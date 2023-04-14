@@ -1,0 +1,87 @@
+[gd_scene load_steps=15 format=3 uid="uid://c310h0m0lkqpd"]
+
+[ext_resource type="Shader" path="res://Worlds/Plane/plane.gdshader" id="1_qnw0c"]
+[ext_resource type="Script" path="res://Worlds/Plane/plane.gd" id="2_88jhe"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bthxj"]
+noise_type = 0
+seed = 1337
+fractal_type = 2
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_frequency = 0.005
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 7
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_inu8h"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_bthxj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e3nt7"]
+render_priority = 0
+shader = ExtResource("1_qnw0c")
+shader_parameter/noise = SubResource("NoiseTexture2D_inu8h")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8tv6s"]
+material = SubResource("ShaderMaterial_e3nt7")
+size = Vector2(50, 50)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7y5ho"]
+noise_type = 0
+seed = 10
+frequency = 0.003
+fractal_octaves = 9
+fractal_lacunarity = 0.5
+fractal_gain = 0.05
+fractal_weighted_strength = 1.0
+cellular_return_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2vill"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_7y5ho")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_55ir1"]
+render_priority = 0
+shader = ExtResource("1_qnw0c")
+shader_parameter/noise = SubResource("NoiseTexture2D_2vill")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h5s5n"]
+material = SubResource("ShaderMaterial_55ir1")
+size = Vector2(50, 50)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_u8ojl"]
+noise_type = 3
+seed = 100
+frequency = 0.005
+fractal_type = 3
+fractal_octaves = 7
+fractal_weighted_strength = 0.5
+cellular_distance_function = 3
+cellular_return_type = 5
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_labui"]
+noise = SubResource("FastNoiseLite_u8ojl")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7mkka"]
+render_priority = 0
+shader = ExtResource("1_qnw0c")
+shader_parameter/noise = SubResource("NoiseTexture2D_labui")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_radur"]
+material = SubResource("ShaderMaterial_7mkka")
+size = Vector2(50, 50)
+
+[node name="Plane" type="MeshInstance3D"]
+mesh = SubResource("PlaneMesh_8tv6s")
+script = ExtResource("2_88jhe")
+
+[node name="Peaks" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50.2762)
+mesh = SubResource("PlaneMesh_h5s5n")
+skeleton = NodePath("../Erosion")
+
+[node name="Erosion" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.232822, 0, -50.9568)
+mesh = SubResource("PlaneMesh_radur")

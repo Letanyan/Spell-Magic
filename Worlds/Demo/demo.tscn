@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=3 uid="uid://bhec0b6awe536"]
+
+[ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
+[ext_resource type="PackedScene" uid="uid://telbyb8p3juv" path="res://Characters/Player/player.tscn" id="2_8iei0"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_denqe"]
+noise_type = 0
+seed = 1
+frequency = 0.005
+fractal_type = 3
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 10
+domain_warp_fractal_lacunarity = 8.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_r8mkq"]
+noise_type = 0
+frequency = 0.005
+fractal_type = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qylwn"]
+noise_type = 3
+frequency = 0.001
+fractal_octaves = 1
+fractal_lacunarity = 1.0
+fractal_gain = 0.0
+domain_warp_type = 2
+domain_warp_amplitude = 100.0
+domain_warp_fractal_type = 0
+domain_warp_fractal_octaves = 10
+domain_warp_fractal_lacunarity = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i5cg2"]
+size = Vector3(1000, 1, 1000)
+
+[node name="Demo" type="Node"]
+script = ExtResource("1_f83i4")
+noise_struct = SubResource("FastNoiseLite_denqe")
+noise_erosion = SubResource("FastNoiseLite_r8mkq")
+noise_peaks = SubResource("FastNoiseLite_qylwn")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_i5cg2")
+disabled = true
+
+[node name="Player" parent="." instance=ExtResource("2_8iei0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10, 100)
+visible = false
+omni_range = 1000.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10, -100)
+visible = false
+omni_range = 1000.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.750965, 0.660343, 0, -0.660343, 0.750965, 5.85383, 5, 3.45085)

@@ -1,0 +1,60 @@
+class_name Token
+
+enum Kind { NUMBER, WORD, OP, OPEN, CLOSE, NONE, ERROR }
+
+var kind: Kind
+var raw: String
+
+func _init(k: Kind, r: String):
+	kind = k
+	raw = r
+
+static func tokenize(expr: String) -> Array:
+	var state = Kind.NONE
+	var result = []
+	
+	var current = ""
+	for c in expr:
+		match state:
+			Kind.NUMBER:
+				if "1234567890.".contains(c):
+					current = current + c
+				else:
+					result.append(Token.new(Kind.NUMBER, String(current)))
+					current = ""
+					state = Kind.NONE
+			Kind.WORD:
+				if "qwertyuiopasdfghjklzxcvbnm1234567890".contains(c.to_lower()):
+					current = current + c
+				else:
+					result.append(Token.new(Kind.WORD, String(current)))
+					current = ""
+					state = Kind.NONE
+		match state:
+			Kind.NONE:
+				if "1234567890".contains(c):
+					state = Kind.NUMBER
+					current = current + c
+				elif "qwertyuiopasdfghjklzxcvbnm".contains(c.to_lower()):
+					state = Kind.WORD
+					current = current + c
+				elif "+-*/^".contains(c):
+					result.append(Token.new(Kind.OP, c))
+				elif c == "(":
+					result.append(Token.new(Kind.OPEN, c))
+				elif c == ")":
+					result.append(Token.new(Kind.CLOSE, c))
+				elif c == " ":
+					pass
+				else:
+					result.append(Token.new(Kind.ERROR, c))
+	
+	if current.length() > 0:
+		match state:
+			Kind.NUMBER:
+				result.append(Token.new(Kind.NUMBER, String(current)))
+			Kind.WORD:
+				result.append(Token.new(Kind.WORD, String(current)))
+	
+	return result
+					
