@@ -72,7 +72,7 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 		if e.kind == Token.Kind.NUMBER:
 			tape.append(e.raw.to_float())
 		elif e.kind == Token.Kind.VAR:
-			tape.append(vars[e.raw])
+			tape.append(vars.get(e.raw, 0.0))
 		elif e.kind == Token.Kind.OP:
 			var b = tape.pop_back()
 			var a = tape.pop_back()

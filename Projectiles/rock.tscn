@@ -1,29 +1,43 @@
-[gd_scene load_steps=5 format=3 uid="uid://bs31awp6oeunh"]
+[gd_scene load_steps=8 format=3 uid="uid://bs31awp6oeunh"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i3esg"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ljjel"]
-albedo_color = Color(0.454902, 0.25098, 0.0823529, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_3hxed"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_t2oo6"]
-material = SubResource("StandardMaterial3D_ljjel")
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wx7dh"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_myivp"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xll23"]
+noise = SubResource("FastNoiseLite_wx7dh")
 
-[node name="Rock" type="CPUParticles3D"]
-amount = 4
-lifetime = 10.0
-mesh = SubResource("SphereMesh_t2oo6")
-emission_shape = 1
-emission_sphere_radius = 1.0
-direction = Vector3(0, 0, 0)
-spread = 180.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_max = 0.1
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w8ji5"]
+albedo_color = Color(0.533333, 0.117647, 0.0117647, 1)
+albedo_texture = SubResource("NoiseTexture2D_xll23")
+
+[sub_resource type="BoxMesh" id="BoxMesh_th3cy"]
+material = SubResource("StandardMaterial3D_w8ji5")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_si2rd"]
+
+[node name="rock" type="Node3D"]
 script = ExtResource("1_i3esg")
 
-[node name="Area3D" type="Area3D" parent="."]
-collision_layer = 4
+[node name="body" type="RigidBody3D" parent="."]
+collision_layer = 16
+collision_mask = 255
+freeze = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("SphereShape3D_myivp")
+[node name="shape" type="CollisionShape3D" parent="body"]
+shape = SubResource("BoxShape3D_3hxed")
+
+[node name="mesh" type="MeshInstance3D" parent="body"]
+mesh = SubResource("BoxMesh_th3cy")
+skeleton = NodePath("../..")
+
+[node name="area" type="Area3D" parent="body/mesh"]
+collision_layer = 16
+collision_mask = 255
+
+[node name="shape" type="CollisionShape3D" parent="body/mesh/area"]
+shape = SubResource("BoxShape3D_si2rd")
+
+[connection signal="body_entered" from="body/mesh/area" to="." method="_on_area_3d_body_entered"]

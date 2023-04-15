@@ -61,3 +61,10 @@ fire={
 
 3d_physics/layer_1="world"
 3d_physics/layer_2="player"
+3d_physics/layer_3="enemy"
+3d_physics/layer_4="fire"
+3d_physics/layer_5="rock"
+3d_physics/layer_6="water"
+3d_physics/layer_7="air"
+3d_physics/layer_8="ice"
+3d_physics/layer_9="electric"

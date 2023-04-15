@@ -14,6 +14,7 @@ static func tokenize(expr: String) -> Array:
 	var result = []
 	
 	var current = ""
+	var lastWasOp = true
 	for c in expr:
 		match state:
 			Kind.NUMBER:
@@ -21,6 +22,7 @@ static func tokenize(expr: String) -> Array:
 					current = current + c
 				else:
 					result.append(Token.new(Kind.NUMBER, String(current)))
+					lastWasOp = false
 					current = ""
 					state = Kind.NONE
 			Kind.WORD:
@@ -31,6 +33,7 @@ static func tokenize(expr: String) -> Array:
 					if is_func(current):
 						k = Kind.FUNC
 					result.append(Token.new(k, String(current)))
+					lastWasOp = false
 					current = ""
 					state = Kind.NONE
 		match state:
@@ -42,15 +45,23 @@ static func tokenize(expr: String) -> Array:
 					state = Kind.WORD
 					current = current + c
 				elif "+-*/^".contains(c):
-					result.append(Token.new(Kind.OP, c))
+					if lastWasOp and c == "-":
+						state = Kind.NUMBER
+						current = "-"
+					else: 
+						result.append(Token.new(Kind.OP, c))
+						lastWasOp = true
 				elif c == "(":
 					result.append(Token.new(Kind.OPEN, c))
+					lastWasOp = true
 				elif c == ")":
 					result.append(Token.new(Kind.CLOSE, c))
+					lastWasOp = false
 				elif c == " ":
 					pass
 				else:
 					result.append(Token.new(Kind.ERROR, c))
+					lastWasOp = false
 	
 	if current.length() > 0:
 		match state:

@@ -17,7 +17,7 @@ rings = 8
 [node name="fire" type="Node3D"]
 script = ExtResource("1_tkofl")
 
-[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+[node name="source" type="CPUParticles3D" parent="."]
 amount = 500
 lifetime = 5.0
 mesh = SubResource("SphereMesh_ek7ae")
@@ -29,10 +29,11 @@ gravity = Vector3(0, 0, 0)
 initial_velocity_min = 1.0
 initial_velocity_max = 3.0
 
-[node name="Area3D" type="Area3D" parent="CPUParticles3D"]
-collision_layer = 4
+[node name="area" type="Area3D" parent="source"]
+collision_layer = 8
+collision_mask = 7
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CPUParticles3D/Area3D"]
+[node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_21upn")
 
-[connection signal="body_entered" from="CPUParticles3D/Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="source/area" to="." method="_on_area_3d_body_entered"]
