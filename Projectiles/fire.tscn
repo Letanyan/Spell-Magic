@@ -1,34 +1,38 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8csr66olwt8p"]
+[gd_scene load_steps=5 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_tkofl"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1r0d8"]
-albedo_color = Color(1, 0.396078, 0.180392, 1)
-normal_enabled = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_na415"]
+albedo_color = Color(1, 0.196078, 0.176471, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_km383"]
-material = SubResource("StandardMaterial3D_1r0d8")
+[sub_resource type="SphereMesh" id="SphereMesh_ek7ae"]
+material = SubResource("StandardMaterial3D_na415")
 radius = 0.1
 height = 0.2
+radial_segments = 16
+rings = 8
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_8eiqc"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_21upn"]
 
-[node name="fire" type="CPUParticles3D"]
-amount = 250
-lifetime = 2.0
-mesh = SubResource("SphereMesh_km383")
-emission_shape = 1
-emission_sphere_radius = 0.6
-direction = Vector3(0, 1, 0)
-spread = 30.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_max = 2.0
+[node name="fire" type="Node3D"]
 script = ExtResource("1_tkofl")
 
-[node name="area" type="Area3D" parent="."]
+[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+amount = 500
+lifetime = 5.0
+mesh = SubResource("SphereMesh_ek7ae")
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, 1, 0)
+spread = 15.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+
+[node name="Area3D" type="Area3D" parent="CPUParticles3D"]
 collision_layer = 4
 
-[node name="collision" type="CollisionShape3D" parent="area"]
-shape = SubResource("SphereShape3D_8eiqc")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CPUParticles3D/Area3D"]
+shape = SubResource("SphereShape3D_21upn")
 
-[connection signal="body_entered" from="area" to="." method="_on_area_body_entered"]
+[connection signal="body_entered" from="CPUParticles3D/Area3D" to="." method="_on_area_3d_body_entered"]

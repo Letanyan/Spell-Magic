@@ -1,6 +1,6 @@
 extends Node
 
-@onready var player = $Player
+@onready var player: Player = $Player
 @onready var ground = $Ground
 # @onready var ground_mesh = $Ground/Mesh
 # @onready var ground_collision = $Ground/Collision
@@ -23,11 +23,11 @@ func _input(event):
 	if event.is_action_pressed("fire"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		var spell = Spell.new("tox + t * 2 * cx", "toy + t * cy", "toz + t * cz", "1", 0, 5000, player.spell_variables(true))
-		add_child(player.cast_spell(spell))
+		var circle_me = Spell.new("tx + sin(t * 2) * 5", "ty + t * v", "tz + cos(t * 2) * 5", "1", 0, 5000, player.spell_variables(true))
+		var blast = Spell.new("x + t * u * 3", "y + t * v * 3", "z + t * w * 3", "t", 0, 5000, player.spell_variables(true))
+		add_child(player.cast_spell(blast))
 		
-#		var n = ParseNode.parse("5 * cx + (3 / 5)")
-#		n.display("")
+#		var n = Expr.new("5 * cx + sin(3 / 5) + (cos(1 / 2) * tan(3 / 4))")
 #		print(n.compute({"cx": 3.0}))
 	
 #		if $UserInterface/Retry.visible:

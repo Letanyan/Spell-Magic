@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://bs31awp6oeunh"]
+
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i3esg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ljjel"]
+albedo_color = Color(0.454902, 0.25098, 0.0823529, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_t2oo6"]
+material = SubResource("StandardMaterial3D_ljjel")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_myivp"]
+
+[node name="Rock" type="CPUParticles3D"]
+amount = 4
+lifetime = 10.0
+mesh = SubResource("SphereMesh_t2oo6")
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_max = 0.1
+script = ExtResource("1_i3esg")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_myivp")

@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody3D
 
 @onready var cam_pivot = $CamPivot
@@ -62,11 +63,11 @@ func _physics_process(delta):
 	var t = Time.get_ticks_msec()
 	var should_remove = []
 	for i in range(spells.size()):
-		var p = particles[i]
+		var p: SpellBody = particles[i]
 		spells[i].update_spell(t, spell_variables(false), p)
 		if spells[i].has_expired(t):
 			should_remove.append(i)
-			p.queue_free()
+			p.stop_emitting()
 			
 	should_remove.reverse()
 	for i in should_remove:
@@ -76,20 +77,20 @@ func _physics_process(delta):
 func spell_variables(fixed: bool) -> Dictionary:
 	var result = Dictionary()
 	var prefix = "" if fixed else "t"
-	result[prefix + "ox"] = position.x
-	result[prefix + "oy"] = position.y
-	result[prefix + "oz"] = position.z
+	result[prefix + "x"] = position.x
+	result[prefix + "y"] = position.y
+	result[prefix + "z"] = position.z
 	
 	var cdir = ((global_position + Vector3(0, 1.2, 0)) - cam.global_position).normalized()
 	
-	result[prefix + "cx"] = cdir.x
-	result[prefix + "cy"] = cdir.y
-	result[prefix + "cz"] = cdir.z
+	result[prefix + "u"] = cdir.x
+	result[prefix + "v"] = cdir.y
+	result[prefix + "w"] = cdir.z
 	
 	return result
 	
 
-func cast_spell(spell: Spell) -> CPUParticles3D:
+func cast_spell(spell: Spell) -> SpellBody:
 	spells.append(spell)
 	var p = spell.get_particle()
 	particles.append(p)

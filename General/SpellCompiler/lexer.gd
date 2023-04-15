@@ -1,6 +1,6 @@
 class_name Token
 
-enum Kind { NUMBER, WORD, OP, OPEN, CLOSE, NONE, ERROR }
+enum Kind { NUMBER, WORD, VAR, FUNC, OP, OPEN, CLOSE, NONE, ERROR }
 
 var kind: Kind
 var raw: String
@@ -27,7 +27,10 @@ static func tokenize(expr: String) -> Array:
 				if "qwertyuiopasdfghjklzxcvbnm1234567890".contains(c.to_lower()):
 					current = current + c
 				else:
-					result.append(Token.new(Kind.WORD, String(current)))
+					var k = Kind.VAR
+					if is_func(current):
+						k = Kind.FUNC
+					result.append(Token.new(k, String(current)))
 					current = ""
 					state = Kind.NONE
 		match state:
@@ -54,7 +57,12 @@ static func tokenize(expr: String) -> Array:
 			Kind.NUMBER:
 				result.append(Token.new(Kind.NUMBER, String(current)))
 			Kind.WORD:
-				result.append(Token.new(Kind.WORD, String(current)))
+				var k = Kind.VAR
+				if is_func(current):
+					k = Kind.FUNC
+				result.append(Token.new(k, String(current)))
 	
 	return result
 					
+static func is_func(str: String) -> bool:
+	return ["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "inv"].find(str) != -1
