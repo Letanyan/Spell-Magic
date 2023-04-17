@@ -76,7 +76,7 @@ func _mass(r: float) -> float:
 	return 0
 	
 func _force(r: float) -> Vector3:
-	return _mass(r) * accel
+	return _mass(r) * velocity
 	
 func update_spell(t: float, vars: Dictionary, particle: SpellBody):
 	if not in_control:

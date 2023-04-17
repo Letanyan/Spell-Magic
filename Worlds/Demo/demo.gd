@@ -45,16 +45,19 @@ func _input(event):
 		var drop = Spell.new("x + u * 5", "y + t * -9.8 * 3 + 15", "z + w * 5", "1 + r0 * 5", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
 		var push = Spell.new("x + u * 300 * t + u * 2", "y + t * 200 * v", "z + w * 300 * t + w * 2", "1 + r0 * 0", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
 		var aqua = Spell.new("x + t * u * 10", "y + t * v * 10 + 2", "z + t * w * 10", "t", 0, 5000, Spell.Element.WATER, player.spell_variables(true))
+		var back = Spell.new("x + u * -20 * t + u * 5", "y - 0.75", "z + w * -20 * t + w * 5", "1 + r0 * 0", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
 		
 		var spells = [
 			drop,
 			push,
+			back,
 			circle,
 			blast,
 			aqua,
 		]
 		
 		add_child(player.cast_spell(spells[spell_index]))
+#		player.impulse = Vector3(1, 1, 1) * 50
 		
 #		var n = Expr.new("5 * cx + sin(3 / 5) + (cos(1 / 2) * tan(3 / 4))")
 #		print(n.compute({"cx": 3.0}))

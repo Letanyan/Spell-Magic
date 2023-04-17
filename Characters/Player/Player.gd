@@ -8,7 +8,7 @@ extends CharacterBody3D
 @export var speed = 14
 @export var fall_acceleration = 75
 @export var friction = 25
-@export var jump_impulse = 14
+@export var jump_impulse = 140
 @export var bounce_impulse = 16
 
 var target_velocity = Vector3.ZERO
@@ -28,20 +28,18 @@ func _physics_process(delta):
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		
-	target_velocity.x = direction.x * speed
-	target_velocity.z = direction.z * speed
+	if is_on_floor():
+		target_velocity.x = direction.x * speed
+		target_velocity.z = direction.z * speed
 	
 	if not is_on_floor():
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
-		# $AnimationPlayer.stop()
 	elif Input.is_action_just_pressed("jump"):
 		target_velocity.y = jump_impulse
 	else:
-		pass
-		# $AnimationPlayer.play()
+		target_velocity.y = 0
 	
 	if absf(impulse.length()) > 1:
-		var len = impulse.length()
 		var nor = impulse.normalized()
 		var fri = friction * delta 
 		impulse = Vector3(
@@ -49,9 +47,6 @@ func _physics_process(delta):
 			impulse.y - nor.y * fri,
 			impulse.z - nor.z * fri,
 		)
-#		impulse.x = impulse.x + (friction * delta * -signf(impulse.x))
-#		impulse.y = impulse.y + (friction * delta * -signf(impulse.y))
-#		impulse.z = impulse.z + (friction * delta * -signf(impulse.z))
 	else:
 		impulse.x = 0
 		impulse.y = 0
@@ -67,18 +62,6 @@ func _physics_process(delta):
 		# $AnimationPlayer.speed_scale = 1
 		
 	move_and_slide()
-	
-	for index in range(get_slide_collision_count()):
-		var collision = get_slide_collision(index)
-		if direction != Vector3.ZERO:
-			target_velocity.y = floor(collision.get_normal().y * speed)
-		if collision.get_collider() == null:
-			continue
-		if collision.get_collider().is_in_group("mob"):
-			var mob = collision.get_collider()
-			if Vector3.UP.dot(collision.get_normal()) > 0.1:
-				mob.squash()
-				target_velocity.y = bounce_impulse
 				
 	var t = Time.get_ticks_msec()
 	var should_remove = []

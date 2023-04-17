@@ -29,6 +29,7 @@ func _on_body_entered(body):
 					world_hit.emit(self, body)
 				elif is_player or is_enemy:
 					CharacterCollision.handle(body, self)
+					world_hit.emit(self, body)
 		Spell.Element.WATER:
 			if is_world:
 				world_hit.emit(self, body)
