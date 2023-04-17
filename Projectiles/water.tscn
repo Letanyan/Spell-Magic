@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://ci5156f25r5no"]
+
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_fir5h"]
+[ext_resource type="Material" uid="uid://bptbv1j70wd1t" path="res://Projectiles/water_mat.tres" id="2_ax8yn"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_owy0h"]
+material = ExtResource("2_ax8yn")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6etye"]
+
+[node name="water" type="Node3D"]
+script = ExtResource("1_fir5h")
+
+[node name="source" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_owy0h")
+
+[node name="area" type="Area3D" parent="source"]
+
+[node name="shape" type="CollisionShape3D" parent="source/area"]
+shape = SubResource("SphereShape3D_6etye")
+
+[connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

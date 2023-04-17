@@ -36,4 +36,4 @@ collision_mask = 7
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_21upn")
 
-[connection signal="body_entered" from="source/area" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

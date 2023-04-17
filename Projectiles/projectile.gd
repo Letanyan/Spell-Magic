@@ -3,7 +3,7 @@ extends Node3D
 
 signal world_hit
 
-var element: Spell.Element
+var spell: Spell
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,16 +15,26 @@ func _process(delta):
 	pass
 
 
-func _on_area_3d_body_entered(body):
-	match element:
+func _on_body_entered(body):
+	var is_world  = body.collision_layer & 0b0001 != 0
+	var is_player = body.collision_layer & 0b0010 != 0
+	var is_enemy  = body.collision_layer & 0b0100 != 0
+	match spell.element:
 		Spell.Element.FIRE:
-			world_hit.emit(self, body)
+			if is_world:
+				world_hit.emit(self, body)
 		Spell.Element.ROCK:
 			if body != get_node("body"):
+				if is_world:
+					world_hit.emit(self, body)
+				elif is_player or is_enemy:
+					CharacterCollision.handle(body, self)
+		Spell.Element.WATER:
+			if is_world:
 				world_hit.emit(self, body)
 
 func update_shape(r: float, ignore_time: bool):
-	match element:
+	match spell.element:
 		Spell.Element.FIRE:
 			var particles: CPUParticles3D = get_node("source")
 			var shape: CollisionShape3D = get_node("source/area/shape")
@@ -55,12 +65,33 @@ func update_shape(r: float, ignore_time: bool):
 			mbox.material.albedo_texture.noise = FastNoiseLite.new()
 			mesh.mesh = mbox
 			
+			var body: RigidBody3D = get_node("body")
+			body.mass = r
+			
+		Spell.Element.WATER:
+#			if not ignore_time:
+#				return
+			var m_shape: CollisionShape3D = get_node("source/area/shape")
+			var box = SphereShape3D.new()
+			box.radius = r
+			m_shape.shape = box
+			var mesh: MeshInstance3D = get_node("source")
+			var mbox = SphereMesh.new()
+			mbox.radius = r
+			mbox.height = r * 2
+			mbox.material = water_mat
+			mbox.material.set_shader_parameter("radius", r)
+			mbox.material.set_shader_parameter("displacement", clamp((1.0 / r) / 10.0, 0, 0.5))
+			mesh.mesh = mbox
+#			mesh.mesh.radius = r
+#			mesh.mesh.height = r * 2
+			
+			
 
-func update_movement(v: Vector3):
-	match element:
+func update_movement(v: Vector3, instance: bool):
+	match spell.element:
 		Spell.Element.FIRE:
 			position += v
-			print(position, " : ", v)
 			var particles: CPUParticles3D = get_node("source")
 			particles.direction = v.normalized()
 			var s = v.length()
@@ -69,10 +100,13 @@ func update_movement(v: Vector3):
 		
 		Spell.Element.ROCK:
 			position += v
+				
+		Spell.Element.WATER:
+			position += v
 			
 
 func stop_emitting():
-	match element:
+	match spell.element:
 		Spell.Element.FIRE:
 			var particles: CPUParticles3D = get_node("source")
 			particles.emitting = false
@@ -83,7 +117,11 @@ func stop_emitting():
 		Spell.Element.ROCK:
 			queue_free()
 			
+		Spell.Element.WATER:
+			queue_free()
+			
 func free_after(duration: float):
 	await get_tree().create_timer(duration).timeout
 	queue_free()		
 			
+var water_mat = load("res://Projectiles/water_mat.tres")

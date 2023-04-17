@@ -16,7 +16,7 @@ albedo_texture = SubResource("NoiseTexture2D_xll23")
 [sub_resource type="BoxMesh" id="BoxMesh_th3cy"]
 material = SubResource("StandardMaterial3D_w8ji5")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_si2rd"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_odltr"]
 
 [node name="rock" type="Node3D"]
 script = ExtResource("1_i3esg")
@@ -38,6 +38,6 @@ collision_layer = 16
 collision_mask = 255
 
 [node name="shape" type="CollisionShape3D" parent="body/mesh/area"]
-shape = SubResource("BoxShape3D_si2rd")
+shape = SubResource("BoxShape3D_odltr")
 
-[connection signal="body_entered" from="body/mesh/area" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="body/mesh/area" to="." method="_on_body_entered"]

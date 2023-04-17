@@ -7,10 +7,12 @@ extends CharacterBody3D
 
 @export var speed = 14
 @export var fall_acceleration = 75
+@export var friction = 25
 @export var jump_impulse = 14
 @export var bounce_impulse = 16
 
 var target_velocity = Vector3.ZERO
+var impulse = Vector3.ZERO
 
 var spells: Array = []
 var particles: Array = []
@@ -38,7 +40,25 @@ func _physics_process(delta):
 		pass
 		# $AnimationPlayer.play()
 	
-	velocity = target_velocity
+	if absf(impulse.length()) > 1:
+		var len = impulse.length()
+		var nor = impulse.normalized()
+		var fri = friction * delta 
+		impulse = Vector3(
+			impulse.x - nor.x * fri,
+			impulse.y - nor.y * fri,
+			impulse.z - nor.z * fri,
+		)
+#		impulse.x = impulse.x + (friction * delta * -signf(impulse.x))
+#		impulse.y = impulse.y + (friction * delta * -signf(impulse.y))
+#		impulse.z = impulse.z + (friction * delta * -signf(impulse.z))
+	else:
+		impulse.x = 0
+		impulse.y = 0
+		impulse.z = 0
+	
+#	print(impulse)
+	velocity = target_velocity + impulse
 	if direction != Vector3.ZERO:
 		$Pivot.rotation.y = lerp_angle($Pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
 		# $AnimationPlayer.speed_scale = 4
@@ -93,5 +113,6 @@ func spell_variables(fixed: bool) -> Dictionary:
 func cast_spell(spell: Spell) -> SpellBody:
 	spells.append(spell)
 	var p = spell.get_particle()
+	p.spell = spell
 	particles.append(p)
 	return p

@@ -16,17 +16,45 @@ func _ready():
 func _process(delta):
 	pass
 
+var spell_index = 0
+
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		
+	if event.is_action_pressed("one"):
+		spell_index = 0
+	if event.is_action_pressed("two"):
+		spell_index = 1
+	if event.is_action_pressed("three"):
+		spell_index = 2
+	if event.is_action_pressed("four"):
+		spell_index = 3
+	if event.is_action_pressed("five"):
+		spell_index = 4
+	if event.is_action_pressed("six"):
+		spell_index = 5
+	if event.is_action_pressed("seven"):
+		spell_index = 6
 		
 	if event.is_action_pressed("fire"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		var circle = Spell.new("tx + sin(t * 2) * 5", "ty + t * v", "tz + cos(t * 2) * 5", "1", 1, 5000, Spell.Element.FIRE, player.spell_variables(true))
-		var blast = Spell.new("x + t * u * 3", "y + t * v * 30", "z + t * w * 30", "t * 10", 0, 5000, Spell.Element.FIRE, player.spell_variables(true))
-		var drop = Spell.new("x + u * 5", "y + t * -9.8 * 3 + 15", "z + w * 5", "1 + r0 * 5 + t * 2", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
-		add_child(player.cast_spell(blast))
+		var blast = Spell.new("x + t * u * 10", "y + t * v * 10", "z + t * w * 10", "t * 2", 0, 5000, Spell.Element.FIRE, player.spell_variables(true))
+		var drop = Spell.new("x + u * 5", "y + t * -9.8 * 3 + 15", "z + w * 5", "1 + r0 * 5", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
+		var push = Spell.new("x + u * 300 * t + u * 2", "y + t * 200 * v", "z + w * 300 * t + w * 2", "1 + r0 * 0", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
+		var aqua = Spell.new("x + t * u * 10", "y + t * v * 10 + 2", "z + t * w * 10", "t", 0, 5000, Spell.Element.WATER, player.spell_variables(true))
+		
+		var spells = [
+			drop,
+			push,
+			circle,
+			blast,
+			aqua,
+		]
+		
+		add_child(player.cast_spell(spells[spell_index]))
 		
 #		var n = Expr.new("5 * cx + sin(3 / 5) + (cos(1 / 2) * tan(3 / 4))")
 #		print(n.compute({"cx": 3.0}))
