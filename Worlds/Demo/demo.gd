@@ -40,32 +40,33 @@ func _input(event):
 	if event.is_action_pressed("fire"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		var circle = Spell.new("tx + sin(t * 2) * 5", "ty + t * v", "tz + cos(t * 2) * 5", "1", 1, 5000, Spell.Element.FIRE, player.spell_variables(true))
-		var blast = Spell.new("x + t * u * 10", "y + t * v * 10", "z + t * w * 10", "t * 2", 0, 5000, Spell.Element.FIRE, player.spell_variables(true))
-		var drop = Spell.new("x + u * 5", "y + t * -9.8 * 3 + 15", "z + w * 5", "1 + r0 * 5", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
-		var push = Spell.new("x + u * 300 * t + u * 2", "y + t * 200 * v", "z + w * 300 * t + w * 2", "1 + r0 * 0", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
-		var aqua = Spell.new("x + t * u * 10", "y + t * v * 10 + 2", "z + t * w * 10", "t", 0, 5000, Spell.Element.WATER, player.spell_variables(true))
-		var back = Spell.new("x + u * -20 * t + u * 5", "y - 0.75", "z + w * -20 * t + w * 5", "1 + r0 * 0", 0, 50000, Spell.Element.ROCK, player.spell_variables(true))
+		var spell_vars = player.spell_variables(true)
+		var circle = Spell.new("tx + sin(t * 2) * 5", "ty + -0.2", "tz + cos(t * 2) * 5", "1", 0.5, 50000, Spell.Element.AIR, spell_vars)
+		var blast = Spell.new("x + t * u * 10", "y + t * v * 10", "z + t * w * 10", "t * 2", 0, 5000, Spell.Element.FIRE, spell_vars)
+		var drop = Spell.new("x + u * 5", "y + t * -9.8 * 3 + 15", "z + w * 5", "1 + r0 * 5", 0.5, 50000, Spell.Element.ROCK, spell_vars)
+		var push = Spell.new("x + u * 30 * t + u * 2", "y + t * 20 * v", "z + w * 30 * t + w * 2", "1 + r0 * 0", 0.2, 50000, Spell.Element.ROCK, spell_vars)
+		var aqua = Spell.new("x + t * u * 10", "y + t * v * 10 + 2", "z + t * w * 10", "t", 0, 5000, Spell.Element.WATER, spell_vars)
+		var back = Spell.new("x + u * -20 * t + u * 5", "y - 0.75", "z + w * -20 * t + w * 5", "1 + r0 * 0", 0.3, 50000, Spell.Element.ROCK, spell_vars)
+		var fan = Spell.new("x + u * 2 + u * 2 * (t / 5)", "y - 0.75 + v * (t / 5)", "z + w * 2 + w * 2 * (t / 5)", "2", 0.8, 50000, Spell.Element.AIR, spell_vars)
+		var hover = Spell.new("tx - 10 * u + u * t * 10", "ty - 10 * v + v * t * 10", "tz - 10 * w + w * t * 10", "2", 0.8, 500, Spell.Element.AIR, spell_vars)
 		
 		var spells = [
-			drop,
-			push,
-			back,
-			circle,
-			blast,
-			aqua,
+			drop, # 1
+			push, # 2
+			back, # 3
+			fan,  # 4
+			circle, # 5
+			blast, # 6
+			aqua, # 7
+			hover, #8
 		]
 		
 		add_child(player.cast_spell(spells[spell_index]))
-#		player.impulse = Vector3(1, 1, 1) * 50
 		
-#		var n = Expr.new("5 * cx + sin(3 / 5) + (cos(1 / 2) * tan(3 / 4))")
-#		print(n.compute({"cx": 3.0}))
-	
-#		if $UserInterface/Retry.visible:
-#			get_tree().reload_current_scene()
-#		else:
-#			$Player.fire(self)
+	if event.is_action_pressed("shift"):
+		var spell_vars = player.spell_variables(true)
+		var hover = Spell.new("x - 0.5", "y + t * 30 - 20", "z + 0.5", "2", 1, 500, Spell.Element.AIR, spell_vars)
+		add_child(player.cast_spell(hover))
 		
 @export var noise_struct: Noise
 @export var noise_erosion: Noise

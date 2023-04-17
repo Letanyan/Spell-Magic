@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://n8opbdntc6c3"]
+
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_icqhx"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_pnso3"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_nuyxv"]
+height = 1.0
+
+[node name="air" type="Node3D"]
+script = ExtResource("1_icqhx")
+
+[node name="source" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+amount = 50
+mesh = SubResource("SphereMesh_pnso3")
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.5
+emission_ring_radius = 0.5
+emission_ring_inner_radius = 0.0
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 1.0
+
+[node name="area" type="Area3D" parent="source"]
+collision_layer = 64
+collision_mask = 254
+
+[node name="shape" type="CollisionShape3D" parent="source/area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CylinderShape3D_nuyxv")
+
+[connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

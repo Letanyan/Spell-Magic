@@ -20,7 +20,6 @@ var time_start: float
 var position: Vector3
 var velocity: Vector3
 var accel: Vector3
-var force: Vector3
 var expired: bool
 var started: bool
 var in_control: bool
@@ -70,13 +69,25 @@ func _size(vars: Dictionary) -> float:
 	
 func _mass(r: float) -> float:
 	match element:
-		Element.FIRE: return 0
-		Element.ROCK: return r
-		Element.WATER: return r / 10
+		Element.ROCK: return power * 100.0
+		_: return 0
 	return 0
 	
-func _force(r: float) -> Vector3:
-	return _mass(r) * velocity
+func impulse() -> Vector3:
+	match element:
+		Element.ROCK:
+			return velocity.normalized() * (power * 100.0) 
+		Element.AIR:
+			return velocity.normalized() * (power * 100.0)
+		_:
+			return Vector3.ZERO
+			
+func impulse_length() -> float:
+	match element:
+		Element.AIR:
+			return power * 10
+		_:
+			return 0
 	
 func update_spell(t: float, vars: Dictionary, particle: SpellBody):
 	if not in_control:
@@ -97,8 +108,7 @@ func update_spell(t: float, vars: Dictionary, particle: SpellBody):
 		velocity = velocity.normalized() * clamp(len, -1, 1)
 		if oldVel:
 			accel = oldVel - velocity
-			force = _force(er)
-	particle.update_movement(velocity, false)
+	particle.update_movement(velocity, position, false)
 	started = true
 
 func has_expired(t: float) -> bool:
@@ -111,27 +121,39 @@ func lose_control(p: Node3D, q: Node3D):
 	in_control = false
 	if element == Element.ROCK:
 		var body: RigidBody3D = p.get_node("body")
-		body.collision_layer = 1
+#		body.collision_layer = 1
 		if body.freeze:
 			body.freeze = false
 			body.apply_central_impulse(velocity)
 			var area = p.get_node("body/mesh/area")
-			area.collision_layer = 1
+#			area.collision_layer = 1
+	
+func nothing(p: Node3D, q: Node3D):
+	pass
 	
 func get_particle() -> SpellBody:
+	var temp_vars = {}
+	temp_vars.merge(fixed_vars)
+	temp_vars["tx"] = fixed_vars["x"]
+	temp_vars["ty"] = fixed_vars["y"]
+	temp_vars["tz"] = fixed_vars["z"]
+	temp_vars["tu"] = fixed_vars["u"]
+	temp_vars["tv"] = fixed_vars["v"]
+	temp_vars["tw"] = fixed_vars["w"]
+	
 	match element:
 		Element.FIRE:
 			var p = load("res://Projectiles/fire.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(expire_now.bind())
-			p.position = _location(fixed_vars)
+			p.position = _location(temp_vars)
 			return p
 		
 		Element.ROCK:
 			var p = load("res://Projectiles/rock.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(lose_control.bind())
-			p.position = _location(fixed_vars)
+			p.position = _location(temp_vars)
 			var er = _size(fixed_vars)
 			p.update_shape(er, true)
 			return p
@@ -140,8 +162,17 @@ func get_particle() -> SpellBody:
 			var p = load("res://Projectiles/water.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(expire_now.bind())
-			p.position = _location(fixed_vars)
-			var er = _size(fixed_vars)
+			p.position = _location(temp_vars)
+			var er = _size(temp_vars)
+			p.update_shape(er, true)
+			return p
+			
+		Element.AIR:
+			var p = load("res://Projectiles/air.tscn").instantiate()
+			p.spell = self
+			p.world_hit.connect(nothing.bind())
+			p.position = _location(temp_vars)
+			var er = _size(temp_vars)
 			p.update_shape(er, true)
 			return p
 			

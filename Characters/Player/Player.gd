@@ -8,7 +8,7 @@ extends CharacterBody3D
 @export var speed = 14
 @export var fall_acceleration = 75
 @export var friction = 25
-@export var jump_impulse = 140
+@export var jump_impulse = 20
 @export var bounce_impulse = 16
 
 var target_velocity = Vector3.ZERO
@@ -34,10 +34,10 @@ func _physics_process(delta):
 	
 	if not is_on_floor():
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
-	elif Input.is_action_just_pressed("jump"):
-		target_velocity.y = jump_impulse
 	else:
 		target_velocity.y = 0
+	if Input.is_action_just_pressed("jump"):
+		target_velocity.y = jump_impulse
 	
 	if absf(impulse.length()) > 1:
 		var nor = impulse.normalized()
