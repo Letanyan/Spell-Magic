@@ -38,6 +38,10 @@ func _physics_process(delta):
 		target_velocity.y = 0
 	if Input.is_action_just_pressed("jump"):
 		target_velocity.y = jump_impulse
+		
+	target_velocity.y = clampf(target_velocity.y, -100, 100)
+	target_velocity.x = clampf(target_velocity.x, -100, 100)
+	target_velocity.z = clampf(target_velocity.z, -100, 100)
 	
 	if absf(impulse.length()) > 1:
 		var nor = impulse.normalized()
@@ -52,7 +56,6 @@ func _physics_process(delta):
 		impulse.y = 0
 		impulse.z = 0
 	
-#	print(impulse)
 	velocity = target_velocity + impulse
 	if direction != Vector3.ZERO:
 		$Pivot.rotation.y = lerp_angle($Pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
@@ -89,6 +92,11 @@ func spell_variables(fixed: bool) -> Dictionary:
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
 	result[prefix + "w"] = cdir.z
+	
+	if fixed:
+		result["abs_pos"] = position
+	else:
+		result["rel_pos"] = position
 	
 	return result
 	

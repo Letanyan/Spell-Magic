@@ -42,6 +42,7 @@ func _on_body_entered(body):
 			if is_world or is_rock:
 				world_hit.emit(self, body)
 			elif is_player or is_enemy:
+				print("push")
 				CharacterCollision.handle(body, self)
 				world_hit.emit(self, body)
 

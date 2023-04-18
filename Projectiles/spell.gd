@@ -17,15 +17,16 @@ var z_expr: Expr
 var r_expr: Expr
 
 var time_start: float
+var old_local_pos: Vector3
 var position: Vector3
 var velocity: Vector3
-var accel: Vector3
+var is_relative_to_player_current_pos: bool
 var expired: bool
 var started: bool
 var in_control: bool
 var fixed_vars: Dictionary
 
-func _init(_x: String, _y: String, _z: String, _r: String, _p: float, _d: float, _e: Element, _fvars: Dictionary):
+func _init(rel_pos: bool, _x: String, _y: String, _z: String, _r: String, _p: float, _d: float, _e: Element, _fvars: Dictionary):
 	x = _x
 	y = _y
 	z = _z
@@ -34,9 +35,10 @@ func _init(_x: String, _y: String, _z: String, _r: String, _p: float, _d: float,
 	duration = _d
 	element = _e
 	time_start = Time.get_ticks_msec()
+	old_local_pos = Vector3.ZERO
 	position = Vector3.ZERO
 	velocity = Vector3.ZERO
-	accel = Vector3.ZERO
+	is_relative_to_player_current_pos = rel_pos
 	expired = false
 	started = false
 	in_control = true
@@ -61,7 +63,7 @@ func _location(vars: Dictionary) -> Vector3:
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
-	return Vector3(0, 2, 0) + result
+	return Vector3(0, 2, 0) + result + (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])
 	
 func _size(vars: Dictionary) -> float:
 	var result = clamp(r_expr.compute(vars), 0.01, 10)
@@ -99,16 +101,14 @@ func update_spell(t: float, vars: Dictionary, particle: SpellBody):
 	var p = _location(vars)
 	var er = _size(vars)
 	particle.update_shape(er, false)
-	var oldPos = position
 	position = p
 	if started:
 		var oldVel = velocity
-		velocity = position - oldPos
+		velocity = (position - (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])) - old_local_pos
 		var len = velocity.length()
 		velocity = velocity.normalized() * clamp(len, -1, 1)
-		if oldVel:
-			accel = oldVel - velocity
 	particle.update_movement(velocity, position, false)
+	old_local_pos = position - (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])
 	started = true
 
 func has_expired(t: float) -> bool:
@@ -140,6 +140,7 @@ func get_particle() -> SpellBody:
 	temp_vars["tu"] = fixed_vars["u"]
 	temp_vars["tv"] = fixed_vars["v"]
 	temp_vars["tw"] = fixed_vars["w"]
+	temp_vars["rel_pos"] = fixed_vars["abs_pos"]
 	
 	match element:
 		Element.FIRE:
