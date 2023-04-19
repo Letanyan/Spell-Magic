@@ -1,9 +1,9 @@
 class_name Player
 extends CharacterBody3D
 
-@onready var cam_pivot = $CamPivot
-@onready var cam_arm = $CamPivot/Arm
-@onready var cam = $CamPivot/Arm/Lens
+@onready var cam_pivot: Marker3D = $CamPivot
+@onready var cam_arm: SpringArm3D = $CamPivot/Arm
+@onready var cam: Camera3D = $CamPivot/Arm/Lens
 
 @export var speed = 14
 @export var fall_acceleration = 75
@@ -12,6 +12,8 @@ extends CharacterBody3D
 @export var bounce_impulse = 16
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
+
+signal player_moved
 
 var target_velocity = Vector3.ZERO
 var impulse = Vector3.ZERO
@@ -81,20 +83,24 @@ func _physics_process(delta):
 	
 	velocity = target_velocity + impulse
 	if direction != Vector3.ZERO:
-		$Pivot.rotation.y = lerp_angle($Pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
+		var pivot: Node3D = $Pivot
+		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
 		# $AnimationPlayer.speed_scale = 4
 	else:
 		pass
 		# $AnimationPlayer.speed_scale = 1
 		
 	move_and_slide()
+	if velocity:
+		player_moved.emit(delta)
 				
 	var t = Time.get_ticks_msec()
 	var should_remove = []
 	for i in range(spells.size()):
 		var p: SpellBody = particles[i]
-		spells[i].update_spell(t, spell_variables(false), p)
-		if spells[i].has_expired(t):
+		var spell: Spell = spells[i]
+		spell.update_spell(t, spell_variables(false), p)
+		if spell.has_expired(t):
 			should_remove.append(i)
 			p.stop_emitting()
 			

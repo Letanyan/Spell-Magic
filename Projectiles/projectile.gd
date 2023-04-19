@@ -15,7 +15,7 @@ func _process(delta):
 	pass
 
 
-func _on_body_entered(body):
+func _on_body_entered(body: Node3D):
 	var is_world  = body.collision_layer & 0b0001 != 0
 	var is_player = body.collision_layer & 0b0010 != 0
 	var is_enemy  = body.collision_layer & 0b0100 != 0

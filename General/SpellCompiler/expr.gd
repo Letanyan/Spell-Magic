@@ -68,7 +68,8 @@ func operator_precedes(op1: Token, op2: Token) -> bool:
 func compute(vars: Dictionary, display: bool = false) -> float:
 	var tape = []
 	
-	for e in expression:
+	for expr in expression:
+		var e: Token = expr
 		if e.kind == Token.Kind.NUMBER:
 			tape.append(e.raw.to_float())
 		elif e.kind == Token.Kind.VAR:

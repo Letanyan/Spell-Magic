@@ -8,6 +8,7 @@
 noise_type = 3
 seed = 1
 fractal_octaves = 9
+domain_warp_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dd6px"]
 noise_type = 3
@@ -71,3 +72,5 @@ collision_mask = 81
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.750965, 0.660343, 0, -0.660343, 0.750965, 5.85383, 3.84122, 3.45085)
+
+[connection signal="player_moved" from="Player" to="." method="_on_player_moved"]

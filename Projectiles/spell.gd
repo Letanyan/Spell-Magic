@@ -144,14 +144,14 @@ func get_particle() -> SpellBody:
 	
 	match element:
 		Element.FIRE:
-			var p = load("res://Projectiles/fire.tscn").instantiate()
+			var p: SpellBody = load("res://Projectiles/fire.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(expire_now.bind())
 			p.position = _location(temp_vars)
 			return p
 		
 		Element.ROCK:
-			var p = load("res://Projectiles/rock.tscn").instantiate()
+			var p: SpellBody = load("res://Projectiles/rock.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(lose_control.bind())
 			p.position = _location(temp_vars)
@@ -160,7 +160,7 @@ func get_particle() -> SpellBody:
 			return p
 			
 		Element.WATER:
-			var p = load("res://Projectiles/water.tscn").instantiate()
+			var p: SpellBody = load("res://Projectiles/water.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(expire_now.bind())
 			p.position = _location(temp_vars)
@@ -169,7 +169,7 @@ func get_particle() -> SpellBody:
 			return p
 			
 		Element.AIR:
-			var p = load("res://Projectiles/air.tscn").instantiate()
+			var p: SpellBody = load("res://Projectiles/air.tscn").instantiate()
 			p.spell = self
 			p.world_hit.connect(nothing.bind())
 			p.position = _location(temp_vars)

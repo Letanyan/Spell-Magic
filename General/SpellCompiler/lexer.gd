@@ -75,5 +75,5 @@ static func tokenize(expr: String) -> Array:
 	
 	return result
 					
-static func is_func(str: String) -> bool:
-	return ["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "inv"].find(str) != -1
+static func is_func(txt: String) -> bool:
+	return ["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "inv"].find(txt) != -1
