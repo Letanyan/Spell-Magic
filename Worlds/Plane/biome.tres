@@ -1,0 +1,48 @@
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bjoxbg4fkxj6e"]
+
+[ext_resource type="Shader" path="res://Worlds/Demo/height.gdshader" id="1_dy6w0"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_udgit"]
+noise_type = 3
+seed = 100
+fractal_type = 3
+fractal_octaves = 9
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ou647"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_udgit")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_iofw6"]
+noise_type = 3
+seed = 1
+fractal_octaves = 9
+fractal_lacunarity = 1.0
+fractal_weighted_strength = 0.5
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kefiv"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_iofw6")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4ean5"]
+noise_type = 3
+seed = 32
+fractal_octaves = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4xxtk"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_4ean5")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dy6w0")
+shader_parameter/texture_width = 1000.0
+shader_parameter/texture_depth = 1000.0
+shader_parameter/elevation = SubResource("NoiseTexture2D_kefiv")
+shader_parameter/temperature = SubResource("NoiseTexture2D_4xxtk")
+shader_parameter/dryness = SubResource("NoiseTexture2D_ou647")

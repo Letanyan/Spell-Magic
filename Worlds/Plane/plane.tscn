@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://c310h0m0lkqpd"]
+[gd_scene load_steps=17 format=3 uid="uid://c310h0m0lkqpd"]
 
 [ext_resource type="Shader" path="res://Worlds/Plane/plane.gdshader" id="1_qnw0c"]
 [ext_resource type="Script" path="res://Worlds/Plane/plane.gd" id="2_88jhe"]
+[ext_resource type="Material" uid="uid://bjoxbg4fkxj6e" path="res://Worlds/Plane/biome.tres" id="3_33xwa"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bthxj"]
 noise_type = 0
@@ -73,6 +74,12 @@ shader_parameter/noise = SubResource("NoiseTexture2D_labui")
 material = SubResource("ShaderMaterial_7mkka")
 size = Vector2(50, 50)
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_youg7"]
+material = ExtResource("3_33xwa")
+size = Vector2(1000, 1000)
+subdivide_width = 128
+subdivide_depth = 128
+
 [node name="Plane" type="MeshInstance3D"]
 mesh = SubResource("PlaneMesh_8tv6s")
 script = ExtResource("2_88jhe")
@@ -85,3 +92,7 @@ skeleton = NodePath("../Erosion")
 [node name="Erosion" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.232822, 0, -50.9568)
 mesh = SubResource("PlaneMesh_radur")
+
+[node name="biome" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.2662, 0, 0)
+mesh = SubResource("PlaneMesh_youg7")

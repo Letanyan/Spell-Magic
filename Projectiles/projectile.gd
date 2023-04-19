@@ -164,4 +164,4 @@ func free_after(duration: float):
 	await get_tree().create_timer(duration).timeout
 	queue_free()		
 			
-var water_mat = load("res://Projectiles/water_mat.tres")
+var water_mat = preload("res://Projectiles/water_mat.tres")

@@ -11,19 +11,42 @@ extends CharacterBody3D
 @export var jump_impulse = 20
 @export var bounce_impulse = 16
 
+@onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
+
 var target_velocity = Vector3.ZERO
 var impulse = Vector3.ZERO
 
 var spells: Array = []
 var particles: Array = []
 
+func _ready():
+	# These values need to be adjusted for the actor's speed
+	# and the navigation layout.
+	navigation_agent.path_desired_distance = 0.5
+	navigation_agent.target_desired_distance = 0.5
+
 func _input(event):
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
 		cam_pivot.rotate_y(-event.relative.x / 180 * PI)
 		cam_arm.rotate_x(-event.relative.y / 180 * PI / 3)
 		cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
+		
+func set_movement_target(movement_target: Vector3):
+	navigation_agent.set_target_position(movement_target)
 
 func _physics_process(delta):
+	if not navigation_agent.is_navigation_finished():
+		var current_agent_position: Vector3 = global_transform.origin
+		var next_path_position: Vector3 = navigation_agent.get_next_path_position()
+
+		var new_velocity: Vector3 = next_path_position - current_agent_position
+		new_velocity = new_velocity.normalized()
+		new_velocity = new_velocity * speed
+
+		set_velocity(new_velocity)
+		move_and_slide()
+		print(navigation_agent.distance_to_target())
+
 	var input_dir = Input.get_vector("left", "right", "forward", "back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
