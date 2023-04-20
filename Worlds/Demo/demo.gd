@@ -9,14 +9,17 @@ extends Node
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
-@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 512, 1024)
+@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 512)
 
 var terrain_update_interval = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	update_terrain(false)
+#	update_terrain(false)
+	var chunks = chunker.init_chunks(player.position.x, player.position.z)
+	for chunk in chunks:
+		ground.add_child(chunk)
 
 func update_terrain(unload: bool):
 	var chunks = chunker.find_chunks_to_load_from_position(player.position.x, player.position.z, unload)
@@ -92,6 +95,7 @@ func _input(event):
 
 func _on_player_moved(delta: float):
 	terrain_update_interval += delta
-	if terrain_update_interval >= 5: # update once per 5 second
+	if terrain_update_interval >= 0.5: # update once per 5 second
 		terrain_update_interval = 0
-		update_terrain(true)
+#		update_terrain(true)
+		chunker.update_chunks(player.position.x, player.position.z)

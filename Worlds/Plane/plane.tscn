@@ -1,55 +1,74 @@
-[gd_scene load_steps=17 format=3 uid="uid://c310h0m0lkqpd"]
+[gd_scene load_steps=22 format=3 uid="uid://c310h0m0lkqpd"]
 
 [ext_resource type="Shader" path="res://Worlds/Plane/plane.gdshader" id="1_qnw0c"]
 [ext_resource type="Script" path="res://Worlds/Plane/plane.gd" id="2_88jhe"]
 [ext_resource type="Material" uid="uid://bjoxbg4fkxj6e" path="res://Worlds/Plane/biome.tres" id="3_33xwa"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bthxj"]
-noise_type = 0
-seed = 1337
-fractal_type = 2
-domain_warp_enabled = true
+frequency = 0.001
 domain_warp_type = 2
 domain_warp_frequency = 0.005
 domain_warp_fractal_type = 2
 domain_warp_fractal_octaves = 7
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_inu8h"]
-width = 1024
-height = 1024
+in_3d_space = true
+normalize = false
 noise = SubResource("FastNoiseLite_bthxj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e3nt7"]
 render_priority = 0
 shader = ExtResource("1_qnw0c")
+shader_parameter/off_x = 25.0
+shader_parameter/off_y = 25.0
 shader_parameter/noise = SubResource("NoiseTexture2D_inu8h")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8tv6s"]
 material = SubResource("ShaderMaterial_e3nt7")
 size = Vector2(50, 50)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7y5ho"]
-noise_type = 0
-seed = 10
-frequency = 0.003
-fractal_octaves = 9
-fractal_lacunarity = 0.5
-fractal_gain = 0.05
-fractal_weighted_strength = 1.0
+[sub_resource type="Shader" id="Shader_1jn10"]
+code = "shader_type spatial;
+
+uniform sampler2D noise;
+uniform float off_x;
+uniform float off_y;
+
+void vertex() {
+	//VERTEX.y = VERTEX.y * 0.0;
+	//vec4 clr = texture(noise, VERTEX.xz / 100.0);
+	//ALBEDO = vec3(clr.x, clr.y, clr.z);
+}
+
+void fragment() {
+	// Place fragment code here.
+	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1.0);
+	vec4 w = vec4(v.x + off_x, v.y, v.z + off_y, v.w);
+	vec4 clr = texture(noise, w.xz / 50.0);
+	ALBEDO = vec3(clr.x, clr.y, clr.z);
+}
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6c16a"]
+frequency = 0.001
+offset = Vector3(512, 0, 0)
 cellular_return_type = 3
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2vill"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_7y5ho")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hhciu"]
+in_3d_space = true
+normalize = false
+noise = SubResource("FastNoiseLite_6c16a")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_55ir1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_up7dh"]
 render_priority = 0
-shader = ExtResource("1_qnw0c")
-shader_parameter/noise = SubResource("NoiseTexture2D_2vill")
+shader = SubResource("Shader_1jn10")
+shader_parameter/off_x = 25.0
+shader_parameter/off_y = 25.0
+shader_parameter/noise = SubResource("NoiseTexture2D_hhciu")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h5s5n"]
-material = SubResource("ShaderMaterial_55ir1")
+lightmap_size_hint = Vector2i(252, 252)
+material = SubResource("ShaderMaterial_up7dh")
 size = Vector2(50, 50)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_u8ojl"]
@@ -63,11 +82,14 @@ cellular_distance_function = 3
 cellular_return_type = 5
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_labui"]
+seamless = true
 noise = SubResource("FastNoiseLite_u8ojl")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7mkka"]
 render_priority = 0
 shader = ExtResource("1_qnw0c")
+shader_parameter/off_x = null
+shader_parameter/off_y = null
 shader_parameter/noise = SubResource("NoiseTexture2D_labui")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_radur"]
@@ -80,19 +102,44 @@ size = Vector2(1000, 1000)
 subdivide_width = 128
 subdivide_depth = 128
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_234xm"]
+frequency = 0.001
+offset = Vector3(-512, 0, 0)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gse4j"]
+in_3d_space = true
+normalize = false
+noise = SubResource("FastNoiseLite_234xm")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ovemb"]
+render_priority = 0
+shader = ExtResource("1_qnw0c")
+shader_parameter/off_x = null
+shader_parameter/off_y = null
+shader_parameter/noise = SubResource("NoiseTexture2D_gse4j")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xl5xb"]
+material = SubResource("ShaderMaterial_ovemb")
+size = Vector2(50, 50)
+
 [node name="Plane" type="MeshInstance3D"]
 mesh = SubResource("PlaneMesh_8tv6s")
 script = ExtResource("2_88jhe")
 
 [node name="Peaks" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50.2762)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 0)
 mesh = SubResource("PlaneMesh_h5s5n")
 skeleton = NodePath("../Erosion")
 
 [node name="Erosion" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.232822, 0, -50.9568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.7597, 0, -50.9568)
 mesh = SubResource("PlaneMesh_radur")
 
 [node name="biome" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.2662, 0, 0)
+visible = false
 mesh = SubResource("PlaneMesh_youg7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
+mesh = SubResource("PlaneMesh_xl5xb")

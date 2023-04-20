@@ -5,6 +5,8 @@ uniform sampler2D temperature;
 uniform sampler2D dryness;
 uniform float texture_width;
 uniform float texture_depth;
+uniform float texture_x;
+uniform float texture_y;
 
 void vertex() {
 	
@@ -13,7 +15,9 @@ void vertex() {
 void fragment() {
 	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
 	
-	vec2 w = vec2(v.x / texture_width, v.z / texture_depth);
+//	vec2 w = vec2((v.x + texture_x) / texture_width, (v.z + texture_y) / texture_depth);
+//	vec2 w = vec2(mod(v.x, texture_width) / texture_width, mod(v.z, texture_depth) / texture_depth);
+	vec2 w = vec2(v.x / texture_width + 0.5, v.z / texture_depth + 0.5);
 	float e = texture(elevation, w).r;
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
@@ -92,6 +96,10 @@ void fragment() {
 			color = vec3(0, 0, 0); // otherworld
 		}
 	}
+	
 	ALBEDO = color;
+//	ALBEDO = vec3(w.x, 0.0, w.y);
+//	ALBEDO = vec3(e, t, d);
+	
 //	ALBEDO = vec3(v.y / 50.0 + 0.5);
 }

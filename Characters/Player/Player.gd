@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@export var speed = 14
+@export var speed = 14 * 8
 @export var fall_acceleration = 75
 @export var friction = 25
 @export var jump_impulse = 20
@@ -93,6 +93,7 @@ func _physics_process(delta):
 	move_and_slide()
 	if velocity:
 		player_moved.emit(delta)
+#		print(position)
 				
 	var t = Time.get_ticks_msec()
 	var should_remove = []
