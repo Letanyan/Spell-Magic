@@ -115,6 +115,6 @@ func update_terrain():
 func update_population_at(locations: Array):
 	for loc in locations:
 		var coord = chunker.convert_position_to_coord(loc.x, loc.y)
-		var pop = Population.new(coord, chunker.chunk_size, chunker.blender)
+		var pop = Population.new(coord, chunker.chunk_size, chunker.blender, player)
 		pop.spawn_all_into_world(self)
 		population[loc] = pop

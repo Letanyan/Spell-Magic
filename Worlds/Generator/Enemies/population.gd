@@ -9,16 +9,18 @@ const ENEMY_SPAWN_PROB: Dictionary = {
 
 var rng: RandomNumberGenerator
 var blender: NoiseBlender
+var player: Player
 
 var coord: Vector2
 var chunk_size: float
 
 var inhabitants = []
 
-func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender):
+func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
 	coord = _coord
 	blender = _blender
+	player = _player
 	chunk_size = _chunk_size
 	seed_location()
 	
@@ -33,6 +35,7 @@ func spawn(x: float, y: float) -> Enemy:
 	if rng.randf() < prob:
 		result = load("res://Characters/Enemy/enemy.tscn").instantiate()
 		result.blender = blender
+		result.player = player
 		result.position.x = x
 		result.position.y = blender.height(x, y) + 5
 		result.position.z = y

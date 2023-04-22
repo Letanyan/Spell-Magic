@@ -19,12 +19,8 @@ var spells: Array = []
 var particles: Array = []
 
 var player: Player
-
-enum PathStyle { ORIGIN, CIRCLE }
-var path_style = PathStyle.CIRCLE
-var path_radius = 5.0
-var origin = Vector3.ZERO
 var blender: NoiseBlender
+var state: StateManager
 
 func _ready():
 	# These values need to be adjusted for the actor's speed
@@ -32,7 +28,10 @@ func _ready():
 	navigation_agent.path_desired_distance = 0.5
 	navigation_agent.target_desired_distance = 0.5
 
-	origin = position
+	state = StateManager.new(
+		PathStyle.new(blender).circle(position, 15),
+		PathStyle.new(blender).circle_player(5)
+	)
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
@@ -47,16 +46,10 @@ func actor_setup():
 func set_movement_target(movement_target: Vector3):
 	navigation_agent.set_target_position(movement_target)
 
-func update_position_on_path():
-	var t = Time.get_ticks_msec()
-	match path_style:
-		PathStyle.CIRCLE:
-			var x = cos(t / 1000 / PI) * path_radius + origin.x
-			var z = sin(t / 1000 / PI) * path_radius + origin.z
-			var y = blender.height(x, z)
-			set_movement_target(Vector3(x, y, z))
-		PathStyle.ORIGIN:
-			set_movement_target(Vector3.ZERO)
+func interval_check(interval: int, epsilon: int):
+	var t = Time.get_ticks_msec() % interval
+	return t < epsilon
+	
 
 func _physics_process(delta):
 	if not navigation_agent.is_navigation_finished():
@@ -69,10 +62,13 @@ func _physics_process(delta):
 
 		set_velocity(new_velocity)
 		move_and_slide()
-		update_position_on_path()
+		if interval_check(1000, 100):
+			state.update_state(self, player)
+			set_movement_target(state.next_position(player))
 		return
 	else:
-		update_position_on_path()
+		if interval_check(1000, 100):
+			set_movement_target(state.next_position(player))
 
 	
 	if not is_on_floor():
