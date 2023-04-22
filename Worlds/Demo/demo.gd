@@ -10,21 +10,16 @@ extends Node
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
 @onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 512)
+@onready var population: Dictionary = {}
 
 var terrain_update_interval = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-#	update_terrain(false)
-	var chunks = chunker.init_chunks(player.position.x, player.position.z)
-	for chunk in chunks:
-		ground.add_child(chunk)
+	
+	build_terrain()
 
-func update_terrain(unload: bool):
-	var chunks = chunker.find_chunks_to_load_from_position(player.position.x, player.position.z, unload)
-	for chunk in chunks:
-		ground.add_child(chunk)
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -97,5 +92,29 @@ func _on_player_moved(delta: float):
 	terrain_update_interval += delta
 	if terrain_update_interval >= 0.5: # update once per 5 second
 		terrain_update_interval = 0
-#		update_terrain(true)
-		chunker.update_chunks(player.position.x, player.position.z)
+		update_terrain()
+		
+func build_terrain():
+	var chunks = chunker.init_chunks(player.position.x, player.position.z)
+	for chunk in chunks:
+		ground.add_child(chunk)
+		
+	update_population_at(chunker.loaded_chunks_location)
+
+
+func update_terrain():
+	var chunks = chunker.update_chunks(player.position.x, player.position.z)
+	
+	for loc in chunks.get("removed", []):
+		var pop = population[loc]
+		pop.despawn_all_from_world(self)
+		population.erase(loc)
+		
+	update_population_at(chunks.get("updated", []))
+
+func update_population_at(locations: Array):
+	for loc in locations:
+		var coord = chunker.convert_position_to_coord(loc.x, loc.y)
+		var pop = Population.new(coord, chunker.chunk_size, chunker.blender)
+		pop.spawn_all_into_world(self)
+		population[loc] = pop

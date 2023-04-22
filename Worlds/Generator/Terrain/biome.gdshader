@@ -98,8 +98,4 @@ void fragment() {
 	}
 	
 	ALBEDO = color;
-//	ALBEDO = vec3(w.x, 0.0, w.y);
-//	ALBEDO = vec3(e, t, d);
-	
-//	ALBEDO = vec3(v.y / 50.0 + 0.5);
 }

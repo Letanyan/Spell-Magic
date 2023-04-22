@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://bhec0b6awe536"]
+[gd_scene load_steps=8 format=3 uid="uid://bhec0b6awe536"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="PackedScene" uid="uid://telbyb8p3juv" path="res://Characters/Player/player.tscn" id="2_8iei0"]
-[ext_resource type="PackedScene" uid="uid://cl1hh2keowpj4" path="res://Characters/Enemy/enemy.tscn" id="3_rtbyt"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_vo40b"]
 seed = 1
@@ -41,11 +40,6 @@ disabled = true
 
 [node name="Player" parent="." instance=ExtResource("2_8iei0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
-
-[node name="enemy" parent="." instance=ExtResource("3_rtbyt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, -20)
-collision_layer = 4
-collision_mask = 81
 
 [node name="TestMan" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.750965, 0.660343, 0, -0.660343, 0.750965, 5.85383, 3.84122, 3.45085)

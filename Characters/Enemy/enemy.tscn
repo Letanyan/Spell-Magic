@@ -13,6 +13,8 @@ material = SubResource("StandardMaterial3D_kee3k")
 size = Vector3(0.5, 0.5, 1)
 
 [node name="enemy" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 81
 script = ExtResource("1_ois7t")
 
 [node name="collision" type="CollisionShape3D" parent="."]

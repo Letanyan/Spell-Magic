@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bjoxbg4fkxj6e"]
+[gd_resource type="ShaderMaterial" load_steps=8 format=3]
 
-[ext_resource type="Shader" path="res://Worlds/Demo/height.gdshader" id="1_dy6w0"]
+[ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome.gdshader" id="1_dy6w0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_udgit"]
 noise_type = 3

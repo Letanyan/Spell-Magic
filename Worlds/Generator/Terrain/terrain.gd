@@ -1,0 +1,175 @@
+class_name Terrain
+
+var blender: NoiseBlender
+var chunk_size: float
+var radius: float # number of chunks = radius / chunk_size
+
+var player_coord: Vector2
+
+var biome_shader = preload("res://Worlds/Generator/Terrain/biome.gdshader")
+
+var loaded_chunks_location = PackedVector2Array()
+var loaded_chunks = []
+
+## r must be an even multiple of cs. `r = cs * 2n for some integer n`
+func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 128, r: float = 1024):
+	blender = NoiseBlender.new(e, d, t)
+	chunk_size = cs
+	radius = r
+	
+func init_chunks(x: float, y: float) -> Array:
+	var chunk_count = radius / chunk_size
+	set_player_coord_using_position(x, y)
+	var rad = chunk_count / 2
+	var result = []
+	for w in range(-rad, rad + 1):
+		for h in range(-rad, rad + 1):
+			var p = Vector2((player_coord.x + w) * chunk_size, (player_coord.y + h) * chunk_size)
+			var nav = create_chunk(p.x, p.y)
+			update_chunk(nav, p.x, p.y)
+			result.append(nav)
+	return result
+	
+func update_chunks(x: float, y: float) -> Dictionary:
+	var chunk_count = radius / chunk_size
+	var old_coord = player_coord
+	set_player_coord_using_position(x, y)
+	var delta = player_coord - old_coord
+	if delta == Vector2.ZERO:
+		return {}
+	var removed_locations = []
+	var updated_locations = []
+	var rad = chunk_count / 2
+	for i in range(loaded_chunks.size()):
+		var loc = loaded_chunks_location[i]
+		var should_update = false
+		if delta.x == -1 and loc.x == (old_coord.x + rad) * chunk_size:
+			loc.x = (player_coord.x + -rad) * chunk_size
+			should_update = true
+		if delta.x == 1 and loc.x == (old_coord.x - rad) * chunk_size:
+			loc.x = (player_coord.x + rad) * chunk_size
+			should_update = true
+		if delta.y == -1 and loc.y == (old_coord.y + rad) * chunk_size:
+			loc.y = (player_coord.y + -rad) * chunk_size
+			should_update = true
+		if delta.y == 1 and loc.y == (old_coord.y - rad) * chunk_size:
+			loc.y = (player_coord.y + rad) * chunk_size
+			should_update = true
+			
+		if should_update:
+			removed_locations.append(loaded_chunks_location[i])
+			updated_locations.append(loc)
+			loaded_chunks_location[i] = loc
+			update_chunk(loaded_chunks[i], loc.x, loc.y)
+			
+	return {"removed": removed_locations, "updated": updated_locations}
+		
+func create_chunk(x: float, y: float) -> NavigationRegion3D:
+	var mesh = ArrayMesh.new()
+	var plane = PlaneMesh.new()
+	var collision_points = PackedVector3Array()
+	plane.size = Vector2(chunk_size, chunk_size)
+	plane.subdivide_depth = chunk_size * 0.05
+	plane.subdivide_width = chunk_size * 0.05
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
+	var mdt = MeshDataTool.new()
+	mdt.create_from_surface(mesh, 0)
+
+	mesh.clear_surfaces()
+	mdt.commit_to_surface(mesh)
+	var mi = MeshInstance3D.new()
+	var mat: ShaderMaterial = ShaderMaterial.new()
+	mat.shader = biome_shader
+	mat.set_shader_parameter("texture_x", chunk_size / 2 - x)
+	mat.set_shader_parameter("texture_y", chunk_size / 2 - y)
+	mat.set_shader_parameter("texture_width", chunk_size)
+	mat.set_shader_parameter("texture_depth", chunk_size)
+	mesh.surface_set_material(0, mat)
+	mi.mesh = mesh
+
+	var nav = NavigationRegion3D.new()
+	mi.name = "mesh"
+	nav.add_child(mi)
+	nav.position.x = x
+	nav.position.z = y
+
+	loaded_chunks_location.append(Vector2(x, y))
+	loaded_chunks.append(nav)
+
+	return nav
+
+func update_chunk(nav: NavigationRegion3D, x: float, y: float):
+	var mi: = nav.get_node("mesh")
+	var mesh = mi.mesh
+	var mdt = MeshDataTool.new()
+	mdt.create_from_surface(mesh, 0)
+
+	for i in range(mdt.get_vertex_count()):
+		mdt.set_vertex_normal(i, Vector3.ZERO)
+
+	for i in range(mdt.get_face_count()):
+		var a = mdt.get_face_vertex(i, 0)
+		var b = mdt.get_face_vertex(i, 1)
+		var c = mdt.get_face_vertex(i, 2)
+		var A = mdt.get_vertex(a)
+		var B = mdt.get_vertex(b)
+		var C = mdt.get_vertex(c)
+		var Ah = blender.height(A.x + x, A.z + y)
+		var Bh = blender.height(B.x + x, B.z + y)
+		var Ch = blender.height(C.x + x, C.z + y)
+		A.y = Ah
+		B.y = Bh
+		C.y = Ch
+		var face_norm = (C - A).cross(B - A).normalized()
+
+		var Av = mdt.get_vertex_normal(a)
+		var Bv = mdt.get_vertex_normal(b)
+		var Cv = mdt.get_vertex_normal(c)
+
+		mdt.set_vertex_normal(a, Av + face_norm)
+		mdt.set_vertex_normal(b, Bv + face_norm)
+		mdt.set_vertex_normal(c, Cv + face_norm)
+
+		mdt.set_vertex(a, A)
+		mdt.set_vertex(b, B)
+		mdt.set_vertex(c, C)
+
+		mdt.set_vertex_uv(a, Vector2.ZERO)
+		mdt.set_vertex_uv(b, Vector2.ZERO)
+		mdt.set_vertex_uv(c, Vector2.ZERO)
+
+	for i in range(mdt.get_vertex_count()):
+		var norm = mdt.get_vertex_normal(i).normalized()
+		mdt.set_vertex_normal(i, norm)
+
+	mesh.clear_surfaces()
+	mdt.commit_to_surface(mesh)
+#	var mat = mesh.surface_get_material(0)
+	var mat = ShaderMaterial.new()
+	mat.shader = biome_shader
+	mat.set_shader_parameter("texture_width", chunk_size)
+	mat.set_shader_parameter("texture_depth", chunk_size)
+	mat.set_shader_parameter("texture_x", chunk_size / 2 - x)
+	mat.set_shader_parameter("texture_y", chunk_size / 2 - y)
+	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, chunk_size, chunk_size))
+	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, chunk_size, chunk_size))
+	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, chunk_size, chunk_size))
+	mesh.surface_set_material(0, mat)
+#	mi.mesh = mesh
+	for n in mi.get_children():
+		mi.remove_child(n)
+	mi.create_trimesh_collision()
+	
+	var nav_mesh = NavigationMesh.new()
+	nav_mesh.create_from_mesh(mesh)
+	nav.navigation_mesh = nav_mesh
+	nav.position.x = x
+	nav.position.z = y
+
+	return nav
+
+func set_player_coord_using_position(x: float, y: float):
+	player_coord = convert_position_to_coord(x, y)
+	
+func convert_position_to_coord(x: float, y: float) -> Vector2:
+	return Vector2(floorf((x + chunk_size / 2) / chunk_size), floorf((y + chunk_size / 2) / chunk_size))
