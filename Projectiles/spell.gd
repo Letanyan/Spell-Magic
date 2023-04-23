@@ -69,11 +69,10 @@ func _size(vars: Dictionary) -> float:
 	var result = clamp(r_expr.compute(vars), 0.01, 10)
 	return result
 	
-func _mass(r: float) -> float:
+func _mass() -> float:
 	match element:
 		Element.ROCK: return power * 100.0
 		_: return 0
-	return 0
 	
 func impulse() -> Vector3:
 	match element:
@@ -103,10 +102,9 @@ func update_spell(t: float, vars: Dictionary, particle: SpellBody):
 	particle.update_shape(er, false)
 	position = p
 	if started:
-		var oldVel = velocity
 		velocity = (position - (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])) - old_local_pos
-		var len = velocity.length()
-		velocity = velocity.normalized() * clamp(len, -1, 1)
+		var dist = velocity.length()
+		velocity = velocity.normalized() * clamp(dist, -1, 1)
 	particle.update_movement(velocity, position, false)
 	old_local_pos = position - (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])
 	started = true
@@ -121,12 +119,9 @@ func lose_control(p: Node3D, q: Node3D):
 	in_control = false
 	if element == Element.ROCK:
 		var body: RigidBody3D = p.get_node("body")
-#		body.collision_layer = 1
 		if body.freeze:
 			body.freeze = false
 			body.apply_central_impulse(velocity)
-			var area = p.get_node("body/mesh/area")
-#			area.collision_layer = 1
 	
 func nothing(p: Node3D, q: Node3D):
 	pass

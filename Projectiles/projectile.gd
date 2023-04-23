@@ -129,9 +129,9 @@ func update_movement(v: Vector3, p: Vector3, instance: bool):
 		Spell.Element.AIR:
 			position = p
 			var particles: CPUParticles3D = get_node("source")
-			var len = spell.impulse_length()
-			particles.initial_velocity_min = len * 0.9
-			particles.initial_velocity_max = len * 1.1
+			var dist = spell.impulse_length()
+			particles.initial_velocity_min = dist * 0.9
+			particles.initial_velocity_max = dist * 1.1
 			if v.normalized() == Vector3.ZERO:
 				v = Vector3(0.05, 0.99, 0.05).normalized()
 			var dir = global_position + v.normalized() * 100

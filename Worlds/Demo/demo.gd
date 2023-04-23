@@ -1,7 +1,6 @@
 extends Node
 
 @onready var player: Player = $Player
-@onready var enemy: Enemy = $enemy
 @onready var ground = $Ground
 # @onready var ground_mesh = $Ground/Mesh
 # @onready var ground_collision = $Ground/Collision
@@ -66,7 +65,7 @@ func _input(event):
 		var aqua = Spell.new(false, "t * u * 10", "t * v * 10 + 2", "t * w * 10", "t", 0, 5000, Spell.Element.WATER, spell_vars)
 		var back = Spell.new(false, "u * -20 * t + u * 5", "-0.75", "w * -20 * t + w * 5", "1 + r0 * 0", 0.3, 50000, Spell.Element.ROCK, spell_vars)
 		var fan = Spell.new(false, "u * 2 + u * 2 * (t / 5)", "-0.75 + v * (t / 5)", "w * 2 + w * 2 * (t / 5)", "2", 0.8, 50000, Spell.Element.AIR, spell_vars)
-		var hover = Spell.new(false, "-3 * u + u * t * 6", "-6 + t * 12", "-3 * w + w * t * 6", "2", 0.8, 500, Spell.Element.AIR, spell_vars)
+		var hover = Spell.new(true, "-6 * u + u * t * 6", "-6 * v + v * t * 6", "-6 * w + w * t * 6", "2", 0.8, 500, Spell.Element.AIR, spell_vars)
 		
 		var spells = [
 			drop, # 1

@@ -29,9 +29,10 @@ func _ready():
 	navigation_agent.target_desired_distance = 0.5
 
 	state = StateManager.new(
-		PathStyle.new(blender).circle(position, 15),
-		PathStyle.new(blender).circle_player(5)
+		PathStyle.new(blender, get_rid().get_id()).circle(position, 15),
+		PathStyle.new(blender, get_rid().get_id()).follow_player(5, 10)
 	)
+	state.update_state(self, player)
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
@@ -64,11 +65,11 @@ func _physics_process(delta):
 		move_and_slide()
 		if interval_check(1000, 100):
 			state.update_state(self, player)
-			set_movement_target(state.next_position(player))
+			set_movement_target(state.next_position(self, player))
 		return
 	else:
 		if interval_check(1000, 100):
-			set_movement_target(state.next_position(player))
+			set_movement_target(state.next_position(self, player))
 
 	
 	if not is_on_floor():

@@ -67,7 +67,6 @@ func update_chunks(x: float, y: float) -> Dictionary:
 func create_chunk(x: float, y: float) -> NavigationRegion3D:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
-	var collision_points = PackedVector3Array()
 	plane.size = Vector2(chunk_size, chunk_size)
 	plane.subdivide_depth = chunk_size * 0.05
 	plane.subdivide_width = chunk_size * 0.05
