@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@export var speed = 14 * 8
+@export var speed = 14
 @export var fall_acceleration = 75
 @export var friction = 25
 @export var jump_impulse = 20
@@ -21,11 +21,15 @@ var impulse = Vector3.ZERO
 var spells: Array = []
 var particles: Array = []
 
+var vitals: Vitals
+
 func _ready():
 	# These values need to be adjusted for the actor's speed
 	# and the navigation layout.
 	navigation_agent.path_desired_distance = 0.5
 	navigation_agent.target_desired_distance = 0.5
+	
+	vitals = Vitals.new(100, 50)
 
 func _input(event):
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
@@ -47,7 +51,6 @@ func _physics_process(delta):
 
 		set_velocity(new_velocity)
 		move_and_slide()
-		print(navigation_agent.distance_to_target())
 
 	var input_dir = Input.get_vector("left", "right", "forward", "back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()

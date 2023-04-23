@@ -25,6 +25,9 @@ func _on_body_entered(body: Node3D):
 		Spell.Element.FIRE:
 			if is_world or is_rock:
 				world_hit.emit(self, body)
+			elif is_enemy or is_player:
+				body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
+				world_hit.emit(self, body)
 		Spell.Element.ROCK:
 			if body != get_node("body"):
 				if is_world :
@@ -32,18 +35,22 @@ func _on_body_entered(body: Node3D):
 				elif is_rock:
 					world_hit.emit(self, body)
 					body.apply_central_impulse(spell.impulse())
-				elif is_player or is_enemy:
+				elif is_enemy or is_player:
 					CharacterCollision.handle(body, self)
+					body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
 					world_hit.emit(self, body)
 		Spell.Element.WATER:
 			if is_world or is_rock:
+				world_hit.emit(self, body)
+			elif is_enemy or is_player:
+				body.vitals.handle_damage(Spell.Element.WATER, spell.power)
 				world_hit.emit(self, body)
 		Spell.Element.AIR:
 			if is_world or is_rock:
 				world_hit.emit(self, body)
 			elif is_player or is_enemy:
-				print("push")
 				CharacterCollision.handle(body, self)
+				body.vitals.handle_damage(Spell.Element.AIR, spell.power)
 				world_hit.emit(self, body)
 
 func update_shape(r: float, ignore_time: bool):

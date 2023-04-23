@@ -59,7 +59,7 @@ func _input(event):
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		var spell_vars = player.spell_variables(true)
 		var circle = Spell.new(true, "sin(t * 2) * 5", "-0.2", "cos(t * 2) * 5", "1", 0.5, 50000, Spell.Element.AIR, spell_vars)
-		var blast = Spell.new(false, "t * u * 10", "t * v * 10", "t * w * 10", "t * 2", 0, 5000, Spell.Element.FIRE, spell_vars)
+		var blast = Spell.new(false, "t * u * 10", "t * v * 10", "t * w * 10", "t * 2", 0.3, 5000, Spell.Element.FIRE, spell_vars)
 		var drop = Spell.new(false, "u * 5", "t * -9.8 * 3 + 15", "w * 5", "1 + r0 * 5", 0.5, 50000, Spell.Element.ROCK, spell_vars)
 		var push = Spell.new(false, "u * 30 * t + u * 2", "t * 20 * v", "w * 30 * t + w * 2", "1 + r0 * 0", 0.2, 50000, Spell.Element.ROCK, spell_vars)
 		var aqua = Spell.new(false, "t * u * 10", "t * v * 10 + 2", "t * w * 10", "t", 0, 5000, Spell.Element.WATER, spell_vars)

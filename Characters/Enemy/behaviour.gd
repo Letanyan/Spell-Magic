@@ -1,4 +1,4 @@
-class_name StateManager
+class_name Behaviour
 
 var passive: PathStyle
 var aggresive: PathStyle

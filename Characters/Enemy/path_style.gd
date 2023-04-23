@@ -27,9 +27,9 @@ func circle_player(radius: float) -> PathStyle:
 	max_radius = radius
 	return self
 	
-func follow_player(min: float, max: float) -> PathStyle:
-	min_radius = min
-	max_radius = max
+func follow_player(mn: float, mx: float) -> PathStyle:
+	min_radius = mn
+	max_radius = mx
 	kind = Kind.FOLLOW
 	return self
 	
