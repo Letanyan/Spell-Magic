@@ -22,3 +22,6 @@ func update_state(me: Enemy, player: Player):
 		current = aggresive
 	elif current == aggresive and sqrt(player.position.distance_squared_to(me.position)) > passive_radius:
 		current = passive
+
+func movement_speed():
+	return current.movement_speed

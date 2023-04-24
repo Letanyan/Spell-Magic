@@ -28,7 +28,7 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="Arm" type="SpringArm3D" parent="CamPivot"]
-spring_length = 8.0
+spring_length = 2.4
 
 [node name="Lens" type="Camera3D" parent="CamPivot/Arm"]
 

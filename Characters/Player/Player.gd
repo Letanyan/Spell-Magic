@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@export var speed = 14
+@export var speed = 8
 @export var fall_acceleration = 75
 @export var friction = 25
 @export var jump_impulse = 20
@@ -88,6 +88,8 @@ func _physics_process(delta):
 	if direction != Vector3.ZERO:
 		var pivot: Node3D = $Pivot
 		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
+		var collision: Node3D = $Collision
+		collision.rotation.y = pivot.rotation.y
 		# $AnimationPlayer.speed_scale = 4
 	else:
 		pass
@@ -104,7 +106,7 @@ func _physics_process(delta):
 		var p: SpellBody = particles[i]
 		var spell: Spell = spells[i]
 		spell.update_spell(t, spell_variables(false), p)
-		if spell.has_expired(t):
+		if p.has_expired(t):
 			should_remove.append(i)
 			p.stop_emitting()
 			
@@ -134,9 +136,10 @@ func spell_variables(fixed: bool) -> Dictionary:
 	return result
 	
 
-func cast_spell(spell: Spell) -> SpellBody:
-	spells.append(spell)
-	var p = spell.get_particle()
-	p.spell = spell
-	particles.append(p)
-	return p
+func cast_spell(spell: Spell) -> Array:
+	var ps = spell.get_particles()
+	for p in ps:
+		spells.append(spell)
+		p.spell = spell
+		particles.append(p)
+	return ps

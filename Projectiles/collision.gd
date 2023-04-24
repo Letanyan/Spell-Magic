@@ -1,5 +1,6 @@
 class_name CharacterCollision
 
-static func handle(player: Player, projectile: SpellBody):	
-	player.impulse += projectile.spell.impulse()
-	player.impulse = clamp(player.impulse, Vector3(-10, -10, -10), Vector3(10, 10, 10))
+static func handle(player: Player, projectile: SpellBody):
+	player.impulse += projectile.impulse()
+	var dist = clamp(player.impulse.length(), -100, 100)
+	player.impulse = player.impulse.normalized() * dist

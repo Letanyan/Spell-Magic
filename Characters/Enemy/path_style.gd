@@ -4,6 +4,7 @@ enum Kind { ORIGIN, CIRCLE, CIRCLE_PLAYER, FOLLOW }
 var kind = Kind.CIRCLE
 var min_radius = 5.0
 var max_radius = 10.0
+var movement_speed = 2.0
 var origin = Vector3.ZERO
 var blender: NoiseBlender
 var seed_offset: int

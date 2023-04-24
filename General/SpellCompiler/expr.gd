@@ -97,5 +97,14 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"asin": tape.append(asin(a))
 				"acos": tape.append(acos(a))
 				"atan": tape.append(atan(a))
+				
+				"inv": tape.append(1.0 / a if a != 0 else 0)
+				
+				"lt": tape.append(1 if a < 0 else 0)
+				"gt": tape.append(1 if a > 0 else 0)
+				"lte": tape.append(1 if a <= 0 else 0)
+				"gte": tape.append(1 if a >= 0 else 0)
+				"eq": tape.append(1 if a == 0 else 0)
+				"neq": tape.append(1 if a != 0 else 0)
 	
 	return tape.back()

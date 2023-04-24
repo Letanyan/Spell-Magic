@@ -1,16 +1,14 @@
 class_name Enemy
 extends CharacterBody3D
 
-var movement_speed: float = 2.0
-var movement_target_position: Vector3 = Vector3(-3.0,0.0,2.0)
+var movement_target_position: Vector3 = Vector3.ZERO
 
-@export var speed = 14 * 8
+@export var speed = 14
 @export var fall_acceleration = 75
 @export var friction = 25
 @export var jump_impulse = 20
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
-#@onready var navigation_agent: NavigationAgent3D = NavigationAgent3D.new()
 
 var target_velocity = Vector3.ZERO
 var impulse = Vector3.ZERO
@@ -62,16 +60,16 @@ func _physics_process(delta):
 
 		var new_velocity: Vector3 = next_path_position - current_agent_position
 		new_velocity = new_velocity.normalized()
-		new_velocity = new_velocity * movement_speed
+		new_velocity = new_velocity * behaviour.movement_speed()
 
 		set_velocity(new_velocity)
 		move_and_slide()
-		if interval_check(1000, 100):
+		if interval_check(250, 50):
 			behaviour.update_state(self, player)
 			set_movement_target(behaviour.next_position(self, player))
 		return
 	else:
-		if interval_check(1000, 100):
+		if interval_check(250, 50):
 			set_movement_target(behaviour.next_position(self, player))
 
 	
@@ -136,9 +134,10 @@ func spell_variables(fixed: bool) -> Dictionary:
 	return result
 	
 
-func cast_spell(spell: Spell) -> SpellBody:
-	spells.append(spell)
-	var p = spell.get_particle()
-	p.spell = spell
-	particles.append(p)
-	return p
+func cast_spell(spell: Spell) -> Array:
+	var ps = spell.get_particles()
+	for p in ps:
+		spells.append(spell)
+		p.spell = spell
+		particles.append(p)
+	return ps

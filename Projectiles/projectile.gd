@@ -4,16 +4,48 @@ extends Node3D
 signal world_hit
 
 var spell: Spell
+var n: int
+var time_start: float
+var expired: bool = false
+var started: bool = false
+var in_control: bool = true
+var velocity: Vector3 = Vector3.ZERO
+var old_pos: Vector3 = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	time_start = Time.get_ticks_msec()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
+func has_expired(t: float) -> bool:
+	return expired or (t - time_start) >= spell.duration
+	
+func expire_now(p: Node3D, q: Node3D):
+	expired = true
+	
+func lose_control(p: Node3D, q: Node3D):
+	in_control = false
+	if spell.element == Spell.Element.ROCK:
+		var body: RigidBody3D = p.get_node("body")
+		if body.freeze:
+			body.freeze = false
+			body.apply_central_impulse(velocity)
+
+func nothing(p: Node3D, q: Node3D):
+	pass
+	
+func impulse() -> Vector3:
+	match spell.element:
+		Spell.Element.ROCK:
+			return velocity.normalized() * (spell.power * 100.0) 
+		Spell.Element.AIR:
+			return velocity.normalized() * (spell.power * 100.0)
+		_:
+			return Vector3.ZERO
 
 func _on_body_entered(body: Node3D):
 	var is_world  = body.collision_layer & 0b0001 != 0
@@ -24,34 +56,34 @@ func _on_body_entered(body: Node3D):
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock:
-				world_hit.emit(self, body)
+				expire_now(self, body)
 			elif is_enemy or is_player:
 				body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
-				world_hit.emit(self, body)
+				expire_now(self, body)
 		Spell.Element.ROCK:
 			if body != get_node("body"):
 				if is_world :
-					world_hit.emit(self, body)
+					lose_control(self, body)
 				elif is_rock:
-					world_hit.emit(self, body)
+					lose_control(self, body)
 					body.apply_central_impulse(spell.impulse())
 				elif is_enemy or is_player:
 					CharacterCollision.handle(body, self)
 					body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
-					world_hit.emit(self, body)
+					lose_control(self, body)
 		Spell.Element.WATER:
 			if is_world or is_rock:
-				world_hit.emit(self, body)
+				expire_now(self, body)
 			elif is_enemy or is_player:
 				body.vitals.handle_damage(Spell.Element.WATER, spell.power)
-				world_hit.emit(self, body)
+				expire_now(self, body)
 		Spell.Element.AIR:
 			if is_world or is_rock:
-				world_hit.emit(self, body)
+				nothing(self, body)
 			elif is_player or is_enemy:
 				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.AIR, spell.power)
-				world_hit.emit(self, body)
+				nothing(self, body)
 
 func update_shape(r: float, ignore_time: bool):
 	match spell.element:
@@ -117,15 +149,23 @@ func update_shape(r: float, ignore_time: bool):
 			
 			
 
-func update_movement(v: Vector3, p: Vector3, instance: bool):
+func update_movement(p: Vector3, instance: bool, vars: Dictionary):
+	var next_pos = p - (vars["rel_pos"] if spell.is_relative_to_player_current_pos else vars["abs_pos"])
+	if started:
+		velocity = next_pos - old_pos
+		var dist = velocity.length() * 60
+		velocity = velocity.normalized() * clamp(dist, -1, 1)
+	old_pos = next_pos
+	started = true
+	
 	match spell.element:
 		Spell.Element.FIRE:
 			position = p
 			var particles: CPUParticles3D = get_node("source")
-			particles.direction = v.normalized()
-			var s = v.length()
-			particles.initial_velocity_min = s * 14.9
-			particles.initial_velocity_max = s * 15.1
+			particles.direction = (velocity.normalized() + Vector3.UP).normalized()
+			var s = velocity.length()
+			particles.initial_velocity_min = s * 4.9
+			particles.initial_velocity_max = s * 5.1
 		
 		Spell.Element.ROCK:
 			position = p
@@ -139,9 +179,9 @@ func update_movement(v: Vector3, p: Vector3, instance: bool):
 			var dist = spell.impulse_length()
 			particles.initial_velocity_min = dist * 0.9
 			particles.initial_velocity_max = dist * 1.1
-			if v.normalized() == Vector3.ZERO:
-				v = Vector3(0.05, 0.99, 0.05).normalized()
-			var dir = global_position + v.normalized() * 100
+			if velocity.normalized() == Vector3.ZERO:
+				velocity = Vector3(0.05, 0.99, 0.05).normalized()
+			var dir = global_position + velocity.normalized() * 100
 			look_at(dir)
 			
 
