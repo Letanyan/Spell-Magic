@@ -5,11 +5,11 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@export var speed = 8
-@export var fall_acceleration = 75
-@export var friction = 25
-@export var jump_impulse = 20
-@export var bounce_impulse = 16
+@export var speed: float = 24
+@export var fall_acceleration: float = 75
+@export var friction: float = 25
+@export var jump_impulse: float = 20
+@export var bounce_impulse: float = 16
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
@@ -137,7 +137,7 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 
 func cast_spell(spell: Spell) -> Array:
-	var ps = spell.get_particles()
+	var ps = spell.get_particles(spell_variables(true))
 	for p in ps:
 		spells.append(spell)
 		p.spell = spell

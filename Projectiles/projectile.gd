@@ -66,7 +66,7 @@ func _on_body_entered(body: Node3D):
 					lose_control(self, body)
 				elif is_rock:
 					lose_control(self, body)
-					body.apply_central_impulse(spell.impulse())
+					body.apply_central_impulse(impulse())
 				elif is_enemy or is_player:
 					CharacterCollision.handle(body, self)
 					body.vitals.handle_damage(Spell.Element.ROCK, spell.power)

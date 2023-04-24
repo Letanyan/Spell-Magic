@@ -40,6 +40,11 @@ disabled = true
 
 [node name="Player" parent="." instance=ExtResource("2_8iei0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
+speed = 24.0
+fall_acceleration = 75.0
+friction = 25.0
+jump_impulse = 20.0
+bounce_impulse = 16.0
 
 [node name="TestMan" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.750965, 0.660343, 0, -0.660343, 0.750965, 5.85383, 3.84122, 3.45085)

@@ -14,6 +14,12 @@ func _init(_passive: PathStyle, _aggresive: PathStyle):
 	aggresive = _aggresive 
 	current = passive
 
+func movement_speed():
+	return current.movement_speed
+	
+func is_aggresive() -> bool:
+	return current == aggresive
+
 func next_position(me: Enemy, player: Player) -> Vector3:
 	return current.next_position(me, player)
 
@@ -22,6 +28,3 @@ func update_state(me: Enemy, player: Player):
 		current = aggresive
 	elif current == aggresive and sqrt(player.position.distance_squared_to(me.position)) > passive_radius:
 		current = passive
-
-func movement_speed():
-	return current.movement_speed

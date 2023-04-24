@@ -21,7 +21,7 @@ var is_relative_to_player_current_pos: bool
 
 var fixed_vars: Dictionary
 
-func _init(rel_pos: bool, _x: String, _y: String, _z: String, _r: String, _p: float, _d: float, _e: Element, _N: int, _fvars: Dictionary):
+func _init(rel_pos: bool, _x: String, _y: String, _z: String, _r: String, _p: float, _d: float, _e: Element, _N: int):
 	x = _x
 	y = _y
 	z = _z
@@ -37,7 +37,7 @@ func _init(rel_pos: bool, _x: String, _y: String, _z: String, _r: String, _p: fl
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
 	r_expr = Expr.new(r)
-	fixed_vars = _fvars
+	fixed_vars = {}
 	fixed_vars["r0"] = randf()
 	fixed_vars["r1"] = randf()
 	fixed_vars["r2"] = randf()
@@ -90,6 +90,7 @@ func update_spell(t: float, vars: Dictionary, particle: SpellBody):
 func get_particle(n: int) -> SpellBody:
 	var temp_vars = {}
 	temp_vars.merge(fixed_vars)
+#	temp_vars.merge(updated, true)
 	temp_vars["tx"] = fixed_vars["x"]
 	temp_vars["ty"] = fixed_vars["y"]
 	temp_vars["tz"] = fixed_vars["z"]
@@ -134,8 +135,9 @@ func get_particle(n: int) -> SpellBody:
 			var p = load("res://Projectiles/fire.tscn").instantiate()
 			return p
 		
-func get_particles() -> Array:
+func get_particles(fvars: Dictionary) -> Array:
 	var result = []
+	fixed_vars.merge(fvars, true)
 	for i in range(count):
 		var p = get_particle(i)
 		p.n = i

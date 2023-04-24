@@ -4,7 +4,7 @@ extends CharacterBody3D
 var movement_target_position: Vector3 = Vector3.ZERO
 
 @export var speed = 14
-@export var fall_acceleration = 75
+@export var fall_acceleration: float = 75
 @export var friction = 25
 @export var jump_impulse = 20
 
@@ -20,6 +20,7 @@ var player: Player
 var blender: NoiseBlender
 var behaviour: Behaviour
 var vitals: Vitals
+var patterns: AttackPatterns
 
 func _ready():
 	# These values need to be adjusted for the actor's speed
@@ -34,6 +35,19 @@ func _ready():
 	behaviour.update_state(self, player)
 	
 	vitals = Vitals.new(100, 50)
+	
+	patterns = AttackPatterns.new(
+		[
+			Spell.new(false, "u * t * 5", "v * t * 5", "w * t * 5", "1", 0.1, 5000, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5", "w * t * 5", "1", 0.1, 5000, Spell.Element.WATER, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5", "w * t * 5", "1", 0.1, 5000, Spell.Element.ROCK, 1),
+		],
+		[
+			5,
+			3,
+			2,
+		]
+	)
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
@@ -67,7 +81,11 @@ func _physics_process(delta):
 		if interval_check(250, 50):
 			behaviour.update_state(self, player)
 			set_movement_target(behaviour.next_position(self, player))
-		return
+		if interval_check(100, 20):
+			var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
+			if spell != null:
+				for s in cast_spell(spell):
+					add_sibling(s)
 	else:
 		if interval_check(250, 50):
 			set_movement_target(behaviour.next_position(self, player))
@@ -104,7 +122,7 @@ func _physics_process(delta):
 		var p: SpellBody = particles[i]
 		var spell: Spell = spells[i]
 		spell.update_spell(t, spell_variables(false), p)
-		if spell.has_expired(t):
+		if p.has_expired(t):
 			should_remove.append(i)
 			p.stop_emitting()
 			
@@ -120,7 +138,8 @@ func spell_variables(fixed: bool) -> Dictionary:
 	result[prefix + "y"] = position.y
 	result[prefix + "z"] = position.z
 	
-	var cdir = ((global_position + Vector3(0, 1.2, 0)) - player.global_position).normalized()
+#	var cdir = ((global_position + Vector3(0, 1.2, 0)) - player.global_position).normalized()
+	var cdir = (player.global_position - (global_position + Vector3(0, 1.2, 0))).normalized()
 	
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
@@ -135,7 +154,7 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 
 func cast_spell(spell: Spell) -> Array:
-	var ps = spell.get_particles()
+	var ps = spell.get_particles(spell_variables(true))
 	for p in ps:
 		spells.append(spell)
 		p.spell = spell
