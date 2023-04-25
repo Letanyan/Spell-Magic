@@ -136,10 +136,12 @@ func spell_variables(fixed: bool) -> Dictionary:
 	return result
 	
 
-func cast_spell(spell: Spell) -> Array:
+func cast_spell(insert: Callable, spell: Spell):
 	var ps = spell.get_particles(spell_variables(true))
 	for p in ps:
 		spells.append(spell)
-		p.spell = spell
 		particles.append(p)
-	return ps
+	await get_tree().create_timer(spell.delay / 1000.0).timeout
+	for p in ps:
+		insert.call(p)
+

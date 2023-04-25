@@ -12,10 +12,30 @@ var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
 var old_pos: Vector3 = Vector3.ZERO
 
+var spells: Array = []
+var particles: Array = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	time_start = Time.get_ticks_msec()
+	if spell.chain != null:
+		cast_spell(func(p): add_sibling(p), spell.chain)
 
+func _physics_process(delta):
+	var t = Time.get_ticks_msec()
+	var should_remove = []
+	for i in range(spells.size()):
+		var p: SpellBody = particles[i]
+		var spell: Spell = spells[i]
+		spell.update_spell(t, spell_variables(false), p)
+		if p.has_expired(t):
+			should_remove.append(i)
+			p.stop_emitting()
+			
+	should_remove.reverse()
+	for i in should_remove:
+		spells.remove_at(i)
+		particles.remove_at(i)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -208,7 +228,37 @@ func stop_emitting():
 			free_after(particles.lifetime)
 			
 func free_after(duration: float):
-	await get_tree().create_timer(duration).timeout
-	queue_free()		
+	if get_tree():
+		await get_tree().create_timer(duration).timeout
+		queue_free()		
 			
 var water_mat = preload("res://Projectiles/water_mat.tres")
+
+func spell_variables(fixed: bool) -> Dictionary:
+	var result = Dictionary()
+	var prefix = "" if fixed else "t"
+	result[prefix + "x"] = position.x
+	result[prefix + "y"] = position.y
+	result[prefix + "z"] = position.z
+	
+	var cdir = Vector3.ZERO
+	
+	result[prefix + "u"] = cdir.x
+	result[prefix + "v"] = cdir.y
+	result[prefix + "w"] = cdir.z
+	
+	if fixed:
+		result["abs_pos"] = position
+	else:
+		result["rel_pos"] = position
+	
+	return result
+
+func cast_spell(insert: Callable, next_spell: Spell):
+	var ps = next_spell.get_particles(spell_variables(true))
+	for p in ps:
+		spells.append(next_spell)
+		particles.append(p)
+	await get_tree().create_timer(next_spell.delay / 1000).timeout
+	for p in ps:
+		insert.call(p)

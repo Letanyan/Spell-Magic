@@ -84,8 +84,7 @@ func _physics_process(delta):
 		if interval_check(100, 20):
 			var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
 			if spell != null:
-				for s in cast_spell(spell):
-					add_sibling(s)
+				await cast_spell(func(p): add_sibling(p), spell)
 	else:
 		if interval_check(250, 50):
 			set_movement_target(behaviour.next_position(self, player))
@@ -153,10 +152,11 @@ func spell_variables(fixed: bool) -> Dictionary:
 	return result
 	
 
-func cast_spell(spell: Spell) -> Array:
+func cast_spell(insert: Callable, spell: Spell):
 	var ps = spell.get_particles(spell_variables(true))
 	for p in ps:
 		spells.append(spell)
-		p.spell = spell
 		particles.append(p)
-	return ps
+	await get_tree().create_timer(spell.delay / 1000.0).timeout
+	for p in ps:
+		insert.call(p)

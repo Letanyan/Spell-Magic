@@ -11,6 +11,8 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var power: float
 @export var duration: float
 @export var count: float
+@export var delay: float
+var chain: Spell
 
 var x_expr: Expr
 var y_expr: Expr
@@ -21,15 +23,17 @@ var is_relative_to_player_current_pos: bool
 
 var fixed_vars: Dictionary
 
-func _init(rel_pos: bool, _x: String, _y: String, _z: String, _r: String, _p: float, _d: float, _e: Element, _N: int):
+func _init(rel_pos: bool, _x: String, _y: String, _z: String, _r: String, _power: float, _duration: float, _el: Element, _N: int, _delay: float = 0.0):
 	x = _x
 	y = _y
 	z = _z
 	r = _r
-	power = _p
-	duration = _d
-	element = _e
+	power = _power
+	duration = _duration
+	element = _el
 	count = _N
+	delay = _delay
+	chain = null
 	
 	is_relative_to_player_current_pos = rel_pos
 	
@@ -56,7 +60,7 @@ func _location(vars: Dictionary) -> Vector3:
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
-	return Vector3(0, 2, 0) + result + (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])
+	return result + (vars["rel_pos"] if is_relative_to_player_current_pos else vars["abs_pos"])
 	
 func _size(vars: Dictionary) -> float:
 	var result = clamp(r_expr.compute(vars), 0.01, 10)
@@ -141,5 +145,6 @@ func get_particles(fvars: Dictionary) -> Array:
 	for i in range(count):
 		var p = get_particle(i)
 		p.n = i
+		p.spell = self
 		result.append(p)
 	return result

@@ -58,12 +58,16 @@ func _input(event):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			
+		var firework = Spell.new(true, "t * cos(n / N * pi * 2)", "0", "t * sin(n / N * pi * 2)", "1", 0.1, 10000, Spell.Element.FIRE, 10)
+		firework.delay = 1000
 		var circle = Spell.new(true, "sin(t * 2) * 5", "-0.2", "cos(t * 2) * 5", "1", 0.5, 50000, Spell.Element.FIRE, 1)
 		var blast = Spell.new(false, 
 			"u * 2 + (t - n) * u * 10 * gt(t - n)", 
 			"v * 2 + (t - n) * v * 10 * gt(t - n)", 
 			"w * 2 + (t - n) * w * 10 * gt(t - n)", 
 			"1", 0.3, 5000, Spell.Element.FIRE, 1)
+		blast.chain = firework
+#		blast.delay = 1000
 		var drop = Spell.new(false, "u * 5", "t * -9.8 * 3 + 15", "w * 5", "1 + r0 * 5", 0.5, 50000, Spell.Element.ROCK, 1)
 		var push = Spell.new(false, "u * 30 * t + u * 2", "t * 20 * v", "w * 30 * t + w * 2", "1 + r0 * 0", 0.2, 50000, Spell.Element.ROCK, 1)
 		var aqua = Spell.new(false, "t * u * 10", "t * v * 10 + 2", "t * w * 10", "t", 0, 5000, Spell.Element.WATER, 1)
@@ -84,15 +88,12 @@ func _input(event):
 			spire, #9
 		]
 		
-		for p in player.cast_spell(spells[spell_index]):
-			add_child(p)
+		await player.cast_spell(func(p): add_child(p), spells[spell_index])
 		
 	if event.is_action_pressed("shift"):
 #		player.set_movement_target(Vector3(randf() * 10, randf() * 10, randf() * 10))
-		var spell_vars = player.spell_variables(true)
 		var hover = Spell.new(true, "-0.5", "t * 30 - 20", "0.5", "2", 1, 500, Spell.Element.AIR, 1)
-		for p in player.cast_spell(hover):
-			add_child(p)
+		player.cast_spell(func(p): add_child(p), hover)
 
 
 func _on_player_moved(delta: float):
