@@ -5,6 +5,7 @@ extends Node
 # @onready var ground_mesh = $Ground/Mesh
 # @onready var ground_collision = $Ground/Collision
 @onready var magic_book = $MagicBook
+@onready var wand_case = $WandCase
 
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
@@ -15,6 +16,8 @@ extends Node
 var terrain_update_interval = 0
 
 var book: MagicBook
+var case: WandCase
+var wand: Wand
 
 var showing_gui: bool = false
 
@@ -27,6 +30,11 @@ func _ready():
 	book.load()
 	
 	build_terrain()
+	
+	case = WandCase.new()
+	case.load()
+	# FIXME: Support user selecting wands
+	wand = case.wands[0]
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -40,48 +48,45 @@ var spell_index = 5
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
+		if showing_gui:
+			if magic_book.visible:
+				book.save()
+			if wand_case.visible:
+				case.save()
+			magic_book.visible = false
+			wand_case.visible = false
+			showing_gui = false
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			
+	if not showing_gui and event.is_action_pressed("magic_book"):
+		magic_book.visible = true
+		magic_book.book = book
+		showing_gui = true
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			
+	if not showing_gui and event.is_action_pressed("wand_case"):
+		wand_case.visible = true
+		wand_case.case = case
+		showing_gui = true
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
-	if not showing_gui:
-		if event.is_action_pressed("one"):
-			spell_index = 0
-		if event.is_action_pressed("two"):
-			spell_index = 1
-		if event.is_action_pressed("three"):
-			spell_index = 2
-		if event.is_action_pressed("four"):
-			spell_index = 3
-		if event.is_action_pressed("five"):
-			spell_index = 4
-		if event.is_action_pressed("six"):
-			spell_index = 5
-		if event.is_action_pressed("seven"):
-			spell_index = 6
-		if event.is_action_pressed("eight"):
-			spell_index = 7
-		if event.is_action_pressed("nine"):
-			spell_index = 8
-		if event.is_action_pressed("zero"):
-			spell_index = 9
-	if event.is_action_pressed("magic_book"):
-		magic_book.visible = not magic_book.visible
-		magic_book.book = book
-		showing_gui = magic_book.visible
-		if not magic_book.visible:
-			book.save()
-		if showing_gui:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		
-		
-	if not showing_gui and event.is_action_pressed("fire"):
+	if not showing_gui and event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+#		await player.cast_spell(func(p): if p != null: add_child(p), book.spells[spell_index])
 		
-		await player.cast_spell(func(p): if p != null: add_child(p), book.spells[spell_index])
+	if not showing_gui:
+		for k in wand.basic_keys:
+			if event.is_action_pressed(k):
+				var s = wand.action_down(k, book)
+				if s != null:
+					await player.cast_spell(func(p): if p != null: add_child(p), s)
+			if event.is_action_released(k):
+				wand.action_up(k)
 		
-	if not showing_gui and event.is_action_pressed("shift"):
+	if not showing_gui and event.is_action_pressed("LT"):
 		var hover = Spell.new(true, "-0.5", "t * 30 - 20", "0.5", "2", 1, 0.5, Spell.Element.AIR, 1)
 		player.cast_spell(func(p): add_child(p), hover)
 

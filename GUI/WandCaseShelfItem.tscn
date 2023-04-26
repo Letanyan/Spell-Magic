@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3 uid="uid://cl6anb75utdrn"]
+
+[ext_resource type="Script" path="res://GUI/WandCaseShelfItem.gd" id="1_kx7hf"]
+
+[node name="WandCaseShelfItem" type="Control"]
+custom_minimum_size = Vector2(800, 48)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -352.0
+offset_bottom = -600.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kx7hf")
+
+[node name="key" type="Label" parent="."]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 48.0
+text = "LB + X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MenuBar" type="MenuBar" parent="."]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 8.0
+offset_right = 274.0
+offset_bottom = 40.0
+start_index = 0
+switch_on_hover = false
+
+[node name="Action" type="PopupMenu" parent="MenuBar"]
+title = "Action"
+size = Vector2i(127, 143)
+visible = true
+item_count = 5
+item_0/text = "None"
+item_0/id = 0
+item_1/text = "Fire"
+item_1/id = 1
+item_2/text = "Select"
+item_2/id = 2
+item_3/text = "Fire Selected"
+item_3/id = 3
+item_4/text = "Modifier"
+item_4/id = 4
+
+[node name="spell" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 384.0
+offset_right = 800.0
+offset_bottom = 48.0
+
+[connection signal="id_pressed" from="MenuBar/Action" to="." method="_on_action_id_pressed"]

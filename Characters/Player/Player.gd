@@ -51,7 +51,7 @@ func _physics_process(delta):
 		set_velocity(new_velocity)
 		move_and_slide()
 
-	var input_dir = Input.get_vector("left", "right", "forward", "back")
+	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		
@@ -63,7 +63,7 @@ func _physics_process(delta):
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
 	else:
 		target_velocity.y = 0
-	if Input.is_action_just_pressed("jump"):
+	if Input.is_action_just_pressed("L3"):
 		target_velocity.y = jump_impulse
 		
 	target_velocity.y = clampf(target_velocity.y, -100, 100)
