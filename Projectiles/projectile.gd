@@ -12,29 +12,28 @@ var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
 var old_pos: Vector3 = Vector3.ZERO
 
-var spells: Array = []
 var particles: Array = []
+
+var fixed_vars: Dictionary
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	time_start = Time.get_ticks_msec()
 	if spell.chain != null:
-		cast_spell(func(p): add_sibling(p), spell.chain)
+		cast_spell(func(p): if p != null: add_sibling(p), spell.chain)
 
 func _physics_process(delta):
-	var t = Time.get_ticks_msec()
+	var t = Time.get_unix_time_from_system()
 	var should_remove = []
-	for i in range(spells.size()):
+	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
-		var spell: Spell = spells[i]
-		spell.update_spell(t, spell_variables(false), p)
+		p.update_spell(t, spell_variables(false))
 		if p.has_expired(t):
+			print("should_remove")
 			should_remove.append(i)
 			p.stop_emitting()
 			
 	should_remove.reverse()
 	for i in should_remove:
-		spells.remove_at(i)
 		particles.remove_at(i)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -42,6 +41,8 @@ func _process(delta):
 	pass
 
 func has_expired(t: float) -> bool:
+	if time_start <= 0:
+		return false
 	return expired or (t - time_start) >= spell.duration
 	
 func expire_now(p: Node3D, q: Node3D):
@@ -204,6 +205,16 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var dir = global_position + velocity.normalized() * 100
 			look_at(dir)
 			
+func update_spell(t: float, vars: Dictionary):
+	if not in_control or time_start == 0:
+		return
+	vars.merge(fixed_vars, true)
+	vars["n"] = n
+	vars["t"] = t - time_start
+	var p = spell.calculate_location(vars)
+	var er = spell.calculate_size(vars)
+	update_shape(er, false)
+	update_movement(p, false, vars)
 
 func stop_emitting():
 	match spell.element:
@@ -257,8 +268,8 @@ func spell_variables(fixed: bool) -> Dictionary:
 func cast_spell(insert: Callable, next_spell: Spell):
 	var ps = next_spell.get_particles(spell_variables(true))
 	for p in ps:
-		spells.append(next_spell)
 		particles.append(p)
-	await get_tree().create_timer(next_spell.delay / 1000).timeout
+	await get_tree().create_timer(next_spell.delay).timeout
 	for p in ps:
+		p.time_start = Time.get_unix_time_from_system()
 		insert.call(p)

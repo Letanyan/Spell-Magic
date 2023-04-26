@@ -18,7 +18,6 @@ signal player_moved
 var target_velocity = Vector3.ZERO
 var impulse = Vector3.ZERO
 
-var spells: Array = []
 var particles: Array = []
 
 var vitals: Vitals
@@ -100,19 +99,17 @@ func _physics_process(delta):
 		player_moved.emit(delta)
 #		print(position)
 				
-	var t = Time.get_ticks_msec()
+	var t = Time.get_unix_time_from_system()
 	var should_remove = []
-	for i in range(spells.size()):
+	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
-		var spell: Spell = spells[i]
-		spell.update_spell(t, spell_variables(false), p)
+		p.update_spell(t, spell_variables(false))
 		if p.has_expired(t):
 			should_remove.append(i)
 			p.stop_emitting()
 			
 	should_remove.reverse()
 	for i in should_remove:
-		spells.remove_at(i)
 		particles.remove_at(i)
 				
 func spell_variables(fixed: bool) -> Dictionary:
@@ -139,9 +136,9 @@ func spell_variables(fixed: bool) -> Dictionary:
 func cast_spell(insert: Callable, spell: Spell):
 	var ps = spell.get_particles(spell_variables(true))
 	for p in ps:
-		spells.append(spell)
 		particles.append(p)
 	await get_tree().create_timer(spell.delay / 1000.0).timeout
 	for p in ps:
+		p.time_start = Time.get_unix_time_from_system()
 		insert.call(p)
 

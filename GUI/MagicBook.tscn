@@ -1,0 +1,217 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwlh6xe128lt6"]
+
+[ext_resource type="Script" path="res://GUI/MagicBookGUI.gd" id="1_1c5yt"]
+
+[node name="MagicBook" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1c5yt")
+
+[node name="Create" type="Button" parent="."]
+layout_mode = 0
+offset_top = 576.0
+offset_right = 286.0
+offset_bottom = 647.0
+text = "Create New"
+
+[node name="SpellIndex" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 284.0
+offset_bottom = -72.0
+grow_vertical = 2
+
+[node name="container" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 286.0
+offset_right = 1149.0
+offset_bottom = 647.0
+
+[node name="name_edit" type="LineEdit" parent="container"]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 23.0
+offset_right = 533.0
+offset_bottom = 54.0
+size_flags_vertical = 4
+
+[node name="x" type="Label" parent="container"]
+layout_mode = 2
+offset_left = 34.0
+offset_top = 80.0
+offset_right = 43.0
+offset_bottom = 106.0
+text = "x"
+
+[node name="edit" type="LineEdit" parent="container/x"]
+layout_mode = 2
+offset_left = 35.0
+offset_top = -1.0
+offset_right = 380.0
+offset_bottom = 30.0
+
+[node name="y" type="Label" parent="container"]
+layout_mode = 2
+offset_left = 450.0
+offset_top = 79.0
+offset_right = 459.0
+offset_bottom = 105.0
+text = "y
+"
+
+[node name="edit" type="LineEdit" parent="container/y"]
+layout_mode = 2
+offset_left = 31.0
+offset_top = -2.0
+offset_right = 372.0
+offset_bottom = 29.0
+
+[node name="z" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 134.0
+offset_right = 63.0
+offset_bottom = 160.0
+text = "z"
+
+[node name="edit" type="LineEdit" parent="container/z"]
+layout_mode = 0
+offset_left = 35.0
+offset_top = -1.0
+offset_right = 380.0
+offset_bottom = 30.0
+
+[node name="r" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 134.0
+offset_right = 460.0
+offset_bottom = 160.0
+text = "r"
+
+[node name="edit" type="LineEdit" parent="container/r"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = -2.0
+offset_right = 372.0
+offset_bottom = 29.0
+
+[node name="power" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 200.0
+offset_right = 499.0
+offset_bottom = 226.0
+text = "power"
+
+[node name="edit" type="LineEdit" parent="container/power"]
+layout_mode = 0
+offset_left = 67.0
+offset_right = 372.0
+offset_bottom = 31.0
+
+[node name="duration" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 256.0
+offset_right = 102.0
+offset_bottom = 282.0
+text = "duration"
+
+[node name="edit" type="LineEdit" parent="container/duration"]
+layout_mode = 0
+offset_left = 88.0
+offset_right = 376.0
+offset_bottom = 31.0
+
+[node name="element" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 562.0
+offset_top = 23.0
+offset_right = 626.0
+offset_bottom = 49.0
+text = "element"
+
+[node name="edit" type="LineEdit" parent="container/element"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 1.0
+offset_right = 256.0
+offset_bottom = 32.0
+
+[node name="count" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 200.0
+offset_right = 79.0
+offset_bottom = 226.0
+text = "count"
+
+[node name="edit" type="LineEdit" parent="container/count"]
+layout_mode = 0
+offset_left = 68.0
+offset_right = 376.0
+offset_bottom = 31.0
+
+[node name="delay" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 256.0
+offset_right = 492.0
+offset_bottom = 282.0
+text = "delay"
+
+[node name="edit" type="LineEdit" parent="container/delay"]
+layout_mode = 0
+offset_left = 67.0
+offset_right = 372.0
+offset_bottom = 31.0
+
+[node name="chain" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 312.0
+offset_right = 76.0
+offset_bottom = 338.0
+text = "chain"
+
+[node name="edit" type="LineEdit" parent="container/chain"]
+layout_mode = 0
+offset_left = 64.0
+offset_right = 376.0
+offset_bottom = 31.0
+
+[node name="save" type="Button" parent="container"]
+layout_mode = 0
+offset_left = 746.0
+offset_top = 592.0
+offset_right = 838.0
+offset_bottom = 623.0
+text = "Save"
+
+[node name="is_rel" type="CheckButton" parent="container"]
+layout_mode = 0
+offset_left = 442.0
+offset_top = 312.0
+offset_right = 822.0
+offset_bottom = 343.0
+text = "follow player"
+
+[node name="Delete" type="Button" parent="container"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 592.0
+offset_right = 114.0
+offset_bottom = 623.0
+text = "Delete
+"
+
+[connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
+[connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
+[connection signal="pressed" from="container/save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="container/Delete" to="." method="_on_delete_pressed"]

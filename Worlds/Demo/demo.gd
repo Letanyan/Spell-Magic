@@ -4,6 +4,7 @@ extends Node
 @onready var ground = $Ground
 # @onready var ground_mesh = $Ground/Mesh
 # @onready var ground_collision = $Ground/Collision
+@onready var magic_book = $MagicBook
 
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
@@ -13,9 +14,17 @@ extends Node
 
 var terrain_update_interval = 0
 
+var book: MagicBook
+
+var showing_gui: bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	magic_book.visible = false
+	
+	book = MagicBook.new()
+	book.load()
 	
 	build_terrain()
 
@@ -33,66 +42,47 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
-	if event.is_action_pressed("one"):
-		spell_index = 0
-	if event.is_action_pressed("two"):
-		spell_index = 1
-	if event.is_action_pressed("three"):
-		spell_index = 2
-	if event.is_action_pressed("four"):
-		spell_index = 3
-	if event.is_action_pressed("five"):
-		spell_index = 4
-	if event.is_action_pressed("six"):
-		spell_index = 5
-	if event.is_action_pressed("seven"):
-		spell_index = 6
-	if event.is_action_pressed("eight"):
-		spell_index = 7
-	if event.is_action_pressed("nine"):
-		spell_index = 8
-	if event.is_action_pressed("zero"):
-		spell_index = 9
+	if not showing_gui:
+		if event.is_action_pressed("one"):
+			spell_index = 0
+		if event.is_action_pressed("two"):
+			spell_index = 1
+		if event.is_action_pressed("three"):
+			spell_index = 2
+		if event.is_action_pressed("four"):
+			spell_index = 3
+		if event.is_action_pressed("five"):
+			spell_index = 4
+		if event.is_action_pressed("six"):
+			spell_index = 5
+		if event.is_action_pressed("seven"):
+			spell_index = 6
+		if event.is_action_pressed("eight"):
+			spell_index = 7
+		if event.is_action_pressed("nine"):
+			spell_index = 8
+		if event.is_action_pressed("zero"):
+			spell_index = 9
+	if event.is_action_pressed("magic_book"):
+		magic_book.visible = not magic_book.visible
+		magic_book.book = book
+		showing_gui = magic_book.visible
+		if not magic_book.visible:
+			book.save()
+		if showing_gui:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
-	if event.is_action_pressed("fire"):
+		
+	if not showing_gui and event.is_action_pressed("fire"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			
-		var firework = Spell.new(true, "t * cos(n / N * pi * 2)", "0", "t * sin(n / N * pi * 2)", "1", 0.1, 10000, Spell.Element.FIRE, 10)
-		firework.delay = 1000
-		var circle = Spell.new(true, "sin(t * 2) * 5", "-0.2", "cos(t * 2) * 5", "1", 0.5, 50000, Spell.Element.FIRE, 1)
-		var blast = Spell.new(false, 
-			"u * 2 + (t - n) * u * 10 * gt(t - n)", 
-			"v * 2 + (t - n) * v * 10 * gt(t - n)", 
-			"w * 2 + (t - n) * w * 10 * gt(t - n)", 
-			"1", 0.3, 5000, Spell.Element.FIRE, 1)
-		blast.chain = firework
-#		blast.delay = 1000
-		var drop = Spell.new(false, "u * 5", "t * -9.8 * 3 + 15", "w * 5", "1 + r0 * 5", 0.5, 50000, Spell.Element.ROCK, 1)
-		var push = Spell.new(false, "u * 30 * t + u * 2", "t * 20 * v", "w * 30 * t + w * 2", "1 + r0 * 0", 0.2, 50000, Spell.Element.ROCK, 1)
-		var aqua = Spell.new(false, "t * u * 10", "t * v * 10 + 2", "t * w * 10", "t", 0, 5000, Spell.Element.WATER, 1)
-		var back = Spell.new(false, "u * -20 * t + u * 5", "-0.75", "w * -20 * t + w * 5", "1 + r0 * 0", 0.3, 50000, Spell.Element.ROCK, 1)
-		var fan = Spell.new(false, "u * 2 + u * 2 * (t / 5)", "-0.75 + v * (t / 5)", "w * 2 + w * 2 * (t / 5)", "2", 0.8, 50000, Spell.Element.AIR, 1)
-		var hover = Spell.new(true, "-6 * u + u * t * 6", "-6 * v + v * t * 6", "-6 * w + w * t * 6", "2", 0.8, 500, Spell.Element.AIR, 1)
-		var spire = Spell.new(false, "sin(n / N * pi * 2) * t * 5", "3", "cos(n / N * pi * 2) * t * 5", "0.5", 0.1, 10000, Spell.Element.FIRE, 8)
 		
-		var spells = [
-			drop, # 1
-			push, # 2
-			back, # 3
-			fan,  # 4
-			circle, # 5
-			blast, # 6
-			aqua, # 7
-			hover, #8
-			spire, #9
-		]
+		await player.cast_spell(func(p): if p != null: add_child(p), book.spells[spell_index])
 		
-		await player.cast_spell(func(p): add_child(p), spells[spell_index])
-		
-	if event.is_action_pressed("shift"):
-#		player.set_movement_target(Vector3(randf() * 10, randf() * 10, randf() * 10))
-		var hover = Spell.new(true, "-0.5", "t * 30 - 20", "0.5", "2", 1, 500, Spell.Element.AIR, 1)
+	if not showing_gui and event.is_action_pressed("shift"):
+		var hover = Spell.new(true, "-0.5", "t * 30 - 20", "0.5", "2", 1, 0.5, Spell.Element.AIR, 1)
 		player.cast_spell(func(p): add_child(p), hover)
 
 
