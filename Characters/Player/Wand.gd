@@ -18,14 +18,14 @@ class Option extends Object:
 		spell = dict["spell"]
 
 const basic_keys = [
-	"LB",
 	"LT",
+	"LB",
 	"RT",
 	"RB",
-	"N",
-	"E",
 	"S",
 	"W",
+	"E",
+	"N",
 	"UP",
 	"DOWN",
 	"LEFT",
@@ -34,8 +34,25 @@ const basic_keys = [
 	"R3",
 ]
 
+const pc_keys = {
+	"LT": "Shift",
+	"LB": "Ctrl",
+	"RT": "Left Mouse",
+	"RB": "Alt",
+	"S": "Space",
+	"W": "R",
+	"E": "E",
+	"N": "Q",
+	"UP": "Up",
+	"DOWN": "Down",
+	"LEFT": "Left",
+	"RIGHT": "Right",
+	"L3": "Z",
+	"R3": "Right Mouse",
+}
+
 var name: String
-var mods: Array
+var mods: Dictionary
 var keys: Dictionary
 var picked: Spell
 
@@ -43,14 +60,15 @@ var current_actions: Dictionary
 
 func _init():
 	name = ""
-	mods = []
+	mods = {}
 	keys = {}
 	picked = null
 	current_actions = {}
+	build_keys()
 
 func build_keys():
 	for b in basic_keys:
-		if not keys.has(b):
+		if not keys.has([b]):
 			keys[[b]] = Option.new()
 	for m in mods:
 		for key in keys:
@@ -61,19 +79,17 @@ func build_keys():
 					keys[nKey] = Option.new()
 
 func remove_mod(mod: String):
-	var i = mods.find(mod)
-	if i != -1:
-		var m = mods[i]
-		mods.remove_at(i)
+	if mods.has(mod):
+		mods.erase(mod)
 		var to_remove = []
 		for key in keys:
-			if key.size() > 1 and key.find(m) != -1:
+			if key.size() > 1 and key.find(mod) != -1:
 				to_remove.append(key)
 		for k in to_remove:
 			keys.erase(k)
 	
 func add_mod(mod: String):
-	mods.append(mod)
+	mods[mod] = true
 	build_keys()
 	
 func find_spell(key: Array, book: MagicBook) -> Spell:
@@ -131,3 +147,8 @@ func load_dict(dict: Dictionary):
 		opt.load_dict(dict["keys"][k])
 		keys[k] = opt
 
+static func key_description(key: Array) -> String:
+	var text = pc_keys[key[0]]
+	for i in range(1, key.size()):
+		text += " + " + pc_keys[key[i]]
+	return text

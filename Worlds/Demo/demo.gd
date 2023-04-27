@@ -24,17 +24,25 @@ var showing_gui: bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	magic_book.visible = false
 	
 	book = MagicBook.new()
 	book.load()
 	
 	build_terrain()
 	
+#	var w = Wand.new()
+#	w.mods["LT"] = true
+#	w.name = "Test"
+#	w.build_keys()
+#	w.keys[["LT"]] = Wand.Option.new(Wand.Kind.MOD)
+	
 	case = WandCase.new()
+#	case.wands = [w]
 	case.load()
 	# FIXME: Support user selecting wands
 	wand = case.wands[0]
+	wand_case.use_current_wand = func(id: int):
+		wand = case.wands[id]
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.

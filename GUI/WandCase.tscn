@@ -20,14 +20,6 @@ offset_right = 248.0
 offset_bottom = 640.0
 text = "Create"
 
-[node name="save" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1016.0
-offset_top = 592.0
-offset_right = 1140.0
-offset_bottom = 640.0
-text = "Save"
-
 [node name="delete" type="Button" parent="."]
 layout_mode = 0
 offset_left = 272.0
@@ -58,7 +50,16 @@ offset_top = 600.0
 offset_right = 872.0
 offset_bottom = 631.0
 
+[node name="use" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1024.0
+offset_top = 592.0
+offset_right = 1142.0
+offset_bottom = 640.0
+text = "Use Wand"
+
 [connection signal="item_selected" from="WandIndex" to="." method="_on_wand_index_item_selected"]
 [connection signal="pressed" from="create" to="." method="_on_create_pressed"]
-[connection signal="pressed" from="save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="delete" to="." method="_on_delete_pressed"]
+[connection signal="text_changed" from="name" to="." method="_on_name_text_changed"]
+[connection signal="pressed" from="use" to="." method="_on_use_pressed"]

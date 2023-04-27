@@ -10,6 +10,7 @@ var case: WandCase:
 @onready var name_edit: LineEdit = $name
 
 var current_index = -1
+var use_current_wand: Callable
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,26 +35,24 @@ func _on_wand_index_item_selected(index):
 		item.store_key = w
 		item.store_action = wand.keys[w].kind
 		item.store_spell = wand.keys[w].spell
-		container.add_child(item)
-
-
-func _on_save_pressed():
-	if current_index < 0:
-		return
-	var wand: Wand = case.wands[current_index]
-	
-	wand.name = name_edit.text
-	wand.keys.clear()
-	for child in container.get_children():
-		var c: WandCaseShelfItem = child
-		var opt = Wand.Option.new()
-		opt.spell = c.spell.text
-		opt.kind = c.store_action as Wand.Kind
-		if opt.kind == Wand.Kind.MOD:
-			wand.mods.append(c.store_key)
-		wand.keys[c.store_key] = opt
 		
-	reload_list()
+		item.spell_changed = func(text: String):
+			wand.keys[w].spell = text
+		
+		item.action_changed = func(from: Wand.Kind, to: Wand.Kind) -> bool:
+			item.store_action = to
+			wand.keys[w].kind = to
+			if to == Wand.Kind.MOD:
+				wand.add_mod(w[0])
+				_on_wand_index_item_selected(current_index)
+				return true
+			elif from == Wand.Kind.MOD:
+				wand.remove_mod(w[0])
+				_on_wand_index_item_selected(current_index)
+				return true
+			return false
+			
+		container.add_child(item)
 
 func reload_list():
 	wand_index.clear()
@@ -72,3 +71,16 @@ func _on_create_pressed():
 	case.wands.append(wand)
 	reload_list()
 	_on_wand_index_item_selected(case.wands.size() - 1)
+
+
+func _on_name_text_changed(new_text):
+	if current_index < 0:
+		return
+	case.wands[current_index].name = new_text
+	reload_list()
+
+
+func _on_use_pressed():
+	if current_index < 0:
+		return
+	use_current_wand.call(current_index)
