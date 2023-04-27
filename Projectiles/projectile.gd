@@ -28,7 +28,6 @@ func _physics_process(delta):
 		var p: SpellBody = particles[i]
 		p.update_spell(t, spell_variables(false))
 		if p.has_expired(t):
-			print("should_remove")
 			should_remove.append(i)
 			p.stop_emitting()
 			
@@ -226,10 +225,10 @@ func stop_emitting():
 			free_after(particles.lifetime)
 			
 		Spell.Element.ROCK:
-			queue_free()
+			free_after(0)
 			
 		Spell.Element.WATER:
-			queue_free()
+			free_after(0)
 			
 		Spell.Element.AIR:
 			var particles: CPUParticles3D = get_node("source")
@@ -240,8 +239,15 @@ func stop_emitting():
 			
 func free_after(duration: float):
 	if get_tree():
-		await get_tree().create_timer(duration).timeout
-		queue_free()		
+		if duration > 0:
+			await get_tree().create_timer(duration).timeout
+		var max_duration = 0
+		for p in particles:
+			max_duration = max(max_duration, p.spell.duration)
+		if max_duration <= 0:
+			queue_free()
+		else:
+			free_after(max_duration)
 			
 var water_mat = preload("res://Projectiles/water_mat.tres")
 
@@ -252,7 +258,7 @@ func spell_variables(fixed: bool) -> Dictionary:
 	result[prefix + "y"] = position.y
 	result[prefix + "z"] = position.z
 	
-	var cdir = Vector3.ZERO
+	var cdir = -velocity.normalized()
 	
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
@@ -266,10 +272,24 @@ func spell_variables(fixed: bool) -> Dictionary:
 	return result
 
 func cast_spell(insert: Callable, next_spell: Spell):
-	var ps = next_spell.get_particles(spell_variables(true))
+	var vars = spell_variables(true)
+	var ps = next_spell.get_particles(vars)
 	for p in ps:
 		particles.append(p)
-	await get_tree().create_timer(next_spell.delay).timeout
-	for p in ps:
+		var temps_vars = vars.duplicate()
+		temps_vars["n"] = p.n
+		var delay = next_spell.calculate_delay(temps_vars)
+		get_tree().create_timer(delay).connect("timeout", start_particle(p, insert))
+		
+
+func start_particle(p: SpellBody, insert: Callable):
+	return func():
 		p.time_start = Time.get_unix_time_from_system()
+		if not p.spell.is_bomb:
+			p.fixed_vars["abs_pos"] = position
+			var cdir = -velocity.normalized()
+			p.fixed_vars["u"] = cdir.x
+			p.fixed_vars["v"] = cdir.y
+			p.fixed_vars["w"] = cdir.z
 		insert.call(p)
+

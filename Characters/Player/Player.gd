@@ -134,11 +134,23 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 
 func cast_spell(insert: Callable, spell: Spell):
+	var vars = spell_variables(true)
 	var ps = spell.get_particles(spell_variables(true))
 	for p in ps:
 		particles.append(p)
-	await get_tree().create_timer(spell.delay / 1000.0).timeout
-	for p in ps:
-		p.time_start = Time.get_unix_time_from_system()
-		insert.call(p)
+		var temps_vars = vars.duplicate()
+		temps_vars["n"] = p.n
+		var delay = spell.calculate_delay(temps_vars)
+		get_tree().create_timer(delay).connect("timeout", start_particle(p, insert))
+		
 
+func start_particle(p: SpellBody, insert: Callable):
+	return func():
+		p.time_start = Time.get_unix_time_from_system()
+		if not p.spell.is_bomb:
+			p.fixed_vars["abs_pos"] = position
+			var cdir = ((global_position + Vector3(0, 1.2, 0)) - cam.global_position).normalized()
+			p.fixed_vars["u"] = cdir.x
+			p.fixed_vars["v"] = cdir.y
+			p.fixed_vars["w"] = cdir.z
+		insert.call(p)

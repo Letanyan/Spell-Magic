@@ -22,6 +22,7 @@ var book: MagicBook:
 @onready var element_edit: LineEdit = $container/element/edit
 @onready var chain_edit: LineEdit = $container/chain/edit
 @onready var is_rel: CheckButton = $container/is_rel
+@onready var is_bomb: CheckButton = $container/is_bomb
 
 var current_index = -1
 
@@ -48,12 +49,13 @@ func _on_spell_index_item_selected(index):
 	
 	power_edit.text = "%f" % spell.power
 	duration_edit.text = "%f" % spell.duration
-	delay_edit.text = "%f" % spell.delay
+	delay_edit.text = spell.delay
 	count_edit.text = "%f" % spell.count
 	
 	element_edit.text = "%d" % spell.element
 	chain_edit.text = spell.chain.name if spell.chain else ""
 	is_rel.button_pressed = spell.is_relative_to_player_current_pos
+	is_bomb.button_pressed = spell.is_bomb
 
 
 func _on_save_pressed():
@@ -73,9 +75,11 @@ func _on_save_pressed():
 	
 	spell.power = power_edit.text.to_float()
 	spell.duration = duration_edit.text.to_float()
-	spell.delay = delay_edit.text.to_float()
-	spell.count = count_edit.text.to_float()
+	spell.delay = delay_edit.text
+	spell.count = count_edit.text.to_int()
 	spell.element = element_edit.text.to_int() as Spell.Element
+	
+	spell.d_expr = Expr.new(spell.delay)
 	
 	var n = chain_edit.text
 	if n == "":
@@ -84,8 +88,14 @@ func _on_save_pressed():
 		for s in book.spells:
 			if s.name == n:
 				spell.chain = s
+				
+	if spell.name != "":
+		for s in book.spells:
+			if s.chain != null and s.chain.name == spell.name and s.name != spell.name:
+				s.chain = spell
 	
 	spell.is_relative_to_player_current_pos = is_rel.button_pressed
+	spell.is_bomb = is_bomb.button_pressed
 	reload_list()
 	
 func reload_list():

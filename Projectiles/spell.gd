@@ -12,17 +12,19 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var power: float
 @export var duration: float
 @export var count: float
-@export var delay: float
+@export var delay: String
 var chain: Spell
 
 var x_expr: Expr
 var y_expr: Expr
 var z_expr: Expr
 var r_expr: Expr
+var d_expr: Expr
 
 var is_relative_to_player_current_pos: bool
+var is_bomb: bool
 
-func _init(rel_pos: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1000, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: float = 0.0):
+func _init(rel_pos: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false):
 	x = _x
 	y = _y
 	z = _z
@@ -35,11 +37,13 @@ func _init(rel_pos: bool = false, _x: String = "0", _y: String = "0", _z: String
 	chain = null
 	
 	is_relative_to_player_current_pos = rel_pos
+	is_bomb = _is_bomb
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
 	r_expr = Expr.new(r)
+	d_expr = Expr.new(delay)
 	
 func calculate_location(vars: Dictionary) -> Vector3:
 	var result = Vector3.ZERO
@@ -50,6 +54,10 @@ func calculate_location(vars: Dictionary) -> Vector3:
 	
 func calculate_size(vars: Dictionary) -> float:
 	var result = clamp(r_expr.compute(vars), 0.01, 10)
+	return result
+	
+func calculate_delay(vars: Dictionary) -> float:
+	var result = d_expr.compute(vars)
 	return result
 	
 func _mass() -> float:
@@ -143,7 +151,7 @@ func save_dict():
 	return {
 		"x": x, "y": y, "z": z, "r": r,
 		"power": power, "duration": duration, "count": count, "delay": delay,
-		"chain": chain.save_dict() if chain else {},
+		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": is_relative_to_player_current_pos, "el": element,
 		"name": name,
 	}
@@ -159,15 +167,16 @@ func load_dict(dict: Dictionary):
 	element = dict["el"]
 	count = dict["count"]
 	delay = dict["delay"]
+	is_bomb = dict.get("is_bomb", false)
+	is_relative_to_player_current_pos = dict["is_rel"]
 	if dict["chain"] != {}:
 		chain = Spell.new()
 		chain.load_dict(dict["chain"])
-	
-	is_relative_to_player_current_pos = dict["is_rel"]
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
 	r_expr = Expr.new(r)
+	d_expr = Expr.new(delay)
 	
 	
