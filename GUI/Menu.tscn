@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://b185ji0u0kuxo"]
+
+[ext_resource type="Script" path="res://GUI/Menu.gd" id="1_op10b"]
+[ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/MagicBook.tscn" id="1_ufdyg"]
+[ext_resource type="PackedScene" uid="uid://b1jnhv7ky6aap" path="res://GUI/WandCase.tscn" id="2_4jtlr"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_op10b")
+
+[node name="MagicBook" parent="." instance=ExtResource("1_ufdyg")]
+visible = false
+layout_mode = 1
+
+[node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
+visible = false
+
+[node name="Tabbar" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 48.0
+
+[node name="Spells" type="Button" parent="Tabbar"]
+layout_mode = 0
+offset_left = 536.0
+offset_top = 8.0
+offset_right = 589.0
+offset_bottom = 39.0
+text = "Spells"
+
+[node name="Wands" type="Button" parent="Tabbar"]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 8.0
+offset_right = 669.0
+offset_bottom = 39.0
+text = "Wands"
+
+[connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
+[connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]

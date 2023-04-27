@@ -22,6 +22,7 @@ text = "Create New"
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
+offset_top = 49.0
 offset_right = 284.0
 offset_bottom = -72.0
 grow_vertical = 2
@@ -29,6 +30,7 @@ grow_vertical = 2
 [node name="container" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 286.0
+offset_top = 49.0
 offset_right = 1149.0
 offset_bottom = 647.0
 
@@ -188,10 +190,10 @@ offset_bottom = 31.0
 
 [node name="save" type="Button" parent="container"]
 layout_mode = 0
-offset_left = 746.0
-offset_top = 592.0
-offset_right = 838.0
-offset_bottom = 623.0
+offset_left = 738.0
+offset_top = 543.0
+offset_right = 830.0
+offset_bottom = 574.0
 text = "Save"
 
 [node name="is_rel" type="CheckButton" parent="container"]
@@ -205,9 +207,9 @@ text = "follow player"
 [node name="Delete" type="Button" parent="container"]
 layout_mode = 0
 offset_left = 34.0
-offset_top = 592.0
+offset_top = 543.0
 offset_right = 114.0
-offset_bottom = 623.0
+offset_bottom = 574.0
 text = "Delete
 "
 
