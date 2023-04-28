@@ -8,6 +8,8 @@ uniform float texture_depth;
 uniform float texture_x;
 uniform float texture_y;
 
+uniform sampler2D grass;
+
 void vertex() {
 	
 }
@@ -97,5 +99,5 @@ void fragment() {
 		}
 	}
 	
-	ALBEDO = color;
+	ALBEDO = color * texture(grass, v.xz).rgb;
 }

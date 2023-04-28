@@ -6,6 +6,7 @@ var radius: float # number of chunks = radius / chunk_size
 
 var player_coord: Vector2
 
+var grass_texture = preload("res://Worlds/grass.jpg")
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
@@ -153,6 +154,7 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, chunk_size, chunk_size))
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, chunk_size, chunk_size))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, chunk_size, chunk_size))
+	mat.set_shader_parameter("grass", grass_texture)
 	mesh.surface_set_material(0, mat)
 #	mi.mesh = mesh
 	for n in mi.get_children():

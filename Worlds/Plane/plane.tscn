@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Worlds/Plane/plane.gdshader" id="1_qnw0c"]
 [ext_resource type="Script" path="res://Worlds/Plane/plane.gd" id="2_88jhe"]
-[ext_resource type="Material" uid="uid://bjoxbg4fkxj6e" path="res://Worlds/Plane/biome.tres" id="3_33xwa"]
+[ext_resource type="Material" uid="uid://dqt6kvnbibsi6" path="res://Worlds/Plane/biome.tres" id="3_33xwa"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bthxj"]
 frequency = 0.001
@@ -137,7 +137,6 @@ mesh = SubResource("PlaneMesh_radur")
 
 [node name="biome" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.2662, 0, 0)
-visible = false
 mesh = SubResource("PlaneMesh_youg7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

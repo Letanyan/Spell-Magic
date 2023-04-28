@@ -1,20 +1,31 @@
-[gd_scene load_steps=8 format=3 uid="uid://bs31awp6oeunh"]
+[gd_scene load_steps=10 format=3 uid="uid://bs31awp6oeunh"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i3esg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3hxed"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wx7dh"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dqfwf"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xll23"]
-noise = SubResource("FastNoiseLite_wx7dh")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_o07gf"]
+noise = SubResource("FastNoiseLite_dqfwf")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w8ji5"]
-albedo_color = Color(0.533333, 0.117647, 0.0117647, 1)
-albedo_texture = SubResource("NoiseTexture2D_xll23")
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_obdun"]
+domain_warp_frequency = 1.0
+domain_warp_fractal_gain = 1.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_th3cy"]
-material = SubResource("StandardMaterial3D_w8ji5")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j0l14"]
+as_normal_map = true
+noise = SubResource("FastNoiseLite_obdun")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g0hp5"]
+albedo_color = Color(0.376471, 0.12549, 0, 1)
+albedo_texture = SubResource("NoiseTexture2D_o07gf")
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_j0l14")
+
+[sub_resource type="BoxMesh" id="BoxMesh_gs8om"]
+lightmap_size_hint = Vector2i(14, 21)
+material = SubResource("StandardMaterial3D_g0hp5")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_odltr"]
 
@@ -30,7 +41,7 @@ freeze = true
 shape = SubResource("BoxShape3D_3hxed")
 
 [node name="mesh" type="MeshInstance3D" parent="body"]
-mesh = SubResource("BoxMesh_th3cy")
+mesh = SubResource("BoxMesh_gs8om")
 skeleton = NodePath("../..")
 
 [node name="area" type="Area3D" parent="body/mesh"]

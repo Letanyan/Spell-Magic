@@ -132,9 +132,13 @@ func update_shape(r: float, ignore_time: bool):
 			mbox.size.y = r
 			mbox.size.z = r
 			mbox.material = StandardMaterial3D.new()
-			mbox.material.albedo_color = Color8(136, 30, 3)
+			mbox.material.albedo_color = Color8(96, 32, 0)
 			mbox.material.albedo_texture = NoiseTexture2D.new()
 			mbox.material.albedo_texture.noise = FastNoiseLite.new()
+			mbox.material.normal_enabled = true
+			mbox.material.normal_texture = NoiseTexture2D.new()
+			mbox.material.normal_texture.as_normal_map = true
+			mbox.material.normal_texture.noise = FastNoiseLite.new()
 			mesh.mesh = mbox
 			
 			var body: RigidBody3D = get_node("body")
