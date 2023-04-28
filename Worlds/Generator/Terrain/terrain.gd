@@ -3,10 +3,11 @@ class_name Terrain
 var blender: NoiseBlender
 var chunk_size: float
 var radius: float # number of chunks = radius / chunk_size
+var raycast: RayCast3D
 
 var player_coord: Vector2
 
-var grass_texture = preload("res://Worlds/grass.jpg")
+var grass_texture = preload("res://Worlds/Generator/Terrain/grass.tres")
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
@@ -86,10 +87,30 @@ func create_chunk(x: float, y: float) -> NavigationRegion3D:
 	mat.set_shader_parameter("texture_depth", chunk_size)
 	mesh.surface_set_material(0, mat)
 	mi.mesh = mesh
+	
+	var mm = MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.instance_count = 2000
+	var cy: CylinderMesh = CylinderMesh.new()
+	cy.top_radius = 0.01
+	cy.bottom_radius = 0.025
+	cy.height = 0.1
+	cy.radial_segments = 5
+	cy.rings = 5
+	mm.mesh = cy
+	var mmi = MultiMeshInstance3D.new()
+	mmi.multimesh = mm
+	
+	for i in range(mm.instance_count):
+		var pos = Vector3(randf_range(-2, 2), 0, randf_range(-2, 2))
+		var t = Transform3D(Basis(), pos)
+		mm.set_instance_transform(i, t)
 
 	var nav = NavigationRegion3D.new()
 	mi.name = "mesh"
 	nav.add_child(mi)
+	mmi.name = "multimesh"
+	nav.add_child(mmi)
 	nav.position.x = x
 	nav.position.z = y
 
@@ -99,7 +120,7 @@ func create_chunk(x: float, y: float) -> NavigationRegion3D:
 	return nav
 
 func update_chunk(nav: NavigationRegion3D, x: float, y: float):
-	var mi: = nav.get_node("mesh")
+	var mi = nav.get_node("mesh")
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
@@ -160,7 +181,9 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	for n in mi.get_children():
 		mi.remove_child(n)
 	mi.create_trimesh_collision()
-	
+	var body: StaticBody3D = mi.get_child(0)
+	body.collision_layer = 0b1
+				
 	var nav_mesh = NavigationMesh.new()
 	nav_mesh.create_from_mesh(mesh)
 	nav.navigation_mesh = nav_mesh
@@ -168,6 +191,26 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	nav.position.z = y
 
 	return nav
+
+func update_environment():
+	for i in range(loaded_chunks.size()):
+		update_chunk_environment(loaded_chunks[i])
+
+func update_chunk_environment(nav: NavigationRegion3D):
+	place_grass(nav)
+
+func place_grass(nav: NavigationRegion3D):
+	var mmi: MultiMeshInstance3D = nav.get_node("multimesh")
+	var mm: MultiMesh = mmi.multimesh
+	for i in range(mm.instance_count):
+		var _x = randf_range(-chunk_size / 2, chunk_size / 2)
+		var _z = randf_range(-chunk_size / 2, chunk_size / 2)
+		raycast.position = nav.position + Vector3(_x, 100, _z)
+		raycast.force_raycast_update()
+		var pos = raycast.get_collision_point() 
+		var t = Transform3D(Basis(), pos - nav.position)
+		mm.set_instance_transform(i, t)
+	
 
 func set_player_coord_using_position(x: float, y: float):
 	player_coord = convert_position_to_coord(x, y)

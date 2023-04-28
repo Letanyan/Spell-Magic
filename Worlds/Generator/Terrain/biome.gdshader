@@ -27,7 +27,7 @@ void fragment() {
 	vec3 color = vec3(0, 0, 0);
 	
 	vec3 taiga = vec3(0, 1, 1);
-	vec3 grassland = vec3(0, 1, 0);
+	vec3 grassland = mix(vec3(0, 0.6, 0), texture(grass, w).rgb, 0.1);
 	vec3 forest = vec3(0, 0.5, 0.5);
 	vec3 desert = vec3(1, 1, 0);
 	vec3 jungle = vec3(0, 0.25, 0.25);
@@ -99,5 +99,5 @@ void fragment() {
 		}
 	}
 	
-	ALBEDO = color * texture(grass, v.xz).rgb;
+	ALBEDO = color;
 }

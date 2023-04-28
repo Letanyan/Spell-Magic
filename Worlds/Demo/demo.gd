@@ -12,6 +12,8 @@ extends Node
 @onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 512)
 @onready var population: Dictionary = {}
 
+@onready var raycast = $RayCast3D
+
 var terrain_update_interval = 0
 
 var book: MagicBook
@@ -33,6 +35,8 @@ func _ready():
 	wand = case.wands[0]
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
+	
+	chunker.raycast = raycast
 	
 	build_terrain()
 
@@ -88,19 +92,30 @@ func build_terrain():
 	var chunks = chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		ground.add_child(chunk)
-		
+	chunker.update_environment()
 	update_population_at(chunker.loaded_chunks_location)
 
 
 func update_terrain():
-	var chunks = chunker.update_chunks(player.position.x, player.position.z)
-	
-	for loc in chunks.get("removed", []):
-		var pop = population[loc]
-		pop.despawn_all_from_world(self)
-		population.erase(loc)
+	var work = func():
+		var chunks = chunker.update_chunks(player.position.x, player.position.z)
+
+		for loc in chunks.get("removed", []):
+			var pop = population[loc]
+			pop.despawn_all_from_world(self)
+			population.erase(loc)
 		
-	update_population_at(chunks.get("updated", []))
+		update_population_at(chunks.get("updated", []))
+		return chunks.get("updated", []).size() > 0
+	
+	if work.call():
+		chunker.update_environment()
+		
+#	var thread = Thread.new()
+#	thread.start(work)
+#	if not thread.is_alive() and thread.wait_to_finish():
+#		chunker.update_environment()
+	
 
 func update_population_at(locations: Array):
 	for loc in locations:

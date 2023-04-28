@@ -1,7 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://dqt6kvnbibsi6"]
+[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://dqt6kvnbibsi6"]
 
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome.gdshader" id="1_dy6w0"]
-[ext_resource type="Texture2D" uid="uid://bc1cvkh2idneg" path="res://Worlds/grass.jpg" id="2_kia5h"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_udgit"]
 noise_type = 3
@@ -28,6 +27,12 @@ height = 1024
 seamless = true
 noise = SubResource("FastNoiseLite_iofw6")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fajk3"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_df3es"]
+seamless = true
+noise = SubResource("FastNoiseLite_fajk3")
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4ean5"]
 noise_type = 3
 seed = 32
@@ -49,4 +54,4 @@ shader_parameter/texture_y = null
 shader_parameter/elevation = SubResource("NoiseTexture2D_kefiv")
 shader_parameter/temperature = SubResource("NoiseTexture2D_4xxtk")
 shader_parameter/dryness = SubResource("NoiseTexture2D_ou647")
-shader_parameter/grass = ExtResource("2_kia5h")
+shader_parameter/grass = SubResource("NoiseTexture2D_df3es")
