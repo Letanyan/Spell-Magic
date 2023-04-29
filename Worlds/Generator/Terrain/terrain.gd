@@ -70,8 +70,10 @@ func create_chunk(x: float, y: float) -> NavigationRegion3D:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(chunk_size, chunk_size)
-	plane.subdivide_depth = chunk_size * 0.05
-	plane.subdivide_width = chunk_size * 0.05
+#	var dist = max(max(abs(x), abs(y)) / chunk_size, 1)
+	var dist = 1
+	plane.subdivide_depth = chunk_size * (5.0 / (100.0 * dist))
+	plane.subdivide_width = chunk_size * (5.0 / (100.0 * dist))
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
@@ -91,12 +93,10 @@ func create_chunk(x: float, y: float) -> NavigationRegion3D:
 	var mm = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.instance_count = 2000
-	var cy: CylinderMesh = CylinderMesh.new()
-	cy.top_radius = 0.01
-	cy.bottom_radius = 0.025
-	cy.height = 0.1
-	cy.radial_segments = 5
-	cy.rings = 5
+	var cy: PlaneMesh = PlaneMesh.new()
+	cy.size.x = 4
+	cy.size.y = 4
+#	cy.orientation = PlaneMesh.FACE_X
 	mm.mesh = cy
 	var mmi = MultiMeshInstance3D.new()
 	mmi.multimesh = mm
@@ -155,9 +155,9 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 		mdt.set_vertex(b, B)
 		mdt.set_vertex(c, C)
 
-		mdt.set_vertex_uv(a, Vector2.ZERO)
-		mdt.set_vertex_uv(b, Vector2.ZERO)
-		mdt.set_vertex_uv(c, Vector2.ZERO)
+#		mdt.set_vertex_uv(a, Vector2.ZERO)
+#		mdt.set_vertex_uv(b, Vector2.ZERO)
+#		mdt.set_vertex_uv(c, Vector2.ZERO)
 
 	for i in range(mdt.get_vertex_count()):
 		var norm = mdt.get_vertex_normal(i).normalized()
@@ -189,6 +189,7 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	nav.navigation_mesh = nav_mesh
 	nav.position.x = x
 	nav.position.z = y
+#	nav.position.y = max(abs(x), abs(y)) / chunk_size * 8
 
 	return nav
 
@@ -197,19 +198,50 @@ func update_environment():
 		update_chunk_environment(loaded_chunks[i])
 
 func update_chunk_environment(nav: NavigationRegion3D):
-	place_grass(nav)
+#	place_grass(nav)
+	pass
 
 func place_grass(nav: NavigationRegion3D):
 	var mmi: MultiMeshInstance3D = nav.get_node("multimesh")
 	var mm: MultiMesh = mmi.multimesh
-	for i in range(mm.instance_count):
-		var _x = randf_range(-chunk_size / 2, chunk_size / 2)
-		var _z = randf_range(-chunk_size / 2, chunk_size / 2)
-		raycast.position = nav.position + Vector3(_x, 100, _z)
-		raycast.force_raycast_update()
-		var pos = raycast.get_collision_point() 
-		var t = Transform3D(Basis(), pos - nav.position)
-		mm.set_instance_transform(i, t)
+	
+	var i = 0
+	seed(0)
+	var overflow = false
+	for x in range(-chunk_size / 2, chunk_size / 2, 4):
+		if overflow:
+			break
+		for y in range(-chunk_size / 2, chunk_size / 2, 4):
+			var p = Vector3(x, 1000, y) + nav.position
+			var biome = blender.biome(p.x, p.z)
+			if biome != NoiseBlender.Biome.GRASSLAND:
+				continue
+#			if randf() < 0.1:
+#				continue
+			raycast.position = p
+			raycast.force_raycast_update()
+			var pos = raycast.get_collision_point() 
+			var t = Transform3D(Basis(), pos - nav.position)
+#			t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))
+			mm.set_instance_transform(i, t)
+			i += 1
+			if i > mm.instance_count:
+				overflow = true
+				break
+
+	for j in range(i, mm.instance_count):
+		var t = Transform3D(Basis(), Vector3(0, -1000, 0))
+		mm.set_instance_transform(j, t)
+	
+#	for i in range(mm.instance_count):
+#		var _x = randf_range(-chunk_size / 2, chunk_size / 2)
+#		var _z = randf_range(-chunk_size / 2, chunk_size / 2)
+#		raycast.position = nav.position + Vector3(_x, 100, _z)
+#		raycast.force_raycast_update()
+#		var pos = raycast.get_collision_point() 
+#		var t = Transform3D(Basis(), pos - nav.position)
+#		t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))
+#		mm.set_instance_transform(i, t)
 	
 
 func set_player_coord_using_position(x: float, y: float):

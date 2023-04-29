@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@export var speed: float = 24
+@export var speed: float = 24 * 8
 @export var fall_acceleration: float = 75
 @export var friction: float = 25
 @export var jump_impulse: float = 20
@@ -55,7 +55,7 @@ func _physics_process(delta):
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		
-	if is_on_floor():
+	if true or is_on_floor():
 		target_velocity.x = direction.x * speed
 		target_velocity.z = direction.z * speed
 	

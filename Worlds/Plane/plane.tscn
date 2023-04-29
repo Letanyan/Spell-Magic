@@ -146,7 +146,6 @@ mesh = SubResource("PlaneMesh_radur")
 
 [node name="biome" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.2662, 0, 0)
-visible = false
 mesh = SubResource("PlaneMesh_youg7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

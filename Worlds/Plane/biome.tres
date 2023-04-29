@@ -9,9 +9,10 @@ fractal_type = 3
 fractal_octaves = 9
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ou647"]
-width = 1024
-height = 1024
-seamless = true
+width = 2048
+height = 2048
+in_3d_space = true
+normalize = false
 noise = SubResource("FastNoiseLite_udgit")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_iofw6"]
@@ -22,14 +23,17 @@ fractal_lacunarity = 1.0
 fractal_weighted_strength = 0.5
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kefiv"]
-width = 1024
-height = 1024
-seamless = true
+width = 2048
+height = 2048
+normalize = false
 noise = SubResource("FastNoiseLite_iofw6")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fajk3"]
+frequency = 0.028
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_df3es"]
+width = 256
+height = 256
 seamless = true
 noise = SubResource("FastNoiseLite_fajk3")
 
@@ -39,9 +43,10 @@ seed = 32
 fractal_octaves = 6
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4xxtk"]
-width = 1024
-height = 1024
-seamless = true
+width = 2048
+height = 2048
+in_3d_space = true
+normalize = false
 noise = SubResource("FastNoiseLite_4ean5")
 
 [resource]

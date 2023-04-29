@@ -9,7 +9,7 @@ extends Node
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
-@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 512)
+@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 1280)
 @onready var population: Dictionary = {}
 
 @onready var raycast = $RayCast3D
@@ -37,6 +37,10 @@ func _ready():
 		wand = case.wands[id]
 	
 	chunker.raycast = raycast
+	
+	noise_elevation.frequency = 0.0001
+	noise_temperature.frequency = 0.0001
+	noise_dryness.frequency = 0.0001
 	
 	build_terrain()
 
@@ -76,10 +80,6 @@ func _input(event):
 					await player.cast_spell(func(p): if p != null: add_child(p), s)
 			if event.is_action_released(k):
 				wand.action_up(k)
-		
-	if not menu.is_showing and event.is_action_pressed("LT"):
-		var hover = Spell.new(true, "-0.5", "t * 30 - 20", "0.5", "2", 1, 0.5, Spell.Element.AIR, 1)
-		player.cast_spell(func(p): add_child(p), hover)
 
 
 func _on_player_moved(delta: float):

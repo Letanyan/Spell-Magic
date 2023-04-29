@@ -6,6 +6,22 @@ enum Biome {
 	OTHERWORLD, HFIL
 }
 
+var elevation_curve: Curve = load("res://Worlds/Generator/Terrain/terrain_elevation_curve.tres")
+
+func color_for_biome(biome: Biome) -> Color:
+	match biome:
+		Biome.WATER: return Color(0, 0, 1)
+		Biome.TAIGA: return Color(0, 1, 1)
+		Biome.GRASSLAND: return Color(0, 1, 0)
+		Biome.FOREST: return Color(0, 0.5, 0.5)
+		Biome.DESERT: return Color(1, 1, 0)
+		Biome.JUNGLE: return Color(0, 0.25, 0.25)
+		Biome.SAVANNAH: return Color(1, 0.5, 0)
+		Biome.TUNDRA: return Color(1, 1, 1)
+		Biome.OTHERWORLD: return Color(0, 0, 0)
+		Biome.HFIL: return Color(1, 0, 0)
+		_: return Color(1, 0, 1)
+
 var elevation: FastNoiseLite
 var dryness: FastNoiseLite
 var temperature: FastNoiseLite
@@ -27,28 +43,25 @@ func temperature_texture(x: float, y: float, w: float, h: float) -> NoiseTexture
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float) -> NoiseTexture2D:
 	var result = NoiseTexture2D.new()
 	result.noise = noise.duplicate(true)
-	result.noise.offset.x = x
-	result.noise.offset.y = y
+	result.noise.offset.x = x - w / 2
+	result.noise.offset.y = y - h / 2
 	result.width = w
 	result.height = h
 	result.normalize = false
-	result.in_3d_space = true
 	return result
 
 func height(x: float, y: float) -> float:
-	return elevation.get_noise_2d(x, y) ** 2 * 250.0
-	
-func height_with_offset(X: float, Y: float, x: float, y: float) -> float:
-	elevation.offset.x = X
-	elevation.offset.y = Y
-	return height(x, y)
+	var e = elevation.get_noise_2d(x, y) / 2 + 0.5
+	var result = elevation_curve.sample(e)
+	return result * 250
+
 	
 func biome(x: float, y: float) -> Biome:
-	var e = elevation.get_noise_2d(x, y)
-	var d = dryness.get_noise_2d(x, y)
-	var t = temperature.get_noise_2d(x, y)
+	var e = elevation.get_noise_2d(x, y) / 2 + 0.5
+	var d = dryness.get_noise_2d(x, y) / 2 + 0.5
+	var t = temperature.get_noise_2d(x, y) / 2 + 0.5
 	
-	var result = Biome.GRASSLAND
+	var result = Biome.OTHERWORLD
 	if t >= 0.0 and t < 0.1:
 		result = Biome.TAIGA
 	elif t >= 0.1 and t < 0.3:
@@ -106,10 +119,3 @@ func biome(x: float, y: float) -> Biome:
 			result = Biome.OTHERWORLD
 	
 	return result
-
-func biome_with_offset(X: float, Y: float, x: float, y: float) -> Biome:
-	var offset = Vector3(X, Y, 0)
-	elevation.offset = offset
-	dryness.offset = offset
-	temperature.offset = offset
-	return biome(x, y)

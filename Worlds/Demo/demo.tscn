@@ -5,10 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Menu.tscn" id="3_luuj6"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r3lp4"]
-seed = 1
 frequency = 0.001
-offset = Vector3(256, 0, 0)
-fractal_octaves = 9
+fractal_lacunarity = 4.0
+fractal_weighted_strength = 0.52
+domain_warp_enabled = true
+domain_warp_type = 2
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_2xukv"]
 seed = 32
@@ -32,7 +33,8 @@ sky_material = SubResource("ProceduralSkyMaterial_2hx8f")
 [sub_resource type="Environment" id="Environment_yd7q2"]
 background_mode = 2
 sky = SubResource("Sky_mm3m4")
-ambient_light_source = 1
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
 
 [node name="Demo" type="Node3D"]
 script = ExtResource("1_f83i4")
@@ -48,13 +50,14 @@ shape = SubResource("BoxShape3D_25qtt")
 disabled = true
 
 [node name="Player" parent="." instance=ExtResource("2_8iei0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_yd7q2")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.810512, 0.585722, 0, -0.585722, 0.810512, 0, 27.2389, 0)
+visible = false
 shadow_enabled = true
 shadow_opacity = 0.5
 shadow_blur = 4.0

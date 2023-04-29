@@ -19,7 +19,8 @@ void fragment() {
 	
 //	vec2 w = vec2((v.x + texture_x) / texture_width, (v.z + texture_y) / texture_depth);
 //	vec2 w = vec2(mod(v.x, texture_width) / texture_width, mod(v.z, texture_depth) / texture_depth);
-	vec2 w = vec2(v.x / texture_width + 0.5, v.z / texture_depth + 0.5);
+//	vec2 w = vec2(v.x / texture_width + 0.5, v.z / texture_depth + 0.5);
+	vec2 w = vec2(fract(v.x / texture_width + 0.5), fract(v.z / texture_depth + 0.5));
 	float e = texture(elevation, w).r;
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
@@ -83,13 +84,13 @@ void fragment() {
 	
 	if (e >= 0.0 && e < 0.01) {
 		if (t >= 0.9 && t <= 1.0) {
-			color = vec3(1, 1, 1); // hfil
+			color = vec3(1, 0, 0); // hfil
 		} else {
 			color = water;
 		}
 	} else if (e >= 0.01 && e < 0.2) {
 		color = water;
-	} else if (e >= 0.99 && e <= 1.0) {
+	} else if (e >= 0.85 && e <= 1.0) {
 		if (t >= 0.0 && t < 0.3) {
 			color = tundra;
 		} else if (t >= 0.3 && t < 0.9) {
@@ -100,4 +101,6 @@ void fragment() {
 	}
 	
 	ALBEDO = color;
+//	ALBEDO = vec3(e, 0, 0);
+//	ALBEDO = vec3(w.x, 0, w.y);
 }
