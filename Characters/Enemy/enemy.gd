@@ -37,9 +37,9 @@ func _ready():
 	
 	patterns = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5", "w * t * 5", "1", 0.1, 5000, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5", "w * t * 5", "1", 0.1, 5000, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5", "w * t * 5", "1", 0.1, 5000, Spell.Element.ROCK, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5 + 2", "w * t * 5", "1", 0.1, 5000, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5 + 2", "w * t * 5", "1", 0.1, 5000, Spell.Element.WATER, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5 + 2", "w * t * 5", "1", 0.1, 5000, Spell.Element.ROCK, 1),
 		],
 		[
 			5,
@@ -77,7 +77,7 @@ func _physics_process(delta):
 
 		set_velocity(new_velocity)
 		move_and_slide()
-		if interval_check(250, 50):
+		if true or interval_check(250, 50):
 			behaviour.update_state(self, player)
 			set_movement_target(behaviour.next_position(self, player))
 		if interval_check(100, 20):
@@ -145,6 +145,11 @@ func spell_variables(fixed: bool) -> Dictionary:
 		result["abs_pos"] = position
 	else:
 		result["rel_pos"] = position
+		var v = velocity.normalized()
+		result["vx"] = v.x
+		result["vy"] = v.y
+		result["vz"] = v.z
+		result["V"] = velocity.length()
 	
 	return result
 	

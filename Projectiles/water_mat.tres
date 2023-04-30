@@ -15,6 +15,7 @@ cellular_jitter = 0.5
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nyfxn"]
 invert = true
 in_3d_space = true
+seamless = true
 noise = SubResource("FastNoiseLite_vcavu")
 
 [resource]
@@ -22,5 +23,5 @@ render_priority = 0
 shader = ExtResource("1_6txi0")
 shader_parameter/height_scale = 0.05
 shader_parameter/radius = 1.0
-shader_parameter/displacement = 0.01
+shader_parameter/displacement = 0.02
 shader_parameter/noise = SubResource("NoiseTexture2D_nyfxn")

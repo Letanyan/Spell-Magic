@@ -37,7 +37,7 @@ func spawn(x: float, y: float) -> Enemy:
 		result.blender = blender
 		result.player = player
 		result.position.x = x
-		result.position.y = blender.height(x, y) + 2
+		result.position.y = blender.height(x, y) + 5
 		result.position.z = y
 		
 	if result != null:

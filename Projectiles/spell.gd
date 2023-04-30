@@ -98,6 +98,10 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	temp_vars["tw"] = fixed_vars["w"]
 	temp_vars["rel_pos"] = fixed_vars["abs_pos"]
 	temp_vars["n"] = n
+	temp_vars["tvx"] = 0
+	temp_vars["tvy"] = 0
+	temp_vars["tvz"] = 0
+	temp_vars["tV"] = 0
 	
 	match element:
 		Element.FIRE:

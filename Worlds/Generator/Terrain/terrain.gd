@@ -216,12 +216,14 @@ func place_grass(nav: NavigationRegion3D):
 			var biome = blender.biome(p.x, p.z)
 			if biome != NoiseBlender.Biome.GRASSLAND:
 				continue
-#			if randf() < 0.1:
-#				continue
+			if randf() < 0.1:
+				continue
 			raycast.position = p
 			raycast.force_raycast_update()
 			var pos = raycast.get_collision_point() 
 			var t = Transform3D(Basis(), pos - nav.position)
+#			var pos = Vector3(x, blender.height(p.x, p.z), y)
+#			var t = Transform3D(Basis(), pos)
 #			t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))
 			mm.set_instance_transform(i, t)
 			i += 1

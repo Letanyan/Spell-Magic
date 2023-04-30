@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@export var speed: float = 24 * 8
+@export var speed: float = 24
 @export var fall_acceleration: float = 75
 @export var friction: float = 25
 @export var jump_impulse: float = 20
@@ -127,9 +127,14 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 	if fixed:
 		result["abs_pos"] = position
+		var v = rotation.normalized()
+		result["vx"] = v.x
+		result["vy"] = v.y
+		result["vz"] = v.z
+		result["V"] = rotation.length()
 	else:
 		result["rel_pos"] = position
-	
+		
 	return result
 	
 

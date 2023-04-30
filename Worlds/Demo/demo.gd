@@ -9,7 +9,7 @@ extends Node
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
-@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 1280)
+@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 512)
 @onready var population: Dictionary = {}
 
 @onready var raycast = $RayCast3D
@@ -38,11 +38,13 @@ func _ready():
 	
 	chunker.raycast = raycast
 	
-	noise_elevation.frequency = 0.0001
-	noise_temperature.frequency = 0.0001
-	noise_dryness.frequency = 0.0001
+	noise_elevation.frequency = 0.0005
+	noise_temperature.frequency = 0.0005
+	noise_dryness.frequency = 0.0005
 	
 	build_terrain()
+	
+	player.position.y = chunker.blender.height(0, 0) + 5
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.

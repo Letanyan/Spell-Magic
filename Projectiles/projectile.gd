@@ -204,8 +204,10 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			particles.initial_velocity_min = dist * 0.9
 			particles.initial_velocity_max = dist * 1.1
 			if velocity.normalized() == Vector3.ZERO:
-				velocity = Vector3(0.05, 0.99, 0.05).normalized()
-			var dir = global_position + velocity.normalized() * 100
+				velocity = Vector3(0.05, 0.95, 0.05).normalized()
+			elif velocity.normalized() == Vector3.UP:
+				velocity = Vector3(0.05, 0.95, 0.05).normalized()
+			var dir = global_position + velocity.normalized() * 10
 			look_at(dir)
 			
 func update_spell(t: float, vars: Dictionary):
@@ -272,6 +274,11 @@ func spell_variables(fixed: bool) -> Dictionary:
 		result["abs_pos"] = position
 	else:
 		result["rel_pos"] = position
+		var v = velocity.normalized()
+		result["vx"] = v.x
+		result["vy"] = v.y
+		result["vz"] = v.z
+		result["V"] = velocity.length()
 	
 	return result
 

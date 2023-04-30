@@ -156,3 +156,7 @@ wand_case={
 3d_physics/layer_7="air"
 3d_physics/layer_8="ice"
 3d_physics/layer_9="electric"
+
+[rendering]
+
+mesh_lod/lod_change/threshold_pixels=0.5

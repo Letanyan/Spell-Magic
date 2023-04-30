@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://c310h0m0lkqpd"]
+[gd_scene load_steps=20 format=3 uid="uid://c310h0m0lkqpd"]
 
 [ext_resource type="Shader" path="res://Worlds/Plane/plane.gdshader" id="1_qnw0c"]
 [ext_resource type="Script" path="res://Worlds/Plane/plane.gd" id="2_88jhe"]
@@ -27,48 +27,11 @@ shader_parameter/noise = SubResource("NoiseTexture2D_inu8h")
 material = SubResource("ShaderMaterial_e3nt7")
 size = Vector2(50, 50)
 
-[sub_resource type="Shader" id="Shader_1jn10"]
-code = "shader_type spatial;
-
-uniform sampler2D noise;
-uniform float off_x;
-uniform float off_y;
-
-void vertex() {
-	//VERTEX.y = VERTEX.y * 0.0;
-	//vec4 clr = texture(noise, VERTEX.xz / 100.0);
-	//ALBEDO = vec3(clr.x, clr.y, clr.z);
-}
-
-void fragment() {
-	// Place fragment code here.
-	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1.0);
-	vec4 w = vec4(v.x + off_x, v.y, v.z + off_y, v.w);
-	vec4 clr = texture(noise, w.xz / 50.0);
-	ALBEDO = vec3(clr.x, clr.y, clr.z);
-}
-"
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6c16a"]
-frequency = 0.001
-offset = Vector3(512, 0, 0)
-cellular_return_type = 3
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hhciu"]
-in_3d_space = true
-normalize = false
-noise = SubResource("FastNoiseLite_6c16a")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_up7dh"]
-render_priority = 0
-shader = SubResource("Shader_1jn10")
-shader_parameter/off_x = 25.0
-shader_parameter/off_y = 25.0
-shader_parameter/noise = SubResource("NoiseTexture2D_hhciu")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dnd64"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h5s5n"]
 lightmap_size_hint = Vector2i(252, 252)
-material = SubResource("ShaderMaterial_up7dh")
+material = SubResource("StandardMaterial3D_dnd64")
 size = Vector2(50, 50)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_u8ojl"]
@@ -146,6 +109,7 @@ mesh = SubResource("PlaneMesh_radur")
 
 [node name="biome" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.2662, 0, 0)
+visible = false
 mesh = SubResource("PlaneMesh_youg7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
