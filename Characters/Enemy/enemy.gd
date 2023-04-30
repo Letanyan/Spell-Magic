@@ -143,13 +143,16 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 	if fixed:
 		result["abs_pos"] = position
+		var c = Vector3(0, 0, -1).rotated(Vector3.UP, $Pivot.rotation.y)
+		result["cx"] = c.x
+		result["cy"] = c.y
+		result["cz"] = c.z
 	else:
 		result["rel_pos"] = position
-		var v = velocity.normalized()
-		result["vx"] = v.x
-		result["vy"] = v.y
-		result["vz"] = v.z
-		result["V"] = velocity.length()
+		var c = Vector3(0, 0, -1).rotated(Vector3.UP, $Pivot.rotation.y)
+		result["tcx"] = c.x
+		result["tcy"] = c.y
+		result["tcz"] = c.z
 	
 	return result
 	

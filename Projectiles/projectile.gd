@@ -117,20 +117,22 @@ func update_shape(r: float, ignore_time: bool):
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
+# FIXME: maintain scale once rock unfreezes after contact
+				scale = Vector3(r, r, r)
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			var m_shape: CollisionShape3D = get_node("body/mesh/area/shape")
 			var box = BoxShape3D.new()
-			box.size.x = r
-			box.size.y = r
-			box.size.z = r
+			box.size.x = 1
+			box.size.y = 1
+			box.size.z = 1
 			p_shape.shape = box
 			m_shape.shape = box
 			var mesh: MeshInstance3D = get_node("body/mesh")
 			var mbox = BoxMesh.new()
-			mbox.size.x = r
-			mbox.size.y = r
-			mbox.size.z = r
+			mbox.size.x = 1
+			mbox.size.y = 1
+			mbox.size.z = 1
 			mbox.material = StandardMaterial3D.new()
 			mbox.material.albedo_color = Color8(96, 32, 0)
 			mbox.material.albedo_texture = NoiseTexture2D.new()
@@ -143,6 +145,7 @@ func update_shape(r: float, ignore_time: bool):
 			
 			var body: RigidBody3D = get_node("body")
 			body.mass = r
+			scale = Vector3(r, r, r)
 			
 		Spell.Element.WATER:
 #			if not ignore_time:
@@ -272,13 +275,15 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 	if fixed:
 		result["abs_pos"] = position
+		result["cx"] = 0
+		result["cy"] = 0
+		result["cz"] = 0
 	else:
 		result["rel_pos"] = position
 		var v = velocity.normalized()
-		result["vx"] = v.x
-		result["vy"] = v.y
-		result["vz"] = v.z
-		result["V"] = velocity.length()
+		result["tcx"] = v.x
+		result["tcy"] = v.y
+		result["tcz"] = v.z
 	
 	return result
 

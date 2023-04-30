@@ -16,7 +16,7 @@ layout_mode = 0
 offset_top = 576.0
 offset_right = 286.0
 offset_bottom = 647.0
-text = "Create New"
+text = "Write New Spell"
 
 [node name="SpellIndex" type="ItemList" parent="."]
 layout_mode = 1
@@ -109,7 +109,7 @@ offset_left = 450.0
 offset_top = 200.0
 offset_right = 499.0
 offset_bottom = 226.0
-text = "power"
+text = "P"
 
 [node name="edit" type="LineEdit" parent="container/power"]
 layout_mode = 0
@@ -123,7 +123,7 @@ offset_left = 34.0
 offset_top = 256.0
 offset_right = 102.0
 offset_bottom = 282.0
-text = "duration"
+text = "T"
 
 [node name="edit" type="LineEdit" parent="container/duration"]
 layout_mode = 0
@@ -152,7 +152,8 @@ offset_left = 34.0
 offset_top = 200.0
 offset_right = 79.0
 offset_bottom = 226.0
-text = "count"
+text = "N
+"
 
 [node name="edit" type="LineEdit" parent="container/count"]
 layout_mode = 0
@@ -166,7 +167,7 @@ offset_left = 450.0
 offset_top = 256.0
 offset_right = 492.0
 offset_bottom = 282.0
-text = "delay"
+text = "D"
 
 [node name="edit" type="LineEdit" parent="container/delay"]
 layout_mode = 0

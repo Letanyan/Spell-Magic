@@ -51,6 +51,23 @@ const pc_keys = {
 	"R3": "Right Mouse",
 }
 
+const ps_keys = {
+	"LT": "L2",
+	"LB": "L1",
+	"RT": "R2",
+	"RB": "R1",
+	"S": "Cross",
+	"W": "Square",
+	"E": "Circle",
+	"N": "Triangle",
+	"UP": "Up",
+	"DOWN": "Down",
+	"LEFT": "Left",
+	"RIGHT": "Right",
+	"L3": "L3",
+	"R3": "R3",
+}
+
 var name: String
 var mods: Dictionary
 var keys: Dictionary
@@ -77,6 +94,12 @@ func build_keys():
 				nKey.insert(0, m)
 				if not keys.has(nKey):
 					keys[nKey] = Option.new()
+
+static func basic() -> Wand:
+	var result = Wand.new()
+	result.build_keys()
+	return result
+	
 
 func remove_mod(mod: String):
 	if mods.has(mod):

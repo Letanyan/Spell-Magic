@@ -4,6 +4,7 @@ extends Control
 var case: WandCase:
 	set(value):
 		case = value
+		current_index = value.selected_wand
 		reload_list()
 
 @onready var container: HFlowContainer = $panel/scroll/container
@@ -58,6 +59,8 @@ func reload_list():
 	wand_index.clear()
 	for w in case.wands:
 		wand_index.add_item(w.name)
+	if current_index > -1:
+		_on_wand_index_item_selected(current_index)
 	
 func _on_delete_pressed():
 	if current_index < 0:
@@ -83,4 +86,5 @@ func _on_name_text_changed(new_text):
 func _on_use_pressed():
 	if current_index < 0:
 		return
+	case.selected_wand = current_index
 	use_current_wand.call(current_index)

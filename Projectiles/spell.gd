@@ -85,6 +85,9 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["r8"] = randf()
 	fixed_vars["r9"] = randf()
 	fixed_vars["N"] = count
+	fixed_vars["T"] = duration
+	fixed_vars["P"] = power
+	fixed_vars["D"] = delay
 	fixed_vars["pi"] = PI
 	fixed_vars.merge(fvars, true)
 	var temp_vars = {}
@@ -98,10 +101,9 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	temp_vars["tw"] = fixed_vars["w"]
 	temp_vars["rel_pos"] = fixed_vars["abs_pos"]
 	temp_vars["n"] = n
-	temp_vars["tvx"] = 0
-	temp_vars["tvy"] = 0
-	temp_vars["tvz"] = 0
-	temp_vars["tV"] = 0
+	temp_vars["tcx"] = fixed_vars["cx"]
+	temp_vars["tcy"] = fixed_vars["cy"]
+	temp_vars["tcz"] = fixed_vars["cz"]
 	
 	match element:
 		Element.FIRE:

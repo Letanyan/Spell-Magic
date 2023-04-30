@@ -178,11 +178,13 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	mat.set_shader_parameter("grass", grass_texture)
 	mesh.surface_set_material(0, mat)
 #	mi.mesh = mesh
+	var dist = max(max(abs(x), abs(y)) / chunk_size, 1)
 	for n in mi.get_children():
 		mi.remove_child(n)
-	mi.create_trimesh_collision()
-	var body: StaticBody3D = mi.get_child(0)
-	body.collision_layer = 0b1
+	if dist <= 1 or true:
+		mi.create_trimesh_collision()
+		var body: StaticBody3D = mi.get_child(0)
+		body.collision_layer = 0b1
 				
 	var nav_mesh = NavigationMesh.new()
 	nav_mesh.create_from_mesh(mesh)
