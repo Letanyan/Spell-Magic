@@ -23,11 +23,13 @@ func _process(delta):
 
 
 func _on_spells_pressed():
+	save_changes()
 	magic_book.visible = true
 	wand_case.visible = false
 
 
 func _on_wands_pressed():
+	save_changes()
 	magic_book.visible = false
 	wand_case.visible = true
 
@@ -45,6 +47,9 @@ func close():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	is_showing = false
 	visible = false
+	save_changes()
+
+func save_changes():
 	if magic_book.visible:
 		magic_book.book.save()
 	if wand_case.visible:

@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://8p44w2bikis2"]
+
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_qx5re"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvh81"]
+shading_mode = 0
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="TextMesh" id="TextMesh_vk844"]
+material = SubResource("StandardMaterial3D_gvh81")
+text = "Z"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lys4a"]
+shading_mode = 0
+diffuse_mode = 1
+specular_mode = 1
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_sdaq3"]
+material = SubResource("StandardMaterial3D_lys4a")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_erm55"]
+
+[node name="electric" type="Node3D"]
+script = ExtResource("1_qx5re")
+
+[node name="source" type="CPUParticles3D" parent="."]
+amount = 800
+local_coords = true
+mesh = SubResource("TextMesh_vk844")
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, 1, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 1.0
+radial_accel_min = 0.1
+radial_accel_max = 1.0
+tangential_accel_max = 28.8
+angle_min = -720.0
+angle_max = 720.0
+scale_amount_min = 0.5
+scale_amount_max = 2.0
+
+[node name="body" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_sdaq3")
+
+[node name="area" type="Area3D" parent="body"]
+collision_layer = 256
+collision_mask = 23
+
+[node name="shape" type="CollisionShape3D" parent="body/area"]
+shape = SubResource("SphereShape3D_erm55")
+
+[connection signal="body_entered" from="body/area" to="." method="_on_body_entered"]

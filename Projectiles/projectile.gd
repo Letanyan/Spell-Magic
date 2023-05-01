@@ -104,6 +104,20 @@ func _on_body_entered(body: Node3D):
 				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.AIR, spell.power)
 				nothing(self, body)
+		Spell.Element.ICE:
+			if is_world or is_rock:
+				nothing(self, body)
+			elif is_player or is_enemy:
+				CharacterCollision.handle(body, self)
+				body.vitals.handle_damage(Spell.Element.ICE, spell.power)
+				nothing(self, body)
+		Spell.Element.ELECTRIC:
+			if is_world or is_rock:
+				nothing(self, body)
+			elif is_player or is_enemy:
+				CharacterCollision.handle(body, self)
+				body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
+				nothing(self, body)
 
 func update_shape(r: float, ignore_time: bool):
 	match spell.element:
@@ -174,6 +188,28 @@ func update_shape(r: float, ignore_time: bool):
 			var source = get_node("source")
 			source.emission_ring_radius = r 
 			
+		Spell.Element.ICE:
+			var m_shape: CollisionShape3D = get_node("source/area/shape")
+			var box = BoxShape3D.new()
+			box.size.x = r * 2
+			box.size.z = r * 2
+			m_shape.shape = box
+			
+			var source: CPUParticles3D = get_node("source")
+			source.emission_box_extents = Vector3(r, 0.2, r)
+			
+		Spell.Element.ELECTRIC:
+			var m_shape: CollisionShape3D = get_node("body/area/shape")
+			var box = SphereShape3D.new()
+			box.radius = r
+			m_shape.shape = box
+			
+			var source: CPUParticles3D = get_node("source")
+			source.emission_sphere_radius = r
+			var body = get_node("body")
+			body.mesh.radius = r
+			body.mesh.height = r * 2
+			
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary):
@@ -213,6 +249,21 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var dir = global_position + velocity.normalized() * 10
 			look_at(dir)
 			
+		Spell.Element.ICE:
+			position = p
+			var particles: CPUParticles3D = get_node("source")
+			particles.initial_velocity_min = 0.2 * 0.9
+			particles.initial_velocity_max = 0.2 * 1.1
+			if velocity.normalized() == Vector3.ZERO:
+				velocity = Vector3(0.05, 0.95, 0.05).normalized()
+			elif velocity.normalized() == Vector3.UP:
+				velocity = Vector3(0.05, 0.95, 0.05).normalized()
+			var dir = global_position + velocity.normalized() * 10
+			look_at(dir)
+			
+		Spell.Element.ELECTRIC:
+			position = p
+			
 func update_spell(t: float, vars: Dictionary):
 	if not in_control or time_start == 0:
 		return
@@ -243,6 +294,22 @@ func stop_emitting():
 			var particles: CPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
+			area.collision_mask = 0
+			free_after(particles.lifetime)
+			
+		Spell.Element.ICE:
+			var particles: CPUParticles3D = get_node("source")
+			particles.emitting = false
+			var area: Area3D = get_node("source/area")
+			area.collision_mask = 0
+			free_after(particles.lifetime)
+			
+		Spell.Element.ELECTRIC:
+			var particles: CPUParticles3D = get_node("source")
+			particles.emitting = false
+			var body = get_node("body")
+			body.visible = false
+			var area: Area3D = get_node("body/area")
 			area.collision_mask = 0
 			free_after(particles.lifetime)
 			

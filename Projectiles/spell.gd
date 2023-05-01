@@ -111,6 +111,8 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 			p.fixed_vars = fixed_vars
 			p.spell = self
 			p.position = calculate_location(temp_vars)
+			var er = calculate_size(fixed_vars)
+			p.update_shape(er, true)
 			return p
 		
 		Element.ROCK:
@@ -133,6 +135,24 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 			
 		Element.AIR:
 			var p: SpellBody = load("res://Projectiles/air.tscn").instantiate()
+			p.fixed_vars = fixed_vars
+			p.spell = self
+			p.position = calculate_location(temp_vars)
+			var er = calculate_size(temp_vars)
+			p.update_shape(er, true)
+			return p
+			
+		Element.ICE:
+			var p: SpellBody = load("res://Projectiles/ice.tscn").instantiate()
+			p.fixed_vars = fixed_vars
+			p.spell = self
+			p.position = calculate_location(temp_vars)
+			var er = calculate_size(temp_vars)
+			p.update_shape(er, true)
+			return p
+			
+		Element.ELECTRIC:
+			var p: SpellBody = load("res://Projectiles/electric.tscn").instantiate()
 			p.fixed_vars = fixed_vars
 			p.spell = self
 			p.position = calculate_location(temp_vars)
@@ -185,4 +205,22 @@ func load_dict(dict: Dictionary):
 	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
 	
-	
+static func name_from_element(el: Element) -> String:
+	match el:
+		Element.FIRE: return "Fire"
+		Element.ROCK: return "Rock"
+		Element.WATER: return "Water"
+		Element.AIR: return "Air"
+		Element.ICE: return "Ice"
+		Element.ELECTRIC: return "Electric"
+		_: return ""
+
+static func element_from_name(str: String) -> Element:
+	match str.to_lower():
+		"fire": return Element.FIRE
+		"rock": return Element.ROCK
+		"water": return Element.WATER
+		"air": return Element.AIR
+		"ice": return Element.ICE
+		"electric": return Element.ELECTRIC
+		_: return Element.FIRE

@@ -52,7 +52,7 @@ func _on_spell_index_item_selected(index):
 	delay_edit.text = spell.delay
 	count_edit.text = "%f" % spell.count
 	
-	element_edit.text = "%d" % spell.element
+	element_edit.text = Spell.name_from_element(spell.element)
 	chain_edit.text = spell.chain.name if spell.chain else ""
 	is_rel.button_pressed = spell.is_relative_to_player_current_pos
 	is_bomb.button_pressed = spell.is_bomb
@@ -77,7 +77,7 @@ func _on_save_pressed():
 	spell.duration = duration_edit.text.to_float()
 	spell.delay = delay_edit.text
 	spell.count = count_edit.text.to_int()
-	spell.element = element_edit.text.to_int() as Spell.Element
+	spell.element = Spell.element_from_name(element_edit.text)
 	
 	spell.d_expr = Expr.new(spell.delay)
 	
