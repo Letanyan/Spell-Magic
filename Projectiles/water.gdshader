@@ -12,9 +12,9 @@ uniform float displacement = 0.01;
 void vertex() {
 	vec2 pos = VERTEX.xz;
 	float n = texture(noise, pos / radius).x;
-	float tx = texture(noise, vec2(sin(TIME / 8.0), 0)).x * 0.8 + 0.2;
-	float ty = texture(noise, vec2(0, sin(TIME / 8.0))).x * 0.8 + 0.2;
-	float tz = texture(noise, vec2(cos(TIME / 8.0), sin(TIME / 8.0))).x * 0.8 + 0.2;
+	float tx = texture(noise, vec2(sin(TIME / 8.0), 0)).x * 0.2 + 0.8;
+	float tz = texture(noise, vec2(0, sin(TIME / 8.0))).x * 0.2 + 0.8;
+	float ty = 1.0 - ((0.2 - (tx - 0.8)) + (0.2 - (tz - 0.8))); // texture(noise, vec2(cos(TIME / 8.0), sin(TIME / 8.0))).x * 0.8 + 0.2;
 	float k = clamp(sin(TIME * n * 3.0) / 4.0 + 1.0, 1.0 - displacement, 1.0 + displacement);
 	vec3 result = vec3(VERTEX.x * tx, VERTEX.y * ty, VERTEX.z * tz) * k;
 	

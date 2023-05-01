@@ -73,21 +73,22 @@ func _physics_process(delta):
 
 		var new_velocity: Vector3 = next_path_position - current_agent_position
 		new_velocity = new_velocity.normalized()
-		new_velocity = new_velocity * behaviour.movement_speed()
+		new_velocity = new_velocity * behaviour.movement_speed() * (1.0 - vitals.freeze)
 
 		set_velocity(new_velocity)
 		move_and_slide()
-		if true or interval_check(250, 50):
+		if interval_check(250, 50):
 			behaviour.update_state(self, player)
 			set_movement_target(behaviour.next_position(self, player))
-		if interval_check(100, 20):
-			var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
-			if spell != null:
-				await cast_spell(func(p): if p != null: add_sibling(p), spell)
 	else:
 		if interval_check(250, 50):
 			set_movement_target(behaviour.next_position(self, player))
 
+	if interval_check(500, 20):
+		vitals.update_vitals()
+#		var spell = patterns.choose_spell(0.5 * (1.0 - vitals.freeze) if behaviour.is_aggresive() else 0.0)
+#		if spell != null and vitals.freeze < 1:
+#			await cast_spell(func(p): if p != null: add_sibling(p), spell)
 	
 	if not is_on_floor():
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)

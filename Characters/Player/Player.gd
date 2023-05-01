@@ -39,6 +39,10 @@ func _input(event):
 func set_movement_target(movement_target: Vector3):
 	navigation_agent.set_target_position(movement_target)
 
+func interval_check(interval: int, epsilon: int):
+	var t = Time.get_ticks_msec() % interval
+	return t < epsilon
+
 func _physics_process(delta):
 	if not navigation_agent.is_navigation_finished():
 		var current_agent_position: Vector3 = global_transform.origin
@@ -51,13 +55,16 @@ func _physics_process(delta):
 		set_velocity(new_velocity)
 		move_and_slide()
 
+	if interval_check(100, 2000 / 60):
+		vitals.update_vitals()
+
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		
 	if true or is_on_floor():
-		target_velocity.x = direction.x * speed
-		target_velocity.z = direction.z * speed
+		target_velocity.x = direction.x * speed * (1 - vitals.freeze)
+		target_velocity.z = direction.z * speed * (1 - vitals.freeze)
 	
 	if not is_on_floor():
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)

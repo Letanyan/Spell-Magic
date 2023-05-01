@@ -17,6 +17,7 @@ script = ExtResource("1_fir5h")
 mesh = SubResource("SphereMesh_owy0h")
 
 [node name="area" type="Area3D" parent="source"]
+collision_mask = 23
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_6etye")

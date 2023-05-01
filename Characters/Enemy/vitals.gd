@@ -11,45 +11,49 @@ var burn_res: float
 var wet_res: float
 var freeze_res: float
 
-func _init(_health: float, _mana: float, _burning: float = 0.0, _wetness: float = 0.0, _freeze: float = 0.0):
+func _init(_health: float, _mana: float, _burning: float = 0.0, _wetness: float = 0.0, _freeze: float = 0.0, _burn_res: float = 0.0, _wet_res: float = 0.0, _freeze_res: float = 0.0):
 	health = _health
 	mana = _mana
 	burning = _burning
 	wetness = _wetness
 	freeze = _freeze
+	burn_res = _burn_res
+	wet_res = _wet_res
+	freeze_res = _freeze_res
 
 func handle_damage(kind: Spell.Element, power: float):
 	match kind:
 		Spell.Element.FIRE:
 			var amount = (1 - burn_res) * power
 			if wetness <= 0:
-				burning += amount
-				burning = clamp(burning, 0, 1)
+				burning = clamp(burning + amount, 0, 1)
 			else:
 				power = power * 0.5
-			wetness -= amount
-			wetness = clamp(wetness, 0, 1)
+			wetness = clamp(wetness - amount, 0, 1)
 		Spell.Element.WATER:
 			var amount = (1 - wet_res) * power
 			if burning <= 0:
-				wetness += amount
-				wetness = clamp(wetness, 0, 1)
+				wetness = clamp(wetness + amount, 0, 1)
 			else:
 				power = power * 0.5
-			burning -= amount
-			burning = clamp(burning, 0, 1)
+			burning = clamp(burning - amount, 0, 1)
 		Spell.Element.ICE:
 			var amount = (1 - freeze_res) * wetness * power
 			if wetness > 0:
-				freeze += amount
-				freeze = clamp(freeze, 0, 1)	
-				wetness -= amount
-				wetness = clamp(wetness, 0, 1)
+				freeze = clamp(freeze + amount, 0, 1)
+				wetness = clamp(wetness - amount, 0, 1)
 			if burning > 0:
-				power = power * 0.5
-			burning -= amount
-			burning = clamp(burning, 0, 1)
+				power = power * 0.75
+			burning = clamp(burning - amount, 0, 1)
 			
 	health -= power
 	print("health: ", health, ", burning: ", burning, ", wetness: ", wetness, ", freeze: ", freeze)
 	print("element: ", Spell.name_from_element(kind))
+
+func update_vitals():
+	if freeze > 0:
+		freeze = clamp(freeze - (freeze_res + 0.01), 0, 1)
+	if burning > 0:
+		burning = clamp(burning - (burn_res + 0.05), 0, 1)
+	if wetness > 0:
+		wetness = clamp(wetness - (wet_res + 0.001), 0, 1)
