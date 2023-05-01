@@ -131,22 +131,22 @@ func update_shape(r: float, ignore_time: bool):
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
-# FIXME: maintain scale once rock unfreezes after contact
-				scale = Vector3(r, r, r)
+				var R = get_node("body/shape").shape.size.x
+				scale = Vector3(r / R, r / R, r / R)
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			var m_shape: CollisionShape3D = get_node("body/mesh/area/shape")
 			var box = BoxShape3D.new()
-			box.size.x = 1
-			box.size.y = 1
-			box.size.z = 1
+			box.size.x = r
+			box.size.y = r
+			box.size.z = r
 			p_shape.shape = box
 			m_shape.shape = box
 			var mesh: MeshInstance3D = get_node("body/mesh")
 			var mbox = BoxMesh.new()
-			mbox.size.x = 1
-			mbox.size.y = 1
-			mbox.size.z = 1
+			mbox.size.x = r
+			mbox.size.y = r
+			mbox.size.z = r
 			mbox.material = StandardMaterial3D.new()
 			mbox.material.albedo_color = Color8(96, 32, 0)
 			mbox.material.albedo_texture = NoiseTexture2D.new()
@@ -159,7 +159,7 @@ func update_shape(r: float, ignore_time: bool):
 			
 			var body: RigidBody3D = get_node("body")
 			body.mass = r
-			scale = Vector3(r, r, r)
+			scale = Vector3(1, 1, 1)
 			
 		Spell.Element.WATER:
 #			if not ignore_time:
