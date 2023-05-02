@@ -1,6 +1,6 @@
 class_name Token
 
-enum Kind { NUMBER, WORD, VAR, FUNC, OP, OPEN, CLOSE, NONE, ERROR }
+enum Kind { NUMBER, WORD, VAR, FUNC, OP, OPEN, CLOSE, COMMA, PREFIX_OP, NONE, ERROR }
 
 var kind: Kind
 var raw: String
@@ -45,9 +45,8 @@ static func tokenize(expr: String) -> Array:
 					state = Kind.WORD
 					current = current + c
 				elif "+-*/^".contains(c):
-					if lastWasOp and c == "-":
-						state = Kind.NUMBER
-						current = "-"
+					if lastWasOp and "-+".contains(c):
+						result.append(Token.new(Kind.PREFIX_OP, c))
 					else: 
 						result.append(Token.new(Kind.OP, c))
 						lastWasOp = true
@@ -57,6 +56,9 @@ static func tokenize(expr: String) -> Array:
 				elif c == ")":
 					result.append(Token.new(Kind.CLOSE, c))
 					lastWasOp = false
+				elif c == ",":
+					result.append(Token.new(Kind.COMMA, c))
+					lastWasOp = true
 				elif c == " ":
 					pass
 				else:
@@ -76,4 +78,4 @@ static func tokenize(expr: String) -> Array:
 	return result
 					
 static func is_func(txt: String) -> bool:
-	return ["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "inv", "lt", "gt", "lte", "gte", "eq", "neq"].find(txt) != -1
+	return ["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "inv", "lt", "gt", "lte", "gte", "eq", "neq", "max", "min"].find(txt) != -1

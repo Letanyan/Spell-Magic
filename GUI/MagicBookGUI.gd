@@ -24,6 +24,8 @@ var book: MagicBook:
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
 
+@onready var error_label: Label = $container/error_label
+
 var current_index = -1
 
 # Called when the node enters the scene tree for the first time.
@@ -139,26 +141,39 @@ func _on_x_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].x = new_text
-	book.spells[current_index].x_expr = Expr.new(new_text)
+	var e = Expr.new(new_text)
+	book.spells[current_index].x_expr = e
+	print(e.error)
+	if e.error.length() > 0:
+		error_label.text = "x: " + e.error
 
 
 func _on_y_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].y = new_text
-	book.spells[current_index].y_expr = Expr.new(new_text)
+	var e = Expr.new(new_text)
+	book.spells[current_index].y_expr = e
+	if e.error.length() > 0:
+		error_label.text = "y: " + e.error
 
 func _on_z_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].z = new_text
-	book.spells[current_index].z_expr = Expr.new(new_text)
+	var e = Expr.new(new_text)
+	book.spells[current_index].z_expr = e
+	if e.error.length() > 0:
+		error_label.text = "z: " + e.error
 
 func _on_r_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].r = new_text
-	book.spells[current_index].r_expr = Expr.new(new_text)
+	var e = Expr.new(new_text)
+	book.spells[current_index].r_expr = e
+	if e.error.length() > 0:
+		error_label.text = "r: " + e.error
 
 func _on_N_text_changed(new_text):
 	if current_index < 0:
@@ -179,7 +194,10 @@ func _on_D_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].delay = new_text.to_float()
-	book.spells[current_index].d_expr = Expr.new(new_text)
+	var e = Expr.new(new_text)
+	book.spells[current_index].d_expr = e
+	if e.error.length() > 0:
+		error_label.text = "D: " + e.error
 
 func _on_chain_text_changed(new_text):
 	if current_index < 0:

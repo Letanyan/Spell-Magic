@@ -255,24 +255,13 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var dist = spell.impulse_length()
 			particles.initial_velocity_min = dist * 0.9
 			particles.initial_velocity_max = dist * 1.1
-			if velocity.normalized() == Vector3.ZERO:
-				velocity = Vector3(0.05, 0.95, 0.05).normalized()
-			elif velocity.normalized() == Vector3.UP:
-				velocity = Vector3(0.05, 0.95, 0.05).normalized()
 			var dir = global_position + velocity.normalized() * 10
-			look_at(dir)
 			
 		Spell.Element.ICE:
 			position = p
 			var particles: CPUParticles3D = get_node("source")
 			particles.initial_velocity_min = 0.2 * 0.9
 			particles.initial_velocity_max = 0.2 * 1.1
-			if velocity.normalized() == Vector3.ZERO:
-				velocity = Vector3(0.05, 0.95, 0.05).normalized()
-			elif velocity.normalized() == Vector3.UP:
-				velocity = Vector3(0.05, 0.95, 0.05).normalized()
-			var dir = global_position + velocity.normalized() * 10
-			look_at(dir)
 			
 		Spell.Element.ELECTRIC:
 			position = p

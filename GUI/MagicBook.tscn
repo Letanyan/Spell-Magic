@@ -31,7 +31,7 @@ grow_vertical = 2
 
 [node name="container" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 288.0
+offset_left = 280.0
 offset_top = 56.0
 offset_right = 1144.0
 offset_bottom = 639.0
@@ -198,10 +198,10 @@ text = "follow player"
 
 [node name="Delete" type="Button" parent="container"]
 layout_mode = 0
-offset_left = 752.0
-offset_top = 528.0
-offset_right = 832.0
-offset_bottom = 559.0
+offset_left = 768.0
+offset_top = 536.0
+offset_right = 848.0
+offset_bottom = 567.0
 text = "Delete
 "
 
@@ -212,6 +212,13 @@ offset_top = 359.0
 offset_right = 414.0
 offset_bottom = 390.0
 text = "is bomb"
+
+[node name="error_label" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 536.0
+offset_right = 752.0
+offset_bottom = 559.0
 
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]

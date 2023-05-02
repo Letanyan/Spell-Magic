@@ -1,10 +1,12 @@
 class_name Expr
 
 var expression: Array
+var error: String
 
 func _init(expr: String):
 	var tokens = Token.tokenize(expr)
 	
+	error = ""
 	expression = []
 	var operators = []
 	var i = 0
@@ -27,6 +29,8 @@ func _init(expr: String):
 					else:
 						break
 			operators.append(token)
+		elif token.kind == Token.Kind.PREFIX_OP:
+			operators.append(token)
 		elif token.kind == Token.Kind.OPEN:
 			operators.append(token)
 		elif token.kind == Token.Kind.CLOSE:
@@ -40,16 +44,28 @@ func _init(expr: String):
 					else:
 						break
 				if operators.size() < 0:
-					print("Error no opening paren")
+					expression.append(Token.new(Token.Kind.ERROR, "Missing Opening Paren"))
 				operators.pop_back()
 				if operators.size() > 0 and operators[-1].kind == Token.Kind.FUNC:
 					var op = operators.pop_back()
 					expression.append(op)
 			else:
-				print("Error no opening paren")
+				expression.append(Token.new(Token.Kind.ERROR, "Missing Opening Paren"))
+		elif token.kind == Token.Kind.COMMA:
+			if operators.size() > 0:
+				var op: Token = operators[-1]
+				while op.kind != Token.Kind.OPEN:
+					expression.append(op)
+					operators.pop_back()
+					if operators.size() > 0:
+						op = operators[-1]
+					else:
+						break
 		
 	while operators.size() > 0:
 		var op = operators.pop_back()
+		if op.kind == Token.Kind.OPEN:
+			expression.append(Token.new(Token.Kind.ERROR, "Missing Closing Paren"))
 		expression.append(op)
 
 func operator_precedes(op1: Token, op2: Token) -> bool:
@@ -70,10 +86,17 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 	
 	for expr in expression:
 		var e: Token = expr
+		if e.kind == Token.Kind.ERROR:
+			error = e.raw
+			return 0
+			
 		if e.kind == Token.Kind.NUMBER:
 			tape.append(e.raw.to_float())
 		elif e.kind == Token.Kind.VAR:
-			tape.append(vars.get(e.raw, 0.0))
+			if e.raw.begins_with("-"):
+				tape.append(-vars.get(e.raw.right(-1), 0.0))
+			else:
+				tape.append(vars.get(e.raw, 0.0))
 		elif e.kind == Token.Kind.OP:
 			var b = tape.pop_back()
 			var a = tape.pop_back()
@@ -83,6 +106,11 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"*": tape.append(a * b)
 				"/": tape.append(a / b)
 				"^": tape.append(a ^ b)
+		elif e.kind == Token.Kind.PREFIX_OP:
+			var a = tape.pop_back()
+			match e.raw:
+				"-": tape.append(-a)
+				"+": tape.append(a)
 		elif e.kind ==Token.Kind.FUNC:
 			var a = tape.pop_back()
 			match e.raw:
@@ -106,5 +134,8 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"gte": tape.append(1 if a >= 0 else 0)
 				"eq": tape.append(1 if a == 0 else 0)
 				"neq": tape.append(1 if a != 0 else 0)
+				
+				"max": tape.append(max(tape.pop_back(), a))
+				"min": tape.append(min(tape.pop_back(), a))
 	
 	return tape.back()
