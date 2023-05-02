@@ -21,25 +21,39 @@ layout_mode = 1
 visible = false
 
 [node name="Tabbar" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 48.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 49.0
+grow_horizontal = 2
 
 [node name="Spells" type="Button" parent="Tabbar"]
-layout_mode = 0
-offset_left = 536.0
-offset_top = 8.0
-offset_right = 589.0
-offset_bottom = 39.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.481337
+anchor_top = 0.2
+anchor_right = 0.481337
+anchor_bottom = 0.2
+offset_left = -26.5
+offset_right = 26.5
+offset_bottom = 31.0
+grow_horizontal = 2
 text = "Spells"
+metadata/_edit_use_anchors_ = true
 
 [node name="Wands" type="Button" parent="Tabbar"]
-layout_mode = 0
-offset_left = 608.0
-offset_top = 8.0
-offset_right = 669.0
-offset_bottom = 39.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.540365
+anchor_top = 0.2
+anchor_right = 0.540365
+anchor_bottom = 0.2
+offset_left = -30.5
+offset_right = 30.5
+offset_bottom = 31.0
+grow_horizontal = 2
 text = "Wands"
+metadata/_edit_use_anchors_ = true
 
 [connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]

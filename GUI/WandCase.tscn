@@ -9,8 +9,9 @@ script = ExtResource("1_1fquc")
 
 [node name="WandIndex" type="ItemList" parent="."]
 layout_mode = 0
-offset_top = 48.0
-offset_right = 256.0
+offset_left = 8.0
+offset_top = 52.0
+offset_right = 248.0
 offset_bottom = 584.0
 
 [node name="create" type="Button" parent="."]
@@ -32,7 +33,7 @@ text = "Remove"
 [node name="panel" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 264.0
-offset_top = 48.0
+offset_top = 52.0
 offset_right = 1152.0
 offset_bottom = 584.0
 
