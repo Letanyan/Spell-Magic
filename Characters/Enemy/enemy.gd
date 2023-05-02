@@ -86,9 +86,7 @@ func _physics_process(delta):
 
 	if interval_check(500, 20):
 		vitals.update_vitals()
-#		var spell = patterns.choose_spell(0.5 * (1.0 - vitals.freeze) if behaviour.is_aggresive() else 0.0)
-#		if spell != null and vitals.freeze < 1:
-#			await cast_spell(func(p): if p != null: add_sibling(p), spell)
+		get_node("WetArea").scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
 	
 	if not is_on_floor():
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)

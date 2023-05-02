@@ -112,12 +112,25 @@ func _on_body_entered(body: Node3D):
 				body.vitals.handle_damage(Spell.Element.ICE, spell.power)
 				nothing(self, body)
 		Spell.Element.ELECTRIC:
+			# Look at `_on_area_entered` for implementation
+			pass
+
+func _on_area_entered(area):
+	var body = area.get_parent_node_3d()
+	var is_world  = area.collision_layer & 0b0001 != 0
+	var is_player = area.collision_layer & 0b0010 != 0
+	var is_enemy  = area.collision_layer & 0b0100 != 0
+	
+	var is_rock  = area.collision_layer & 0b1_0000 != 0
+	var is_water = area.collision_layer & 0b10_0000 != 0
+	match spell.element:
+		Spell.Element.ELECTRIC:
 			if is_world or is_rock:
-				nothing(self, body)
-			elif is_player or is_enemy:
+				expire_now(self, body)
+			elif (is_player or is_enemy) and is_water:
 				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
-				nothing(self, body)
+				expire_now(self, body)
 
 func update_shape(r: float, ignore_time: bool):
 	match spell.element:
@@ -375,4 +388,3 @@ func start_particle(p: SpellBody, insert: Callable):
 			p.fixed_vars["v"] = cdir.y
 			p.fixed_vars["w"] = cdir.z
 		insert.call(p)
-

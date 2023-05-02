@@ -55,8 +55,9 @@ func _physics_process(delta):
 		set_velocity(new_velocity)
 		move_and_slide()
 
-	if interval_check(100, 2000 / 60):
+	if interval_check(500, 20):
 		vitals.update_vitals()
+		get_node("WetArea").scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
 
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -96,6 +97,8 @@ func _physics_process(delta):
 		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
 		var collision: Node3D = $Collision
 		collision.rotation.y = pivot.rotation.y
+		var wet_area: Node3D = $WetArea
+		wet_area.rotation.y = pivot.rotation.y
 		# $AnimationPlayer.speed_scale = 4
 	else:
 		pass
@@ -169,3 +172,7 @@ func start_particle(p: SpellBody, insert: Callable):
 			p.fixed_vars["v"] = cdir.y
 			p.fixed_vars["w"] = cdir.z
 		insert.call(p)
+
+
+func _on_wet_area_body_entered(body):
+	print(body)

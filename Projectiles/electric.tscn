@@ -48,9 +48,10 @@ mesh = SubResource("SphereMesh_sdaq3")
 
 [node name="area" type="Area3D" parent="body"]
 collision_layer = 256
-collision_mask = 23
+collision_mask = 55
 
 [node name="shape" type="CollisionShape3D" parent="body/area"]
 shape = SubResource("SphereShape3D_erm55")
 
+[connection signal="area_entered" from="body/area" to="." method="_on_area_entered"]
 [connection signal="body_entered" from="body/area" to="." method="_on_body_entered"]
