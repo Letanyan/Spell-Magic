@@ -5,6 +5,8 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
+@onready var animator: AnimationPlayer = $AnimationPlayer 
+
 @export var speed: float = 24
 @export var fall_acceleration: float = 75
 @export var friction: float = 25
@@ -71,8 +73,6 @@ func _physics_process(delta):
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
 	else:
 		target_velocity.y = 0
-	if Input.is_action_just_pressed("L3"):
-		target_velocity.y = jump_impulse
 		
 	target_velocity.y = clampf(target_velocity.y, -100, 100)
 	target_velocity.x = clampf(target_velocity.x, -100, 100)
@@ -99,15 +99,21 @@ func _physics_process(delta):
 		collision.rotation.y = pivot.rotation.y
 		var wet_area: Node3D = $WetArea
 		wet_area.rotation.y = pivot.rotation.y
-		# $AnimationPlayer.speed_scale = 4
+		if is_on_floor():
+			if direction.length() > 1:
+				animator.play("Man_Walk")
+			else:
+				animator.play("Man_Run")
 	else:
-		pass
-		# $AnimationPlayer.speed_scale = 1
+		if is_on_floor():
+			animator.play("Man_Idle")
+		
+	if not is_on_floor_only():
+		animator.play("Man_Run")
 		
 	move_and_slide()
 	if velocity:
 		player_moved.emit(delta)
-#		print(position)
 				
 	var t = Time.get_unix_time_from_system()
 	var should_remove = []

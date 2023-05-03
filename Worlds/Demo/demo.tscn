@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://bhec0b6awe536"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
-[ext_resource type="PackedScene" uid="uid://telbyb8p3juv" path="res://Characters/Player/player.tscn" id="2_8iei0"]
+[ext_resource type="PackedScene" uid="uid://c0gnhq00qwtf8" path="res://Characters/Player/male_casual.tscn" id="3_f8pmm"]
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Menu.tscn" id="3_luuj6"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r3lp4"]
@@ -49,7 +49,7 @@ collision_mask = 7
 shape = SubResource("BoxShape3D_25qtt")
 disabled = true
 
-[node name="Player" parent="." instance=ExtResource("2_8iei0")]
+[node name="Player" parent="." instance=ExtResource("3_f8pmm")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_yd7q2")
@@ -67,5 +67,3 @@ visible = false
 [node name="RayCast3D" type="RayCast3D" parent="."]
 target_position = Vector3(0, -1000, 0)
 hit_from_inside = true
-
-[connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
