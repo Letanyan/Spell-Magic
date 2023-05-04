@@ -101,15 +101,15 @@ func _physics_process(delta):
 		wet_area.rotation.y = pivot.rotation.y
 		if is_on_floor():
 			if direction.length() > 1:
-				animator.play("Man_Walk")
+				animator.play("Man_Walk", 1)
 			else:
-				animator.play("Man_Run")
+				animator.play("Man_Run", 1)
 	else:
 		if is_on_floor():
-			animator.play("Man_Idle")
+			animator.play("Man_Idle", 1)
 		
 	if not is_on_floor_only():
-		animator.play("Man_Run")
+		animator.play("Man_Run", 1)
 		
 	move_and_slide()
 	if velocity:
