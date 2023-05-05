@@ -7,18 +7,12 @@ extends CharacterBody3D
 
 @onready var animator: AnimationPlayer = $Pivot/AnimationPlayer 
 
-@export var speed: float = 24
-@export var fall_acceleration: float = 75
-@export var friction: float = 25
-@export var jump_impulse: float = 20
-@export var bounce_impulse: float = 16
-
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
+
+var velocity_movement = VeloctyMovement.new()
 
 signal player_moved
 
-var target_velocity = Vector3.ZERO
-var impulse = Vector3.ZERO
 
 var particles: Array = []
 
@@ -29,6 +23,7 @@ func _ready():
 	# and the navigation layout.
 	navigation_agent.path_desired_distance = 0.5
 	navigation_agent.target_desired_distance = 0.5
+	velocity_movement.navigation_agent = navigation_agent
 	
 	vitals = Vitals.new(100, 50)
 
@@ -41,67 +36,19 @@ func _input(event):
 func set_movement_target(movement_target: Vector3):
 	navigation_agent.set_target_position(movement_target)
 
+func apply_impulse(impulse: Vector3):
+	velocity_movement.impulse += impulse
+
 func interval_check(interval: int, epsilon: int):
 	var t = Time.get_ticks_msec() % interval
 	return t < epsilon
 
 func _physics_process(delta):
-	if not navigation_agent.is_navigation_finished():
-		var current_agent_position: Vector3 = global_transform.origin
-		var next_path_position: Vector3 = navigation_agent.get_next_path_position()
-
-		var new_velocity: Vector3 = next_path_position - current_agent_position
-		new_velocity = new_velocity.normalized()
-		new_velocity = new_velocity * speed
-
-		set_velocity(new_velocity)
-		move_and_slide()
-
-	if interval_check(500, 20):
-		vitals.update_vitals()
-		get_node("WetArea").scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
-
-	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
-		
-	if true or is_on_floor():
-		target_velocity.x = direction.x * speed * (1 - vitals.freeze)
-		target_velocity.z = direction.z * speed * (1 - vitals.freeze)
-	
-	if not is_on_floor():
-		target_velocity.y = target_velocity.y - (fall_acceleration * delta) ** 5
-	else:
-		target_velocity.y = 0
-		
-	target_velocity.y = clampf(target_velocity.y, -100, 100)
-	target_velocity.x = clampf(target_velocity.x, -100, 100)
-	target_velocity.z = clampf(target_velocity.z, -100, 100)
-	
-	if absf(impulse.length()) > 1:
-		var nor = impulse.normalized()
-		var fri = friction * delta 
-		impulse = Vector3(
-			impulse.x - nor.x * fri,
-			impulse.y - nor.y * fri,
-			impulse.z - nor.z * fri,
-		)
-	else:
-		impulse.x = 0
-		impulse.y = 0
-		impulse.z = 0
-	
-	target_velocity += impulse
-	impulse = Vector3.ZERO
-	
-	velocity = target_velocity + impulse
+	var movement = velocity_movement.update(delta, vitals, 14, self)
+	velocity = movement["velocity"]
+	move_and_slide()
+	var direction = movement["direction"]
 	if direction != Vector3.ZERO:
-		var pivot: Node3D = $Pivot
-		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
-		var collision: Node3D = $Collision
-		collision.rotation.y = pivot.rotation.y
-		var wet_area: Node3D = $WetArea
-		wet_area.rotation.y = pivot.rotation.y
 		if is_on_floor():
 			if direction.length() > 1:
 				animator.play("Man_Walk", 1)
@@ -114,7 +61,6 @@ func _physics_process(delta):
 	if not is_on_floor_only():
 		animator.play("Man_Run", 1)
 		
-	move_and_slide()
 	if velocity:
 		player_moved.emit(delta)
 				

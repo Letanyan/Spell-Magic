@@ -1,5 +1,4 @@
 class_name Spell
-extends Object
 
 enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 

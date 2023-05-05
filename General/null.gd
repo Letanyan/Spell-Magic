@@ -1,5 +1,4 @@
-extends Object
-class_name Null
+class_name Ptr
 
 static func default(a, b):
 	if a == null:

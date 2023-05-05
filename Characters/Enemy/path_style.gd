@@ -59,6 +59,8 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 				return player.position.lerp(me.position, max_radius / dist)
 			elif dist < min_radius:
 				return player.position.lerp(me.position, min_radius / dist)
+			else:
+				return me.position
 			
 		Kind.ORIGIN:
 			return origin

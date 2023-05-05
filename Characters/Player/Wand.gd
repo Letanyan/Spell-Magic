@@ -2,7 +2,7 @@ class_name Wand
 
 enum Kind { NONE, FIRE, PICK, FIRE_PICKED, MOD  }
 
-class Option extends Object:
+class Option:
 	var kind: Kind
 	var spell: String
 	
