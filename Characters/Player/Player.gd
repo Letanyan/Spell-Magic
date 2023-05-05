@@ -10,11 +10,10 @@ extends CharacterBody3D
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
 var velocity_movement = VeloctyMovement.new()
+var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
 
 signal player_moved
 
-
-var particles: Array = []
 
 var vitals: Vitals
 
@@ -64,70 +63,10 @@ func _physics_process(delta):
 	if velocity:
 		player_moved.emit(delta)
 				
-	var t = Time.get_unix_time_from_system()
-	var should_remove = []
-	for i in range(particles.size()):
-		var p: SpellBody = particles[i]
-		p.update_spell(t, spell_variables(false))
-		if p.has_expired(t):
-			should_remove.append(i)
-			p.stop_emitting()
-			
-	should_remove.reverse()
-	for i in should_remove:
-		particles.remove_at(i)
-				
-func spell_variables(fixed: bool) -> Dictionary:
-	var result = Dictionary()
-	var prefix = "" if fixed else "t"
-	result[prefix + "x"] = position.x
-	result[prefix + "y"] = position.y
-	result[prefix + "z"] = position.z
+	spell_caster.update(self, delta)
 
-	var cdir = ((global_position + cam_pivot.position) - cam.global_position).normalized()
-	
-	result[prefix + "u"] = cdir.x
-	result[prefix + "v"] = cdir.y
-	result[prefix + "w"] = cdir.z
-	
-	if fixed:
-		result["abs_pos"] = position
-		var c = Vector3(0, 0, -1).rotated(Vector3.UP, $Pivot.rotation.y)
-		result["cx"] = c.x
-		result["cy"] = c.y
-		result["cz"] = c.z
-	else:
-		result["rel_pos"] = position
-		var c = Vector3(0, 0, -1).rotated(Vector3.UP, $Pivot.rotation.y)
-		result["tcx"] = c.x
-		result["tcy"] = c.y
-		result["tcz"] = c.z
-		
-	return result
-	
-func all_spell_variables():
-	var result = spell_variables(true)
-	result.merge(spell_variables(false))
-	return result
-
-func cast_spell(insert: Callable, spell: Spell):
-	var vars = all_spell_variables()
-	var ps = spell.get_particles(vars)
-	for p in ps:
-		particles.append(p)
-		var temps_vars = vars.duplicate()
-		temps_vars["n"] = p.n
-		var delay = spell.calculate_delay(temps_vars)
-		get_tree().create_timer(delay).connect("timeout", start_particle(p, insert))
-		
-
-func start_particle(p: SpellBody, insert: Callable):
-	return func():
-		p.time_start = Time.get_unix_time_from_system()
-		if not p.spell.is_bomb:
-			p.fixed_vars.merge(spell_variables(true), true)
-		insert.call(p)
-
+func cast_spell(insert: Callable, next_spell: Spell):
+	spell_caster.cast_spell(self, insert, next_spell)
 
 func _on_wet_area_body_entered(body):
 	print(body)

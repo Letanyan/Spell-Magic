@@ -1,0 +1,84 @@
+class_name SpellCaster
+
+enum Entity { PLAYER, ENEMY, PROJECTILE }
+
+var entity: Entity
+var particles: Array = []
+
+func _init(e: Entity):
+	entity = e
+	
+func update(body, delta):
+	var t = Time.get_unix_time_from_system()
+	var should_remove = []
+	for i in range(particles.size()):
+		var p: SpellBody = particles[i]
+		p.update_spell(t, spell_variables(body, false))
+		if p.has_expired(t):
+			should_remove.append(i)
+			p.stop_emitting()
+			
+	should_remove.reverse()
+	for i in should_remove:
+		particles.remove_at(i)
+
+func spell_variables(body: Node3D, fixed: bool) -> Dictionary:
+	var result = Dictionary()
+	var prefix = "" if fixed else "t"
+	result[prefix + "x"] = body.position.x
+	result[prefix + "y"] = body.position.y
+	result[prefix + "z"] = body.position.z
+
+	var cdir = Vector3.ZERO
+	match entity:
+		Entity.PLAYER:
+			var cam_pivot = body.get_node("CamPivot")
+			var cam = body.get_node("CamPivot/Arm/Lens")
+			cdir = ((body.global_position + cam_pivot.position) - cam.global_position).normalized()
+		Entity.ENEMY:
+			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized()
+		Entity.PROJECTILE:
+			cdir = -body.velocity.normalized()
+	
+	result[prefix + "u"] = cdir.x
+	result[prefix + "v"] = cdir.y
+	result[prefix + "w"] = cdir.z
+	
+	var c = Vector3.ZERO 
+	match entity:
+		Entity.PLAYER:
+			c = Vector3(0, 0, -1).rotated(Vector3.UP, body.get_node("Pivot").rotation.y)
+		Entity.ENEMY:
+			c = Vector3(0, 0, -1).rotated(Vector3.UP, body.rotation.y)
+		Entity.PROJECTILE:
+			c = body.velocity.normalized()
+	result[prefix + "cx"] = c.x
+	result[prefix + "cy"] = c.y
+	result[prefix + "cz"] = c.z
+	
+	result["abs_pos" if fixed else "rel_pos"] = body.position
+		
+	return result
+	
+func all_spell_variables(body: Node3D):
+	var result = spell_variables(body, true)
+	result.merge(spell_variables(body, false))
+	return result
+
+func cast_spell(body: Node3D, insert: Callable, spell: Spell):
+	var vars = all_spell_variables(body)
+	var ps = spell.get_particles(vars)
+	for p in ps:
+		particles.append(p)
+		var temps_vars = vars.duplicate()
+		temps_vars["n"] = p.n
+		var delay = spell.calculate_delay(temps_vars)
+		body.get_tree().create_timer(delay).connect("timeout", start_particle(body, p, insert))
+		
+
+func start_particle(body: Node3D, p: SpellBody, insert: Callable):
+	return func():
+		p.time_start = Time.get_unix_time_from_system()
+		if not p.spell.is_bomb:
+			p.fixed_vars.merge(spell_variables(body, true), true)
+		insert.call(p)

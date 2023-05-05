@@ -12,7 +12,7 @@ var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
 var old_pos: Vector3 = Vector3.ZERO
 
-var particles: Array = []
+var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
 
 var fixed_vars: Dictionary
 
@@ -22,18 +22,7 @@ func _ready():
 		cast_spell(func(p): if p != null: add_sibling(p), spell.chain)
 
 func _physics_process(delta):
-	var t = Time.get_unix_time_from_system()
-	var should_remove = []
-	for i in range(particles.size()):
-		var p: SpellBody = particles[i]
-		p.update_spell(t, spell_variables(false))
-		if p.has_expired(t):
-			should_remove.append(i)
-			p.stop_emitting()
-			
-	should_remove.reverse()
-	for i in should_remove:
-		particles.remove_at(i)
+	spell_caster.update(self, delta)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -331,7 +320,7 @@ func free_after(duration: float):
 		if duration > 0:
 			await get_tree().create_timer(duration).timeout
 		var max_duration = 0
-		for p in particles:
+		for p in spell_caster.particles:
 			max_duration = max(max_duration, p.spell.duration)
 		if max_duration <= 0:
 			queue_free()
@@ -340,52 +329,5 @@ func free_after(duration: float):
 			
 var water_mat = preload("res://Projectiles/water_mat.tres")
 
-func spell_variables(fixed: bool) -> Dictionary:
-	var result = Dictionary()
-	var prefix = "" if fixed else "t"
-	result[prefix + "x"] = position.x
-	result[prefix + "y"] = position.y
-	result[prefix + "z"] = position.z
-	
-	var cdir = -velocity.normalized()
-	
-	result[prefix + "u"] = cdir.x
-	result[prefix + "v"] = cdir.y
-	result[prefix + "w"] = cdir.z
-	
-	if fixed:
-		result["abs_pos"] = position
-		result["cx"] = 0
-		result["cy"] = 0
-		result["cz"] = 0
-	else:
-		result["rel_pos"] = position
-		var v = velocity.normalized()
-		result["tcx"] = v.x
-		result["tcy"] = v.y
-		result["tcz"] = v.z
-	
-	return result
-
-func all_spell_variables():
-	var result = spell_variables(true)
-	result.merge(spell_variables(false))
-	return result
-
 func cast_spell(insert: Callable, next_spell: Spell):
-	var vars = all_spell_variables()
-	var ps = next_spell.get_particles(vars)
-	for p in ps:
-		particles.append(p)
-		var temps_vars = vars.duplicate()
-		temps_vars["n"] = p.n
-		var delay = next_spell.calculate_delay(temps_vars)
-		get_tree().create_timer(delay).connect("timeout", start_particle(p, insert))
-		
-
-func start_particle(p: SpellBody, insert: Callable):
-	return func():
-		p.time_start = Time.get_unix_time_from_system()
-		if not p.spell.is_bomb:
-			p.fixed_vars.merge(spell_variables(true), true)
-		insert.call(p)
+	spell_caster.cast_spell(self, insert, next_spell)
