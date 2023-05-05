@@ -193,7 +193,7 @@ func update_shape(r: float, ignore_time: bool):
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
 			var box = CylinderShape3D.new()
-			box.height = spell.impulse_length()
+			box.height = r #spell.impulse_length()
 			box.radius = r
 			m_shape.position.y = box.height / 2
 			m_shape.shape = box
@@ -252,16 +252,27 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		Spell.Element.AIR:
 			position = p
 			var particles: CPUParticles3D = get_node("source")
-			var dist = spell.impulse_length()
+			var dist = get_node("source/area/shape").shape.radius
 			particles.initial_velocity_min = dist * 0.9
 			particles.initial_velocity_max = dist * 1.1
-			var dir = global_position + velocity.normalized() * 10
+			var v = velocity.normalized()
+			if v != Vector3.ZERO:
+				if v == Vector3.UP:
+					v = Vector3(0.1, 0.9, 0.1).normalized()
+				var dir = global_position + v * 10
+				look_at(dir)
 			
 		Spell.Element.ICE:
 			position = p
 			var particles: CPUParticles3D = get_node("source")
 			particles.initial_velocity_min = 0.2 * 0.9
 			particles.initial_velocity_max = 0.2 * 1.1
+			var v = velocity.normalized()
+			if v != Vector3.ZERO:
+				if v == Vector3.UP:
+					v = Vector3(0.1, 0.9, 0.1).normalized()
+				var dir = global_position + v * 10
+				look_at(dir)
 			
 		Spell.Element.ELECTRIC:
 			position = p
@@ -356,8 +367,13 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 	return result
 
+func all_spell_variables():
+	var result = spell_variables(true)
+	result.merge(spell_variables(false))
+	return result
+
 func cast_spell(insert: Callable, next_spell: Spell):
-	var vars = spell_variables(true)
+	var vars = all_spell_variables()
 	var ps = next_spell.get_particles(vars)
 	for p in ps:
 		particles.append(p)
@@ -371,9 +387,5 @@ func start_particle(p: SpellBody, insert: Callable):
 	return func():
 		p.time_start = Time.get_unix_time_from_system()
 		if not p.spell.is_bomb:
-			p.fixed_vars["abs_pos"] = position
-			var cdir = -velocity.normalized()
-			p.fixed_vars["u"] = cdir.x
-			p.fixed_vars["v"] = cdir.y
-			p.fixed_vars["w"] = cdir.z
+			p.fixed_vars.merge(spell_variables(true), true)
 		insert.call(p)

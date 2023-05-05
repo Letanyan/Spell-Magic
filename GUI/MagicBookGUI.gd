@@ -193,7 +193,7 @@ func _on_T_text_changed(new_text):
 func _on_D_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].delay = new_text.to_float()
+	book.spells[current_index].delay = new_text
 	var e = Expr.new(new_text)
 	book.spells[current_index].d_expr = e
 	if e.error.length() > 0:

@@ -9,7 +9,7 @@ extends Node
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
-@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 128, 512)
+@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 1024)
 @onready var population: Dictionary = {}
 
 @onready var raycast = $RayCast3D

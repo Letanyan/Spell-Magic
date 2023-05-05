@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@onready var animator: AnimationPlayer = $AnimationPlayer 
+@onready var animator: AnimationPlayer = $Pivot/AnimationPlayer 
 
 @export var speed: float = 24
 @export var fall_acceleration: float = 75
@@ -70,7 +70,7 @@ func _physics_process(delta):
 		target_velocity.z = direction.z * speed * (1 - vitals.freeze)
 	
 	if not is_on_floor():
-		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
+		target_velocity.y = target_velocity.y - (fall_acceleration * delta) ** 5
 	else:
 		target_velocity.y = 0
 		
@@ -90,6 +90,9 @@ func _physics_process(delta):
 		impulse.x = 0
 		impulse.y = 0
 		impulse.z = 0
+	
+	target_velocity += impulse
+	impulse = Vector3.ZERO
 	
 	velocity = target_velocity + impulse
 	if direction != Vector3.ZERO:
@@ -134,8 +137,8 @@ func spell_variables(fixed: bool) -> Dictionary:
 	result[prefix + "x"] = position.x
 	result[prefix + "y"] = position.y
 	result[prefix + "z"] = position.z
-	
-	var cdir = ((global_position + Vector3(0, 1.2, 0)) - cam.global_position).normalized()
+
+	var cdir = ((global_position + cam_pivot.position) - cam.global_position).normalized()
 	
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
@@ -156,10 +159,14 @@ func spell_variables(fixed: bool) -> Dictionary:
 		
 	return result
 	
+func all_spell_variables():
+	var result = spell_variables(true)
+	result.merge(spell_variables(false))
+	return result
 
 func cast_spell(insert: Callable, spell: Spell):
-	var vars = spell_variables(true)
-	var ps = spell.get_particles(spell_variables(true))
+	var vars = all_spell_variables()
+	var ps = spell.get_particles(vars)
 	for p in ps:
 		particles.append(p)
 		var temps_vars = vars.duplicate()
@@ -172,11 +179,7 @@ func start_particle(p: SpellBody, insert: Callable):
 	return func():
 		p.time_start = Time.get_unix_time_from_system()
 		if not p.spell.is_bomb:
-			p.fixed_vars["abs_pos"] = position
-			var cdir = ((global_position + Vector3(0, 1.2, 0)) - cam.global_position).normalized()
-			p.fixed_vars["u"] = cdir.x
-			p.fixed_vars["v"] = cdir.y
-			p.fixed_vars["w"] = cdir.z
+			p.fixed_vars.merge(spell_variables(true), true)
 		insert.call(p)
 
 

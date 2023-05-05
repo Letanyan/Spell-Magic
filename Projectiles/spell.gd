@@ -92,18 +92,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars.merge(fvars, true)
 	var temp_vars = {}
 	temp_vars.merge(fixed_vars)
-#	temp_vars.merge(updated, true)
-	temp_vars["tx"] = fixed_vars["x"]
-	temp_vars["ty"] = fixed_vars["y"]
-	temp_vars["tz"] = fixed_vars["z"]
-	temp_vars["tu"] = fixed_vars["u"]
-	temp_vars["tv"] = fixed_vars["v"]
-	temp_vars["tw"] = fixed_vars["w"]
-	temp_vars["rel_pos"] = fixed_vars["abs_pos"]
 	temp_vars["n"] = n
-	temp_vars["tcx"] = fixed_vars["cx"]
-	temp_vars["tcy"] = fixed_vars["cy"]
-	temp_vars["tcz"] = fixed_vars["cz"]
 	
 	match element:
 		Element.FIRE:

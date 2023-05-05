@@ -127,6 +127,14 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"atan": tape.append(atan(a))
 				
 				"inv": tape.append(1.0 / a if a != 0 else 0)
+				"mod": tape.append(fmod(tape.pop_back(), a) if a != 0 else 0)
+				"div": tape.append(floor(tape.pop_back() / a) if a != 0 else 0)
+				"floor": tape.append(floor(a))
+				"ceil": tape.append(ceil(a))
+				"round": tape.append(round(a))
+				
+				"max": tape.append(max(tape.pop_back(), a))
+				"min": tape.append(min(tape.pop_back(), a))
 				
 				"lt": tape.append(1 if a < 0 else 0)
 				"gt": tape.append(1 if a > 0 else 0)
@@ -135,7 +143,6 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"eq": tape.append(1 if a == 0 else 0)
 				"neq": tape.append(1 if a != 0 else 0)
 				
-				"max": tape.append(max(tape.pop_back(), a))
-				"min": tape.append(min(tape.pop_back(), a))
+				
 	
 	return tape.back()

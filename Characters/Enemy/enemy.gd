@@ -155,10 +155,14 @@ func spell_variables(fixed: bool) -> Dictionary:
 	
 	return result
 	
+func all_spell_variables():
+	var result = spell_variables(true)
+	result.merge(spell_variables(false))
+	return result
 
 func cast_spell(insert: Callable, spell: Spell):
-	var vars = spell_variables(true)
-	var ps = spell.get_particles(spell_variables(true))
+	var vars = all_spell_variables()
+	var ps = spell.get_particles(vars)
 	for p in ps:
 		particles.append(p)
 		var temps_vars = vars.duplicate()
@@ -171,9 +175,5 @@ func start_particle(p: SpellBody, insert: Callable):
 	return func():
 		p.time_start = Time.get_unix_time_from_system()
 		if not p.spell.is_bomb:
-			p.fixed_vars["abs_pos"] = position
-			var cdir = (player.global_position - (global_position + Vector3(0, 1.2, 0))).normalized()
-			p.fixed_vars["u"] = cdir.x
-			p.fixed_vars["v"] = cdir.y
-			p.fixed_vars["w"] = cdir.z
+			p.fixed_vars.merge(spell_variables(true), true)
 		insert.call(p)

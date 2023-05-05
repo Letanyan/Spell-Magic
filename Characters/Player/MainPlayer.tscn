@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3 uid="uid://cs66h1r8861hy"]
+
+[ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
+[ext_resource type="PackedScene" uid="uid://cfmjmhpvsgexr" path="res://Characters/Male_Casual.glb" id="2_p05k3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4v8dt"]
+size = Vector3(0.7, 1.9, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tcvrm"]
+size = Vector3(0.7, 1.9, 0.3)
+
+[node name="MainPlayer" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 81
+script = ExtResource("1_pc14x")
+
+[node name="Pivot" parent="." instance=ExtResource("2_p05k3")]
+transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 0, 0, 0)
+
+[node name="HumanArmature" parent="Pivot" index="0"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Pivot/HumanArmature" index="0"]
+bones/1/position = Vector3(0.425884, 0.0600924, -0.130459)
+bones/1/rotation = Quaternion(0.125494, 0.684858, 0.707433, -0.121486)
+bones/2/position = Vector3(0.0065493, 2.07573, 0.291912)
+bones/2/rotation = Quaternion(-0.000513423, 0.00269969, 2.46359e-05, 0.999996)
+bones/4/rotation = Quaternion(0.0805747, 4.36903e-07, 4.99804e-08, 0.996749)
+bones/5/rotation = Quaternion(0.0112436, -8.32241e-07, 2.71825e-09, 0.999937)
+bones/6/rotation = Quaternion(0.0821125, 8.11096e-06, 0.000141601, 0.996623)
+bones/7/rotation = Quaternion(-0.115399, -0.000198485, 0.00300092, 0.993315)
+bones/8/position = Vector3(0.253285, 0.483647, 0.0307642)
+bones/9/rotation = Quaternion(-0.579385, -0.265226, -0.689765, 0.343791)
+bones/10/rotation = Quaternion(-0.00717728, -0.00781725, -0.12299, 0.992351)
+bones/14/position = Vector3(0.0955368, 0.0770474, -0.0190327)
+bones/16/position = Vector3(-0.24029, 0.482854, 0.0378492)
+bones/17/rotation = Quaternion(-0.604889, 0.335094, 0.65396, 0.30685)
+bones/18/rotation = Quaternion(-0.0351727, -0.0354201, 0.0595044, 0.996979)
+bones/21/position = Vector3(-0.128886, -0.0700092, -0.0165863)
+bones/21/rotation = Quaternion(-0.194684, 0.863447, 0.0340954, 0.464106)
+bones/24/rotation = Quaternion(0.995512, 0.0253576, 0.0229025, 0.0882472)
+bones/25/rotation = Quaternion(0.238047, 1.15159e-08, -4.0329e-08, 0.971254)
+bones/26/rotation = Quaternion(0.994213, -0.0292658, -0.0172725, 0.101912)
+bones/27/rotation = Quaternion(0.245002, -1.08365e-07, 2.41196e-08, 0.969523)
+bones/29/position = Vector3(-0.44756, 0.0600924, -0.0857063)
+bones/29/rotation = Quaternion(-0.0564969, 0.693395, 0.716253, 0.054699)
+
+[node name="CamPivot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+
+[node name="Arm" type="SpringArm3D" parent="CamPivot"]
+
+[node name="Lens" type="Camera3D" parent="CamPivot/Arm"]
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_4v8dt")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "O"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WetArea" type="Area3D" parent="."]
+
+[node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_tcvrm")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[editable path="Pivot"]
