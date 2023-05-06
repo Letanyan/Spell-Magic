@@ -82,7 +82,7 @@ func operator_precedes(op1: Token, op2: Token) -> bool:
 	return false
 
 func compute(vars: Dictionary, display: bool = false) -> float:
-	var tape = []
+	var tape = [] 
 	
 	for expr in expression:
 		var e: Token = expr
@@ -100,6 +100,12 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 		elif e.kind == Token.Kind.OP:
 			var b = tape.pop_back()
 			var a = tape.pop_back()
+			if b == null:
+				error = "incomplete expression"
+				return 0.0
+			if a == null:
+				error = "incomplete expression"
+				return 0.0
 			match e.raw:
 				"+": tape.append(a + b)
 				"-": tape.append(a - b)

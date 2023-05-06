@@ -220,6 +220,14 @@ offset_top = 536.0
 offset_right = 752.0
 offset_bottom = 559.0
 
+[node name="view_chain_button" type="Button" parent="container"]
+layout_mode = 0
+offset_left = 424.0
+offset_top = 312.0
+offset_right = 469.0
+offset_bottom = 343.0
+text = "View"
+
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
@@ -236,3 +244,4 @@ offset_bottom = 559.0
 [connection signal="toggled" from="container/is_rel" to="." method="_on_is_rel_toggled"]
 [connection signal="pressed" from="container/Delete" to="." method="_on_delete_pressed"]
 [connection signal="toggled" from="container/is_bomb" to="." method="_on_is_bomb_toggled"]
+[connection signal="pressed" from="container/view_chain_button" to="." method="_on_view_chain_button_pressed"]

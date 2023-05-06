@@ -73,25 +73,23 @@ func impulse_length() -> float:
 	
 func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	var fixed_vars = {}
-	fixed_vars["r0"] = randf()
-	fixed_vars["r1"] = randf()
-	fixed_vars["r2"] = randf()
-	fixed_vars["r3"] = randf()
-	fixed_vars["r4"] = randf()
-	fixed_vars["r5"] = randf()
-	fixed_vars["r6"] = randf()
-	fixed_vars["r7"] = randf()
-	fixed_vars["r8"] = randf()
-	fixed_vars["r9"] = randf()
+	fixed_vars["rn0"] = randf()
+	fixed_vars["rn1"] = randf()
+	fixed_vars["rn2"] = randf()
+	fixed_vars["rn3"] = randf()
+	fixed_vars["rn4"] = randf()
+	fixed_vars["rn5"] = randf()
+	fixed_vars["rn6"] = randf()
+	fixed_vars["rn7"] = randf()
+	fixed_vars["rn8"] = randf()
+	fixed_vars["rn9"] = randf()
 	fixed_vars["N"] = count
 	fixed_vars["T"] = duration
 	fixed_vars["P"] = power
 	fixed_vars["D"] = delay
 	fixed_vars["pi"] = PI
+	fixed_vars["n"] = n
 	fixed_vars.merge(fvars, true)
-	var temp_vars = {}
-	temp_vars.merge(fixed_vars)
-	temp_vars["n"] = n
 	
 	var p: SpellBody
 	match element:
@@ -105,15 +103,27 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 			
 	p.fixed_vars = fixed_vars
 	p.spell = self
-	p.position = calculate_location(temp_vars)
+	p.position = calculate_location(fixed_vars)
 	var er = calculate_size(fixed_vars)
 	p.update_shape(er, true)
 	return p
 		
 func get_particles(fvars: Dictionary) -> Array:
 	var result = []
+	var fixed_vars = {}
+	fixed_vars["r0"] = randf()
+	fixed_vars["r1"] = randf()
+	fixed_vars["r2"] = randf()
+	fixed_vars["r3"] = randf()
+	fixed_vars["r4"] = randf()
+	fixed_vars["r5"] = randf()
+	fixed_vars["r6"] = randf()
+	fixed_vars["r7"] = randf()
+	fixed_vars["r8"] = randf()
+	fixed_vars["r9"] = randf()
+	fixed_vars.merge(fvars, true)
 	for i in range(count):
-		var p = get_particle(i, fvars)
+		var p = get_particle(i, fixed_vars)
 		p.n = i
 		p.spell = self
 		result.append(p)

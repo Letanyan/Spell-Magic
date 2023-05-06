@@ -122,6 +122,7 @@ func _on_create_pressed():
 	book.spells.append(spell)
 	reload_list()
 	_on_spell_index_item_selected(book.spells.size() - 1)
+	spell_index.select(book.spells.size() - 1, true)
 	name_edit.grab_focus()
 	name_edit.select_all()
 
@@ -136,6 +137,7 @@ func _on_element_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].element = Spell.element_from_name(new_text)
+	update_spells_that_chain_to_current_spell()
 
 func _on_x_text_changed(new_text):
 	if current_index < 0:
@@ -143,10 +145,9 @@ func _on_x_text_changed(new_text):
 	book.spells[current_index].x = new_text
 	var e = Expr.new(new_text)
 	book.spells[current_index].x_expr = e
-	print(e.error)
 	if e.error.length() > 0:
 		error_label.text = "x: " + e.error
-
+	update_spells_that_chain_to_current_spell()
 
 func _on_y_text_changed(new_text):
 	if current_index < 0:
@@ -156,6 +157,7 @@ func _on_y_text_changed(new_text):
 	book.spells[current_index].y_expr = e
 	if e.error.length() > 0:
 		error_label.text = "y: " + e.error
+	update_spells_that_chain_to_current_spell()
 
 func _on_z_text_changed(new_text):
 	if current_index < 0:
@@ -165,6 +167,7 @@ func _on_z_text_changed(new_text):
 	book.spells[current_index].z_expr = e
 	if e.error.length() > 0:
 		error_label.text = "z: " + e.error
+	update_spells_that_chain_to_current_spell()
 
 func _on_r_text_changed(new_text):
 	if current_index < 0:
@@ -174,21 +177,25 @@ func _on_r_text_changed(new_text):
 	book.spells[current_index].r_expr = e
 	if e.error.length() > 0:
 		error_label.text = "r: " + e.error
+	update_spells_that_chain_to_current_spell()
 
 func _on_N_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].count = new_text.to_int()
+	update_spells_that_chain_to_current_spell()
 
 func _on_P_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].power = new_text.to_float()
+	update_spells_that_chain_to_current_spell()
 
 func _on_T_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].duration = new_text.to_float()
+	update_spells_that_chain_to_current_spell()
 
 func _on_D_text_changed(new_text):
 	if current_index < 0:
@@ -198,6 +205,7 @@ func _on_D_text_changed(new_text):
 	book.spells[current_index].d_expr = e
 	if e.error.length() > 0:
 		error_label.text = "D: " + e.error
+	update_spells_that_chain_to_current_spell()
 
 func _on_chain_text_changed(new_text):
 	if current_index < 0:
@@ -212,17 +220,38 @@ func _on_chain_text_changed(new_text):
 			if s.name == n:
 				spell.chain = s
 				
-	if spell.name != "":
-		for s in book.spells:
-			if s.chain != null and s.chain.name == spell.name and s.name != spell.name:
-				s.chain = spell
+	update_spells_that_chain_to_current_spell()
 
 func _on_is_rel_toggled(button_pressed):
 	if current_index < 0:
 		return
 	book.spells[current_index].is_relative_to_player_current_pos = button_pressed
+	update_spells_that_chain_to_current_spell()
 
 func _on_is_bomb_toggled(button_pressed):
 	if current_index < 0:
 		return
 	book.spells[current_index].is_bomb = button_pressed
+	update_spells_that_chain_to_current_spell()
+
+func update_spells_that_chain_to_current_spell():
+	if current_index < 0:
+		return
+	var spell = book.spells[current_index]
+				
+	if spell.name != "":
+		for s in book.spells:
+			if s.chain != null and s.chain.name == spell.name and s.name != spell.name:
+				s.chain = spell
+
+func _on_view_chain_button_pressed():
+	var n = chain_edit.text
+	if n == "":
+		return
+	else:
+		var i = 0
+		for s in book.spells:
+			if s.name == n:
+				_on_spell_index_item_selected(i)
+				spell_index.select(i, true)
+			i += 1
