@@ -124,9 +124,9 @@ func _on_area_entered(area):
 func update_shape(r: float, ignore_time: bool):
 	match spell.element:
 		Spell.Element.FIRE:
-			var particles: CPUParticles3D = get_node("source")
+			var particles: GPUParticles3D = get_node("source")
 			var shape: CollisionShape3D = get_node("source/area/shape")
-			particles.emission_sphere_radius = r
+			particles.process_material.emission_sphere_radius = r
 			var sphere = SphereShape3D.new()
 			sphere.radius = r
 			shape.shape = sphere
@@ -178,6 +178,8 @@ func update_shape(r: float, ignore_time: bool):
 			mbox.material.set_shader_parameter("radius", r)
 			mbox.material.set_shader_parameter("displacement", clamp((1.0 / r) / 10.0, 0, 0.5))
 			mesh.mesh = mbox
+			var particles: GPUParticles3D = get_node("source/drops")
+			particles.process_material.emission_sphere_radius = r * 0.8
 			
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -226,11 +228,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 	match spell.element:
 		Spell.Element.FIRE:
 			position = p
-			var particles: CPUParticles3D = get_node("source")
-			particles.direction = (velocity.normalized() + Vector3.UP).normalized()
+			var particles: GPUParticles3D = get_node("source")
+			particles.process_material.direction = (velocity.normalized() + Vector3.UP).normalized()
 			var s = velocity.length()
-			particles.initial_velocity_min = s * 4.9
-			particles.initial_velocity_max = s * 5.1
+			particles.process_material.initial_velocity_min = s * 0.9
+			particles.process_material.initial_velocity_max = s * 1.1
 		
 		Spell.Element.ROCK:
 			position = p
@@ -280,7 +282,7 @@ func update_spell(t: float, vars: Dictionary):
 func stop_emitting():
 	match spell.element:
 		Spell.Element.FIRE:
-			var particles: CPUParticles3D = get_node("source")
+			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0

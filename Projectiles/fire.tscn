@@ -1,33 +1,59 @@
-[gd_scene load_steps=5 format=3 uid="uid://ded2wbijwa0uu"]
+[gd_scene load_steps=10 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_tkofl"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_na415"]
-albedo_color = Color(1, 0.196078, 0.176471, 1)
+[sub_resource type="Gradient" id="Gradient_k1smn"]
+offsets = PackedFloat32Array(0, 0.205714, 1)
+colors = PackedColorArray(1, 1, 0, 1, 1, 0.68, 0, 1, 1, 0, 0, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_ek7ae"]
-material = SubResource("StandardMaterial3D_na415")
-radius = 0.1
-height = 0.2
-radial_segments = 16
-rings = 8
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7he8g"]
+gradient = SubResource("Gradient_k1smn")
+
+[sub_resource type="Curve" id="Curve_27q22"]
+_data = [Vector2(0, 0.545455), 0.0, 0.0, 0, 0, Vector2(0.480583, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_jbj8g"]
+width = 32
+curve = SubResource("Curve_27q22")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_omybi"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_max = 1.0
+angular_velocity_max = 5.0
+linear_accel_max = 1.0
+radial_accel_max = 1.0
+angle_min = 360.0
+angle_max = 360.0
+scale_curve = SubResource("CurveTexture_jbj8g")
+color_ramp = SubResource("GradientTexture1D_7he8g")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t0aey"]
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_58dya"]
+material = SubResource("StandardMaterial3D_t0aey")
+radius = 0.25
+height = 0.5
+radial_segments = 8
+rings = 4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_21upn"]
 
 [node name="fire" type="Node3D"]
 script = ExtResource("1_tkofl")
 
-[node name="source" type="CPUParticles3D" parent="."]
-amount = 500
-lifetime = 5.0
-mesh = SubResource("SphereMesh_ek7ae")
-emission_shape = 1
-emission_sphere_radius = 0.5
-direction = Vector3(0, 1, 0)
-spread = 15.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 3.0
+[node name="source" type="GPUParticles3D" parent="."]
+amount = 80
+randomness = 1.0
+draw_order = 3
+trail_lifetime = 4.0
+process_material = SubResource("ParticleProcessMaterial_omybi")
+draw_pass_1 = SubResource("SphereMesh_58dya")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 8

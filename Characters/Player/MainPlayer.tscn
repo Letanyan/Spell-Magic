@@ -46,7 +46,7 @@ bones/29/position = Vector3(-0.44756, 0.0600924, -0.0857063)
 bones/29/rotation = Quaternion(-0.0564969, 0.693395, 0.716253, 0.054699)
 
 [node name="CamPivot" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.9, 0)
 
 [node name="Arm" type="SpringArm3D" parent="CamPivot"]
 
