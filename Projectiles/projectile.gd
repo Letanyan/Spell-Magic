@@ -229,7 +229,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		Spell.Element.FIRE:
 			position = p
 			var particles: GPUParticles3D = get_node("source")
-			particles.process_material.direction = (velocity.normalized() + Vector3.UP).normalized()
+			particles.process_material.direction = (-velocity.normalized() + Vector3.UP).normalized()
 			var s = velocity.length()
 			particles.process_material.initial_velocity_min = s * 0.9
 			particles.process_material.initial_velocity_max = s * 1.1
@@ -239,6 +239,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 				
 		Spell.Element.WATER:
 			position = p
+			var particles: GPUParticles3D = get_node("source/drops")
+			particles.process_material.direction = -velocity.normalized()
+			var s = velocity.length()
+			particles.process_material.initial_velocity_min = s * 0.9
+			particles.process_material.initial_velocity_max = s * 1.1
 			
 		Spell.Element.AIR:
 			position = p

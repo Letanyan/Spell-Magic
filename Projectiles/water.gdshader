@@ -34,9 +34,7 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = NORMAL;
-	float fresnel = sqrt(1.0 - dot(NORMAL, VIEW));
-	ALBEDO = vec3(0.02, 0.05, 0.5) + (0.01 * fresnel);
+	ALBEDO = vec3(0.02, 0.05, 0.5);
 	METALLIC = 0.0;
 	ROUGHNESS = 1.0;
 	RIM = 0.2;

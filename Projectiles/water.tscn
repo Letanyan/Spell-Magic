@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=12 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_fir5h"]
 [ext_resource type="Material" uid="uid://bptbv1j70wd1t" path="res://Projectiles/water_mat.tres" id="2_ax8yn"]
-[ext_resource type="Shader" path="res://Projectiles/water.gdshader" id="3_v3nsa"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_owy0h"]
 material = ExtResource("2_ax8yn")
@@ -10,9 +9,13 @@ material = ExtResource("2_ax8yn")
 [sub_resource type="SphereShape3D" id="SphereShape3D_6etye"]
 
 [sub_resource type="Gradient" id="Gradient_eaodq"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.525714, 1)
+colors = PackedColorArray(0.0196078, 0.0509804, 0.501961, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_1ccbm"]
 gradient = SubResource("Gradient_eaodq")
+width = 64
 
 [sub_resource type="Curve" id="Curve_e4atl"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -25,21 +28,20 @@ curve = SubResource("Curve_e4atl")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tnio6"]
 emission_shape = 1
 emission_sphere_radius = 0.25
-direction = Vector3(0, 0, 0)
-scale_min = 0.1
-scale_max = 0.2
+direction = Vector3(0, 0, -1)
+spread = 0.0
+gravity = Vector3(0, -1, 0)
+initial_velocity_max = 1.0
+scale_min = 0.3
 scale_curve = SubResource("CurveTexture_20bab")
 color_ramp = SubResource("GradientTexture1D_1ccbm")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qodep"]
-render_priority = 0
-shader = ExtResource("3_v3nsa")
-shader_parameter/height_scale = 0.05
-shader_parameter/radius = 1.0
-shader_parameter/displacement = 0.01
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5otlk"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_37v5l"]
-material = SubResource("ShaderMaterial_qodep")
+material = SubResource("StandardMaterial3D_5otlk")
 radius = 0.1
 height = 0.2
 radial_segments = 8

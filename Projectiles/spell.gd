@@ -93,64 +93,22 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	temp_vars.merge(fixed_vars)
 	temp_vars["n"] = n
 	
+	var p: SpellBody
 	match element:
-		Element.FIRE:
-			var p: SpellBody = load("res://Projectiles/fire.tscn").instantiate()
-			p.fixed_vars = fixed_vars
-			p.spell = self
-			p.position = calculate_location(temp_vars)
-			var er = calculate_size(fixed_vars)
-			p.update_shape(er, true)
-			return p
-		
-		Element.ROCK:
-			var p: SpellBody = load("res://Projectiles/rock.tscn").instantiate()
-			p.fixed_vars = fixed_vars
-			p.spell = self
-			p.position = calculate_location(temp_vars)
-			var er = calculate_size(fixed_vars)
-			p.update_shape(er, true)
-			return p
+		Element.FIRE: p = load("res://Projectiles/fire.tscn").instantiate()
+		Element.ROCK: p = load("res://Projectiles/rock.tscn").instantiate()
+		Element.WATER: p = load("res://Projectiles/water.tscn").instantiate()
+		Element.AIR: p = load("res://Projectiles/air.tscn").instantiate()
+		Element.ICE: p = load("res://Projectiles/ice.tscn").instantiate()
+		Element.ELECTRIC: p = load("res://Projectiles/electric.tscn").instantiate()
+		_: p = load("res://Projectiles/fire.tscn").instantiate()
 			
-		Element.WATER:
-			var p: SpellBody = load("res://Projectiles/water.tscn").instantiate()
-			p.fixed_vars = fixed_vars
-			p.spell = self
-			p.position = calculate_location(temp_vars)
-			var er = calculate_size(temp_vars)
-			p.update_shape(er, true)
-			return p
-			
-		Element.AIR:
-			var p: SpellBody = load("res://Projectiles/air.tscn").instantiate()
-			p.fixed_vars = fixed_vars
-			p.spell = self
-			p.position = calculate_location(temp_vars)
-			var er = calculate_size(temp_vars)
-			p.update_shape(er, true)
-			return p
-			
-		Element.ICE:
-			var p: SpellBody = load("res://Projectiles/ice.tscn").instantiate()
-			p.fixed_vars = fixed_vars
-			p.spell = self
-			p.position = calculate_location(temp_vars)
-			var er = calculate_size(temp_vars)
-			p.update_shape(er, true)
-			return p
-			
-		Element.ELECTRIC:
-			var p: SpellBody = load("res://Projectiles/electric.tscn").instantiate()
-			p.fixed_vars = fixed_vars
-			p.spell = self
-			p.position = calculate_location(temp_vars)
-			var er = calculate_size(temp_vars)
-			p.update_shape(er, true)
-			return p
-			
-		_: 
-			var p = load("res://Projectiles/fire.tscn").instantiate()
-			return p
+	p.fixed_vars = fixed_vars
+	p.spell = self
+	p.position = calculate_location(temp_vars)
+	var er = calculate_size(fixed_vars)
+	p.update_shape(er, true)
+	return p
 		
 func get_particles(fvars: Dictionary) -> Array:
 	var result = []
