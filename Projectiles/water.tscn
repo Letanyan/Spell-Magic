@@ -1,12 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=10 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_fir5h"]
-[ext_resource type="Material" uid="uid://bptbv1j70wd1t" path="res://Projectiles/water_mat.tres" id="2_ax8yn"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_owy0h"]
-material = ExtResource("2_ax8yn")
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_6etye"]
 
 [sub_resource type="Gradient" id="Gradient_eaodq"]
 interpolation_mode = 2
@@ -18,8 +12,8 @@ gradient = SubResource("Gradient_eaodq")
 width = 64
 
 [sub_resource type="Curve" id="Curve_e4atl"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.436893, 0.781818), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_20bab"]
 width = 32
@@ -27,7 +21,7 @@ curve = SubResource("Curve_e4atl")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tnio6"]
 emission_shape = 1
-emission_sphere_radius = 0.25
+emission_sphere_radius = 0.5
 direction = Vector3(0, 0, -1)
 spread = 0.0
 gravity = Vector3(0, -1, 0)
@@ -42,26 +36,25 @@ vertex_color_use_as_albedo = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_37v5l"]
 material = SubResource("StandardMaterial3D_5otlk")
-radius = 0.1
-height = 0.2
+radius = 0.25
+height = 0.5
 radial_segments = 8
 rings = 4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6etye"]
 
 [node name="water" type="Node3D"]
 script = ExtResource("1_fir5h")
 
-[node name="source" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_owy0h")
+[node name="source" type="GPUParticles3D" parent="."]
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_tnio6")
+draw_pass_1 = SubResource("SphereMesh_37v5l")
 
 [node name="area" type="Area3D" parent="source"]
 collision_mask = 23
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_6etye")
-
-[node name="drops" type="GPUParticles3D" parent="source"]
-amount = 20
-process_material = SubResource("ParticleProcessMaterial_tnio6")
-draw_pass_1 = SubResource("SphereMesh_37v5l")
 
 [connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

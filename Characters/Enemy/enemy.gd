@@ -75,7 +75,7 @@ func _physics_process(delta):
 		set_movement_target(next_pos)
 	
 	if interval_check(500, 10):
-		var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0)
+		var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
 		if spell != null:
 			cast_spell(func(p): if p != null: add_sibling(p), spell)
 		

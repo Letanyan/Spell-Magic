@@ -6,9 +6,9 @@ class Option:
 	var kind: Kind
 	var spell: String
 	
-	func _init(kind: Kind = Kind.NONE, spell: String = ""):
-		self.kind = kind
-		self.spell = spell
+	func _init(_kind: Kind = Kind.NONE, _spell: String = ""):
+		kind = _kind
+		spell = _spell
 		
 	func save_dict():
 		return {"kind": kind, "spell": spell}

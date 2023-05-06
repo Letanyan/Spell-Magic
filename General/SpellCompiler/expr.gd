@@ -127,8 +127,8 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"atan": tape.append(atan(a))
 				
 				"inv": tape.append(1.0 / a if a != 0 else 0)
-				"mod": tape.append(fmod(tape.pop_back(), a) if a != 0 else 0)
-				"div": tape.append(floor(tape.pop_back() / a) if a != 0 else 0)
+				"mod": tape.append(fmod(tape.pop_back(), a) if a != 0 else 0.0)
+				"div": tape.append(floor(tape.pop_back() / a) if a != 0 else 0.0)
 				"floor": tape.append(floor(a))
 				"ceil": tape.append(ceil(a))
 				"round": tape.append(round(a))

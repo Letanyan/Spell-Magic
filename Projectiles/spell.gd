@@ -161,8 +161,8 @@ static func name_from_element(el: Element) -> String:
 		Element.ELECTRIC: return "Electric"
 		_: return ""
 
-static func element_from_name(str: String) -> Element:
-	match str.to_lower():
+static func element_from_name(_name: String) -> Element:
+	match _name.to_lower():
 		"fire": return Element.FIRE
 		"rock": return Element.ROCK
 		"water": return Element.WATER

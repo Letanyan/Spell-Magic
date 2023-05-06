@@ -8,8 +8,8 @@ enum Biome {
 
 var elevation_curve: Curve = load("res://Worlds/Generator/Terrain/terrain_elevation_curve.tres")
 
-func color_for_biome(biome: Biome) -> Color:
-	match biome:
+func color_for_biome(_biome: Biome) -> Color:
+	match _biome:
 		Biome.WATER: return Color(0, 0, 1)
 		Biome.TAIGA: return Color(0, 1, 1)
 		Biome.GRASSLAND: return Color(0, 1, 0)

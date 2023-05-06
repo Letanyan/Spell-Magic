@@ -170,16 +170,8 @@ func update_shape(r: float, ignore_time: bool):
 			var box = SphereShape3D.new()
 			box.radius = r
 			m_shape.shape = box
-			var mesh: MeshInstance3D = get_node("source")
-			var mbox = SphereMesh.new()
-			mbox.radius = r
-			mbox.height = r * 2
-			mbox.material = water_mat
-			mbox.material.set_shader_parameter("radius", r)
-			mbox.material.set_shader_parameter("displacement", clamp((1.0 / r) / 10.0, 0, 0.5))
-			mesh.mesh = mbox
-			var particles: GPUParticles3D = get_node("source/drops")
-			particles.process_material.emission_sphere_radius = r * 0.8
+			var particles: GPUParticles3D = get_node("source")
+			particles.process_material.emission_sphere_radius = r
 			
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -239,7 +231,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 				
 		Spell.Element.WATER:
 			position = p
-			var particles: GPUParticles3D = get_node("source/drops")
+			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.direction = -velocity.normalized()
 			var s = velocity.length()
 			particles.process_material.initial_velocity_min = s * 0.9
@@ -297,7 +289,11 @@ func stop_emitting():
 			free_after(0)
 			
 		Spell.Element.WATER:
-			free_after(0)
+			var particles: GPUParticles3D = get_node("source")
+			particles.emitting = false
+			var area: Area3D = get_node("source/area")
+			area.collision_mask = 0
+			free_after(particles.lifetime)
 			
 		Spell.Element.AIR:
 			var particles: CPUParticles3D = get_node("source")
