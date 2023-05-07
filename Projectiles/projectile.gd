@@ -127,6 +127,9 @@ func update_shape(r: float, ignore_time: bool):
 			var particles: GPUParticles3D = get_node("source")
 			var shape: CollisionShape3D = get_node("source/area/shape")
 			particles.process_material.emission_sphere_radius = r
+			particles.process_material.scale_min = r * 2
+			particles.process_material.scale_max = r * 2
+			particles.process_material.initial_velocity_max = r * 2
 			var sphere = SphereShape3D.new()
 			sphere.radius = r
 			shape.shape = sphere
@@ -164,14 +167,14 @@ func update_shape(r: float, ignore_time: bool):
 			scale = Vector3(1, 1, 1)
 			
 		Spell.Element.WATER:
-#			if not ignore_time:
-#				return
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
 			var box = SphereShape3D.new()
 			box.radius = r
 			m_shape.shape = box
 			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.emission_sphere_radius = r
+			particles.process_material.initial_velocity_max = r * 2
+			particles.process_material.scale_max = r * 2
 			
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -222,9 +225,6 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			position = p
 			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.direction = (-velocity.normalized() + Vector3.UP).normalized()
-			var s = velocity.length()
-			particles.process_material.initial_velocity_min = s * 0.9
-			particles.process_material.initial_velocity_max = s * 1.1
 		
 		Spell.Element.ROCK:
 			position = p
@@ -233,9 +233,6 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			position = p
 			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.direction = -velocity.normalized()
-			var s = velocity.length()
-			particles.process_material.initial_velocity_min = s * 0.9
-			particles.process_material.initial_velocity_max = s * 1.1
 			
 		Spell.Element.AIR:
 			position = p
