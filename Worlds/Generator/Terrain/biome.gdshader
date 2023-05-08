@@ -5,8 +5,6 @@ uniform sampler2D temperature;
 uniform sampler2D dryness;
 uniform float texture_width;
 uniform float texture_depth;
-uniform float texture_x;
-uniform float texture_y;
 
 uniform sampler2D grass;
 
@@ -28,7 +26,7 @@ void fragment() {
 	vec3 color = vec3(0, 0, 0);
 	
 	vec3 taiga = vec3(0, 1, 1);
-	vec3 grassland = mix(vec3(0, 0.6, 0), texture(grass, w).rgb, 0.1);
+	vec3 grassland = mix(vec3(0, 0.776, 0.282), texture(grass, w).rgb, 0.1);
 	vec3 forest = vec3(0, 0.5, 0.5);
 	vec3 desert = vec3(1, 1, 0);
 	vec3 jungle = vec3(0, 0.25, 0.25);

@@ -9,7 +9,7 @@ extends Node
 @export var noise_elevation: Noise
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
-@onready var chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 1024)
+@onready var chunker: Terrain
 @onready var population: Dictionary = {}
 
 @onready var raycast = $RayCast3D
@@ -36,13 +36,16 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 	
-	chunker.raycast = raycast
-	
 	noise_elevation.frequency = 0.0005
 	noise_temperature.frequency = 0.0005
 	noise_dryness.frequency = 0.0005
 	
+	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 1024)
+	chunker.raycast = raycast
 	build_terrain()
+	if chunker.large_map != null:
+		ground.add_child(chunker.large_map)
+		ground.add_child(chunker.medium_map)
 	
 	player.position.y = chunker.blender.height(0, 0) + 5
 
@@ -57,6 +60,9 @@ func _physics_process(delta):
 var spell_index = 5
 
 func _input(event):
+	if event.is_action_pressed("debug1"):
+		chunker.switch_detail()
+	
 	if event.is_action_pressed("ui_cancel"):
 		if menu.is_showing:
 			menu.close()
