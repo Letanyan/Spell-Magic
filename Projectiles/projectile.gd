@@ -212,7 +212,7 @@ func update_shape(r: float, ignore_time: bool):
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary):
-	var next_pos = p - (vars["rel_pos"] if spell.is_relative_to_player_current_pos else vars["abs_pos"])
+	var next_pos = p - (vars["rel_pos"] if spell.follow else vars["abs_pos"])
 	if started:
 		velocity = next_pos - old_pos
 		var dist = velocity.length() * 60
@@ -265,7 +265,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 func update_spell(t: float, vars: Dictionary):
 	if not in_control or time_start == 0:
 		return
-	vars.merge(fixed_vars, true)
+	vars.merge(fixed_vars)
 	vars["n"] = n
 	vars["t"] = t - time_start
 	var p = spell.calculate_location(vars)
