@@ -31,6 +31,7 @@ scale_curve = SubResource("CurveTexture_jbj8g")
 color_ramp = SubResource("GradientTexture1D_7he8g")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t0aey"]
+shading_mode = 0
 vertex_color_use_as_albedo = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_58dya"]

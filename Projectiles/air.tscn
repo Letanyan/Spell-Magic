@@ -1,55 +1,57 @@
-[gd_scene load_steps=8 format=3 uid="uid://n8opbdntc6c3"]
+[gd_scene load_steps=9 format=3 uid="uid://n8opbdntc6c3"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_icqhx"]
+[ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="2_qxk8k"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_pnso3"]
-radius = 0.1
-height = 0.2
+[sub_resource type="Curve" id="Curve_acxw5"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.160194, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ijg8r"]
+width = 64
+curve = SubResource("Curve_acxw5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qcqdi"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 0.5
+emission_ring_inner_radius = 0.0
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+scale_curve = SubResource("CurveTexture_ijg8r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ovv0f"]
+render_priority = 0
+shader = ExtResource("2_qxk8k")
+shader_parameter/alpha = 1.0
+shader_parameter/period = 2.0
+shader_parameter/len = 0.5
+shader_parameter/radius = 0.25
+shader_parameter/width = 0.1
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_otar0"]
+material = SubResource("ShaderMaterial_ovv0f")
+radius = 1.0
+radial_segments = 8
+rings = 16
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_nuyxv"]
 height = 1.0
 
-[sub_resource type="Curve" id="Curve_wv0ah"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_cnti3"]
-curve = SubResource("Curve_wv0ah")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ronn3"]
-emission_shape = 6
-emission_ring_axis = Vector3(0, 0, 1)
-emission_ring_height = 1.0
-emission_ring_radius = 1.0
-emission_ring_inner_radius = 0.0
-direction = Vector3(0, 1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_max = 1.0
-scale_curve = SubResource("CurveTexture_cnti3")
-
-[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_wmw2q"]
-radius = 0.1
-section_length = 0.02
-
 [node name="air" type="Node3D"]
 script = ExtResource("1_icqhx")
 
-[node name="source" type="CPUParticles3D" parent="."]
+[node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-visible = false
-amount = 50
-mesh = SubResource("SphereMesh_pnso3")
-emission_shape = 6
-emission_ring_axis = Vector3(0, 1, 0)
-emission_ring_height = 0.5
-emission_ring_radius = 0.5
-emission_ring_inner_radius = 0.0
-direction = Vector3(0, 1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 1.0
+amount = 12
+lifetime = 4.0
+process_material = SubResource("ParticleProcessMaterial_qcqdi")
+draw_pass_1 = SubResource("CapsuleMesh_otar0")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 64
@@ -58,11 +60,5 @@ collision_mask = 22
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_nuyxv")
-
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-trail_enabled = true
-process_material = SubResource("ParticleProcessMaterial_ronn3")
-draw_pass_1 = SubResource("TubeTrailMesh_wmw2q")
 
 [connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

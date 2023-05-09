@@ -60,8 +60,8 @@ func _physics_process(delta):
 var spell_index = 5
 
 func _input(event):
-	if event.is_action_pressed("debug1"):
-		chunker.switch_detail()
+#	if event.is_action_pressed("debug1"):
+#		chunker.switch_detail()
 	
 	if event.is_action_pressed("ui_cancel"):
 		if menu.is_showing:

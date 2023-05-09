@@ -35,6 +35,10 @@ background_mode = 2
 sky = SubResource("Sky_mm3m4")
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
+fog_light_color = Color(0, 0, 0, 1)
+fog_light_energy = 10.0
+fog_density = 0.005
+fog_aerial_perspective = 0.1
 
 [node name="Demo" type="Node3D"]
 script = ExtResource("1_f83i4")

@@ -56,7 +56,7 @@ func _on_spell_index_item_selected(index):
 	
 	element_edit.text = Spell.name_from_element(spell.element)
 	chain_edit.text = spell.chain.name if spell.chain else ""
-	is_rel.button_pressed = spell.is_relative_to_player_current_pos
+	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
 	$container.visible = true
 
@@ -97,7 +97,7 @@ func _on_save_pressed():
 			if s.chain != null and s.chain.name == spell.name and s.name != spell.name:
 				s.chain = spell
 	
-	spell.is_relative_to_player_current_pos = is_rel.button_pressed
+	spell.follow = is_rel.button_pressed
 	spell.is_bomb = is_bomb.button_pressed
 	reload_list()
 	
@@ -225,7 +225,7 @@ func _on_chain_text_changed(new_text):
 func _on_is_rel_toggled(button_pressed):
 	if current_index < 0:
 		return
-	book.spells[current_index].is_relative_to_player_current_pos = button_pressed
+	book.spells[current_index].follow = button_pressed
 	update_spells_that_chain_to_current_spell()
 
 func _on_is_bomb_toggled(button_pressed):

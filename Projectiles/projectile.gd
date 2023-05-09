@@ -152,14 +152,7 @@ func update_shape(r: float, ignore_time: bool):
 			mbox.size.x = r
 			mbox.size.y = r
 			mbox.size.z = r
-			mbox.material = StandardMaterial3D.new()
-			mbox.material.albedo_color = Color8(96, 32, 0)
-			mbox.material.albedo_texture = NoiseTexture2D.new()
-			mbox.material.albedo_texture.noise = FastNoiseLite.new()
-			mbox.material.normal_enabled = true
-			mbox.material.normal_texture = NoiseTexture2D.new()
-			mbox.material.normal_texture.as_normal_map = true
-			mbox.material.normal_texture.noise = FastNoiseLite.new()
+			mbox.material = rock_mat
 			mesh.mesh = mbox
 			
 			var body: RigidBody3D = get_node("body")
@@ -179,13 +172,17 @@ func update_shape(r: float, ignore_time: bool):
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
 			var box = CylinderShape3D.new()
-			box.height = r #spell.impulse_length()
+			box.height = r * 4
 			box.radius = r
 			m_shape.position.y = box.height / 2
 			m_shape.shape = box
 			
-			var source = get_node("source")
-			source.emission_ring_radius = r 
+			var source2: GPUParticles3D = get_node("source")
+			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("width", r / 10.0)
+			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("len", r)
+			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("radius", r / 2)
+			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("period", r * 4)
+			source2.process_material.emission_ring_radius = r
 			
 		Spell.Element.ICE:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -236,10 +233,10 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			
 		Spell.Element.AIR:
 			position = p
-			var particles: CPUParticles3D = get_node("source")
-			var dist = get_node("source/area/shape").shape.radius
-			particles.initial_velocity_min = dist * 0.9
-			particles.initial_velocity_max = dist * 1.1
+			var source: GPUParticles3D = get_node("source")
+			source.process_material.initial_velocity_min = abs(velocity.length()) * 1.0
+			source.process_material.initial_velocity_max = abs(velocity.length()) * 1.5 
+			
 			var v = velocity.normalized()
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:
@@ -256,6 +253,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:
 					v = Vector3(0.1, 0.9, 0.1).normalized()
+				v = v.rotated(Vector3.BACK, PI / 2)
 				var dir = global_position + v * 10
 				look_at(dir)
 			
@@ -293,7 +291,7 @@ func stop_emitting():
 			free_after(particles.lifetime)
 			
 		Spell.Element.AIR:
-			var particles: CPUParticles3D = get_node("source")
+			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
@@ -328,6 +326,7 @@ func free_after(duration: float):
 			free_after(max_duration)
 			
 var water_mat = preload("res://Projectiles/water_mat.tres")
+var rock_mat = preload("res://Projectiles/rock.tres")
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, insert, next_spell)

@@ -4,15 +4,15 @@
 
 [sub_resource type="Gradient" id="Gradient_eaodq"]
 interpolation_mode = 2
-offsets = PackedFloat32Array(0.525714, 1)
-colors = PackedColorArray(0.0196078, 0.0509804, 0.501961, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.137143, 0.542857, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.0196078, 0.0509804, 0.501961, 1, 0.0243498, 0.0555706, 0.50437, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_1ccbm"]
 gradient = SubResource("Gradient_eaodq")
 width = 64
 
 [sub_resource type="Curve" id="Curve_e4atl"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.436893, 0.781818), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.145631, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_20bab"]
