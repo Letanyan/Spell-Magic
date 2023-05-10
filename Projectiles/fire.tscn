@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_tkofl"]
 
 [sub_resource type="Gradient" id="Gradient_k1smn"]
-offsets = PackedFloat32Array(0, 0.205714, 1)
-colors = PackedColorArray(1, 1, 0, 1, 1, 0.68, 0, 1, 1, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 0, 1, 1, 0.68, 0, 1, 1, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_7he8g"]
 gradient = SubResource("Gradient_k1smn")
@@ -38,7 +38,7 @@ vertex_color_use_as_albedo = true
 material = SubResource("StandardMaterial3D_t0aey")
 radius = 0.25
 height = 0.5
-radial_segments = 8
+radial_segments = 6
 rings = 4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_21upn"]

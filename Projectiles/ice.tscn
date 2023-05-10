@@ -1,16 +1,43 @@
-[gd_scene load_steps=5 format=3 uid="uid://kjdhhq3p1a5m"]
+[gd_scene load_steps=8 format=3 uid="uid://kjdhhq3p1a5m"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_8dm3y"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_be0f7"]
-albedo_color = Color(0, 1, 1, 1)
-metallic = 0.51
-metallic_specular = 0.0
-roughness = 0.56
+[sub_resource type="Gradient" id="Gradient_k3a7i"]
+offsets = PackedFloat32Array(0, 0.754286, 1)
+colors = PackedColorArray(0, 0.239216, 1, 1, 0.321569, 1, 1, 1, 1, 1, 1, 0)
 
-[sub_resource type="PrismMesh" id="PrismMesh_eaysx"]
-material = SubResource("StandardMaterial3D_be0f7")
-size = Vector3(0.1, 0.1, 0.1)
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m0348"]
+gradient = SubResource("Gradient_k3a7i")
+width = 32
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p7bpa"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 0.2, 1)
+particle_flag_align_y = true
+particle_flag_rotate_y = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.2
+angular_velocity_min = 50.0
+angular_velocity_max = 100.0
+angle_max = 360.0
+scale_min = 0.1
+color_ramp = SubResource("GradientTexture1D_m0348")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhvgb"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.752941, 1, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_b25tq"]
+material = SubResource("StandardMaterial3D_hhvgb")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1v7ss"]
 size = Vector3(1, 0.2, 1)
@@ -18,17 +45,11 @@ size = Vector3(1, 0.2, 1)
 [node name="ice" type="Node3D"]
 script = ExtResource("1_8dm3y")
 
-[node name="source" type="CPUParticles3D" parent="."]
+[node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 amount = 100
-mesh = SubResource("PrismMesh_eaysx")
-emission_shape = 3
-emission_box_extents = Vector3(1, 0.1, 1)
-direction = Vector3(0, 1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 0.2
+process_material = SubResource("ParticleProcessMaterial_p7bpa")
+draw_pass_1 = SubResource("SphereMesh_b25tq")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 128

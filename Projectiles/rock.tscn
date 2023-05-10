@@ -5,8 +5,7 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3hxed"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_gs8om"]
-lightmap_size_hint = Vector2i(14, 21)
+[sub_resource type="BoxMesh" id="BoxMesh_i7rb6"]
 material = ExtResource("2_hsxl8")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_odltr"]
@@ -23,7 +22,7 @@ freeze = true
 shape = SubResource("BoxShape3D_3hxed")
 
 [node name="mesh" type="MeshInstance3D" parent="body"]
-mesh = SubResource("BoxMesh_gs8om")
+mesh = SubResource("BoxMesh_i7rb6")
 skeleton = NodePath("../..")
 
 [node name="area" type="Area3D" parent="body/mesh"]

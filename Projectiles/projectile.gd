@@ -181,8 +181,9 @@ func update_shape(r: float, ignore_time: bool):
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("width", r / 10.0)
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("len", r)
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("radius", r / 2)
-			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("period", r * 4)
+			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("period", r / 4)
 			source2.process_material.emission_ring_radius = r
+			source2.process_material.emission_ring_height = r * 4
 			
 		Spell.Element.ICE:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -191,8 +192,8 @@ func update_shape(r: float, ignore_time: bool):
 			box.size.z = r * 2
 			m_shape.shape = box
 			
-			var source: CPUParticles3D = get_node("source")
-			source.emission_box_extents = Vector3(r, 0.2, r)
+			var source: GPUParticles3D = get_node("source")
+			source.process_material.emission_box_extents = Vector3(r, 0.2, r)
 			
 		Spell.Element.ELECTRIC:
 			var m_shape: CollisionShape3D = get_node("body/area/shape")
@@ -233,9 +234,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			
 		Spell.Element.AIR:
 			position = p
+			var box: CollisionShape3D = get_node("source/area/shape")
+			var h = box.shape.height
 			var source: GPUParticles3D = get_node("source")
-			source.process_material.initial_velocity_min = abs(velocity.length()) * 1.0
-			source.process_material.initial_velocity_max = abs(velocity.length()) * 1.5 
+			source.process_material.initial_velocity_min = abs(velocity.length()) * 1.0 * h
+			source.process_material.initial_velocity_max = abs(velocity.length()) * 1.5 * h
 			
 			var v = velocity.normalized()
 			if v != Vector3.ZERO:
@@ -246,14 +249,13 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			
 		Spell.Element.ICE:
 			position = p
-			var particles: CPUParticles3D = get_node("source")
-			particles.initial_velocity_min = 0.2 * 0.9
-			particles.initial_velocity_max = 0.2 * 1.1
+			var particles: GPUParticles3D = get_node("source")
+			particles.process_material.initial_velocity_min = 0.2 * 0.9
+			particles.process_material.initial_velocity_max = 0.2 * 1.1
 			var v = velocity.normalized()
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:
 					v = Vector3(0.1, 0.9, 0.1).normalized()
-				v = v.rotated(Vector3.BACK, PI / 2)
 				var dir = global_position + v * 10
 				look_at(dir)
 			
@@ -298,7 +300,7 @@ func stop_emitting():
 			free_after(particles.lifetime)
 			
 		Spell.Element.ICE:
-			var particles: CPUParticles3D = get_node("source")
+			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
