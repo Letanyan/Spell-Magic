@@ -72,4 +72,14 @@ visible = false
 target_position = Vector3(0, -1000, 0)
 hit_from_inside = true
 
+[node name="FPS" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -102.0
+offset_bottom = 32.0
+grow_horizontal = 0
+text = "FPS: 0"
+horizontal_alignment = 2
+
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
