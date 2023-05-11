@@ -252,7 +252,7 @@ func place_grass(nav: NavigationRegion3D):
 		for y in range(-chunk_size / 2, chunk_size / 2, 4):
 			var p = Vector3(x, 1000, y) + nav.position
 			var biome = blender.biome(p.x, p.z)
-			if biome != NoiseBlender.Biome.GRASSLAND:
+			if biome != World.Biome.GRASSLAND:
 				continue
 			if randf() < 0.1:
 				continue

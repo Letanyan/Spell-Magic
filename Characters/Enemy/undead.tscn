@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://cqvqvhk36ldhe"]
+
+[ext_resource type="Script" path="res://Characters/Enemy/undead.gd" id="1_cwexf"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tjkv7"]
+size = Vector3(0.4, 1.9, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uxob1"]
+size = Vector3(0.4, 1.9, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kee3k"]
+albedo_color = Color(1, 0.0431373, 0.0666667, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qdqeg"]
+material = SubResource("StandardMaterial3D_kee3k")
+size = Vector3(0.4, 1.9, 0.2)
+
+[node name="enemy" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 81
+script = ExtResource("1_cwexf")
+
+[node name="collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_tjkv7")
+
+[node name="WetArea" type="Area3D" parent="."]
+collision_layer = 36
+collision_mask = 0
+
+[node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_uxob1")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+mesh = SubResource("BoxMesh_qdqeg")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+max_speed = 100.0
+debug_use_custom = true
+debug_path_custom_color = Color(0.443137, 0.619608, 0.309804, 1)
+debug_path_custom_point_size = 10.0

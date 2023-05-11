@@ -2,10 +2,17 @@ class_name Population
 
 # Each enemy has a probability of spawning in a biome
 const ENEMY_SPAWN_PROB: Dictionary = {
-	NoiseBlender.Biome.GRASSLAND: 0.01,
-	NoiseBlender.Biome.SAVANNAH: 0.02,
-	NoiseBlender.Biome.WATER: 0.01,
+	World.Biome.GRASSLAND: {
+		World.Enemy.UNDEAD: 0.01
+	},
+	World.Biome.SAVANNAH: {
+		World.Enemy.UNDEAD: 0.02
+	},
+	World.Biome.WATER: {
+		World.Enemy.UNDEAD: 0.01
+	},
 }
+
 
 var rng: RandomNumberGenerator
 var blender: NoiseBlender
@@ -15,6 +22,8 @@ var coord: Vector2
 var chunk_size: float
 
 var inhabitants = []
+
+var undead = preload("res://Characters/Enemy/undead.tscn")
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
@@ -27,20 +36,42 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
+func random_enemy(biome: World.Biome) -> World.Enemy:
+	var probs = ENEMY_SPAWN_PROB.get(biome, {})
+	var keys = probs.keys()
+	if keys.size() == 0:
+		return World.Enemy.NONE
+	
+	var r = rng.randf()
+	if keys.size() == 1:
+		var i = keys[0]
+		return keys[0] if r < probs[i] else World.Enemy.NONE
+		
+	var base := 0.0
+	for n in range(0, keys.size()):
+		var i = keys[n]
+		var next_base = base + probs[i]
+		if base <= probs[i] and probs[i] < next_base:
+			return i
+		base = next_base
+	
+	return World.Enemy.NONE
+		
+	
 func spawn(x: float, y: float) -> Enemy:
 	var biome = blender.biome(x, y)
-	var prob = ENEMY_SPAWN_PROB.get(biome, 0.0)
 	
 	var result = null
-	if rng.randf() < prob:
-		result = load("res://Characters/Enemy/enemy.tscn").instantiate()
+	match random_enemy(biome):
+		World.Enemy.UNDEAD:
+			result = undead.instantiate()
+		
+	if result != null:
 		result.blender = blender
 		result.player = player
 		result.position.x = x
 		result.position.y = blender.height(x, y) + 5
 		result.position.z = y
-		
-	if result != null:
 		inhabitants.append(result)
 		
 	return result

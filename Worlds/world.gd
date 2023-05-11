@@ -1,0 +1,11 @@
+class_name World
+
+enum Biome {
+	WATER,
+	GRASSLAND, TAIGA, FOREST, DESERT, JUNGLE, SAVANNAH, TUNDRA,
+	OTHERWORLD, HFIL
+}
+
+enum Enemy {
+	NONE, UNDEAD
+}

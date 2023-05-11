@@ -5,7 +5,7 @@ var movement_target_position: Vector3 = Vector3.ZERO
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
-var velocity_movement = VeloctyMovement.new()
+var velocity_movement: VeloctyMovement
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
 
@@ -20,28 +20,7 @@ func _ready():
 	# and the navigation layout.
 	navigation_agent.path_desired_distance = 0.5
 	navigation_agent.target_desired_distance = 0.5
-	velocity_movement.navigation_agent = navigation_agent
-
-	behaviour = Behaviour.new(
-		PathStyle.new(blender, get_rid().get_id()).circle(position, 15),
-		PathStyle.new(blender, get_rid().get_id()).follow_player(5, 10)
-	)
-	behaviour.update_state(self, player)
 	
-	vitals = Vitals.new(100, 50)
-	
-	patterns = AttackPatterns.new(
-		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 2", "w * t * 5", "1", 0.1, 5000, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 2", "w * t * 5", "1", 0.1, 5000, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 2", "w * t * 5", "1", 0.1, 5000, Spell.Element.ROCK, 1),
-		],
-		[
-			5,
-			3,
-			2,
-		]
-	)
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
