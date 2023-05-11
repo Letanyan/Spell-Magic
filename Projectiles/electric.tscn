@@ -1,47 +1,71 @@
-[gd_scene load_steps=7 format=3 uid="uid://8p44w2bikis2"]
+[gd_scene load_steps=12 format=3 uid="uid://8p44w2bikis2"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_qx5re"]
+[ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
+[ext_resource type="Shader" path="res://Projectiles/electric.gdshader" id="3_8dbc8"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvh81"]
-shading_mode = 0
-albedo_color = Color(1, 1, 0, 1)
+[sub_resource type="Gradient" id="Gradient_t57qq"]
+offsets = PackedFloat32Array(0, 0.177143)
+colors = PackedColorArray(1, 1, 0.12549, 1, 1, 1, 1, 0)
 
-[sub_resource type="TextMesh" id="TextMesh_vk844"]
-material = SubResource("StandardMaterial3D_gvh81")
-text = "Z"
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ya8v8"]
+gradient = SubResource("Gradient_t57qq")
+width = 32
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lys4a"]
-shading_mode = 0
-diffuse_mode = 1
-specular_mode = 1
-albedo_color = Color(1, 1, 0, 1)
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_06km0"]
+emission_shape = 2
+emission_sphere_radius = 0.6
+particle_flag_rotate_y = true
+direction = Vector3(0, 1, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+angle_min = 360.0
+angle_max = 360.0
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("GradientTexture1D_ya8v8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o7bmt"]
+render_priority = 0
+shader = ExtResource("2_2xrdn")
+shader_parameter/alpha = 1.0
+shader_parameter/period = 8.0
+shader_parameter/len = 0.1
+shader_parameter/radius = 0.25
+shader_parameter/width = 0.1
+shader_parameter/use_vertex_color = true
+shader_parameter/color = Color(1, 1, 0, 1)
+shader_parameter/comps = PackedFloat32Array(4, 0.4, 17, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_a4wuh"]
+material = SubResource("ShaderMaterial_o7bmt")
+size = Vector3(0.1, 2, 0.1)
+subdivide_height = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g1ktx"]
+render_priority = 0
+shader = ExtResource("3_8dbc8")
+shader_parameter/start_color = Color(1, 1, 0, 1)
+shader_parameter/end_color = Color(1, 1, 0, 0.501961)
+shader_parameter/speed = 5.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_sdaq3"]
-material = SubResource("StandardMaterial3D_lys4a")
+material = SubResource("ShaderMaterial_g1ktx")
+radial_segments = 16
+rings = 8
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_erm55"]
 
 [node name="electric" type="Node3D"]
 script = ExtResource("1_qx5re")
 
-[node name="source" type="CPUParticles3D" parent="."]
-amount = 800
-local_coords = true
-mesh = SubResource("TextMesh_vk844")
-emission_shape = 1
-emission_sphere_radius = 1.0
-direction = Vector3(0, 1, 0)
-spread = 180.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 1.0
-radial_accel_min = 0.1
-radial_accel_max = 1.0
-tangential_accel_max = 28.8
-angle_min = -720.0
-angle_max = 720.0
-scale_amount_min = 0.5
-scale_amount_max = 2.0
+[node name="source" type="GPUParticles3D" parent="."]
+amount = 20
+lifetime = 0.5
+transform_align = 2
+process_material = SubResource("ParticleProcessMaterial_06km0")
+draw_pass_1 = SubResource("BoxMesh_a4wuh")
 
 [node name="body" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_sdaq3")

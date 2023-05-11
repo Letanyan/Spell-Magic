@@ -149,6 +149,7 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"eq": tape.append(1 if a == 0 else 0)
 				"neq": tape.append(1 if a != 0 else 0)
 				
-				
+	if tape.is_empty():
+		return 0
 	
 	return tape.back()

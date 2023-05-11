@@ -201,8 +201,8 @@ func update_shape(r: float, ignore_time: bool):
 			box.radius = r
 			m_shape.shape = box
 			
-			var source: CPUParticles3D = get_node("source")
-			source.emission_sphere_radius = r
+			var source: GPUParticles3D = get_node("source")
+			source.process_material.emission_sphere_radius = r * 1.2
 			var body = get_node("body")
 			body.mesh.radius = r
 			body.mesh.height = r * 2
@@ -307,7 +307,7 @@ func stop_emitting():
 			free_after(particles.lifetime)
 			
 		Spell.Element.ELECTRIC:
-			var particles: CPUParticles3D = get_node("source")
+			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var body = get_node("body")
 			body.visible = false
