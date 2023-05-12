@@ -4,12 +4,12 @@ extends Enemy
 func _ready():
 	super._ready()
 	
-	velocity_movement = VeloctyMovement.new()
+	velocity_movement = VelocityMovement.new()
 	velocity_movement.navigation_agent = navigation_agent
 
 	behaviour = Behaviour.new(
-		PathStyle.new(blender, get_rid().get_id()).circle(position, 15),
-		PathStyle.new(blender, get_rid().get_id()).follow_player(5, 10)
+		PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2),
+		PathStyle.new(blender, get_rid().get_id()).follow_player(0, 1).speed(6)
 	)
 	behaviour.update_state(self, player)
 	

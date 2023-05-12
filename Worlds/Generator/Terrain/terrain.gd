@@ -25,13 +25,13 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 #	large_map = create_mesh(0, 0, large_chunk, 0.0005)[0]
 #	update_mesh(large_map, 0, 0, large_chunk)
 #	large_map.position = Vector3(0, 0, 0)
-#	large_map.visible = false
+#	large_map.visible = true
 	
 #	var medium_chunk = r * 2
 #	medium_map = create_mesh(0, 0, medium_chunk, 0.005)[0]
 #	update_mesh(medium_map, 0, 0, medium_chunk)
 #	medium_map.position = Vector3(0, 0, 0)
-#	medium_map.visible = false
+#	medium_map.visible = true
 	
 func switch_detail():
 	if large_map.visible:

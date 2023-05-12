@@ -1,4 +1,4 @@
-class_name VeloctyMovement
+class_name VelocityMovement
 
 @export var speed: float = 24
 @export var fall_acceleration: float = 75
@@ -12,6 +12,15 @@ var velocity = Vector3.ZERO
 var target_velocity = Vector3.ZERO
 var impulse = Vector3.ZERO
 
+func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float = 75, _jump_impulse: float = 20, _bounce_impulse: float = 16):
+	speed = _speed
+	fall_acceleration = _fall_acceleration
+	friction = _friction
+	jump_impulse = _jump_impulse
+	bounce_impulse = _bounce_impulse
+	
+static func player() -> VelocityMovement:
+	return VelocityMovement.new(36, 150, 150)
 
 func interval_check(interval: int, epsilon: int):
 	var t = Time.get_ticks_msec() % interval

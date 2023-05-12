@@ -15,6 +15,10 @@ func _init(_blender: NoiseBlender, _seed: int, _kind: Kind = Kind.ORIGIN, _origi
 	blender = _blender
 	seed_offset = _seed
 	
+func speed(s: float) -> PathStyle:
+	movement_speed = s
+	return self
+	
 func circle(center: Vector3, radius: float) -> PathStyle:
 	kind = Kind.CIRCLE
 	origin = center

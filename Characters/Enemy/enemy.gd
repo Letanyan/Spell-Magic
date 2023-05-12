@@ -5,7 +5,7 @@ var movement_target_position: Vector3 = Vector3.ZERO
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
-var velocity_movement: VeloctyMovement
+var velocity_movement: VelocityMovement
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
 

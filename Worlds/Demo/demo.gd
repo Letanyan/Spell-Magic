@@ -45,6 +45,7 @@ func _ready():
 	build_terrain()
 	if chunker.large_map != null:
 		ground.add_child(chunker.large_map)
+	if chunker.medium_map != null:
 		ground.add_child(chunker.medium_map)
 	
 	player.position.y = chunker.blender.height(0, 0) + 5

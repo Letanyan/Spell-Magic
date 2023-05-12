@@ -50,9 +50,9 @@ func nothing(p: Node3D, q: Node3D):
 func impulse() -> Vector3:
 	match spell.element:
 		Spell.Element.ROCK:
-			return velocity.normalized() * (spell.power * 100.0) 
+			return velocity.normalized() * (spell.power * 10.0) 
 		Spell.Element.AIR:
-			return velocity.normalized() * (spell.power * 100.0)
+			return velocity.normalized() * (spell.power * 10.0)
 		_:
 			return Vector3.ZERO
 

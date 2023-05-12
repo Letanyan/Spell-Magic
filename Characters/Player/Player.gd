@@ -9,7 +9,7 @@ extends CharacterBody3D
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
-var velocity_movement = VeloctyMovement.new()
+var velocity_movement = VelocityMovement.player()
 var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
 
 signal player_moved
@@ -18,8 +18,6 @@ signal player_moved
 var vitals: Vitals
 
 func _ready():
-	# These values need to be adjusted for the actor's speed
-	# and the navigation layout.
 	navigation_agent.path_desired_distance = 0.5
 	navigation_agent.target_desired_distance = 0.5
 	velocity_movement.navigation_agent = navigation_agent
