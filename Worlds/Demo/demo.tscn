@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bhec0b6awe536"]
+[gd_scene load_steps=11 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="3_j80hc"]
@@ -76,7 +76,7 @@ hit_from_inside = true
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -102.0
+offset_left = -370.0
 offset_bottom = 32.0
 grow_horizontal = 0
 text = "FPS: 0"

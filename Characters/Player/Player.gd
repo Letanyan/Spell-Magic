@@ -22,6 +22,7 @@ func _ready():
 	navigation_agent.target_desired_distance = 0.5
 	velocity_movement.navigation_agent = navigation_agent
 	
+	velocity_movement.speed = 500
 	vitals = Vitals.new(100, 50)
 
 func _input(event):

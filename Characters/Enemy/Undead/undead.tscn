@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://cqvqvhk36ldhe"]
 
-[ext_resource type="Script" path="res://Characters/Enemy/undead.gd" id="1_cwexf"]
-[ext_resource type="Material" uid="uid://d2brs1yndser8" path="res://Characters/Enemy/Undead/skin.tres" id="2_a2q7y"]
+[ext_resource type="Script" path="res://Characters/Enemy/Undead/undead.gd" id="1_bsy36"]
+[ext_resource type="Material" uid="uid://d2brs1yndser8" path="res://Characters/Enemy/Undead/skin.tres" id="2_2p0i4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tjkv7"]
 size = Vector3(0.7, 1.9, 0.3)
@@ -10,53 +10,128 @@ size = Vector3(0.7, 1.9, 0.3)
 size = Vector3(0.7, 1.9, 0.3)
 
 [sub_resource type="SphereMesh" id="SphereMesh_noyre"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.127
 height = 0.253
 
 [sub_resource type="BoxMesh" id="BoxMesh_kwlve"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 size = Vector3(0.253, 0.506, 0.063)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_uopfy"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.38
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vib20"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.38
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_k3fe3"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.38
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_812wy"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.38
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_o8kd0"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.506
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vs2uj"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.506
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_2cu3u"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.506
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ln2fr"]
-material = ExtResource("2_a2q7y")
+material = ExtResource("2_2p0i4")
 radius = 0.063
 height = 0.506
+
+[sub_resource type="Animation" id="Animation_7jp6q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("mesh/legs/right:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("mesh/legs/left:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("mesh/torso:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("mesh/head:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("mesh/arms/left:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("mesh/arms/right:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_a735j"]
 resource_name = "undead_idle"
@@ -161,81 +236,6 @@ tracks/5/keys = {
 "values": [Vector3(0, 0, 0), Vector3(0, 0, -0.1), Vector3(0, 0, -0.1), Vector3(0, 0, 0), Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_7jp6q"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("mesh/legs/right:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("mesh/legs/left:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("mesh/torso:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("mesh/head:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("mesh/arms/left:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("mesh/arms/right:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_o6bo6"]
 _data = {
 "RESET": SubResource("Animation_7jp6q"),
@@ -246,7 +246,7 @@ _data = {
 [node name="enemy" type="CharacterBody3D"]
 collision_layer = 4
 collision_mask = 81
-script = ExtResource("1_cwexf")
+script = ExtResource("1_bsy36")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)

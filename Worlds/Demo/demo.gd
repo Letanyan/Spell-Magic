@@ -11,6 +11,7 @@ extends Node
 @export var noise_dryness: Noise
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
+@onready var terrain: Dictionary = {}
 
 @onready var raycast = $RayCast3D
 
@@ -53,7 +54,7 @@ func _ready():
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$FPS.text = "FPS: " + str(Engine.get_frames_per_second())
+	$FPS.text = "LOC: " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	pass
 	
 func _physics_process(delta):
@@ -114,6 +115,9 @@ func update_terrain():
 			var pop = population[loc]
 			pop.despawn_all_from_world(self)
 			population.erase(loc)
+			var scat = terrain[loc]
+			scat.despawn_all_from_world(self)
+			terrain.erase(loc)
 		
 		update_population_at(chunks.get("updated", []))
 		return chunks.get("updated", []).size() > 0
@@ -130,6 +134,11 @@ func update_terrain():
 func update_population_at(locations: Array):
 	for loc in locations:
 		var coord = chunker.convert_position_to_coord(loc.x, loc.y)
+		
 		var pop = Population.new(coord, chunker.chunk_size, chunker.blender, player)
 		pop.spawn_all_into_world(self)
 		population[loc] = pop
+		
+		var scat = Scatter.new(coord, chunker.chunk_size, chunker.blender, player)
+		scat.spawn_all_into_world(self)
+		terrain[loc] = scat

@@ -1,18 +1,19 @@
-class_name Population
+class_name Scatter
 
-# Each enemy has a probability of spawning in a biome
 const ENEMY_SPAWN_PROB: Dictionary = {
 	World.Biome.GRASSLAND: {
-		World.Enemy.UNDEAD: 0.01
+		World.Foliage.GRASSLAND_TREE: 0.01
 	},
 	World.Biome.SAVANNAH: {
-		World.Enemy.UNDEAD: 0.02
+		World.Foliage.GRASSLAND_TREE: 0.02
 	},
 	World.Biome.WATER: {
-		World.Enemy.UNDEAD: 0.01
+		World.Foliage.GRASSLAND_TREE: 0.01
 	},
+	World.Biome.FOREST: {
+		World.Foliage.GRASSLAND_TREE: 0.25
+	}
 }
-
 
 var rng: RandomNumberGenerator
 var blender: NoiseBlender
@@ -22,8 +23,6 @@ var coord: Vector2
 var chunk_size: float
 
 var inhabitants = []
-
-var undead = preload("res://Characters/Enemy/Undead/undead.tscn")
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
@@ -36,11 +35,11 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-func random_enemy(biome: World.Biome) -> World.Enemy:
+func random_terrain(biome: World.Biome) -> World.Foliage:
 	var probs = ENEMY_SPAWN_PROB.get(biome, {})
 	var keys = probs.keys()
 	if keys.size() == 0:
-		return World.Enemy.NONE
+		return World.Foliage.NONE
 	
 	var r = rng.randf()
 	if keys.size() == 1:
@@ -55,22 +54,20 @@ func random_enemy(biome: World.Biome) -> World.Enemy:
 			return i
 		base = next_base
 	
-	return World.Enemy.NONE
+	return World.Foliage.NONE
 		
 	
-func spawn(x: float, y: float) -> Enemy:
+func spawn(x: float, y: float) -> Node3D:
 	var biome = blender.biome(x, y)
 	
 	var result = null
-	match random_enemy(biome):
-		World.Enemy.UNDEAD:
-			result = undead.instantiate()
+	match random_terrain(biome):
+		World.Foliage.GRASSLAND_TREE:
+			result = Trees.build(rng)
 		
 	if result != null:
-		result.blender = blender
-		result.player = player
 		result.position.x = x
-		result.position.y = blender.height(x, y) + 5
+		result.position.y = blender.height(x, y)
 		result.position.z = y
 		inhabitants.append(result)
 		

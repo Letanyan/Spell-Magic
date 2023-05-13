@@ -1,0 +1,41 @@
+class_name Trees
+
+const leaves_mat = preload("res://Worlds/Generator/Terrain/Trees/tree_leaves.tres")
+const trunk_mat = preload("res://Worlds/Generator/Terrain/Trees/tree_trunk.tres")
+
+static func build(rng: RandomNumberGenerator) -> Node3D:
+	var trunk = MeshInstance3D.new()
+	trunk.mesh = CylinderMesh.new()
+	var h = rng.randf_range(4, 10)
+	var r = rng.randf_range(h / 8, h / 2)
+	trunk.mesh.height = h
+	trunk.mesh.top_radius = r
+	trunk.mesh.bottom_radius = r
+	trunk.mesh.surface_set_material(0, trunk_mat)
+	trunk.position.y = h / 2
+	
+	var s = rng.randf_range(r * 1.5, r * 2)
+	var sh = rng.randf_range(s, s * 2)
+	var leaves = MeshInstance3D.new()
+	leaves.mesh = SphereMesh.new()
+	leaves.mesh.radius = s
+	leaves.mesh.height = sh
+	leaves.mesh.surface_set_material(0, leaves_mat)
+	leaves.position.y = h
+	
+	var body = StaticBody3D.new()
+	body.collision_layer = 0b1
+	
+	var box = CollisionShape3D.new()
+	box.shape = CylinderShape3D.new()
+	box.shape.height = h
+	box.shape.radius = r
+	body.add_child(box)
+	trunk.add_child(body)
+	
+	var result = Node3D.new()
+	result.add_child(trunk)
+	result.add_child(leaves)
+	
+	return result
+	

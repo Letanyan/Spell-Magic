@@ -9,3 +9,8 @@ enum Biome {
 enum Enemy {
 	NONE, UNDEAD
 }
+
+enum Foliage {
+	NONE,
+	GRASSLAND_TREE
+}
