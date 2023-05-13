@@ -5,6 +5,8 @@ var movement_target_position: Vector3 = Vector3.ZERO
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
+@onready var animator: AnimationPlayer = $AnimationPlayer
+
 var velocity_movement: VelocityMovement
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
@@ -15,12 +17,18 @@ var behaviour: Behaviour
 var vitals: Vitals
 var patterns: AttackPatterns
 
+var animation_map: Dictionary
+
+var behavior_tick: int = 0
+var spell_tick: int = 0
+
 func _ready():
 	# These values need to be adjusted for the actor's speed
 	# and the navigation layout.
 	navigation_agent.path_desired_distance = 0.5
 	navigation_agent.target_desired_distance = 0.5
 	
+	animation_map = {}
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
@@ -37,28 +45,51 @@ func set_movement_target(movement_target: Vector3):
 	
 func apply_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
-
-func interval_check(interval: int, epsilon: int):
-	var t = Time.get_ticks_msec() % interval
-	return t < epsilon
 	
+func increment_ticks():
+	behavior_tick += 1
+	spell_tick += 1
+	
+	
+func play_animation(animation: String, blend: float):
+	var anim = animation_map.get(animation, "")
+	if anim != "":
+		animator.play(anim, blend) 
 
 func _physics_process(delta):
+	increment_ticks()
+	
 	var movement = velocity_movement.update(delta, vitals, behaviour.movement_speed(), self)
 	velocity = movement["velocity"]
 	move_and_slide()
+
 		
-	if interval_check(250, 50):
+	if behavior_tick == 20:
 		behaviour.update_state(self, player)
 		var next_pos = behaviour.next_position(self, player)
 		set_movement_target(next_pos)
+		behavior_tick = 0
 	
-	if interval_check(500, 10):
+	if spell_tick == 60:
 		var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
 		if spell != null:
 			cast_spell(func(p): if p != null: add_sibling(p), spell)
+		spell_tick = 0
 		
 	spell_caster.update(self, delta)
+	
+	if velocity != Vector3.ZERO:
+		if is_on_floor():
+			if velocity.length() > 1:
+				play_animation("walk", 1)
+			else:
+				play_animation("run", 1)
+	else:
+		if is_on_floor():
+			play_animation("idle", 1)
+
+	if not is_on_floor_only():
+		play_animation("run", 1)
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, insert, next_spell)

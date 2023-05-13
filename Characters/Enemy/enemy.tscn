@@ -38,3 +38,5 @@ max_speed = 100.0
 debug_use_custom = true
 debug_path_custom_color = Color(0.443137, 0.619608, 0.309804, 1)
 debug_path_custom_point_size = 10.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

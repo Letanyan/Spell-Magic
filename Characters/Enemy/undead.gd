@@ -4,6 +4,9 @@ extends Enemy
 func _ready():
 	super._ready()
 	
+	animation_map["idle"] = "undead_idle"
+	animation_map["walk"] = "undead_walk"
+	
 	velocity_movement = VelocityMovement.new()
 	velocity_movement.navigation_agent = navigation_agent
 

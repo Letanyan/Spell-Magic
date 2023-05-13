@@ -76,12 +76,20 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	velocity = target_velocity + navigation_velocity
 	result["velocity"] = velocity
-	if direction != Vector3.ZERO:
-		var pivot: Node3D = body.get_node("Pivot")
-		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
-		var collision: Node3D = body.get_node("Collision")
-		collision.rotation.y = pivot.rotation.y
-		var wet_area: Node3D = body.get_node("WetArea")
-		wet_area.rotation.y = pivot.rotation.y
+	
+	if body.has_node("CamPivot"):
+		if direction != Vector3.ZERO:
+			var pivot: Node3D = body.get_node("Pivot")
+	#		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
+			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.15)
+			var collision: Node3D = body.get_node("Collision")
+			collision.rotation.y = pivot.rotation.y
+			var wet_area: Node3D = body.get_node("WetArea")
+			wet_area.rotation.y = pivot.rotation.y
+	else:
+		if navigation_velocity != Vector3.ZERO:
+			body.rotation.y = lerp_angle(body.rotation.y, atan2(-navigation_velocity.x, -navigation_velocity.z), 0.15)
+		
+		
 		
 	return result

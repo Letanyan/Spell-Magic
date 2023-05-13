@@ -36,10 +36,6 @@ func set_movement_target(movement_target: Vector3):
 func apply_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
 
-func interval_check(interval: int, epsilon: int):
-	var t = Time.get_ticks_msec() % interval
-	return t < epsilon
-
 func _physics_process(delta):
 	var movement = velocity_movement.update(delta, vitals, 14, self)
 	velocity = movement["velocity"]
