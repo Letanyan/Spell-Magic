@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://cqvqvhk36ldhe"]
+[gd_scene load_steps=20 format=3 uid="uid://cqvqvhk36ldhe"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Undead/undead.gd" id="1_bsy36"]
 [ext_resource type="Material" uid="uid://d2brs1yndser8" path="res://Characters/Enemy/Undead/skin.tres" id="2_2p0i4"]
+[ext_resource type="Material" uid="uid://cma3sosowprss" path="res://Characters/Enemy/Undead/cloth.tres" id="3_x7eml"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tjkv7"]
 size = Vector3(0.7, 1.9, 0.3)
@@ -15,11 +16,11 @@ radius = 0.127
 height = 0.253
 
 [sub_resource type="BoxMesh" id="BoxMesh_kwlve"]
-material = ExtResource("2_2p0i4")
+material = ExtResource("3_x7eml")
 size = Vector3(0.253, 0.506, 0.063)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_uopfy"]
-material = ExtResource("2_2p0i4")
+material = ExtResource("3_x7eml")
 radius = 0.063
 height = 0.38
 
@@ -29,7 +30,7 @@ radius = 0.063
 height = 0.38
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_k3fe3"]
-material = ExtResource("2_2p0i4")
+material = ExtResource("3_x7eml")
 radius = 0.063
 height = 0.38
 
@@ -39,7 +40,7 @@ radius = 0.063
 height = 0.38
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_o8kd0"]
-material = ExtResource("2_2p0i4")
+material = ExtResource("3_x7eml")
 radius = 0.063
 height = 0.506
 
@@ -49,7 +50,7 @@ radius = 0.063
 height = 0.506
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_2cu3u"]
-material = ExtResource("2_2p0i4")
+material = ExtResource("3_x7eml")
 radius = 0.063
 height = 0.506
 
@@ -283,28 +284,29 @@ mesh = SubResource("BoxMesh_kwlve")
 skeleton = NodePath("../..")
 
 [node name="arms" type="Node3D" parent="mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0140078, 0)
 
 [node name="left" type="Node3D" parent="mesh/arms"]
 
 [node name="top" type="MeshInstance3D" parent="mesh/arms/left"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.23, 1.4, 0)
+transform = Transform3D(1, 0, 0, 0, -0.567326, 0.823493, 0, -0.823493, -0.567326, -0.23, 1.4, 0)
 mesh = SubResource("CapsuleMesh_uopfy")
 skeleton = NodePath("../../..")
 
 [node name="bottom" type="MeshInstance3D" parent="mesh/arms/left"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.23, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 0.35207, -0.935974, 0, 0.935974, 0.35207, -0.23, 1.20889, -0.343016)
 mesh = SubResource("CapsuleMesh_vib20")
 skeleton = NodePath("../../..")
 
 [node name="right" type="Node3D" parent="mesh/arms"]
 
 [node name="top" type="MeshInstance3D" parent="mesh/arms/right"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23, 1.4, 0)
+transform = Transform3D(1, 0, 0, 0, 0.411292, -0.911504, 0, 0.911504, 0.411292, 0.23, 1.4, 0)
 mesh = SubResource("CapsuleMesh_k3fe3")
 skeleton = NodePath("../../..")
 
 [node name="bottom" type="MeshInstance3D" parent="mesh/arms/right"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 0.341971, -0.939711, 0, 0.939711, 0.341971, 0.23, 1.25015, -0.381228)
 mesh = SubResource("CapsuleMesh_812wy")
 skeleton = NodePath("../../..")
 

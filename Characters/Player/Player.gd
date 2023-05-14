@@ -22,7 +22,6 @@ func _ready():
 	navigation_agent.target_desired_distance = 0.5
 	velocity_movement.navigation_agent = navigation_agent
 	
-	velocity_movement.speed = 500
 	vitals = Vitals.new(100, 50)
 
 func _input(event):
@@ -58,7 +57,7 @@ func _physics_process(delta):
 	if velocity:
 		player_moved.emit(delta)
 				
-	spell_caster.update(self, delta)
+	spell_caster.deferred_update(self, delta)
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, insert, next_spell)

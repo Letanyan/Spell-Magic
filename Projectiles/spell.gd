@@ -71,6 +71,13 @@ func impulse_length() -> float:
 		_:
 			return 0
 	
+const fire = preload("res://Projectiles/fire.tscn")
+const rock = preload("res://Projectiles/rock.tscn")
+const water = preload("res://Projectiles/water.tscn")
+const air = preload("res://Projectiles/air.tscn")
+const ice = preload("res://Projectiles/ice.tscn")
+const electric = preload("res://Projectiles/electric.tscn")
+	
 func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	var fixed_vars = {}
 	fixed_vars["rn0"] = randf()
@@ -93,13 +100,13 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	
 	var p: SpellBody
 	match element:
-		Element.FIRE: p = load("res://Projectiles/fire.tscn").instantiate()
-		Element.ROCK: p = load("res://Projectiles/rock.tscn").instantiate()
-		Element.WATER: p = load("res://Projectiles/water.tscn").instantiate()
-		Element.AIR: p = load("res://Projectiles/air.tscn").instantiate()
-		Element.ICE: p = load("res://Projectiles/ice.tscn").instantiate()
-		Element.ELECTRIC: p = load("res://Projectiles/electric.tscn").instantiate()
-		_: p = load("res://Projectiles/fire.tscn").instantiate()
+		Element.FIRE: p = fire.instantiate()
+		Element.ROCK: p = rock.instantiate()
+		Element.WATER: p = water.instantiate()
+		Element.AIR: p = air.instantiate()
+		Element.ICE: p = ice.instantiate()
+		Element.ELECTRIC: p = electric.instantiate()
+		_: p = fire.instantiate()
 			
 	p.fixed_vars = fixed_vars
 	p.spell = self

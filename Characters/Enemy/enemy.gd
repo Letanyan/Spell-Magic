@@ -73,7 +73,7 @@ func _physics_process(delta):
 	if spell_tick == 60:
 		var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
 		if spell != null:
-			cast_spell(func(p): if p != null: add_sibling(p), spell)
+			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 		
 	spell_caster.update(self, delta)

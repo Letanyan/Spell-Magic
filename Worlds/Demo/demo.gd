@@ -54,13 +54,11 @@ func _ready():
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$FPS.text = "LOC: " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	$FPS.text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	pass
 	
 func _physics_process(delta):
 	pass
-
-var spell_index = 5
 
 func _input(event):
 #	if event.is_action_pressed("debug1"):
@@ -88,7 +86,7 @@ func _input(event):
 			if event.is_action_pressed(k):
 				var s = wand.action_down(k, book)
 				if s != null:
-					await player.cast_spell(func(p): if p != null: add_child(p), s)
+					player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
 			if event.is_action_released(k):
 				wand.action_up(k)
 
@@ -118,11 +116,12 @@ func update_terrain():
 			var scat = terrain[loc]
 			scat.despawn_all_from_world(self)
 			terrain.erase(loc)
-		
+
+		await get_tree().process_frame
 		update_population_at(chunks.get("updated", []))
 		return chunks.get("updated", []).size() > 0
-	
-	if work.call():
+
+	if await work.call():
 		chunker.update_environment()
 		
 #	var thread = Thread.new()
@@ -140,5 +139,6 @@ func update_population_at(locations: Array):
 		population[loc] = pop
 		
 		var scat = Scatter.new(coord, chunker.chunk_size, chunker.blender, player)
+		scat.raycast = raycast
 		scat.spawn_all_into_world(self)
 		terrain[loc] = scat

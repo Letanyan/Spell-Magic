@@ -18,6 +18,7 @@ const ENEMY_SPAWN_PROB: Dictionary = {
 var rng: RandomNumberGenerator
 var blender: NoiseBlender
 var player: Player
+var raycast: RayCast3D
 
 var coord: Vector2
 var chunk_size: float
@@ -66,8 +67,16 @@ func spawn(x: float, y: float) -> Node3D:
 			result = Trees.build(rng)
 		
 	if result != null:
+		var nav_pos = Vector3(coord.x * chunk_size, 0, coord.y * chunk_size) 
+		var p = Vector3(x, 1000, y)
+		raycast.position = p
+		raycast.force_raycast_update()
+		var pos = raycast.get_collision_point()
+		
+		print(p, " -> ", pos, " :: ", raycast.position)
+		
 		result.position.x = x
-		result.position.y = blender.height(x, y)
+		result.position.y = pos.y
 		result.position.z = y
 		inhabitants.append(result)
 		

@@ -16,13 +16,17 @@ var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
 
 var fixed_vars: Dictionary
 
+var to_remove = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if spell.chain != null:
-		cast_spell(func(p): if p != null: add_sibling(p), spell.chain)
+		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 
 func _physics_process(delta):
-	spell_caster.update(self, delta)
+	spell_caster.deferred_update(self, delta)
+	if to_remove:
+		get_parent().remove_child(self)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -46,6 +50,12 @@ func lose_control(p: Node3D, q: Node3D):
 
 func nothing(p: Node3D, q: Node3D):
 	pass
+	
+func actual_duration() -> float:
+	var result := spell.duration - (Time.get_unix_time_from_system() - time_start)
+	for p in spell_caster.particles:
+		result = max(result, p.actual_duration())
+	return max(0, result)
 	
 func impulse() -> Vector3:
 	match spell.element:
@@ -316,16 +326,16 @@ func stop_emitting():
 			free_after(particles.lifetime)
 			
 func free_after(duration: float):
-	if get_tree():
-		if duration > 0:
-			await get_tree().create_timer(duration).timeout
-		var max_duration = 0
-		for p in spell_caster.particles:
-			max_duration = max(max_duration, p.spell.duration)
-		if max_duration <= 0:
-			queue_free()
-		else:
-			free_after(max_duration)
+	if get_parent() != null and get_tree() != null:
+		var max_duration = duration
+		while max_duration > 0:
+			await get_tree().create_timer(max_duration, false, true).timeout
+			max_duration = actual_duration()
+			if not spell_caster.particles.is_empty():
+				max_duration = max(max_duration, 2)
+			else:
+				max_duration = 0
+		to_remove = true
 			
 var water_mat = preload("res://Projectiles/water_mat.tres")
 var rock_mat = preload("res://Projectiles/rock.tres")

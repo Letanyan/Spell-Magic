@@ -8,6 +8,9 @@ var particles: Array = []
 func _init(e: Entity):
 	entity = e
 	
+func deferred_update(body, delta):
+	call_deferred("update", body, delta)
+	
 func update(body, delta):
 	var t = Time.get_unix_time_from_system()
 	var should_remove = []
@@ -16,11 +19,12 @@ func update(body, delta):
 		p.update_spell(t, spell_variables(body, false))
 		if p.has_expired(t):
 			should_remove.append(i)
-			p.stop_emitting()
-			
+
 	should_remove.reverse()
 	for i in should_remove:
+		particles[i].stop_emitting()
 		particles.remove_at(i)
+		
 
 func spell_variables(body: Node3D, fixed: bool) -> Dictionary:
 	var result = Dictionary()
@@ -73,12 +77,12 @@ func cast_spell(body: Node3D, insert: Callable, spell: Spell):
 		var temps_vars = vars.duplicate()
 		temps_vars["n"] = p.n
 		var delay = spell.calculate_delay(temps_vars)
-		body.get_tree().create_timer(delay).connect("timeout", start_particle(body, p, insert))
+		start_particle(delay, body, p, insert)
 		
 
-func start_particle(body: Node3D, p: SpellBody, insert: Callable):
-	return func():
-		p.time_start = Time.get_unix_time_from_system()
-		if not p.spell.is_bomb:
-			p.fixed_vars.merge(spell_variables(body, true), true)
-		insert.call(p)
+func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
+	await body.get_tree().create_timer(delay, false, true).timeout
+	p.time_start = Time.get_unix_time_from_system()
+	if not p.spell.is_bomb:
+		p.fixed_vars.merge(spell_variables(body, true), true)
+	insert.call(p)

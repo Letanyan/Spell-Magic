@@ -265,13 +265,13 @@ func place_grass(nav: NavigationRegion3D):
 #			t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))
 			mm.set_instance_transform(i, t)
 			i += 1
-			if i > mm.instance_count:
+			if i >= mm.instance_count:
 				overflow = true
 				break
 
-	for j in range(i, mm.instance_count):
-		var t = Transform3D(Basis(), Vector3(0, -1000, 0))
-		mm.set_instance_transform(j, t)
+#	for j in range(i, mm.instance_count):
+#		var t = Transform3D(Basis(), Vector3(0, -1000, 0))
+#		mm.set_instance_transform(j, t)
 	
 #	for i in range(mm.instance_count):
 #		var _x = randf_range(-chunk_size / 2, chunk_size / 2)
