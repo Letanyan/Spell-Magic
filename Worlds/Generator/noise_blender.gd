@@ -39,8 +39,8 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float) -> No
 	result.noise = noise.duplicate(true)
 	result.noise.offset.x = x - w / 2
 	result.noise.offset.y = y - h / 2
-	result.width = w
-	result.height = h
+	result.width = w + 2
+	result.height = h + 2
 	result.normalize = false
 	return result
 

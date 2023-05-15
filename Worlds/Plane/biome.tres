@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=10 format=3]
+[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://l6tb32xm8tkm"]
 
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome.gdshader" id="1_dy6w0"]
 
@@ -54,8 +54,6 @@ render_priority = 0
 shader = ExtResource("1_dy6w0")
 shader_parameter/texture_width = 1000.0
 shader_parameter/texture_depth = 1000.0
-shader_parameter/texture_x = null
-shader_parameter/texture_y = null
 shader_parameter/elevation = SubResource("NoiseTexture2D_kefiv")
 shader_parameter/temperature = SubResource("NoiseTexture2D_4xxtk")
 shader_parameter/dryness = SubResource("NoiseTexture2D_ou647")

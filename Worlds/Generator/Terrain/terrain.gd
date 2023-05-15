@@ -8,6 +8,7 @@ var raycast: RayCast3D
 var player_coord: Vector2 = Vector2.ZERO
 
 var grass_texture = preload("res://Worlds/Generator/Terrain/grass.tres")
+var forest_texture = preload("res://Worlds/Generator/Terrain/forest_ground.tres")
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
@@ -207,6 +208,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
 	mat.set_shader_parameter("grass", grass_texture)
+	mat.set_shader_parameter("forest_ground", forest_texture)
 	mesh.surface_set_material(0, mat)
 #	mi.mesh = mesh
 	var dist = max(max(abs(x), abs(y)) / size, 1)
@@ -225,8 +227,8 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	var nav_mesh = NavigationMesh.new()
 	nav_mesh.create_from_mesh(mesh)
 	nav.navigation_mesh = nav_mesh
-	nav.position.x = x
-	nav.position.z = y
+	nav.position.x = x - (x / float(chunk_size) * 0.0)
+	nav.position.z = y - (y / float(chunk_size) * 0.0)
 #	nav.position.y = max(abs(x), abs(y)) / chunk_size * 8
 
 	return nav

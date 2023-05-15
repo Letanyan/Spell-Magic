@@ -7,8 +7,9 @@ uniform float texture_width;
 
 void vertex() {
 	//VERTEX.y = VERTEX.y * 0.0;
-	//vec4 clr = texture(noise, VERTEX.xz / 100.0);
+	vec4 clr = texture(noise, VERTEX.xz / 100.0);
 	//ALBEDO = vec3(clr.x, clr.y, clr.z);
+	VERTEX.y = clr.r * 5.0;
 }
 
 void fragment() {
@@ -17,8 +18,7 @@ void fragment() {
 //	vec2 w = vec2((v.x + texture_x) / texture_width, (v.z + texture_y) / texture_depth);
 //	vec2 w = vec2(mod(v.x, texture_width) / texture_width, mod(v.z, texture_depth) / texture_depth);
 //	vec2 w = vec2(v.x / texture_width + 0.5, v.z / texture_depth + 0.5);
-	vec2 w = vec2(fract(v.x / texture_width + 0.5), fract(v.z / texture_width + 0.5));
 	
-	vec4 clr = texture(noise, w);
+	vec4 clr = texture(noise, UV);
 	ALBEDO = vec3(clr.x, clr.y, clr.z);
 }

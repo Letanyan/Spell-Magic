@@ -67,13 +67,10 @@ func spawn(x: float, y: float) -> Node3D:
 			result = Trees.build(rng)
 		
 	if result != null:
-		var nav_pos = Vector3(coord.x * chunk_size, 0, coord.y * chunk_size) 
 		var p = Vector3(x, 1000, y)
 		raycast.position = p
 		raycast.force_raycast_update()
 		var pos = raycast.get_collision_point()
-		
-		print(p, " -> ", pos, " :: ", raycast.position)
 		
 		result.position.x = x
 		result.position.y = pos.y
@@ -83,9 +80,9 @@ func spawn(x: float, y: float) -> Node3D:
 	return result
 	
 func spawn_all_into_world(world: Node):
-	var spacing = 16
-	for x in range(-chunk_size / 2, chunk_size / 2 + 1, spacing):
-		for y in range(-chunk_size / 2, chunk_size / 2 + 1, spacing):
+	var spacing = 16.0
+	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0, spacing):
+		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0, spacing):
 			var p = spawn(coord.x * chunk_size + x, coord.y * chunk_size + y)
 			if p != null:
 				world.add_child(p)
