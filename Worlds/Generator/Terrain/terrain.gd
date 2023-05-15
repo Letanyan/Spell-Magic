@@ -23,13 +23,13 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	radius = r
 	
 #	var large_chunk = r * 4
-#	large_map = create_mesh(0, 0, large_chunk, 0.0005)[0]
+#	large_map = create_mesh(0, 0, large_chunk, 1 / 128.0)[0]
 #	update_mesh(large_map, 0, 0, large_chunk)
 #	large_map.position = Vector3(0, 0, 0)
 #	large_map.visible = true
 	
 #	var medium_chunk = r * 2
-#	medium_map = create_mesh(0, 0, medium_chunk, 0.005)[0]
+#	medium_map = create_mesh(0, 0, medium_chunk, 1 / 64.0)[0]
 #	update_mesh(medium_map, 0, 0, medium_chunk)
 #	medium_map.position = Vector3(0, 0, 0)
 #	medium_map.visible = true
@@ -57,11 +57,17 @@ func init_chunks(x: float, y: float) -> Array:
 	set_player_coord_using_position(x, y)
 	var rad = chunk_count / 2
 	var result = []
+	var final_d = {}
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
 			var p = Vector2((player_coord.x + w) * chunk_size, (player_coord.y + h) * chunk_size)
 			var nav = create_chunk(p.x, p.y)
-			update_chunk(nav, p.x, p.y)
+			var d = update_chunk(nav, p.x, p.y)
+			for k in d:
+				if final_d.has(k):
+					if final_d[k] != d[k]:
+						print("match: ", k, " => ", final_d[k], " ~~ ", d[k])
+				final_d[k] = d[k]
 			result.append(nav)
 			
 	return result
@@ -100,7 +106,7 @@ func update_chunks(x: float, y: float) -> Dictionary:
 			
 	return {"removed": removed_locations, "updated": updated_locations}
 		
-func create_mesh(x: float, y: float, size: float, subdivide: float = 0.05) -> Array:
+func create_mesh(x: float, y: float, size: float, subdivide: float = 1.0 / 16.0) -> Array:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(size, size)
@@ -143,7 +149,7 @@ func create_mesh(x: float, y: float, size: float, subdivide: float = 0.05) -> Ar
 	return [mi, mmi]
 		
 func create_chunk(x: float, y: float) -> NavigationRegion3D:
-	var meshes = create_mesh(x, y, chunk_size)
+	var meshes = create_mesh(x, y, chunk_size, 1.0 / 16.0)
 	var mi = meshes[0]
 	var mmi = meshes[1]
 
@@ -158,13 +164,15 @@ func create_chunk(x: float, y: float) -> NavigationRegion3D:
 
 	return nav
 
-func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
+func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float) -> Dictionary:
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 
 	for i in range(mdt.get_vertex_count()):
 		mdt.set_vertex_normal(i, Vector3.ZERO)
+
+	var vertices := {}
 
 	for i in range(mdt.get_face_count()):
 		var a = mdt.get_face_vertex(i, 0)
@@ -180,6 +188,10 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 		B.y = Bh
 		C.y = Ch
 		var face_norm = (C - A).cross(B - A).normalized()
+		
+		vertices[Vector2(A.x + x, A.z + y)] = Ah
+		vertices[Vector2(B.x + x, B.z + y)] = Bh
+		vertices[Vector2(C.x + x, C.z + y)] = Ch
 
 		var Av = mdt.get_vertex_normal(a)
 		var Bv = mdt.get_vertex_normal(b)
@@ -192,6 +204,10 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 		mdt.set_vertex(a, A)
 		mdt.set_vertex(b, B)
 		mdt.set_vertex(c, C)
+		
+	for k in vertices:
+		print(k, " => ", vertices[k])
+	print("----------------------")
 
 	for i in range(mdt.get_vertex_count()):
 		var norm = mdt.get_vertex_normal(i).normalized()
@@ -218,11 +234,13 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 0b1
+		
+	return vertices
 
-func update_chunk(nav: NavigationRegion3D, x: float, y: float):
+func update_chunk(nav: NavigationRegion3D, x: float, y: float) -> Dictionary:
 	var mi = nav.get_node("mesh")
 	var mesh = mi.mesh
-	update_mesh(mi, x, y, chunk_size)
+	var d = update_mesh(mi, x, y, chunk_size)
 				
 	var nav_mesh = NavigationMesh.new()
 	nav_mesh.create_from_mesh(mesh)
@@ -231,7 +249,8 @@ func update_chunk(nav: NavigationRegion3D, x: float, y: float):
 	nav.position.z = y - (y / float(chunk_size) * 0.0)
 #	nav.position.y = max(abs(x), abs(y)) / chunk_size * 8
 
-	return nav
+	return d
+	
 
 func update_environment():
 	for i in range(loaded_chunks.size()):

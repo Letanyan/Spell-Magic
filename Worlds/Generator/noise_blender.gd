@@ -45,7 +45,7 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float) -> No
 	return result
 
 func height(x: float, y: float) -> float:
-	var e = elevation.get_noise_2d(x, y) / 2 + 0.5
+	var e = elevation.get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
 	var result = elevation_curve.sample(e)
 	return result * 250
 

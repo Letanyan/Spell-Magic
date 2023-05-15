@@ -41,7 +41,7 @@ func _ready():
 	noise_temperature.frequency = 0.0005
 	noise_dryness.frequency = 0.0005
 	
-	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 1024)
+	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 512)
 	chunker.raycast = raycast
 	build_terrain()
 	if chunker.large_map != null:

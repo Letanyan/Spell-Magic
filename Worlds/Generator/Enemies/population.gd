@@ -77,9 +77,9 @@ func spawn(x: float, y: float) -> Enemy:
 	return result
 	
 func spawn_all_into_world(world: Node):
-	var spacing = 16
-	for x in range(-chunk_size / 2 + spacing / 2, chunk_size / 2 - spacing / 2 + 1, spacing):
-		for y in range(-chunk_size / 2 + spacing / 2, chunk_size / 2 - spacing / 2 + 1, spacing):
+	var spacing = 16.0
+	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
+		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
 			var p = spawn(coord.x * chunk_size + x, coord.y * chunk_size + y)
 			if p != null:
 				world.add_child(p)

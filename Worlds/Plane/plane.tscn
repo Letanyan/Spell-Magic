@@ -1,33 +1,27 @@
-[gd_scene load_steps=20 format=3 uid="uid://h451qh8owkt1"]
+[gd_scene load_steps=24 format=3 uid="uid://h451qh8owkt1"]
 
 [ext_resource type="Shader" path="res://Worlds/Plane/plane.gdshader" id="1_qnw0c"]
 [ext_resource type="Script" path="res://Worlds/Plane/plane.gd" id="2_88jhe"]
 [ext_resource type="Material" uid="uid://l6tb32xm8tkm" path="res://Worlds/Plane/biome.tres" id="3_33xwa"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bthxj"]
-noise_type = 2
-frequency = 0.005
-fractal_type = 3
-domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_inu8h"]
-invert = true
+width = 102
+height = 102
 normalize = false
 noise = SubResource("FastNoiseLite_bthxj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e3nt7"]
 render_priority = 0
 shader = ExtResource("1_qnw0c")
-shader_parameter/off_x = 0.0
-shader_parameter/off_y = 0.0
-shader_parameter/texture_width = 512.0
 shader_parameter/noise = SubResource("NoiseTexture2D_inu8h")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8tv6s"]
 material = SubResource("ShaderMaterial_e3nt7")
 size = Vector2(100, 100)
-subdivide_width = 5
-subdivide_depth = 5
+subdivide_width = 2
+subdivide_depth = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dnd64"]
 
@@ -53,9 +47,6 @@ noise = SubResource("FastNoiseLite_u8ojl")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7mkka"]
 render_priority = 0
 shader = ExtResource("1_qnw0c")
-shader_parameter/off_x = null
-shader_parameter/off_y = null
-shader_parameter/texture_width = null
 shader_parameter/noise = SubResource("NoiseTexture2D_labui")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_radur"]
@@ -81,9 +72,6 @@ noise = SubResource("FastNoiseLite_234xm")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ovemb"]
 render_priority = 0
 shader = ExtResource("1_qnw0c")
-shader_parameter/off_x = null
-shader_parameter/off_y = null
-shader_parameter/texture_width = 512.0
 shader_parameter/noise = SubResource("NoiseTexture2D_gse4j")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_xl5xb"]
@@ -92,6 +80,26 @@ size = Vector2(50, 50)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ifj1b"]
 data = PackedVector3Array(25, 0, 25, -25, 0, 25, 25, 0, -25, -25, 0, 25, -25, 0, -25, 25, 0, -25)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_12to1"]
+offset = Vector3(0, 100, 0)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_s6e7p"]
+width = 102
+height = 102
+normalize = false
+noise = SubResource("FastNoiseLite_12to1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tt071"]
+render_priority = 0
+shader = ExtResource("1_qnw0c")
+shader_parameter/noise = SubResource("NoiseTexture2D_s6e7p")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_a341i"]
+material = SubResource("ShaderMaterial_tt071")
+size = Vector2(100, 100)
+subdivide_width = 2
+subdivide_depth = 2
 
 [node name="Plane" type="MeshInstance3D"]
 mesh = SubResource("PlaneMesh_8tv6s")
@@ -126,3 +134,7 @@ collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_ifj1b")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 100)
+mesh = SubResource("PlaneMesh_a341i")
