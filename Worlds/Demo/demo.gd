@@ -79,7 +79,6 @@ func _input(event):
 	if not menu.is_showing and event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-#		await player.cast_spell(func(p): if p != null: add_child(p), book.spells[spell_index])
 		
 	if not menu.is_showing:
 		for k in wand.basic_keys:

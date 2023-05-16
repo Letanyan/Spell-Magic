@@ -72,6 +72,4 @@ vertical_alignment = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
 shape = SubResource("BoxShape3D_tcvrm")
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-
 [editable path="Pivot"]

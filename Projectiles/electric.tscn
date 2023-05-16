@@ -61,6 +61,7 @@ rings = 8
 script = ExtResource("1_qx5re")
 
 [node name="source" type="GPUParticles3D" parent="."]
+cast_shadow = 0
 amount = 80
 lifetime = 0.5
 explosiveness = 0.5
@@ -70,6 +71,7 @@ process_material = SubResource("ParticleProcessMaterial_06km0")
 draw_pass_1 = SubResource("BoxMesh_a4wuh")
 
 [node name="body" type="MeshInstance3D" parent="."]
+cast_shadow = 0
 mesh = SubResource("SphereMesh_sdaq3")
 
 [node name="area" type="Area3D" parent="body"]

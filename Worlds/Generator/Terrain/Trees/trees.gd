@@ -11,15 +11,19 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	trunk.mesh.height = h
 	trunk.mesh.top_radius = r
 	trunk.mesh.bottom_radius = r
+	trunk.mesh.radial_segments = 16
+	trunk.mesh.rings = 1
 	trunk.mesh.surface_set_material(0, trunk_mat)
 	trunk.position.y = h / 2
 	
-	var s = rng.randf_range(r * 1.5, r * 2)
+	var s = rng.randf_range(r * 1.75, r * 2)
 	var sh = rng.randf_range(s, s * 2)
 	var leaves = MeshInstance3D.new()
 	leaves.mesh = SphereMesh.new()
 	leaves.mesh.radius = s
 	leaves.mesh.height = sh
+	leaves.mesh.radial_segments = rng.randf_range(8, 16)
+	leaves.mesh.rings = rng.randf_range(4, 8)
 	leaves.mesh.surface_set_material(0, leaves_mat)
 	leaves.position.y = h
 	

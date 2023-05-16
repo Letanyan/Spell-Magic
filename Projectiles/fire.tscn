@@ -45,6 +45,7 @@ rings = 4
 script = ExtResource("1_tkofl")
 
 [node name="source" type="GPUParticles3D" parent="."]
+cast_shadow = 0
 amount = 80
 randomness = 1.0
 process_material = SubResource("ParticleProcessMaterial_omybi")

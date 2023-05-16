@@ -86,3 +86,10 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	if not p.spell.is_bomb:
 		p.fixed_vars.merge(spell_variables(body, true), true)
 	insert.call(p)
+
+func set_up_collision(world: Node3D, p: SpellBody):
+	var new_agent_rid: RID = NavigationServer3D.agent_create()
+	var default_3d_map_rid: RID = world.get_world_3d().get_navigation_map()
+	NavigationServer3D.agent_set_map(new_agent_rid, default_3d_map_rid)
+	NavigationServer3D.agent_set_radius(new_agent_rid, 5)
+	NavigationServer3D.agent_set_position(new_agent_rid, p.global_position)

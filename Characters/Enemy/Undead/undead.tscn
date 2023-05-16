@@ -261,12 +261,6 @@ collision_mask = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
 shape = SubResource("BoxShape3D_uxob1")
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-max_speed = 100.0
-debug_use_custom = true
-debug_path_custom_color = Color(0.443137, 0.619608, 0.309804, 1)
-debug_path_custom_point_size = 10.0
-
 [node name="mesh" type="MeshInstance3D" parent="."]
 
 [node name="head" type="Node3D" parent="mesh"]

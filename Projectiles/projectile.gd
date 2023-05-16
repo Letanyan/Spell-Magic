@@ -146,8 +146,8 @@ func update_shape(r: float, ignore_time: bool):
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
-				var R = get_node("body/shape").shape.size.x
-				scale = Vector3(r / R, r / R, r / R)
+#				var R = get_node("body/shape").shape.size.x
+#				scale = Vector3(r / R, r / R, r / R)
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			var m_shape: CollisionShape3D = get_node("body/mesh/area/shape")

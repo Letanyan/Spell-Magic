@@ -7,21 +7,14 @@ extends CharacterBody3D
 
 @onready var animator: AnimationPlayer = $Pivot/AnimationPlayer 
 
-@onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
-
 var velocity_movement = VelocityMovement.player()
 var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
 
 signal player_moved
 
-
 var vitals: Vitals
 
 func _ready():
-	navigation_agent.path_desired_distance = 0.5
-	navigation_agent.target_desired_distance = 0.5
-	velocity_movement.navigation_agent = navigation_agent
-	
 	vitals = Vitals.new(100, 50)
 
 func _input(event):
@@ -29,9 +22,6 @@ func _input(event):
 		cam_pivot.rotate_y(-event.relative.x / 180 * PI)
 		cam_arm.rotate_x(-event.relative.y / 180 * PI / 3)
 		cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
-		
-func set_movement_target(movement_target: Vector3):
-	navigation_agent.set_target_position(movement_target)
 
 func apply_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse

@@ -22,17 +22,17 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	chunk_size = cs
 	radius = r
 	
-#	var large_chunk = r * 4
-#	large_map = create_mesh(0, 0, large_chunk, 1 / 128.0)[0]
-#	update_mesh(large_map, 0, 0, large_chunk)
-#	large_map.position = Vector3(0, 0, 0)
-#	large_map.visible = true
+	var large_chunk = r * 8
+	large_map = create_mesh(0, 0, large_chunk, 1 / 128.0)[0]
+	update_mesh(large_map, 0, 0, large_chunk)
+	large_map.position = Vector3(0, 0, 0)
+	large_map.visible = true
 	
-#	var medium_chunk = r * 2
-#	medium_map = create_mesh(0, 0, medium_chunk, 1 / 64.0)[0]
-#	update_mesh(medium_map, 0, 0, medium_chunk)
-#	medium_map.position = Vector3(0, 0, 0)
-#	medium_map.visible = true
+	var medium_chunk = r * 4
+	medium_map = create_mesh(0, 0, medium_chunk, 1 / 64.0)[0]
+	update_mesh(medium_map, 0, 0, medium_chunk)
+	medium_map.position = Vector3(0, 0, 0)
+	medium_map.visible = true
 	
 func switch_detail():
 	if large_map.visible:
@@ -61,14 +61,9 @@ func init_chunks(x: float, y: float) -> Array:
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
 			var p = Vector2((player_coord.x + w) * chunk_size, (player_coord.y + h) * chunk_size)
-			var nav = create_chunk(p.x, p.y)
-			var d = update_chunk(nav, p.x, p.y)
-			for k in d:
-				if final_d.has(k):
-					if final_d[k] != d[k]:
-						print("match: ", k, " => ", final_d[k], " ~~ ", d[k])
-				final_d[k] = d[k]
-			result.append(nav)
+			var node = create_chunk(p.x, p.y)
+			update_chunk(node, p.x, p.y)
+			result.append(node)
 			
 	return result
 	
@@ -148,31 +143,29 @@ func create_mesh(x: float, y: float, size: float, subdivide: float = 1.0 / 16.0)
 		
 	return [mi, mmi]
 		
-func create_chunk(x: float, y: float) -> NavigationRegion3D:
+func create_chunk(x: float, y: float) -> Node3D:
 	var meshes = create_mesh(x, y, chunk_size, 1.0 / 16.0)
 	var mi = meshes[0]
 	var mmi = meshes[1]
 
-	var nav = NavigationRegion3D.new()
-	nav.add_child(mi)
-	nav.add_child(mmi)
-	nav.position.x = x
-	nav.position.z = y
+	var node = Node3D.new()
+	node.add_child(mi)
+	node.add_child(mmi)
+	node.position.x = x
+	node.position.z = y
 
 	loaded_chunks_location.append(Vector2(x, y))
-	loaded_chunks.append(nav)
+	loaded_chunks.append(node)
 
-	return nav
+	return node
 
-func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float) -> Dictionary:
+func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 
 	for i in range(mdt.get_vertex_count()):
 		mdt.set_vertex_normal(i, Vector3.ZERO)
-
-	var vertices := {}
 
 	for i in range(mdt.get_face_count()):
 		var a = mdt.get_face_vertex(i, 0)
@@ -188,10 +181,6 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float) -> Diction
 		B.y = Bh
 		C.y = Ch
 		var face_norm = (C - A).cross(B - A).normalized()
-		
-		vertices[Vector2(A.x + x, A.z + y)] = Ah
-		vertices[Vector2(B.x + x, B.z + y)] = Bh
-		vertices[Vector2(C.x + x, C.z + y)] = Ch
 
 		var Av = mdt.get_vertex_normal(a)
 		var Bv = mdt.get_vertex_normal(b)
@@ -204,10 +193,6 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float) -> Diction
 		mdt.set_vertex(a, A)
 		mdt.set_vertex(b, B)
 		mdt.set_vertex(c, C)
-		
-	for k in vertices:
-		print(k, " => ", vertices[k])
-	print("----------------------")
 
 	for i in range(mdt.get_vertex_count()):
 		var norm = mdt.get_vertex_normal(i).normalized()
@@ -234,34 +219,27 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float) -> Diction
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 0b1
-		
-	return vertices
 
-func update_chunk(nav: NavigationRegion3D, x: float, y: float) -> Dictionary:
-	var mi = nav.get_node("mesh")
+func update_chunk(node: Node3D, x: float, y: float):
+	var mi = node.get_node("mesh")
 	var mesh = mi.mesh
 	var d = update_mesh(mi, x, y, chunk_size)
 				
-	var nav_mesh = NavigationMesh.new()
-	nav_mesh.create_from_mesh(mesh)
-	nav.navigation_mesh = nav_mesh
-	nav.position.x = x - (x / float(chunk_size) * 0.0)
-	nav.position.z = y - (y / float(chunk_size) * 0.0)
+	node.position.x = x - (x / float(chunk_size) * 0.0)
+	node.position.z = y - (y / float(chunk_size) * 0.0)
 #	nav.position.y = max(abs(x), abs(y)) / chunk_size * 8
-
-	return d
 	
 
 func update_environment():
 	for i in range(loaded_chunks.size()):
 		update_chunk_environment(loaded_chunks[i])
 
-func update_chunk_environment(nav: NavigationRegion3D):
-#	place_grass(nav)
+func update_chunk_environment(node: Node3D):
+#	place_grass(node)
 	pass
 
-func place_grass(nav: NavigationRegion3D):
-	var mmi: MultiMeshInstance3D = nav.get_node("multimesh")
+func place_grass(node: Node3D):
+	var mmi: MultiMeshInstance3D = node.get_node("multimesh")
 	var mm: MultiMesh = mmi.multimesh
 	
 	var i = 0
@@ -271,7 +249,7 @@ func place_grass(nav: NavigationRegion3D):
 		if overflow:
 			break
 		for y in range(-chunk_size / 2, chunk_size / 2, 4):
-			var p = Vector3(x, 1000, y) + nav.position
+			var p = Vector3(x, 1000, y) + node.position
 			var biome = blender.biome(p.x, p.z)
 			if biome != World.Biome.GRASSLAND:
 				continue
@@ -280,7 +258,7 @@ func place_grass(nav: NavigationRegion3D):
 			raycast.position = p
 			raycast.force_raycast_update()
 			var pos = raycast.get_collision_point() 
-			var t = Transform3D(Basis(), pos - nav.position)
+			var t = Transform3D(Basis(), pos - node.position)
 #			var pos = Vector3(x, blender.height(p.x, p.z), y)
 #			var t = Transform3D(Basis(), pos)
 #			t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))

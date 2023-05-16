@@ -8,11 +8,10 @@ func _ready():
 	animation_map["walk"] = "undead_walk"
 	
 	velocity_movement = VelocityMovement.new()
-	velocity_movement.navigation_agent = navigation_agent
 
 	behaviour = Behaviour.new(
 		PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2),
-		PathStyle.new(blender, get_rid().get_id()).follow_player(0, 1).speed(6)
+		PathStyle.new(blender, get_rid().get_id()).follow_player(0, 1).speed(2)
 	)
 	behaviour.update_state(self, player)
 	

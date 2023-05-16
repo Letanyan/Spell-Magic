@@ -6,7 +6,13 @@ class_name VelocityMovement
 @export var jump_impulse: float = 20
 @export var bounce_impulse: float = 16
 
-var navigation_agent: NavigationAgent3D
+var target_position: Vector3:
+	set(value):
+		target_position = value
+		has_navigation_target = true
+var has_navigation_target: bool
+
+var vital_tick: int = 0
 
 var velocity = Vector3.ZERO
 var target_velocity = Vector3.ZERO
@@ -18,21 +24,24 @@ func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float 
 	friction = _friction
 	jump_impulse = _jump_impulse
 	bounce_impulse = _bounce_impulse
+	has_navigation_target = false
 	
 static func player() -> VelocityMovement:
 	return VelocityMovement.new(36, 150, 150)
 
-func interval_check(interval: int, epsilon: int):
-	var t = Time.get_ticks_msec() % interval
-	return t < epsilon
+func increment_ticks():
+	vital_tick += 1
 
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody3D) -> Dictionary:
 	var result = {}
 	
+	if body.position == target_position:
+		has_navigation_target = false
+	
 	var navigation_velocity = Vector3.ZERO
-	if not navigation_agent.is_navigation_finished():
+	if has_navigation_target:
 		var current_agent_position: Vector3 = body.global_transform.origin
-		var next_path_position: Vector3 = navigation_agent.get_next_path_position()
+		var next_path_position: Vector3 = target_position
 
 		var new_velocity: Vector3 = next_path_position - current_agent_position
 		new_velocity = new_velocity.normalized()
@@ -40,11 +49,12 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 		navigation_velocity = new_velocity
 
-	if interval_check(500, 20):
+	if vital_tick == 60:
 		vitals.update_vitals()
 		var wet_area = body.get_node("WetArea")
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
+		vital_tick = 0
 
 	
 	var direction = Vector3.ZERO
