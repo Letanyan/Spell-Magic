@@ -4,9 +4,11 @@ enum Entity { PLAYER, ENEMY, PROJECTILE }
 
 var entity: Entity
 var particles: Array = []
+var ignore_mana_cost: bool
 
 func _init(e: Entity):
 	entity = e
+	ignore_mana_cost = true
 	
 func deferred_update(body, delta):
 	call_deferred("update", body, delta)
@@ -70,7 +72,7 @@ func all_spell_variables(body: Node3D):
 	return result
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
-	if vitals != null:
+	if vitals != null and not ignore_mana_cost:
 		if vitals.mana >= spell.mana_cost:
 			vitals.mana -= spell.mana_cost
 		else:

@@ -73,6 +73,7 @@ var mods: Dictionary
 var keys: Dictionary
 var last_use: Dictionary
 var picked: Spell
+var ignore_cooldown: bool
 
 var current_actions: Dictionary
 
@@ -82,6 +83,7 @@ func _init():
 	keys = {}
 	last_use = {}
 	picked = null
+	ignore_cooldown = true
 	current_actions = {}
 	build_keys()
 
@@ -147,7 +149,7 @@ func action_down(action: String, book: MagicBook) -> Spell:
 			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
 				var s = find_spell(key, book)
 				var used = last_use.get(s.name, 0)
-				if Time.get_unix_time_from_system() - used > s.cooldown:
+				if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
 					last_use[s.name] = Time.get_unix_time_from_system()
 					return s
 				else:
@@ -164,6 +166,7 @@ func save_dict():
 		"keys": {},
 		"picked": picked.save_dict() if picked != null else {},
 		"mods": mods,
+		"ignore_cooldown": ignore_cooldown,
 	}
 	for key in keys:
 		result["keys"][key] = keys[key].save_dict()
@@ -172,6 +175,7 @@ func save_dict():
 func load_dict(dict: Dictionary):
 	name = dict["name"]
 	mods = dict["mods"]
+	ignore_cooldown = dict.get("ignore_cooldown", true)
 	picked = Spell.new()
 #	picked.load_dict(dict["picked"])
 	for k in dict["keys"]:

@@ -2,6 +2,8 @@ class_name Vitals
 
 var health: float
 var mana: float
+var mana_growth: float
+var _mana_limit: float
 
 var burning: float
 var wetness: float
@@ -11,9 +13,11 @@ var burn_res: float
 var wet_res: float
 var freeze_res: float
 
-func _init(_health: float, _mana: float, _burning: float = 0.0, _wetness: float = 0.0, _freeze: float = 0.0, _burn_res: float = 0.0, _wet_res: float = 0.0, _freeze_res: float = 0.0):
+func _init(_health: float, _mana: float, _burning: float = 0.0, _wetness: float = 0.0, _freeze: float = 0.0, _burn_res: float = 0.0, _wet_res: float = 0.0, _freeze_res: float = 0.0, _mana_growth: float = 0.0):
 	health = _health
 	mana = _mana
+	mana_growth = _mana_growth
+	_mana_limit = _mana
 	burning = _burning
 	wetness = _wetness
 	freeze = _freeze
@@ -61,6 +65,7 @@ func update_vitals():
 		health = clamp(health - burning * health / 100, 0, 1)
 	if wetness > 0:
 		wetness = clamp(wetness - (wet_res + 0.001), 0, 1)
+	mana = clamp(mana + mana_growth, 0, _mana_limit)
 
 func wetness_scale():
 	return 1 + wetness
