@@ -23,6 +23,8 @@ var d_expr: Expr
 var follow: bool
 var is_bomb: bool
 
+var id: int = -1
+
 func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false):
 	x = _x
 	y = _y
@@ -142,7 +144,7 @@ func save_dict():
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element,
-		"name": name,
+		"name": name, "id": id,
 	}
 
 func load_dict(dict: Dictionary):
@@ -161,6 +163,7 @@ func load_dict(dict: Dictionary):
 	if dict["chain"] != {}:
 		chain = Spell.new()
 		chain.load_dict(dict["chain"])
+	id = dict.get("id", -1)
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)

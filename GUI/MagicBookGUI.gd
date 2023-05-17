@@ -1,11 +1,24 @@
 extends Control
 
+@onready var sort_button: MenuButton = $SortButton
+const TOTAL_SORT_ITEMS = 5
+var sort_popup: PopupMenu = null
+var sort_selected: int = 0
+var sort_order: int = 0
+@onready var filter_button: MenuButton = $FilterButton
+const TOTAL_FILTER_ITEMS = 9
+var filter_popup: PopupMenu = null
+var filter_options = {}
+var filter_chain = ""
+
 @onready var spell_index: ItemList = $SpellIndex
 var book: MagicBook:
 	set(value):
 		book = value
+		update_spells_list()
 		reload_list()
-		
+
+var spells_index_map = {}
 		
 @onready var name_edit: LineEdit = $container/name_edit
 
@@ -30,8 +43,12 @@ var current_index = -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass	
-
+	sort_popup = sort_button.get_popup()
+	sort_popup.connect("id_pressed", sort_popup_selected)
+	filter_popup = filter_button.get_popup()
+	filter_popup.connect("id_pressed", filter_popup_selected)
+	
+	$container.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -39,8 +56,8 @@ func _process(delta):
 
 
 func _on_spell_index_item_selected(index):
-	var spell: Spell = book.spells[index]
-	current_index = index
+	current_index = spells_index_map[index]
+	var spell: Spell = book.spells[current_index]
 	
 	name_edit.text = spell.name
 	
@@ -49,8 +66,8 @@ func _on_spell_index_item_selected(index):
 	z_edit.text = spell.z
 	r_edit.text = spell.r
 	
-	power_edit.text = "%f" % spell.power
-	duration_edit.text = "%f" % spell.duration
+	power_edit.text = "%.2f" % spell.power
+	duration_edit.text = "%.2f" % spell.duration
 	delay_edit.text = spell.delay
 	count_edit.text = "%d" % spell.count
 	
@@ -59,6 +76,9 @@ func _on_spell_index_item_selected(index):
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
 	$container.visible = true
+	
+	filter_popup.set_item_disabled(TOTAL_FILTER_ITEMS - 1, false)
+	filter_popup.set_item_text(TOTAL_FILTER_ITEMS - 1, "Chains '" + spell.name + "'")
 
 
 func _on_save_pressed():
@@ -101,9 +121,45 @@ func _on_save_pressed():
 	spell.is_bomb = is_bomb.button_pressed
 	reload_list()
 	
+func update_spells_list():
+	var spells_list = book.spells.duplicate(false)
+	for i in range(spells_list.size()):
+		spells_list[i].id = i
+	
+	var is_ascending = sort_order == 0
+	if sort_selected == 0:
+		spells_list.sort_custom(func(a, b): return a.name < b.name if is_ascending else a.name > b.name)
+	elif sort_selected == 1:
+		spells_list.sort_custom(func(a, b): return a.duration < b.duration if is_ascending else a.duration > b.duration)
+	elif sort_selected == 2:
+		spells_list.sort_custom(func(a, b): return a.count < b.count if is_ascending else a.count > b.count)
+	elif sort_selected == 3:
+		spells_list.sort_custom(func(a, b): return a.power < b.power if is_ascending else a.power > b.power)
+		
+	spells_index_map = {}
+	var k = 0
+	for i in range(spells_list.size()):
+		var spell: Spell = spells_list[i]
+		var q0 = filter_options.is_empty()
+		q0 = q0 or filter_options.get(0, false) and spell.element == Spell.Element.FIRE
+		q0 = q0 or filter_options.get(1, false) and spell.element == Spell.Element.WATER
+		q0 = q0 or filter_options.get(2, false) and spell.element == Spell.Element.AIR
+		q0 = q0 or filter_options.get(3, false) and spell.element == Spell.Element.ROCK
+		q0 = q0 or filter_options.get(4, false) and spell.element == Spell.Element.ICE
+		q0 = q0 or filter_options.get(5, false) and spell.element == Spell.Element.ELECTRIC
+		q0 = q0 or filter_options.get(6, false) and spell.is_bomb
+		q0 = q0 or filter_options.get(7, false) and spell.follow
+		q0 = q0 or filter_options.get(8, false) and (spell.chain != null and spell.chain.name == filter_chain)
+		if q0:
+			spells_index_map[k] = spell.id
+			k += 1
+	
 func reload_list():
 	spell_index.clear()
-	for s in book.spells:
+#	for s in book.spells:
+#		spell_index.add_item(s.name)
+	for k in spells_index_map:
+		var s = book.spells[spells_index_map[k]]
 		spell_index.add_item(s.name)
 	
 		
@@ -255,3 +311,33 @@ func _on_view_chain_button_pressed():
 				_on_spell_index_item_selected(i)
 				spell_index.select(i, true)
 			i += 1
+
+func sort_popup_selected(id: int):
+	var is_order = id > TOTAL_SORT_ITEMS - 1
+	if is_order:
+		sort_order = id - TOTAL_SORT_ITEMS
+		var other = (1 if sort_order == 0 else 0) + TOTAL_SORT_ITEMS
+		sort_popup.set_item_checked(id, true)
+		sort_popup.set_item_checked(other, false)
+	else:
+		for i in range(TOTAL_SORT_ITEMS):
+			sort_popup.set_item_checked(i, false)
+		sort_popup.set_item_checked(id, true)
+		sort_selected = id
+		
+	update_spells_list()
+	reload_list()
+	
+func filter_popup_selected(id: int):
+	const TOTAL_ITEMS = 9
+	var is_selected = filter_options.has(id)
+	if is_selected:
+		filter_options.erase(id)
+	else:
+		filter_options[id] = true
+	filter_popup.set_item_checked(id, not is_selected)
+	if id == TOTAL_FILTER_ITEMS - 1 and current_index != -1:
+		filter_chain = book.spells[current_index].name
+		
+	update_spells_list()
+	reload_list()
