@@ -1,7 +1,7 @@
 extends Control
 
 @onready var sort_button: MenuButton = $SortButton
-const TOTAL_SORT_ITEMS = 5
+const TOTAL_SORT_ITEMS = 7
 var sort_popup: PopupMenu = null
 var sort_selected: int = 0
 var sort_order: int = 0
@@ -37,6 +37,9 @@ var spells_index_map = {}
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
 
+@onready var mana_edit: LineEdit = $container/mana/edit
+@onready var cooldown_label: Label = $container/cooldown
+
 @onready var error_label: Label = $container/error_label
 
 var current_index = -1
@@ -70,6 +73,8 @@ func _on_spell_index_item_selected(index):
 	duration_edit.text = "%.2f" % spell.duration
 	delay_edit.text = spell.delay
 	count_edit.text = "%d" % spell.count
+	mana_edit.text = "%.2f" % spell.mana_cost
+	update_cooldown()
 	
 	element_edit.text = Spell.name_from_element(spell.element)
 	chain_edit.text = spell.chain.name if spell.chain else ""
@@ -135,6 +140,10 @@ func update_spells_list():
 		spells_list.sort_custom(func(a, b): return a.count < b.count if is_ascending else a.count > b.count)
 	elif sort_selected == 3:
 		spells_list.sort_custom(func(a, b): return a.power < b.power if is_ascending else a.power > b.power)
+	elif sort_selected == 4:
+		spells_list.sort_custom(func(a, b): return a.mana_cost < b.mana_cost if is_ascending else a.mana_cost > b.mana_cost)
+	elif sort_selected == 5:
+		spells_list.sort_custom(func(a, b): return a.cooldown < b.cooldown if is_ascending else a.cooldown > b.cooldown)
 		
 	spells_index_map = {}
 	var k = 0
@@ -239,18 +248,21 @@ func _on_N_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].count = new_text.to_int()
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_P_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].power = new_text.to_float()
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_T_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].duration = new_text.to_float()
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_D_text_changed(new_text):
@@ -276,6 +288,7 @@ func _on_chain_text_changed(new_text):
 			if s.name == n:
 				spell.chain = s
 				
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_is_rel_toggled(button_pressed):
@@ -289,6 +302,20 @@ func _on_is_bomb_toggled(button_pressed):
 		return
 	book.spells[current_index].is_bomb = button_pressed
 	update_spells_that_chain_to_current_spell()
+	
+func _on_M_text_changed(new_text):
+	if current_index < 0:
+		return
+	book.spells[current_index].mana_cost = new_text.to_float()
+	update_cooldown()
+	update_spells_that_chain_to_current_spell()
+
+func update_cooldown():
+	if current_index < 0:
+		return
+	book.spells[current_index].calculate_cooldown()
+	cooldown_label.text = "Cooldown: " + ("%.2f" % book.spells[current_index].cooldown) + "s"
+	
 
 func update_spells_that_chain_to_current_spell():
 	if current_index < 0:
@@ -341,3 +368,4 @@ func filter_popup_selected(id: int):
 		
 	update_spells_list()
 	reload_list()
+

@@ -12,6 +12,7 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var duration: float
 @export var count: float
 @export var delay: String
+@export var mana_cost: float = 0.0
 var chain: Spell
 
 var x_expr: Expr
@@ -22,10 +23,11 @@ var d_expr: Expr
 
 var follow: bool
 var is_bomb: bool
+var cooldown: float
 
 var id: int = -1
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false):
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0):
 	x = _x
 	y = _y
 	z = _z
@@ -36,6 +38,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	count = _N
 	delay = _delay
 	chain = null
+	mana_cost = _mana
 	
 	follow = _follow
 	is_bomb = _is_bomb
@@ -45,6 +48,8 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	z_expr = Expr.new(z)
 	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
+	
+	calculate_cooldown()
 	
 func calculate_location(vars: Dictionary) -> Vector3:
 	var result = Vector3.ZERO
@@ -72,6 +77,13 @@ func impulse_length() -> float:
 			return power * 10
 		_:
 			return 0
+			
+func calculate_cooldown():
+	var chain_cost = 0.0
+	if chain != null:
+		chain_cost = chain.calculate_cooldown()
+	cooldown = (power + 1) * count * (1 + duration) + chain_cost - mana_cost
+	return cooldown
 	
 const fire = preload("res://Projectiles/fire.tscn")
 const rock = preload("res://Projectiles/rock.tscn")
@@ -98,6 +110,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["D"] = delay
 	fixed_vars["pi"] = PI
 	fixed_vars["n"] = n
+	fixed_vars["M"] = mana_cost
 	fixed_vars.merge(fvars, true)
 	
 	var p: SpellBody
@@ -144,7 +157,7 @@ func save_dict():
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element,
-		"name": name, "id": id,
+		"name": name, "id": id, "mana": mana_cost
 	}
 
 func load_dict(dict: Dictionary):
@@ -164,12 +177,15 @@ func load_dict(dict: Dictionary):
 		chain = Spell.new()
 		chain.load_dict(dict["chain"])
 	id = dict.get("id", -1)
+	mana_cost = dict.get("mana", 0.0)
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
 	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
+	
+	calculate_cooldown()
 	
 static func name_from_element(el: Element) -> String:
 	match el:
