@@ -71,6 +71,7 @@ const ps_keys = {
 var name: String
 var mods: Dictionary
 var keys: Dictionary
+var last_use: Dictionary
 var picked: Spell
 
 var current_actions: Dictionary
@@ -79,6 +80,7 @@ func _init():
 	name = ""
 	mods = {}
 	keys = {}
+	last_use = {}
 	picked = null
 	current_actions = {}
 	build_keys()
@@ -127,7 +129,7 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 				return s
 			elif opt.kind == Kind.PICK:
 				picked = s
-				return
+				return null
 	return null
 
 func action_down(action: String, book: MagicBook) -> Spell:
@@ -143,7 +145,14 @@ func action_down(action: String, book: MagicBook) -> Spell:
 		if found:
 			var opt: Option = keys[key]
 			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
-				return find_spell(key, book)
+				var s = find_spell(key, book)
+				var used = last_use.get(s.name, 0)
+				if Time.get_unix_time_from_system() - used > s.cooldown:
+					last_use[s.name] = Time.get_unix_time_from_system()
+					return s
+				else:
+					print(Time.get_unix_time_from_system() - used, " > ", s.cooldown)
+					return null
 	return null
 	
 func action_up(action: String):

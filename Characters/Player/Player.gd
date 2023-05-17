@@ -50,7 +50,7 @@ func _physics_process(delta):
 	spell_caster.deferred_update(self, delta)
 
 func cast_spell(insert: Callable, next_spell: Spell):
-	spell_caster.cast_spell(self, insert, next_spell)
+	spell_caster.cast_spell(self, vitals, insert, next_spell)
 
 func _on_wet_area_body_entered(body):
 	print(body)

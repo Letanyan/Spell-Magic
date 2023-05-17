@@ -343,4 +343,4 @@ var water_mat = preload("res://Projectiles/water_mat.tres")
 var rock_mat = preload("res://Projectiles/rock.tres")
 
 func cast_spell(insert: Callable, next_spell: Spell):
-	spell_caster.cast_spell(self, insert, next_spell)
+	spell_caster.cast_spell(self, null, insert, next_spell)

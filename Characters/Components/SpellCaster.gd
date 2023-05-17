@@ -69,7 +69,13 @@ func all_spell_variables(body: Node3D):
 	result.merge(spell_variables(body, false))
 	return result
 
-func cast_spell(body: Node3D, insert: Callable, spell: Spell):
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
+	if vitals != null:
+		if vitals.mana >= spell.mana_cost:
+			vitals.mana -= spell.mana_cost
+		else:
+			print("not enough mana")
+			return
 	var vars = all_spell_variables(body)
 	var ps = spell.get_particles(vars)
 	for p in ps:
