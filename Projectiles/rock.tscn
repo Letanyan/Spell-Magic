@@ -15,7 +15,7 @@ script = ExtResource("1_i3esg")
 
 [node name="body" type="RigidBody3D" parent="."]
 collision_layer = 16
-collision_mask = 255
+collision_mask = 1023
 freeze = true
 
 [node name="shape" type="CollisionShape3D" parent="body"]
@@ -27,7 +27,7 @@ skeleton = NodePath("../..")
 
 [node name="area" type="Area3D" parent="body/mesh"]
 collision_layer = 16
-collision_mask = 255
+collision_mask = 1023
 
 [node name="shape" type="CollisionShape3D" parent="body/mesh/area"]
 shape = SubResource("BoxShape3D_odltr")

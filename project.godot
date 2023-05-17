@@ -161,6 +161,7 @@ debug1={
 3d_physics/layer_7="air"
 3d_physics/layer_8="ice"
 3d_physics/layer_9="electric"
+3d_physics/layer_10="world_object"
 
 [rendering]
 

@@ -28,9 +28,10 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	leaves.position.y = h
 	
 	var body = StaticBody3D.new()
-	body.collision_layer = 0b1
+	body.collision_layer = 1 << 9
 	
 	var box = CollisionShape3D.new()
+	box.name = "collision"
 	box.shape = CylinderShape3D.new()
 	box.shape.height = h
 	box.shape.radius = r

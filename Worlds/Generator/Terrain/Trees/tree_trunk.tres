@@ -18,6 +18,7 @@ color_ramp = SubResource("Gradient_i83en")
 noise = SubResource("FastNoiseLite_4lqpc")
 
 [resource]
+transparency = 1
 shading_mode = 2
 diffuse_mode = 3
 albedo_color = Color(0.490196, 0.192157, 0, 1)

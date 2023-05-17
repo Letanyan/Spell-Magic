@@ -71,17 +71,18 @@ func _on_body_entered(body: Node3D):
 	var is_player = body.collision_layer & 0b0010 != 0
 	var is_enemy  = body.collision_layer & 0b0100 != 0
 	
+	var is_world_object = body.collision_layer & (1 << 9) != 0
 	var is_rock  = body.collision_layer & 0b1_0000 != 0
 	match spell.element:
 		Spell.Element.FIRE:
-			if is_world or is_rock:
+			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif is_enemy or is_player:
 				body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
 				expire_now(self, body)
 		Spell.Element.ROCK:
 			if body != get_node("body"):
-				if is_world :
+				if is_world or is_world_object:
 					lose_control(self, body)
 				elif is_rock:
 					lose_control(self, body)
@@ -91,20 +92,20 @@ func _on_body_entered(body: Node3D):
 					body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
 					lose_control(self, body)
 		Spell.Element.WATER:
-			if is_world or is_rock:
+			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif is_enemy or is_player:
 				body.vitals.handle_damage(Spell.Element.WATER, spell.power)
 				expire_now(self, body)
 		Spell.Element.AIR:
-			if is_world or is_rock:
+			if is_world or is_rock or is_world_object:
 				nothing(self, body)
 			elif is_player or is_enemy:
 				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.AIR, spell.power)
 				nothing(self, body)
 		Spell.Element.ICE:
-			if is_world or is_rock:
+			if is_world or is_rock or is_world_object:
 				nothing(self, body)
 			elif is_player or is_enemy:
 				CharacterCollision.handle(body, self)
@@ -120,11 +121,12 @@ func _on_area_entered(area):
 	var is_player = area.collision_layer & 0b0010 != 0
 	var is_enemy  = area.collision_layer & 0b0100 != 0
 	
+	var is_world_object = body.collision_layer & (1 << 9) != 0
 	var is_rock  = area.collision_layer & 0b1_0000 != 0
 	var is_water = area.collision_layer & 0b10_0000 != 0
 	match spell.element:
 		Spell.Element.ELECTRIC:
-			if is_world or is_rock:
+			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif (is_player or is_enemy) and is_water:
 				CharacterCollision.handle(body, self)

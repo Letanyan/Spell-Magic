@@ -22,17 +22,17 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	chunk_size = cs
 	radius = r
 	
-	var large_chunk = r * 8
-	large_map = create_mesh(0, 0, large_chunk, 1 / 128.0)[0]
-	update_mesh(large_map, 0, 0, large_chunk)
-	large_map.position = Vector3(0, 0, 0)
-	large_map.visible = true
-	
-	var medium_chunk = r * 4
-	medium_map = create_mesh(0, 0, medium_chunk, 1 / 64.0)[0]
-	update_mesh(medium_map, 0, 0, medium_chunk)
-	medium_map.position = Vector3(0, 0, 0)
-	medium_map.visible = true
+#	var large_chunk = r * 8
+#	large_map = create_mesh(0, 0, large_chunk, 1 / 128.0)[0]
+#	update_mesh(large_map, 0, 0, large_chunk)
+#	large_map.position = Vector3(0, 0, 0)
+#	large_map.visible = true
+#
+#	var medium_chunk = r * 4
+#	medium_map = create_mesh(0, 0, medium_chunk, 1 / 64.0)[0]
+#	update_mesh(medium_map, 0, 0, medium_chunk)
+#	medium_map.position = Vector3(0, 0, 0)
+#	medium_map.visible = true
 	
 func switch_detail():
 	if large_map.visible:
@@ -57,7 +57,6 @@ func init_chunks(x: float, y: float) -> Array:
 	set_player_coord_using_position(x, y)
 	var rad = chunk_count / 2
 	var result = []
-	var final_d = {}
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
 			var p = Vector2((player_coord.x + w) * chunk_size, (player_coord.y + h) * chunk_size)
@@ -218,12 +217,11 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	if dist <= 1 or true:
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
-		body.collision_layer = 0b1
+		body.collision_layer = 1 << 0
 
 func update_chunk(node: Node3D, x: float, y: float):
 	var mi = node.get_node("mesh")
-	var mesh = mi.mesh
-	var d = update_mesh(mi, x, y, chunk_size)
+	update_mesh(mi, x, y, chunk_size)
 				
 	node.position.x = x - (x / float(chunk_size) * 0.0)
 	node.position.z = y - (y / float(chunk_size) * 0.0)

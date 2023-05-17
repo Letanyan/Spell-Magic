@@ -53,7 +53,7 @@ draw_pass_1 = SubResource("SphereMesh_58dya")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 8
-collision_mask = 23
+collision_mask = 535
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_21upn")

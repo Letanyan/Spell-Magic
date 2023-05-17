@@ -67,7 +67,7 @@ draw_pass_1 = SubResource("BoxMesh_axn5x")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 64
-collision_mask = 22
+collision_mask = 6
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

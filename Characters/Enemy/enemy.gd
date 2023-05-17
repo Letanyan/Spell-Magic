@@ -47,7 +47,7 @@ func _physics_process(delta):
 	if behavior_tick == 20:
 		behaviour.update_state(self, player)
 		var next_pos = behaviour.next_position(self, player)
-		velocity_movement.target_position = next_pos
+		velocity_movement.target_position = Navigator.find_path(get_node("."), next_pos)
 		behavior_tick = 0
 	
 	if spell_tick == 60:
