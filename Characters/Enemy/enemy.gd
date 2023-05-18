@@ -13,7 +13,6 @@ var player: Player
 var blender: NoiseBlender
 var behaviour: Behaviour
 var vitals: Vitals
-var patterns: AttackPatterns
 
 var animation_map: Dictionary
 
@@ -36,6 +35,9 @@ func play_animation(animation: String, blend: float):
 	if anim != "":
 		animator.play(anim, blend) 
 
+func attack_state() -> AttackPatterns:
+	return AttackPatterns.new([], [], false)
+
 func _physics_process(delta):
 	increment_ticks()
 	
@@ -50,10 +52,11 @@ func _physics_process(delta):
 		velocity_movement.target_position = Navigator.find_path(get_node("."), next_pos)
 		behavior_tick = 0
 	
-	if spell_tick == 60:
-		var spell = patterns.choose_spell(0.5 if behaviour.is_aggresive() else 0.0)
-		if spell != null:
-			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
+	if spell_tick == 30:
+		if behaviour.is_aggresive():
+			var spell = attack_state().choose_spell(vitals, behaviour)
+			if spell != null:
+				cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 		
 	spell_caster.update(self, delta)
