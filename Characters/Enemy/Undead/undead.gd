@@ -42,7 +42,6 @@ func _ready():
 	)
 
 func attack_state() -> AttackPatterns:
-	print(vitals.health)
 	if vitals.health >= 50:
 		return sequence_pattern
 	else:

@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode diffuse_toon, vertex_lighting, ensure_correct_normals;
 
 uniform sampler2D elevation;
 uniform sampler2D temperature;
@@ -7,7 +8,9 @@ uniform float texture_width;
 uniform float texture_depth;
 
 uniform sampler2D grass;
+uniform sampler2D grass_normal;
 uniform sampler2D forest_ground;
+uniform sampler2D forest_ground_normal;
 
 void vertex() {
 //	vec2 pixel = 1.0 / vec2(textureSize(elevation, 0)); 
@@ -35,10 +38,13 @@ void fragment() {
 	float d = texture(dryness, w).r;
 	
 	vec3 color = vec3(0, 0, 0);
+	vec3 normal = vec3(0, 0, 0);
 	
 	vec3 taiga = vec3(0, 1, 1);
-	vec3 grassland = mix(vec3(1, 0.776, 0.282), texture(grass, tw).rgb, 0.9);
-	vec3 forest = mix(vec3(1, 0.5, 0.5), texture(forest_ground, tw).rgb, 0.9);
+	vec3 grassland = mix(vec3(1, 0.776, 0.282), texture(grass, UV).rgb, 1.0);
+	vec3 grassland_normal = texture(grass_normal, UV).rgb;
+	vec3 forest = mix(vec3(0.1, 0.05, 0.05), texture(forest_ground, UV).rgb, 1.0);
+	vec3 forest_normal = texture(forest_ground_normal, UV).rgb;
 	vec3 desert = vec3(1, 1, 0);
 	vec3 jungle = vec3(0, 0.25, 0.25);
 	vec3 water = vec3(0, 0, 1);
@@ -50,18 +56,23 @@ void fragment() {
 	} else if (t >= 0.1 && t < 0.3) {
 		if (d >= 0.0 && d < 0.5) {
 			color = grassland;
+			normal = grassland_normal;
 		} else if (d >= 0.5 && d <= 1.0) {
 			color = taiga;
 		}
 	} else if (t >= 0.3 && t < 0.6) {
 		if (d >= 0.0 && d < 0.1) {
 			color = forest;
+			normal = forest_normal;
 		} else if (d >= 0.1 && d < 0.4) {
 			color = forest;
+			normal = forest_normal;
 		} else if (d >= 0.4 && d < 0.7) {
 			color = grassland;
+			normal = grassland_normal;
 		} else if (d >= 0.7 && d < 0.9) {
 			color = grassland;
+			normal = grassland_normal;
 		} else if (d >= 0.9 && d <= 1.0) {
 			color = desert;
 		}
@@ -70,8 +81,10 @@ void fragment() {
 			color = jungle;
 		} else if (d >= 0.1 && d < 0.4) {
 			color = forest;
+			normal = forest_normal;
 		} else if (d >= 0.4 && d < 0.7) {
 			color = grassland;
+			normal = grassland_normal;
 		} else if (d >= 0.7 && d < 0.9) {
 			color = desert;
 		} else if (d >= 0.9 && d <= 1.0) {
@@ -107,15 +120,10 @@ void fragment() {
 		} else if (t >= 0.9 && t <= 1.0) {
 			color = vec3(0, 0, 0); // otherworld
 		}
-	} /*else if (e >= 0.2 && e < 0.4) {
-		color = vec3(1, 0, 0);
-	} else if (e >= 0.4 && e < 0.6) {
-		color = vec3(0, 1, 1);
-	} else if (e >= 0.6 && e < 0.85) {
-		color = vec3(0, 0, 1);
-	}*/
+	}
 	
 	ALBEDO = color;
-//	ALBEDO = vec3(t, t, t);
-//	ALBEDO = vec3(w.x, 0, w.y);
+	if (normal != vec3(0)) {
+		NORMAL_MAP = normal;
+	} 
 }

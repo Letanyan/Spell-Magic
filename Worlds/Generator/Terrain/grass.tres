@@ -2,7 +2,7 @@
 
 [sub_resource type="Gradient" id="Gradient_hj1c8"]
 offsets = PackedFloat32Array(0.67907, 1)
-colors = PackedColorArray(0, 0.752941, 0, 1, 0, 0.368627, 0, 1)
+colors = PackedColorArray(0, 0.478431, 0, 1, 0, 0.368627, 0, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kn65v"]
 noise_type = 2
@@ -10,6 +10,7 @@ fractal_type = 3
 domain_warp_enabled = true
 
 [resource]
+in_3d_space = true
 seamless = true
 color_ramp = SubResource("Gradient_hj1c8")
 noise = SubResource("FastNoiseLite_kn65v")

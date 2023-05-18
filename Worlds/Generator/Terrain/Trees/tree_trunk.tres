@@ -20,5 +20,6 @@ noise = SubResource("FastNoiseLite_4lqpc")
 [resource]
 shading_mode = 2
 diffuse_mode = 3
+vertex_color_use_as_albedo = true
 albedo_color = Color(0.490196, 0.192157, 0, 1)
 albedo_texture = SubResource("NoiseTexture2D_u7kt2")

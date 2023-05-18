@@ -1,8 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=24 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="3_j80hc"]
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Menu.tscn" id="3_luuj6"]
+[ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome.gdshader" id="4_benyj"]
+[ext_resource type="Texture2D" uid="uid://bhk6by6hmi7kw" path="res://Worlds/Generator/Terrain/grass.tres" id="4_d3h6x"]
+[ext_resource type="Texture2D" uid="uid://cd4b8dvv7807w" path="res://Worlds/Generator/Terrain/forest_ground.tres" id="5_ilfs1"]
+[ext_resource type="Texture2D" uid="uid://dq8eydm7e74xj" path="res://Worlds/Generator/Terrain/forest_ground_normal.tres" id="6_ju7py"]
+[ext_resource type="Texture2D" uid="uid://tg6j7ejbuq0f" path="res://Worlds/Generator/Terrain/grass_normal.tres" id="8_8jpqs"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r3lp4"]
 frequency = 0.001
@@ -26,6 +31,8 @@ size = Vector3(1000, 1, 1000)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2hx8f"]
 sky_top_color = Color(0.196078, 0.411765, 0.835294, 1)
+ground_curve = 2.56
+sun_curve = 0.05
 
 [sub_resource type="Sky" id="Sky_mm3m4"]
 sky_material = SubResource("ProceduralSkyMaterial_2hx8f")
@@ -39,6 +46,42 @@ fog_light_color = Color(0, 0, 0, 1)
 fog_light_energy = 10.0
 fog_density = 0.005
 fog_aerial_perspective = 0.1
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qgtmx"]
+noise_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2clhn"]
+noise = SubResource("FastNoiseLite_qgtmx")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_70qba"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lghw7"]
+noise = SubResource("FastNoiseLite_70qba")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_opx88"]
+noise_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vl0lb"]
+noise = SubResource("FastNoiseLite_opx88")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eggur"]
+render_priority = 0
+shader = ExtResource("4_benyj")
+shader_parameter/texture_width = 512.0
+shader_parameter/texture_depth = 512.0
+shader_parameter/elevation = SubResource("NoiseTexture2D_lghw7")
+shader_parameter/temperature = SubResource("NoiseTexture2D_vl0lb")
+shader_parameter/dryness = SubResource("NoiseTexture2D_2clhn")
+shader_parameter/grass = ExtResource("4_d3h6x")
+shader_parameter/grass_normal = ExtResource("8_8jpqs")
+shader_parameter/forest_ground = ExtResource("5_ilfs1")
+shader_parameter/forest_ground_normal = ExtResource("6_ju7py")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_f4gnr"]
+material = SubResource("ShaderMaterial_eggur")
+size = Vector2(100, 100)
+subdivide_width = 32
+subdivide_depth = 32
 
 [node name="Demo" type="Node3D"]
 script = ExtResource("1_f83i4")
@@ -59,7 +102,7 @@ environment = SubResource("Environment_yd7q2")
 [node name="Player" parent="." instance=ExtResource("3_j80hc")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.810512, 0.585722, 0, -0.585722, 0.810512, 0, 27.2389, 0)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -4.69289, 10.2263, 0)
 shadow_enabled = true
 shadow_opacity = 0.5
 shadow_blur = 4.0
@@ -80,5 +123,9 @@ offset_bottom = 32.0
 grow_horizontal = 0
 text = "FPS: 0"
 horizontal_alignment = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0215473)
+mesh = SubResource("PlaneMesh_f4gnr")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]

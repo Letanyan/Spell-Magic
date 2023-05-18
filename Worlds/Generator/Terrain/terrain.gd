@@ -9,6 +9,8 @@ var player_coord: Vector2 = Vector2.ZERO
 
 var grass_texture = preload("res://Worlds/Generator/Terrain/grass.tres")
 var forest_texture = preload("res://Worlds/Generator/Terrain/forest_ground.tres")
+var grass_normal = preload("res://Worlds/Generator/Terrain/grass_normal.tres")
+var forest_ground_normal = preload("res://Worlds/Generator/Terrain/forest_ground_normal.tres")
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
@@ -208,7 +210,9 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
 	mat.set_shader_parameter("grass", grass_texture)
+	mat.set_shader_parameter("grass_normal", grass_normal)
 	mat.set_shader_parameter("forest_ground", forest_texture)
+	mat.set_shader_parameter("forest_ground_normal", forest_ground_normal)
 	mesh.surface_set_material(0, mat)
 #	mi.mesh = mesh
 	var dist = max(max(abs(x), abs(y)) / size, 1)
