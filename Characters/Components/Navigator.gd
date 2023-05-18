@@ -62,8 +62,7 @@ static func get_intersection(p: Node3D, from: Vector3, target: Vector3) -> Colli
 		
 	return c
 	
-static func build_graph(p: Node3D, target: Vector3) -> Dictionary:
-	var current_position = p.global_position
+static func build_graph(p: Node3D, current_position: Vector3, target: Vector3) -> Dictionary:
 	var obj = get_intersection(p, current_position, target)
 	if obj == null:
 		return {}
@@ -125,8 +124,9 @@ static func dfs(graph: Dictionary, start: Vector3, target: Vector3) -> Array[Vec
 	return []
 	
 static func find_path(p: Node3D, target: Vector3) -> Vector3:
-	var graph = build_graph(p, target)
-	var path = dfs(graph, p.global_position, target)
+	var start_position = p.global_position
+	var graph = build_graph(p, start_position, target)
+	var path = dfs(graph, start_position, target)
 	if path.is_empty():
 		return target
 	var next = path[0]

@@ -48,8 +48,8 @@ enum Kind {
 	PYRAMID, ROUND
 }
 
-const pyramid_tree = preload("res://Models/Nature/Tree_Pyramid.fbx")
-const round_tree = preload("res://Models/Nature/Tree_Round.fbx")
+const pyramid_tree = preload("res://Models/Nature/tree_pyramid.tscn")
+const round_tree = preload("res://Models/Nature/tree_round.tscn")
 	
 static func make(kind: Kind, rng: RandomNumberGenerator) -> Node3D:
 	var result: Node3D
@@ -58,9 +58,19 @@ static func make(kind: Kind, rng: RandomNumberGenerator) -> Node3D:
 		Kind.ROUND: result = round_tree.instantiate()
 		
 	var s = rng.randf_range(2, 5)
-	result.scale = Vector3(s, s, s)
+	result.get_node("RootNode").scale = Vector3(s, s, s)
 	var r = rng.randf_range(0, 2 * PI)
-	result.rotate(Vector3.UP, r)
+	result.get_node("RootNode").rotate(Vector3.UP, r)
+	
+	var body = StaticBody3D.new()
+	body.collision_layer = 1 << 9
+	var box = CollisionShape3D.new()
+	box.name = "collision"
+	box.shape = CylinderShape3D.new()
+	box.shape.height = 4 * s
+	box.shape.radius = 0.25 * s
+	body.add_child(box)
+	result.add_child(body)
 		
 	return result
 				

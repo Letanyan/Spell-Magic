@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://bb8ixffwl14hq"]
+
+[ext_resource type="PackedScene" uid="uid://dxuae7x455udi" path="res://Models/Nature/Tree_Round.fbx" id="1_651pb"]
+
+[node name="Tree_Round" instance=ExtResource("1_651pb")]
