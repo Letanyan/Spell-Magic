@@ -44,3 +44,23 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	
 	return result
 	
+enum Kind {
+	PYRAMID, ROUND
+}
+
+const pyramid_tree = preload("res://Models/Nature/Tree_Pyramid.fbx")
+const round_tree = preload("res://Models/Nature/Tree_Round.fbx")
+	
+static func make(kind: Kind, rng: RandomNumberGenerator) -> Node3D:
+	var result: Node3D
+	match kind:
+		Kind.PYRAMID: result = pyramid_tree.instantiate()
+		Kind.ROUND: result = round_tree.instantiate()
+		
+	var s = rng.randf_range(2, 5)
+	result.scale = Vector3(s, s, s)
+	var r = rng.randf_range(0, 2 * PI)
+	result.rotate(Vector3.UP, r)
+		
+	return result
+				

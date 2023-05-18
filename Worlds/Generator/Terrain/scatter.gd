@@ -2,16 +2,17 @@ class_name Scatter
 
 const ENEMY_SPAWN_PROB: Dictionary = {
 	World.Biome.GRASSLAND: {
-		World.Foliage.GRASSLAND_TREE: 0.01
+		World.Foliage.TREE_ROUND: 0.01
 	},
 	World.Biome.SAVANNAH: {
-		World.Foliage.GRASSLAND_TREE: 0.02
+		World.Foliage.TREE_ROUND: 0.02
 	},
 	World.Biome.WATER: {
-		World.Foliage.GRASSLAND_TREE: 0.01
+		World.Foliage.TREE_ROUND: 0.01
 	},
 	World.Biome.FOREST: {
-		World.Foliage.GRASSLAND_TREE: 0.25
+		World.Foliage.TREE_ROUND: 0.01,
+		World.Foliage.TREE_PYRAMID: 0.24
 	}
 }
 
@@ -58,15 +59,23 @@ func random_terrain(biome: World.Biome) -> World.Foliage:
 	return World.Foliage.NONE
 		
 	
-func spawn(x: float, y: float) -> Node3D:
+func spawn(x: float, y: float, spacing: float) -> Node3D:
 	var biome = blender.biome(x, y)
 	
 	var result = null
+	var displace = 0.0
 	match random_terrain(biome):
-		World.Foliage.GRASSLAND_TREE:
-			result = Trees.build(rng)
+		World.Foliage.TREE_ROUND:
+			result = Trees.make(Trees.Kind.ROUND, rng)
+			displace = rng.randf_range(-0.5, 0.5)
+		World.Foliage.TREE_PYRAMID:
+			result = Trees.make(Trees.Kind.PYRAMID, rng)
+			displace = rng.randf_range(-0.5, 0.5)
 		
 	if result != null:
+		if displace:
+			x += displace * spacing
+			y += displace * spacing
 		var p = Vector3(x, 1000, y)
 		raycast.position = p
 		raycast.force_raycast_update()
@@ -83,7 +92,7 @@ func spawn_all_into_world(world: Node):
 	var spacing = 16.0
 	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0, spacing):
 		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0, spacing):
-			var p = spawn(coord.x * chunk_size + x, coord.y * chunk_size + y)
+			var p = spawn(coord.x * chunk_size + x, coord.y * chunk_size + y, spacing)
 			if p != null:
 				world.add_child(p)
 	

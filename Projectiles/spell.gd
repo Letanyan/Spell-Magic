@@ -10,7 +10,7 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var r: String
 @export var power: float
 @export var duration: float
-@export var count: float
+@export var count: int
 @export var delay: String
 @export var mana_cost: float = 0.0
 var chain: Spell:

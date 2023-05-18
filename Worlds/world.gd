@@ -12,5 +12,5 @@ enum Enemy {
 
 enum Foliage {
 	NONE,
-	GRASSLAND_TREE
+	TREE_PYRAMID, TREE_ROUND
 }
