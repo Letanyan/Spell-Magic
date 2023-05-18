@@ -3,7 +3,7 @@ class_name AttackPatterns
 var spells: Array
 var spell_weight: Array
 var is_sequence: bool = false
-var start_time: int
+var start_time: float
 var current_sequence_index: int
 
 func _init(_spells: Array, _spell_weight: Array, _is_sequence: bool):

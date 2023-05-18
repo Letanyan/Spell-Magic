@@ -13,7 +13,10 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var count: float
 @export var delay: String
 @export var mana_cost: float = 0.0
-var chain: Spell
+var chain: Spell:
+	set(spell):
+		chain = spell
+		calculate_cooldown()
 
 var x_expr: Expr
 var y_expr: Expr
@@ -50,6 +53,12 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	d_expr = Expr.new(delay)
 	
 	calculate_cooldown()
+	
+func duplicate() -> Spell:
+	var result = Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost)
+	result.chain = chain
+	result.name = name
+	return result
 	
 func calculate_location(vars: Dictionary) -> Vector3:
 	var result = Vector3.ZERO

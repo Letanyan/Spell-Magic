@@ -52,7 +52,7 @@ func handle_damage(kind: Spell.Element, power: float):
 				power = power * 0.25
 			burning = clamp(burning - amount, 0, 1)
 			
-	health = clamp(health - power, 0, 1)
+	health = clamp(health - power, 0, 100000)
 	print("health: ", health, ", burning: ", burning, ", wetness: ", wetness, ", freeze: ", freeze)
 	print("element: ", Spell.name_from_element(kind))
 	print(wetness_scale())

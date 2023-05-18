@@ -15,10 +15,17 @@ var filter_chain = ""
 var book: MagicBook:
 	set(value):
 		book = value
+		var i = 0 
+		for s in book.spells:
+			s.id = i
+			i += 1
 		update_spells_list()
 		reload_list()
 
 var spells_index_map = {}
+
+@onready var create_button: Button = $Create
+@onready var duplicate_button: Button = $Duplicate
 		
 @onready var name_edit: LineEdit = $container/name_edit
 
@@ -61,6 +68,8 @@ func _process(delta):
 func _on_spell_index_item_selected(index):
 	current_index = spells_index_map[index]
 	var spell: Spell = book.spells[current_index]
+	
+	duplicate_button.disabled = index < 0
 	
 	name_edit.text = spell.name
 	
@@ -128,8 +137,6 @@ func _on_save_pressed():
 	
 func update_spells_list():
 	var spells_list = book.spells.duplicate(false)
-	for i in range(spells_list.size()):
-		spells_list[i].id = i
 	
 	var is_ascending = sort_order == 0
 	if sort_selected == 0:
@@ -162,6 +169,8 @@ func update_spells_list():
 		if q0:
 			spells_index_map[k] = spell.id
 			k += 1
+		
+	create_button.disabled = k < book.spells.size()
 	
 func reload_list():
 	spell_index.clear()
@@ -178,19 +187,36 @@ func _on_delete_pressed():
 	book.spells.remove_at(current_index)
 	current_index = -1
 	$container.visible = false
+	update_spells_list()
 	reload_list()
 
-
+func add_spell(spell: Spell):
+	spell.id = book.spells.size()
+	book.spells.append(spell)
+	update_spells_list()
+	reload_list()
+	var k_index = -1
+	for k in spells_index_map:
+		if spells_index_map[k] == spell.id:
+			k_index = k
+			break
+	if k_index != -1:
+		_on_spell_index_item_selected(k_index)
+		spell_index.select(k_index, true)
+		name_edit.grab_focus()
+		name_edit.select_all()
+		
 func _on_create_pressed():
 	var spell = Spell.new()
 	spell.name = "New Spell"
-	book.spells.append(spell)
-	reload_list()
-	_on_spell_index_item_selected(book.spells.size() - 1)
-	spell_index.select(book.spells.size() - 1, true)
-	name_edit.grab_focus()
-	name_edit.select_all()
+	add_spell(spell)
 
+func _on_duplicate_pressed():
+	if current_index < 0:
+		return
+	var spell = book.spells[current_index].duplicate()
+	spell.name += " (Copy)"
+	add_spell(spell)
 
 func _on_name_edit_text_changed(new_text):
 	if current_index < 0:
@@ -356,7 +382,6 @@ func sort_popup_selected(id: int):
 	reload_list()
 	
 func filter_popup_selected(id: int):
-	const TOTAL_ITEMS = 9
 	var is_selected = filter_options.has(id)
 	if is_selected:
 		filter_options.erase(id)

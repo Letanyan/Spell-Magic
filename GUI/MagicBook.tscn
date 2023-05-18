@@ -328,6 +328,15 @@ popup/item_8/checkable = 1
 popup/item_8/id = 8
 popup/item_8/disabled = true
 
+[node name="Duplicate" type="Button" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 56.0
+offset_right = 96.0
+offset_bottom = 104.0
+disabled = true
+text = "Duplicate"
+
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
@@ -346,3 +355,4 @@ popup/item_8/disabled = true
 [connection signal="toggled" from="container/is_bomb" to="." method="_on_is_bomb_toggled"]
 [connection signal="pressed" from="container/view_chain_button" to="." method="_on_view_chain_button_pressed"]
 [connection signal="text_changed" from="container/mana/edit" to="." method="_on_M_text_changed"]
+[connection signal="pressed" from="Duplicate" to="." method="_on_duplicate_pressed"]
