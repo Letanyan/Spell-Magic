@@ -56,7 +56,7 @@ func update_entity_info(info: EntityInfo):
 	info.position = position
 
 
-func update_behaviour(player: Player):
+func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < 30.0:
 		print("aggro: ", sqrt(player.position.distance_squared_to(position)))
 		vitals.aggression.value = 0.5

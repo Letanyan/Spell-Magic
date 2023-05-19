@@ -48,7 +48,7 @@ func _physics_process(delta):
 	move_and_slide()
 
 	if behavior_tick == 30:
-		update_behaviour(player)
+		update_behaviour()
 		var next_pos = current_path.next_position(self, player)
 		velocity_movement.target_position = Navigator.find_path(get_node("."), next_pos)
 		behavior_tick = 0
@@ -84,5 +84,5 @@ func entity_info() -> EntityInfo:
 func update_entity_info(info: EntityInfo):
 	info.position = position
 
-func update_behaviour(player: Player):
+func update_behaviour():
 	pass
