@@ -15,7 +15,7 @@ signal player_moved
 var vitals: Vitals
 
 func _ready():
-	vitals = Vitals.new(100, 50)
+	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 1))
 
 func _input(event):
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
@@ -54,3 +54,9 @@ func cast_spell(insert: Callable, next_spell: Spell):
 
 func _on_wet_area_body_entered(body):
 	print(body)
+	
+func entity_info() -> EntityInfo:
+	return EntityInfo.new(EntityInfo.Kind.PLAYER, position)
+
+func update_entity_info(info: EntityInfo):
+	info.position = position

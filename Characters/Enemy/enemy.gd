@@ -13,6 +13,7 @@ var player: Player
 var blender: NoiseBlender
 var behaviour: Behaviour
 var vitals: Vitals
+var knowledge: Knowledge
 
 var animation_map: Dictionary
 
@@ -57,6 +58,9 @@ func _physics_process(delta):
 			var spell = attack_state().choose_spell(vitals, behaviour)
 			if spell != null:
 				cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
+				for e in knowledge.entries:
+					print(e)
+				print("===========")
 		spell_tick = 0
 		
 	spell_caster.update(self, delta)
@@ -76,3 +80,9 @@ func _physics_process(delta):
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, vitals, insert, next_spell)
+
+func entity_info() -> EntityInfo:
+	return EntityInfo.new(EntityInfo.Kind.ENEMY, position)
+
+func update_entity_info(info: EntityInfo):
+	info.position = position

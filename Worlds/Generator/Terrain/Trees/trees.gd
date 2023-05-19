@@ -1,4 +1,5 @@
 class_name Trees
+extends Node3D
 
 const leaves_mat = preload("res://Worlds/Generator/Terrain/Trees/tree_leaves.tres")
 const trunk_mat = preload("res://Worlds/Generator/Terrain/Trees/tree_trunk.tres")
@@ -51,8 +52,8 @@ enum Kind {
 const pyramid_tree = preload("res://Models/Nature/tree_pyramid.tscn")
 const round_tree = preload("res://Models/Nature/tree_round.tscn")
 	
-static func make(kind: Kind, rng: RandomNumberGenerator) -> Node3D:
-	var result: Node3D
+static func make(kind: Kind, rng: RandomNumberGenerator) -> Trees:
+	var result: Trees
 	match kind:
 		Kind.PYRAMID: result = pyramid_tree.instantiate()
 		Kind.ROUND: result = round_tree.instantiate()
@@ -74,3 +75,5 @@ static func make(kind: Kind, rng: RandomNumberGenerator) -> Node3D:
 		
 	return result
 				
+func entity_info() -> EntityInfo:
+	return EntityInfo.new(EntityInfo.Kind.TREE, position)

@@ -21,7 +21,7 @@ var player: Player
 var coord: Vector2
 var chunk_size: float
 
-var inhabitants = []
+var inhabitants: Array[Enemy] = []
 
 var undead = preload("res://Characters/Enemy/Undead/undead.tscn")
 
@@ -65,6 +65,7 @@ func spawn(x: float, y: float) -> Enemy:
 	match random_enemy(biome):
 		World.Enemy.UNDEAD:
 			result = undead.instantiate()
+			result.name = "Undead" + str(rng.randi())
 		
 	if result != null:
 		result.blender = blender
@@ -88,3 +89,15 @@ func despawn_all_from_world(world: Node):
 	for habitant in inhabitants:
 		world.remove_child(habitant)
 	inhabitants.clear()
+
+func update_info(player: Player, scatter: Scatter):
+	for habitant in inhabitants:
+		if abs(habitant.position.distance_to(player.position)) < habitant.vitals.perception.value:
+			habitant.knowledge.update_entry_from(player)
+		for other in inhabitants:
+			if habitant != other and abs(habitant.position.distance_to(other.position)) < habitant.vitals.perception.value:
+				habitant.knowledge.update_entry_from(other)
+	for habitant in inhabitants:
+		for object in scatter.inhabitants:
+			if abs(habitant.position.distance_to(object.position)) < habitant.vitals.perception.value:
+				habitant.knowledge.update_entry_from(object)

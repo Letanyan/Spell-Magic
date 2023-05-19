@@ -45,7 +45,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 		var new_velocity: Vector3 = next_path_position - current_agent_position
 		new_velocity = new_velocity.normalized()
-		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze)
+		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value)
 
 		navigation_velocity = new_velocity
 
@@ -65,8 +65,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
 		if true or body.is_on_floor():
-			target_velocity.x = direction.x * speed * (1 - vitals.freeze)
-			target_velocity.z = direction.z * speed * (1 - vitals.freeze)
+			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value)
+			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value)
 	
 	if not body.is_on_floor():
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)

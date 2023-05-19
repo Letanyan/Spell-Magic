@@ -21,6 +21,8 @@ var book: MagicBook
 var case: WandCase
 var wand: Wand
 
+var knowledge_tick: int
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -58,7 +60,14 @@ func _process(delta):
 	pass
 	
 func _physics_process(delta):
-	pass
+	knowledge_tick += 1
+
+	if knowledge_tick == 60:
+		knowledge_tick = 0
+		for loc in population:
+			var scatter = terrain[loc]
+			var pop = population[loc]
+			pop.update_info(player, scatter)
 
 func _input(event):
 #	if event.is_action_pressed("debug1"):

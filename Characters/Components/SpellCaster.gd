@@ -73,8 +73,8 @@ func all_spell_variables(body: Node3D):
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 	if vitals != null and not ignore_mana_cost:
-		if vitals.mana >= spell.mana_cost:
-			vitals.mana -= spell.mana_cost
+		if vitals.mana.value >= spell.mana_cost:
+			vitals.mana.apply_ignoring_resistance(spell.mana_cost)
 		else:
 			print("not enough mana")
 			return

@@ -1,71 +1,91 @@
 class_name Vitals
 
-var health: float
-var mana: float
-var mana_growth: float
-var _mana_limit: float
+class Stat:
+	var min_value: float
+	var max_value: float
+	var value: float
+	var change_per_tick: float
+	var resistance: float
+	
+	func _init(v: float, min_v: float, max_v: float, change: float = 0, res: float = 0):
+		value = v
+		min_value = min_v
+		max_value = max_v
+		change_per_tick = change
+		resistance = res
+		
+	func amount_of_change(p: float) -> float:
+		return (1 - resistance) * p
+		
+	func apply_ignoring_resistance(amount: float):
+		value = clamp(value + amount, min_value, max_value)
+		
+	func update_per_tick():
+		apply_ignoring_resistance(change_per_tick)
+		
 
-var burning: float
-var wetness: float
-var freeze: float
+var health: Stat
+var mana: Stat
 
-var burn_res: float
-var wet_res: float
-var freeze_res: float
+var burning: Stat
+var wetness: Stat
+var freeze: Stat
 
-func _init(_health: float, _mana: float, _burning: float = 0.0, _wetness: float = 0.0, _freeze: float = 0.0, _burn_res: float = 0.0, _wet_res: float = 0.0, _freeze_res: float = 0.0, _mana_growth: float = 0.0):
+var hunger: Stat
+var thirst: Stat
+var perception: Stat
+
+
+func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _wetness := Stat.new(0, 0, 1, -0.001), _freeze := Stat.new(0, 0, 1, -0.01)):
 	health = _health
 	mana = _mana
-	mana_growth = _mana_growth
-	_mana_limit = _mana
 	burning = _burning
 	wetness = _wetness
 	freeze = _freeze
-	burn_res = _burn_res
-	wet_res = _wet_res
-	freeze_res = _freeze_res
+	hunger = Stat.new(0, 0, 0)
+	thirst = Stat.new(0, 0, 0)
+	perception = Stat.new(50, 0, 100)
 
 func handle_damage(kind: Spell.Element, power: float):
 	match kind:
 		Spell.Element.FIRE:
-			var amount = (1 - burn_res) * power
-			if wetness <= 0 and freeze <= 0:
-				burning = clamp(burning + amount, 0, 1)
+			var amount = burning.amount_of_change(power)
+			if wetness.value <= 0 and freeze.value <= 0:
+				burning.apply_ignoring_resistance(amount)
 			else:
 				power = power * 0.5
-			wetness = clamp(wetness - amount, 0, 1)
-			freeze = clamp(freeze - amount * 1.5, 0, 1)
+			wetness.apply_ignoring_resistance(-amount)
+			freeze.apply_ignoring_resistance(-amount * 1.5)
 		Spell.Element.WATER:
-			var amount = (1 - wet_res) * power
-			if burning <= 0:
-				wetness = clamp(wetness + amount, 0, 1)
+			var amount = wetness.amount_of_change(power)
+			if burning.value <= 0:
+				wetness.apply_ignoring_resistance(amount)
 			else:
 				power = power * 0.5
-			burning = clamp(burning - amount, 0, 1)
-			freeze = clamp(freeze + amount * freeze, 0, 1)
+			burning.apply_ignoring_resistance(-amount)
+			freeze.apply_ignoring_resistance(amount * freeze.value)
 		Spell.Element.ICE:
-			var amount = (1 - freeze_res) * wetness * power
-			if wetness > 0:
-				freeze = clamp(freeze + amount, 0, 1)
-				wetness = clamp(wetness - amount, 0, 1)
-			if burning > 0:
+			var amount = freeze.amount_of_change(wetness.value * power)
+			if wetness.value > 0:
+				freeze.apply_ignoring_resistance(amount)
+				wetness.apply_ignoring_resistance(-amount)
+			if burning.value > 0:
 				power = power * 0.25
-			burning = clamp(burning - amount, 0, 1)
+			burning.apply_ignoring_resistance(-amount)
 			
-	health = clamp(health - power, 0, 100000)
-	print("health: ", health, ", burning: ", burning, ", wetness: ", wetness, ", freeze: ", freeze)
+	health.apply_ignoring_resistance(-power)
+	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value)
 	print("element: ", Spell.name_from_element(kind))
 	print(wetness_scale())
 
 func update_vitals():
-	if freeze > 0:
-		freeze = clamp(freeze - (freeze_res + 0.01), 0, 1)
-	if burning > 0:
-		burning = clamp(burning - (burn_res + 0.05), 0, 1)
-		health = clamp(health - burning * health / 100, 0, 1)
-	if wetness > 0:
-		wetness = clamp(wetness - (wet_res + 0.001), 0, 1)
-	mana = clamp(mana + mana_growth, 0, _mana_limit)
+	freeze.update_per_tick()
+	wetness.update_per_tick()
+	burning.update_per_tick()
+	health.update_per_tick()
+	mana.update_per_tick()
+	if burning.value > 0:
+		health.apply_ignoring_resistance(-burning.value * health.value / 100.0)
 
 func wetness_scale():
-	return 1 + wetness
+	return 1 + wetness.value

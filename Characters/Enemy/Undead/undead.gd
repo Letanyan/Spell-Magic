@@ -19,7 +19,9 @@ func _ready():
 	)
 	behaviour.update_state(self, player)
 	
-	vitals = Vitals.new(100, 50)
+	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
+	
+	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.UNDEAD: true}, false)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -42,7 +44,13 @@ func _ready():
 	)
 
 func attack_state() -> AttackPatterns:
-	if vitals.health >= 50:
+	if vitals.health.value >= 50:
 		return sequence_pattern
 	else:
 		return random_pattern
+
+func entity_info() -> EntityInfo:
+	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
+
+func update_entity_info(info: EntityInfo):
+	info.position = position

@@ -68,9 +68,11 @@ func spawn(x: float, y: float, spacing: float) -> Node3D:
 		World.Foliage.TREE_ROUND:
 			result = Trees.make(Trees.Kind.ROUND, rng)
 			displace = rng.randf_range(-0.5, 0.5)
+			result.name = "RoundTree" + str(rng.randi())
 		World.Foliage.TREE_PYRAMID:
 			result = Trees.make(Trees.Kind.PYRAMID, rng)
 			displace = rng.randf_range(-0.5, 0.5)
+			result.name = "PyramidTree" + str(rng.randi())
 		
 	if result != null:
 		if displace:
