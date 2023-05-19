@@ -90,7 +90,7 @@ func despawn_all_from_world(world: Node):
 		world.remove_child(habitant)
 	inhabitants.clear()
 
-func update_info(player: Player, scatter: Scatter):
+func update_info(scatter: Scatter):
 	for habitant in inhabitants:
 		if abs(habitant.position.distance_to(player.position)) < habitant.vitals.perception.value:
 			habitant.knowledge.update_entry_from(player)

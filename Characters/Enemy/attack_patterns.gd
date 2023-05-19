@@ -20,7 +20,7 @@ func _init(_spells: Array, _spell_weight: Array, _is_sequence: bool):
 			spell_weight[i] = spell_weight[i] / total
 	
 func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spell:
-	if not randf() < behaviour.aggression * 0.25:
+	if not randf() < vitals.aggression.value * 0.25:
 		return null
 		
 	var range_start = 0.0

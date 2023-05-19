@@ -4,6 +4,9 @@ extends Enemy
 var random_pattern: AttackPatterns
 var sequence_pattern: AttackPatterns
 
+var idle_path: PathStyle
+var attack_path: PathStyle
+
 func _ready():
 	super._ready()
 	
@@ -11,15 +14,12 @@ func _ready():
 	animation_map["walk"] = "undead_walk"
 	
 	velocity_movement = VelocityMovement.new()
-
-	behaviour = Behaviour.new(
-		PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2),
-		PathStyle.new(blender, get_rid().get_id()).follow_player(0, 1).speed(2),
-		0.5
-	)
-	behaviour.update_state(self, player)
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
+	
+	idle_path = PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2)
+	attack_path = PathStyle.new(blender, get_rid().get_id()).follow_player(0, 1).speed(2)
+	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.UNDEAD: true}, false)
 	
@@ -54,3 +54,14 @@ func entity_info() -> EntityInfo:
 
 func update_entity_info(info: EntityInfo):
 	info.position = position
+
+
+func update_behaviour(player: Player):
+	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < 30.0:
+		print("aggro: ", sqrt(player.position.distance_squared_to(position)))
+		vitals.aggression.value = 0.5
+		current_path = attack_path
+	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > 90.0:
+		print("passive: ", sqrt(player.position.distance_squared_to(position)))
+		vitals.aggression.value = 0.0
+		current_path = idle_path

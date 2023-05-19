@@ -14,6 +14,7 @@ var blender: NoiseBlender
 var behaviour: Behaviour
 var vitals: Vitals
 var knowledge: Knowledge
+var current_path: PathStyle
 
 var animation_map: Dictionary
 
@@ -22,6 +23,7 @@ var spell_tick: int = 0
 
 func _ready():
 	animation_map = {}
+	current_path = PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2)
 	
 func apply_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -29,7 +31,6 @@ func apply_impulse(impulse: Vector3):
 func increment_ticks():
 	behavior_tick += 1
 	spell_tick += 1
-	
 	
 func play_animation(animation: String, blend: float):
 	var anim = animation_map.get(animation, "")
@@ -41,30 +42,26 @@ func attack_state() -> AttackPatterns:
 
 func _physics_process(delta):
 	increment_ticks()
-	
-	var movement = velocity_movement.update(delta, vitals, behaviour.movement_speed(), self)
+
+	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)
 	velocity = movement["velocity"]
 	move_and_slide()
 
-		
-	if behavior_tick == 20:
-		behaviour.update_state(self, player)
-		var next_pos = behaviour.next_position(self, player)
+	if behavior_tick == 30:
+		update_behaviour(player)
+		var next_pos = current_path.next_position(self, player)
 		velocity_movement.target_position = Navigator.find_path(get_node("."), next_pos)
 		behavior_tick = 0
-	
+
 	if spell_tick == 30:
-		if behaviour.is_aggresive():
+		if vitals.aggression.value > 0:
 			var spell = attack_state().choose_spell(vitals, behaviour)
 			if spell != null:
 				cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
-				for e in knowledge.entries:
-					print(e)
-				print("===========")
 		spell_tick = 0
-		
+
 	spell_caster.update(self, delta)
-	
+
 	if velocity != Vector3.ZERO:
 		if is_on_floor():
 			if velocity.length() > 1:
@@ -86,3 +83,6 @@ func entity_info() -> EntityInfo:
 
 func update_entity_info(info: EntityInfo):
 	info.position = position
+
+func update_behaviour(player: Player):
+	pass

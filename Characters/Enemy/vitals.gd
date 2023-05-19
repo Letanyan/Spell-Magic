@@ -26,6 +26,7 @@ class Stat:
 
 var health: Stat
 var mana: Stat
+var aggression: Stat
 
 var burning: Stat
 var wetness: Stat
@@ -45,6 +46,7 @@ func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _we
 	hunger = Stat.new(0, 0, 0)
 	thirst = Stat.new(0, 0, 0)
 	perception = Stat.new(50, 0, 100)
+	aggression = Stat.new(0, 0, 1)
 
 func handle_damage(kind: Spell.Element, power: float):
 	match kind:

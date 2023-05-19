@@ -67,7 +67,7 @@ func _physics_process(delta):
 		for loc in population:
 			var scatter = terrain[loc]
 			var pop = population[loc]
-			pop.update_info(player, scatter)
+			pop.update_info(scatter)
 
 func _input(event):
 #	if event.is_action_pressed("debug1"):
