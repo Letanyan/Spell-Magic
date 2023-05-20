@@ -124,8 +124,10 @@ void fragment() {
 		}
 	}
 	
-	if (distance(vec3(0, 1, 0), normalize(NORMAL)) > inversesqrt(8.0)) {
-		color = vec3(0.25);
+	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
+	if (norm_angle > inversesqrt(8.0)) {
+		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
+		color = mix(color, vec3(0.25), blend);
 	}
 	
 	ALBEDO = color;

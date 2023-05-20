@@ -145,7 +145,7 @@ func create_mesh(x: float, y: float, size: float, subdivide: float = 1.0 / 16.0)
 	return [mi, mmi]
 		
 func create_chunk(x: float, y: float) -> Node3D:
-	var meshes = create_mesh(x, y, chunk_size, 1.0 / 16.0)
+	var meshes = create_mesh(x, y, chunk_size, 1.0 / 8.0)
 	var mi = meshes[0]
 	var mmi = meshes[1]
 
