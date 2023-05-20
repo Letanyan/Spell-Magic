@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode diffuse_toon, vertex_lighting, ensure_correct_normals;
+render_mode diffuse_toon, skip_vertex_transform;
 
 uniform sampler2D elevation;
 uniform sampler2D temperature;
@@ -18,6 +18,8 @@ void vertex() {
 //
 //	vec4 clr = texture(elevation, w);
 //	VERTEX.y = clr.r * 250.0;
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+//	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 }
 
 void fragment() {
@@ -120,6 +122,10 @@ void fragment() {
 		} else if (t >= 0.9 && t <= 1.0) {
 			color = vec3(0, 0, 0); // otherworld
 		}
+	}
+	
+	if (distance(vec3(0, 1, 0), normalize(NORMAL)) > inversesqrt(8.0)) {
+		color = vec3(0.25);
 	}
 	
 	ALBEDO = color;
