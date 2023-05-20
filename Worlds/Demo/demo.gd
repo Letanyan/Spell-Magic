@@ -51,7 +51,7 @@ func _ready():
 	if chunker.medium_map != null:
 		ground.add_child(chunker.medium_map)
 	
-	player.position.y = chunker.blender.height(0, 0) + 5
+	player.position.y = Navigator.get_world_height(player.get_world_3d().direct_space_state, 0, 0)  # chunker.blender.height(0, 0) + 5
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -119,10 +119,10 @@ func update_terrain():
 
 		for loc in chunks.get("removed", []):
 			var pop = population[loc]
-			pop.despawn_all_from_world(self)
+			pop.despawn_all_from_world(get_node("."))
 			population.erase(loc)
 			var scat = terrain[loc]
-			scat.despawn_all_from_world(self)
+			scat.despawn_all_from_world(get_node("."))
 			terrain.erase(loc)
 
 		await get_tree().process_frame
@@ -143,10 +143,9 @@ func update_population_at(locations: Array):
 		var coord = chunker.convert_position_to_coord(loc.x, loc.y)
 		
 		var pop = Population.new(coord, chunker.chunk_size, chunker.blender, player)
-		pop.spawn_all_into_world(self)
+		pop.spawn_all_into_world(get_node("."))
 		population[loc] = pop
 		
 		var scat = Scatter.new(coord, chunker.chunk_size, chunker.blender, player)
-		scat.raycast = raycast
-		scat.spawn_all_into_world(self)
+		scat.spawn_all_into_world(get_node("."))
 		terrain[loc] = scat

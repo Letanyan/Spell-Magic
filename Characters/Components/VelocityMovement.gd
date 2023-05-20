@@ -86,6 +86,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	velocity = target_velocity + navigation_velocity
 	result["velocity"] = velocity
+	result["absolute"] = navigation_velocity * delta
 	
 	if body.has_node("CamPivot"):
 		if direction != Vector3.ZERO:

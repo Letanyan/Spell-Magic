@@ -16,9 +16,10 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
+	vitals.perception.value = 10
 	
-	idle_path = PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2)
-	attack_path = PathStyle.new(blender, get_rid().get_id()).follow_player(0, 1).speed(2)
+	idle_path = PathStyle.new(get_rid().get_id()).circle(position, 15).speed(2)
+	attack_path = PathStyle.new(get_rid().get_id()).follow_player(0, 1).speed(2).use_physics()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.UNDEAD: true}, false)
@@ -57,11 +58,11 @@ func update_entity_info(info: EntityInfo):
 
 
 func update_behaviour():
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < 30.0:
+	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		print("aggro: ", sqrt(player.position.distance_squared_to(position)))
 		vitals.aggression.value = 0.5
 		current_path = attack_path
-	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > 90.0:
+	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		print("passive: ", sqrt(player.position.distance_squared_to(position)))
 		vitals.aggression.value = 0.0
 		current_path = idle_path

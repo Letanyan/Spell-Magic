@@ -10,7 +10,6 @@ var velocity_movement: VelocityMovement
 var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
 
 var player: Player
-var blender: NoiseBlender
 var behaviour: Behaviour
 var vitals: Vitals
 var knowledge: Knowledge
@@ -23,7 +22,7 @@ var spell_tick: int = 0
 
 func _ready():
 	animation_map = {}
-	current_path = PathStyle.new(blender, get_rid().get_id()).circle(position, 15).speed(2)
+	current_path = PathStyle.new(get_rid().get_id()).circle(position, 15).speed(2)
 	
 func apply_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -45,12 +44,16 @@ func _physics_process(delta):
 
 	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)
 	velocity = movement["velocity"]
-	move_and_slide()
+	match current_path.mover:
+		PathStyle.Mover.PHYSICS:
+			move_and_slide()
+		PathStyle.Mover.ABSOLUTE:
+			position += movement["absolute"]
 
 	if behavior_tick == 30:
 		update_behaviour()
 		var next_pos = current_path.next_position(self, player)
-		velocity_movement.target_position = Navigator.find_path(get_node("."), next_pos)
+		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos)
 		behavior_tick = 0
 
 	if spell_tick == 30:

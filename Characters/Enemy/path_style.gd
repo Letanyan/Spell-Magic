@@ -6,17 +6,25 @@ var min_radius = 5.0
 var max_radius = 10.0
 var movement_speed = 2.0
 var origin = Vector3.ZERO
-var blender: NoiseBlender
 var seed_offset: int
+enum Mover { PHYSICS, ABSOLUTE }
+var mover: Mover = Mover.ABSOLUTE
 
-func _init(_blender: NoiseBlender, _seed: int, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
+func _init(_seed: int, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
 	kind = _kind
 	origin = _origin
-	blender = _blender
 	seed_offset = _seed
 	
 func speed(s: float) -> PathStyle:
 	movement_speed = s
+	return self
+	
+func use_physics() -> PathStyle:
+	mover = Mover.PHYSICS
+	return self
+	
+func use_absolute() -> PathStyle:
+	mover = Mover.ABSOLUTE
 	return self
 	
 func circle(center: Vector3, radius: float) -> PathStyle:
@@ -49,12 +57,12 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 		Kind.CIRCLE:
 			var x = cos(t / 1000 / PI) * min_radius + origin.x
 			var z = sin(t / 1000 / PI) * min_radius + origin.z
-			var y = blender.height(x, z)
+			var y = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
 			return Vector3(x, y, z)
 		Kind.CIRCLE_PLAYER:
 			var x = cos(t / 1000 / PI) * min_radius + player.position.x
 			var z = sin(t / 1000 / PI) * min_radius + player.position.z
-			var y = blender.height(x, z)
+			var y = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
 			return Vector3(x, y, z)
 
 		Kind.FOLLOW:

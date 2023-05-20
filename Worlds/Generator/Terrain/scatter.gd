@@ -19,7 +19,6 @@ const ENEMY_SPAWN_PROB: Dictionary = {
 var rng: RandomNumberGenerator
 var blender: NoiseBlender
 var player: Player
-var raycast: RayCast3D
 
 var coord: Vector2
 var chunk_size: float
@@ -59,7 +58,7 @@ func random_terrain(biome: World.Biome) -> World.Foliage:
 	return World.Foliage.NONE
 		
 	
-func spawn(x: float, y: float, spacing: float) -> Node3D:
+func spawn(world: Node3D, x: float, y: float, spacing: float) -> Node3D:
 	var biome = blender.biome(x, y)
 	
 	var result = null
@@ -78,27 +77,23 @@ func spawn(x: float, y: float, spacing: float) -> Node3D:
 		if displace:
 			x += displace * spacing
 			y += displace * spacing
-		var p = Vector3(x, 1000, y)
-		raycast.position = p
-		raycast.force_raycast_update()
-		var pos = raycast.get_collision_point()
 		
 		result.position.x = x
-		result.position.y = pos.y
+		result.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, x, y)
 		result.position.z = y
 		inhabitants.append(result)
 		
 	return result
 	
-func spawn_all_into_world(world: Node):
+func spawn_all_into_world(world: Node3D):
 	var spacing = 16.0
 	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0, spacing):
 		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0, spacing):
-			var p = spawn(coord.x * chunk_size + x, coord.y * chunk_size + y, spacing)
+			var p = spawn(world, coord.x * chunk_size + x, coord.y * chunk_size + y, spacing)
 			if p != null:
 				world.add_child(p)
 	
-func despawn_all_from_world(world: Node):
+func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
 		world.remove_child(habitant)
 	inhabitants.clear()

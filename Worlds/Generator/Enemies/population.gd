@@ -58,7 +58,7 @@ func random_enemy(biome: World.Biome) -> World.Enemy:
 	return World.Enemy.NONE
 		
 	
-func spawn(x: float, y: float) -> Enemy:
+func spawn(world: Node3D, x: float, y: float) -> Enemy:
 	var biome = blender.biome(x, y)
 	
 	var result = null
@@ -68,24 +68,27 @@ func spawn(x: float, y: float) -> Enemy:
 			result.name = "Undead" + str(rng.randi())
 		
 	if result != null:
-		result.blender = blender
 		result.player = player
 		result.position.x = x
-		result.position.y = blender.height(x, y) + 5
+		result.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, x, y)
 		result.position.z = y
 		inhabitants.append(result)
 		
 	return result
 	
-func spawn_all_into_world(world: Node):
+func spawn_all_into_world(world: Node3D):
 	var spacing = 16.0
+	var limit = 100000
 	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
 		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
-			var p = spawn(coord.x * chunk_size + x, coord.y * chunk_size + y)
+			if limit <= 0:
+				return
+			var p = spawn(world, coord.x * chunk_size + x, coord.y * chunk_size + y)
 			if p != null:
+				limit -= 1
 				world.add_child(p)
 	
-func despawn_all_from_world(world: Node):
+func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
 		world.remove_child(habitant)
 	inhabitants.clear()
