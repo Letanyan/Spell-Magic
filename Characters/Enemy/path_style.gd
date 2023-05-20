@@ -56,7 +56,7 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			var z = sin(t / 1000 / PI) * min_radius + player.position.z
 			var y = blender.height(x, z)
 			return Vector3(x, y, z)
-			
+
 		Kind.FOLLOW:
 			var dist = sqrt(player.position.distance_squared_to(me.position))
 			if dist > max_radius:
@@ -65,8 +65,8 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 				return player.position.lerp(me.position, min_radius / dist)
 			else:
 				return me.position
-			
+
 		Kind.ORIGIN:
 			return origin
-			
+
 	return Vector3.ZERO

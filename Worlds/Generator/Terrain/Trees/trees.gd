@@ -66,7 +66,7 @@ static func make(kind: Kind, rng: RandomNumberGenerator) -> Trees:
 	var body = StaticBody3D.new()
 	body.collision_layer = 1 << 9
 	var box = CollisionShape3D.new()
-	box.name = "collision"
+	box.name = "shape"
 	box.shape = CylinderShape3D.new()
 	box.shape.height = 4 * s
 	box.shape.radius = 0.25 * s
