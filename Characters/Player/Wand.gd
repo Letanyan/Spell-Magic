@@ -152,11 +152,15 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 func action_down(action: String, book: MagicBook) -> Spell:
 	current_actions[action] = 0
 	for key in keys:
-		if key.size() != current_actions.size():
+		if key.size() > current_actions.size():
 			continue
 		var found = true
-		for k in current_actions:
-			if key.find(k) == -1:
+#		for k in current_actions:
+#			if key.find(k) == -1:
+#				found = false
+#				break
+		for k in key:
+			if not current_actions.has(k):
 				found = false
 				break
 		if found:

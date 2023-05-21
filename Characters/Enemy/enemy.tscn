@@ -21,9 +21,11 @@ collision_mask = 593
 script = ExtResource("1_ois7t")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 shape = SubResource("BoxShape3D_tjkv7")
 
 [node name="WetArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 collision_layer = 36
 collision_mask = 0
 
@@ -31,12 +33,7 @@ collision_mask = 0
 shape = SubResource("BoxShape3D_uxob1")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 mesh = SubResource("BoxMesh_qdqeg")
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-max_speed = 100.0
-debug_use_custom = true
-debug_path_custom_color = Color(0.443137, 0.619608, 0.309804, 1)
-debug_path_custom_point_size = 10.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

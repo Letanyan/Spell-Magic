@@ -76,7 +76,42 @@ func spawn(world: Node3D, x: float, y: float) -> Enemy:
 		
 	return result
 	
+static func contains_neighbour_point(collection: Array, point: Vector2, spacing: float) -> bool:
+	for p in collection:
+		if p.distance_to(point) <= spacing:
+			return true
+	return false
+	
+func group_spawn_points(spacing: float) -> Dictionary:
+	var result: Array = []
+	var biomes: Array = []
+	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
+		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
+			var p = Vector2(coord.x * chunk_size + x, coord.y * chunk_size + y)
+			var biome = blender.biome(p.x, p.y)
+			var found_subset = false
+			for i in range(result.size()):
+				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
+					result[i].append(p)
+					found_subset = true
+					break
+			if not found_subset:
+				result.append([p])
+				biomes.append(biome)
+	return {"points": result, "biomes": biomes}
+	
 func spawn_all_into_world(world: Node3D):
+#	var areas = group_spawn_points(16.0)
+#	var points = areas["points"]
+#	var biomes = areas["biomes"]
+#
+#	for i in range(biomes.size()):
+#		if biomes[i] == World.Biome.GRASSLAND:
+#			for pos in points[i]:
+#				var p = spawn(world, pos.x, pos.y)
+#				if p != null:
+#					world.add_child(p)
+	
 	var spacing = 16.0
 	var limit = 100000
 	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
