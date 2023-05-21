@@ -23,7 +23,7 @@ var chunk_size: float
 
 var inhabitants: Array[Enemy] = []
 
-var undead = preload("res://Characters/Enemy/Undead/undead.tscn")
+const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
@@ -36,8 +36,7 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-func random_enemy(biome: World.Biome) -> World.Enemy:
-	var probs = ENEMY_SPAWN_PROB.get(biome, {})
+static func random_enemy(rng: RandomNumberGenerator, probs: Dictionary, biome: World.Biome) -> World.Enemy:
 	var keys = probs.keys()
 	if keys.size() == 0:
 		return World.Enemy.NONE
@@ -56,13 +55,10 @@ func random_enemy(biome: World.Biome) -> World.Enemy:
 		base = next_base
 	
 	return World.Enemy.NONE
-		
 	
-func spawn(world: Node3D, x: float, y: float) -> Enemy:
-	var biome = blender.biome(x, y)
-	
+func spawn(enemy: World.Enemy, world: Node3D, x: float, y: float) -> Enemy:
 	var result = null
-	match random_enemy(biome):
+	match enemy:
 		World.Enemy.UNDEAD:
 			result = undead.instantiate()
 			result.name = "Undead" + str(rng.randi())
@@ -76,7 +72,11 @@ func spawn(world: Node3D, x: float, y: float) -> Enemy:
 		
 	return result
 	
-static func contains_neighbour_point(collection: Array, point: Vector2, spacing: float) -> bool:
+func spawn_random(biome_prob: Dictionary, world: Node3D, x: float, y: float) -> Enemy:
+	var biome = blender.biome(x, y)
+	return spawn(random_enemy(rng, biome_prob, biome), world, x, y)
+	
+static func contains_neighbour_point(collection: Dictionary, point: Vector2, spacing: float) -> bool:
 	for p in collection:
 		if p.distance_to(point) <= spacing:
 			return true
@@ -92,36 +92,22 @@ func group_spawn_points(spacing: float) -> Dictionary:
 			var found_subset = false
 			for i in range(result.size()):
 				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
-					result[i].append(p)
+					result[i][p] = true
 					found_subset = true
 					break
 			if not found_subset:
-				result.append([p])
+				result.append({p: true})
 				biomes.append(biome)
 	return {"points": result, "biomes": biomes}
 	
 func spawn_all_into_world(world: Node3D):
-#	var areas = group_spawn_points(16.0)
-#	var points = areas["points"]
-#	var biomes = areas["biomes"]
-#
-#	for i in range(biomes.size()):
-#		if biomes[i] == World.Biome.GRASSLAND:
-#			for pos in points[i]:
-#				var p = spawn(world, pos.x, pos.y)
-#				if p != null:
-#					world.add_child(p)
-	
-	var spacing = 16.0
-	var limit = 100000
-	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
-		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
-			if limit <= 0:
-				return
-			var p = spawn(world, coord.x * chunk_size + x, coord.y * chunk_size + y)
-			if p != null:
-				limit -= 1
-				world.add_child(p)
+	var areas = group_spawn_points(16.0)
+	var points = areas["points"]
+	var biomes = areas["biomes"]
+
+	for i in range(biomes.size()):
+		if biomes[i] == World.Biome.GRASSLAND:
+			GrasslandEnemies.populate(self, world, points[i])
 	
 func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
