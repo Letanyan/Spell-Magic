@@ -41,7 +41,7 @@ switch_on_hover = false
 [node name="Action" type="PopupMenu" parent="MenuBar"]
 title = "Action"
 size = Vector2i(127, 143)
-item_count = 5
+item_count = 6
 item_0/text = "None"
 item_0/id = 0
 item_1/text = "Fire"
@@ -50,8 +50,10 @@ item_2/text = "Select"
 item_2/id = 2
 item_3/text = "Fire Selected"
 item_3/id = 3
-item_4/text = "Modifier"
+item_4/text = "Charge"
 item_4/id = 4
+item_5/text = "Modify"
+item_5/id = 5
 
 [node name="spell" type="LineEdit" parent="."]
 layout_mode = 0

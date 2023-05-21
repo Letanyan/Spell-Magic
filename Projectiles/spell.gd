@@ -27,6 +27,7 @@ var d_expr: Expr
 var follow: bool
 var is_bomb: bool
 var cooldown: float
+var charge: float
 
 var id: int = -1
 
@@ -45,6 +46,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	
 	follow = _follow
 	is_bomb = _is_bomb
+	charge = 0.0
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
@@ -120,6 +122,8 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["pi"] = PI
 	fixed_vars["n"] = n
 	fixed_vars["M"] = mana_cost
+	fixed_vars["C"] = charge
+	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	
 	var p: SpellBody
@@ -182,6 +186,7 @@ func load_dict(dict: Dictionary):
 	delay = dict["delay"]
 	is_bomb = dict.get("is_bomb", false)
 	follow = dict["is_rel"]
+	charge = 0.0
 	if dict["chain"] != {}:
 		chain = Spell.new()
 		chain.load_dict(dict["chain"])

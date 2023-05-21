@@ -18,7 +18,7 @@ func _ready():
 	spell.text = store_spell
 	action.name = action.get_item_text(store_action)
 	if store_key.size() > 1:
-		action.remove_item(4)
+		action.remove_item(5)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

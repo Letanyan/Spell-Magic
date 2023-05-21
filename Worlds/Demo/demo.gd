@@ -91,12 +91,13 @@ func _input(event):
 		
 	if not menu.is_showing:
 		for k in wand.basic_keys:
+			var s: Spell = null
 			if event.is_action_pressed(k):
-				var s = wand.action_down(k, book)
-				if s != null:
-					player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
+				s = wand.action_down(k, book)
 			if event.is_action_released(k):
-				wand.action_up(k)
+				s = wand.action_up(k, book)
+			if s != null:
+				player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
 
 
 func _on_player_moved(delta: float):

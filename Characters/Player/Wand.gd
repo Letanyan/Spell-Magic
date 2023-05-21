@@ -1,14 +1,16 @@
 class_name Wand
 
-enum Kind { NONE, FIRE, PICK, FIRE_PICKED, MOD  }
+enum Kind { NONE, FIRE, PICK, FIRE_PICKED, FIRE_HOLD, MOD  }
 
 class Option:
 	var kind: Kind
 	var spell: String
+	var start_hold: float
 	
 	func _init(_kind: Kind = Kind.NONE, _spell: String = ""):
 		kind = _kind
 		spell = _spell
+		start_hold = 0.0
 		
 	func save_dict():
 		return {"kind": kind, "spell": spell}
@@ -16,6 +18,7 @@ class Option:
 	func load_dict(dict: Dictionary):
 		kind = dict["kind"]
 		spell = dict["spell"]
+		start_hold = 0.0
 
 const basic_keys = [
 	"LT",
@@ -127,7 +130,7 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 		return null
 	for s in book.spells:
 		if s.name == opt.spell:
-			if opt.kind == Kind.FIRE:
+			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD:
 				return s
 			elif opt.kind == Kind.PICK:
 				picked = s
@@ -146,7 +149,9 @@ func action_down(action: String, book: MagicBook) -> Spell:
 				break
 		if found:
 			var opt: Option = keys[key]
-			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
+			if opt.kind == Kind.FIRE_HOLD:
+				keys[key].start_hold = Time.get_unix_time_from_system()
+			elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
 				var s = find_spell(key, book)
 				var used = last_use.get(s.name, 0)
 				if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
@@ -157,8 +162,31 @@ func action_down(action: String, book: MagicBook) -> Spell:
 					return null
 	return null
 	
-func action_up(action: String):
+func action_up(action: String, book: MagicBook):
+	for key in keys:
+		if key.size() != current_actions.size():
+			continue
+		var found = true
+		for k in current_actions:
+			if key.find(k) == -1:
+				found = false
+				break
+		if found:
+			var opt: Option = keys[key]
+			if opt.kind == Kind.FIRE_HOLD:
+				var s = find_spell(key, book)
+				var used = last_use.get(s.name, 0)
+				if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
+					last_use[s.name] = Time.get_unix_time_from_system()
+					current_actions.erase(action)
+					s.charge = Time.get_unix_time_from_system() - opt.start_hold
+					return s
+				else:
+					print(Time.get_unix_time_from_system() - used, " > ", s.cooldown)
+					current_actions.erase(action)
+					return null
 	current_actions.erase(action)
+	return null
 
 func save_dict():
 	var result = {
