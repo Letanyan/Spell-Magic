@@ -35,6 +35,10 @@ const basic_keys = [
 	"RIGHT",
 	"L3",
 	"R3",
+	"move_left",
+	"move_right",
+	"move_forward",
+	"move_back"
 ]
 
 const pc_keys = {
@@ -52,6 +56,10 @@ const pc_keys = {
 	"RIGHT": "Right",
 	"L3": "Z",
 	"R3": "Right Mouse",
+	"move_forward": "W",
+	"move_left": "A",
+	"move_back": "S",
+	"move_right": "D",
 }
 
 const ps_keys = {
@@ -69,6 +77,10 @@ const ps_keys = {
 	"RIGHT": "Right",
 	"L3": "L3",
 	"R3": "R3",
+	"move_forward": "Move Forward",
+	"move_left": "Move Left",
+	"move_back": "Move Back",
+	"move_right": "Move Right",
 }
 
 var name: String

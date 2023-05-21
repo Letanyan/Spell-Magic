@@ -73,7 +73,7 @@ func _input(event):
 #	if event.is_action_pressed("debug1"):
 #		chunker.switch_detail()
 	
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("menu"):
 		if menu.is_showing:
 			menu.close()
 		else:
