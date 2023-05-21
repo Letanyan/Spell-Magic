@@ -22,6 +22,7 @@ var coord: Vector2
 var chunk_size: float
 
 var inhabitants: Array[Enemy] = []
+var garden: Array[Node3D] = []
 
 const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
 
@@ -36,15 +37,15 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-static func random_enemy(rng: RandomNumberGenerator, probs: Dictionary, biome: World.Biome) -> World.Enemy:
+func random_entity_from_distribution(probs: Dictionary, biome: World.Biome) -> int:
 	var keys = probs.keys()
 	if keys.size() == 0:
-		return World.Enemy.NONE
+		return 0
 	
 	var r = rng.randf()
 	if keys.size() == 1:
 		var i = keys[0]
-		return keys[0] if r < probs[i] else World.Enemy.NONE
+		return keys[0] if r < probs[i] else 0
 		
 	var base := 0.0
 	for n in range(0, keys.size()):
@@ -54,27 +55,61 @@ static func random_enemy(rng: RandomNumberGenerator, probs: Dictionary, biome: W
 			return i
 		base = next_base
 	
-	return World.Enemy.NONE
+	return 0
 	
-func spawn(enemy: World.Enemy, world: Node3D, x: float, y: float) -> Enemy:
+func random_enemy(probs: Dictionary, biome: World.Biome) -> World.Enemy:
+	return random_entity_from_distribution(probs, biome) as World.Enemy
+	
+func random_foliage(probs: Dictionary, biome: World.Biome) -> World.Foliage:
+	return random_entity_from_distribution(probs, biome) as World.Foliage
+	
+func prepare_entity(world: Node3D, entity: Node3D, pos: Vector2, is_enemy: bool):
+	if entity != null:
+		entity.position.x = pos.x
+		entity.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, pos.x, pos.y)
+		entity.position.z = pos.y
+		if is_enemy:
+			entity.player = player
+			inhabitants.append(entity)
+		else:
+			garden.append(entity)
+	return entity
+	
+func spawn_enemy(enemy: World.Enemy, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
 	var result = null
+	var pos = Vector2(x, y)
 	match enemy:
 		World.Enemy.UNDEAD:
 			result = undead.instantiate()
 			result.name = "Undead" + str(rng.randi())
-		
-	if result != null:
-		result.player = player
-		result.position.x = x
-		result.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, x, y)
-		result.position.z = y
-		inhabitants.append(result)
-		
-	return result
 	
-func spawn_random(biome_prob: Dictionary, world: Node3D, x: float, y: float) -> Enemy:
+	return prepare_entity(world, result, pos, true)
+	
+func spawn_foliage(foliage: World.Foliage, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
+	var result = null
+	var pos = Vector2(x, y)
+	match foliage:
+		World.Foliage.TREE_ROUND:
+			result = Trees.make(Trees.Kind.ROUND, rng)
+			pos.x += spacing * rng.randf_range(-0.5, 0.5)
+			pos.y += spacing * rng.randf_range(-0.5, 0.5)
+			result.name = "RoundTree" + str(rng.randi())
+		World.Foliage.TREE_PYRAMID:
+			result = Trees.make(Trees.Kind.PYRAMID, rng)
+			pos.x += spacing * rng.randf_range(-0.5, 0.5)
+			pos.y += spacing * rng.randf_range(-0.5, 0.5)
+			result.name = "PyramidTree" + str(rng.randi())
+	
+	return prepare_entity(world, result, pos, false)
+	
+	
+func spawn_random_enemy(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
 	var biome = blender.biome(x, y)
-	return spawn(random_enemy(rng, biome_prob, biome), world, x, y)
+	return spawn_enemy(random_enemy(biome_prob, biome), world, x, y, spacing)
+	
+func spawn_random_foliage(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
+	var biome = blender.biome(x, y)
+	return spawn_foliage(random_foliage(biome_prob, biome), world, x, y, spacing)
 	
 static func contains_neighbour_point(collection: Dictionary, point: Vector2, spacing: float) -> bool:
 	for p in collection:
@@ -101,20 +136,25 @@ func group_spawn_points(spacing: float) -> Dictionary:
 	return {"points": result, "biomes": biomes}
 	
 func spawn_all_into_world(world: Node3D):
-	var areas = group_spawn_points(16.0)
+	const spacing = 16.0
+	var areas = group_spawn_points(spacing)
 	var points = areas["points"]
 	var biomes = areas["biomes"]
 
 	for i in range(biomes.size()):
-		if biomes[i] == World.Biome.GRASSLAND:
-			GrasslandEnemies.populate(self, world, points[i])
+		match biomes[i]:
+			World.Biome.GRASSLAND: GrasslandGen.populate(self, world, points[i], spacing)
+			World.Biome.FOREST: ForestGen.populate(self, world, points[i], spacing)
 	
 func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
 		world.remove_child(habitant)
+	for f in garden:
+		world.remove_child(f)
 	inhabitants.clear()
+	garden.clear()
 
-func update_info(scatter: Scatter):
+func update_info():
 	for habitant in inhabitants:
 		if abs(habitant.position.distance_to(player.position)) < habitant.vitals.perception.value:
 			habitant.knowledge.update_entry_from(player)
@@ -122,6 +162,6 @@ func update_info(scatter: Scatter):
 			if habitant != other and abs(habitant.position.distance_to(other.position)) < habitant.vitals.perception.value:
 				habitant.knowledge.update_entry_from(other)
 	for habitant in inhabitants:
-		for object in scatter.inhabitants:
+		for object in garden:
 			if abs(habitant.position.distance_to(object.position)) < habitant.vitals.perception.value:
 				habitant.knowledge.update_entry_from(object)

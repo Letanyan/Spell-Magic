@@ -11,7 +11,6 @@ extends Node
 @export var noise_dryness: Noise
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
-@onready var terrain: Dictionary = {}
 
 @onready var raycast = $RayCast3D
 
@@ -65,9 +64,8 @@ func _physics_process(delta):
 	if knowledge_tick == 60:
 		knowledge_tick = 0
 		for loc in population:
-			var scatter = terrain[loc]
 			var pop = population[loc]
-			pop.update_info(scatter)
+			pop.update_info()
 
 func _input(event):
 #	if event.is_action_pressed("debug1"):
@@ -122,9 +120,6 @@ func update_terrain():
 			var pop = population[loc]
 			pop.despawn_all_from_world(get_node("."))
 			population.erase(loc)
-			var scat = terrain[loc]
-			scat.despawn_all_from_world(get_node("."))
-			terrain.erase(loc)
 
 		await get_tree().process_frame
 		update_population_at(chunks.get("updated", []))
@@ -146,7 +141,3 @@ func update_population_at(locations: Array):
 		var pop = Population.new(coord, chunker.chunk_size, chunker.blender, player)
 		pop.spawn_all_into_world(get_node("."))
 		population[loc] = pop
-		
-		var scat = Scatter.new(coord, chunker.chunk_size, chunker.blender, player)
-		scat.spawn_all_into_world(get_node("."))
-		terrain[loc] = scat

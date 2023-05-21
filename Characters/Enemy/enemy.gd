@@ -48,7 +48,7 @@ func _physics_process(delta):
 		PathStyle.Mover.PHYSICS:
 			move_and_slide()
 		PathStyle.Mover.ABSOLUTE:
-			position += movement["absolute"]
+			position += movement["absolute"] * (60 / 30)
 
 	if behavior_tick == 30:
 		update_behaviour()
