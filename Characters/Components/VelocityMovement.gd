@@ -68,7 +68,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value)
 			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value)
 	
-	if not body.is_on_floor():
+	if not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y:
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
 	else:
 		target_velocity.y = 0
@@ -87,6 +87,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	velocity = target_velocity + navigation_velocity
 	result["velocity"] = velocity
 	result["absolute"] = navigation_velocity * delta
+	result["target"] = target_velocity * delta
 	
 	if body.has_node("CamPivot"):
 		if direction != Vector3.ZERO:

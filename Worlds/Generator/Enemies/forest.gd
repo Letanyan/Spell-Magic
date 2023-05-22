@@ -14,7 +14,7 @@ static func populate(pop: Population, world: Node3D, area: Dictionary, spacing: 
 	var skip = false
 	var undead_hordes = 0
 	while size > 10 and not skip:
-		if size / (10.0 * undead_hordes + 1.0) > 100.0:
+		if size / (5.0 * undead_hordes + 1.0) > 100.0:
 			var count = pop.rng.randi_range(4, 16)
 			undead_hordes += count
 			var origin = area.keys()[pop.rng.randi_range(0, area.size())]

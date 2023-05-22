@@ -8,6 +8,31 @@ class VectorEdge:
 		p = a
 		q = b
 		
+static func vertices(parent: Node3D, shape: Shape3D) -> Array:
+	if shape is CylinderShape3D:
+		var bottom = parent.global_position
+		var radius = shape.radius * 2
+		var result = []
+		var pivot = Vector3(radius, 0, 0)
+		var p = bottom + pivot
+		result.append(p)
+		for t in range(8):
+			p = bottom + pivot.rotated(Vector3.UP, t / 8.0 * 2.0 * PI)
+			result.append(p)
+		return result
+	elif shape is BoxShape3D:
+		var bottom = parent.global_position
+		var radius = max(shape.size.x, max(shape.size.y, shape.size.z))
+		var result = []
+		var pivot = Vector3(radius, 0, 0)
+		var p = bottom + pivot
+		result.append(p)
+		for t in range(8):
+			p = bottom + pivot.rotated(Vector3.UP, t / 8.0 * 2.0 * PI)
+			result.append(p)
+		return result
+		
+	return []
 
 static func edges(parent: Node3D, shape: Shape3D) -> Dictionary:
 	if shape is CylinderShape3D:
@@ -50,6 +75,27 @@ static func fully_connect(body: Node3D, node: Vector3, graph: Dictionary):
 			visited[p] = true
 			graph[VectorEdge.new(node, p)] = true
 			graph[VectorEdge.new(p, node)] = true
+
+static func get_point_intersection(p: Node3D, target: Vector3) -> CollisionShape3D:
+	var space_state = p.get_world_3d().direct_space_state
+	var query = PhysicsPointQueryParameters3D.new()
+	query.position = target
+	query.collision_mask = ~1
+	query.exclude = [p]
+	var result = space_state.intersect_point(query)
+	if result.is_empty():
+		return null
+	if result[0].is_empty():
+		return null
+	var obj: CollisionObject3D = result[0].get("collider")	
+	if obj == null:
+		return null
+	var c: CollisionShape3D = null
+	for o in obj.get_children():
+		if o.name == "shape":
+			c = o
+			break
+	return c
 	
 static func get_ray_intersection(p: Node3D, from: Vector3, target: Vector3) -> CollisionShape3D:
 	var space_state = p.get_world_3d().direct_space_state
@@ -170,14 +216,15 @@ static func reconstruct_path(came_from: Dictionary, target: Vector3) -> Array[Ve
 	return result
 	
 static func neighbours(p: Node3D, from: Vector3, directions: int, distance: float) -> Array[Vector3]:
-	var result: Array[Vector3] = []
+	var result: Array[Vector3] = [from + Vector3(0, distance, 0), from + Vector3(0, -distance, 0)]
 	var direction = Vector3(1, 0, 0)
 	var angle = 2 * PI / float(directions)
-	for a in range(directions):
-		var to = from + direction * distance
-		if get_ray_intersection(p, from, to) == null:
-			result.append(to)
-		direction = direction.rotated(Vector3.UP, angle)
+	for y in range(-1, 2):
+		for a in range(directions):
+			var to = from + direction * distance + Vector3(0, y, 0) * distance
+			if get_ray_intersection(p, from, to) == null:
+				result.append(to)
+			direction = direction.rotated(Vector3.UP, angle)
 	return result
 	
 static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: float = 2.0) -> Array[Vector3]:	
@@ -188,6 +235,7 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 	g_score[start] = 0.0
 	var f_score = {}
 	f_score[start] = start.distance_to(target)
+	var max_look_up = 10000
 	
 	while open.size() > 0:
 		var current = minimum_score(open, f_score)
@@ -205,6 +253,11 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 				if not open.has(n):
 					open[n] = true
 					
+		max_look_up -= 1
+		if max_look_up <= 0:
+			print(target)
+			return [target]
+				
 	return [target]
 	
 static func will_collide(p: Node3D, target: Vector3) -> bool:
@@ -213,6 +266,19 @@ static func will_collide(p: Node3D, target: Vector3) -> bool:
 static func find_target(p: Node3D, target: Vector3) -> Vector3:
 	if not will_collide(p, target):
 		return target
+	var target_in_shape = get_point_intersection(p, target)
+	if target_in_shape != null:
+		var candidates = vertices(target_in_shape, target_in_shape.shape)
+		if candidates.size() <= 0:
+			return target
+		var result = candidates[0]
+		var max_res = INF
+		for c in candidates:
+			if c.distance_to(target) < max_res:
+				max_res = c.distance_to(target)
+				result = c
+		target = result
+				
 	var path = astar(p, target, 4.0, 2.0)
 	if path.is_empty():
 		return target

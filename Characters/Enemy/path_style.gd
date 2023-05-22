@@ -10,7 +10,7 @@ var movement_speed = 2.0
 var origin = Vector3.ZERO
 var use_player_as_origin: bool
 var seed_offset: float
-var mover: Mover = Mover.ABSOLUTE
+var mover: Mover = Mover.ABSOLUTE_XZ
 
 func _init(_seed: float, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
 	kind = _kind
