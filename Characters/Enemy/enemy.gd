@@ -22,7 +22,7 @@ var spell_tick: int = 0
 
 func _ready():
 	animation_map = {}
-	current_path = PathStyle.new(get_rid().get_id()).circle(position, 15).speed(2)
+	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	
 func apply_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -48,7 +48,11 @@ func _physics_process(delta):
 		PathStyle.Mover.PHYSICS:
 			move_and_slide()
 		PathStyle.Mover.ABSOLUTE:
-			position += movement["absolute"] * (60 / 30)
+			position += movement["absolute"]
+		PathStyle.Mover.ABSOLUTE_XZ:
+			var v = movement["absolute"]
+#			position.y = v.y
+			position += Vector3(v.x, v.y, v.z)
 
 	if behavior_tick == 30:
 		update_behaviour()
