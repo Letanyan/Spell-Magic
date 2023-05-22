@@ -27,7 +27,7 @@ skeleton = NodePath("../..")
 
 [node name="area" type="Area3D" parent="body/mesh"]
 collision_layer = 16
-collision_mask = 1023
+collision_mask = 959
 
 [node name="shape" type="CollisionShape3D" parent="body/mesh/area"]
 shape = SubResource("BoxShape3D_odltr")

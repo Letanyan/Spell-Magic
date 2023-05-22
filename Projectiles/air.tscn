@@ -4,14 +4,14 @@
 [ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="2_qxk8k"]
 
 [sub_resource type="Gradient" id="Gradient_c4dcj"]
-offsets = PackedFloat32Array(0, 0.457143, 0.64, 1)
-colors = PackedColorArray(0, 0.501961, 0, 1, 0.501961, 1, 0.501961, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+offsets = PackedFloat32Array(0, 0.457143, 0.640187, 1)
+colors = PackedColorArray(0, 0.501961, 0, 0.501961, 0.501961, 1, 0.501961, 0.501961, 1, 1, 1, 1, 1, 1, 1, 0.501961)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_nwxdy"]
 gradient = SubResource("Gradient_c4dcj")
 
 [sub_resource type="Curve" id="Curve_acxw5"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.480583, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.489796, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_ijg8r"]
@@ -21,7 +21,7 @@ curve = SubResource("Curve_acxw5")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qcqdi"]
 emission_shape = 6
 emission_ring_axis = Vector3(0, 1, 0)
-emission_ring_height = 1.0
+emission_ring_height = 0.0
 emission_ring_radius = 0.5
 emission_ring_inner_radius = 0.0
 particle_flag_align_y = true
@@ -32,10 +32,10 @@ initial_velocity_min = 1.0
 initial_velocity_max = 1.0
 scale_max = 1.5
 scale_curve = SubResource("CurveTexture_ijg8r")
-color = Color(0.501961, 1, 0.501961, 1)
+color = Color(0.501961, 1, 0.501961, 0.501961)
 color_ramp = SubResource("GradientTexture1D_nwxdy")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jnxrc"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0nrmu"]
 render_priority = 0
 shader = ExtResource("2_qxk8k")
 shader_parameter/alpha = 1.0
@@ -44,12 +44,11 @@ shader_parameter/len = 0.5
 shader_parameter/radius = 0.25
 shader_parameter/width = 0.1
 shader_parameter/use_vertex_color = true
-shader_parameter/color = Color(0.501961, 1, 0.501961, 1)
+shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_axn5x"]
-material = SubResource("ShaderMaterial_jnxrc")
-size = Vector3(1, 2, 1)
-subdivide_height = 8
+[sub_resource type="BoxMesh" id="BoxMesh_8grns"]
+material = SubResource("ShaderMaterial_0nrmu")
+size = Vector3(2, 2, 2)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_nuyxv"]
 height = 1.0
@@ -60,14 +59,14 @@ script = ExtResource("1_icqhx")
 [node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 cast_shadow = 0
-amount = 32
+amount = 80
 lifetime = 4.0
 process_material = SubResource("ParticleProcessMaterial_qcqdi")
-draw_pass_1 = SubResource("BoxMesh_axn5x")
+draw_pass_1 = SubResource("BoxMesh_8grns")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 64
-collision_mask = 6
+collision_mask = 22
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

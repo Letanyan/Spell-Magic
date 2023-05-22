@@ -98,11 +98,14 @@ func _on_body_entered(body: Node3D):
 				body.vitals.handle_damage(Spell.Element.WATER, spell.power)
 				expire_now(self, body)
 		Spell.Element.AIR:
-			if is_world or is_rock or is_world_object:
+			if is_world or is_world_object:
 				nothing(self, body)
 			elif is_player or is_enemy:
 				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.AIR, spell.power)
+				nothing(self, body)
+			elif is_rock:
+				body.apply_impulse(impulse())
 				nothing(self, body)
 		Spell.Element.ICE:
 			if is_world or is_rock or is_world_object:
@@ -195,7 +198,6 @@ func update_shape(r: float, ignore_time: bool):
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("radius", r / 2)
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("period", r / 4)
 			source2.process_material.emission_ring_radius = r
-			source2.process_material.emission_ring_height = r * 4
 			
 		Spell.Element.ICE:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -214,7 +216,8 @@ func update_shape(r: float, ignore_time: bool):
 			m_shape.shape = box
 			
 			var source: GPUParticles3D = get_node("source")
-			source.process_material.emission_sphere_radius = r * 1.2
+			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
+			mat.set_shader_parameter("len", r * 1.2)
 			var body = get_node("body")
 			body.mesh.radius = r
 			body.mesh.height = r * 2
@@ -249,8 +252,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var box: CollisionShape3D = get_node("source/area/shape")
 			var h = box.shape.height
 			var source: GPUParticles3D = get_node("source")
-			source.process_material.initial_velocity_min = abs(velocity.length()) * 1.0 * h
-			source.process_material.initial_velocity_max = abs(velocity.length()) * 1.5 * h
+			source.process_material.initial_velocity_min = h * abs(velocity.length()) * 1.0
+			source.process_material.initial_velocity_max = h * abs(velocity.length()) * 1.0
 			
 			var v = velocity.normalized()
 			if v != Vector3.ZERO:
