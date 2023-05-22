@@ -1,19 +1,5 @@
 class_name Population
 
-# Each enemy has a probability of spawning in a biome
-const ENEMY_SPAWN_PROB: Dictionary = {
-	World.Biome.GRASSLAND: {
-		World.Enemy.UNDEAD: 0.01
-	},
-	World.Biome.SAVANNAH: {
-		World.Enemy.UNDEAD: 0.02
-	},
-	World.Biome.WATER: {
-		World.Enemy.UNDEAD: 0.01
-	},
-}
-
-
 var rng: RandomNumberGenerator
 var blender: NoiseBlender
 var player: Player
@@ -37,7 +23,7 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-func random_entity_from_distribution(probs: Dictionary, biome: World.Biome) -> int:
+func random_entity_from_distribution(probs: Dictionary) -> int:
 	var keys = probs.keys()
 	if keys.size() == 0:
 		return 0
@@ -51,17 +37,17 @@ func random_entity_from_distribution(probs: Dictionary, biome: World.Biome) -> i
 	for n in range(0, keys.size()):
 		var i = keys[n]
 		var next_base = base + probs[i]
-		if base <= probs[i] and probs[i] < next_base:
+		if base <= r and r < next_base:
 			return i
 		base = next_base
 	
 	return 0
 	
-func random_enemy(probs: Dictionary, biome: World.Biome) -> World.Enemy:
-	return random_entity_from_distribution(probs, biome) as World.Enemy
+func random_enemy(probs: Dictionary) -> World.Enemy:
+	return random_entity_from_distribution(probs) as World.Enemy
 	
-func random_foliage(probs: Dictionary, biome: World.Biome) -> World.Foliage:
-	return random_entity_from_distribution(probs, biome) as World.Foliage
+func random_foliage(probs: Dictionary) -> World.Foliage:
+	return random_entity_from_distribution(probs) as World.Foliage
 	
 func prepare_entity(world: Node3D, entity: Node3D, pos: Vector2, is_enemy: bool):
 	if entity != null:
@@ -104,14 +90,12 @@ func spawn_foliage(foliage: World.Foliage, world: Node3D, x: float, y: float, sp
 	
 	
 func spawn_random_enemy(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
-	var biome = blender.biome(x, y)
-	return spawn_enemy(random_enemy(biome_prob, biome), world, x, y, spacing)
+	return spawn_enemy(random_enemy(biome_prob), world, x, y, spacing)
 	
 func spawn_random_foliage(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
-	var biome = blender.biome(x, y)
-	return spawn_foliage(random_foliage(biome_prob, biome), world, x, y, spacing)
+	return spawn_foliage(random_foliage(biome_prob), world, x, y, spacing)
 	
-static func contains_neighbour_point(collection: Dictionary, point: Vector2, spacing: float) -> bool:
+static func contains_neighbour_point(collection: Array, point: Vector2, spacing: float) -> bool:
 	for p in collection:
 		if p.distance_to(point) <= spacing:
 			return true
@@ -127,11 +111,11 @@ func group_spawn_points(spacing: float) -> Dictionary:
 			var found_subset = false
 			for i in range(result.size()):
 				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
-					result[i][p] = true
+					result[i].append(p)
 					found_subset = true
 					break
 			if not found_subset:
-				result.append({p: true})
+				result.append([p])
 				biomes.append(biome)
 	return {"points": result, "biomes": biomes}
 	
