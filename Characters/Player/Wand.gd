@@ -151,6 +151,7 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 
 func action_down(action: String, book: MagicBook) -> Spell:
 	current_actions[action] = 0
+	var best_candidate = []
 	for key in keys:
 		if key.size() > current_actions.size():
 			continue
@@ -163,19 +164,22 @@ func action_down(action: String, book: MagicBook) -> Spell:
 			if not current_actions.has(k):
 				found = false
 				break
-		if found:
-			var opt: Option = keys[key]
-			if opt.kind == Kind.FIRE_HOLD:
-				keys[key].start_hold = Time.get_unix_time_from_system()
-			elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
-				var s = find_spell(key, book)
-				var used = last_use.get(s.name, 0)
-				if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
-					last_use[s.name] = Time.get_unix_time_from_system()
-					return s
-				else:
-					print(Time.get_unix_time_from_system() - used, " > ", s.cooldown)
-					return null
+		if found and key.size() > best_candidate.size():
+			best_candidate = key
+				
+	if not best_candidate.is_empty():
+		var opt: Option = keys[best_candidate]
+		if opt.kind == Kind.FIRE_HOLD:
+			keys[best_candidate].start_hold = Time.get_unix_time_from_system()
+		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
+			var s = find_spell(best_candidate, book)
+			var used = last_use.get(s.name, 0)
+			if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
+				last_use[s.name] = Time.get_unix_time_from_system()
+				return s
+			else:
+				print(Time.get_unix_time_from_system() - used, " > ", s.cooldown)
+				return null
 	return null
 	
 func action_up(action: String, book: MagicBook):
