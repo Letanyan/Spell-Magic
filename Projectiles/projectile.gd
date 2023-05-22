@@ -63,6 +63,17 @@ func impulse() -> Vector3:
 			return velocity.normalized() * (spell.power * 10.0) 
 		Spell.Element.AIR:
 			return velocity.normalized() * (spell.power * 10.0)
+			
+		Spell.Element.FIRE:
+			return velocity.normalized() * spell.power * 2
+		Spell.Element.WATER:
+			return velocity.normalized() * spell.power * 1.5
+		Spell.Element.ELECTRIC:
+			return velocity.normalized() * spell.power
+		Spell.Element.ICE:
+			return velocity.normalized() * spell.power * 0.5
+			
+			
 		_:
 			return Vector3.ZERO
 
@@ -78,6 +89,7 @@ func _on_body_entered(body: Node3D):
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif is_enemy or is_player:
+				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
 				expire_now(self, body)
 		Spell.Element.ROCK:
@@ -95,6 +107,7 @@ func _on_body_entered(body: Node3D):
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif is_enemy or is_player:
+				CharacterCollision.handle(body, self)
 				body.vitals.handle_damage(Spell.Element.WATER, spell.power)
 				expire_now(self, body)
 		Spell.Element.AIR:

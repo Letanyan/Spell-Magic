@@ -24,7 +24,7 @@ func _ready():
 	animation_map = {}
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	
-func apply_impulse(impulse: Vector3):
+func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
 	
 func increment_ticks():
@@ -43,9 +43,9 @@ func _physics_process(delta):
 	increment_ticks()
 
 	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)
-	velocity = movement["velocity"]
 	match current_path.mover:
 		PathStyle.Mover.PHYSICS:
+			velocity = movement["velocity"]
 			move_and_slide()
 		PathStyle.Mover.ABSOLUTE:
 			position += movement["absolute"]
@@ -53,7 +53,8 @@ func _physics_process(delta):
 			var v = movement["absolute"]
 			var t = movement["target"]
 #			position.y = v.y
-			position += Vector3(v.x, v.y + t.y, v.z)
+#			position += Vector3(v.x, v.y + t.y, v.z)
+			position += v
 
 	if behavior_tick == 30:
 		update_behaviour()
@@ -93,4 +94,7 @@ func update_entity_info(info: EntityInfo):
 	info.position = position
 
 func update_behaviour():
+	pass
+
+func handle_damage():
 	pass

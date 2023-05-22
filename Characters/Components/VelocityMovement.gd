@@ -67,6 +67,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if true or body.is_on_floor():
 			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value)
 			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value)
+	else:
+		target_velocity.x = 0
+		target_velocity.z = 0
 	
 	if not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y:
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)

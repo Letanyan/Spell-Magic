@@ -23,7 +23,7 @@ func _input(event):
 		cam_arm.rotate_x(-event.relative.y / 180 * PI / 3)
 		cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
 
-func apply_impulse(impulse: Vector3):
+func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
 
 func _physics_process(delta):

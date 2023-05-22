@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://nvx12omqgpe2"]
+
+[sub_resource type="Gradient" id="Gradient_ce2kv"]
+offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 0, 1, 1, 0.68, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7he8g"]
+gradient = SubResource("Gradient_ce2kv")
+
+[sub_resource type="Curve" id="Curve_oyf73"]
+_data = [Vector2(0, 0.545455), 0.0, 0.0, 0, 0, Vector2(0.480583, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_jbj8g"]
+width = 32
+curve = SubResource("Curve_oyf73")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_be67v"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 1.0
+scale_curve = SubResource("CurveTexture_jbj8g")
+color_ramp = SubResource("GradientTexture1D_7he8g")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t0aey"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_orbll"]
+material = SubResource("StandardMaterial3D_t0aey")
+radius = 0.25
+height = 0.5
+radial_segments = 6
+rings = 4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_e50qj"]
+
+[node name="fire_exp" type="Node3D"]
+
+[node name="source" type="GPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 80
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_be67v")
+draw_pass_1 = SubResource("SphereMesh_orbll")
+
+[node name="area" type="Area3D" parent="source"]
+collision_layer = 8
+collision_mask = 535
+
+[node name="shape" type="CollisionShape3D" parent="source/area"]
+shape = SubResource("SphereShape3D_e50qj")
