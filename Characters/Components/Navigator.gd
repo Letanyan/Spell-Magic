@@ -235,7 +235,7 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 	g_score[start] = 0.0
 	var f_score = {}
 	f_score[start] = start.distance_to(target)
-	var max_look_up = 10000
+	var max_look_up = 200.0 / distance
 	
 	while open.size() > 0:
 		var current = minimum_score(open, f_score)
@@ -255,7 +255,6 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 					
 		max_look_up -= 1
 		if max_look_up <= 0:
-			print(target)
 			return [target]
 				
 	return [target]
@@ -263,7 +262,9 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 static func will_collide(p: Node3D, target: Vector3) -> bool:
 	return get_ray_intersection(p, p.global_position, target) != null
 	
-static func find_target(p: Node3D, target: Vector3) -> Vector3:
+static func find_target(p: Node3D, target: Vector3, margin: float = 4.0, distance: float = 2.0) -> Vector3:
+	if p.global_position.distance_to(target) > 200.0 / distance:
+		return target
 	if not will_collide(p, target):
 		return target
 	var target_in_shape = get_point_intersection(p, target)
@@ -279,10 +280,9 @@ static func find_target(p: Node3D, target: Vector3) -> Vector3:
 				result = c
 		target = result
 				
-	var path = astar(p, target, 4.0, 2.0)
+	var path = astar(p, target, margin, distance)
 	if path.is_empty():
 		return target
-#	print(path)
 	var next = path[0]
 	while not path.is_empty():
 		var x = Vector2(p.global_position.x, p.global_position.z)
