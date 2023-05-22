@@ -220,3 +220,13 @@ static func element_from_name(_name: String) -> Element:
 		"ice": return Element.ICE
 		"electric": return Element.ELECTRIC
 		_: return Element.FIRE
+
+static func color_from_element(el: Element) -> Color:
+	match el:
+		Element.FIRE: return Color.RED
+		Element.ROCK: return Color.SADDLE_BROWN
+		Element.WATER: return Color.BLUE
+		Element.AIR: return Color.GREEN_YELLOW
+		Element.ICE: return Color.DODGER_BLUE
+		Element.ELECTRIC: return Color.YELLOW
+		_: return Color.WHITE

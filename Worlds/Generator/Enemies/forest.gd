@@ -20,13 +20,8 @@ const FOREST_STRUCTURES: Dictionary = {
 }
 
 static func populate(pop: Population, world: Node3D, area: Array, spacing: float):
-	var totals = {}
-	var total_sie = area.size()
-	var total_visited = 0
 	while area.size() > 0:
-		total_visited += 1
 		var struct = pop.random_entity_from_distribution(FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
-		totals[struct] = totals.get(struct, 0) + 1
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
 				area.pop_back()

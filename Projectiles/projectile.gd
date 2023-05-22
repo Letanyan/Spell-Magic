@@ -84,13 +84,14 @@ func _on_body_entered(body: Node3D):
 	
 	var is_world_object = body.collision_layer & (1 << 9) != 0
 	var is_rock  = body.collision_layer & 0b1_0000 != 0
+	var dmg = {"dmg": 0.0, "el": Spell.Element.FIRE}
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif is_enemy or is_player:
 				CharacterCollision.handle(body, self)
-				body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
+				dmg = body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
 				expire_now(self, body)
 		Spell.Element.ROCK:
 			if body != get_node("body"):
@@ -101,21 +102,21 @@ func _on_body_entered(body: Node3D):
 					body.apply_central_impulse(impulse())
 				elif is_enemy or is_player:
 					CharacterCollision.handle(body, self)
-					body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
+					dmg = body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
 					lose_control(self, body)
 		Spell.Element.WATER:
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif is_enemy or is_player:
 				CharacterCollision.handle(body, self)
-				body.vitals.handle_damage(Spell.Element.WATER, spell.power)
+				dmg = body.vitals.handle_damage(Spell.Element.WATER, spell.power)
 				expire_now(self, body)
 		Spell.Element.AIR:
 			if is_world or is_world_object:
 				nothing(self, body)
 			elif is_player or is_enemy:
 				CharacterCollision.handle(body, self)
-				body.vitals.handle_damage(Spell.Element.AIR, spell.power)
+				dmg = body.vitals.handle_damage(Spell.Element.AIR, spell.power)
 				nothing(self, body)
 			elif is_rock:
 				body.apply_impulse(impulse())
@@ -125,11 +126,20 @@ func _on_body_entered(body: Node3D):
 				nothing(self, body)
 			elif is_player or is_enemy:
 				CharacterCollision.handle(body, self)
-				body.vitals.handle_damage(Spell.Element.ICE, spell.power)
+				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.power)
 				nothing(self, body)
 		Spell.Element.ELECTRIC:
 			# Look at `_on_area_entered` for implementation
 			pass
+			
+	if dmg["dmg"] != 0.0:
+		var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
+		body.add_child(lbl)
+		lbl.position.y = 2.0
+		lbl.text = str(-dmg["dmg"])
+		var clr = Spell.color_from_element(dmg["el"])
+		lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
+		lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
 
 func _on_area_entered(area):
 	var body = area.get_parent_node_3d()
@@ -140,14 +150,25 @@ func _on_area_entered(area):
 	var is_world_object = body.collision_layer & (1 << 9) != 0
 	var is_rock  = area.collision_layer & 0b1_0000 != 0
 	var is_water = area.collision_layer & 0b10_0000 != 0
+	var dmg = {"dmg": 0.0, "el": Spell.Element.FIRE}
 	match spell.element:
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
 			elif (is_player or is_enemy) and is_water:
 				CharacterCollision.handle(body, self)
-				body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
+				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
+				
+	if dmg["dmg"] != 0.0:
+		var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
+		body.add_child(lbl)
+		lbl.position.y = 2.0
+		lbl.text = str(-dmg["dmg"])
+		var clr = Spell.color_from_element(dmg["el"])
+		lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
+		lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
+		
 
 func update_shape(r: float, ignore_time: bool):
 	match spell.element:

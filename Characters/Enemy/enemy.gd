@@ -53,8 +53,7 @@ func _physics_process(delta):
 			var v = movement["absolute"]
 			var t = movement["target"]
 #			position.y = v.y
-#			position += Vector3(v.x, v.y + t.y, v.z)
-			position += v
+			position += Vector3(v.x, v.y + t.y, v.z)
 
 	if behavior_tick == 30:
 		update_behaviour()

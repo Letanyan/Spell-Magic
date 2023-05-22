@@ -20,8 +20,9 @@ class Stat:
 	func apply_ignoring_resistance(amount: float):
 		value = clamp(value + amount, min_value, max_value)
 		
-	func update_per_tick():
+	func update_per_tick() -> float:
 		apply_ignoring_resistance(change_per_tick)
+		return change_per_tick
 		
 
 var health: Stat
@@ -48,7 +49,7 @@ func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _we
 	perception = Stat.new(50, 0, 100)
 	aggression = Stat.new(0, 0, 1)
 
-func handle_damage(kind: Spell.Element, power: float):
+func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 	match kind:
 		Spell.Element.FIRE:
 			var amount = burning.amount_of_change(power)
@@ -79,15 +80,21 @@ func handle_damage(kind: Spell.Element, power: float):
 	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value)
 	print("element: ", Spell.name_from_element(kind))
 	print(wetness_scale())
+	
+	return {"dmg": -power, "el": kind}
 
-func update_vitals():
+func update_vitals() -> Array:
 	freeze.update_per_tick()
 	wetness.update_per_tick()
 	burning.update_per_tick()
-	health.update_per_tick()
+	var h = health.update_per_tick()
+	var result = [{"dmg": h, "el": Spell.Element.FIRE}]
 	mana.update_per_tick()
 	if burning.value > 0:
 		health.apply_ignoring_resistance(-burning.value * health.value / 100.0)
+		result.append({"dmg": -burning.value * health.value / 100.0, "el": Spell.Element.FIRE})
+		
+	return result
 
 func wetness_scale():
 	return 1 + wetness.value
