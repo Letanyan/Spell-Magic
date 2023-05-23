@@ -7,14 +7,14 @@
 offsets = PackedFloat32Array(0, 0.457143, 0.640187, 1)
 colors = PackedColorArray(0, 0.501961, 0, 0.501961, 0.501961, 1, 0.501961, 0.501961, 1, 1, 1, 1, 1, 1, 1, 0.501961)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_nwxdy"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rlncl"]
 gradient = SubResource("Gradient_c4dcj")
 
 [sub_resource type="Curve" id="Curve_acxw5"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.489796, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_ijg8r"]
+[sub_resource type="CurveTexture" id="CurveTexture_tncfq"]
 width = 64
 curve = SubResource("Curve_acxw5")
 
@@ -31,11 +31,11 @@ gravity = Vector3(0, 0, 0)
 initial_velocity_min = 1.0
 initial_velocity_max = 1.0
 scale_max = 1.5
-scale_curve = SubResource("CurveTexture_ijg8r")
+scale_curve = SubResource("CurveTexture_tncfq")
 color = Color(0.501961, 1, 0.501961, 0.501961)
-color_ramp = SubResource("GradientTexture1D_nwxdy")
+color_ramp = SubResource("GradientTexture1D_rlncl")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0nrmu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e01aq"]
 render_priority = 0
 shader = ExtResource("2_qxk8k")
 shader_parameter/alpha = 1.0
@@ -47,10 +47,10 @@ shader_parameter/use_vertex_color = true
 shader_parameter/color = Color(1, 1, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8grns"]
-material = SubResource("ShaderMaterial_0nrmu")
+material = SubResource("ShaderMaterial_e01aq")
 size = Vector3(2, 2, 2)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_nuyxv"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ydynh"]
 height = 1.0
 
 [node name="air" type="Node3D"]
@@ -66,10 +66,10 @@ draw_pass_1 = SubResource("BoxMesh_8grns")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 64
-collision_mask = 22
+collision_mask = 534
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("CylinderShape3D_nuyxv")
+shape = SubResource("CylinderShape3D_ydynh")
 
 [connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

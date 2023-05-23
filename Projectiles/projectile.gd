@@ -11,6 +11,7 @@ var started: bool = false
 var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
 var old_pos: Vector3 = Vector3.ZERO
+var most_recent_radius: float = 0
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
 
@@ -60,22 +61,40 @@ func actual_duration() -> float:
 func impulse() -> Vector3:
 	match spell.element:
 		Spell.Element.ROCK:
-			return velocity.normalized() * (spell.power * 10.0) 
+			return velocity.normalized() * (spell.power * 1.5) 
 		Spell.Element.AIR:
-			return velocity.normalized() * (spell.power * 10.0)
+			return velocity.normalized() * (spell.power * 2.0)
 			
 		Spell.Element.FIRE:
-			return velocity.normalized() * spell.power * 2
+			return velocity.normalized() * spell.power * 1
 		Spell.Element.WATER:
-			return velocity.normalized() * spell.power * 1.5
+			return velocity.normalized() * spell.power * 0.5
 		Spell.Element.ELECTRIC:
 			return velocity.normalized() * spell.power
 		Spell.Element.ICE:
-			return velocity.normalized() * spell.power * 0.5
+			return velocity.normalized() * spell.power
 			
 			
 		_:
 			return Vector3.ZERO
+
+func get_shape() -> Shape3D:
+	match spell.element:
+		Spell.Element.FIRE: return get_node("source/area/shape").shape
+		Spell.Element.WATER: return get_node("source/area/shape").shape
+		Spell.Element.ROCK: return get_node("body/shape").shape
+		Spell.Element.AIR: return get_node("source/area/shape").shape
+		Spell.Element.ICE: return get_node("source/area/shape").shape
+		Spell.Element.ELECTRIC: return get_node("body/area/shape").shape
+		_: return BoxShape3D.new()
+
+func get_spell_transform() -> Transform3D:
+	if spell.element == Spell.Element.ROCK:
+		return get_node("body").global_transform
+	elif spell.element == Spell.Element.AIR:
+		return get_node("source/area/shape").global_transform
+	else:
+		return global_transform
 
 func _on_body_entered(body: Node3D):
 	var is_world  = body.collision_layer & 0b0001 != 0
@@ -131,9 +150,15 @@ func _on_body_entered(body: Node3D):
 		Spell.Element.ELECTRIC:
 			# Look at `_on_area_entered` for implementation
 			pass
-			
-	var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
-	Vitals.apply_damage(body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p)
+	
+	if velocity != Vector3.ZERO:
+		var exclude = []
+		if spell.element == Spell.Element.ROCK:
+			exclude.append(get_node("body/mesh/area"))
+			exclude.append(get_node("body"))
+		var p = Navigator.get_collisions_from_shape(get_node("."), get_shape(), get_spell_transform(), ~0, exclude)
+		print(p)
+		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p, most_recent_radius, velocity)
 
 func _on_area_entered(area):
 	var body = area.get_parent_node_3d()
@@ -154,11 +179,17 @@ func _on_area_entered(area):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
-	var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
-	Vitals.apply_damage(body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p)
+	if velocity != Vector3.ZERO:		
+		var p = Navigator.get_collisions_from_shape(get_node("."), get_shape(), get_spell_transform(), ~0)
+		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p, most_recent_radius, velocity)
 		
 
 func update_shape(r: float, ignore_time: bool):
+	if spell.element == Spell.Element.ROCK and not ignore_time:
+		most_recent_radius = r
+	elif spell.element != Spell.Element.ROCK:
+		most_recent_radius = r
+	
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")
@@ -167,9 +198,7 @@ func update_shape(r: float, ignore_time: bool):
 			particles.process_material.scale_min = r * 2
 			particles.process_material.scale_max = r * 2
 			particles.process_material.initial_velocity_max = r * 2
-			var sphere = SphereShape3D.new()
-			sphere.radius = r
-			shape.shape = sphere
+			shape.shape.radius = r
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
@@ -178,19 +207,18 @@ func update_shape(r: float, ignore_time: bool):
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			var m_shape: CollisionShape3D = get_node("body/mesh/area/shape")
-			var box = BoxShape3D.new()
-			box.size.x = r
-			box.size.y = r
-			box.size.z = r
-			p_shape.shape = box
-			m_shape.shape = box
+			p_shape.shape.size.x = r
+			p_shape.shape.size.y = r
+			p_shape.shape.size.z = r
+			m_shape.shape.size.x = r
+			m_shape.shape.size.y = r
+			m_shape.shape.size.z = r
 			var mesh: MeshInstance3D = get_node("body/mesh")
 			var mbox = BoxMesh.new()
-			mbox.size.x = r
-			mbox.size.y = r
-			mbox.size.z = r
 			mbox.material = rock_mat
-			mesh.mesh = mbox
+			mesh.mesh.size.x = r
+			mesh.mesh.size.y = r
+			mesh.mesh.size.z = r
 			
 			var body: RigidBody3D = get_node("body")
 			body.mass = r
@@ -198,9 +226,7 @@ func update_shape(r: float, ignore_time: bool):
 			
 		Spell.Element.WATER:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
-			var box = SphereShape3D.new()
-			box.radius = r
-			m_shape.shape = box
+			m_shape.shape.radius = r
 			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.emission_sphere_radius = r
 			particles.process_material.initial_velocity_max = r * 2
@@ -208,11 +234,9 @@ func update_shape(r: float, ignore_time: bool):
 			
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
-			var box = CylinderShape3D.new()
-			box.height = r * 4
-			box.radius = r
-			m_shape.position.y = box.height / 2
-			m_shape.shape = box
+			get_node("source/area").position.y = r * 2
+			m_shape.shape.height = r * 4
+			m_shape.shape.radius = r
 			
 			var source2: GPUParticles3D = get_node("source")
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("width", r / 10.0)
@@ -223,19 +247,15 @@ func update_shape(r: float, ignore_time: bool):
 			
 		Spell.Element.ICE:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
-			var box = BoxShape3D.new()
-			box.size.x = r * 2
-			box.size.z = r * 2
-			m_shape.shape = box
+			m_shape.shape.size.x = r * 2
+			m_shape.shape.size.z = r * 2
 			
 			var source: GPUParticles3D = get_node("source")
 			source.process_material.emission_box_extents = Vector3(r, 0.2, r)
 			
 		Spell.Element.ELECTRIC:
 			var m_shape: CollisionShape3D = get_node("body/area/shape")
-			var box = SphereShape3D.new()
-			box.radius = r
-			m_shape.shape = box
+			m_shape.shape.radius = r
 			
 			var source: GPUParticles3D = get_node("source")
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
@@ -274,8 +294,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var box: CollisionShape3D = get_node("source/area/shape")
 			var h = box.shape.height
 			var source: GPUParticles3D = get_node("source")
-			source.process_material.initial_velocity_min = h * abs(velocity.length()) * 1.0
-			source.process_material.initial_velocity_max = h * abs(velocity.length()) * 1.0
+			source.process_material.initial_velocity_min = (h * 1.25 / source.lifetime) + abs(velocity.length()) * 1.0
+			source.process_material.initial_velocity_max = (h * 1.25 / source.lifetime) + abs(velocity.length()) * 1.1
 			
 			var v = velocity.normalized()
 			if v != Vector3.ZERO:

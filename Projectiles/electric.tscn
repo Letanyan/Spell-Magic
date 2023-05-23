@@ -8,7 +8,7 @@
 offsets = PackedFloat32Array(0, 0.177143)
 colors = PackedColorArray(1, 1, 0.12549, 1, 1, 1, 1, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_ya8v8"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ig4cv"]
 gradient = SubResource("Gradient_t57qq")
 width = 32
 
@@ -22,9 +22,9 @@ initial_velocity_max = 1.0
 angle_min = 360.0
 angle_max = 360.0
 color = Color(1, 1, 0, 1)
-color_ramp = SubResource("GradientTexture1D_ya8v8")
+color_ramp = SubResource("GradientTexture1D_ig4cv")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_o7bmt"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7mh5d"]
 render_priority = 0
 shader = ExtResource("2_2xrdn")
 shader_parameter/alpha = 1.0
@@ -37,7 +37,7 @@ shader_parameter/color = Color(1, 1, 0, 1)
 shader_parameter/comps = PackedFloat32Array(4, 0.4, 17, 0.8, 3, 23, 107.5)
 
 [sub_resource type="BoxMesh" id="BoxMesh_a4wuh"]
-material = SubResource("ShaderMaterial_o7bmt")
+material = SubResource("ShaderMaterial_7mh5d")
 size = Vector3(0.1, 2, 0.1)
 subdivide_height = 16
 

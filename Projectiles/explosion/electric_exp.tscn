@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://bgffub1e330rf"]
+
+[ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="1_ihm7o"]
+
+[sub_resource type="Gradient" id="Gradient_dmsxn"]
+offsets = PackedFloat32Array(0, 0.177143)
+colors = PackedColorArray(1, 1, 0.12549, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ya8v8"]
+gradient = SubResource("Gradient_dmsxn")
+width = 32
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cjwec"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+particle_flag_rotate_y = true
+direction = Vector3(0, 1, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+angle_min = 360.0
+angle_max = 360.0
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("GradientTexture1D_ya8v8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o7bmt"]
+render_priority = 0
+shader = ExtResource("1_ihm7o")
+shader_parameter/alpha = 1.0
+shader_parameter/period = 12.0
+shader_parameter/len = 0.6
+shader_parameter/radius = 0.25
+shader_parameter/width = 0.1
+shader_parameter/use_vertex_color = true
+shader_parameter/color = Color(1, 1, 0, 1)
+shader_parameter/comps = PackedFloat32Array(4, 0.4, 17, 0.8, 3, 23, 107.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_s2fkk"]
+material = SubResource("ShaderMaterial_o7bmt")
+size = Vector3(0.1, 2, 0.1)
+subdivide_height = 16
+
+[node name="electric_exp" type="Node3D"]
+
+[node name="source" type="GPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 80
+one_shot = true
+explosiveness = 0.5
+interpolate = false
+transform_align = 2
+process_material = SubResource("ParticleProcessMaterial_cjwec")
+draw_pass_1 = SubResource("BoxMesh_s2fkk")

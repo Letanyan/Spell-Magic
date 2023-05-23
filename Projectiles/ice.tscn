@@ -6,7 +6,7 @@
 offsets = PackedFloat32Array(0, 0.754286, 1)
 colors = PackedColorArray(0, 0.239216, 1, 1, 0.321569, 1, 1, 1, 1, 1, 1, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_m0348"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gddqt"]
 gradient = SubResource("Gradient_k3a7i")
 width = 32
 
@@ -24,16 +24,16 @@ angular_velocity_min = 50.0
 angular_velocity_max = 100.0
 angle_max = 360.0
 scale_min = 0.1
-color_ramp = SubResource("GradientTexture1D_m0348")
+color_ramp = SubResource("GradientTexture1D_gddqt")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhvgb"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xrdsr"]
 transparency = 1
 shading_mode = 0
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.752941, 1, 1, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_b25tq"]
-material = SubResource("StandardMaterial3D_hhvgb")
+material = SubResource("StandardMaterial3D_xrdsr")
 radius = 0.1
 height = 0.2
 radial_segments = 4
@@ -54,7 +54,6 @@ draw_pass_1 = SubResource("SphereMesh_b25tq")
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 128
 collision_mask = 534
-monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)

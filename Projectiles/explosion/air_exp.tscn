@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://ctt3p522qggex"]
+
+[ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="1_cpkdh"]
+
+[sub_resource type="Gradient" id="Gradient_ukcei"]
+offsets = PackedFloat32Array(0, 0.457143, 0.640187, 1)
+colors = PackedColorArray(0, 0.501961, 0, 0.501961, 0.501961, 1, 0.501961, 0.501961, 1, 1, 1, 1, 1, 1, 1, 0.501961)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nwxdy"]
+gradient = SubResource("Gradient_ukcei")
+
+[sub_resource type="Curve" id="Curve_5uv6y"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.489796, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ijg8r"]
+width = 64
+curve = SubResource("Curve_5uv6y")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_f4flv"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.0
+emission_ring_radius = 0.5
+emission_ring_inner_radius = 0.0
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_ijg8r")
+color = Color(0.501961, 1, 0.501961, 0.501961)
+color_ramp = SubResource("GradientTexture1D_nwxdy")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0nrmu"]
+render_priority = 0
+shader = ExtResource("1_cpkdh")
+shader_parameter/alpha = 1.0
+shader_parameter/period = 2.0
+shader_parameter/len = 0.5
+shader_parameter/radius = 0.25
+shader_parameter/width = 0.1
+shader_parameter/use_vertex_color = true
+shader_parameter/color = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_m6pj8"]
+material = SubResource("ShaderMaterial_0nrmu")
+size = Vector3(2, 2, 2)
+
+[node name="air_exp" type="Node3D"]
+
+[node name="source" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+cast_shadow = 0
+emitting = false
+amount = 80
+lifetime = 4.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_f4flv")
+draw_pass_1 = SubResource("BoxMesh_m6pj8")

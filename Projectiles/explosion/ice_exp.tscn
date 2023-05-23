@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3 uid="uid://df8aixqk2yst4"]
+
+[sub_resource type="Gradient" id="Gradient_gbyqs"]
+colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_288oe"]
+gradient = SubResource("Gradient_gbyqs")
+width = 32
+
+[sub_resource type="Gradient" id="Gradient_m6p20"]
+offsets = PackedFloat32Array(0, 0.754286, 1)
+colors = PackedColorArray(0, 0.239216, 1, 1, 0.321569, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m0348"]
+gradient = SubResource("Gradient_m6p20")
+width = 32
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1xe54"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+particle_flag_align_y = true
+particle_flag_rotate_y = true
+direction = Vector3(0, 0, 0)
+spread = 0.0
+gravity = Vector3(0, -1, 0)
+angle_max = 360.0
+scale_min = 0.1
+color_ramp = SubResource("GradientTexture1D_m0348")
+color_initial_ramp = SubResource("GradientTexture1D_288oe")
+hue_variation_max = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhvgb"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.752941, 1, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_dcne6"]
+material = SubResource("StandardMaterial3D_hhvgb")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 2
+
+[node name="ice_exp" type="Node3D"]
+
+[node name="source" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 100
+lifetime = 5.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_1xe54")
+draw_pass_1 = SubResource("SphereMesh_dcne6")

@@ -42,7 +42,7 @@ rings = 4
 [node name="source" type="GPUParticles3D" parent="."]
 cast_shadow = 0
 emitting = false
-amount = 80
+amount = 100
 one_shot = true
 explosiveness = 0.5
 randomness = 1.0

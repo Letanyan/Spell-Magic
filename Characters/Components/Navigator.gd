@@ -97,6 +97,16 @@ static func get_point_intersection(p: Node3D, target: Vector3) -> CollisionShape
 			break
 	return c
 
+static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int, exclude: Array = []) -> Array[Vector3]:
+	var space_state = p.get_world_3d().direct_space_state
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.collision_mask = mask
+	query.shape = shape
+	query.transform = transform
+	query.exclude = [p] + exclude
+	return space_state.collide_shape(query)
+	
+
 static func get_ray_collision(p: Node3D, from: Vector3, direction: Vector3, mask: int) -> Vector3:
 	var space_state = p.get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, from + direction, mask, [p])

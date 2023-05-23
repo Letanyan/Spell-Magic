@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://b3nif5h2enne2"]
+
+[ext_resource type="Material" uid="uid://tyc0j0x8j2w7" path="res://Projectiles/rock.tres" id="1_3bf6l"]
+
+[sub_resource type="Curve" id="Curve_4phsl"]
+_data = [Vector2(0, 0.881818), 0.0, 0.0, 0, 0, Vector2(0.145631, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_46fth"]
+width = 32
+curve = SubResource("Curve_4phsl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1126x"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+gravity = Vector3(0, -1, 0)
+initial_velocity_max = 1.0
+scale_min = 0.3
+scale_curve = SubResource("CurveTexture_46fth")
+
+[sub_resource type="BoxMesh" id="BoxMesh_wsgmk"]
+material = ExtResource("1_3bf6l")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="rock_exp" type="Node3D"]
+
+[node name="source" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 20
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_1126x")
+draw_pass_1 = SubResource("BoxMesh_wsgmk")

@@ -7,7 +7,7 @@ interpolation_mode = 2
 offsets = PackedFloat32Array(0, 0.137143, 0.542857, 1)
 colors = PackedColorArray(1, 1, 1, 1, 0.0196078, 0.0509804, 0.501961, 1, 0.0243498, 0.0555706, 0.50437, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_1ccbm"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_a2dhw"]
 gradient = SubResource("Gradient_eaodq")
 width = 64
 
@@ -15,7 +15,7 @@ width = 64
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.145631, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_20bab"]
+[sub_resource type="CurveTexture" id="CurveTexture_58u4p"]
 width = 32
 curve = SubResource("Curve_e4atl")
 
@@ -27,15 +27,15 @@ spread = 0.0
 gravity = Vector3(0, -1, 0)
 initial_velocity_max = 1.0
 scale_min = 0.3
-scale_curve = SubResource("CurveTexture_20bab")
-color_ramp = SubResource("GradientTexture1D_1ccbm")
+scale_curve = SubResource("CurveTexture_58u4p")
+color_ramp = SubResource("GradientTexture1D_a2dhw")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5otlk"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i06b7"]
 shading_mode = 0
 vertex_color_use_as_albedo = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_37v5l"]
-material = SubResource("StandardMaterial3D_5otlk")
+material = SubResource("StandardMaterial3D_i06b7")
 radius = 0.25
 height = 0.5
 radial_segments = 8
