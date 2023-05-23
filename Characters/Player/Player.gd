@@ -6,21 +6,43 @@ extends CharacterBody3D
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
 @onready var animator: AnimationPlayer = $Pivot/AnimationPlayer 
+@onready var cam_animator: AnimationPlayer = $AnimationPlayer
 
 var velocity_movement = VelocityMovement.player()
 var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
+
+var camera_target_velocity: float = 0
 
 signal player_moved
 
 var vitals: Vitals
 
 func _ready():
+	velocity_movement.speed = 12
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 1))
+	velocity = Vector3.ZERO
 
 func _input(event):
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
-		cam_pivot.rotate_y(-event.relative.x / 180 * PI)
-		cam_arm.rotate_x(-event.relative.y / 180 * PI / 3)
+		var damping = 0.75
+#		var animation = cam_animator.get_animation("camera_rotate")
+#
+#		animation.length = 0.2
+#		var idx = animation.find_track("CamPivot:rotation", Animation.TYPE_VALUE)
+#		var y = cam_pivot.transform.rotated(Vector3.UP, -event.relative.x * damping / 180 * PI).basis.get_euler()
+#		animation.track_insert_key(idx, 0.0, cam_pivot.rotation)
+#		animation.track_insert_key(idx, animation.length, y)
+#
+#		idx = animation.find_track("CamPivot/Arm:rotation", Animation.TYPE_VALUE)
+#		var x = cam_arm.transform.rotated(Vector3.RIGHT, -event.relative.y * damping / 180 * PI).basis.get_euler()
+#		x.x = clamp(x.x, -PI / 2, PI / 2)
+#		animation.track_insert_key(idx, 0.0, cam_arm.rotation)
+#		animation.track_insert_key(idx, animation.length, x)
+#
+#		cam_animator.play("camera_rotate")
+		
+		cam_pivot.rotate_y(-event.relative.x * damping / 180 * PI)
+		cam_arm.rotate_x(-event.relative.y * damping / 180 * PI / 3)
 		cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
 
 func add_impulse(impulse: Vector3):
@@ -33,7 +55,7 @@ func _physics_process(delta):
 	var direction = movement["direction"]
 	if direction != Vector3.ZERO:
 		if is_on_floor():
-			if direction.length() > 1:
+			if velocity.length() < 1:
 				animator.play("Man_Walk", 1)
 			else:
 				animator.play("Man_Run", 1)
@@ -46,6 +68,10 @@ func _physics_process(delta):
 		
 	if velocity:
 		player_moved.emit(delta)
+		
+	var rate = 0.05 if velocity.length() == 0 else 0.01
+	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
+	cam_arm.spring_length = 1 + camera_target_velocity
 				
 	spell_caster.deferred_update(self, delta)
 
