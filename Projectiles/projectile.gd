@@ -84,7 +84,7 @@ func _on_body_entered(body: Node3D):
 	
 	var is_world_object = body.collision_layer & (1 << 9) != 0
 	var is_rock  = body.collision_layer & 0b1_0000 != 0
-	var dmg = {"dmg": 0.0, "el": Spell.Element.FIRE}
+	var dmg = {"dmg": spell.power, "el": spell.element}
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object:
@@ -132,9 +132,8 @@ func _on_body_entered(body: Node3D):
 			# Look at `_on_area_entered` for implementation
 			pass
 			
-	if is_player or is_enemy:
-		var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
-		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false, p)
+	var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
+	Vitals.apply_damage(body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p)
 
 func _on_area_entered(area):
 	var body = area.get_parent_node_3d()
@@ -145,7 +144,7 @@ func _on_area_entered(area):
 	var is_world_object = area.collision_layer & (1 << 9) != 0
 	var is_rock  = area.collision_layer & 0b1_0000 != 0
 	var is_water = area.collision_layer & 0b10_0000 != 0
-	var dmg = {"dmg": 0.0, "el": Spell.Element.FIRE}
+	var dmg = {"dmg": spell.power, "el": spell.element}
 	match spell.element:
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
@@ -155,9 +154,8 @@ func _on_area_entered(area):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
-	if is_player or is_enemy:
-		var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
-		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false, p)
+	var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
+	Vitals.apply_damage(body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p)
 		
 
 func update_shape(r: float, ignore_time: bool):
