@@ -133,7 +133,8 @@ func _on_body_entered(body: Node3D):
 			pass
 			
 	if is_player or is_enemy:
-		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false)
+		var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
+		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false, p)
 
 func _on_area_entered(area):
 	var body = area.get_parent_node_3d()
@@ -155,7 +156,8 @@ func _on_area_entered(area):
 				expire_now(self, body)
 				
 	if is_player or is_enemy:
-		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false)
+		var p = Navigator.get_ray_collision(get_node("."), position, velocity.normalized() * 10, ~0)
+		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false, p)
 		
 
 func update_shape(r: float, ignore_time: bool):

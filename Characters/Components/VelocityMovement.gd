@@ -53,7 +53,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	if vital_tick == 60:
 		var h = vitals.update_vitals()
 		for dmg in h:
-			Vitals.apply_damage(body, dmg["dmg"], dmg["el"], true)
+			Vitals.apply_damage(body, dmg["dmg"], dmg["el"], true, Vector3.ZERO)
 		var wet_area = body.get_node("WetArea")
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())

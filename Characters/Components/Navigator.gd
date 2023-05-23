@@ -96,6 +96,14 @@ static func get_point_intersection(p: Node3D, target: Vector3) -> CollisionShape
 			c = o
 			break
 	return c
+
+static func get_ray_collision(p: Node3D, from: Vector3, direction: Vector3, mask: int) -> Vector3:
+	var space_state = p.get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, from + direction, mask, [p])
+	var result = space_state.intersect_ray(query)
+	if result.is_empty():
+		return Vector3.ZERO
+	return result.get("position")
 	
 static func get_ray_intersection(p: Node3D, from: Vector3, target: Vector3) -> CollisionShape3D:
 	var space_state = p.get_world_3d().direct_space_state
