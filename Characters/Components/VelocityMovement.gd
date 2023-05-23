@@ -53,14 +53,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	if vital_tick == 60:
 		var h = vitals.update_vitals()
 		for dmg in h:
-			if dmg["dmg"] != 0.0:
-				var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
-				lbl.position.y = 2.0
-				lbl.text = str(-dmg["dmg"])
-				body.add_child(lbl)
-				var clr = Spell.color_from_element(dmg["el"])
-				lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
-				lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
+			Vitals.apply_damage(body, dmg["dmg"], dmg["el"], true)
 		var wet_area = body.get_node("WetArea")
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())

@@ -132,14 +132,8 @@ func _on_body_entered(body: Node3D):
 			# Look at `_on_area_entered` for implementation
 			pass
 			
-	if dmg["dmg"] != 0.0:
-		var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
-		body.add_child(lbl)
-		lbl.position.y = 2.0
-		lbl.text = str(-dmg["dmg"])
-		var clr = Spell.color_from_element(dmg["el"])
-		lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
-		lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
+	if is_player or is_enemy:
+		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false)
 
 func _on_area_entered(area):
 	var body = area.get_parent_node_3d()
@@ -147,7 +141,7 @@ func _on_area_entered(area):
 	var is_player = area.collision_layer & 0b0010 != 0
 	var is_enemy  = area.collision_layer & 0b0100 != 0
 	
-	var is_world_object = body.collision_layer & (1 << 9) != 0
+	var is_world_object = area.collision_layer & (1 << 9) != 0
 	var is_rock  = area.collision_layer & 0b1_0000 != 0
 	var is_water = area.collision_layer & 0b10_0000 != 0
 	var dmg = {"dmg": 0.0, "el": Spell.Element.FIRE}
@@ -160,14 +154,8 @@ func _on_area_entered(area):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
-	if dmg["dmg"] != 0.0:
-		var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
-		body.add_child(lbl)
-		lbl.position.y = 2.0
-		lbl.text = str(-dmg["dmg"])
-		var clr = Spell.color_from_element(dmg["el"])
-		lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
-		lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
+	if is_player or is_enemy:
+		Vitals.apply_damage(body, dmg["dmg"], dmg["el"], false)
 		
 
 func update_shape(r: float, ignore_time: bool):

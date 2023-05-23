@@ -98,3 +98,26 @@ func update_vitals() -> Array:
 
 func wetness_scale():
 	return 1 + wetness.value
+
+static func apply_damage(body: CharacterBody3D, amount: float, element: Spell.Element, is_implicit: bool):
+	if amount == 0.0:
+		return
+	var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
+	lbl.position.y = 2.0
+	lbl.text = str(-amount)
+	body.add_child(lbl)
+	var clr = Spell.color_from_element(element)
+	lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
+	lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
+	
+	if is_implicit:
+		return
+		
+	match element:
+		Spell.Element.FIRE:
+			var exp = load("res://Projectiles/explosion/fire_exp.tscn").instantiate()
+			exp.position.y = 2.0
+			exp.get_node("source").emitting = true
+			body.add_child(exp)
+			await body.get_tree().create_timer(exp.get_node("source").lifetime + 0.1).timeout
+			exp.queue_free()

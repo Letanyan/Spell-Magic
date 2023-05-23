@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://nvx12omqgpe2"]
+[gd_scene load_steps=8 format=3 uid="uid://nvx12omqgpe2"]
 
 [sub_resource type="Gradient" id="Gradient_ce2kv"]
 offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
@@ -37,8 +37,6 @@ height = 0.5
 radial_segments = 6
 rings = 4
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_e50qj"]
-
 [node name="fire_exp" type="Node3D"]
 
 [node name="source" type="GPUParticles3D" parent="."]
@@ -50,10 +48,3 @@ explosiveness = 1.0
 randomness = 1.0
 process_material = SubResource("ParticleProcessMaterial_be67v")
 draw_pass_1 = SubResource("SphereMesh_orbll")
-
-[node name="area" type="Area3D" parent="source"]
-collision_layer = 8
-collision_mask = 535
-
-[node name="shape" type="CollisionShape3D" parent="source/area"]
-shape = SubResource("SphereShape3D_e50qj")
