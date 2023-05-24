@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_tkofl"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_i6n1l"]
+resource_local_to_scene = true
 
 [sub_resource type="Gradient" id="Gradient_k1smn"]
 offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
@@ -42,6 +43,7 @@ radial_segments = 6
 rings = 4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_21upn"]
+resource_local_to_scene = true
 
 [node name="fire" type="Node3D"]
 script = ExtResource("1_tkofl")

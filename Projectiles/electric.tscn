@@ -5,6 +5,7 @@
 [ext_resource type="Shader" path="res://Projectiles/electric.gdshader" id="3_8dbc8"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_htuie"]
+resource_local_to_scene = true
 
 [sub_resource type="Gradient" id="Gradient_t57qq"]
 offsets = PackedFloat32Array(0, 0.177143)
@@ -56,6 +57,7 @@ radial_segments = 16
 rings = 8
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_erm55"]
+resource_local_to_scene = true
 
 [node name="electric" type="Node3D"]
 script = ExtResource("1_qx5re")

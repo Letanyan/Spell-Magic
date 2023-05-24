@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_8dm3y"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwdgd"]
+resource_local_to_scene = true
 size = Vector3(1, 0.2, 1)
 
 [sub_resource type="Gradient" id="Gradient_k3a7i"]
@@ -43,6 +44,7 @@ radial_segments = 4
 rings = 2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1v7ss"]
+resource_local_to_scene = true
 size = Vector3(1, 0.2, 1)
 
 [node name="ice" type="Node3D"]

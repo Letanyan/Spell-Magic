@@ -30,7 +30,6 @@ static func populate(pop: Population, world: Node3D, area: Array, spacing: float
 				var p = pop.spawn_foliage(World.Foliage.TREE_ROUND, world, pos.x, pos.y, spacing)
 				if p != null:
 					world.add_child(p)
-				area.pop_back()
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
 				var pos = area.pop_back()
 				var p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, world, pos.x, pos.y, spacing)

@@ -4,13 +4,17 @@
 [ext_resource type="Material" uid="uid://tyc0j0x8j2w7" path="res://Projectiles/rock.tres" id="2_hsxl8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3hxed"]
+resource_local_to_scene = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_i7rb6"]
+resource_local_to_scene = true
 material = ExtResource("2_hsxl8")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_odltr"]
+resource_local_to_scene = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ikdw0"]
+resource_local_to_scene = true
 
 [node name="rock" type="Node3D"]
 script = ExtResource("1_i3esg")

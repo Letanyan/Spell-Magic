@@ -220,8 +220,8 @@ func update_shape(r: float, ignore_time: bool):
 			get_node("shape_cast").shape.size.y = r
 			get_node("shape_cast").shape.size.z = r
 			var mesh: MeshInstance3D = get_node("body/mesh")
-			var mbox = BoxMesh.new()
-			mbox.material = rock_mat
+#			var mbox = BoxMesh.new()
+#			mbox.material = rock_mat
 			mesh.mesh.size.x = r
 			mesh.mesh.size.y = r
 			mesh.mesh.size.z = r
