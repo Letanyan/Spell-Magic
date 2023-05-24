@@ -27,7 +27,7 @@ func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float 
 	has_navigation_target = false
 	
 static func player() -> VelocityMovement:
-	return VelocityMovement.new(36, 150, 150)
+	return VelocityMovement.new(12, 150, 150)
 
 func increment_ticks():
 	vital_tick += 1
@@ -63,13 +63,14 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	var direction = Vector3.ZERO
 	if body.has_node("CamPivot"):
 		var cam_pivot = body.get_node("CamPivot")
-		var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		var input_dir = VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
+		var input_len = input_dir.length()
 		direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
 		if true or body.is_on_floor():
-			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value)
-			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value)
+			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value) * input_len
+			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value) * input_len
 	else:
 		target_velocity.x = 0
 		target_velocity.z = 0
@@ -108,6 +109,22 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if navigation_velocity != Vector3.ZERO:
 			body.rotation.y = lerp_angle(body.rotation.y, atan2(-navigation_velocity.x, -navigation_velocity.z), 0.3)
 		
-		
-		
 	return result
+
+static func get_input_strength(negative_x: String, positive_x: String, negative_y: String, positive_y: String, deadzone: float = 0.05) -> Vector2:
+	var left = Input.get_action_raw_strength(negative_x)
+	var right = Input.get_action_raw_strength(positive_x)
+	var forward = Input.get_action_raw_strength(negative_y)
+	var back = Input.get_action_raw_strength(positive_y)
+	
+	if left < deadzone:
+		left = 0
+	if right < deadzone:
+		right = 0
+	if forward < deadzone:
+		forward = 0
+	if back < deadzone:
+		back = 0
+	
+	return Vector2(right - left, back - forward)
+	

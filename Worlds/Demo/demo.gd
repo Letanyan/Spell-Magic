@@ -66,6 +66,11 @@ func _physics_process(delta):
 		for loc in population:
 			var pop = population[loc]
 			pop.update_info()
+			
+	const SPEED = 12.0
+	var movement = VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
+	if movement != Vector2.ZERO:
+		player.pan_camera(movement)
 
 func _input(event):
 #	if event.is_action_pressed("debug1"):
@@ -86,6 +91,12 @@ func _input(event):
 	if not menu.is_showing and event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			
+	if not menu.is_showing:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			if event is InputEventMouseMotion:
+				print(event.relative)
+				player.pan_camera(event.relative)
 		
 	if not menu.is_showing:
 		for k in wand.basic_keys:
