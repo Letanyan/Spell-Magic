@@ -201,6 +201,7 @@ func update_shape(r: float, ignore_time: bool):
 			particles.process_material.scale_max = r * 2
 			particles.process_material.initial_velocity_max = r * 2
 			shape.shape.radius = r
+			get_node("shape_cast").shape.radius = r
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
@@ -215,6 +216,9 @@ func update_shape(r: float, ignore_time: bool):
 			m_shape.shape.size.x = r
 			m_shape.shape.size.y = r
 			m_shape.shape.size.z = r
+			get_node("shape_cast").shape.size.x = r
+			get_node("shape_cast").shape.size.y = r
+			get_node("shape_cast").shape.size.z = r
 			var mesh: MeshInstance3D = get_node("body/mesh")
 			var mbox = BoxMesh.new()
 			mbox.material = rock_mat
@@ -229,6 +233,7 @@ func update_shape(r: float, ignore_time: bool):
 		Spell.Element.WATER:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
 			m_shape.shape.radius = r
+			get_node("shape_cast").shape.radius = r
 			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.emission_sphere_radius = r
 			particles.process_material.initial_velocity_max = r * 2
@@ -239,6 +244,8 @@ func update_shape(r: float, ignore_time: bool):
 			get_node("source/area").position.y = r * 2
 			m_shape.shape.height = r * 4
 			m_shape.shape.radius = r
+			get_node("shape_cast").shape.height = r * 4
+			get_node("shape_cast").shape.radius = r
 			
 			var source2: GPUParticles3D = get_node("source")
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("width", r / 10.0)
@@ -251,6 +258,8 @@ func update_shape(r: float, ignore_time: bool):
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
 			m_shape.shape.size.x = r * 2
 			m_shape.shape.size.z = r * 2
+			get_node("shape_cast").shape.size.x = r * 2
+			get_node("shape_cast").shape.size.z = r * 2
 			
 			var source: GPUParticles3D = get_node("source")
 			source.process_material.emission_box_extents = Vector3(r, 0.2, r)
@@ -258,6 +267,7 @@ func update_shape(r: float, ignore_time: bool):
 		Spell.Element.ELECTRIC:
 			var m_shape: CollisionShape3D = get_node("body/area/shape")
 			m_shape.shape.radius = r
+			get_node("shape_cast").shape.radius = r
 			
 			var source: GPUParticles3D = get_node("source")
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
@@ -276,6 +286,16 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		velocity = velocity.normalized() * clamp(dist, -1, 1)
 	old_pos = next_pos
 	started = true
+	
+	var shape_cast: ShapeCast3D = get_node("shape_cast")
+	shape_cast.target_position = (p - position)
+	var count = shape_cast.get_collision_count()
+	for i in range(count):
+		var obj = shape_cast.get_collider(i)
+		if obj is Area3D:
+			_on_area_entered(obj)
+		else:
+			_on_body_entered(obj)
 	
 	match spell.element:
 		Spell.Element.FIRE:

@@ -1,6 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://kjdhhq3p1a5m"]
+[gd_scene load_steps=9 format=3 uid="uid://kjdhhq3p1a5m"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_8dm3y"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hwdgd"]
+size = Vector3(1, 0.2, 1)
 
 [sub_resource type="Gradient" id="Gradient_k3a7i"]
 offsets = PackedFloat32Array(0, 0.754286, 1)
@@ -45,6 +48,12 @@ size = Vector3(1, 0.2, 1)
 [node name="ice" type="Node3D"]
 script = ExtResource("1_8dm3y")
 
+[node name="shape_cast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("BoxShape3D_hwdgd")
+target_position = Vector3(0, 0, 0.1)
+collision_mask = 534
+
 [node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 amount = 100
@@ -54,9 +63,9 @@ draw_pass_1 = SubResource("SphereMesh_b25tq")
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 128
 collision_mask = 534
+monitoring = false
+monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 shape = SubResource("BoxShape3D_1v7ss")
-
-[connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

@@ -75,7 +75,6 @@ func calculate_location(vars: Dictionary) -> Vector3:
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
-	result = result.normalized() * clamp(result.length(), 0, 20)
 	return result + (vars["rel_pos"] if follow else vars["abs_pos"])
 	
 func calculate_size(vars: Dictionary) -> float:

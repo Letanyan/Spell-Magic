@@ -1,8 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://8p44w2bikis2"]
+[gd_scene load_steps=13 format=3 uid="uid://8p44w2bikis2"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_qx5re"]
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
 [ext_resource type="Shader" path="res://Projectiles/electric.gdshader" id="3_8dbc8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_htuie"]
 
 [sub_resource type="Gradient" id="Gradient_t57qq"]
 offsets = PackedFloat32Array(0, 0.177143)
@@ -58,6 +60,12 @@ rings = 8
 [node name="electric" type="Node3D"]
 script = ExtResource("1_qx5re")
 
+[node name="shape_cast" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_htuie")
+target_position = Vector3(0, 0, 0)
+collision_mask = 567
+collide_with_areas = true
+
 [node name="source" type="GPUParticles3D" parent="."]
 cast_shadow = 0
 amount = 80
@@ -73,9 +81,8 @@ mesh = SubResource("SphereMesh_sdaq3")
 [node name="area" type="Area3D" parent="body"]
 collision_layer = 256
 collision_mask = 567
+monitoring = false
+monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="body/area"]
 shape = SubResource("SphereShape3D_erm55")
-
-[connection signal="area_entered" from="body/area" to="." method="_on_area_entered"]
-[connection signal="body_entered" from="body/area" to="." method="_on_body_entered"]

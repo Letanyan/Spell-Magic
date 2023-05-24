@@ -1,6 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://ded2wbijwa0uu"]
+[gd_scene load_steps=11 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_tkofl"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_i6n1l"]
 
 [sub_resource type="Gradient" id="Gradient_k1smn"]
 offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
@@ -44,6 +46,12 @@ rings = 4
 [node name="fire" type="Node3D"]
 script = ExtResource("1_tkofl")
 
+[node name="shape_cast" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_i6n1l")
+target_position = Vector3(0, 0, 0)
+collision_mask = 535
+debug_shape_custom_color = Color(0, 0, 1, 1)
+
 [node name="source" type="GPUParticles3D" parent="."]
 cast_shadow = 0
 amount = 80
@@ -54,8 +62,8 @@ draw_pass_1 = SubResource("SphereMesh_58dya")
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 8
 collision_mask = 535
+monitoring = false
+monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_21upn")
-
-[connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]

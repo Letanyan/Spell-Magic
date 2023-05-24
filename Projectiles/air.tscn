@@ -1,7 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://n8opbdntc6c3"]
+[gd_scene load_steps=12 format=3 uid="uid://n8opbdntc6c3"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_icqhx"]
 [ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="2_qxk8k"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_i1ldc"]
+height = 1.0
 
 [sub_resource type="Gradient" id="Gradient_c4dcj"]
 offsets = PackedFloat32Array(0, 0.457143, 0.640187, 1)
@@ -56,6 +59,12 @@ height = 1.0
 [node name="air" type="Node3D"]
 script = ExtResource("1_icqhx")
 
+[node name="shape_cast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -2.18557e-08, -0.5)
+shape = SubResource("CylinderShape3D_i1ldc")
+target_position = Vector3(0, 0, 0)
+collision_mask = 534
+
 [node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 cast_shadow = 0
@@ -67,9 +76,9 @@ draw_pass_1 = SubResource("BoxMesh_8grns")
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 64
 collision_mask = 534
+monitoring = false
+monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_ydynh")
-
-[connection signal="body_entered" from="source/area" to="." method="_on_body_entered"]
