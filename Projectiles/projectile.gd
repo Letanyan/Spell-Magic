@@ -96,7 +96,7 @@ func get_spell_transform() -> Transform3D:
 	else:
 		return global_transform
 
-func _on_body_entered(body: Node3D):
+func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	var is_world  = body.collision_layer & 0b0001 != 0
 	var is_player = body.collision_layer & 0b0010 != 0
 	var is_enemy  = body.collision_layer & 0b0100 != 0
@@ -151,17 +151,11 @@ func _on_body_entered(body: Node3D):
 			# Look at `_on_area_entered` for implementation
 			pass
 	
-	if velocity != Vector3.ZERO:
-		var exclude = []
-		if spell.element == Spell.Element.ROCK:
-			exclude.append(get_node("body/mesh/area"))
-			exclude.append(get_node("body"))
-		var p = Navigator.get_collisions_from_shape(get_node("."), get_shape(), get_spell_transform(), ~0, exclude)
-		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p, most_recent_radius, velocity)
-		if is_player or is_enemy:
-			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
+	if is_player or is_enemy:
+		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 
-func _on_area_entered(area):
+func _on_area_entered(area, contact_points: Array[Vector3]):
 	var body = area.get_parent_node_3d()
 	var is_world  = area.collision_layer & 0b0001 != 0
 	var is_player = area.collision_layer & 0b0010 != 0
@@ -180,11 +174,9 @@ func _on_area_entered(area):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
-	if velocity != Vector3.ZERO:		
-		var p = Navigator.get_collisions_from_shape(get_node("."), get_shape(), get_spell_transform(), ~0)
-		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p, most_recent_radius, velocity)
-		if is_player or is_enemy:
-			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
+	if is_player or is_enemy:
+		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 
 func update_shape(r: float, ignore_time: bool):
 	if spell.element == Spell.Element.ROCK and not ignore_time:
@@ -292,10 +284,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 	var count = shape_cast.get_collision_count()
 	for i in range(count):
 		var obj = shape_cast.get_collider(i)
+		var point = shape_cast.get_collision_point(i)
 		if obj is Area3D:
-			_on_area_entered(obj)
+			_on_area_entered(obj, [point])
 		else:
-			_on_body_entered(obj)
+			_on_body_entered(obj, [point])
 	
 	match spell.element:
 		Spell.Element.FIRE:
