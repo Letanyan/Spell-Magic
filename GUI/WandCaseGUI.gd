@@ -42,6 +42,7 @@ func _on_wand_index_item_selected(index):
 			for i in range(all_spells.size()):
 				all_spells[i] = all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
 			wand.keys[w].spell = all_spells
+			wand.keys[w].spell_index = all_spells.size() - 1
 		
 		item.action_changed = func(from: Wand.Kind, to: Wand.Kind) -> bool:
 			item.store_action = to
