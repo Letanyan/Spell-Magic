@@ -157,8 +157,9 @@ func _on_body_entered(body: Node3D):
 			exclude.append(get_node("body/mesh/area"))
 			exclude.append(get_node("body"))
 		var p = Navigator.get_collisions_from_shape(get_node("."), get_shape(), get_spell_transform(), ~0, exclude)
-		print(p)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p, most_recent_radius, velocity)
+		if is_player or is_enemy:
+			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 
 func _on_area_entered(area):
 	var body = area.get_parent_node_3d()
@@ -182,7 +183,8 @@ func _on_area_entered(area):
 	if velocity != Vector3.ZERO:		
 		var p = Navigator.get_collisions_from_shape(get_node("."), get_shape(), get_spell_transform(), ~0)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, p, most_recent_radius, velocity)
-		
+		if is_player or is_enemy:
+			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 
 func update_shape(r: float, ignore_time: bool):
 	if spell.element == Spell.Element.ROCK and not ignore_time:

@@ -12,6 +12,8 @@ var velocity_movement = VelocityMovement.player()
 var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
 
 var camera_target_velocity: float = 0
+var shake_intensity: float = 0.0
+const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 
 signal player_moved
 
@@ -47,6 +49,9 @@ func _input(event):
 
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
+	
+func add_shake(amount: float):
+	shake_intensity += amount
 
 func _physics_process(delta):
 	var movement = velocity_movement.update(delta, vitals, 14, self)
@@ -72,6 +77,20 @@ func _physics_process(delta):
 	var rate = 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
 	cam_arm.spring_length = 1 + camera_target_velocity
+	
+	if shake_intensity > 0.0:
+		var intensity = clamp(shake_intensity, 0, 1) ** 2
+		if is_zero_approx(intensity):
+			shake_intensity = 0.0
+		else:
+			shake_intensity = clamp(lerp(shake_intensity, 0.0, 0.05), 0.0, 1.0)
+		var t = fmod(Time.get_unix_time_from_system(), 1000000)
+		var dx = camera_shake_noise.get_noise_3d(t, 0, 0)
+		var dy = camera_shake_noise.get_noise_3d(0, t, 0)
+		var dz = camera_shake_noise.get_noise_3d(0, 0, t)
+		cam.rotation.x = (dx * intensity) * (2 * PI / 8)
+		cam.rotation.y = (dy * intensity) * (2 * PI / 8)
+		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
 				
 	spell_caster.deferred_update(self, delta)
 

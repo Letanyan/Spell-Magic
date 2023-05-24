@@ -27,6 +27,9 @@ func _ready():
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
 	
+func add_shake(amount: float):
+	player.add_shake(amount)
+	
 func increment_ticks():
 	behavior_tick += 1
 	spell_tick += 1
