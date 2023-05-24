@@ -39,7 +39,7 @@ var spells_index_map = {}
 @onready var delay_edit: LineEdit = $container/delay/edit
 @onready var count_edit: LineEdit = $container/count/edit
 
-@onready var element_edit: LineEdit = $container/element/edit
+@onready var element_combo: OptionButton = $container/element_combo
 @onready var chain_edit: LineEdit = $container/chain/edit
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
@@ -85,7 +85,7 @@ func _on_spell_index_item_selected(index):
 	mana_edit.text = "%.2f" % spell.mana_cost
 	update_cooldown()
 	
-	element_edit.text = Spell.name_from_element(spell.element)
+	element_combo.selected = spell.element
 	chain_edit.text = spell.chain.name if spell.chain else ""
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
@@ -114,7 +114,7 @@ func _on_save_pressed():
 	spell.duration = duration_edit.text.to_float()
 	spell.delay = delay_edit.text
 	spell.count = count_edit.text.to_int()
-	spell.element = Spell.element_from_name(element_edit.text)
+	spell.element = element_combo.selected as Spell.Element
 	
 	spell.d_expr = Expr.new(spell.delay)
 	
@@ -224,10 +224,10 @@ func _on_name_edit_text_changed(new_text):
 	book.spells[current_index].name = new_text
 	reload_list()
 
-func _on_element_text_changed(new_text):
+func _on_element_combo_selected(index):
 	if current_index < 0:
 		return
-	book.spells[current_index].element = Spell.element_from_name(new_text)
+	book.spells[current_index].element = index as Spell.Element
 	update_spells_that_chain_to_current_spell()
 
 func _on_x_text_changed(new_text):
