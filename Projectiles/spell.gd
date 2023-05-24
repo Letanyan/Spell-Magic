@@ -8,11 +8,19 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var y: String
 @export var z: String
 @export var r: String
-@export var power: float
-@export var duration: float
-@export var count: int
+@export var power: float:
+	set(value):
+		power = clamp(value, 0, 100)
+@export var duration: float:
+	set(value):
+		duration = clamp(value, 1, 25)
+@export var count: int:
+	set(value):
+		count = clamp(value, 1, 25)
 @export var delay: String
-@export var mana_cost: float = 0.0
+@export var mana_cost: float = 0.0:
+	set(value):
+		mana_cost = clamp(value, 0, 100)
 var chain: Spell:
 	set(spell):
 		chain = spell
@@ -67,6 +75,7 @@ func calculate_location(vars: Dictionary) -> Vector3:
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
+	result = result.normalized() * clamp(result.length(), 0, 20)
 	return result + (vars["rel_pos"] if follow else vars["abs_pos"])
 	
 func calculate_size(vars: Dictionary) -> float:
@@ -74,7 +83,7 @@ func calculate_size(vars: Dictionary) -> float:
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:
-	var result = d_expr.compute(vars)
+	var result = clamp(d_expr.compute(vars), 0, 25)
 	return result
 	
 func _mass() -> float:

@@ -152,7 +152,7 @@ static func build_explosion(world: Node3D, amount: int, element: Spell.Element, 
 			source.draw_pass_1.surface_get_material(0).set_shader_parameter("period", r / 4)
 			source.process_material.emission_ring_radius = r
 			source.process_material.direction = v.normalized()
-			source.amount = int(amount / 10) + 1
+			source.amount = int(float(amount) / 10.0) + 1
 		Spell.Element.ICE:
 			explosion = load("res://Projectiles/explosion/ice_exp.tscn").instantiate()
 			source = explosion.get_node("source")

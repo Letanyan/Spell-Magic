@@ -273,21 +273,21 @@ func _on_r_text_changed(new_text):
 func _on_N_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].count = new_text.to_int()
+	book.spells[current_index].count = clamp(new_text.to_int(), 1, 25)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_P_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].power = new_text.to_float()
+	book.spells[current_index].power = clamp(new_text.to_float(), 0.0, 100.0)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_T_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].duration = new_text.to_float()
+	book.spells[current_index].duration = clamp(new_text.to_float(), 1.0, 25.0)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
@@ -332,7 +332,7 @@ func _on_is_bomb_toggled(button_pressed):
 func _on_M_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].mana_cost = new_text.to_float()
+	book.spells[current_index].mana_cost = clamp(new_text.to_float(), 0.0, 100.0)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
