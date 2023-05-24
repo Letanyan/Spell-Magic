@@ -4,12 +4,14 @@ enum Kind { NONE, FIRE, PICK, FIRE_PICKED, FIRE_HOLD, MOD  }
 
 class Option:
 	var kind: Kind
-	var spell: String
+	var spell: Array
+	var spell_index: int
 	var start_hold: float
 	
-	func _init(_kind: Kind = Kind.NONE, _spell: String = ""):
+	func _init(_kind: Kind = Kind.NONE, _spell: Array = []):
 		kind = _kind
 		spell = _spell
+		spell_index = spell.size() - 1
 		start_hold = 0.0
 		
 	func save_dict():
@@ -17,8 +19,19 @@ class Option:
 		
 	func load_dict(dict: Dictionary):
 		kind = dict["kind"]
-		spell = dict["spell"]
+		var s = dict["spell"] 
+		if s is String:
+			spell = [s]
+		else:
+			spell = s as Array[String]
+		spell_index = spell.size() - 1
 		start_hold = 0.0
+		
+	func next_spell() -> String:
+		spell_index += 1
+		if spell_index >= spell.size():
+			spell_index = 0
+		return spell[spell_index]
 
 const basic_keys = [
 	"LT",
@@ -45,7 +58,7 @@ const pc_keys = {
 	"LT": "Shift",
 	"LB": "Ctrl",
 	"RT": "Left Mouse",
-	"RB": "Alt",
+	"RB": "Right Mouse",
 	"S": "Space",
 	"W": "R",
 	"E": "E",
@@ -55,7 +68,7 @@ const pc_keys = {
 	"LEFT": "Left",
 	"RIGHT": "Right",
 	"L3": "Z",
-	"R3": "Right Mouse",
+	"R3": "Alt",
 	"move_forward": "W",
 	"move_left": "A",
 	"move_back": "S",
@@ -140,8 +153,9 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 		return picked
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
 		return null
+	var opt_spell = opt.next_spell()
 	for s in book.spells:
-		if s.name == opt.spell:
+		if s.name == opt_spell:
 			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD:
 				return s
 			elif opt.kind == Kind.PICK:
@@ -156,10 +170,6 @@ func action_down(action: String, book: MagicBook) -> Spell:
 		if key.size() > current_actions.size():
 			continue
 		var found = true
-#		for k in current_actions:
-#			if key.find(k) == -1:
-#				found = false
-#				break
 		for k in key:
 			if not current_actions.has(k):
 				found = false
@@ -173,6 +183,8 @@ func action_down(action: String, book: MagicBook) -> Spell:
 			keys[best_candidate].start_hold = Time.get_unix_time_from_system()
 		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
 			var s = find_spell(best_candidate, book)
+			if s == null:
+				return null
 			var used = last_use.get(s.name, 0)
 			if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
 				last_use[s.name] = Time.get_unix_time_from_system()
