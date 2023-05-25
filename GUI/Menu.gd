@@ -5,6 +5,7 @@ enum Kind { ANY, SPELLS, WANDS }
 
 @onready var magic_book: Control = $MagicBook
 @onready var wand_case: Control = $WandCase
+var current_index = 0
 
 var is_showing: bool = false
 
@@ -21,17 +22,25 @@ func _ready():
 func _process(delta):
 	pass
 
+func update_index(index):
+	save_changes()
+	if index < 0:
+		current_index = 1
+	elif index > 1:
+		current_index = 0
+	else:
+		current_index = index
+	magic_book.visible = false
+	wand_case.visible = false
+	match index:
+		0: magic_book.visible = true
+		1: wand_case.visible = true
 
 func _on_spells_pressed():
-	save_changes()
-	magic_book.visible = true
-	wand_case.visible = false
-
+	update_index(0)
 
 func _on_wands_pressed():
-	save_changes()
-	magic_book.visible = false
-	wand_case.visible = true
+	update_index(1)
 
 func open(kind: Kind):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -48,6 +57,13 @@ func close():
 	is_showing = false
 	visible = false
 	save_changes()
+	
+func _gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("RB"):
+		update_index(current_index + 1)
+	elif event.is_action_pressed("LB"):
+		update_index(current_index - 1)
+	
 
 func save_changes():
 	if magic_book.visible:

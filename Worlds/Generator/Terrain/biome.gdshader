@@ -133,5 +133,5 @@ void fragment() {
 	ALBEDO = color;
 	if (normal != vec3(0)) {
 		NORMAL_MAP = normal;
-	} 
+	}
 }

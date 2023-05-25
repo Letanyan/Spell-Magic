@@ -99,7 +99,6 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	if body.has_node("CamPivot"):
 		if direction != Vector3.ZERO:
 			var pivot: Node3D = body.get_node("Pivot")
-	#		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-velocity.x, -velocity.z), 0.15)
 			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
 			var collision: Node3D = body.get_node("Collision")
 			collision.rotation.y = pivot.rotation.y
