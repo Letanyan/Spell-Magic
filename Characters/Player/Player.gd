@@ -14,6 +14,7 @@ var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
+var is_menu_showing: Callable
 
 signal player_moved
 
@@ -39,25 +40,27 @@ func add_shake(amount: float):
 	shake_intensity += amount
 
 func _physics_process(delta):
+	var menu_showing = is_menu_showing.call()
 	var movement = velocity_movement.update(delta, vitals, 14, self)
-	velocity = movement["velocity"]
-	move_and_slide()
-	var direction = movement["direction"]
-	if direction != Vector3.ZERO:
-		if is_on_floor():
-			if velocity.length() < 1:
-				animator.play("Man_Walk", 1)
-			else:
-				animator.play("Man_Run", 1)
-	else:
-		if is_on_floor():
-			animator.play("Man_Idle", 1)
-		
-	if not is_on_floor_only():
-		animator.play("Man_Run", 1)
-		
-	if velocity:
-		player_moved.emit(delta)
+	if not menu_showing:
+		velocity = movement["velocity"]
+		move_and_slide()
+		var direction = movement["direction"]
+		if direction != Vector3.ZERO:
+			if is_on_floor():
+				if velocity.length() < 1:
+					animator.play("Man_Walk", 1)
+				else:
+					animator.play("Man_Run", 1)
+		else:
+			if is_on_floor():
+				animator.play("Man_Idle", 1)
+			
+		if not is_on_floor_only():
+			animator.play("Man_Run", 1)
+			
+		if velocity:
+			player_moved.emit(delta)
 		
 	var rate = 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
