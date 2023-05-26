@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode diffuse_toon, skip_vertex_transform;
+render_mode diffuse_toon, skip_vertex_transform, blend_mix;
 
 uniform sampler2D elevation;
 uniform sampler2D temperature;
@@ -7,17 +7,12 @@ uniform sampler2D dryness;
 uniform float texture_width;
 uniform float texture_depth;
 
-uniform sampler2D grass;
-uniform sampler2D grass_normal;
-uniform sampler2D forest_ground;
-uniform sampler2D forest_ground_normal;
+uniform sampler2D grass: source_color;
+uniform sampler2D grass_normal: source_color;
+uniform sampler2D forest_ground: source_color;
+uniform sampler2D forest_ground_normal: source_color;
 
 void vertex() {
-//	vec2 pixel = 1.0 / vec2(textureSize(elevation, 0)); 
-//	vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
-//
-//	vec4 clr = texture(elevation, w);
-//	VERTEX.y = clr.r * 250.0;
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 }
@@ -34,7 +29,6 @@ void fragment() {
 	// hack because godot generates textures with 1 pixel edges that have increased saturation?
 	vec2 pixel = 1.0 / vec2(textureSize(elevation, 0)); 
 	vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
-	
 	float e = texture(elevation, w).r;
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
@@ -45,8 +39,8 @@ void fragment() {
 	vec3 taiga = vec3(0, 1, 1);
 	vec3 grassland = mix(vec3(1, 0.776, 0.282), texture(grass, UV).rgb, 1.0);
 	vec3 grassland_normal = texture(grass_normal, UV).rgb;
-	vec3 forest = mix(vec3(0.1, 0.05, 0.05), texture(forest_ground, UV).rgb, 1.0);
-	vec3 forest_normal = texture(forest_ground_normal, UV).rgb;
+	vec3 forest = mix(vec3(0.1, 0.05, 0.05), texture(forest_ground, w * 48.0).rgb, 0.1);
+	vec3 forest_normal = texture(forest_ground_normal, w * 48.0).rgb;
 	vec3 desert = vec3(1, 1, 0);
 	vec3 jungle = vec3(0, 0.25, 0.25);
 	vec3 water = vec3(0, 0, 1);
@@ -131,7 +125,10 @@ void fragment() {
 	}
 	
 	ALBEDO = color;
-	if (normal != vec3(0)) {
-		NORMAL_MAP = normal;
-	}
+	NORMAL_MAP = normal;
 }
+
+//void light() {
+//	DIFFUSE_LIGHT += ALBEDO * LIGHT_COLOR * ATTENUATION;
+//	SPECULAR_LIGHT = BACKLIGHT;
+//}

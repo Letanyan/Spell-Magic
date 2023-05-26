@@ -1,13 +1,12 @@
-[gd_scene load_steps=24 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=25 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="3_j80hc"]
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Menu.tscn" id="3_luuj6"]
-[ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome.gdshader" id="4_benyj"]
 [ext_resource type="Texture2D" uid="uid://bhk6by6hmi7kw" path="res://Worlds/Generator/Terrain/grass.tres" id="4_d3h6x"]
-[ext_resource type="Texture2D" uid="uid://cd4b8dvv7807w" path="res://Worlds/Generator/Terrain/forest_ground.tres" id="5_ilfs1"]
-[ext_resource type="Texture2D" uid="uid://dq8eydm7e74xj" path="res://Worlds/Generator/Terrain/forest_ground_normal.tres" id="6_ju7py"]
-[ext_resource type="Texture2D" uid="uid://tg6j7ejbuq0f" path="res://Worlds/Generator/Terrain/grass_normal.tres" id="8_8jpqs"]
+[ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="4_nlahj"]
+[ext_resource type="Texture2D" uid="uid://chyt7hrbg2h66" path="res://Worlds/Generator/Terrain/forest_ground.jpg" id="5_f7yc2"]
+[ext_resource type="Texture2D" uid="uid://cc1cbv0gwlf23" path="res://Worlds/Generator/Terrain/forest_ground_normal.png" id="7_eyveq"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r3lp4"]
 frequency = 0.001
@@ -51,31 +50,47 @@ fog_aerial_perspective = 0.1
 noise_type = 3
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2clhn"]
+normalize = false
 noise = SubResource("FastNoiseLite_qgtmx")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_70qba"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lghw7"]
+normalize = false
 noise = SubResource("FastNoiseLite_70qba")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gbf1a"]
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f6q4h"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_gbf1a")
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_opx88"]
-noise_type = 2
+noise_type = 0
+seed = 5
+fractal_octaves = 3
+fractal_gain = 0.1
+domain_warp_enabled = true
+domain_warp_fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vl0lb"]
+normalize = false
 noise = SubResource("FastNoiseLite_opx88")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eggur"]
 render_priority = 0
-shader = ExtResource("4_benyj")
+shader = ExtResource("4_nlahj")
 shader_parameter/texture_width = 512.0
 shader_parameter/texture_depth = 512.0
 shader_parameter/elevation = SubResource("NoiseTexture2D_lghw7")
 shader_parameter/temperature = SubResource("NoiseTexture2D_vl0lb")
 shader_parameter/dryness = SubResource("NoiseTexture2D_2clhn")
 shader_parameter/grass = ExtResource("4_d3h6x")
-shader_parameter/grass_normal = ExtResource("8_8jpqs")
-shader_parameter/forest_ground = ExtResource("5_ilfs1")
-shader_parameter/forest_ground_normal = ExtResource("6_ju7py")
+shader_parameter/grass_normal = ExtResource("7_eyveq")
+shader_parameter/forest_ground = ExtResource("5_f7yc2")
+shader_parameter/forest_ground_normal = SubResource("NoiseTexture2D_f6q4h")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_f4gnr"]
 material = SubResource("ShaderMaterial_eggur")
@@ -90,6 +105,7 @@ noise_temperature = SubResource("FastNoiseLite_2xukv")
 noise_dryness = SubResource("FastNoiseLite_sx4vb")
 
 [node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109003, 0, 0)
 collision_mask = 7
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
@@ -104,9 +120,9 @@ environment = SubResource("Environment_yd7q2")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -4.69289, 10.2263, 0)
 shadow_enabled = true
+shadow_normal_bias = 0.05
 shadow_opacity = 0.5
 shadow_blur = 4.0
-directional_shadow_blend_splits = true
 
 [node name="Menu" parent="." instance=ExtResource("3_luuj6")]
 visible = false

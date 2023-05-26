@@ -8,10 +8,10 @@ var raycast: RayCast3D
 var player_coord: Vector2 = Vector2.ZERO
 
 var grass_texture = preload("res://Worlds/Generator/Terrain/grass.tres")
-var forest_texture = preload("res://Worlds/Generator/Terrain/forest_ground.tres")
+var forest_texture = preload("res://Worlds/Generator/Terrain/forest_ground.jpg")
 var grass_normal = preload("res://Worlds/Generator/Terrain/grass_normal.tres")
-var forest_ground_normal = preload("res://Worlds/Generator/Terrain/forest_ground_normal.tres")
-var biome_shader = preload("res://Worlds/Generator/Terrain/biome.gdshader")
+var forest_ground_normal = preload("res://Worlds/Generator/Terrain/forest_ground_normal.png")
+var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
 var loaded_chunks = []
@@ -114,14 +114,7 @@ func create_mesh(x: float, y: float, size: float, subdivide: float = 1.0 / 16.0)
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 
-	mesh.clear_surfaces()
-	mdt.commit_to_surface(mesh)
 	var mi = MeshInstance3D.new()
-	var mat: ShaderMaterial = ShaderMaterial.new()
-	mat.shader = biome_shader
-	mat.set_shader_parameter("texture_width", size)
-	mat.set_shader_parameter("texture_depth", size)
-	mesh.surface_set_material(0, mat)
 	mi.mesh = mesh
 	mi.name = "mesh"
 	
@@ -164,7 +157,6 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
-
 	for i in range(mdt.get_vertex_count()):
 		mdt.set_vertex_normal(i, Vector3.ZERO)
 
@@ -201,7 +193,6 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
-#	var mat = mesh.surface_get_material(0)
 	var mat = ShaderMaterial.new()
 	mat.shader = biome_shader
 	mat.set_shader_parameter("texture_width", size)
@@ -213,7 +204,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	mat.set_shader_parameter("grass_normal", grass_normal)
 	mat.set_shader_parameter("forest_ground", forest_texture)
 	mat.set_shader_parameter("forest_ground_normal", forest_ground_normal)
-	mesh.surface_set_material(0, mat)
+	mi.mesh.surface_set_material(0, mat)
 #	mi.mesh = mesh
 	var dist = max(max(abs(x), abs(y)) / size, 1)
 	for n in mi.get_children():
@@ -290,3 +281,74 @@ func set_player_coord_using_position(x: float, y: float):
 	
 func convert_position_to_coord(x: float, y: float) -> Vector2:
 	return Vector2(floorf((x + chunk_size / 2) / chunk_size), floorf((y + chunk_size / 2) / chunk_size))
+
+func update_mesh_with_surface_tool(mi: MeshInstance3D, x: float, y: float, size: float):
+	var st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+
+	var step = 8.0
+	for X in range(-chunk_size / 2.0, chunk_size / 2.0, step):
+		for Y in range(-chunk_size / 2.0, chunk_size / 2.0, step):
+			# Top Left
+			var v = Vector3(X, 0, Y)
+			v.y = blender.height(v.x + x, v.z + y)
+			st.set_normal(v.normalized())
+			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
+			st.add_vertex(v)
+			# Top Right
+			v.x += step
+			v.y = blender.height(v.x + x, v.z + y)
+			st.set_normal(v.normalized())
+			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
+			st.add_vertex(v)
+			# Bottom Left
+			v.x -= step
+			v.z += step
+			v.y = blender.height(v.x + x, v.z + y)
+			st.set_normal(v.normalized())
+			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
+			st.add_vertex(v)
+			
+			# Top Right
+			v.z -= step
+			v.x += step
+			v.y = blender.height(v.x + x, v.z + y)
+			st.set_normal(v.normalized())
+			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
+			st.add_vertex(v)
+			# Bottom Right
+			v.z += step
+			v.y = blender.height(v.x + x, v.z + y)
+			st.set_normal(v.normalized())
+			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
+			st.add_vertex(v)
+			# Bottom Left
+			v.x -= step
+			v.y = blender.height(v.x + x, v.z + y)
+			st.set_normal(v.normalized())
+			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
+			st.add_vertex(v)
+			
+			
+	st.generate_normals()
+	st.generate_tangents()
+	mi.mesh = st.commit()
+	var mat = ShaderMaterial.new()
+	mat.shader = biome_shader
+	mat.set_shader_parameter("texture_width", size)
+	mat.set_shader_parameter("texture_depth", size)
+	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
+	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
+	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
+	mat.set_shader_parameter("grass", grass_texture)
+	mat.set_shader_parameter("grass_normal", grass_normal)
+	mat.set_shader_parameter("forest_ground", forest_texture)
+	mat.set_shader_parameter("forest_ground_normal", forest_ground_normal)
+	mi.mesh.surface_set_material(0, mat)
+	var dist = max(max(abs(x), abs(y)) / size, 1)
+	for n in mi.get_children():
+		mi.remove_child(n)
+	if dist <= 1 or true:
+		mi.create_trimesh_collision()
+		var body: StaticBody3D = mi.get_child(0)
+		body.collision_layer = 1 << 0

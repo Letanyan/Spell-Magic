@@ -46,17 +46,22 @@ func _physics_process(delta):
 	increment_ticks()
 
 	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)
-	match current_path.mover:
-		PathStyle.Mover.PHYSICS:
-			velocity = movement["velocity"]
-			move_and_slide()
-		PathStyle.Mover.ABSOLUTE:
-			position += movement["absolute"]
-		PathStyle.Mover.ABSOLUTE_XZ:
-			var v = movement["absolute"]
-			var t = movement["target"]
-#			position.y = v.y
-			position += Vector3(v.x, v.y + t.y, v.z)
+	if velocity_movement.impulse != Vector3.ZERO:
+		velocity = movement["velocity"]
+		move_and_slide()
+		print("physics")
+	else:
+		match current_path.mover:
+			PathStyle.Mover.PHYSICS:
+				velocity = movement["velocity"]
+				move_and_slide()
+			PathStyle.Mover.ABSOLUTE:
+				position += movement["absolute"]
+			PathStyle.Mover.ABSOLUTE_XZ:
+				var v = movement["absolute"]
+				var t = movement["target"]
+	#			position.y = v.y
+				position += Vector3(v.x, v.y + t.y, v.z)
 
 	if behavior_tick == 30:
 		update_behaviour()

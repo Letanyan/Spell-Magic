@@ -72,12 +72,13 @@ bones/29/position = Vector3(-0.311257, 0.640309, 1.25603)
 bones/29/rotation = Quaternion(3.27445e-06, 0.881808, 0.471609, 1.81963e-06)
 
 [node name="CamPivot" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.9, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
 
 [node name="Arm" type="SpringArm3D" parent="CamPivot"]
 collision_mask = 513
 
 [node name="Lens" type="Camera3D" parent="CamPivot/Arm"]
+h_offset = 0.4
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
