@@ -49,7 +49,6 @@ func _physics_process(delta):
 	if velocity_movement.impulse != Vector3.ZERO:
 		velocity = movement["velocity"]
 		move_and_slide()
-		print("physics")
 	else:
 		match current_path.mover:
 			PathStyle.Mover.PHYSICS:

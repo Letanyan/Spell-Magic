@@ -2,6 +2,12 @@ class_name NoiseBlender
 
 var elevation_curve: Curve = load("res://Worlds/Generator/Terrain/terrain_elevation_curve.tres")
 
+const grassland_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/grassland.tres")
+const forest_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/forest.tres")
+const taiga_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/taiga.tres")
+
+const flat_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/flat.tres")
+
 func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
 		World.Biome.WATER: return Color(0, 0, 1)
@@ -44,12 +50,52 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float) -> No
 	result.normalize = false
 	return result
 
+static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
+	var swapped = false
+	while not swapped:
+		swapped = false
+		for i in range(keys.size()):
+			if values[i - 1] > values[i]:
+				var v = values[i - 1]
+				values[i - 1] = values[i]
+				values[i] = v
+				var k = keys[i - 1]
+				keys[i - 1] = keys[i]
+				keys[i] = k
+				swapped = true
+				
+		if not swapped:
+			break
+	
+	return keys
+	
+	
+
 func height(x: float, y: float) -> float:
 	var e = elevation.get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
-	var result = elevation_curve.sample(e)
-	return result * 250
+	
+	var biomes = biome_distances(x, y)
+	var distances = biomes["distances"]
+	
+	var curve_list = {
+		World.Biome.GRASSLAND: grassland_curve,
+		World.Biome.FOREST: forest_curve,
+		World.Biome.TAIGA: taiga_curve,
+	}
+	
+	var result = 0.0
+	var total_size = biomes["total"]
+	for b in distances:
+		var curve = curve_list.get(b, flat_curve)
+		result += curve.sample(e) * (1.0 - distances[b] / total_size)
+	
+#	for biome in distances:
+#		var curve = curve_list.get(biome, flat_curve)
+#		result += curve.sample(e) * (1.0 - distances[biome] / total_size)
+	
+	return result
 
-func biome(x: float, y: float) -> World.Biome:
+func biome_distances(x: float, y: float) -> Dictionary:
 	var d := dryness.get_noise_2d(x, y) / 2 + 0.5
 	var t := temperature.get_noise_2d(x, y) / 2 + 0.5
 	
@@ -88,16 +134,21 @@ func biome(x: float, y: float) -> World.Biome:
 	var p := Vector2(d, t)
 	var min_distance := INF
 	var pos := 0
+	var distances = {}
+	var total := 0.0
 	for i in range(biome_locations.size()):
 		var q = biome_locations[i]
 		var dist := p.distance_to(q)
+		distances[biome_list[i]] = dist
+		total += dist
 		if dist < min_distance:
 			min_distance = dist
 			pos = i
-			
-	return biome_list[pos]
 	
+	return {"distances": distances, "biome": biome_list[pos], "total": total}
 	
+func biome(x: float, y: float) -> World.Biome:
+	return biome_distances(x, y)["biome"]
 	
 func biome_p(x: float, y: float) -> World.Biome:
 	var e = elevation.get_noise_2d(x, y) / 2 + 0.5
