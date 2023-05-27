@@ -5,6 +5,12 @@ var elevation_curve: Curve = load("res://Worlds/Generator/Terrain/terrain_elevat
 const grassland_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/grassland.tres")
 const forest_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/forest.tres")
 const taiga_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/taiga.tres")
+const desert_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/desert.tres")
+const hfil_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/hfil.tres")
+const jungle_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/jungle.tres")
+const otherworld_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/otherworld.tres")
+const savannah_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/savannah.tres")
+const tundra_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/tundra.tres")
 
 const flat_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/flat.tres")
 
@@ -68,8 +74,6 @@ static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
 			break
 	
 	return keys
-	
-	
 
 func height(x: float, y: float) -> float:
 	var e = elevation.get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
@@ -81,6 +85,12 @@ func height(x: float, y: float) -> float:
 		World.Biome.GRASSLAND: grassland_curve,
 		World.Biome.FOREST: forest_curve,
 		World.Biome.TAIGA: taiga_curve,
+		World.Biome.DESERT: desert_curve,
+		World.Biome.HFIL: hfil_curve,
+		World.Biome.JUNGLE: jungle_curve,
+		World.Biome.OTHERWORLD: otherworld_curve,
+		World.Biome.SAVANNAH: savannah_curve,
+		World.Biome.TUNDRA: tundra_curve
 	}
 	
 	var result = 0.0
@@ -88,10 +98,6 @@ func height(x: float, y: float) -> float:
 	for b in distances:
 		var curve = curve_list.get(b, flat_curve)
 		result += curve.sample(e) * (1.0 - distances[b] / total_size)
-	
-#	for biome in distances:
-#		var curve = curve_list.get(biome, flat_curve)
-#		result += curve.sample(e) * (1.0 - distances[biome] / total_size)
 	
 	return result
 
