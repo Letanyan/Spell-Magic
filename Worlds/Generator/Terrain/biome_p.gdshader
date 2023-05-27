@@ -13,8 +13,8 @@ uniform sampler2D forest_ground: source_color;
 uniform sampler2D forest_ground_normal: source_color;
 
 void vertex() {
-	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
 void fragment() {
@@ -26,10 +26,10 @@ void fragment() {
 	float e = texture(elevation, w).r;
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
-	
+
 	vec3 color = vec3(1);
 	vec3 normal = vec3(0);
-	
+
 //	vec3 taiga = vec3(0, 1, 1);
 //	vec3 grassland = mix(vec3(1, 0.776, 0.282), texture(grass, UV).rgb, 1.0);
 //	vec3 forest = mix(vec3(0.1, 0.05, 0.05), texture(forest_ground, w * 48.0).rgb, 0.1);
@@ -38,10 +38,10 @@ void fragment() {
 //	vec3 water = vec3(0, 0, 1);
 //	vec3 savannah = vec3(1, 0.5, 0);
 //	vec3 tundra = vec3(1, 1, 1);
-	
+
 	vec3 grassland_normal = texture(grass_normal, UV).rgb;
 	vec3 forest_normal = texture(forest_ground_normal, w * 48.0).rgb;
-	
+
 	vec3 colors[9] = {
 		vec3(1, 0, 0),
 		vec3(0, 0, 0),
@@ -49,12 +49,8 @@ void fragment() {
 		vec3(1, 0.5, 0),
 		vec3(0, 0.25, 0.25),
 		vec3(1, 1, 0),
-		
 		vec3(0.282, 0.133, 0.0),
 		vec3(1, 0.776, 0.282),
-//		mix(vec3(0.282, 0.133, 0.0), texture(forest_ground, w * 48.0).rgb, 0.99),
-//		mix(vec3(1, 0.776, 0.282), texture(grass, UV).rgb, 1.0),
-		
 		vec3(0, 1, 1)
 	};
 	vec2 locations[9] = {
@@ -68,7 +64,7 @@ void fragment() {
 		vec2(0.5, 0.5),
 		vec2(0.25, 0.75)
 	};
-	
+
 	vec2 p = vec2(d, t);
 	float distances[9];
 	float total_distance = 0.0;
@@ -86,15 +82,15 @@ void fragment() {
 			index = i;
 		}
 	}
-	
+
 	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
 	if (norm_angle > inversesqrt(8.0)) {
 		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
-		color = mix(color, vec3(0.15), blend);
+		color = mix(color, vec3(0.15), 0.25);
 	}
-	
+
 	ALBEDO = color;
-	NORMAL_MAP = normal;
+	NORMAL = normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 }
 
 //void light() {
