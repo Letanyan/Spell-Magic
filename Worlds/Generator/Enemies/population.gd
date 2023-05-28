@@ -49,11 +49,14 @@ func random_enemy(probs: Dictionary) -> World.Enemy:
 func random_foliage(probs: Dictionary) -> World.Foliage:
 	return random_entity_from_distribution(probs) as World.Foliage
 	
-func prepare_entity(world: Node3D, entity: Node3D, pos: Vector2, is_enemy: bool):
+func random_building(probs: Dictionary) -> World.Building:
+	return random_entity_from_distribution(probs) as World.Building
+	
+func prepare_entity(world: Node3D, entity: Node3D, pos: Vector3, is_enemy: bool):
 	if entity != null:
 		entity.position.x = pos.x
-		entity.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, pos.x, pos.y)
-		entity.position.z = pos.y
+		entity.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, pos.x, pos.z) + pos.y
+		entity.position.z = pos.z
 		if is_enemy:
 			entity.player = player
 			inhabitants.append(entity)
@@ -63,7 +66,7 @@ func prepare_entity(world: Node3D, entity: Node3D, pos: Vector2, is_enemy: bool)
 	
 func spawn_enemy(enemy: World.Enemy, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
 	var result = null
-	var pos = Vector2(x, y)
+	var pos = Vector3(x, 0, y)
 	match enemy:
 		World.Enemy.UNDEAD:
 			result = undead.instantiate()
@@ -73,27 +76,46 @@ func spawn_enemy(enemy: World.Enemy, world: Node3D, x: float, y: float, spacing:
 	
 func spawn_foliage(foliage: World.Foliage, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
 	var result = null
-	var pos = Vector2(x, y)
+	var pos = Vector3(x, 0, y)
 	match foliage:
 		World.Foliage.TREE_ROUND:
 			result = Trees.make(Trees.Kind.ROUND, rng)
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
-			pos.y += spacing * rng.randf_range(-0.5, 0.5)
+			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 			result.name = "RoundTree" + str(rng.randi())
 		World.Foliage.TREE_PYRAMID:
 			result = Trees.make(Trees.Kind.PYRAMID, rng)
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
-			pos.y += spacing * rng.randf_range(-0.5, 0.5)
+			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 			result.name = "PyramidTree" + str(rng.randi())
 	
 	return prepare_entity(world, result, pos, false)
 	
+func spawn_building(building: World.Building, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
+	var result = null
+	var pos = Vector3(x, 0, y)
+	match building:
+		World.Building.FANTASY_VALLEY_SINGLE:
+			result = Buildings.make(Buildings.Kind.FANTASY_VALLEY_SINGLE, rng)
+			pos.x += spacing * rng.randf_range(-0.25, 0.25)
+			pos.z += spacing * rng.randf_range(-0.25, 0.25)
+			result.name = "FantasyValleySingle" + str(rng.randi())
+		World.Building.FANTASY_VALLEY_DOUBLE:
+			result = Buildings.make(Buildings.Kind.FANTASY_VALLEY_DOUBLE, rng)
+			pos.x += spacing * rng.randf_range(-0.25, 0.25)
+			pos.z += spacing * rng.randf_range(-0.25, 0.25)
+			result.name = "FantasyValleyDouble" + str(rng.randi())
+	
+	return prepare_entity(world, result, pos, false)
 	
 func spawn_random_enemy(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
 	return spawn_enemy(random_enemy(biome_prob), world, x, y, spacing)
 	
 func spawn_random_foliage(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
 	return spawn_foliage(random_foliage(biome_prob), world, x, y, spacing)
+	
+func spawn_random_building(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
+	return spawn_building(random_building(biome_prob), world, x, y, spacing)
 	
 static func contains_neighbour_point(collection: Array, point: Vector2, spacing: float) -> bool:
 	for p in collection:

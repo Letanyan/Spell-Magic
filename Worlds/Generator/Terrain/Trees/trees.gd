@@ -70,6 +70,7 @@ static func make(kind: Kind, rng: RandomNumberGenerator) -> Trees:
 	box.shape = CylinderShape3D.new()
 	box.shape.height = 4 * s
 	box.shape.radius = 0.25 * s
+	box.position.y = 2 * s
 	body.add_child(box)
 	result.add_child(body)
 		

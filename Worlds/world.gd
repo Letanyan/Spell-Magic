@@ -14,3 +14,8 @@ enum Foliage {
 	NONE,
 	TREE_PYRAMID, TREE_ROUND
 }
+
+enum Building {
+	NONE,
+	FANTASY_VALLEY_SINGLE, FANTASY_VALLEY_DOUBLE
+}
