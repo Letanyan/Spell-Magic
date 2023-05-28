@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=18 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="3_j80hc"]
@@ -50,12 +50,6 @@ noise_type = 3
 normalize = false
 noise = SubResource("FastNoiseLite_qgtmx")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_70qba"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lghw7"]
-normalize = false
-noise = SubResource("FastNoiseLite_70qba")
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_opx88"]
 noise_type = 0
 seed = 5
@@ -73,7 +67,6 @@ render_priority = 0
 shader = ExtResource("4_nlahj")
 shader_parameter/texture_width = 512.0
 shader_parameter/texture_depth = 512.0
-shader_parameter/elevation = SubResource("NoiseTexture2D_lghw7")
 shader_parameter/temperature = SubResource("NoiseTexture2D_vl0lb")
 shader_parameter/dryness = SubResource("NoiseTexture2D_2clhn")
 

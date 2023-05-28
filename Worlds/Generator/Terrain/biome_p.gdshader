@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode diffuse_toon, skip_vertex_transform, blend_mix;
 
-uniform sampler2D elevation: source_color;
+//uniform sampler2D elevation: source_color;
 uniform sampler2D temperature: source_color;
 uniform sampler2D dryness: source_color;
 uniform float texture_width;
@@ -16,23 +16,13 @@ void fragment() {
 	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
 
 	// hack because godot generates textures with 1 pixel edges that have increased saturation?
-	vec2 pixel = 1.0 / vec2(textureSize(elevation, 0)); 
+	vec2 pixel = 1.0 / vec2(textureSize(temperature, 0)); 
 	vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
-	float e = texture(elevation, w).r;
+//	float e = texture(elevation, w).r;
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
 
 	vec3 color = vec3(1);
-	vec3 normal = vec3(0);
-
-//	vec3 taiga = vec3(0, 1, 1);
-//	vec3 grassland = mix(vec3(1, 0.776, 0.282), texture(grass, UV).rgb, 1.0);
-//	vec3 forest = mix(vec3(0.1, 0.05, 0.05), texture(forest_ground, w * 48.0).rgb, 0.1);
-//	vec3 desert = vec3(1, 1, 0);
-//	vec3 jungle = vec3(0, 0.25, 0.25);
-//	vec3 water = vec3(0, 0, 1);
-//	vec3 savannah = vec3(1, 0.5, 0);
-//	vec3 tundra = vec3(1, 1, 1);
 
 	vec3 colors[9] = {
 		vec3(1, 0, 0),

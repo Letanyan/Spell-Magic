@@ -5,7 +5,7 @@ var chunk_size: float
 var radius: float # number of chunks
 var subdivide_percent: float
 var raycast: RayCast3D
-const has_medium = false
+const has_medium = true
 
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
@@ -14,7 +14,6 @@ var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
 var loaded_chunks = []
-var main_chunks = PackedVector2Array()
 var medium_chunks_location = PackedVector2Array()
 var medium_chunks = []
 
@@ -41,7 +40,7 @@ func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float,
 func init_chunks(x: float, y: float) -> Array:
 	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
 	if has_medium:
-		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, subdivide_percent)
+		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, subdivide_percent / 1.0)
 		result.append_array(medium)
 	return result
 	
@@ -76,7 +75,7 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 				chunks[i].position.y = -100	
 			else:
 				chunks[i].position.y = 0
-				
+
 		if should_update:
 			removed_locations.append(locations[i])
 			updated_locations.append(loc)
@@ -89,9 +88,8 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
 	var removed = high.get("removed", [])
 	var updated = high.get("updated", [])
-#	update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius * radius, subdivide_percent)
 	if has_medium:
-		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius, subdivide_percent)
+		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius, subdivide_percent / 1.0)
 		removed.append_array(medium.get("removed", []))
 		updated.append_array(medium.get("updated", []))
 	set_player_coord_using_position(x, y, chunk_size)
@@ -158,12 +156,14 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 
 	var block = size * subdivide
 	var bounds = size / 2.0
+	var rng = RandomNumberGenerator.new()
+	rng.seed = hash(str(x) + ":" + str(y))
 	for i in range(mdt.get_vertex_count()):
 		var A = mdt.get_vertex(i)
 		var Ah = blender.height(A.x + x, A.z + y)
 		A.y = Ah
 		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
-			var v = Vector2(randf() - 0.5, randf() - 0.5).normalized() * 0.25 * block
+			var v = Vector2(rng.randf() - 0.5, rng.randf() - 0.5).normalized() * 0.25 * block
 			A.x += v.x
 			A.z += v.y
 		mdt.set_vertex(i, A)
@@ -172,11 +172,13 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mdt.commit_to_surface(mesh)
 	var mat = mesh.surface_get_material(0)
 	mat.shader = biome_shader
-	mat.set_shader_parameter("texture_width", size)
-	mat.set_shader_parameter("texture_depth", size)
-	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
-	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
-	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
+	const R = 4.0
+	var texture_size = size / R
+	mat.set_shader_parameter("texture_width", texture_size)
+	mat.set_shader_parameter("texture_depth", texture_size)
+#	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
+	mat.set_shader_parameter("temperature", blender.temperature_texture(x / R, y / R, texture_size, texture_size))
+	mat.set_shader_parameter("dryness", blender.dryness_texture(x / R, y / R, texture_size, texture_size))
 	for n in mi.get_children():
 		mi.remove_child(n)
 	if r <= radius:
