@@ -4,6 +4,7 @@ var blender: NoiseBlender
 var chunk_size: float
 var radius: float # number of chunks = radius / chunk_size
 var raycast: RayCast3D
+const has_medium = false
 
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
@@ -64,7 +65,7 @@ func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float,
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
 			var p = Vector2((player_coord.x + w) * cs, (player_coord.y + h) * cs)
-			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, subdivide)
+			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, r, subdivide)
 			update_chunk_with_size(node, p.x, p.y, cs, r)
 			result.append(node)
 			
@@ -74,8 +75,9 @@ func init_chunks(x: float, y: float) -> Array:
 	var result = []
 	var high = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, 1.0 / 8.0)
 	result.append_array(high)
-#	var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, 1.0 / 32.0)
-#	result.append_array(medium)
+	if has_medium:
+		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, 1.0 / 32.0)
+		result.append_array(medium)
 	return result
 	
 func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float) -> Dictionary:
@@ -105,7 +107,7 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			
 		if r > radius:
 			var origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
-			if abs(origin_delta.x) < int(radius / 2) and abs(origin_delta.y) < int(radius / 2):
+			if abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
 				chunks[i].position.y = -100	
 			else:
 				chunks[i].position.y = 0
@@ -124,9 +126,10 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius)
 	removed.append_array(high.get("removed", []))
 	updated.append_array(high.get("updated", []))
-#	var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius)
-#	removed.append_array(medium.get("removed", []))
-#	updated.append_array(medium.get("updated", []))
+	if has_medium:
+		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius)
+		removed.append_array(medium.get("removed", []))
+		updated.append_array(medium.get("updated", []))
 	set_player_coord_using_position(x, y, chunk_size)
 	return {"removed": removed, "updated": updated}
 		
@@ -134,8 +137,6 @@ func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(size, size)
-#	var dist = max(max(abs(x), abs(y)) / chunk_size, 1)
-	var dist = 1
 	plane.subdivide_depth = size * subdivide
 	plane.subdivide_width = size * subdivide
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
@@ -165,7 +166,7 @@ func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 		
 	return [mi, mmi]
 		
-func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, subdivide: float) -> Node3D:
+func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Node3D:
 	var meshes = create_mesh(x, y, cs, subdivide)
 	var mi = meshes[0]
 	var mmi = meshes[1]
@@ -175,13 +176,20 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 	node.add_child(mmi)
 	node.position.x = x
 	node.position.z = y
+	
+	if r > radius:
+		var coord = convert_position_to_coord(x, y, cs)
+		if abs(coord.x) <= int(radius / 2) and abs(coord.y) <= int(radius / 2):
+			node.position.y = -100
+		else:
+			node.position.y = 0
 
 	locations.append(Vector2(x, y))
 	chunks.append(node)
 
 	return node
 
-func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
+func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float,):
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
@@ -232,14 +240,14 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 #	mi.mesh = mesh
 	for n in mi.get_children():
 		mi.remove_child(n)
-	if size == chunk_size:
+	if r <= radius:
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 1 << 0
 
 func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float):
 	var mi = node.get_node("mesh")
-	update_mesh(mi, x, y, cs)
+	update_mesh(mi, x, y, cs, r)
 				
 	node.position.x = x
 	node.position.z = y
@@ -312,8 +320,8 @@ func update_mesh_with_surface_tool(mi: MeshInstance3D, x: float, y: float, size:
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	var step = 8.0
-	for X in range(-chunk_size / 2.0, chunk_size / 2.0, step):
-		for Y in range(-chunk_size / 2.0, chunk_size / 2.0, step):
+	for X in range(-size / 2.0, size / 2.0, step):
+		for Y in range(-size / 2.0, size / 2.0, step):
 			# Top Left
 			var v = Vector3(X, 0, Y)
 			v.y = blender.height(v.x + x, v.z + y)

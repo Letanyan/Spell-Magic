@@ -75,14 +75,14 @@ void fragment() {
 		}
 	}
 
-	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
-	if (norm_angle > inversesqrt(8.0)) {
-		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
-		color = mix(color, vec3(0.15), 0.25);
-	}
+//	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
+//	if (norm_angle > inversesqrt(8.0)) {
+//		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
+//		color = mix(color, vec3(0.15), 0.25);
+//	}
 
 	ALBEDO = color;
-	NORMAL = normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
+	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 }
 
 //void light() {
