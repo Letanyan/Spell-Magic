@@ -7,11 +7,6 @@ uniform sampler2D dryness: source_color;
 uniform float texture_width;
 uniform float texture_depth;
 
-uniform sampler2D grass: source_color;
-uniform sampler2D grass_normal: source_color;
-uniform sampler2D forest_ground: source_color;
-uniform sampler2D forest_ground_normal: source_color;
-
 void vertex() {
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
@@ -38,9 +33,6 @@ void fragment() {
 //	vec3 water = vec3(0, 0, 1);
 //	vec3 savannah = vec3(1, 0.5, 0);
 //	vec3 tundra = vec3(1, 1, 1);
-
-	vec3 grassland_normal = texture(grass_normal, UV).rgb;
-	vec3 forest_normal = texture(forest_ground_normal, w * 48.0).rgb;
 
 	vec3 colors[9] = {
 		vec3(1, 0, 0),

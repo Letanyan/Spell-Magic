@@ -6,6 +6,7 @@ var radius: float # number of chunks = radius / chunk_size
 var raycast: RayCast3D
 
 var player_coord: Vector2 = Vector2.ZERO
+var player_coord_resolution: Dictionary = {}
 
 var grass_texture = preload("res://Worlds/Generator/Terrain/grass.tres")
 var forest_texture = preload("res://Worlds/Generator/Terrain/forest_ground.jpg")
@@ -17,9 +18,11 @@ var loaded_chunks_location = PackedVector2Array()
 var loaded_chunks = []
 var medium_map: MeshInstance3D = null
 var large_map: MeshInstance3D = null
+var medium_chunks_location = PackedVector2Array()
+var medium_chunks = []
 
 ## r must be an even multiple of cs. `r = cs * 2n for some integer n`
-func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 1024):
+func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
 	blender = NoiseBlender.new(e, d, t)
 	chunk_size = cs
 	radius = r
@@ -54,55 +57,80 @@ func switch_detail():
 			c.visible = false
 	
 	
-func init_chunks(x: float, y: float) -> Array:
-	var chunk_count = radius / chunk_size
-	set_player_coord_using_position(x, y)
-	var rad = chunk_count / 2
+func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Array:
+	set_player_coord_using_position(x, y, cs)
+	var rad = int(r / 2)
 	var result = []
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
-			var p = Vector2((player_coord.x + w) * chunk_size, (player_coord.y + h) * chunk_size)
-			var node = create_chunk(p.x, p.y)
-			update_chunk(node, p.x, p.y)
+			var p = Vector2((player_coord.x + w) * cs, (player_coord.y + h) * cs)
+			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, subdivide)
+			update_chunk_with_size(node, p.x, p.y, cs, r)
 			result.append(node)
 			
 	return result
 	
-func update_chunks(x: float, y: float) -> Dictionary:
-	var chunk_count = radius / chunk_size
+func init_chunks(x: float, y: float) -> Array:
+	var result = []
+	var high = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, 1.0 / 8.0)
+	result.append_array(high)
+#	var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, 1.0 / 32.0)
+#	result.append_array(medium)
+	return result
+	
+func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float) -> Dictionary:
 	var old_coord = player_coord
-	set_player_coord_using_position(x, y)
-	var delta = player_coord - old_coord
+	var current_coord = convert_position_to_coord(x, y, cs)
+	var delta = current_coord - old_coord
 	if delta == Vector2.ZERO:
 		return {}
 	var removed_locations = []
 	var updated_locations = []
-	var rad = chunk_count / 2
-	for i in range(loaded_chunks.size()):
-		var loc = loaded_chunks_location[i]
+	var rad = int(r / 2)
+	for i in range(chunks.size()):
+		var loc = locations[i]
 		var should_update = false
-		if delta.x == -1 and loc.x == (old_coord.x + rad) * chunk_size:
-			loc.x = (player_coord.x + -rad) * chunk_size
+		if delta.x == -1 and loc.x == (old_coord.x + rad) * cs:
+			loc.x = (current_coord.x + -rad) * cs
 			should_update = true
-		if delta.x == 1 and loc.x == (old_coord.x - rad) * chunk_size:
-			loc.x = (player_coord.x + rad) * chunk_size
+		if delta.x == 1 and loc.x == (old_coord.x - rad) * cs:
+			loc.x = (current_coord.x + rad) * cs
 			should_update = true
-		if delta.y == -1 and loc.y == (old_coord.y + rad) * chunk_size:
-			loc.y = (player_coord.y + -rad) * chunk_size
+		if delta.y == -1 and loc.y == (old_coord.y + rad) * cs:
+			loc.y = (current_coord.y + -rad) * cs
 			should_update = true
-		if delta.y == 1 and loc.y == (old_coord.y - rad) * chunk_size:
-			loc.y = (player_coord.y + rad) * chunk_size
+		if delta.y == 1 and loc.y == (old_coord.y - rad) * cs:
+			loc.y = (current_coord.y + rad) * cs
 			should_update = true
 			
+		if r > radius:
+			var origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
+			if abs(origin_delta.x) < int(radius / 2) and abs(origin_delta.y) < int(radius / 2):
+				chunks[i].position.y = -100	
+			else:
+				chunks[i].position.y = 0
+				
 		if should_update:
-			removed_locations.append(loaded_chunks_location[i])
+			removed_locations.append(locations[i])
 			updated_locations.append(loc)
-			loaded_chunks_location[i] = loc
-			update_chunk(loaded_chunks[i], loc.x, loc.y)
+			locations[i] = loc
+			update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r)
 			
 	return {"removed": removed_locations, "updated": updated_locations}
+	
+func update_chunks(x: float, y: float) -> Dictionary:
+	var removed = []
+	var updated = []
+	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius)
+	removed.append_array(high.get("removed", []))
+	updated.append_array(high.get("updated", []))
+#	var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius)
+#	removed.append_array(medium.get("removed", []))
+#	updated.append_array(medium.get("updated", []))
+	set_player_coord_using_position(x, y, chunk_size)
+	return {"removed": removed, "updated": updated}
 		
-func create_mesh(x: float, y: float, size: float, subdivide: float = 1.0 / 16.0) -> Array:
+func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(size, size)
@@ -137,8 +165,8 @@ func create_mesh(x: float, y: float, size: float, subdivide: float = 1.0 / 16.0)
 		
 	return [mi, mmi]
 		
-func create_chunk(x: float, y: float) -> Node3D:
-	var meshes = create_mesh(x, y, chunk_size, 1.0 / 8.0)
+func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, subdivide: float) -> Node3D:
+	var meshes = create_mesh(x, y, cs, subdivide)
 	var mi = meshes[0]
 	var mmi = meshes[1]
 
@@ -148,8 +176,8 @@ func create_chunk(x: float, y: float) -> Node3D:
 	node.position.x = x
 	node.position.z = y
 
-	loaded_chunks_location.append(Vector2(x, y))
-	loaded_chunks.append(node)
+	locations.append(Vector2(x, y))
+	chunks.append(node)
 
 	return node
 
@@ -200,26 +228,22 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float):
 	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
-	mat.set_shader_parameter("grass", grass_texture)
-	mat.set_shader_parameter("grass_normal", grass_normal)
-	mat.set_shader_parameter("forest_ground", forest_texture)
-	mat.set_shader_parameter("forest_ground_normal", forest_ground_normal)
 	mi.mesh.surface_set_material(0, mat)
 #	mi.mesh = mesh
-	var dist = max(max(abs(x), abs(y)) / size, 1)
 	for n in mi.get_children():
 		mi.remove_child(n)
-	if dist <= 1 or true:
+	if size == chunk_size:
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 1 << 0
 
-func update_chunk(node: Node3D, x: float, y: float):
+func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float):
 	var mi = node.get_node("mesh")
-	update_mesh(mi, x, y, chunk_size)
+	update_mesh(mi, x, y, cs)
 				
-	node.position.x = x - (x / float(chunk_size) * 0.0)
-	node.position.z = y - (y / float(chunk_size) * 0.0)
+	node.position.x = x
+	node.position.z = y
+	
 #	nav.position.y = max(abs(x), abs(y)) / chunk_size * 8
 	
 
@@ -276,11 +300,12 @@ func place_grass(node: Node3D):
 #		mm.set_instance_transform(i, t)
 	
 
-func set_player_coord_using_position(x: float, y: float):
-	player_coord = convert_position_to_coord(x, y)
+func set_player_coord_using_position(x: float, y: float, cs: float):
+	player_coord = convert_position_to_coord(x, y, cs)
+	player_coord_resolution[cs] = player_coord
 	
-func convert_position_to_coord(x: float, y: float) -> Vector2:
-	return Vector2(floorf((x + chunk_size / 2) / chunk_size), floorf((y + chunk_size / 2) / chunk_size))
+func convert_position_to_coord(x: float, y: float, cs: float) -> Vector2:
+	return Vector2(floorf((x + cs / 2) / cs), floorf((y + cs / 2) / cs))
 
 func update_mesh_with_surface_tool(mi: MeshInstance3D, x: float, y: float, size: float):
 	var st = SurfaceTool.new()

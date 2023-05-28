@@ -38,11 +38,11 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 	
-	noise_elevation.frequency = 0.0005
-	noise_temperature.frequency = 0.0005
-	noise_dryness.frequency = 0.0005
+	noise_elevation.frequency = 0.0001
+	noise_temperature.frequency = 0.0001
+	noise_dryness.frequency = 0.0001
 	
-	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 512)
+	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 3)
 	chunker.raycast = raycast
 	build_terrain()
 	if chunker.large_map != null:
@@ -130,7 +130,9 @@ func update_terrain():
 		var chunks = chunker.update_chunks(player.position.x, player.position.z)
 
 		for loc in chunks.get("removed", []):
-			var pop = population[loc]
+			var pop = population.get(loc, null)
+			if pop == null:
+				continue
 			pop.despawn_all_from_world(get_node("."))
 			population.erase(loc)
 
@@ -149,7 +151,7 @@ func update_terrain():
 
 func update_population_at(locations: Array):
 	for loc in locations:
-		var coord = chunker.convert_position_to_coord(loc.x, loc.y)
+		var coord = chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
 		var pop = Population.new(coord, chunker.chunk_size, chunker.blender, player)
 		pop.spawn_all_into_world(get_node("."))
