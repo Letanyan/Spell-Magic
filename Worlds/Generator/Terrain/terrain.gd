@@ -9,10 +9,6 @@ const has_medium = false
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
 
-var grass_texture = preload("res://Worlds/Generator/Terrain/grass.tres")
-var forest_texture = preload("res://Worlds/Generator/Terrain/forest_ground.jpg")
-var grass_normal = preload("res://Worlds/Generator/Terrain/grass_normal.tres")
-var forest_ground_normal = preload("res://Worlds/Generator/Terrain/forest_ground_normal.png")
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
@@ -27,18 +23,6 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	blender = NoiseBlender.new(e, d, t)
 	chunk_size = cs
 	radius = r
-	
-#	var large_chunk = r * 8
-#	large_map = create_mesh(0, 0, large_chunk, 1 / 128.0)[0]
-#	update_mesh(large_map, 0, 0, large_chunk)
-#	large_map.position = Vector3(0, 0, 0)
-#	large_map.visible = true
-#
-#	var medium_chunk = r * 4
-#	medium_map = create_mesh(0, 0, medium_chunk, 1 / 64.0)[0]
-#	update_mesh(medium_map, 0, 0, medium_chunk)
-#	medium_map.position = Vector3(0, 0, 0)
-#	medium_map.visible = true
 	
 func switch_detail():
 	if large_map.visible:
@@ -72,11 +56,9 @@ func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float,
 	return result
 	
 func init_chunks(x: float, y: float) -> Array:
-	var result = []
-	var high = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, 1.0 / 8.0)
-	result.append_array(high)
+	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, 1.0 / 16.0)
 	if has_medium:
-		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, 1.0 / 32.0)
+		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, 1.0 / 16.0)
 		result.append_array(medium)
 	return result
 	
@@ -121,11 +103,9 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 	return {"removed": removed_locations, "updated": updated_locations}
 	
 func update_chunks(x: float, y: float) -> Dictionary:
-	var removed = []
-	var updated = []
 	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius)
-	removed.append_array(high.get("removed", []))
-	updated.append_array(high.get("updated", []))
+	var removed = high.get("removed", [])
+	var updated = high.get("updated", [])
 	if has_medium:
 		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius)
 		removed.append_array(medium.get("removed", []))
@@ -140,8 +120,7 @@ func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 	plane.subdivide_depth = size * subdivide
 	plane.subdivide_width = size * subdivide
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
-	var mdt = MeshDataTool.new()
-	mdt.create_from_surface(mesh, 0)
+	mesh.surface_set_material(0, ShaderMaterial.new())
 
 	var mi = MeshInstance3D.new()
 	mi.mesh = mesh
@@ -153,7 +132,6 @@ func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 	var cy: PlaneMesh = PlaneMesh.new()
 	cy.size.x = 4
 	cy.size.y = 4
-#	cy.orientation = PlaneMesh.FACE_X
 	mm.mesh = cy
 	var mmi = MultiMeshInstance3D.new()
 	mmi.multimesh = mm
@@ -193,51 +171,22 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float,)
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
-	for i in range(mdt.get_vertex_count()):
-		mdt.set_vertex_normal(i, Vector3.ZERO)
 
-	for i in range(mdt.get_face_count()):
-		var a = mdt.get_face_vertex(i, 0)
-		var b = mdt.get_face_vertex(i, 1)
-		var c = mdt.get_face_vertex(i, 2)
-		var A = mdt.get_vertex(a)
-		var B = mdt.get_vertex(b)
-		var C = mdt.get_vertex(c)
+	for i in range(mdt.get_vertex_count()):
+		var A = mdt.get_vertex(i)
 		var Ah = blender.height(A.x + x, A.z + y)
-		var Bh = blender.height(B.x + x, B.z + y)
-		var Ch = blender.height(C.x + x, C.z + y)
 		A.y = Ah
-		B.y = Bh
-		C.y = Ch
-		var face_norm = (C - A).cross(B - A).normalized()
-
-		var Av = mdt.get_vertex_normal(a)
-		var Bv = mdt.get_vertex_normal(b)
-		var Cv = mdt.get_vertex_normal(c)
-
-		mdt.set_vertex_normal(a, Av + face_norm)
-		mdt.set_vertex_normal(b, Bv + face_norm)
-		mdt.set_vertex_normal(c, Cv + face_norm)
-
-		mdt.set_vertex(a, A)
-		mdt.set_vertex(b, B)
-		mdt.set_vertex(c, C)
-
-	for i in range(mdt.get_vertex_count()):
-		var norm = mdt.get_vertex_normal(i).normalized()
-		mdt.set_vertex_normal(i, norm)
+		mdt.set_vertex(i, A)
 
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
-	var mat = ShaderMaterial.new()
+	var mat = mesh.surface_get_material(0)
 	mat.shader = biome_shader
 	mat.set_shader_parameter("texture_width", size)
 	mat.set_shader_parameter("texture_depth", size)
 	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
-	mi.mesh.surface_set_material(0, mat)
-#	mi.mesh = mesh
 	for n in mi.get_children():
 		mi.remove_child(n)
 	if r <= radius:
@@ -248,11 +197,8 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float,)
 func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float):
 	var mi = node.get_node("mesh")
 	update_mesh(mi, x, y, cs, r)
-				
 	node.position.x = x
 	node.position.z = y
-	
-#	nav.position.y = max(abs(x), abs(y)) / chunk_size * 8
 	
 
 func update_environment():
@@ -373,10 +319,6 @@ func update_mesh_with_surface_tool(mi: MeshInstance3D, x: float, y: float, size:
 	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
-	mat.set_shader_parameter("grass", grass_texture)
-	mat.set_shader_parameter("grass_normal", grass_normal)
-	mat.set_shader_parameter("forest_ground", forest_texture)
-	mat.set_shader_parameter("forest_ground_normal", forest_ground_normal)
 	mi.mesh.surface_set_material(0, mat)
 	var dist = max(max(abs(x), abs(y)) / size, 1)
 	for n in mi.get_children():
