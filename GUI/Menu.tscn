@@ -13,6 +13,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_op10b")
 
+[node name="MagicBook" parent="." instance=ExtResource("1_ufdyg")]
+layout_mode = 1
+
+[node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
+visible = false
+
 [node name="Tabbar" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 10
@@ -47,12 +53,6 @@ offset_bottom = 31.0
 grow_horizontal = 2
 text = "Wands"
 metadata/_edit_use_anchors_ = true
-
-[node name="MagicBook" parent="." instance=ExtResource("1_ufdyg")]
-layout_mode = 1
-
-[node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
-visible = false
 
 [connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]

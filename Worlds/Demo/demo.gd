@@ -45,10 +45,6 @@ func _ready():
 	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 3)
 	chunker.raycast = raycast
 	build_terrain()
-	if chunker.large_map != null:
-		ground.add_child(chunker.large_map)
-	if chunker.medium_map != null:
-		ground.add_child(chunker.medium_map)
 	
 	player.is_menu_showing = func(): return menu.is_showing
 	player.position.y = Navigator.get_world_height(player.get_world_3d().direct_space_state, 0, 0)  # chunker.blender.height(0, 0) + 5

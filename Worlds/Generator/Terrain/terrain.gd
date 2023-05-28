@@ -2,7 +2,8 @@ class_name Terrain
 
 var blender: NoiseBlender
 var chunk_size: float
-var radius: float # number of chunks = radius / chunk_size
+var radius: float # number of chunks
+var subdivide_percent: float
 var raycast: RayCast3D
 const has_medium = false
 
@@ -13,33 +14,15 @@ var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 
 var loaded_chunks_location = PackedVector2Array()
 var loaded_chunks = []
-var medium_map: MeshInstance3D = null
-var large_map: MeshInstance3D = null
+var main_chunks = PackedVector2Array()
 var medium_chunks_location = PackedVector2Array()
 var medium_chunks = []
 
-## r must be an even multiple of cs. `r = cs * 2n for some integer n`
 func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
 	blender = NoiseBlender.new(e, d, t)
 	chunk_size = cs
 	radius = r
-	
-func switch_detail():
-	if large_map.visible:
-		large_map.visible = false
-		medium_map.visible = true
-		for c in loaded_chunks:
-			c.visible = false
-	elif medium_map.visible:
-		large_map.visible = false
-		medium_map.visible = false
-		for c in loaded_chunks:
-			c.visible = true
-	else:
-		large_map.visible = true
-		medium_map.visible = false
-		for c in loaded_chunks:
-			c.visible = false
+	subdivide_percent = 1.0 / 16.0
 	
 	
 func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Array:
@@ -50,19 +33,19 @@ func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float,
 		for h in range(-rad, rad + 1):
 			var p = Vector2((player_coord.x + w) * cs, (player_coord.y + h) * cs)
 			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, r, subdivide)
-			update_chunk_with_size(node, p.x, p.y, cs, r)
+			update_chunk_with_size(node, p.x, p.y, cs, r, subdivide)
 			result.append(node)
 			
 	return result
 	
 func init_chunks(x: float, y: float) -> Array:
-	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, 1.0 / 16.0)
+	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
 	if has_medium:
-		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, 1.0 / 16.0)
+		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, subdivide_percent)
 		result.append_array(medium)
 	return result
 	
-func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float) -> Dictionary:
+func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Dictionary:
 	var old_coord = player_coord
 	var current_coord = convert_position_to_coord(x, y, cs)
 	var delta = current_coord - old_coord
@@ -98,16 +81,17 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			removed_locations.append(locations[i])
 			updated_locations.append(loc)
 			locations[i] = loc
-			update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r)
+			update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r, subdivide)
 			
 	return {"removed": removed_locations, "updated": updated_locations}
 	
 func update_chunks(x: float, y: float) -> Dictionary:
-	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius)
+	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
 	var removed = high.get("removed", [])
 	var updated = high.get("updated", [])
+#	update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius * radius, subdivide_percent)
 	if has_medium:
-		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius)
+		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius, subdivide_percent)
 		removed.append_array(medium.get("removed", []))
 		updated.append_array(medium.get("updated", []))
 	set_player_coord_using_position(x, y, chunk_size)
@@ -167,15 +151,21 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 
 	return node
 
-func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float,):
+func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
 	var mesh = mi.mesh
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 
+	var block = size * subdivide
+	var bounds = size / 2.0
 	for i in range(mdt.get_vertex_count()):
 		var A = mdt.get_vertex(i)
 		var Ah = blender.height(A.x + x, A.z + y)
 		A.y = Ah
+		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
+			var v = Vector2(randf() - 0.5, randf() - 0.5).normalized() * 0.25 * block
+			A.x += v.x
+			A.z += v.y
 		mdt.set_vertex(i, A)
 
 	mesh.clear_surfaces()
@@ -194,9 +184,9 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float,)
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 1 << 0
 
-func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float):
+func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float):
 	var mi = node.get_node("mesh")
-	update_mesh(mi, x, y, cs, r)
+	update_mesh(mi, x, y, cs, r, subdivide)
 	node.position.x = x
 	node.position.z = y
 	
