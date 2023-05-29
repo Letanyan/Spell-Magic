@@ -44,19 +44,22 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	result.add_child(leaves)
 	
 	return result
-	
-enum Kind {
-	PYRAMID, ROUND
-}
 
 const pyramid_tree = preload("res://Models/Nature/tree_pyramid.tscn")
 const round_tree = preload("res://Models/Nature/tree_round.tscn")
+const christmas_tree = preload("res://Models/Nature/tree_christmas.tscn")
+const safari_tree = preload("res://Models/Nature/tree_safari.tscn")
+const branched_tree = preload("res://Models/Nature/tree_branched.tscn")
 	
-static func make(kind: Kind, rng: RandomNumberGenerator) -> Trees:
+static func make(kind: World.Foliage, rng: RandomNumberGenerator) -> Trees:
 	var result: Trees
 	match kind:
-		Kind.PYRAMID: result = pyramid_tree.instantiate()
-		Kind.ROUND: result = round_tree.instantiate()
+		World.Foliage.TREE_PYRAMID: result = pyramid_tree.instantiate()
+		World.Foliage.TREE_ROUND: result = round_tree.instantiate()
+		World.Foliage.TREE_CHRISTMAS: result = christmas_tree.instantiate()
+		World.Foliage.TREE_SAFARI: result = safari_tree.instantiate()
+		World.Foliage.TREE_BRANCHED: result = branched_tree.instantiate()
+		_: result = round_tree.instantiate()
 		
 	var s = rng.randf_range(2, 5)
 	result.get_node("RootNode").scale = Vector3(s, s, s)

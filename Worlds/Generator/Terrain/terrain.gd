@@ -163,7 +163,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		var Ah = blender.height(A.x + x, A.z + y)
 		A.y = Ah
 		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
-			var v = Vector2(rng.randf() - 0.5, rng.randf() - 0.5).normalized() * 0.25 * block
+			var v = Vector2(rng.randf() - 0.5, rng.randf() - 0.5).normalized() * 0.2 * block
 			A.x += v.x
 			A.z += v.y
 		mdt.set_vertex(i, A)

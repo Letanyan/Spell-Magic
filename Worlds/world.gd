@@ -12,7 +12,7 @@ enum Enemy {
 
 enum Foliage {
 	NONE,
-	TREE_PYRAMID, TREE_ROUND
+	TREE_PYRAMID, TREE_ROUND, TREE_CHRISTMAS, TREE_SAFARI, TREE_BRANCHED
 }
 
 enum Building {

@@ -78,16 +78,11 @@ func spawn_foliage(foliage: World.Foliage, world: Node3D, x: float, y: float, sp
 	var result = null
 	var pos = Vector3(x, 0, y)
 	match foliage:
-		World.Foliage.TREE_ROUND:
-			result = Trees.make(Trees.Kind.ROUND, rng)
+		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI:
+			result = Trees.make(foliage, rng)
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
-			result.name = "RoundTree" + str(rng.randi())
-		World.Foliage.TREE_PYRAMID:
-			result = Trees.make(Trees.Kind.PYRAMID, rng)
-			pos.x += spacing * rng.randf_range(-0.5, 0.5)
-			pos.z += spacing * rng.randf_range(-0.5, 0.5)
-			result.name = "PyramidTree" + str(rng.randi())
+			result.name = World.Foliage.keys()[foliage] + str(rng.randi())
 	
 	return prepare_entity(world, result, pos, false)
 	
@@ -95,16 +90,11 @@ func spawn_building(building: World.Building, world: Node3D, x: float, y: float,
 	var result = null
 	var pos = Vector3(x, 0, y)
 	match building:
-		World.Building.FANTASY_VALLEY_SINGLE:
-			result = Buildings.make(Buildings.Kind.FANTASY_VALLEY_SINGLE, rng)
+		World.Building.FANTASY_VALLEY_SINGLE, World.Building.FANTASY_VALLEY_DOUBLE:
+			result = Buildings.make(building, rng)
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
-			result.name = "FantasyValleySingle" + str(rng.randi())
-		World.Building.FANTASY_VALLEY_DOUBLE:
-			result = Buildings.make(Buildings.Kind.FANTASY_VALLEY_DOUBLE, rng)
-			pos.x += spacing * rng.randf_range(-0.25, 0.25)
-			pos.z += spacing * rng.randf_range(-0.25, 0.25)
-			result.name = "FantasyValleyDouble" + str(rng.randi())
+			result.name = World.Building.keys()[building] + str(rng.randi())
 	
 	return prepare_entity(world, result, pos, false)
 	
@@ -154,9 +144,11 @@ func spawn_all_into_world(world: Node3D):
 	
 func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
-		world.remove_child(habitant)
+		habitant.queue_free()
+#		world.remove_child(habitant)
 	for f in garden:
-		world.remove_child(f)
+		f.queue_free()
+#		world.remove_child(f)
 	inhabitants.clear()
 	garden.clear()
 

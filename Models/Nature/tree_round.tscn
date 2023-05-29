@@ -75,5 +75,6 @@ mesh = SubResource("ArrayMesh_13406")
 skeleton = NodePath("")
 
 [node name="Tree_03_LOD1" type="MeshInstance3D" parent="RootNode"]
+visible = false
 mesh = SubResource("ArrayMesh_8167o")
 skeleton = NodePath("")

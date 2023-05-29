@@ -10,11 +10,11 @@ const FOLIAGE_SPAWN_PROB: Dictionary = {
 }
 
 enum FOREST_STRUCTURES_KIND {
-	NONE, TREE_ROUND, TREE_PYRAMID, HORDE
+	NONE, TREE_CHRISTMAS, TREE_PYRAMID, HORDE
 }
 
 const FOREST_STRUCTURES: Dictionary = {
-	FOREST_STRUCTURES_KIND.TREE_ROUND: 0.01,
+	FOREST_STRUCTURES_KIND.TREE_CHRISTMAS: 0.01,
 	FOREST_STRUCTURES_KIND.TREE_PYRAMID: 0.89,
 	FOREST_STRUCTURES_KIND.HORDE: 0.1
 }
@@ -25,9 +25,9 @@ static func populate(pop: Population, world: Node3D, area: Array, spacing: float
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
 				area.pop_back()
-			FOREST_STRUCTURES_KIND.TREE_ROUND:
+			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
 				var pos = area.pop_back()
-				var p = pop.spawn_foliage(World.Foliage.TREE_ROUND, world, pos.x, pos.y, spacing)
+				var p = pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, world, pos.x, pos.y, spacing)
 				if p != null:
 					world.add_child(p)
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:

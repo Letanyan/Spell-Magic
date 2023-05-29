@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ct8dcb1ngmwol"]
+[gd_scene load_steps=11 format=3 uid="uid://ct8dcb1ngmwol"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/buildings.gd" id="1_ela40"]
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_p2h4u"]
@@ -93,6 +93,16 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vu0bn")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dd76k"]
+shading_mode = 2
+diffuse_mode = 3
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.207843, 0.223529, 0.227451, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_s2pi1"]
+material = SubResource("StandardMaterial3D_dd76k")
+size = Vector3(6, 1, 4)
+
 [node name="House_Single" type="Node3D"]
 script = ExtResource("1_ela40")
 
@@ -114,3 +124,7 @@ transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
 visible = false
 mesh = SubResource("ArrayMesh_qfs87")
 skeleton = NodePath("")
+
+[node name="floor" type="MeshInstance3D" parent="RootNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_s2pi1")

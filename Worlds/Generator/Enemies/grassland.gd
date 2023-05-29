@@ -10,13 +10,14 @@ const FOLIAGE_SPAWN_PROB: Dictionary = {
 
 enum GRASSLAND_STRUCTURES_KIND {
 	NONE,
-	TREE_ROUND,
+	TREE_ROUND, TREE_BRANCHED,
 	HOUSE_SINGLE, HOUSE_DOUBLE,
 	UNDEAD
 }
 
 const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 0.025,
+	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.025,
 	GRASSLAND_STRUCTURES_KIND.HOUSE_SINGLE: 0.005,
 	GRASSLAND_STRUCTURES_KIND.HOUSE_DOUBLE: 0.0025,
 	GRASSLAND_STRUCTURES_KIND.UNDEAD: 0.01,
@@ -32,6 +33,11 @@ static func populate(pop: Population, world: Node3D, area: Array, spacing: float
 			GRASSLAND_STRUCTURES_KIND.TREE_ROUND:
 				var pos = area.pop_back()
 				var p = pop.spawn_foliage(World.Foliage.TREE_ROUND, world, pos.x, pos.y, spacing)
+				if p != null:
+					world.add_child(p)
+			GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED:
+				var pos = area.pop_back()
+				var p = pop.spawn_foliage(World.Foliage.TREE_BRANCHED, world, pos.x, pos.y, spacing)
 				if p != null:
 					world.add_child(p)
 			GRASSLAND_STRUCTURES_KIND.UNDEAD:
