@@ -7,7 +7,7 @@ enum Biome {
 }
 
 enum Enemy {
-	NONE, UNDEAD
+	NONE, UNDEAD, BAT
 }
 
 enum Foliage {

@@ -1,6 +1,7 @@
 class_name PathStyle
 
 enum Kind { ORIGIN, CIRCLE, RAND_CIRCLE }
+enum CoordY { GROUND, ORIGIN, GROUND_PLUS_ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
 
 var kind = Kind.CIRCLE
@@ -8,9 +9,11 @@ var min_radius = 5.0
 var max_radius = 10.0
 var movement_speed = 2.0
 var origin = Vector3.ZERO
+var offset = Vector3.ZERO
 var use_player_as_origin: bool
 var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE_XZ
+var coord_y: CoordY = CoordY.GROUND
 
 func _init(_seed: float, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
 	kind = _kind
@@ -28,6 +31,26 @@ func use_physics() -> PathStyle:
 	
 func use_absolute() -> PathStyle:
 	mover = Mover.ABSOLUTE
+	return self
+	
+func use_absolute_xz() -> PathStyle:
+	mover = Mover.ABSOLUTE
+	return self
+	
+func align_y_to_origin(y = null) -> PathStyle:
+	coord_y = CoordY.ORIGIN
+	if y != null:
+		origin.y = y
+	return self
+	
+func align_y_to_ground() -> PathStyle:
+	coord_y = CoordY.GROUND
+	return self
+	
+func align_y_to_ground_plus_offset(y = null) -> PathStyle:
+	coord_y = CoordY.GROUND_PLUS_ORIGIN
+	if y != null:
+		offset.y = y
 	return self
 	
 func circle(center: Vector3, radius: float) -> PathStyle:
@@ -91,7 +114,7 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			var lap = t * (movement_speed / min_radius)
 			var x = cos(lap) * min_radius + origin.x
 			var z = sin(lap) * min_radius + origin.z
-			var y = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+			var y = next_y_position(me, x, z)
 			return Vector3(x, y, z)
 
 		Kind.RAND_CIRCLE:
@@ -101,8 +124,15 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			v = v.rotated(randf() * 2 * PI)
 			var x = origin.x + v.x * min_radius
 			var z = origin.z + v.y * min_radius
-			var y = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+			var y = next_y_position(me, x, z)
 			return Vector3(x, y, z)
 
 
 	return Vector3.ZERO
+
+func next_y_position(me: Enemy, x: float, z: float) -> float:
+	match coord_y:
+		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+		CoordY.ORIGIN: return origin.y
+		CoordY.GROUND_PLUS_ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + offset.y
+		_: return 0

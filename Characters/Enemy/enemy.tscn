@@ -8,11 +8,11 @@ size = Vector3(0.4, 0.9, 0.2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_uxob1"]
 size = Vector3(0.4, 0.9, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kee3k"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ey633"]
 albedo_color = Color(1, 0.0431373, 0.0666667, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qdqeg"]
-material = SubResource("StandardMaterial3D_kee3k")
+material = SubResource("StandardMaterial3D_ey633")
 size = Vector3(0.4, 0.9, 0.2)
 
 [node name="enemy" type="CharacterBody3D"]

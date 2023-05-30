@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://dyeclaveumfmu"]
+
+[ext_resource type="Script" path="res://Characters/Enemy/Bat/bat.gd" id="1_8k3qi"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1vebu"]
+size = Vector3(1, 0.9, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v4gpo"]
+size = Vector3(1, 0.9, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kee3k"]
+albedo_color = Color(0, 0, 0.254902, 1)
+metallic = 1.0
+roughness = 0.52
+emission = Color(1, 0.937255, 1, 1)
+emission_operator = 1
+
+[sub_resource type="BoxMesh" id="BoxMesh_5cvxi"]
+material = SubResource("StandardMaterial3D_kee3k")
+size = Vector3(1, 0.9, 0.2)
+
+[node name="bat" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 593
+script = ExtResource("1_8k3qi")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_1vebu")
+
+[node name="WetArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+collision_layer = 36
+collision_mask = 0
+
+[node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
+shape = SubResource("BoxShape3D_v4gpo")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("BoxMesh_5cvxi")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

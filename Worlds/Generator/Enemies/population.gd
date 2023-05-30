@@ -11,6 +11,7 @@ var inhabitants: Array[Enemy] = []
 var garden: Array[Node3D] = []
 
 const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
+const bat = preload("res://Characters/Enemy/Bat/bat.tscn")
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
@@ -71,6 +72,9 @@ func spawn_enemy(enemy: World.Enemy, world: Node3D, x: float, y: float, spacing:
 		World.Enemy.UNDEAD:
 			result = undead.instantiate()
 			result.name = "Undead" + str(rng.randi())
+		World.Enemy.BAT:
+			result = bat.instantiate()
+			result.name = "Bat" + str(rng.randi())
 	
 	return prepare_entity(world, result, pos, true)
 	

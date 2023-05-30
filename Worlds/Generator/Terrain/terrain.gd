@@ -5,7 +5,7 @@ var chunk_size: float
 var radius: float # number of chunks
 var subdivide_percent: float
 var raycast: RayCast3D
-const has_medium = true
+const has_medium = false
 
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
