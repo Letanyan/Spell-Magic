@@ -5,7 +5,7 @@ var chunk_size: float
 var radius: float # number of chunks
 var subdivide_percent: float
 var raycast: RayCast3D
-const has_medium = false
+const has_medium = true
 
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
@@ -16,6 +16,8 @@ var loaded_chunks_location = PackedVector2Array()
 var loaded_chunks = []
 var medium_chunks_location = PackedVector2Array()
 var medium_chunks = []
+
+var base_coords = []
 
 func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
 	blender = NoiseBlender.new(e, d, t)
@@ -40,7 +42,7 @@ func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float,
 func init_chunks(x: float, y: float) -> Array:
 	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
 	if has_medium:
-		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius, subdivide_percent / 1.0)
+		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0)
 		result.append_array(medium)
 	return result
 	
@@ -89,9 +91,7 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	var removed = high.get("removed", [])
 	var updated = high.get("updated", [])
 	if has_medium:
-		var medium = update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius, subdivide_percent / 1.0)
-		removed.append_array(medium.get("removed", []))
-		updated.append_array(medium.get("updated", []))
+		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0)
 	set_player_coord_using_position(x, y, chunk_size)
 	return {"removed": removed, "updated": updated}
 		
@@ -154,18 +154,22 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 
-	var block = size * subdivide
+	if base_coords.is_empty():
+		for i in range(mdt.get_vertex_count()):
+			base_coords.append(mdt.get_vertex(i))
+
+	var block = size / float(int(size * subdivide) + 1)
 	var bounds = size / 2.0
 	var rng = RandomNumberGenerator.new()
 	rng.seed = hash(str(x) + ":" + str(y))
 	for i in range(mdt.get_vertex_count()):
 		var A = mdt.get_vertex(i)
+		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
+			var v = Vector2(rng.randf() * 2 - 1, rng.randf() * 2 - 1).normalized() * 0.25 * block
+			A.x = base_coords[i].x + v.x
+			A.z = base_coords[i].z + v.y
 		var Ah = blender.height(A.x + x, A.z + y)
 		A.y = Ah
-		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
-			var v = Vector2(rng.randf() - 0.5, rng.randf() - 0.5).normalized() * 0.2 * block
-			A.x += v.x
-			A.z += v.y
 		mdt.set_vertex(i, A)
 
 	mesh.clear_surfaces()
