@@ -41,11 +41,11 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	var navigation_velocity = Vector3.ZERO
 	if has_navigation_target:
-		var current_agent_position: Vector3 = body.global_transform.origin
-		var next_path_position: Vector3 = target_position
-
-		var new_velocity: Vector3 = next_path_position - current_agent_position
+		var new_velocity: Vector3 = target_position - body.global_position
+		var len = new_velocity.length()
 		new_velocity = new_velocity.normalized()
+		if len < 1.0:
+			new_velocity *= len
 		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value)
 
 		navigation_velocity = new_velocity

@@ -1,6 +1,6 @@
 class_name PathStyle
 
-enum Kind { ORIGIN, CIRCLE, RAND_CIRCLE }
+enum Kind { ORIGIN, CIRCLE, PATH }
 enum CoordY { GROUND, ORIGIN, GROUND_PLUS_ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
 
@@ -10,6 +10,7 @@ var max_radius = 10.0
 var movement_speed = 2.0
 var origin = Vector3.ZERO
 var offset = Vector3.ZERO
+var path: Pathway = null
 var use_player_as_origin: bool
 var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE_XZ
@@ -23,6 +24,10 @@ func _init(_seed: float, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.Z
 	
 func speed(s: float) -> PathStyle:
 	movement_speed = s
+	return self
+	
+func set_origin(o: Vector3) -> PathStyle:
+	origin = o
 	return self
 	
 func use_physics() -> PathStyle:
@@ -83,17 +88,22 @@ func towards_player(mn: float, mx: float) -> PathStyle:
 	use_player_as_origin = true
 	return self
 	
-func rand_circle(center: Vector3, radius: float) -> PathStyle:
-	kind = Kind.RAND_CIRCLE
-	origin = center
-	min_radius = radius
-	use_player_as_origin = false
+func follow_path(pathway: Pathway) -> PathStyle:
+	path = pathway
+	kind = Kind.PATH
 	return self
 	
-func rand_circle_player(radius: float) -> PathStyle:
-	kind = Kind.RAND_CIRCLE
-	min_radius = radius
-	use_player_as_origin = true
+func random_points_in_circle(radius: float, count: int) -> PathStyle:
+	path = Pathway.new()
+	var p = Vector2(randf() * 2 - 1, randf() * 2 - 1).normalized() * radius
+	path.add(Segment.linear(Vector2.ZERO, p))
+	for i in range(count - 1):
+		var q = Vector2(randf(), randf()).normalized() * radius
+		path.add(Segment.linear(p, q))
+		p = q
+	path.add(Segment.linear(p, Vector2.ZERO))
+	path.calculate_distance()
+	kind = Kind.PATH
 	return self
 
 func next_position(me: Enemy, player: Player) -> Vector3:
@@ -117,15 +127,11 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			var y = next_y_position(me, x, z)
 			return Vector3(x, y, z)
 
-		Kind.RAND_CIRCLE:
-			# FIXME: Use `t mod movement_speed` to clamp rand seed so we can wait for `distance / movement_speed` amount 
-			# of time before generating a new position.
-			var v = Vector2(1, 0)
-			v = v.rotated(randf() * 2 * PI)
-			var x = origin.x + v.x * min_radius
-			var z = origin.z + v.y * min_radius
-			var y = next_y_position(me, x, z)
-			return Vector3(x, y, z)
+		Kind.PATH:
+			var dist = fmod(movement_speed * t, path.distance)
+			var v = path.position_at_distance(dist) + Vector2(origin.x, origin.z)
+			var y = next_y_position(me, v.x, v.y)
+			return Vector3(v.x, y, v.y)
 
 
 	return Vector3.ZERO
@@ -136,3 +142,113 @@ func next_y_position(me: Enemy, x: float, z: float) -> float:
 		CoordY.ORIGIN: return origin.y
 		CoordY.GROUND_PLUS_ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + offset.y
 		_: return 0
+
+class Pathway:
+	var segments: Array[Segment]
+	var distance: float
+	
+	func _init():
+		segments = []
+		calculate_distance()
+		
+	func add(segment: Segment):
+		segments.append(segment)
+		
+	func append(sgmnts: Array[Segment]):
+		segments.append_array(sgmnts)
+		calculate_distance()
+	
+	func calculate_distance():
+		distance = 0.0
+		for s in segments:
+			distance += s.distance
+			
+	func position_at_time(t: float) -> Vector2:
+		var dist = t * distance
+		return position_at_distance(dist)
+			
+	func position_at_distance(dist: float) -> Vector2:
+		var segment = 0
+		var running = 0.0
+		for i in range(segments.size()):
+			segment = i
+			var s = segments[i]
+			if running <= dist and dist <= running + s.distance:
+				break
+			running += s.distance
+		dist -= running
+		return segments[segment].position_at_distance(dist)
+
+class Segment:
+	enum BezierKind { LINEAR, QUAD, CUBIC }
+	
+	var start: Vector2
+	var end: Vector2
+	var c1: Vector2
+	var c2: Vector2
+	var kind: BezierKind
+	var distance: float
+	
+	func _init(s: Vector2, e: Vector2, cc1: Vector2, cc2: Vector2, k: BezierKind, d = null):
+		start = s
+		end = e
+		c1 = cc1
+		c2 = cc2
+		kind = k
+		if d != null:
+			distance = d
+		else:
+			calculate_distance()
+	
+	static func point(a: Vector2, d: float) -> Segment:
+		return Segment.new(a, a, a, a, BezierKind.LINEAR, d)
+	
+	static func linear(a: Vector2, b: Vector2) -> Segment:
+		return Segment.new(a, b, a, b, BezierKind.LINEAR)
+	
+	static func quad(a: Vector2, b: Vector2, c: Vector2) -> Segment:
+		return Segment.new(a, b, c, c, BezierKind.QUAD)
+	
+	static func cubic(a: Vector2, b: Vector2, c: Vector2, d: Vector2) -> Segment:
+		return Segment.new(a, b, c, d, BezierKind.CUBIC)
+		
+	func calculate_distance(interval: float = 0.005):
+		if kind == BezierKind.LINEAR:
+			distance = end.distance_to(start)
+		else:
+			var p := start
+			distance = 0.0
+			var i = interval
+			while i <= 1.0:
+				var q = position_at_time(i)
+				distance += p.distance_to(q)
+				p = q
+				i += interval
+		
+	func position_at_time(t: float) -> Vector2:
+		match kind:
+			BezierKind.LINEAR:
+				return lerp(start, end, t)
+			BezierKind.QUAD:
+				var a = lerp(start, c1, t)
+				var b = lerp(c1, end, t)
+				return lerp(a, b, t)
+			BezierKind.CUBIC:
+				var a1 = lerp(start, c1, t)
+				var b1 = lerp(c1, end, t)
+				var c1 = lerp(a1, b1, t)
+				var a2 = lerp(c1, c2, t)
+				var b2 = lerp(c2, end, t)
+				var c2 = lerp(a2, b2, t)
+				return lerp(c1, c2, t)
+				
+		return Vector2.ZERO
+		
+	func position_at_distance(dist: float) -> Vector2:
+		var t = dist / distance
+		return position_at_time(t)
+		
+		
+		
+		
+		
