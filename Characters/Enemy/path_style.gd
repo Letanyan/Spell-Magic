@@ -1,7 +1,7 @@
 class_name PathStyle
 
 enum Kind { ORIGIN, CIRCLE, PATH }
-enum CoordY { GROUND, ORIGIN, GROUND_PLUS_ORIGIN }
+enum CoordY { GROUND, ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
 
 var kind = Kind.CIRCLE
@@ -9,7 +9,6 @@ var min_radius = 5.0
 var max_radius = 10.0
 var movement_speed = 2.0
 var origin = Vector3.ZERO
-var offset = Vector3.ZERO
 var path: Pathway = null
 var use_player_as_origin: bool
 var seed_offset: float
@@ -39,23 +38,19 @@ func use_absolute() -> PathStyle:
 	return self
 	
 func use_absolute_xz() -> PathStyle:
-	mover = Mover.ABSOLUTE
+	mover = Mover.ABSOLUTE_XZ
 	return self
 	
-func align_y_to_origin(y = null) -> PathStyle:
+func set_use_player_as_origin(o: bool = true) -> PathStyle:
+	use_player_as_origin = o
+	return self
+	
+func align_y_to_origin() -> PathStyle:
 	coord_y = CoordY.ORIGIN
-	if y != null:
-		origin.y = y
 	return self
 	
 func align_y_to_ground() -> PathStyle:
 	coord_y = CoordY.GROUND
-	return self
-	
-func align_y_to_ground_plus_offset(y = null) -> PathStyle:
-	coord_y = CoordY.GROUND_PLUS_ORIGIN
-	if y != null:
-		offset.y = y
 	return self
 	
 func circle(center: Vector3, radius: float) -> PathStyle:
@@ -93,15 +88,23 @@ func follow_path(pathway: Pathway) -> PathStyle:
 	kind = Kind.PATH
 	return self
 	
+func circle_path(radius: float, h: float) -> PathStyle:
+	path = Pathway.new()
+	var a = Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
+	var b = Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
+	path.append([a, b])
+	kind = Kind.PATH
+	return self
+	
 func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var p = Vector2(randf() * 2 - 1, randf() * 2 - 1).normalized() * radius
-	path.add(Segment.linear(Vector2.ZERO, p))
+	var p = Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
+	path.add(Segment.linear(Vector3.ZERO, p))
 	for i in range(count - 1):
-		var q = Vector2(randf(), randf()).normalized() * radius
+		var q = Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
 		path.add(Segment.linear(p, q))
 		p = q
-	path.add(Segment.linear(p, Vector2.ZERO))
+	path.add(Segment.linear(p, Vector3.ZERO))
 	path.calculate_distance()
 	kind = Kind.PATH
 	return self
@@ -124,23 +127,22 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			var lap = t * (movement_speed / min_radius)
 			var x = cos(lap) * min_radius + origin.x
 			var z = sin(lap) * min_radius + origin.z
-			var y = next_y_position(me, x, z)
+			var y = next_y_position(me, x, 0, z)
 			return Vector3(x, y, z)
 
 		Kind.PATH:
 			var dist = fmod(movement_speed * t, path.distance)
-			var v = path.position_at_distance(dist) + Vector2(origin.x, origin.z)
-			var y = next_y_position(me, v.x, v.y)
-			return Vector3(v.x, y, v.y)
+			var v = path.position_at_distance(dist) + origin
+			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
+			return Vector3(v.x, y, v.z)
 
 
 	return Vector3.ZERO
 
-func next_y_position(me: Enemy, x: float, z: float) -> float:
+func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:
 		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
-		CoordY.ORIGIN: return origin.y
-		CoordY.GROUND_PLUS_ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + offset.y
+		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y
 		_: return 0
 
 class Pathway:
@@ -163,11 +165,11 @@ class Pathway:
 		for s in segments:
 			distance += s.distance
 			
-	func position_at_time(t: float) -> Vector2:
+	func position_at_time(t: float) -> Vector3:
 		var dist = t * distance
 		return position_at_distance(dist)
 			
-	func position_at_distance(dist: float) -> Vector2:
+	func position_at_distance(dist: float) -> Vector3:
 		var segment = 0
 		var running = 0.0
 		for i in range(segments.size()):
@@ -182,14 +184,14 @@ class Pathway:
 class Segment:
 	enum BezierKind { LINEAR, QUAD, CUBIC }
 	
-	var start: Vector2
-	var end: Vector2
-	var c1: Vector2
-	var c2: Vector2
+	var start: Vector3
+	var end: Vector3
+	var c1: Vector3
+	var c2: Vector3
 	var kind: BezierKind
 	var distance: float
 	
-	func _init(s: Vector2, e: Vector2, cc1: Vector2, cc2: Vector2, k: BezierKind, d = null):
+	func _init(s: Vector3, e: Vector3, cc1: Vector3, cc2: Vector3, k: BezierKind, d = null):
 		start = s
 		end = e
 		c1 = cc1
@@ -200,16 +202,16 @@ class Segment:
 		else:
 			calculate_distance()
 	
-	static func point(a: Vector2, d: float) -> Segment:
+	static func point(a: Vector3, d: float) -> Segment:
 		return Segment.new(a, a, a, a, BezierKind.LINEAR, d)
 	
-	static func linear(a: Vector2, b: Vector2) -> Segment:
+	static func linear(a: Vector3, b: Vector3) -> Segment:
 		return Segment.new(a, b, a, b, BezierKind.LINEAR)
 	
-	static func quad(a: Vector2, b: Vector2, c: Vector2) -> Segment:
+	static func quad(a: Vector3, b: Vector3, c: Vector3) -> Segment:
 		return Segment.new(a, b, c, c, BezierKind.QUAD)
 	
-	static func cubic(a: Vector2, b: Vector2, c: Vector2, d: Vector2) -> Segment:
+	static func cubic(a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> Segment:
 		return Segment.new(a, b, c, d, BezierKind.CUBIC)
 		
 	func calculate_distance(interval: float = 0.005):
@@ -225,7 +227,7 @@ class Segment:
 				p = q
 				i += interval
 		
-	func position_at_time(t: float) -> Vector2:
+	func position_at_time(t: float) -> Vector3:
 		match kind:
 			BezierKind.LINEAR:
 				return lerp(start, end, t)
@@ -236,15 +238,15 @@ class Segment:
 			BezierKind.CUBIC:
 				var a1 = lerp(start, c1, t)
 				var b1 = lerp(c1, end, t)
-				var c1 = lerp(a1, b1, t)
+				var e1 = lerp(a1, b1, t)
 				var a2 = lerp(c1, c2, t)
 				var b2 = lerp(c2, end, t)
-				var c2 = lerp(a2, b2, t)
-				return lerp(c1, c2, t)
+				var e2 = lerp(a2, b2, t)
+				return lerp(e1, e2, t)
 				
-		return Vector2.ZERO
+		return Vector3.ZERO
 		
-	func position_at_distance(dist: float) -> Vector2:
+	func position_at_distance(dist: float) -> Vector3:
 		var t = dist / distance
 		return position_at_time(t)
 		

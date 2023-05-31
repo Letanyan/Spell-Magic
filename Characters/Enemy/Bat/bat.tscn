@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dyeclaveumfmu"]
+[gd_scene load_steps=7 format=3 uid="uid://dyeclaveumfmu"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Bat/bat.gd" id="1_8k3qi"]
 
@@ -18,6 +18,10 @@ emission_operator = 1
 [sub_resource type="BoxMesh" id="BoxMesh_5cvxi"]
 material = SubResource("StandardMaterial3D_kee3k")
 size = Vector3(1, 0.9, 0.2)
+
+[sub_resource type="SphereMesh" id="SphereMesh_o26af"]
+radius = 0.25
+height = 0.5
 
 [node name="bat" type="CharacterBody3D"]
 collision_layer = 4
@@ -39,5 +43,9 @@ shape = SubResource("BoxShape3D_v4gpo")
 [node name="mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 mesh = SubResource("BoxMesh_5cvxi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.174184)
+mesh = SubResource("SphereMesh_o26af")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
