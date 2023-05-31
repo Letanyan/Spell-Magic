@@ -37,18 +37,19 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite):
 	dryness = d
 	temperature = t
 
-func elevation_texture(x: float, y: float, w: float, h: float) -> NoiseTexture2D:
-	return texture(elevation, x, y, w, h)
+func elevation_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
+	return texture(elevation, x, y, w, h, scale)
 	
-func dryness_texture(x: float, y: float, w: float, h: float) -> NoiseTexture2D:
-	return texture(dryness, x, y, w, h)
+func dryness_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
+	return texture(dryness, x, y, w, h, scale)
 	
-func temperature_texture(x: float, y: float, w: float, h: float) -> NoiseTexture2D:
-	return texture(temperature, x, y, w, h)
+func temperature_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
+	return texture(temperature, x, y, w, h, scale)
 
-func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float) -> NoiseTexture2D:
+func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	var result = NoiseTexture2D.new()
 	result.noise = noise.duplicate(true)
+	result.noise.frequency *= scale
 	result.noise.offset.x = x - w / 2
 	result.noise.offset.y = y - h / 2
 	result.width = w + 2
@@ -94,7 +95,13 @@ func height(x: float, y: float) -> float:
 	}
 	
 	var result = 0.0
-	var total_size = biomes["total"]
+#	var total_size = biomes["total"]
+	
+	var total_size := 0.0
+	for b in distances:
+		distances[b] = distances[b] ** 10
+		total_size += distances[b]
+	
 	for b in distances:
 		var curve = curve_list.get(b, flat_curve)
 		result += curve.sample(e) * (1.0 - distances[b] / total_size)

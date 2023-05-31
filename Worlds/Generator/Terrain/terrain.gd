@@ -20,10 +20,10 @@ var medium_chunks = []
 var base_coords = []
 
 func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
+	subdivide_percent = 1.0 / 16.0
 	blender = NoiseBlender.new(e, d, t)
 	chunk_size = cs
 	radius = r
-	subdivide_percent = 1.0 / 16.0
 	
 	
 func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Array:
@@ -176,13 +176,12 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mdt.commit_to_surface(mesh)
 	var mat = mesh.surface_get_material(0)
 	mat.shader = biome_shader
-	const R = 4.0
+	var R = size / float(int(size * subdivide_percent) + 1)
 	var texture_size = size / R
 	mat.set_shader_parameter("texture_width", texture_size)
 	mat.set_shader_parameter("texture_depth", texture_size)
-#	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
-	mat.set_shader_parameter("temperature", blender.temperature_texture(x / R, y / R, texture_size, texture_size))
-	mat.set_shader_parameter("dryness", blender.dryness_texture(x / R, y / R, texture_size, texture_size))
+	mat.set_shader_parameter("temperature", blender.temperature_texture(x / R, y / R, texture_size, texture_size, R))
+	mat.set_shader_parameter("dryness", blender.dryness_texture(x / R, y / R, texture_size, texture_size, R))
 	for n in mi.get_children():
 		mi.remove_child(n)
 	if r <= radius:
@@ -312,9 +311,9 @@ func update_mesh_with_surface_tool(mi: MeshInstance3D, x: float, y: float, size:
 	mat.shader = biome_shader
 	mat.set_shader_parameter("texture_width", size)
 	mat.set_shader_parameter("texture_depth", size)
-	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size))
-	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size))
-	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size))
+	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size, 1))
+	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size, 1))
+	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size, 1))
 	mi.mesh.surface_set_material(0, mat)
 	var dist = max(max(abs(x), abs(y)) / size, 1)
 	for n in mi.get_children():

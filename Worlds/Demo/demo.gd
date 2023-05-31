@@ -38,11 +38,11 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 	
-	noise_elevation.frequency = 0.0001
+	noise_elevation.frequency = 0.0002
 	noise_temperature.frequency = 0.0001
 	noise_dryness.frequency = 0.0001
 	
-	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 3)
+	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 2)
 	chunker.raycast = raycast
 	build_terrain()
 	
