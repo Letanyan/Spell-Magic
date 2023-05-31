@@ -6,16 +6,21 @@ var radius: float # number of chunks
 var subdivide_percent: float
 var raycast: RayCast3D
 const has_medium = true
+const has_water = true
 
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
 
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
+var water_shader = preload("res://Worlds/SkyBox/water.gdshader")
+var water_noise = preload("res://Worlds/SkyBox/water_noise.tres")
 
 var loaded_chunks_location = PackedVector2Array()
 var loaded_chunks = []
 var medium_chunks_location = PackedVector2Array()
 var medium_chunks = []
+var water_chunks_location = PackedVector2Array()
+var water_chunks = []
 
 var base_coords = []
 
@@ -26,27 +31,30 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	radius = r
 	
 	
-func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Array:
+func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Array:
 	set_player_coord_using_position(x, y, cs)
 	var rad = int(r / 2)
 	var result = []
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
 			var p = Vector2((player_coord.x + w) * cs, (player_coord.y + h) * cs)
-			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, r, subdivide)
-			update_chunk_with_size(node, p.x, p.y, cs, r, subdivide)
+			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, r, subdivide, is_water)
+			update_chunk_with_size(node, p.x, p.y, cs, r, subdivide, is_water)
 			result.append(node)
 			
 	return result
 	
 func init_chunks(x: float, y: float) -> Array:
-	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
+	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
 	if has_medium:
-		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0)
+		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius * 2, subdivide_percent, false)
 		result.append_array(medium)
+	if has_water:
+		var water = init_chunks_of_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
+		result.append_array(water)
 	return result
 	
-func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Dictionary:
+func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Dictionary:
 	var old_coord = player_coord
 	var current_coord = convert_position_to_coord(x, y, cs)
 	var delta = current_coord - old_coord
@@ -73,25 +81,27 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			
 		if r > radius:
 			var origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
-			if abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
+			if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
 				chunks[i].position.y = -100	
 			else:
-				chunks[i].position.y = 0
+				chunks[i].position.y = 0 if not is_water else 400
 
 		if should_update:
 			removed_locations.append(locations[i])
 			updated_locations.append(loc)
 			locations[i] = loc
-			update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r, subdivide)
+			update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r, subdivide, is_water)
 			
 	return {"removed": removed_locations, "updated": updated_locations}
 	
 func update_chunks(x: float, y: float) -> Dictionary:
-	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent)
+	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
 	var removed = high.get("removed", [])
 	var updated = high.get("updated", [])
 	if has_medium:
-		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0)
+		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0, false)
+	if has_water:
+		update_chunks_with_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
 	set_player_coord_using_position(x, y, chunk_size)
 	return {"removed": removed, "updated": updated}
 		
@@ -125,24 +135,42 @@ func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 		mm.set_instance_transform(i, t)
 		
 	return [mi, mmi]
-		
-func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float) -> Node3D:
-	var meshes = create_mesh(x, y, cs, subdivide)
-	var mi = meshes[0]
-	var mmi = meshes[1]
+	
+func create_water_mesh(x: float, y: float, size: float) -> Array:
+	var mesh = ArrayMesh.new()
+	var plane = PlaneMesh.new()
+	plane.size = Vector2(size, size)
+	plane.subdivide_depth = 8
+	plane.subdivide_width = 8
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
+	mesh.surface_set_material(0, ShaderMaterial.new())
 
+	var mi = MeshInstance3D.new()
+	mi.mesh = mesh
+	mi.name = "mesh"
+	var mmi = MultiMeshInstance3D.new()
+		
+	return [mi]
+		
+func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Node3D:
 	var node = Node3D.new()
-	node.add_child(mi)
-	node.add_child(mmi)
+	if not is_water:
+		var meshes = create_mesh(x, y, cs, subdivide)
+		node.add_child(meshes[0])
+		node.add_child(meshes[1])
+	else:
+		var meshes = create_water_mesh(x, y, cs)
+		node.add_child(meshes[0])
+
 	node.position.x = x
 	node.position.z = y
 	
 	if r > radius:
 		var coord = convert_position_to_coord(x, y, cs)
-		if abs(coord.x) <= int(radius / 2) and abs(coord.y) <= int(radius / 2):
+		if not is_water and abs(coord.x) <= int(radius / 2) and abs(coord.y) <= int(radius / 2):
 			node.position.y = -100
 		else:
-			node.position.y = 0
+			node.position.y = 0 if not is_water else 400
 
 	locations.append(Vector2(x, y))
 	chunks.append(node)
@@ -188,13 +216,22 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 1 << 0
+		
+func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
+	var mesh = mi.mesh
+	var mat = mesh.surface_get_material(0)
+	mat.shader = water_shader
+	mat.set_shader_parameter("noise", water_noise)
 
-func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float):
+func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool):
 	var mi = node.get_node("mesh")
-	update_mesh(mi, x, y, cs, r, subdivide)
+	if is_water:
+		update_water_mesh(mi, x, y, cs, r, subdivide)
+	else:
+		update_mesh(mi, x, y, cs, r, subdivide)
 	node.position.x = x
 	node.position.z = y
-	
+
 
 func update_environment():
 	for i in range(loaded_chunks.size()):
