@@ -1,6 +1,7 @@
 class_name Bat
 extends Enemy
 
+var none_pattern: AttackPatterns
 var random_pattern: AttackPatterns
 var sequence_pattern: AttackPatterns
 
@@ -21,6 +22,8 @@ func _ready():
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.BAT: true}, false)
 	
+	none_pattern = AttackPatterns.none()
+	
 	random_pattern = AttackPatterns.new(
 		[
 			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 1000, Spell.Element.ELECTRIC, 1),
@@ -28,7 +31,8 @@ func _ready():
 			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 3000, Spell.Element.ELECTRIC, 1),
 		],
 		[ 5, 3, 2 ],
-		false
+		false,
+		0.5
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -42,7 +46,9 @@ func _ready():
 	)
 
 func attack_state() -> AttackPatterns:
-	if vitals.health.value >= 50:
+	if current_path == idle_path:
+		return none_pattern
+	elif vitals.health.value >= 50:
 		return random_pattern
 	else:
 		return sequence_pattern
@@ -56,10 +62,6 @@ func update_entity_info(info: EntityInfo):
 
 func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		print("aggro: ", sqrt(player.position.distance_squared_to(position)))
-		vitals.aggression.value = 0.25
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-		print("passive: ", sqrt(player.position.distance_squared_to(position)))
-		vitals.aggression.value = 0.0
 		current_path = idle_path

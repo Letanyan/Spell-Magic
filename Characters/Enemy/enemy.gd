@@ -71,10 +71,9 @@ func _physics_process(delta):
 		behavior_tick = 0
 
 	if spell_tick == 30:
-		if vitals.aggression.value > 0:
-			var spell = attack_state().choose_spell(vitals, behaviour)
-			if spell != null:
-				cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
+		var spell = attack_state().choose_spell(vitals, behaviour)
+		if spell != null:
+			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 
 	spell_caster.update(self, delta)

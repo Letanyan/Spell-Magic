@@ -5,13 +5,15 @@ var spell_weight: Array
 var is_sequence: bool = false
 var start_time: float
 var current_sequence_index: int
+var aggression: float
 
-func _init(_spells: Array, _spell_weight: Array, _is_sequence: bool):
+func _init(_spells: Array, _spell_weight: Array, _is_sequence: bool, _aggression: float = 0.0):
 	spells = _spells
 	spell_weight = _spell_weight
 	start_time = 0
 	current_sequence_index = 0
 	is_sequence = _is_sequence
+	aggression = _aggression
 	if not _is_sequence:
 		var total: float = 0.0 
 		for s in spell_weight:
@@ -19,8 +21,11 @@ func _init(_spells: Array, _spell_weight: Array, _is_sequence: bool):
 		for i in range(spell_weight.size()):
 			spell_weight[i] = spell_weight[i] / total
 	
+static func none() -> AttackPatterns:
+	return AttackPatterns.new([], [], false, 0.0)
+	
 func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spell:
-	if not randf() < vitals.aggression.value * 0.25:
+	if not randf() < aggression:
 		return null
 		
 	var range_start = 0.0
@@ -51,4 +56,6 @@ func choose_spell_from_sequence(vitals: Vitals, behaviour: Behaviour) -> Spell:
 		return null
 
 func choose_spell(vitals: Vitals, behaviour: Behaviour) -> Spell:
+	if spells.is_empty():
+		return null
 	return choose_spell_from_sequence(vitals, behaviour) if is_sequence else choose_spell_from_distribution(vitals, behaviour)
