@@ -15,12 +15,8 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-#	idle_path = PathStyle.new(randf() * 2 - 1.0).circle(position , 5).speed(7).use_absolute()
-#	idle_path.align_y_to_ground_plus_offset(10)
-#	attack_path = PathStyle.new(randf() * 2 - 1.0).circle_player(5 * randf() + 5).speed(10).use_absolute()
-#	attack_path.align_y_to_ground_plus_offset(5 * randf() + 5)
 	idle_path = PathStyle.new(randf()).circle_path(5, 10).set_origin(position).speed(7).use_absolute().align_y_to_origin()
-	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 5).set_use_player_as_origin().speed(10).use_absolute().align_y_to_origin()
+	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 5).set_use_player_as_origin().speed(10).use_absolute().align_y_to_origin().look_at_player()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.BAT: true}, false)

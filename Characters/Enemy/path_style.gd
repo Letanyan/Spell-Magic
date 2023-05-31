@@ -3,6 +3,7 @@ class_name PathStyle
 enum Kind { ORIGIN, CIRCLE, PATH }
 enum CoordY { GROUND, ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
+enum LookAt { VELOCITY, PLAYER }
 
 var kind = Kind.CIRCLE
 var min_radius = 5.0
@@ -14,6 +15,7 @@ var use_player_as_origin: bool
 var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE_XZ
 var coord_y: CoordY = CoordY.GROUND
+var lookat: LookAt = LookAt.VELOCITY
 
 func _init(_seed: float, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
 	kind = _kind
@@ -27,6 +29,10 @@ func speed(s: float) -> PathStyle:
 	
 func set_origin(o: Vector3) -> PathStyle:
 	origin = o
+	return self
+	
+func look_at_player() -> PathStyle:
+	lookat = LookAt.PLAYER
 	return self
 	
 func use_physics() -> PathStyle:

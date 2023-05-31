@@ -61,6 +61,8 @@ func _physics_process(delta):
 				var t = movement["target"]
 	#			position.y = v.y
 				position += Vector3(v.x, v.y + t.y, v.z)
+		if current_path.lookat == PathStyle.LookAt.PLAYER:
+			look_at(player.position)
 
 	if behavior_tick == 30:
 		update_behaviour()
