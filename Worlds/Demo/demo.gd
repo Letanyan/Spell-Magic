@@ -13,6 +13,7 @@ extends Node
 @onready var population: Dictionary = {}
 
 @onready var raycast = $RayCast3D
+@onready var skybox: SkyBox
 
 var terrain_update_interval = 0
 
@@ -45,6 +46,9 @@ func _ready():
 	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 2)
 	chunker.raycast = raycast
 	build_terrain()
+	
+	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
+	skybox.day_time = 14
 	
 	player.is_menu_showing = func(): return menu.is_showing
 	player.position.y = Navigator.get_world_height(player.get_world_3d().direct_space_state, 0, 0)  # chunker.blender.height(0, 0) + 5
