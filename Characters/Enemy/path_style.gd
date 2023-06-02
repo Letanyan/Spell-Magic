@@ -220,6 +220,19 @@ class Segment:
 	static func cubic(a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> Segment:
 		return Segment.new(a, b, c, d, BezierKind.CUBIC)
 		
+	static func arc(radius: float, angle_start: float, angle_end: float, h: float) -> Segment:
+		var a = Vector3(radius, h, 0).rotated(Vector3.UP, angle_start)
+		var b = Vector3(radius, h, 0).rotated(Vector3.UP, angle_end)
+		
+		var q1 = a.x * a.x + a.z * a.z
+		var q2 = q1 + a.x * b.x + a.z * b.z
+		var k2 = (4.0 / 3.0) * (sqrt(2 * q1 * q2) - q2) / (a.x * b.z - a.z * b.x)
+
+		var c = Vector3(a.x - k2 * a.z, h, a.z + k2 * a.x)
+		var d = Vector3(b.x + k2 * b.z, h, b.z - k2 * b.x)
+		
+		return Segment.new(a, b, c, d, BezierKind.CUBIC)
+		
 	func calculate_distance(interval: float = 0.005):
 		if kind == BezierKind.LINEAR:
 			distance = end.distance_to(start)

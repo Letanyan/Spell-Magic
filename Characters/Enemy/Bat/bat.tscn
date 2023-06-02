@@ -8,7 +8,7 @@ size = Vector3(1, 0.9, 0.2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_v4gpo"]
 size = Vector3(1, 0.9, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kee3k"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sjpar"]
 albedo_color = Color(0, 0, 0.254902, 1)
 metallic = 1.0
 roughness = 0.52
@@ -16,7 +16,7 @@ emission = Color(1, 0.937255, 1, 1)
 emission_operator = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_5cvxi"]
-material = SubResource("StandardMaterial3D_kee3k")
+material = SubResource("StandardMaterial3D_sjpar")
 size = Vector3(1, 0.9, 0.2)
 
 [sub_resource type="SphereMesh" id="SphereMesh_o26af"]

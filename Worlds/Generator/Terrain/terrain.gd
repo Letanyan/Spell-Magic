@@ -7,8 +7,8 @@ var subdivide_percent: float
 var raycast: RayCast3D
 
 const has_medium = true
-const has_water = true
-const has_grass = true
+const has_water = false
+const has_grass = false
 
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
@@ -237,6 +237,8 @@ func update_chunk_environment(node: Node3D):
 	pass
 
 func place_grass(delta: Vector2):
+	if not has_grass:
+		return
 	var ignore_delta = false
 	if grass_coords.is_empty():
 		init_grass()
@@ -265,6 +267,8 @@ func place_grass(delta: Vector2):
 		
 	
 func init_grass():
+	if not has_grass:
+		return
 	var mm: MultiMesh = grass_mesh.multimesh
 	var i = 0
 	seed(0)
@@ -283,7 +287,6 @@ func init_grass():
 			if i >= mm.instance_count:
 				overflow = true
 				break
-	print(i)
 	mm.visible_instance_count = i
 
 func set_player_coord_using_position(x: float, y: float, cs: float):
