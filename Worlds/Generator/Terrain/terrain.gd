@@ -5,11 +5,13 @@ var chunk_size: float
 var radius: float # number of chunks
 var subdivide_percent: float
 var raycast: RayCast3D
-const has_medium = true
-const has_water = false
 
+const has_medium = true
+const has_water = true
+const has_grass = true
+
+var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
-var player_coord_resolution: Dictionary = {}
 
 var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 var water_shader = preload("res://Worlds/SkyBox/water.gdshader")
@@ -21,6 +23,9 @@ var medium_chunks_location = PackedVector2Array()
 var medium_chunks = []
 var water_chunks_location = PackedVector2Array()
 var water_chunks = []
+
+var grass_mesh: MultiMeshInstance3D
+var grass_coords = {}
 
 var base_coords = []
 
@@ -52,6 +57,15 @@ func init_chunks(x: float, y: float) -> Array:
 	if has_water:
 		var water = init_chunks_of_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
 		result.append_array(water)
+	if has_grass:
+		var gm = MultiMesh.new()
+		gm.transform_format = MultiMesh.TRANSFORM_3D
+		gm.instance_count = 30_000
+		gm.visible_instance_count = 0
+		gm.mesh = load("res://Models/Grass/grass_01_mesh.tres")
+		grass_mesh = MultiMeshInstance3D.new()
+		grass_mesh.multimesh = gm
+		result.append(grass_mesh)
 	return result
 	
 func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Dictionary:
@@ -105,7 +119,7 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	set_player_coord_using_position(x, y, chunk_size)
 	return {"removed": removed, "updated": updated}
 		
-func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> Array:
+func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> MeshInstance3D:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(size, size)
@@ -118,25 +132,9 @@ func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) ->
 	mi.mesh = mesh
 	mi.name = "mesh"
 	
-	if r > radius:
-		return [mi]
+	return mi
 	
-	var mm = MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.instance_count = 4_500
-	var cy = load("res://Models/Grass/grass_01_mesh.tres")
-	mm.mesh = cy
-	var mmi = MultiMeshInstance3D.new()
-	mmi.multimesh = mm
-	mmi.name = "multimesh"
-	
-	for i in range(mm.instance_count):
-		var t = Transform3D(Basis(), Vector3.ZERO)
-		mm.set_instance_transform(i, t)
-		
-	return [mi, mmi]
-	
-func create_water_mesh(x: float, y: float, size: float) -> Array:
+func create_water_mesh(x: float, y: float, size: float) -> MeshInstance3D:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(size, size)
@@ -149,18 +147,14 @@ func create_water_mesh(x: float, y: float, size: float) -> Array:
 	mi.mesh = mesh
 	mi.name = "mesh"
 		
-	return [mi]
+	return mi
 		
 func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Node3D:
 	var node = Node3D.new()
 	if not is_water:
-		var meshes = create_mesh(x, y, cs, r, subdivide)
-		node.add_child(meshes[0])
-		if r == radius:
-			node.add_child(meshes[1])
+		node.add_child(create_mesh(x, y, cs, r, subdivide))
 	else:
-		var meshes = create_water_mesh(x, y, cs)
-		node.add_child(meshes[0])
+		node.add_child(create_water_mesh(x, y, cs))
 
 	node.position.x = x
 	node.position.z = y
@@ -233,33 +227,55 @@ func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: floa
 	node.position.z = y
 
 
-func update_environment():
-	for i in range(loaded_chunks.size()):
-		update_chunk_environment(loaded_chunks[i])
+func update_environment(x: float, y: float):
+	var old_position = player_position
+	player_position = Vector2(x, y)
+	var delta = player_position - old_position
+	place_grass(Vector2(chunk_size * sign(delta.x) * 2, chunk_size * sign(delta.y) * 2))
 
 func update_chunk_environment(node: Node3D):
-#	place_grass(node)
 	pass
 
-func place_grass(node: Node3D):
-	var mmi: MultiMeshInstance3D = node.get_node("multimesh")
-	var mm: MultiMesh = mmi.multimesh
+func place_grass(delta: Vector2):
+	var ignore_delta = false
+	if grass_coords.is_empty():
+		init_grass()
+		ignore_delta = true
 	
+	var mm: MultiMesh = grass_mesh.multimesh
+	
+	for i in range(mm.instance_count):
+		var pos = grass_coords.get(i, null)
+		if pos == null:
+			continue
+		var horz = pos.x > player_position.x + chunk_size or pos.x < player_position.x - chunk_size
+		var vert = pos.z > player_position.y + chunk_size or pos.z < player_position.y - chunk_size
+		if horz or vert or ignore_delta:
+			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))
+			var biome = blender.biome(p.x, p.z)
+			if biome != World.Biome.GRASSLAND:
+				p.y = -1000
+			else:
+				p.y = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z)
+			grass_coords[i] = p
+			var t = Transform3D(Basis(), p)
+			t = t.scaled_local(Vector3(800, 100, 800))
+			t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
+			mm.set_instance_transform(i, t)
+		
+	
+func init_grass():
+	var mm: MultiMesh = grass_mesh.multimesh
 	var i = 0
 	seed(0)
 	var overflow = false
-	for x in range(-chunk_size / 2, chunk_size / 2, 4):
+	for x in range(-chunk_size, chunk_size, 3):
 		if overflow:
 			break
-		for y in range(-chunk_size / 2, chunk_size / 2, 4):
-			var p = Vector3(x, 1000, y) + node.position + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
-			var biome = blender.biome(p.x, p.z)
-			if biome != World.Biome.GRASSLAND:
-				continue
-			raycast.position = p
-			raycast.force_raycast_update()
-			var pos = raycast.get_collision_point() 
-			var t = Transform3D(Basis(), pos - node.position)
+		for y in range(-chunk_size, chunk_size, 3):
+			var p = Vector3(x + player_position.x, 1000, y + player_position.y) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
+			grass_coords[i] = p
+			var t = Transform3D(Basis(), p)
 			t = t.scaled_local(Vector3(800, 100, 800))
 			t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
 			mm.set_instance_transform(i, t)
@@ -267,13 +283,11 @@ func place_grass(node: Node3D):
 			if i >= mm.instance_count:
 				overflow = true
 				break
-				
+	print(i)
 	mm.visible_instance_count = i
-	
 
 func set_player_coord_using_position(x: float, y: float, cs: float):
 	player_coord = convert_position_to_coord(x, y, cs)
-	player_coord_resolution[cs] = player_coord
 	
 func convert_position_to_coord(x: float, y: float, cs: float) -> Vector2:
 	return Vector2(floorf((x + cs / 2) / cs), floorf((y + cs / 2) / cs))

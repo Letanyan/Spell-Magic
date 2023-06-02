@@ -113,12 +113,14 @@ func _on_player_moved(delta: float):
 	if terrain_update_interval >= 0.5: # update once per 5 second
 		terrain_update_interval = 0
 		update_terrain()
+#		await get_tree().physics_frame
+#		chunker.update_environment(player.position.x, player.position.z)
 		
 func build_terrain():
 	var chunks = chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
-	chunker.update_environment()
+	chunker.update_environment(player.position.x, player.position.z)
 	update_population_at(chunker.loaded_chunks_location)
 
 
@@ -137,9 +139,9 @@ func update_terrain():
 		update_population_at(chunks.get("updated", []))
 		return chunks.get("updated", []).size() > 0
 
-	if await work.call():
-		await get_tree().process_frame
-		chunker.update_environment()
+	if await work.call() or true:
+		await get_tree().physics_frame
+		chunker.update_environment(player.position.x, player.position.z)
 		
 #	var thread = Thread.new()
 #	thread.start(work)

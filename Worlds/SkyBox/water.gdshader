@@ -12,5 +12,7 @@ void fragment() {
 //	ALBEDO = vec3(UV.x, 0, UV.y);
 	ALPHA = 0.9;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
+	ROUGHNESS = 0.0;
+	METALLIC = 1.0;
 //	NORMAL = mix(NORMAL, vec3(0, 0, 0), 0.5);
 }
