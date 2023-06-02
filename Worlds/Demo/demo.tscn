@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=16 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_6wr6k"]
@@ -24,9 +24,6 @@ fractal_octaves = 6
 frequency = 0.001
 fractal_type = 3
 fractal_octaves = 9
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_25qtt"]
-size = Vector3(1000, 1, 1000)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
 shader = ExtResource("2_6wr6k")
@@ -87,14 +84,6 @@ noise_elevation = SubResource("FastNoiseLite_r3lp4")
 noise_temperature = SubResource("FastNoiseLite_2xukv")
 noise_dryness = SubResource("FastNoiseLite_sx4vb")
 
-[node name="Ground" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109003, 0, 0)
-collision_mask = 7
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-shape = SubResource("BoxShape3D_25qtt")
-disabled = true
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_e47ut")
 
@@ -136,6 +125,7 @@ horizontal_alignment = 2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0215473)
+visible = false
 mesh = SubResource("PlaneMesh_f4gnr")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]

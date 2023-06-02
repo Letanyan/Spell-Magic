@@ -18,7 +18,6 @@ void fragment() {
 	// hack because godot generates textures with 1 pixel edges that have increased saturation?
 	vec2 pixel = 1.0 / vec2(textureSize(temperature, 0)); 
 	vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
-//	float e = texture(elevation, w).r;
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
 
@@ -32,7 +31,7 @@ void fragment() {
 		vec3(0, 0.25, 0.25),
 		vec3(1, 1, 0),
 		vec3(0.282, 0.133, 0.0),
-		vec3(1, 0.776, 0.282),
+		vec3(0.16, 0.53, 0.16),
 		vec3(0, 1, 1)
 	};
 	vec2 locations[9] = {

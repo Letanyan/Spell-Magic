@@ -6,7 +6,7 @@ var radius: float # number of chunks
 var subdivide_percent: float
 var raycast: RayCast3D
 const has_medium = true
-const has_water = true
+const has_water = false
 
 var player_coord: Vector2 = Vector2.ZERO
 var player_coord_resolution: Dictionary = {}
@@ -105,7 +105,7 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	set_player_coord_using_position(x, y, chunk_size)
 	return {"removed": removed, "updated": updated}
 		
-func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
+func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> Array:
 	var mesh = ArrayMesh.new()
 	var plane = PlaneMesh.new()
 	plane.size = Vector2(size, size)
@@ -118,20 +118,20 @@ func create_mesh(x: float, y: float, size: float, subdivide: float) -> Array:
 	mi.mesh = mesh
 	mi.name = "mesh"
 	
+	if r > radius:
+		return [mi]
+	
 	var mm = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.instance_count = 2000
-	var cy: PlaneMesh = PlaneMesh.new()
-	cy.size.x = 4
-	cy.size.y = 4
+	mm.instance_count = 4_500
+	var cy = load("res://Models/Grass/grass_01_mesh.tres")
 	mm.mesh = cy
 	var mmi = MultiMeshInstance3D.new()
 	mmi.multimesh = mm
 	mmi.name = "multimesh"
 	
 	for i in range(mm.instance_count):
-		var pos = Vector3(randf_range(-2, 2), 0, randf_range(-2, 2))
-		var t = Transform3D(Basis(), pos)
+		var t = Transform3D(Basis(), Vector3.ZERO)
 		mm.set_instance_transform(i, t)
 		
 	return [mi, mmi]
@@ -148,16 +148,16 @@ func create_water_mesh(x: float, y: float, size: float) -> Array:
 	var mi = MeshInstance3D.new()
 	mi.mesh = mesh
 	mi.name = "mesh"
-	var mmi = MultiMeshInstance3D.new()
 		
 	return [mi]
 		
 func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Node3D:
 	var node = Node3D.new()
 	if not is_water:
-		var meshes = create_mesh(x, y, cs, subdivide)
+		var meshes = create_mesh(x, y, cs, r, subdivide)
 		node.add_child(meshes[0])
-		node.add_child(meshes[1])
+		if r == radius:
+			node.add_child(meshes[1])
 	else:
 		var meshes = create_water_mesh(x, y, cs)
 		node.add_child(meshes[0])
@@ -204,7 +204,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mdt.commit_to_surface(mesh)
 	var mat = mesh.surface_get_material(0)
 	mat.shader = biome_shader
-	var R = size / float(int(size * subdivide_percent) + 1)
+	var R = size / float(int(size * subdivide_percent))
 	var texture_size = size / R
 	mat.set_shader_parameter("texture_width", texture_size)
 	mat.set_shader_parameter("texture_depth", texture_size)
@@ -252,38 +252,23 @@ func place_grass(node: Node3D):
 		if overflow:
 			break
 		for y in range(-chunk_size / 2, chunk_size / 2, 4):
-			var p = Vector3(x, 1000, y) + node.position
+			var p = Vector3(x, 1000, y) + node.position + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
 			var biome = blender.biome(p.x, p.z)
 			if biome != World.Biome.GRASSLAND:
-				continue
-			if randf() < 0.1:
 				continue
 			raycast.position = p
 			raycast.force_raycast_update()
 			var pos = raycast.get_collision_point() 
 			var t = Transform3D(Basis(), pos - node.position)
-#			var pos = Vector3(x, blender.height(p.x, p.z), y)
-#			var t = Transform3D(Basis(), pos)
-#			t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))
+			t = t.scaled_local(Vector3(800, 100, 800))
+			t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
 			mm.set_instance_transform(i, t)
 			i += 1
 			if i >= mm.instance_count:
 				overflow = true
 				break
-
-#	for j in range(i, mm.instance_count):
-#		var t = Transform3D(Basis(), Vector3(0, -1000, 0))
-#		mm.set_instance_transform(j, t)
-	
-#	for i in range(mm.instance_count):
-#		var _x = randf_range(-chunk_size / 2, chunk_size / 2)
-#		var _z = randf_range(-chunk_size / 2, chunk_size / 2)
-#		raycast.position = nav.position + Vector3(_x, 100, _z)
-#		raycast.force_raycast_update()
-#		var pos = raycast.get_collision_point() 
-#		var t = Transform3D(Basis(), pos - nav.position)
-#		t = t.rotated_local(Vector3.UP, randf_range(-PI, PI))
-#		mm.set_instance_transform(i, t)
+				
+	mm.visible_instance_count = i
 	
 
 func set_player_coord_using_position(x: float, y: float, cs: float):
@@ -292,70 +277,3 @@ func set_player_coord_using_position(x: float, y: float, cs: float):
 	
 func convert_position_to_coord(x: float, y: float, cs: float) -> Vector2:
 	return Vector2(floorf((x + cs / 2) / cs), floorf((y + cs / 2) / cs))
-
-func update_mesh_with_surface_tool(mi: MeshInstance3D, x: float, y: float, size: float):
-	var st = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-
-	var step = 8.0
-	for X in range(-size / 2.0, size / 2.0, step):
-		for Y in range(-size / 2.0, size / 2.0, step):
-			# Top Left
-			var v = Vector3(X, 0, Y)
-			v.y = blender.height(v.x + x, v.z + y)
-			st.set_normal(v.normalized())
-			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
-			st.add_vertex(v)
-			# Top Right
-			v.x += step
-			v.y = blender.height(v.x + x, v.z + y)
-			st.set_normal(v.normalized())
-			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
-			st.add_vertex(v)
-			# Bottom Left
-			v.x -= step
-			v.z += step
-			v.y = blender.height(v.x + x, v.z + y)
-			st.set_normal(v.normalized())
-			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
-			st.add_vertex(v)
-			
-			# Top Right
-			v.z -= step
-			v.x += step
-			v.y = blender.height(v.x + x, v.z + y)
-			st.set_normal(v.normalized())
-			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
-			st.add_vertex(v)
-			# Bottom Right
-			v.z += step
-			v.y = blender.height(v.x + x, v.z + y)
-			st.set_normal(v.normalized())
-			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
-			st.add_vertex(v)
-			# Bottom Left
-			v.x -= step
-			v.y = blender.height(v.x + x, v.z + y)
-			st.set_normal(v.normalized())
-			st.set_uv(Vector2((X + chunk_size / 2.0) / chunk_size, (Y + chunk_size / 2.0) / chunk_size))
-			st.add_vertex(v)
-			
-			
-	st.generate_normals()
-	st.generate_tangents()
-	mi.mesh = st.commit()
-	var mat = ShaderMaterial.new()
-	mat.shader = biome_shader
-	mat.set_shader_parameter("texture_width", size)
-	mat.set_shader_parameter("texture_depth", size)
-	mat.set_shader_parameter("elevation", blender.elevation_texture(x, y, size, size, 1))
-	mat.set_shader_parameter("temperature", blender.temperature_texture(x, y, size, size, 1))
-	mat.set_shader_parameter("dryness", blender.dryness_texture(x, y, size, size, 1))
-	mi.mesh.surface_set_material(0, mat)
-	var dist = max(max(abs(x), abs(y)) / size, 1)
-	for n in mi.get_children():
-		mi.remove_child(n)
-	if dist <= 1 or true:
-		mi.create_trimesh_collision()
-		var body: StaticBody3D = mi.get_child(0)
-		body.collision_layer = 1 << 0

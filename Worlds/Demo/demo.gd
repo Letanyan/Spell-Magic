@@ -1,9 +1,6 @@
 extends Node
 
 @onready var player: Player = $Player
-@onready var ground = $Ground
-# @onready var ground_mesh = $Ground/Mesh
-# @onready var ground_collision = $Ground/Collision
 @onready var menu: Menu = $Menu
 
 @export var noise_elevation: Noise
@@ -120,7 +117,7 @@ func _on_player_moved(delta: float):
 func build_terrain():
 	var chunks = chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
-		ground.add_child(chunk)
+		add_child(chunk)
 	chunker.update_environment()
 	update_population_at(chunker.loaded_chunks_location)
 
@@ -141,6 +138,7 @@ func update_terrain():
 		return chunks.get("updated", []).size() > 0
 
 	if await work.call():
+		await get_tree().process_frame
 		chunker.update_environment()
 		
 #	var thread = Thread.new()

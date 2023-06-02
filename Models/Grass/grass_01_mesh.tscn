@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bm6xgeph8njiw"]
+
+[ext_resource type="ArrayMesh" uid="uid://ci8gi4j1gqeoq" path="res://Models/Grass/grass_01_mesh.tres" id="1_dp357"]
+
+[node name="grass_01_mesh" type="MeshInstance3D"]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 50, 0, 0, 0)
+mesh = ExtResource("1_dp357")

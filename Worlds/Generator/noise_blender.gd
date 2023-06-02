@@ -108,46 +108,47 @@ func height(x: float, y: float) -> float:
 	
 	return result
 
+const biome_list = [
+	World.Biome.HFIL,
+	World.Biome.OTHERWORLD,
+	World.Biome.TUNDRA,
+	World.Biome.SAVANNAH,
+	World.Biome.JUNGLE,
+	World.Biome.DESERT,
+	World.Biome.FOREST,
+	World.Biome.GRASSLAND,
+	World.Biome.TAIGA,
+]
+const biome_locations = [
+	Vector2(1, 1), # hfil
+	Vector2(1, 0), # otherworld
+	Vector2(0, 0), # tundra
+	Vector2(0.75, 0.75), # savannah
+	Vector2(0.25, 0.75), # jungle
+	Vector2(0.75, 1.0), # desert
+	Vector2(0.5, 0.75), # forest
+	Vector2(0.5, 0.5), # grassland
+	Vector2(0.25, 0.75), # taiga
+]
+var distances = {
+	World.Biome.HFIL: 0.0,
+	World.Biome.OTHERWORLD: 0.0,
+	World.Biome.TUNDRA: 0.0,
+	World.Biome.SAVANNAH: 0.0,
+	World.Biome.JUNGLE: 0.0,
+	World.Biome.DESERT: 0.0,
+	World.Biome.FOREST: 0.0,
+	World.Biome.GRASSLAND: 0.0,
+	World.Biome.TAIGA: 0.0,
+}
+
 func biome_distances(x: float, y: float) -> Dictionary:
 	var d := dryness.get_noise_2d(x, y) / 2 + 0.5
 	var t := temperature.get_noise_2d(x, y) / 2 + 0.5
 	
-	var hfil := Vector2(1, 1)
-	var otherworld := Vector2(1, 0)
-	var tundra := Vector2(0, 0)
-	var savannah := Vector2(0.75, 0.75)
-	var jungle := Vector2(0.25, 0.75)
-	var desert := Vector2(0.75, 1.0)
-	var forest := Vector2(0.5, 0.75)
-	var grassland := Vector2(0.5, 0.5)
-	var taiga := Vector2(0.25, 0.75)
-	
-	var biome_list = [
-		World.Biome.HFIL,
-		World.Biome.OTHERWORLD,
-		World.Biome.TUNDRA,
-		World.Biome.SAVANNAH,
-		World.Biome.JUNGLE,
-		World.Biome.DESERT,
-		World.Biome.FOREST,
-		World.Biome.GRASSLAND,
-		World.Biome.TAIGA,
-	]
-	var biome_locations = [
-		hfil,
-		otherworld,
-		tundra,
-		savannah,
-		jungle,
-		desert,
-		forest,
-		grassland,
-		taiga,
-	]
 	var p := Vector2(d, t)
 	var min_distance := INF
 	var pos := 0
-	var distances = {}
 	var total := 0.0
 	for i in range(biome_locations.size()):
 		var q = biome_locations[i]
