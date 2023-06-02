@@ -121,7 +121,7 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 		origin = player.position
 	match kind:
 		Kind.ORIGIN:
-			var dist = sqrt(origin.distance_squared_to(me.position))
+			var dist = origin.distance_to(me.position)
 			if dist > max_radius:
 				return origin.lerp(me.position, max_radius / dist)
 			elif dist < min_radius:

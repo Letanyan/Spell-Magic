@@ -59,7 +59,10 @@ func _physics_process(delta):
 			PathStyle.Mover.ABSOLUTE_XZ:
 				var v = movement["absolute"]
 				var t = movement["target"]
-	#			position.y = v.y
+				var g = Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
+				if position.y < g:
+					position.y = g
+					t.y = 0
 				position += Vector3(v.x, v.y + t.y, v.z)
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
 			look_at(player.position)

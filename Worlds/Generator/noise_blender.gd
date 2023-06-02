@@ -80,7 +80,6 @@ func height(x: float, y: float) -> float:
 	var e = elevation.get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
 	
 	var biomes = biome_distances(x, y)
-	var distances = biomes["distances"]
 	
 	var curve_list = {
 		World.Biome.GRASSLAND: grassland_curve,
@@ -95,7 +94,6 @@ func height(x: float, y: float) -> float:
 	}
 	
 	var result = 0.0
-#	var total_size = biomes["total"]
 	
 	var total_size := 0.0
 	for b in distances:
