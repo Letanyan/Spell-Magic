@@ -79,7 +79,7 @@ static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
 func height(x: float, y: float) -> float:
 	var e = elevation.get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
 	
-	var biomes = biome_distances(x, y)
+	compute_biome_distances(x, y)
 	
 	var curve_list = {
 		World.Biome.GRASSLAND: grassland_curve,
@@ -140,7 +140,7 @@ var distances = {
 	World.Biome.TAIGA: 0.0,
 }
 
-func biome_distances(x: float, y: float) -> Dictionary:
+func compute_biome_distances(x: float, y: float) -> Dictionary:
 	var d := dryness.get_noise_2d(x, y) / 2 + 0.5
 	var t := temperature.get_noise_2d(x, y) / 2 + 0.5
 	
@@ -160,7 +160,7 @@ func biome_distances(x: float, y: float) -> Dictionary:
 	return {"distances": distances, "biome": biome_list[pos], "total": total}
 	
 func biome(x: float, y: float) -> World.Biome:
-	return biome_distances(x, y)["biome"]
+	return compute_biome_distances(x, y)["biome"]
 	
 func biome_p(x: float, y: float) -> World.Biome:
 	var e = elevation.get_noise_2d(x, y) / 2 + 0.5

@@ -4,11 +4,12 @@ var blender: NoiseBlender
 var chunk_size: float
 var radius: float # number of chunks
 var subdivide_percent: float
-var raycast: RayCast3D
+
+var grass_size: float
 
 const has_medium = true
 const has_water = false
-const has_grass = false
+const has_grass = true
 
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
@@ -33,6 +34,7 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	subdivide_percent = 1.0 / 16.0
 	blender = NoiseBlender.new(e, d, t)
 	chunk_size = cs
+	grass_size = cs * 0.75
 	radius = r
 	
 	
@@ -60,7 +62,7 @@ func init_chunks(x: float, y: float) -> Array:
 	if has_grass:
 		var gm = MultiMesh.new()
 		gm.transform_format = MultiMesh.TRANSFORM_3D
-		gm.instance_count = 30_000
+		gm.instance_count = 24_500
 		gm.visible_instance_count = 0
 		gm.mesh = load("res://Models/Grass/grass_01_mesh.tres")
 		grass_mesh = MultiMeshInstance3D.new()
@@ -231,7 +233,7 @@ func update_environment(x: float, y: float):
 	var old_position = player_position
 	player_position = Vector2(x, y)
 	var delta = player_position - old_position
-	place_grass(Vector2(chunk_size * sign(delta.x) * 2, chunk_size * sign(delta.y) * 2))
+	place_grass(Vector2(grass_size * sign(delta.x) * 2, grass_size * sign(delta.y) * 2))
 
 func update_chunk_environment(node: Node3D):
 	pass
@@ -246,19 +248,22 @@ func place_grass(delta: Vector2):
 	
 	var mm: MultiMesh = grass_mesh.multimesh
 	
-	for i in range(mm.instance_count):
-		var pos = grass_coords.get(i, null)
-		if pos == null:
-			continue
-		var horz = pos.x > player_position.x + chunk_size or pos.x < player_position.x - chunk_size
-		var vert = pos.z > player_position.y + chunk_size or pos.z < player_position.y - chunk_size
+	for i in range(mm.visible_instance_count):
+		var pos = grass_coords[i]
+		var horz = pos.x > player_position.x + grass_size or pos.x < player_position.x - grass_size
+		var vert = pos.z > player_position.y + grass_size or pos.z < player_position.y - grass_size
 		if horz or vert or ignore_delta:
 			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))
 			var biome = blender.biome(p.x, p.z)
 			if biome != World.Biome.GRASSLAND:
 				p.y = -1000
 			else:
-				p.y = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z)
+				var no_hit = Ptr.new(false)
+				var wh = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
+				if no_hit.data:
+					p.y = -1000
+				else:
+					p.y = wh
 			grass_coords[i] = p
 			var t = Transform3D(Basis(), p)
 			t = t.scaled_local(Vector3(800, 100, 800))
@@ -272,21 +277,31 @@ func init_grass():
 	var mm: MultiMesh = grass_mesh.multimesh
 	var i = 0
 	seed(0)
-	var overflow = false
-	for x in range(-chunk_size, chunk_size, 3):
-		if overflow:
-			break
-		for y in range(-chunk_size, chunk_size, 3):
-			var p = Vector3(x + player_position.x, 1000, y + player_position.y) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
-			grass_coords[i] = p
-			var t = Transform3D(Basis(), p)
-			t = t.scaled_local(Vector3(800, 100, 800))
-			t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
-			mm.set_instance_transform(i, t)
-			i += 1
-			if i >= mm.instance_count:
-				overflow = true
-				break
+	var R = 16
+	for _X in range(-grass_size, grass_size + 1, R * 2):
+		for y in range(-grass_size, grass_size + 1, R):
+			@warning_ignore("integer_division")
+			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R
+			for r in range(0, R + 1, 4):
+				var a = 0.0
+				while a <= PI * 2:
+					a += PI / 4.0 * (1.0 / (floor(r / 4.0) + 1))
+					var nx = cos(a) * r + x
+					var ny = sin(a) * r + y
+					var is_top_left = Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x - R, y - R), R)
+					var is_top_right = Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x + R, y - R), R)					
+					if (is_top_left or is_top_right):
+						continue
+					var p = Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
+					grass_coords[i] = p
+					var t = Transform3D(Basis(), p)
+					t = t.scaled_local(Vector3(800, 100, 800))
+					t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
+					mm.set_instance_transform(i, t)
+					i += 1
+					if r == 0:
+						break
+			
 	mm.visible_instance_count = i
 
 func set_player_coord_using_position(x: float, y: float, cs: float):

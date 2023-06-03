@@ -131,12 +131,14 @@ static func get_ray_intersection(p: Node3D, from: Vector3, target: Vector3) -> C
 			break
 	return c
 	
-static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float) -> float:
+static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit = Ptr.new(false)) -> float:
 	var query = PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result = space_state.intersect_ray(query)
 	if result.is_empty():
+		no_hit.data = true
 		return 0
 	else:
+		no_hit.data = false
 		return result.get("position", Vector3.ZERO).y
 	
 static func build_graph(p: Node3D, current_position: Vector3, target: Vector3) -> Dictionary:

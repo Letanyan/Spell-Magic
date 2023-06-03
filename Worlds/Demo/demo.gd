@@ -9,7 +9,6 @@ extends Node
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
 
-@onready var raycast = $RayCast3D
 @onready var skybox: SkyBox
 
 var terrain_update_interval = 0
@@ -41,7 +40,6 @@ func _ready():
 	noise_dryness.frequency = 0.0001
 	
 	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 2)
-	chunker.raycast = raycast
 	build_terrain()
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)

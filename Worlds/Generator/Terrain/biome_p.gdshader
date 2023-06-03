@@ -12,12 +12,10 @@ void vertex() {
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
-void fragment() {
-	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
-
+vec3 biome_color(vec4 V, vec2 uv) {
 	// hack because godot generates textures with 1 pixel edges that have increased saturation?
 	vec2 pixel = 1.0 / vec2(textureSize(temperature, 0)); 
-	vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
+	vec2 w = vec2(clamp(uv.x, pixel.x, 1.0 - pixel.x), clamp(uv.y, pixel.y, 1.0 - pixel.y));
 	float t = texture(temperature, w).r;
 	float d = texture(dryness, w).r;
 
@@ -63,12 +61,19 @@ void fragment() {
 			index = i;
 		}
 	}
+	
+	return color;
+}
 
-//	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
-//	if (norm_angle > inversesqrt(8.0)) {
-//		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
-//		color = mix(color, vec3(0.15), 0.25);
-//	}
+void fragment() {
+	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
+	
+	vec3 color = biome_color(v, UV);
+	//	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
+	//	if (norm_angle > inversesqrt(8.0)) {
+	//		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
+	//		color = mix(color, vec3(0.15), 0.25);
+	//	}
 
 	ALBEDO = color;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));

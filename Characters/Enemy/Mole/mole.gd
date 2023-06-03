@@ -43,7 +43,7 @@ func _ready():
 	var p = PathStyle.Pathway.new()
 	p.append([s1, r1, r1d, s2, r2, r2d, s3, r3, r3d, s4, r4, r4d])
 	
-	attack_path = PathStyle.new(randf()).follow_path(p).set_use_player_as_origin().speed(5).use_absolute().align_y_to_origin().look_at_player()
+	attack_path = PathStyle.new(randf()).follow_path(p).set_use_player_as_origin().speed(5).use_absolute().align_y_to_origin()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.BAT: true}, false)
