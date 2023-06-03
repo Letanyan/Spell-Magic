@@ -268,8 +268,7 @@ func place_grass(delta: Vector2):
 			mm.set_instance_custom_data(i, biome_dict["color"])
 			grass_coords[i] = p
 			var t = Transform3D(Basis(), p)
-			t = t.scaled_local(Vector3(100, 100, 100))
-			t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
+			t = t.scaled_local(Vector3(100, 100, 100) * 2)
 			mm.set_instance_transform(i, t)
 		
 	
@@ -284,7 +283,7 @@ func init_grass():
 		for y in range(-grass_size, grass_size + 1, R):
 			@warning_ignore("integer_division")
 			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R
-			for r in range(0, R + 1, 4):
+			for r in range(0, R + 1, 2):
 				var a = 0.0
 				while a <= PI * 2:
 					a += PI / 4.0 * (1.0 / (floor(r / 4.0) + 1))
