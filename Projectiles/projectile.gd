@@ -285,6 +285,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 	for i in range(count):
 		var obj = shape_cast.get_collider(i)
 		var point = shape_cast.get_collision_point(i)
+		if spell.element == Spell.Element.ROCK and (obj == get_node("body")):
+			continue
 		if obj is Area3D:
 			_on_area_entered(obj, [point])
 		else:
