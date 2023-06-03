@@ -8,7 +8,7 @@ var subdivide_percent: float
 var grass_size: float
 
 const has_medium = true
-const has_water = false
+const has_water = true
 const has_grass = true
 
 var player_position: Vector2 = Vector2.ZERO
@@ -100,7 +100,7 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
 				chunks[i].position.y = -100	
 			else:
-				chunks[i].position.y = 0 if not is_water else 400
+				chunks[i].position.y = 0.0 if not is_water else Globals.sea_level()
 
 		if should_update:
 			removed_locations.append(locations[i])
@@ -166,7 +166,7 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 		if not is_water and abs(coord.x) <= int(radius / 2) and abs(coord.y) <= int(radius / 2):
 			node.position.y = -100
 		else:
-			node.position.y = 0 if not is_water else 400
+			node.position.y = 0.0 if not is_water else Globals.sea_level()
 
 	locations.append(Vector2(x, y))
 	chunks.append(node)
@@ -260,7 +260,7 @@ func place_grass(delta: Vector2):
 			else:
 				var no_hit = Ptr.new(false)
 				var wh = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
-				if no_hit.data:
+				if no_hit.data or wh < Globals.sea_level():
 					p.y = -1000
 				else:
 					p.y = wh

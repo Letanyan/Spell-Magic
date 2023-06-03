@@ -56,8 +56,11 @@ func random_building(probs: Dictionary) -> World.Building:
 	
 func prepare_entity(world: Node3D, entity: Node3D, pos: Vector3, is_enemy: bool):
 	if entity != null:
+		var wh = Navigator.get_world_height(world.get_world_3d().direct_space_state, pos.x, pos.z) + pos.y
+		if wh < Globals.sea_level():
+			return null
 		entity.position.x = pos.x
-		entity.position.y = Navigator.get_world_height(world.get_world_3d().direct_space_state, pos.x, pos.z) + pos.y
+		entity.position.y = wh
 		entity.position.z = pos.z
 		if is_enemy:
 			entity.player = player

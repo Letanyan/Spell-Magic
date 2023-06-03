@@ -107,6 +107,12 @@ func _input(event):
 
 
 func _on_player_moved(delta: float):
+	var rect: ColorRect = get_node("CanvasLayer/ColorRect")
+	if player.position.y + 2.0 < Globals.sea_level():
+		rect.material.set_shader_parameter("underwater", 0.5)
+	else:
+		rect.material.set_shader_parameter("underwater", 0.0)
+		
 	terrain_update_interval += delta
 	if terrain_update_interval >= 0.5: # update once per 5 second
 		terrain_update_interval = 0
