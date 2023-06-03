@@ -114,7 +114,7 @@ func _on_player_moved(delta: float):
 		rect.material.set_shader_parameter("underwater", 0.0)
 		
 	terrain_update_interval += delta
-	if terrain_update_interval >= 0.5: # update once per 5 second
+	if terrain_update_interval >= 0.25: # update once per 5 second
 		terrain_update_interval = 0
 		update_terrain()
 #		await get_tree().physics_frame

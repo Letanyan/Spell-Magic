@@ -1,4 +1,4 @@
-[gd_resource type="ArrayMesh" load_steps=4 format=3 uid="uid://ci8gi4j1gqeoq"]
+[gd_resource type="ArrayMesh" load_steps=6 format=3 uid="uid://ci8gi4j1gqeoq"]
 
 [sub_resource type="Shader" id="Shader_repho"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.2.stable's StandardMaterial3D.
@@ -19,20 +19,19 @@ uniform vec3 uv1_offset;
 uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 
+varying vec4 instance_custom;
 
 void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
+	instance_custom = INSTANCE_CUSTOM;
 }
-
-
-
-
-
 
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	albedo_tex = instance_custom;
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	ALBEDO = instance_custom.rgb;
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
@@ -43,10 +42,15 @@ void fragment() {
 }
 "
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f4dy6"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_33m4y"]
+noise = SubResource("FastNoiseLite_f4dy6")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xaxk8"]
 render_priority = 0
 shader = SubResource("Shader_repho")
-shader_parameter/albedo = Color(0.16, 0.53, 0.16, 1)
+shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = Plane(1, 0, 0, 0)
@@ -56,6 +60,7 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_33m4y")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_5b1by"]
 _surfaces = [{

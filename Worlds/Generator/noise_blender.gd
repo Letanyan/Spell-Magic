@@ -128,6 +128,17 @@ const biome_locations = [
 	Vector2(0.5, 0.5), # grassland
 	Vector2(0.25, 0.75), # taiga
 ]
+const biome_colors = [
+	Vector3(1, 0, 0),
+	Vector3(0, 0, 0),
+	Vector3(1, 1, 1),
+	Vector3(1, 0.5, 0),
+	Vector3(0, 0.25, 0.25),
+	Vector3(1, 1, 0),
+	Vector3(0.282, 0.133, 0.0),
+	Vector3(0.16, 0.53, 0.16),
+	Vector3(0, 1, 1)
+]
 var distances = {
 	World.Biome.HFIL: 0.0,
 	World.Biome.OTHERWORLD: 0.0,
@@ -148,16 +159,21 @@ func compute_biome_distances(x: float, y: float) -> Dictionary:
 	var min_distance := INF
 	var pos := 0
 	var total := 0.0
+	var color := Vector3(1, 1, 1)
 	for i in range(biome_locations.size()):
 		var q = biome_locations[i]
 		var dist := p.distance_to(q)
 		distances[biome_list[i]] = dist
 		total += dist
+		var c = lerp(biome_colors[i], Vector3(1, 1, 1), dist)
+		if dist <= 1.0:
+			color = color * c
 		if dist < min_distance:
 			min_distance = dist
 			pos = i
 	
-	return {"distances": distances, "biome": biome_list[pos], "total": total}
+	var clr = Color(color.x, color.y, color.z)
+	return {"distances": distances, "biome": biome_list[pos], "total": total, "color": clr}
 	
 func biome(x: float, y: float) -> World.Biome:
 	return compute_biome_distances(x, y)["biome"]

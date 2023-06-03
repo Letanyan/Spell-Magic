@@ -34,7 +34,7 @@ func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256
 	subdivide_percent = 1.0 / 16.0
 	blender = NoiseBlender.new(e, d, t)
 	chunk_size = cs
-	grass_size = cs * 0.75
+	grass_size = cs * 0.5
 	radius = r
 	
 	
@@ -62,6 +62,7 @@ func init_chunks(x: float, y: float) -> Array:
 	if has_grass:
 		var gm = MultiMesh.new()
 		gm.transform_format = MultiMesh.TRANSFORM_3D
+		gm.use_custom_data = true
 		gm.instance_count = 24_500
 		gm.visible_instance_count = 0
 		gm.mesh = load("res://Models/Grass/grass_01_mesh.tres")
@@ -254,8 +255,8 @@ func place_grass(delta: Vector2):
 		var vert = pos.z > player_position.y + grass_size or pos.z < player_position.y - grass_size
 		if horz or vert or ignore_delta:
 			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))
-			var biome = blender.biome(p.x, p.z)
-			if biome != World.Biome.GRASSLAND:
+			var biome_dict = blender.compute_biome_distances(p.x, p.z)
+			if biome_dict["biome"] != World.Biome.GRASSLAND:
 				p.y = -1000
 			else:
 				var no_hit = Ptr.new(false)
@@ -264,9 +265,10 @@ func place_grass(delta: Vector2):
 					p.y = -1000
 				else:
 					p.y = wh
+			mm.set_instance_custom_data(i, biome_dict["color"])
 			grass_coords[i] = p
 			var t = Transform3D(Basis(), p)
-			t = t.scaled_local(Vector3(800, 100, 800))
+			t = t.scaled_local(Vector3(100, 100, 100))
 			t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
 			mm.set_instance_transform(i, t)
 		
@@ -294,10 +296,10 @@ func init_grass():
 						continue
 					var p = Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
 					grass_coords[i] = p
-					var t = Transform3D(Basis(), p)
-					t = t.scaled_local(Vector3(800, 100, 800))
-					t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
-					mm.set_instance_transform(i, t)
+#					var t = Transform3D(Basis(), p)
+#					t = t.scaled_local(Vector3(800, 100, 800))
+#					t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
+#					mm.set_instance_transform(i, t)
 					i += 1
 					if r == 0:
 						break
