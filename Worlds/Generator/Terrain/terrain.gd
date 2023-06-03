@@ -65,7 +65,7 @@ func init_chunks(x: float, y: float) -> Array:
 		gm.use_custom_data = true
 		gm.instance_count = 24_500
 		gm.visible_instance_count = 0
-		gm.mesh = load("res://Models/Grass/grass_01_mesh.tres")
+		gm.mesh = load("res://Models/Grass/grass_02_mesh.tres")
 		grass_mesh = MultiMeshInstance3D.new()
 		grass_mesh.multimesh = gm
 		result.append(grass_mesh)
@@ -296,10 +296,6 @@ func init_grass():
 						continue
 					var p = Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
 					grass_coords[i] = p
-#					var t = Transform3D(Basis(), p)
-#					t = t.scaled_local(Vector3(800, 100, 800))
-#					t = t.rotated_local(Vector3.UP, randf() * 2 * PI)
-#					mm.set_instance_transform(i, t)
 					i += 1
 					if r == 0:
 						break
