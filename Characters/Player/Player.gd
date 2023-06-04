@@ -60,7 +60,9 @@ func _physics_process(delta):
 			animator.play("Man_Run", 1)
 			
 		if velocity:
-			player_moved.emit(delta)
+			var space = get_world_3d().space
+			var state = PhysicsServer3D.space_get_direct_state(space)
+			player_moved.emit(delta, state)
 			var rect: ColorRect = get_node("CanvasLayer/ColorRect")
 			if position.y + 2.0 < Globals.sea_level():
 				rect.material.set_shader_parameter("underwater", 0.5)

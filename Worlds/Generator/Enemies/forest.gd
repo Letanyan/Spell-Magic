@@ -23,7 +23,8 @@ const FOREST_STRUCTURES: Dictionary = {
 	FOREST_STRUCTURES_KIND.MOLE: 0.05
 }
 
-static func populate(pop: Population, world: Node3D, area: Array, spacing: float):
+static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Array, spacing: float) -> Array:
+	var result = []
 	while area.size() > 0:
 		var struct = pop.random_entity_from_distribution(FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
 		match struct:
@@ -31,24 +32,24 @@ static func populate(pop: Population, world: Node3D, area: Array, spacing: float
 				area.pop_back()
 			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
 				var pos = area.pop_back()
-				var p = pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, world, pos.x, pos.y, spacing)
+				var p = pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos.x, pos.y, spacing)
 				if p != null:
-					world.add_child(p)
+					result.append(p)
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
 				var pos = area.pop_back()
-				var p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, world, pos.x, pos.y, spacing)
+				var p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos.x, pos.y, spacing)
 				if p != null:
-					world.add_child(p)
+					result.append(p)
 			FOREST_STRUCTURES_KIND.BAT:
 				var pos = area.pop_back()
-				var p = pop.spawn_enemy(World.Enemy.BAT, world, pos.x, pos.y, spacing)
+				var p = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
 				if p != null:
-					world.add_child(p)
+					result.append(p)
 			FOREST_STRUCTURES_KIND.MOLE:
 				var pos = area.pop_back()
-				var p = pop.spawn_enemy(World.Enemy.MOLE, world, pos.x, pos.y, spacing)
+				var p = pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
 				if p != null:
-					world.add_child(p)		
+					result.append(p)		
 			FOREST_STRUCTURES_KIND.HORDE:
 				if area.size() < 100:
 					area.pop_back()
@@ -62,7 +63,9 @@ static func populate(pop: Population, world: Node3D, area: Array, spacing: float
 				for i in range(count):
 					x += v.x * spacing / 4.0
 					y += v.y * spacing / 4.0
-					var p = pop.spawn_enemy(World.Enemy.UNDEAD, world, x, y, spacing)
-					world.add_child(p)
+					var p = pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)
+					result.append(p)
 					v.rotated(float(i) / count * 2.0 * PI)
+			
+	return result
 			

@@ -257,7 +257,7 @@ func place_grass(delta: Vector2):
 		if dist < 1.0:
 			dist = 1.0
 		else:
-			dist = 1.0 - (dist - 1.0)
+			dist = (1.0 - (dist - 1.0))
 		
 		if horz or vert or ignore_delta:
 			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))

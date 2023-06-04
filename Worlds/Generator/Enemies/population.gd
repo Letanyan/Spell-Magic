@@ -7,6 +7,8 @@ var player: Player
 var coord: Vector2
 var chunk_size: float
 
+var is_ready := false
+
 var inhabitants: Array[Enemy] = []
 var garden: Array[Node3D] = []
 
@@ -54,9 +56,9 @@ func random_foliage(probs: Dictionary) -> World.Foliage:
 func random_building(probs: Dictionary) -> World.Building:
 	return random_entity_from_distribution(probs) as World.Building
 	
-func prepare_entity(world: Node3D, entity: Node3D, pos: Vector3, is_enemy: bool):
+func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool):
 	if entity != null:
-		var wh = Navigator.get_world_height(world.get_world_3d().direct_space_state, pos.x, pos.z) + pos.y
+		var wh = Navigator.get_world_height(state, pos.x, pos.z) + pos.y
 		if wh < Globals.sea_level():
 			return null
 		entity.position.x = pos.x
@@ -69,7 +71,7 @@ func prepare_entity(world: Node3D, entity: Node3D, pos: Vector3, is_enemy: bool)
 			garden.append(entity)
 	return entity
 	
-func spawn_enemy(enemy: World.Enemy, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
+func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
 	var result = null
 	var pos = Vector3(x, 0, y)
 	match enemy:
@@ -82,10 +84,9 @@ func spawn_enemy(enemy: World.Enemy, world: Node3D, x: float, y: float, spacing:
 		World.Enemy.MOLE:
 			result = mole.instantiate()
 			result.name = "Mole" + str(rng.randi())
+	return prepare_entity(state, result, pos, true)
 	
-	return prepare_entity(world, result, pos, true)
-	
-func spawn_foliage(foliage: World.Foliage, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
+func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result = null
 	var pos = Vector3(x, 0, y)
 	match foliage:
@@ -95,9 +96,9 @@ func spawn_foliage(foliage: World.Foliage, world: Node3D, x: float, y: float, sp
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 			result.name = World.Foliage.keys()[foliage] + str(rng.randi())
 	
-	return prepare_entity(world, result, pos, false)
+	return prepare_entity(state, result, pos, false)
 	
-func spawn_building(building: World.Building, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
+func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result = null
 	var pos = Vector3(x, 0, y)
 	match building:
@@ -107,16 +108,16 @@ func spawn_building(building: World.Building, world: Node3D, x: float, y: float,
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			result.name = World.Building.keys()[building] + str(rng.randi())
 	
-	return prepare_entity(world, result, pos, false)
+	return prepare_entity(state, result, pos, false)
 	
-func spawn_random_enemy(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Enemy:
-	return spawn_enemy(random_enemy(biome_prob), world, x, y, spacing)
+func spawn_random_enemy(biome_prob: Dictionary, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
+	return spawn_enemy(random_enemy(biome_prob), state, x, y, spacing)
 	
-func spawn_random_foliage(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
-	return spawn_foliage(random_foliage(biome_prob), world, x, y, spacing)
+func spawn_random_foliage(biome_prob: Dictionary, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
+	return spawn_foliage(random_foliage(biome_prob), state, x, y, spacing)
 	
-func spawn_random_building(biome_prob: Dictionary, world: Node3D, x: float, y: float, spacing: float) -> Node3D:
-	return spawn_building(random_building(biome_prob), world, x, y, spacing)
+func spawn_random_building(biome_prob: Dictionary, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
+	return spawn_building(random_building(biome_prob), state, x, y, spacing)
 	
 static func contains_neighbour_point(collection: Array, point: Vector2, spacing: float) -> bool:
 	for p in collection:
@@ -142,24 +143,25 @@ func group_spawn_points(spacing: float) -> Dictionary:
 				biomes.append(biome)
 	return {"points": result, "biomes": biomes}
 	
-func spawn_all_into_world(world: Node3D):
+func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
 	const spacing = 16.0
 	var areas = group_spawn_points(spacing)
 	var points = areas["points"]
 	var biomes = areas["biomes"]
 
+	var result = []
 	for i in range(biomes.size()):
 		match biomes[i]:
-			World.Biome.GRASSLAND: GrasslandGen.populate(self, world, points[i], spacing)
-			World.Biome.FOREST: ForestGen.populate(self, world, points[i], spacing)
+			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
+			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))
+	
+	return result
 	
 func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
 		habitant.queue_free()
-#		world.remove_child(habitant)
 	for f in garden:
 		f.queue_free()
-#		world.remove_child(f)
 	inhabitants.clear()
 	garden.clear()
 
