@@ -41,6 +41,7 @@ var spells_index_map = {}
 
 @onready var element_combo: OptionButton = $container/element_combo
 @onready var chain_edit: LineEdit = $container/chain/edit
+@onready var chain_combo: OptionButton = $container/chain_combo
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
 
@@ -87,6 +88,7 @@ func _on_spell_index_item_selected(index):
 	
 	element_combo.selected = spell.element
 	chain_edit.text = spell.chain.name if spell.chain else ""
+	chain_combo.selected = spell.chain_cast_kind
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
 	$container.visible = true
@@ -228,6 +230,12 @@ func _on_element_combo_selected(index):
 	if current_index < 0:
 		return
 	book.spells[current_index].element = index as Spell.Element
+	update_spells_that_chain_to_current_spell()
+
+func _on_chain_combo_selected(index):
+	if current_index < 0:
+		return
+	book.spells[current_index].chain_cast_kind = index as Spell.ChainCastKind
 	update_spells_that_chain_to_current_spell()
 
 func _on_x_text_changed(new_text):

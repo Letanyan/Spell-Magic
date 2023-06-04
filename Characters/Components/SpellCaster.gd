@@ -20,6 +20,8 @@ func update(body, delta):
 		var p: SpellBody = particles[i]
 		p.update_spell(t, spell_variables(body, false))
 		if p.has_expired(t):
+			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
+				p.cast_spell(func(np): if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			should_remove.append(i)
 
 	should_remove.reverse()

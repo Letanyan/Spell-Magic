@@ -227,9 +227,9 @@ offset_bottom = 559.0
 
 [node name="view_chain_button" type="Button" parent="container"]
 layout_mode = 0
-offset_left = 424.0
+offset_left = 568.0
 offset_top = 312.0
-offset_right = 469.0
+offset_right = 613.0
 offset_bottom = 343.0
 text = "View"
 
@@ -275,6 +275,21 @@ popup/item_4/text = "Ice"
 popup/item_4/id = 4
 popup/item_5/text = "Electric"
 popup/item_5/id = 5
+
+[node name="chain_combo" type="OptionButton" parent="container"]
+layout_mode = 0
+offset_left = 424.0
+offset_top = 312.0
+offset_right = 552.0
+offset_bottom = 343.0
+item_count = 3
+selected = 0
+popup/item_0/text = "At Start"
+popup/item_0/id = 0
+popup/item_1/text = "At End"
+popup/item_1/id = 1
+popup/item_2/text = "On Hit"
+popup/item_2/id = 2
 
 [node name="SortButton" type="MenuButton" parent="."]
 layout_mode = 0
@@ -380,4 +395,5 @@ text = "Duplicate"
 [connection signal="pressed" from="container/view_chain_button" to="." method="_on_view_chain_button_pressed"]
 [connection signal="text_changed" from="container/mana/edit" to="." method="_on_M_text_changed"]
 [connection signal="item_selected" from="container/element_combo" to="." method="_on_element_combo_selected"]
+[connection signal="item_selected" from="container/chain_combo" to="." method="_on_chain_combo_selected"]
 [connection signal="pressed" from="Duplicate" to="." method="_on_duplicate_pressed"]

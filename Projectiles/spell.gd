@@ -1,6 +1,7 @@
 class_name Spell
 
 enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
+enum ChainCastKind { START, END, HIT }
 
 @export var element: Element
 @export var name: String
@@ -21,6 +22,10 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 @export var mana_cost: float = 0.0:
 	set(value):
 		mana_cost = clamp(value, 0, 100)
+var chain_cast_kind: ChainCastKind:
+	set(value):
+		chain_cast_kind = value
+		calculate_cooldown()
 var chain: Spell:
 	set(spell):
 		chain = spell
@@ -62,7 +67,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
 	
-	calculate_cooldown()
+	chain_cast_kind = ChainCastKind.START
 	
 func duplicate() -> Spell:
 	var result = Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost)
@@ -99,9 +104,12 @@ func impulse_length() -> float:
 			
 func calculate_cooldown():
 	var chain_cost = 0.0
+	var basic_cost = (power + 1) * count * (1 + duration) - mana_cost
+	if chain_cast_kind != ChainCastKind.START:
+		basic_cost += basic_cost
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
-	cooldown = (power + 1) * count * (1 + duration) + chain_cost - mana_cost
+	cooldown = basic_cost + chain_cost
 	return cooldown
 	
 const fire = preload("res://Projectiles/fire.tscn")
@@ -177,7 +185,7 @@ func save_dict():
 		"x": x, "y": y, "z": z, "r": r,
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
-		"is_rel": follow, "el": element,
+		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
 		"name": name, "id": id, "mana": mana_cost
 	}
 
@@ -200,6 +208,7 @@ func load_dict(dict: Dictionary):
 		chain.load_dict(dict["chain"])
 	id = dict.get("id", -1)
 	mana_cost = dict.get("mana", 0.0)
+	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)

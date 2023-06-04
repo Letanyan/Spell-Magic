@@ -21,7 +21,7 @@ var to_remove = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if spell.chain != null:
+	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 
 func _physics_process(delta):
@@ -151,6 +151,8 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			# Look at `_on_area_entered` for implementation
 			pass
 	
+	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
+		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 	if is_player or is_enemy:
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
@@ -174,6 +176,8 @@ func _on_area_entered(area, contact_points: Array[Vector3]):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
+	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
+		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 	if is_player or is_enemy:
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
