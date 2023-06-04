@@ -25,7 +25,7 @@ vertical_alignment = 1
 
 [node name="spell" type="LineEdit" parent="."]
 layout_mode = 0
-offset_left = 496.0
+offset_left = 512.0
 offset_top = 8.0
 offset_right = 800.0
 offset_bottom = 40.0
@@ -40,15 +40,15 @@ item_count = 6
 selected = 0
 popup/item_0/text = "None"
 popup/item_0/id = 0
-popup/item_1/text = "Fire"
+popup/item_1/text = "Shoot"
 popup/item_1/id = 1
-popup/item_2/text = "Pick"
+popup/item_2/text = "Select"
 popup/item_2/id = 2
-popup/item_3/text = "Fire Picked"
+popup/item_3/text = "Shoot Selected"
 popup/item_3/id = 3
-popup/item_4/text = "Charged Fire"
+popup/item_4/text = "Charged Shot"
 popup/item_4/id = 4
-popup/item_5/text = "Modify"
+popup/item_5/text = "Modifier Key"
 popup/item_5/id = 5
 
 [connection signal="text_changed" from="spell" to="." method="_on_spell_text_changed"]

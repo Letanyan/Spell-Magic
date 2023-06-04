@@ -61,6 +61,11 @@ func _physics_process(delta):
 			
 		if velocity:
 			player_moved.emit(delta)
+			var rect: ColorRect = get_node("CanvasLayer/ColorRect")
+			if position.y + 2.0 < Globals.sea_level():
+				rect.material.set_shader_parameter("underwater", 0.5)
+			else:
+				rect.material.set_shader_parameter("underwater", 0.0)
 		
 	var rate = 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)

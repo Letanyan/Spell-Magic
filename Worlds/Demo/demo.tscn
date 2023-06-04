@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=16 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_6wr6k"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="3_xlx08"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/water.gdshader" id="6_xo78l"]
 [ext_resource type="Texture2D" uid="uid://xty8pnig0wg0" path="res://Worlds/SkyBox/water_noise.tres" id="7_67weq"]
-[ext_resource type="Shader" path="res://Worlds/Demo/screen.gdshader" id="8_m740u"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r3lp4"]
 frequency = 0.001
@@ -79,15 +78,14 @@ size = Vector2(256, 256)
 subdivide_width = 8
 subdivide_depth = 8
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3iasw"]
-shader = ExtResource("8_m740u")
-shader_parameter/underwater = 0.0
-
 [node name="Demo" type="Node3D"]
 script = ExtResource("1_f83i4")
 noise_elevation = SubResource("FastNoiseLite_r3lp4")
 noise_temperature = SubResource("FastNoiseLite_2xukv")
 noise_dryness = SubResource("FastNoiseLite_sx4vb")
+
+[node name="Menu" parent="." instance=ExtResource("3_luuj6")]
+visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_e47ut")
@@ -111,9 +109,6 @@ directional_shadow_blend_splits = true
 
 [node name="Player" parent="." instance=ExtResource("3_j80hc")]
 
-[node name="Menu" parent="." instance=ExtResource("3_luuj6")]
-visible = false
-
 [node name="FPS" type="Label" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
@@ -128,16 +123,5 @@ horizontal_alignment = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0215473)
 visible = false
 mesh = SubResource("PlaneMesh_f4gnr")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-material = SubResource("ShaderMaterial_3iasw")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 4
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]

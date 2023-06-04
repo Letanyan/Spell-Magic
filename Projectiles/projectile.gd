@@ -212,8 +212,6 @@ func update_shape(r: float, ignore_time: bool):
 			get_node("shape_cast").shape.size.y = r
 			get_node("shape_cast").shape.size.z = r
 			var mesh: MeshInstance3D = get_node("body/mesh")
-#			var mbox = BoxMesh.new()
-#			mbox.material = rock_mat
 			mesh.mesh.size.x = r
 			mesh.mesh.size.y = r
 			mesh.mesh.size.z = r
@@ -400,9 +398,6 @@ func free_after(duration: float):
 			else:
 				max_duration = 0
 		to_remove = true
-			
-var water_mat = preload("res://Projectiles/water_mat.tres")
-var rock_mat = preload("res://Projectiles/rock.tres")
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, null, insert, next_spell)
