@@ -287,7 +287,7 @@ func _on_P_text_changed(new_text):
 func _on_T_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].duration = clamp(new_text.to_float(), 1.0, 25.0)
+	book.spells[current_index].duration = clamp(new_text.to_float(), 0.0166667, 25.0)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 

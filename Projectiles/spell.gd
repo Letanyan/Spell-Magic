@@ -13,7 +13,7 @@ enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 		power = clamp(value, 0, 100)
 @export var duration: float:
 	set(value):
-		duration = clamp(value, 1, 25)
+		duration = clamp(value, 0.0166667, 25)
 @export var count: int:
 	set(value):
 		count = clamp(value, 1, 25)

@@ -250,9 +250,15 @@ func place_grass(delta: Vector2):
 	var mm: MultiMesh = grass_mesh.multimesh
 	
 	for i in range(mm.visible_instance_count):
-		var pos = grass_coords[i]
+		var pos: Vector3 = grass_coords[i]
 		var horz = pos.x > player_position.x + grass_size or pos.x < player_position.x - grass_size
 		var vert = pos.z > player_position.y + grass_size or pos.z < player_position.y - grass_size
+		var dist = Vector2(pos.x, pos.z).distance_to(player_position) / grass_size
+		if dist < 1.0:
+			dist = 1.0
+		else:
+			dist = 1.0 - (dist - 1.0)
+		
 		if horz or vert or ignore_delta:
 			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))
 			var biome_dict = blender.compute_biome_distances(p.x, p.z)
@@ -268,8 +274,15 @@ func place_grass(delta: Vector2):
 			mm.set_instance_custom_data(i, biome_dict["color"])
 			grass_coords[i] = p
 			var t = Transform3D(Basis(), p)
-			t = t.scaled_local(Vector3(100, 100, 100) * 2)
+			t = t.scaled_local(Vector3(100, 100, 100) * 2 * dist)
 			mm.set_instance_transform(i, t)
+		else:
+			var p = pos
+			grass_coords[i] = p
+			var t = Transform3D(Basis(), p)
+			t = t.scaled_local(Vector3(100, 100, 100) * 2 * dist)
+			mm.set_instance_transform(i, t)
+			
 		
 	
 func init_grass():
