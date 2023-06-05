@@ -75,12 +75,14 @@ func duplicate() -> Spell:
 	result.name = name
 	return result
 	
-func calculate_location(vars: Dictionary) -> Vector3:
+func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	var result = Vector3.ZERO
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
-	return result + (vars["rel_pos"] if follow else vars["abs_pos"])
+	if not only_delta:
+		result += (vars["rel_pos"] if follow else vars["abs_pos"])
+	return result
 	
 func calculate_size(vars: Dictionary) -> float:
 	var result = clamp(r_expr.compute(vars), 0.01, 10)

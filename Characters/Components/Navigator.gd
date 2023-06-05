@@ -126,7 +126,7 @@ static func get_ray_intersection(p: Node3D, from: Vector3, target: Vector3) -> C
 		return null
 	var c: CollisionShape3D = null
 	for o in obj.get_children():
-		if o.name == "shape":
+		if o.name == "shape" or o.name == "Collision":
 			c = o
 			break
 	return c
