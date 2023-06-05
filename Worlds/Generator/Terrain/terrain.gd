@@ -9,7 +9,7 @@ var grass_size: float
 
 const has_medium = true
 const has_water = true
-const has_grass = true
+const has_grass = false
 
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
@@ -30,9 +30,9 @@ var grass_coords = {}
 
 var base_coords = []
 
-func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
+func _init(d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
 	subdivide_percent = 1.0 / 16.0
-	blender = NoiseBlender.new(e, d, t)
+	blender = NoiseBlender.new(d, t)
 	chunk_size = cs
 	grass_size = cs * 0.5
 	radius = r
@@ -207,12 +207,13 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mat.set_shader_parameter("texture_depth", texture_size)
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x / R, y / R, texture_size, texture_size, R))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x / R, y / R, texture_size, texture_size, R))
-	for n in mi.get_children():
-		mi.remove_child(n)
 	if r <= radius:
+		var saved_children = mi.get_children().duplicate()
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 1 << 0
+		for n in saved_children:
+			mi.remove_child(n)
 		
 func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
 	var mesh = mi.mesh

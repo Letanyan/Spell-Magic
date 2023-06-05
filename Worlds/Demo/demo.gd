@@ -3,7 +3,6 @@ extends Node3D
 @onready var player: Player = $Player
 @onready var menu: Menu = $Menu
 
-@export var noise_elevation: Noise
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
 @onready var chunker: Terrain
@@ -36,11 +35,10 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 	
-	noise_elevation.frequency = 0.0002
 	noise_temperature.frequency = 0.0001
 	noise_dryness.frequency = 0.0001
 	
-	chunker = Terrain.new(noise_elevation, noise_dryness, noise_temperature, 256, 2)
+	chunker = Terrain.new(noise_dryness, noise_temperature, 256, 2)
 	build_terrain()
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)

@@ -1,7 +1,5 @@
 class_name NoiseBlender
 
-var elevation_curve: Curve = load("res://Worlds/Generator/Terrain/terrain_elevation_curve.tres")
-
 const grassland_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/grassland.tres")
 const forest_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/forest.tres")
 const taiga_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/taiga.tres")
@@ -12,7 +10,16 @@ const otherworld_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevatio
 const savannah_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/savannah.tres")
 const tundra_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/tundra.tres")
 
-const flat_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/flat.tres")
+var grassland_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/grassland.tres")
+var jungle_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/jungle.tres")
+var desert_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/desert.tres")
+var forest_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/forest.tres")
+var hfil_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/hfil.tres")
+var otherworld_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/otherworld.tres")
+var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/savannah.tres")
+var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
+var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
+
 
 func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
@@ -28,17 +35,23 @@ func color_for_biome(_biome: World.Biome) -> Color:
 		World.Biome.HFIL: return Color(1, 0, 0)
 		_: return Color(1, 0, 1)
 
-var elevation: FastNoiseLite
 var dryness: FastNoiseLite
 var temperature: FastNoiseLite
 
-func _init(e: FastNoiseLite, d: FastNoiseLite, t: FastNoiseLite):
-	elevation = e
+func _init(d: FastNoiseLite, t: FastNoiseLite):
 	dryness = d
 	temperature = t
-
-func elevation_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
-	return texture(elevation, x, y, w, h, scale)
+	
+	grassland_noise.frequency = 0.0005
+	jungle_noise.frequency = 0.0005
+	desert_noise.frequency = 0.0005
+	forest_noise.frequency = 0.0005
+	hfil_noise.frequency = 0.0005
+	otherworld_noise.frequency = 0.0005
+	savannah_noise.frequency = 0.0005
+	taiga_noise.frequency = 0.0005
+	tundra_noise.frequency = 0.0005
+	
 	
 func dryness_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return texture(dryness, x, y, w, h, scale)
@@ -76,10 +89,20 @@ static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
 	
 	return keys
 
-func height(x: float, y: float) -> float:
-	var e = elevation.get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
-	
+func height(x: float, y: float) -> float:	
 	compute_biome_distances(x, y)
+	
+	var noise_list = {
+		World.Biome.GRASSLAND: grassland_noise,
+		World.Biome.FOREST: forest_noise,
+		World.Biome.TAIGA: taiga_noise,
+		World.Biome.DESERT: desert_noise,
+		World.Biome.HFIL: hfil_noise,
+		World.Biome.JUNGLE: jungle_noise,
+		World.Biome.OTHERWORLD: otherworld_noise,
+		World.Biome.SAVANNAH: savannah_noise,
+		World.Biome.TUNDRA: tundra_noise
+	}
 	
 	var curve_list = {
 		World.Biome.GRASSLAND: grassland_curve,
@@ -95,13 +118,11 @@ func height(x: float, y: float) -> float:
 	
 	var result = 0.0
 	
-	var total_size := 0.0
+	var dict = compute_biome_distances(x, y)
+	var total_size = dict["total"]
 	for b in distances:
-		distances[b] = distances[b] ** 10
-		total_size += distances[b]
-	
-	for b in distances:
-		var curve = curve_list.get(b, flat_curve)
+		var e = noise_list[b].get_noise_2d(snapped(x, 0.0001), snapped(y, 0.0001)) / 2 + 0.5
+		var curve = curve_list[b]
 		result += curve.sample(e) * (1.0 - distances[b] / total_size)
 	
 	return result
@@ -177,67 +198,4 @@ func compute_biome_distances(x: float, y: float) -> Dictionary:
 	
 func biome(x: float, y: float) -> World.Biome:
 	return compute_biome_distances(x, y)["biome"]
-	
-func biome_p(x: float, y: float) -> World.Biome:
-	var e = elevation.get_noise_2d(x, y) / 2 + 0.5
-	var d = dryness.get_noise_2d(x, y) / 2 + 0.5
-	var t = temperature.get_noise_2d(x, y) / 2 + 0.5
-	
-	var result = World.Biome.OTHERWORLD
-	if t >= 0.0 and t < 0.1:
-		result = World.Biome.TAIGA
-	elif t >= 0.1 and t < 0.3:
-		if d >= 0.0 and d < 0.5:
-			result = World.Biome.GRASSLAND
-		elif d >= 0.5 and d <= 1.0:
-			result = World.Biome.TAIGA
-	elif t >= 0.3 and t < 0.6:
-		if d >= 0.0 and d < 0.1:
-			result = World.Biome.FOREST
-		elif d >= 0.1 and d < 0.4:
-			result = World.Biome.FOREST
-		elif d >= 0.4 and d < 0.7:
-			result = World.Biome.GRASSLAND
-		elif d >= 0.7 and d < 0.9:
-			result = World.Biome.GRASSLAND
-		elif d >= 0.9 and d <= 1.0:
-			result = World.Biome.DESERT
-	elif t >= 0.6 and t < 0.8:
-		if d >= 0.0 and d < 0.1:
-			result = World.Biome.JUNGLE
-		elif d >= 0.1 and d < 0.4:
-			result = World.Biome.FOREST
-		elif d >= 0.4 and d < 0.7:
-			result = World.Biome.GRASSLAND
-		elif d >= 0.7 and d < 0.9:
-			result = World.Biome.DESERT
-		elif d >= 0.9 and d <= 1.0:
-			result = World.Biome.DESERT
-	elif t >= 0.8 and t <= 1.0:
-		if d >= 0.0 and d < 0.1:
-			result = World.Biome.JUNGLE
-		elif d >= 0.1 and d < 0.4:
-			result = World.Biome.JUNGLE
-		elif d >= 0.4 and d < 0.7:
-			result = World.Biome.SAVANNAH
-		elif d >= 0.7 and d < 0.9:
-			result = World.Biome.SAVANNAH
-		elif d >= 0.9 and d <= 1.0:
-			result = World.Biome.DESERT
-			
-	if e >= 0.0 and e < 0.01:
-		if t >= 0.9 and t <= 1.0:
-			result = World.Biome.HFIL
-		else:
-			result = World.Biome.WATER
-	elif e >= 0.01 and e < 0.2:
-		result = World.Biome.WATER
-	elif e >= 0.99 and e <= 1.0:
-		if t >= 0.0 and t < 0.3:
-			result = World.Biome.TUNDRA
-		elif t >= 0.3 and t < 0.9:
-			result = World.Biome.TAIGA
-		elif t >= 0.9 and t <= 1.0:
-			result = World.Biome.OTHERWORLD
-	
-	return result
+

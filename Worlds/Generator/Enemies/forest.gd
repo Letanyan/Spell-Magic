@@ -64,7 +64,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Ar
 					x += v.x * spacing / 4.0
 					y += v.y * spacing / 4.0
 					var p = pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)
-					result.append(p)
+					if p != null:
+						result.append(p)
 					v.rotated(float(i) / count * 2.0 * PI)
 			
 	return result
