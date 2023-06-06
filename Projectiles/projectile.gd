@@ -25,7 +25,7 @@ func _ready():
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 
 func _physics_process(delta):
-	spell_caster.deferred_update(self, delta)
+	spell_caster.update(self, delta)
 	if to_remove:
 		get_parent().remove_child(self)
 
@@ -40,6 +40,9 @@ func has_expired(t: float) -> bool:
 	
 func expire_now(p: Node3D, q: Node3D):
 	expired = true
+	
+func is_active() -> bool:
+	return in_control and time_start > 0.0  
 	
 func lose_control(p: Node3D, q: Node3D):
 	in_control = false
@@ -183,6 +186,8 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 
 func update_shape(r: float, ignore_time: bool):
+	if r == most_recent_radius:
+		return
 	if spell.element == Spell.Element.ROCK and not ignore_time:
 		most_recent_radius = r
 	elif spell.element != Spell.Element.ROCK:
@@ -280,9 +285,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		velocity = velocity.normalized() * clampf(dist, -1, 1)
 	old_pos = next_pos
 	started = true
-	
+
 	var shape_cast: ShapeCast3D = get_node("shape_cast")
-	shape_cast.target_position = (p - position)
+	var target = p - position
+	if target.length() > 1.0 or target.distance_to(shape_cast.target_position) > 1.0:
+		shape_cast.target_position = target
 	var count := shape_cast.get_collision_count()
 	for i in range(count):
 		var obj := shape_cast.get_collider(i)
@@ -339,7 +346,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			position = p
 			
 func update_spell(t: float, vars: Dictionary):
-	if not in_control or time_start == 0:
+	if not is_active():
 		return
 	vars.merge(fixed_vars)
 	vars["n"] = n

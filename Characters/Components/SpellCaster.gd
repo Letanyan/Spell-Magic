@@ -6,9 +6,9 @@ var entity: Entity
 var particles: Array = []
 var ignore_mana_cost: bool
 
-var tracking_node: Dictionary
-var tracking_position: Dictionary
-var tracking_offset: Dictionary
+var tracking_node: Dictionary = {}
+var tracking_position: Dictionary = {}
+var tracking_offset: Dictionary = {}
 
 func _init(e: Entity):
 	entity = e
@@ -22,9 +22,13 @@ func update(body, delta):
 	var should_remove := []
 	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
-		var vars := spell_variables(body, false, p)
-		tracking_offset[p.name] = get_spell_tracking_offset(p.spell, vars)
-		p.update_spell(t, vars)
+		
+		if p.is_active():
+			var vars := spell_variables(body, false, p)
+			if entity == Entity.PLAYER:
+				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, vars)
+			p.update_spell(t, vars)
+			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
 				p.cast_spell(func(np): if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
@@ -38,7 +42,7 @@ func update(body, delta):
 		
 
 func spell_variables(body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
-	var result := Dictionary()
+	var result = {}
 	var prefix := "" if fixed else "t"
 	result[prefix + "x"] = body.position.x
 	result[prefix + "y"] = body.position.y
