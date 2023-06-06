@@ -135,9 +135,9 @@ func update_terrain(state: PhysicsDirectSpaceState3D):
 	var updated_chunks = chunks.get("updated", [])
 
 	await get_tree().physics_frame
-	var items = update_population_at(updated_chunks, state)
-	for item in items:
-		add_child(item)
+#	var items = update_population_at(updated_chunks, state)
+#	for item in items:
+#		add_child(item)
 	
 	chunker.update_environment(player.position.x, player.position.z)
 	

@@ -9,7 +9,7 @@ var grass_size: float
 
 const has_medium = true
 const has_water = true
-const has_grass = false
+const has_grass = true
 
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
@@ -26,7 +26,7 @@ var water_chunks_location = PackedVector2Array()
 var water_chunks = []
 
 var grass_mesh: MultiMeshInstance3D
-var grass_coords = {}
+var grass_coords: Array[Vector3] = []
 
 var base_coords = []
 
@@ -249,7 +249,7 @@ func place_grass(delta: Vector2):
 		ignore_delta = true
 	
 	var mm: MultiMesh = grass_mesh.multimesh
-	
+
 	for i in range(mm.visible_instance_count):
 		var pos: Vector3 = grass_coords[i]
 		var horz = pos.x > player_position.x + grass_size or pos.x < player_position.x - grass_size
@@ -259,7 +259,7 @@ func place_grass(delta: Vector2):
 			dist = 1.0
 		else:
 			dist = (1.0 - (dist - 1.0))
-		
+
 		if horz or vert or ignore_delta:
 			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))
 			var biome_dict = blender.compute_biome_distances(p.x, p.z)
@@ -272,7 +272,9 @@ func place_grass(delta: Vector2):
 					p.y = -1000
 				else:
 					p.y = wh
-			mm.set_instance_custom_data(i, biome_dict["color"])
+			var clr: Color = biome_dict["color"]
+			clr.a = p.z
+			mm.set_instance_custom_data(i, clr)
 			grass_coords[i] = p
 			var t = Transform3D(Basis(), p)
 			t = t.scaled_local(Vector3(100, 100, 100) * 2 * dist)
@@ -308,7 +310,7 @@ func init_grass():
 					if (is_top_left or is_top_right):
 						continue
 					var p = Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
-					grass_coords[i] = p
+					grass_coords.append(p)
 					i += 1
 					if r == 0:
 						break
