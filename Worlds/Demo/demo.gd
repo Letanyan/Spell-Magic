@@ -50,7 +50,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
-	var b = chunker.blender.biome
+	var b := chunker.blender.biome
 	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	pass
 	
@@ -65,15 +65,15 @@ func _physics_process(delta):
 			
 	if not menu.is_showing:
 		const SPEED = 12.0
-		var movement = VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
+		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
 			
 	if not has_init_terrain_population:
-		var space = get_world_3d().space
-		var state = PhysicsServer3D.space_get_direct_state(space)
+		var space := get_world_3d().space
+		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
-		var items = update_population_at(chunker.loaded_chunks_location, state)
+		var items := update_population_at(chunker.loaded_chunks_location, state)
 		for item in items:
 			add_child(item)
 		player.position.y = Navigator.get_world_height(state, 0, 0)
@@ -119,15 +119,15 @@ func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):
 		update_terrain(state)
 		
 func build_terrain():
-	var chunks = chunker.init_chunks(player.position.x, player.position.z)
+	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
 
 
 func update_terrain(state: PhysicsDirectSpaceState3D):
-	var chunks = chunker.update_chunks(player.position.x, player.position.z)
+	var chunks := chunker.update_chunks(player.position.x, player.position.z)
 	for loc in chunks.get("removed", []):
-		var pop = population.get(loc, null)
+		var pop : Population = population.get(loc, null)
 		if pop == null:
 			continue
 		pop.despawn_all_from_world(get_node("."))
@@ -136,7 +136,7 @@ func update_terrain(state: PhysicsDirectSpaceState3D):
 	var updated_chunks = chunks.get("updated", [])
 
 	await get_tree().physics_frame
-	var items = update_population_at(updated_chunks, state)
+	var items := update_population_at(updated_chunks, state)
 	for item in items:
 		add_child(item)
 	
@@ -144,11 +144,11 @@ func update_terrain(state: PhysicsDirectSpaceState3D):
 	
 
 func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) -> Array:
-	var result = []
+	var result := []
 	for loc in locations:
-		var coord = chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
+		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
-		var pop = Population.new(coord, chunker.chunk_size, chunker.blender, player)
+		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player)
 		result.append_array(pop.spawn_all_into_world(state))
 		population[loc] = pop
 		

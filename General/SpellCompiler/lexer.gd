@@ -9,9 +9,9 @@ func _init(k: Kind, r: String):
 	kind = k
 	raw = r
 
-static func tokenize(expr: String) -> Array:
-	var state = Kind.NONE
-	var result = []
+static func tokenize(expr: String) -> Array[Token]:
+	var state := Kind.NONE
+	var result: Array[Token] = []
 	
 	var current = ""
 	var lastWasOp = true
@@ -29,7 +29,7 @@ static func tokenize(expr: String) -> Array:
 				if "qwertyuiopasdfghjklzxcvbnm1234567890".contains(c.to_lower()):
 					current = current + c
 				else:
-					var k = Kind.VAR
+					var k := Kind.VAR
 					if is_func(current):
 						k = Kind.FUNC
 					result.append(Token.new(k, String(current)))
@@ -78,9 +78,9 @@ static func tokenize(expr: String) -> Array:
 	return result
 					
 static func is_func(txt: String) -> bool:
-	return [
-		"sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", 
-		"inv", "mod", "div", "floor", "ceil", "round", "max", "min",
-		"lt", "gt", "lte", "gte", "eq", "neq", 
-		
-	].find(txt) != -1
+	match txt:
+		"sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh": return true
+		"inv", "mod", "div", "floor", "ceil", "round", "max", "min": return true
+		"lt", "gt", "lte", "gte", "eq", "neq": return true
+	
+	return false

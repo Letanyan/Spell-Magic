@@ -18,11 +18,11 @@ func deferred_update(body, delta):
 	call_deferred("update", body, delta)
 	
 func update(body, delta):
-	var t = Time.get_unix_time_from_system()
-	var should_remove = []
+	var t := Time.get_unix_time_from_system()
+	var should_remove := []
 	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
-		var vars = spell_variables(body, false, p)
+		var vars := spell_variables(body, false, p)
 		tracking_offset[p.name] = get_spell_tracking_offset(p.spell, vars)
 		p.update_spell(t, vars)
 		if p.has_expired(t):
@@ -38,18 +38,18 @@ func update(body, delta):
 		
 
 func spell_variables(body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
-	var result = Dictionary()
-	var prefix = "" if fixed else "t"
+	var result := Dictionary()
+	var prefix := "" if fixed else "t"
 	result[prefix + "x"] = body.position.x
 	result[prefix + "y"] = body.position.y
 	result[prefix + "z"] = body.position.z
 
-	var cdir = Vector3.ZERO
-	var track = Vector3.ZERO
+	var cdir := Vector3.ZERO
+	var track := Vector3.ZERO
 	match entity:
 		Entity.PLAYER:
-			var cam_pivot = body.get_node("CamPivot")
-			var cam = body.get_node("CamPivot/Arm/Lens")
+			var cam_pivot := body.get_node("CamPivot")
+			var cam := body.get_node("CamPivot/Arm/Lens")
 			cdir = ((body.global_position + cam_pivot.position) - cam.global_position).normalized()
 			track = get_direction_to_tracking(body, p, cdir)
 			
@@ -66,7 +66,7 @@ func spell_variables(body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
 	result[prefix + "V"] = track.y
 	result[prefix + "W"] = track.z
 	
-	var c = Vector3.ZERO 
+	var c := Vector3.ZERO 
 	match entity:
 		Entity.PLAYER:
 			c = Vector3(0, 0, -1).rotated(Vector3.UP, body.get_node("Pivot").rotation.y)
@@ -94,8 +94,8 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 		if t == null or !p.is_inside_tree():
 			return default
 		if t is CollisionShape3D:
-			var vec = ((t.global_position + offset) - p.global_position).normalized()
-			var dir = lerp(position, vec, 0.0166667).normalized()
+			var vec: Vector3 = ((t.global_position + offset) - p.global_position).normalized()
+			var dir: Vector3 = lerp(position, vec, 0.0166667).normalized()
 			tracking_position[p.name] = dir
 			return dir
 		elif t is Vector3:
@@ -104,8 +104,8 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 			return default
 			
 	
-func all_spell_variables(body: Node3D, p: SpellBody):
-	var result = spell_variables(body, true, p)
+func all_spell_variables(body: Node3D, p: SpellBody) -> Dictionary:
+	var result := spell_variables(body, true, p)
 	result.merge(spell_variables(body, false, p))
 	return result
 
@@ -120,9 +120,9 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 	var node_to_track = null
 	var cdir = Vector3.ZERO
 	if entity == Entity.PLAYER:
-		var cam_pivot = body.get_node("CamPivot")
-		var cam = body.get_node("CamPivot/Arm/Lens")
-		var base = body.global_position + cam_pivot.position
+		var cam_pivot := body.get_node("CamPivot")
+		var cam := body.get_node("CamPivot/Arm/Lens")
+		var base: Vector3 = body.global_position + cam_pivot.position
 		cdir = (base - cam.global_position).normalized()
 		node_to_track = Navigator.get_ray_intersection(body, cam.global_position - Vector3.UP, cam.global_position - Vector3.UP + cdir * 500)
 		if node_to_track == null:
@@ -130,21 +130,21 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 			
 	# it's fine that a projectile doesn't have a target set yet at the start
 	# since by default camera direction equals target direction at start
-	var vars = all_spell_variables(body, null)
-	var ps = spell.get_particles(vars)
-	var spell_offset = get_spell_tracking_offset(spell, vars)
+	var vars := all_spell_variables(body, null)
+	var ps := spell.get_particles(vars)
+	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p in ps:
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
 		tracking_offset[p.name] = spell_offset
-		var temps_vars = vars.duplicate()
+		var temps_vars := vars.duplicate()
 		temps_vars["n"] = p.n
-		var delay = spell.calculate_delay(temps_vars)
+		var delay := spell.calculate_delay(temps_vars)
 		start_particle(delay, body, p, insert)
 		
 func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
-	var temp = vars.duplicate()
+	var temp := vars.duplicate()
 	temp["U"] = 0.0
 	temp["V"] = 0.0
 	temp["W"] = 0.0

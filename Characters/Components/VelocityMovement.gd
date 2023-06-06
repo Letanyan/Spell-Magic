@@ -14,9 +14,9 @@ var has_navigation_target: bool
 
 var vital_tick: int = 0
 
-var velocity = Vector3.ZERO
-var target_velocity = Vector3.ZERO
-var impulse = Vector3.ZERO
+var velocity := Vector3.ZERO
+var target_velocity := Vector3.ZERO
+var impulse := Vector3.ZERO
 
 func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float = 75, _jump_impulse: float = 20, _bounce_impulse: float = 16):
 	speed = _speed
@@ -33,16 +33,16 @@ func increment_ticks():
 	vital_tick += 1
 
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody3D) -> Dictionary:
-	var result = {}
+	var result := {}
 	increment_ticks()
 	
 	if body.position == target_position:
 		has_navigation_target = false
 	
-	var navigation_velocity = Vector3.ZERO
+	var navigation_velocity := Vector3.ZERO
 	if has_navigation_target:
-		var new_velocity: Vector3 = target_position - body.global_position
-		var length = new_velocity.length()
+		var new_velocity := target_position - body.global_position
+		var length := new_velocity.length()
 		new_velocity = new_velocity.normalized()
 		if length < 1.0:
 			new_velocity *= length
@@ -51,20 +51,20 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		navigation_velocity = new_velocity
 
 	if vital_tick == 60:
-		var h = vitals.update_vitals()
+		var h := vitals.update_vitals()
 		for dmg in h:
 			Vitals.apply_damage(body.get_parent(), body, dmg["dmg"], dmg["el"], true, false, [])
-		var wet_area = body.get_node("WetArea")
+		var wet_area := body.get_node("WetArea")
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
 		vital_tick = 0
 
 	
-	var direction = Vector3.ZERO
+	var direction := Vector3.ZERO
 	if body.has_node("CamPivot"):
-		var cam_pivot = body.get_node("CamPivot")
-		var input_dir = VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
-		var input_len = input_dir.length()
+		var cam_pivot := body.get_node("CamPivot")
+		var input_dir := VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
+		var input_len := input_dir.length()
 		direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
@@ -111,10 +111,10 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	return result
 
 static func get_input_strength(negative_x: String, positive_x: String, negative_y: String, positive_y: String, deadzone: float = 0.05) -> Vector2:
-	var left = Input.get_action_raw_strength(negative_x)
-	var right = Input.get_action_raw_strength(positive_x)
-	var forward = Input.get_action_raw_strength(negative_y)
-	var back = Input.get_action_raw_strength(positive_y)
+	var left := Input.get_action_raw_strength(negative_x)
+	var right := Input.get_action_raw_strength(positive_x)
+	var forward := Input.get_action_raw_strength(negative_y)
+	var back := Input.get_action_raw_strength(positive_y)
 	
 	if left < deadzone:
 		left = 0

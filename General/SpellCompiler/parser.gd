@@ -21,17 +21,17 @@ func display(t: String):
 		right.display(t + "-")
 		
 func compute(vars: Dictionary, disp: bool = false) -> float:
-	var result = 0.0
+	var result := 0.0
 	match data.kind:
 		Token.Kind.NUMBER:
 			result = data.raw.to_float()
 		Token.Kind.WORD:
 			result = vars[data.raw]
 		Token.Kind.OP:
-			var l = 0.0
+			var l := 0.0
 			if left != null:
 				l = left.compute(vars, disp)
-			var r = 0.0
+			var r := 0.0
 			if right != null:
 				r = right.compute(vars, disp)
 			match data.raw:
@@ -39,9 +39,9 @@ func compute(vars: Dictionary, disp: bool = false) -> float:
 				"-": result = l - r
 				"*": result = l * r
 				"/": result = l / r
-				"^": result = l ^ r
+				"^": result = l ** r
 		Token.Kind.OPEN:
-			var l = 0.0
+			var l := 0.0
 			if left != null:
 				l = left.compute(vars, disp)
 			result = l
@@ -52,8 +52,8 @@ func compute(vars: Dictionary, disp: bool = false) -> float:
 	return result
 
 static func parse(expr: String) -> ParseNode:
-	var tokens = Token.tokenize(expr)
-	var node = parse_tokens(tokens, 0)
+	var tokens := Token.tokenize(expr)
+	var node := parse_tokens(tokens, 0)
 	node = node.fix_op_priority()
 	return node
 
@@ -81,8 +81,8 @@ func rotate_left() -> ParseNode:
 		print("right: ", right.data.raw)
 		if right.left != null:
 			print("right-left: ", right.left.data.raw)
-		var n = right
-		var temp = n.left
+		var n := right
+		var temp := n.left
 		n.left = self
 		right = temp
 		return n
@@ -95,11 +95,11 @@ func fix_op_priority() -> ParseNode:
 	if data.kind == Token.Kind.OP:
 		if "*/^".contains(data.raw):
 			if right != null and "+-".contains(right.data.raw):
-				var p = rotate_left()
+				var p := rotate_left()
 				return p.fix_op_priority()
 		if "^".contains(data.raw):
 			if right != null and "^/*".contains(right.data.raw):
-				var p = rotate_left()
+				var p := rotate_left()
 				return p.fix_op_priority()
 	return self
 	

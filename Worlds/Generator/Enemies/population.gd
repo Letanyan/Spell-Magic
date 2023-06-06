@@ -28,11 +28,11 @@ func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
 func random_entity_from_distribution(probs: Dictionary) -> int:
-	var keys = probs.keys()
+	var keys := probs.keys()
 	if keys.size() == 0:
 		return 0
 	
-	var r = rng.randf()
+	var r := rng.randf()
 	if keys.size() == 1:
 		var i = keys[0]
 		return keys[0] if r < probs[i] else 0
@@ -40,7 +40,7 @@ func random_entity_from_distribution(probs: Dictionary) -> int:
 	var base := 0.0
 	for n in range(0, keys.size()):
 		var i = keys[n]
-		var next_base = base + probs[i]
+		var next_base : float = base + probs[i]
 		if base <= r and r < next_base:
 			return i
 		base = next_base
@@ -58,7 +58,7 @@ func random_building(probs: Dictionary) -> World.Building:
 	
 func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool):
 	if entity != null:
-		var wh = Navigator.get_world_height(state, pos.x, pos.z) + pos.y
+		var wh := Navigator.get_world_height(state, pos.x, pos.z) + pos.y
 		if wh < Globals.sea_level():
 			return null
 		entity.position.x = pos.x
@@ -72,8 +72,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
-	var result = null
-	var pos = Vector3(x, 0, y)
+	var result: Enemy = null
+	var pos := Vector3(x, 0, y)
 	match enemy:
 		World.Enemy.UNDEAD:
 			result = undead.instantiate()
@@ -87,8 +87,8 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 	return prepare_entity(state, result, pos, true)
 	
 func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
-	var result = null
-	var pos = Vector3(x, 0, y)
+	var result: Node3D = null
+	var pos := Vector3(x, 0, y)
 	match foliage:
 		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI:
 			result = Trees.make(foliage, rng)
@@ -99,8 +99,8 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 	return prepare_entity(state, result, pos, false)
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
-	var result = null
-	var pos = Vector3(x, 0, y)
+	var result: Node3D = null
+	var pos := Vector3(x, 0, y)
 	match building:
 		World.Building.FANTASY_VALLEY_SINGLE, World.Building.FANTASY_VALLEY_DOUBLE:
 			result = Buildings.make(building, rng)
@@ -126,31 +126,31 @@ static func contains_neighbour_point(collection: Array, point: Vector2, spacing:
 	return false
 	
 func group_spawn_points(spacing: float) -> Dictionary:
-	var result: Array = []
-	var biomes: Array = []
+	var result: Array[PackedVector2Array] = []
+	var biomes: Array[World.Biome] = []
 	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
 		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
-			var p = Vector2(coord.x * chunk_size + x, coord.y * chunk_size + y)
+			var p := Vector2(coord.x * chunk_size + x, coord.y * chunk_size + y)
 			blender.compute_biome_distances(p.x, p.y)
-			var biome = blender.biome
-			var found_subset = false
+			var biome := blender.biome
+			var found_subset := false
 			for i in range(result.size()):
 				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
 					result[i].append(p)
 					found_subset = true
 					break
 			if not found_subset:
-				result.append([p])
+				result.append(PackedVector2Array([p]))
 				biomes.append(biome)
 	return {"points": result, "biomes": biomes}
 	
 func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
 	const spacing = 16.0
-	var areas = group_spawn_points(spacing)
-	var points = areas["points"]
-	var biomes = areas["biomes"]
+	var areas := group_spawn_points(spacing)
+	var points: Array[PackedVector2Array] = areas["points"]
+	var biomes: Array[World.Biome] = areas["biomes"]
 
-	var result = []
+	var result := []
 	for i in range(biomes.size()):
 		match biomes[i]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))

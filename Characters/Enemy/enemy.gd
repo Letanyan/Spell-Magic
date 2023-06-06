@@ -57,9 +57,9 @@ func _physics_process(delta):
 			PathStyle.Mover.ABSOLUTE:
 				position += movement["absolute"]
 			PathStyle.Mover.ABSOLUTE_XZ:
-				var v = movement["absolute"]
-				var t = movement["target"]
-				var g = Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
+				var v: Vector3 = movement["absolute"]
+				var t: Vector3 = movement["target"]
+				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 				if position.y < g:
 					position.y = g
 					t.y = 0
@@ -69,12 +69,12 @@ func _physics_process(delta):
 
 	if behavior_tick == 30:
 		update_behaviour()
-		var next_pos = current_path.next_position(self, player)
+		var next_pos := current_path.next_position(self, player)
 		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos)
 		behavior_tick = 0
 
 	if spell_tick == 30:
-		var spell = attack_state().choose_spell(vitals, behaviour)
+		var spell := attack_state().choose_spell(vitals, behaviour)
 		if spell != null:
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0

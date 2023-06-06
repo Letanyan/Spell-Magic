@@ -17,7 +17,7 @@ var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
 
 var fixed_vars: Dictionary
 
-var to_remove = false
+var to_remove := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -97,13 +97,13 @@ func get_spell_transform() -> Transform3D:
 		return global_transform
 
 func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
-	var is_world  = body.collision_layer & 0b0001 != 0
-	var is_player = body.collision_layer & 0b0010 != 0
-	var is_enemy  = body.collision_layer & 0b0100 != 0
+	var is_world  : int = body.collision_layer & 0b0001 != 0
+	var is_player : int = body.collision_layer & 0b0010 != 0
+	var is_enemy  : int = body.collision_layer & 0b0100 != 0
 	
-	var is_world_object = body.collision_layer & (1 << 9) != 0
-	var is_rock  = body.collision_layer & 0b1_0000 != 0
-	var dmg = {"dmg": spell.power, "el": spell.element}
+	var is_world_object : int = body.collision_layer & (1 << 9) != 0
+	var is_rock  : int = body.collision_layer & 0b1_0000 != 0
+	var dmg := {"dmg": spell.power, "el": spell.element}
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object:
@@ -157,16 +157,16 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	if is_player or is_enemy:
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 
-func _on_area_entered(area, contact_points: Array[Vector3]):
-	var body = area.get_parent_node_3d()
-	var is_world  = area.collision_layer & 0b0001 != 0
-	var is_player = area.collision_layer & 0b0010 != 0
-	var is_enemy  = area.collision_layer & 0b0100 != 0
+func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
+	var body := area.get_parent_node_3d()
+	var is_world  : int = area.collision_layer & 0b0001 != 0
+	var is_player : int = area.collision_layer & 0b0010 != 0
+	var is_enemy  : int = area.collision_layer & 0b0100 != 0
 	
-	var is_world_object = area.collision_layer & (1 << 9) != 0
-	var is_rock  = area.collision_layer & 0b1_0000 != 0
-	var is_water = area.collision_layer & 0b10_0000 != 0
-	var dmg = {"dmg": spell.power, "el": spell.element}
+	var is_world_object := area.collision_layer & (1 << 9) != 0
+	var is_rock  : int = area.collision_layer & 0b1_0000 != 0
+	var is_water : int = area.collision_layer & 0b10_0000 != 0
+	var dmg := {"dmg": spell.power, "el": spell.element}
 	match spell.element:
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
@@ -266,27 +266,27 @@ func update_shape(r: float, ignore_time: bool):
 			var source: GPUParticles3D = get_node("source")
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
 			mat.set_shader_parameter("len", r * 1.2)
-			var body = get_node("body")
+			var body := get_node("body")
 			body.mesh.radius = r
 			body.mesh.height = r * 2
 			
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary):
-	var next_pos = p - (vars["rel_pos"] if spell.follow else vars["abs_pos"])
+	var next_pos : Vector3 = p - (vars["rel_pos"] if spell.follow else vars["abs_pos"])
 	if started:
 		velocity = next_pos - old_pos
-		var dist = velocity.length() * 60
-		velocity = velocity.normalized() * clamp(dist, -1, 1)
+		var dist := velocity.length() * 60
+		velocity = velocity.normalized() * clampf(dist, -1, 1)
 	old_pos = next_pos
 	started = true
 	
 	var shape_cast: ShapeCast3D = get_node("shape_cast")
 	shape_cast.target_position = (p - position)
-	var count = shape_cast.get_collision_count()
+	var count := shape_cast.get_collision_count()
 	for i in range(count):
-		var obj = shape_cast.get_collider(i)
-		var point = shape_cast.get_collision_point(i)
+		var obj := shape_cast.get_collider(i)
+		var point := shape_cast.get_collision_point(i)
 		if spell.element == Spell.Element.ROCK and (obj == get_node("body")):
 			continue
 		if obj is Area3D:
@@ -311,7 +311,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		Spell.Element.AIR:
 			position = p
 			var box: CollisionShape3D = get_node("source/area/shape")
-			var h = box.shape.height
+			var h : float = box.shape.height
 			var source: GPUParticles3D = get_node("source")
 			source.process_material.initial_velocity_min = (h * 1.25 / source.lifetime) + abs(velocity.length()) * 1.0
 			source.process_material.initial_velocity_max = (h * 1.25 / source.lifetime) + abs(velocity.length()) * 1.1
@@ -320,7 +320,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:
 					v = Vector3(0.1, 0.9, 0.1).normalized()
-				var dir = global_position + v * 10
+				var dir : Vector3 = global_position + v * 10
 				look_at(dir)
 			
 		Spell.Element.ICE:
@@ -328,11 +328,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var particles: GPUParticles3D = get_node("source")
 			particles.process_material.initial_velocity_min = 0.2 * 0.9
 			particles.process_material.initial_velocity_max = 0.2 * 1.1
-			var v = velocity.normalized()
+			var v : Vector3 = velocity.normalized()
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:
 					v = Vector3(0.1, 0.9, 0.1).normalized()
-				var dir = global_position + v * 10
+				var dir : Vector3 = global_position + v * 10
 				look_at(dir)
 			
 		Spell.Element.ELECTRIC:
@@ -393,7 +393,7 @@ func stop_emitting():
 			
 func free_after(duration: float):
 	if get_parent() != null and get_tree() != null:
-		var max_duration = duration
+		var max_duration: float = duration
 		while max_duration > 0:
 			await get_tree().create_timer(max_duration, false, true).timeout
 			max_duration = actual_duration()

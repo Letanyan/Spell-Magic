@@ -1,13 +1,13 @@
 class_name AttackPatterns
 
-var spells: Array
-var spell_weight: Array
+var spells: Array[Spell]
+var spell_weight: Array[float]
 var is_sequence: bool = false
 var start_time: float
 var current_sequence_index: int
 var aggression: float
 
-func _init(_spells: Array, _spell_weight: Array, _is_sequence: bool, _aggression: float = 0.0):
+func _init(_spells: Array[Spell], _spell_weight: Array[float], _is_sequence: bool, _aggression: float = 0.0):
 	spells = _spells
 	spell_weight = _spell_weight
 	start_time = 0
@@ -28,10 +28,10 @@ func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spe
 	if not randf() < aggression:
 		return null
 		
-	var range_start = 0.0
-	var range_end = 0.0
+	var range_start := 0.0
+	var range_end := 0.0
 	
-	var p = randf()
+	var p := randf()
 	for i in range(spell_weight.size()):
 		range_end += spell_weight[i]
 		if range_start <= p and p <= range_end:
@@ -44,10 +44,10 @@ func choose_spell_from_sequence(vitals: Vitals, behaviour: Behaviour) -> Spell:
 	if current_sequence_index >= spells.size():
 		current_sequence_index = 0
 		
-	var s = spells[current_sequence_index]
-	var t = spell_weight[current_sequence_index]
+	var s: Spell = spells[current_sequence_index]
+	var t: float = spell_weight[current_sequence_index]
 	
-	var ct = Time.get_unix_time_from_system()
+	var ct := Time.get_unix_time_from_system()
 	if ct - start_time >= t:
 		start_time = Time.get_unix_time_from_system()
 		current_sequence_index += 1

@@ -1,6 +1,6 @@
 class_name Expr
 
-var expression: Array
+var expression: Array[Token]
 var error: String
 
 func _init(expr: String):
@@ -8,7 +8,7 @@ func _init(expr: String):
 	
 	error = ""
 	expression = []
-	var operators = []
+	var operators: Array[Token] = []
 	var i = 0
 	while i < tokens.size():
 		var token: Token = tokens[i]
@@ -47,7 +47,7 @@ func _init(expr: String):
 					expression.append(Token.new(Token.Kind.ERROR, "Missing Opening Paren"))
 				operators.pop_back()
 				if operators.size() > 0 and operators[-1].kind == Token.Kind.FUNC:
-					var op = operators.pop_back()
+					var op: Token = operators.pop_back()
 					expression.append(op)
 			else:
 				expression.append(Token.new(Token.Kind.ERROR, "Missing Opening Paren"))
@@ -63,26 +63,26 @@ func _init(expr: String):
 						break
 		
 	while operators.size() > 0:
-		var op = operators.pop_back()
+		var op: Token = operators.pop_back()
 		if op.kind == Token.Kind.OPEN:
 			expression.append(Token.new(Token.Kind.ERROR, "Missing Closing Paren"))
 		expression.append(op)
 
 func operator_precedes(op1: Token, op2: Token) -> bool:
-	if "^" == op1.raw and "*/".contains(op2.raw):
+	if "^" == op1.raw and ("*" == op2.raw or "/" == op2.raw):
 		return true
-	if "*/^".contains(op1.raw) and "+-".contains(op2.raw):
+	if ("^" == op1.raw or "*" == op1.raw or "/" == op1.raw) and ("+" == op2.raw or "-" == op2.raw):
 		return true
 	
-	if "*/".contains(op1.raw) and "*/".contains(op2.raw):
+	if ("*" == op1.raw or "/" == op1.raw) and ("*" == op2.raw or "/" == op2.raw):
 		return true
-	if "+-".contains(op1.raw) and "+-".contains(op2.raw):
+	if ("+" == op1.raw or "-" == op1.raw) and ("+" == op2.raw or "-" == op2.raw):
 		return true
 	
 	return false
 
 func compute(vars: Dictionary, display: bool = false) -> float:
-	var tape = [] 
+	var tape: Array[float] = [] 
 	
 	for expr in expression:
 		var e: Token = expr
@@ -98,8 +98,8 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 			else:
 				tape.append(vars.get(e.raw, 0.0))
 		elif e.kind == Token.Kind.OP:
-			var b = tape.pop_back()
-			var a = tape.pop_back()
+			var b: float = tape.pop_back()
+			var a: float = tape.pop_back()
 			if b == null:
 				error = "incomplete expression"
 				return 0.0
@@ -111,14 +111,14 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"-": tape.append(a - b)
 				"*": tape.append(a * b)
 				"/": tape.append(a / b)
-				"^": tape.append(a ^ b)
+				"^": tape.append(a ** b)
 		elif e.kind == Token.Kind.PREFIX_OP:
-			var a = tape.pop_back()
+			var a: float = tape.pop_back()
 			match e.raw:
 				"-": tape.append(-a)
 				"+": tape.append(a)
 		elif e.kind ==Token.Kind.FUNC:
-			var a = tape.pop_back()
+			var a: float = tape.pop_back()
 			match e.raw:
 				"sin": tape.append(sin(a))
 				"cos": tape.append(cos(a))
@@ -132,7 +132,7 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 				"acos": tape.append(acos(a))
 				"atan": tape.append(atan(a))
 				
-				"inv": tape.append(1.0 / a if a != 0 else 0)
+				"inv": tape.append(1.0 / a if a != 0.0 else 0.0)
 				"mod": tape.append(fmod(tape.pop_back(), a) if a != 0 else 0.0)
 				"div": tape.append(floor(tape.pop_back() / a) if a != 0 else 0.0)
 				"floor": tape.append(floor(a))

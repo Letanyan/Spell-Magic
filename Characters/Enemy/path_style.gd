@@ -6,10 +6,10 @@ enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER }
 
 var kind = Kind.CIRCLE
-var min_radius = 5.0
-var max_radius = 10.0
-var movement_speed = 2.0
-var origin = Vector3.ZERO
+var min_radius := 5.0
+var max_radius := 10.0
+var movement_speed := 2.0
+var origin := Vector3.ZERO
 var path: Pathway = null
 var use_player_as_origin: bool
 var seed_offset: float
@@ -96,18 +96,18 @@ func follow_path(pathway: Pathway) -> PathStyle:
 	
 func circle_path(radius: float, h: float) -> PathStyle:
 	path = Pathway.new()
-	var a = Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
-	var b = Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
+	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
+	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
 	path.append([a, b])
 	kind = Kind.PATH
 	return self
 	
 func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var p = Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
+	var p := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
 	path.add(Segment.linear(Vector3.ZERO, p))
 	for i in range(count - 1):
-		var q = Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
+		var q := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
 		path.add(Segment.linear(p, q))
 		p = q
 	path.add(Segment.linear(p, Vector3.ZERO))
@@ -116,7 +116,7 @@ func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	return self
 
 func next_position(me: Enemy, player: Player) -> Vector3:
-	var t = float(Time.get_unix_time_from_system() + seed_offset * 2 * PI)
+	var t := float(Time.get_unix_time_from_system() + seed_offset * 2 * PI)
 	if use_player_as_origin:
 		origin = player.position
 	match kind:
@@ -172,12 +172,12 @@ class Pathway:
 			distance += s.distance
 			
 	func position_at_time(t: float) -> Vector3:
-		var dist = t * distance
+		var dist := t * distance
 		return position_at_distance(dist)
 			
 	func position_at_distance(dist: float) -> Vector3:
-		var segment = 0
-		var running = 0.0
+		var segment := 0
+		var running := 0.0
 		for i in range(segments.size()):
 			segment = i
 			var s = segments[i]
@@ -221,15 +221,15 @@ class Segment:
 		return Segment.new(a, b, c, d, BezierKind.CUBIC)
 		
 	static func arc(radius: float, angle_start: float, angle_end: float, h: float) -> Segment:
-		var a = Vector3(radius, h, 0).rotated(Vector3.UP, angle_start)
-		var b = Vector3(radius, h, 0).rotated(Vector3.UP, angle_end)
+		var a := Vector3(radius, h, 0).rotated(Vector3.UP, angle_start)
+		var b := Vector3(radius, h, 0).rotated(Vector3.UP, angle_end)
 		
-		var q1 = a.x * a.x + a.z * a.z
-		var q2 = q1 + a.x * b.x + a.z * b.z
-		var k2 = (4.0 / 3.0) * (sqrt(2 * q1 * q2) - q2) / (a.x * b.z - a.z * b.x)
+		var q1 := a.x * a.x + a.z * a.z
+		var q2 := q1 + a.x * b.x + a.z * b.z
+		var k2 := (4.0 / 3.0) * (sqrt(2 * q1 * q2) - q2) / (a.x * b.z - a.z * b.x)
 
-		var c = Vector3(a.x - k2 * a.z, h, a.z + k2 * a.x)
-		var d = Vector3(b.x + k2 * b.z, h, b.z - k2 * b.x)
+		var c := Vector3(a.x - k2 * a.z, h, a.z + k2 * a.x)
+		var d := Vector3(b.x + k2 * b.z, h, b.z - k2 * b.x)
 		
 		return Segment.new(a, b, c, d, BezierKind.CUBIC)
 		
@@ -239,9 +239,9 @@ class Segment:
 		else:
 			var p := start
 			distance = 0.0
-			var i = interval
+			var i := interval
 			while i <= 1.0:
-				var q = position_at_time(i)
+				var q := position_at_time(i)
 				distance += p.distance_to(q)
 				p = q
 				i += interval
@@ -251,22 +251,22 @@ class Segment:
 			BezierKind.LINEAR:
 				return lerp(start, end, t)
 			BezierKind.QUAD:
-				var a = lerp(start, c1, t)
-				var b = lerp(c1, end, t)
+				var a: Vector3 = lerp(start, c1, t)
+				var b: Vector3 = lerp(c1, end, t)
 				return lerp(a, b, t)
 			BezierKind.CUBIC:
-				var a1 = lerp(start, c1, t)
-				var b1 = lerp(c1, end, t)
-				var e1 = lerp(a1, b1, t)
-				var a2 = lerp(c1, c2, t)
-				var b2 = lerp(c2, end, t)
-				var e2 = lerp(a2, b2, t)
+				var a1: Vector3 = lerp(start, c1, t)
+				var b1: Vector3 = lerp(c1, end, t)
+				var e1: Vector3 = lerp(a1, b1, t)
+				var a2: Vector3 = lerp(c1, c2, t)
+				var b2: Vector3 = lerp(c2, end, t)
+				var e2: Vector3 = lerp(a2, b2, t)
 				return lerp(e1, e2, t)
 				
 		return Vector3.ZERO
 		
 	func position_at_distance(dist: float) -> Vector3:
-		var t = dist / distance
+		var t := dist / distance
 		return position_at_time(t)
 		
 		

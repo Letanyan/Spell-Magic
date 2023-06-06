@@ -20,7 +20,7 @@ var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elev
 var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
 var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
 
-var noise_list = [
+var noise_list: Array[FastNoiseLite] = [
 	hfil_noise,
 	otherworld_noise,
 	tundra_noise,
@@ -32,7 +32,7 @@ var noise_list = [
 	taiga_noise,
 ]
 
-var curve_list = [
+var curve_list: Array[Curve] = [
 	hfil_curve,
 	otherworld_curve,
 	tundra_curve,
@@ -44,7 +44,7 @@ var curve_list = [
 	taiga_curve,
 ]
 
-const biome_list = [
+const biome_list: Array[World.Biome] = [
 	World.Biome.HFIL,
 	World.Biome.OTHERWORLD,
 	World.Biome.TUNDRA,
@@ -55,7 +55,7 @@ const biome_list = [
 	World.Biome.GRASSLAND,
 	World.Biome.TAIGA,
 ]
-const biome_locations = [
+const biome_locations: PackedVector2Array = [
 	Vector2(1, 1), # hfil
 	Vector2(1, 0), # otherworld
 	Vector2(0, 0), # tundra
@@ -66,7 +66,7 @@ const biome_locations = [
 	Vector2(0.5, 0.5), # grassland
 	Vector2(0.25, 0.75), # taiga
 ]
-const biome_colors = [
+const biome_colors: PackedVector3Array = [
 	Vector3(1, 0, 0),
 	Vector3(0, 0, 0),
 	Vector3(1, 1, 1),
@@ -77,7 +77,7 @@ const biome_colors = [
 	Vector3(0.16, 0.53, 0.16),
 	Vector3(0, 1, 1)
 ]
-var distances = [
+var distances: PackedFloat64Array = [
 	0.0,
 	0.0,
 	0.0,
@@ -131,13 +131,13 @@ func temperature_texture(x: float, y: float, w: float, h: float, scale: float) -
 	return texture(temperature, x, y, w, h, scale)
 
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
-	var result = NoiseTexture2D.new()
+	var result := NoiseTexture2D.new()
 	result.noise = noise.duplicate(true)
 	result.noise.frequency *= scale
 	result.noise.offset.x = x - w / 2
 	result.noise.offset.y = y - h / 2
-	result.width = w + 2
-	result.height = h + 2
+	result.width = int(w + 2)
+	result.height = int(h + 2)
 	result.normalize = false
 	return result
 
@@ -161,12 +161,12 @@ static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
 	return keys
 
 func height(x: float, y: float) -> float:
-	var result = 0.0
+	var result := 0.0
 	
 	compute_biome_distances(x, y)
 	
-	var X = snapped(x, 0.0001)
-	var Y = snapped(y, 0.0001)
+	var X := snappedf(x, 0.0001)
+	var Y := snappedf(y, 0.0001)
 	
 	result += hfil_curve.sample(hfil_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[0] / total_size)
 	result += otherworld_curve.sample(otherworld_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[1] / total_size)

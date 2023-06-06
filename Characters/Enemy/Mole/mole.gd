@@ -18,29 +18,29 @@ func _ready():
 	
 	idle_path = PathStyle.new(randf()).circle_path(5, 0).set_origin(position).speed(7).use_absolute().align_y_to_origin()
 	
-	var R = 5.0
-	var U = -5.0
-	var s1 = PathStyle.Segment.arc(R, 0, PI / 2, U)
-	var v1 = Vector3(R, U, 0).rotated(Vector3.UP, PI / 2)
-	var r1 = PathStyle.Segment.linear(v1, Vector3(v1.x, -U, v1.z))
-	var r1d = PathStyle.Segment.linear(Vector3(v1.x, -U, v1.z), v1)
+	var R := 5.0
+	var U := -5.0
+	var s1 := PathStyle.Segment.arc(R, 0, PI / 2, U)
+	var v1 := Vector3(R, U, 0).rotated(Vector3.UP, PI / 2)
+	var r1 := PathStyle.Segment.linear(v1, Vector3(v1.x, -U, v1.z))
+	var r1d := PathStyle.Segment.linear(Vector3(v1.x, -U, v1.z), v1)
 	
-	var s2 = PathStyle.Segment.arc(R, PI / 2, PI, U)
-	var v2 = Vector3(R, U, 0).rotated(Vector3.UP, PI)
-	var r2 = PathStyle.Segment.linear(v2, Vector3(v2.x, -U, v2.z))
-	var r2d = PathStyle.Segment.linear(Vector3(v2.x, -U, v2.z), v2)
+	var s2 := PathStyle.Segment.arc(R, PI / 2, PI, U)
+	var v2 := Vector3(R, U, 0).rotated(Vector3.UP, PI)
+	var r2 := PathStyle.Segment.linear(v2, Vector3(v2.x, -U, v2.z))
+	var r2d := PathStyle.Segment.linear(Vector3(v2.x, -U, v2.z), v2)
 	
-	var s3 = PathStyle.Segment.arc(R, PI, PI * 3 / 2, U)
-	var v3 = Vector3(R, U, 0).rotated(Vector3.UP, PI * 3 / 2)
-	var r3 = PathStyle.Segment.linear(v3, Vector3(v3.x, -U, v3.z))
-	var r3d = PathStyle.Segment.linear(Vector3(v3.x, -U, v3.z), v3)
+	var s3 := PathStyle.Segment.arc(R, PI, PI * 3 / 2, U)
+	var v3 := Vector3(R, U, 0).rotated(Vector3.UP, PI * 3 / 2)
+	var r3 := PathStyle.Segment.linear(v3, Vector3(v3.x, -U, v3.z))
+	var r3d := PathStyle.Segment.linear(Vector3(v3.x, -U, v3.z), v3)
 	
-	var s4 = PathStyle.Segment.arc(R, PI * 3 / 2, PI * 2, U)
-	var v4 = Vector3(R, U, 0).rotated(Vector3.UP, PI * 2)
-	var r4 = PathStyle.Segment.linear(v4, Vector3(v4.x, -U, v4.z))
-	var r4d = PathStyle.Segment.linear(Vector3(v4.x, -U, v4.z), v4)
+	var s4 := PathStyle.Segment.arc(R, PI * 3 / 2, PI * 2, U)
+	var v4 := Vector3(R, U, 0).rotated(Vector3.UP, PI * 2)
+	var r4 := PathStyle.Segment.linear(v4, Vector3(v4.x, -U, v4.z))
+	var r4d := PathStyle.Segment.linear(Vector3(v4.x, -U, v4.z), v4)
 	
-	var p = PathStyle.Pathway.new()
+	var p := PathStyle.Pathway.new()
 	p.append([s1, r1, r1d, s2, r2, r2d, s3, r3, r3d, s4, r4, r4d])
 	
 	attack_path = PathStyle.new(randf()).follow_path(p).set_use_player_as_origin().speed(5).use_absolute().align_y_to_origin()

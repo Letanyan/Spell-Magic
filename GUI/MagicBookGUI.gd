@@ -8,21 +8,21 @@ var sort_order: int = 0
 @onready var filter_button: MenuButton = $FilterButton
 const TOTAL_FILTER_ITEMS = 9
 var filter_popup: PopupMenu = null
-var filter_options = {}
-var filter_chain = ""
+var filter_options := {}
+var filter_chain := ""
 
 @onready var spell_index: ItemList = $SpellIndex
 var book: MagicBook:
 	set(value):
 		book = value
-		var i = 0 
+		var i := 0 
 		for s in book.spells:
 			s.id = i
 			i += 1
 		update_spells_list()
 		reload_list()
 
-var spells_index_map = {}
+var spells_index_map := {}
 
 @onready var create_button: Button = $Create
 @onready var duplicate_button: Button = $Duplicate
@@ -50,7 +50,7 @@ var spells_index_map = {}
 
 @onready var error_label: Label = $container/error_label
 
-var current_index = -1
+var current_index := -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -120,7 +120,7 @@ func _on_save_pressed():
 	
 	spell.d_expr = Expr.new(spell.delay)
 	
-	var n = chain_edit.text
+	var n := chain_edit.text
 	if n == "":
 		spell.chain = null
 	elif n != spell.name:
@@ -138,9 +138,9 @@ func _on_save_pressed():
 	reload_list()
 	
 func update_spells_list():
-	var spells_list = book.spells.duplicate(false)
+	var spells_list := book.spells.duplicate(false)
 	
-	var is_ascending = sort_order == 0
+	var is_ascending := sort_order == 0
 	if sort_selected == 0:
 		spells_list.sort_custom(func(a, b): return a.name < b.name if is_ascending else a.name > b.name)
 	elif sort_selected == 1:
@@ -158,7 +158,7 @@ func update_spells_list():
 	var k = 0
 	for i in range(spells_list.size()):
 		var spell: Spell = spells_list[i]
-		var q0 = filter_options.is_empty()
+		var q0 := filter_options.is_empty()
 		q0 = q0 or filter_options.get(0, false) and spell.element == Spell.Element.FIRE
 		q0 = q0 or filter_options.get(1, false) and spell.element == Spell.Element.WATER
 		q0 = q0 or filter_options.get(2, false) and spell.element == Spell.Element.AIR
@@ -197,7 +197,7 @@ func add_spell(spell: Spell):
 	book.spells.append(spell)
 	update_spells_list()
 	reload_list()
-	var k_index = -1
+	var k_index := -1
 	for k in spells_index_map:
 		if spells_index_map[k] == spell.id:
 			k_index = k
@@ -209,14 +209,14 @@ func add_spell(spell: Spell):
 		name_edit.select_all()
 		
 func _on_create_pressed():
-	var spell = Spell.new()
+	var spell := Spell.new()
 	spell.name = "New Spell"
 	add_spell(spell)
 
 func _on_duplicate_pressed():
 	if current_index < 0:
 		return
-	var spell = book.spells[current_index].duplicate()
+	var spell: Spell = book.spells[current_index].duplicate()
 	spell.name += " (Copy)"
 	add_spell(spell)
 
@@ -242,7 +242,7 @@ func _on_x_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].x = new_text
-	var e = Expr.new(new_text)
+	var e := Expr.new(new_text)
 	book.spells[current_index].x_expr = e
 	if e.error.length() > 0:
 		error_label.text = "x: " + e.error
@@ -252,7 +252,7 @@ func _on_y_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].y = new_text
-	var e = Expr.new(new_text)
+	var e := Expr.new(new_text)
 	book.spells[current_index].y_expr = e
 	if e.error.length() > 0:
 		error_label.text = "y: " + e.error
@@ -262,7 +262,7 @@ func _on_z_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].z = new_text
-	var e = Expr.new(new_text)
+	var e := Expr.new(new_text)
 	book.spells[current_index].z_expr = e
 	if e.error.length() > 0:
 		error_label.text = "z: " + e.error
@@ -272,7 +272,7 @@ func _on_r_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].r = new_text
-	var e = Expr.new(new_text)
+	var e := Expr.new(new_text)
 	book.spells[current_index].r_expr = e
 	if e.error.length() > 0:
 		error_label.text = "r: " + e.error
@@ -303,7 +303,7 @@ func _on_D_text_changed(new_text):
 	if current_index < 0:
 		return
 	book.spells[current_index].delay = new_text
-	var e = Expr.new(new_text)
+	var e := Expr.new(new_text)
 	book.spells[current_index].d_expr = e
 	if e.error.length() > 0:
 		error_label.text = "D: " + e.error
@@ -312,9 +312,9 @@ func _on_D_text_changed(new_text):
 func _on_chain_text_changed(new_text):
 	if current_index < 0:
 		return
-	var spell = book.spells[current_index]
+	var spell: Spell = book.spells[current_index]
 	
-	var n = chain_edit.text
+	var n := chain_edit.text
 	if n == "":
 		spell.chain = null
 	elif n != spell.name:
@@ -354,7 +354,7 @@ func update_cooldown():
 func update_spells_that_chain_to_current_spell():
 	if current_index < 0:
 		return
-	var spell = book.spells[current_index]
+	var spell: Spell = book.spells[current_index]
 				
 	if spell.name != "":
 		for s in book.spells:
@@ -362,11 +362,11 @@ func update_spells_that_chain_to_current_spell():
 				s.chain = spell
 
 func _on_view_chain_button_pressed():
-	var n = chain_edit.text
+	var n := chain_edit.text
 	if n == "":
 		return
 	else:
-		var i = 0
+		var i := 0
 		for s in book.spells:
 			if s.name == n:
 				_on_spell_index_item_selected(i)
@@ -377,7 +377,7 @@ func sort_popup_selected(id: int):
 	var is_order = id > TOTAL_SORT_ITEMS - 1
 	if is_order:
 		sort_order = id - TOTAL_SORT_ITEMS
-		var other = (1 if sort_order == 0 else 0) + TOTAL_SORT_ITEMS
+		var other := (1 if sort_order == 0 else 0) + TOTAL_SORT_ITEMS
 		sort_popup.set_item_checked(id, true)
 		sort_popup.set_item_checked(other, false)
 	else:
@@ -390,7 +390,7 @@ func sort_popup_selected(id: int):
 	reload_list()
 	
 func filter_popup_selected(id: int):
-	var is_selected = filter_options.has(id)
+	var is_selected := filter_options.has(id)
 	if is_selected:
 		filter_options.erase(id)
 	else:

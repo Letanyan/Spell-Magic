@@ -70,13 +70,13 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	chain_cast_kind = ChainCastKind.START
 	
 func duplicate() -> Spell:
-	var result = Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost)
+	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost)
 	result.chain = chain
 	result.name = name
 	return result
 	
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
-	var result = Vector3.ZERO
+	var result := Vector3.ZERO
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
@@ -85,11 +85,11 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	return result
 	
 func calculate_size(vars: Dictionary) -> float:
-	var result = clamp(r_expr.compute(vars), 0.01, 10)
+	var result := clampf(r_expr.compute(vars), 0.01, 10)
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:
-	var result = clamp(d_expr.compute(vars), 0, 25)
+	var result := clampf(d_expr.compute(vars), 0, 25)
 	return result
 	
 func _mass() -> float:
@@ -105,8 +105,8 @@ func impulse_length() -> float:
 			return 0
 			
 func calculate_cooldown():
-	var chain_cost = 0.0
-	var basic_cost = (power + 1) * count * (1 + duration) - mana_cost
+	var chain_cost := 0.0
+	var basic_cost := (power + 1) * count * (1 + duration) - mana_cost
 	if chain_cast_kind != ChainCastKind.START:
 		basic_cost += basic_cost
 	if chain != null:
@@ -122,7 +122,7 @@ const ice = preload("res://Projectiles/ice.tscn")
 const electric = preload("res://Projectiles/electric.tscn")
 	
 func get_particle(n: int, fvars: Dictionary) -> SpellBody:
-	var fixed_vars = {}
+	var fixed_vars := {}
 	fixed_vars["rn0"] = randf()
 	fixed_vars["rn1"] = randf()
 	fixed_vars["rn2"] = randf()
@@ -157,13 +157,13 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	p.fixed_vars = fixed_vars
 	p.spell = self
 	p.position = calculate_location(fixed_vars)
-	var er = calculate_size(fixed_vars)
+	var er := calculate_size(fixed_vars)
 	p.update_shape(er, true)
 	return p
 		
 func get_particles(fvars: Dictionary) -> Array:
-	var result = []
-	var fixed_vars = {}
+	var result := []
+	var fixed_vars := {}
 	fixed_vars["r0"] = randf()
 	fixed_vars["r1"] = randf()
 	fixed_vars["r2"] = randf()
@@ -176,7 +176,7 @@ func get_particles(fvars: Dictionary) -> Array:
 	fixed_vars["r9"] = randf()
 	fixed_vars.merge(fvars, true)
 	for i in range(count):
-		var p = get_particle(i, fixed_vars)
+		var p := get_particle(i, fixed_vars)
 		p.n = i
 		p.spell = self
 		result.append(p)

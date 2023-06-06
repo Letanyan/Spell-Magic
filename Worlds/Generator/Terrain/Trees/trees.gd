@@ -5,10 +5,10 @@ const leaves_mat = preload("res://Worlds/Generator/Terrain/Trees/tree_leaves.tre
 const trunk_mat = preload("res://Worlds/Generator/Terrain/Trees/tree_trunk.tres")
 
 static func build(rng: RandomNumberGenerator) -> Node3D:
-	var trunk = MeshInstance3D.new()
+	var trunk := MeshInstance3D.new()
 	trunk.mesh = CylinderMesh.new()
-	var h = rng.randf_range(4, 10)
-	var r = rng.randf_range(h / 8, h / 2)
+	var h := rng.randf_range(4, 10)
+	var r := rng.randf_range(h / 8, h / 2)
 	trunk.mesh.height = h
 	trunk.mesh.top_radius = r
 	trunk.mesh.bottom_radius = r
@@ -17,9 +17,9 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	trunk.mesh.surface_set_material(0, trunk_mat)
 	trunk.position.y = h / 2
 	
-	var s = rng.randf_range(r * 1.75, r * 2)
-	var sh = rng.randf_range(s, s * 2)
-	var leaves = MeshInstance3D.new()
+	var s := rng.randf_range(r * 1.75, r * 2)
+	var sh := rng.randf_range(s, s * 2)
+	var leaves := MeshInstance3D.new()
 	leaves.mesh = SphereMesh.new()
 	leaves.mesh.radius = s
 	leaves.mesh.height = sh
@@ -28,10 +28,10 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	leaves.mesh.surface_set_material(0, leaves_mat)
 	leaves.position.y = h
 	
-	var body = StaticBody3D.new()
+	var body := StaticBody3D.new()
 	body.collision_layer = 1 << 9
 	
-	var box = CollisionShape3D.new()
+	var box := CollisionShape3D.new()
 	box.name = "collision"
 	box.shape = CylinderShape3D.new()
 	box.shape.height = h
@@ -39,7 +39,7 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	body.add_child(box)
 	trunk.add_child(body)
 	
-	var result = Node3D.new()
+	var result := Node3D.new()
 	result.add_child(trunk)
 	result.add_child(leaves)
 	
@@ -61,14 +61,14 @@ static func make(kind: World.Foliage, rng: RandomNumberGenerator) -> Trees:
 		World.Foliage.TREE_BRANCHED: result = branched_tree.instantiate()
 		_: result = round_tree.instantiate()
 		
-	var s = rng.randf_range(2, 5)
+	var s := rng.randf_range(2, 5)
 	result.get_node("RootNode").scale = Vector3(s, s, s)
-	var r = rng.randf_range(0, 2 * PI)
+	var r := rng.randf_range(0, 2 * PI)
 	result.get_node("RootNode").rotate(Vector3.UP, r)
 	
-	var body = StaticBody3D.new()
+	var body := StaticBody3D.new()
 	body.collision_layer = 1 << 9
-	var box = CollisionShape3D.new()
+	var box := CollisionShape3D.new()
 	box.name = "shape"
 	box.shape = CylinderShape3D.new()
 	box.shape.height = 4 * s

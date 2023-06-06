@@ -38,7 +38,7 @@ func _on_wand_index_item_selected(index):
 		item.store_spell = wand.keys[w].spell
 		
 		item.spell_changed = func(text: String):
-			var all_spells = text.split(",", false)
+			var all_spells := text.split(",", false)
 			for i in range(all_spells.size()):
 				all_spells[i] = all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
 			wand.keys[w].spell = all_spells

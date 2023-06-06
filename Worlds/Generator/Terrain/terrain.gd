@@ -14,21 +14,21 @@ const has_grass = true
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
 
-var biome_shader = preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
-var water_shader = preload("res://Worlds/SkyBox/water.gdshader")
-var water_noise = preload("res://Worlds/SkyBox/water_noise.tres")
+var biome_shader := preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
+var water_shader := preload("res://Worlds/SkyBox/water.gdshader")
+var water_noise := preload("res://Worlds/SkyBox/water_noise.tres")
 
-var loaded_chunks_location = PackedVector2Array()
-var loaded_chunks = []
-var medium_chunks_location = PackedVector2Array()
-var medium_chunks = []
-var water_chunks_location = PackedVector2Array()
-var water_chunks = []
+var loaded_chunks_location := PackedVector2Array()
+var loaded_chunks: Array[Node3D] = []
+var medium_chunks_location := PackedVector2Array()
+var medium_chunks: Array[Node3D] = []
+var water_chunks_location := PackedVector2Array()
+var water_chunks: Array[Node3D] = []
 
 var grass_mesh: MultiMeshInstance3D
 var grass_coords: Array[Vector3] = []
 
-var base_coords = []
+var base_coords: PackedVector3Array = []
 
 func _init(d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
 	subdivide_percent = 1.0 / 16.0
@@ -38,32 +38,32 @@ func _init(d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
 	radius = r
 	
 	
-func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Array:
+func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Array[Node3D]:
 	set_player_coord_using_position(x, y, cs)
-	var rad = int(r / 2)
-	var result = []
+	var rad := int(r / 2)
+	var result: Array[Node3D] = []
 	for w in range(-rad, rad + 1):
 		for h in range(-rad, rad + 1):
-			var p = Vector2((player_coord.x + w) * cs, (player_coord.y + h) * cs)
-			var node = create_chunk_with_size(chunks, locations, p.x, p.y, cs, r, subdivide, is_water)
+			var p := Vector2((player_coord.x + w) * cs, (player_coord.y + h) * cs)
+			var node := create_chunk_with_size(chunks, locations, p.x, p.y, cs, r, subdivide, is_water)
 			update_chunk_with_size(node, p.x, p.y, cs, r, subdivide, is_water)
 			result.append(node)
 			
 	return result
 	
-func init_chunks(x: float, y: float) -> Array:
-	var result = init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
+func init_chunks(x: float, y: float) -> Array[Node3D]:
+	var result := init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
 	if has_medium:
-		var medium = init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius * 2, subdivide_percent, false)
+		var medium := init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius * 2, subdivide_percent, false)
 		result.append_array(medium)
 	if has_water:
-		var water = init_chunks_of_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
+		var water := init_chunks_of_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
 		result.append_array(water)
 	if has_grass:
-		var gm = MultiMesh.new()
+		var gm := MultiMesh.new()
 		gm.transform_format = MultiMesh.TRANSFORM_3D
 		gm.use_custom_data = true
-		gm.instance_count = 24_500
+		gm.instance_count = 21_000
 		gm.visible_instance_count = 0
 		gm.mesh = load("res://Models/Grass/grass_02_mesh.tres")
 		grass_mesh = MultiMeshInstance3D.new()
@@ -72,17 +72,20 @@ func init_chunks(x: float, y: float) -> Array:
 	return result
 	
 func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Dictionary:
-	var old_coord = player_coord
-	var current_coord = convert_position_to_coord(x, y, cs)
-	var delta = current_coord - old_coord
+	var old_coord := player_coord
+	var current_coord := convert_position_to_coord(x, y, cs)
+	var delta := current_coord - old_coord
 	if delta == Vector2.ZERO:
 		return {}
-	var removed_locations = []
-	var updated_locations = []
-	var rad = int(r / 2)
+	var removed_locations: PackedVector2Array = []
+	var updated_locations: PackedVector2Array = []
+	var rad := int(r / 2)
+	var should_update := false
+	var loc := Vector2.ZERO
+	var origin_delta := Vector2.ZERO
 	for i in range(chunks.size()):
-		var loc = locations[i]
-		var should_update = false
+		loc = locations[i]
+		should_update = false
 		if delta.x == -1 and loc.x == (old_coord.x + rad) * cs:
 			loc.x = (current_coord.x + -rad) * cs
 			should_update = true
@@ -97,7 +100,7 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			should_update = true
 			
 		if r > radius:
-			var origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
+			origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
 			if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
 				chunks[i].position.y = -100	
 			else:
@@ -112,9 +115,9 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 	return {"removed": removed_locations, "updated": updated_locations}
 	
 func update_chunks(x: float, y: float) -> Dictionary:
-	var high = update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
-	var removed = high.get("removed", [])
-	var updated = high.get("updated", [])
+	var high := update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
+	var removed: PackedVector2Array = high.get("removed", [])
+	var updated: PackedVector2Array = high.get("updated", [])
 	if has_medium:
 		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0, false)
 	if has_water:
@@ -123,37 +126,37 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	return {"removed": removed, "updated": updated}
 		
 func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> MeshInstance3D:
-	var mesh = ArrayMesh.new()
-	var plane = PlaneMesh.new()
+	var mesh := ArrayMesh.new()
+	var plane := PlaneMesh.new()
 	plane.size = Vector2(size, size)
-	plane.subdivide_depth = size * subdivide
-	plane.subdivide_width = size * subdivide
+	plane.subdivide_depth = int(size * subdivide)
+	plane.subdivide_width = int(size * subdivide)
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
 	mesh.surface_set_material(0, ShaderMaterial.new())
 
-	var mi = MeshInstance3D.new()
+	var mi := MeshInstance3D.new()
 	mi.mesh = mesh
 	mi.name = "mesh"
 	
 	return mi
 	
 func create_water_mesh(x: float, y: float, size: float) -> MeshInstance3D:
-	var mesh = ArrayMesh.new()
-	var plane = PlaneMesh.new()
+	var mesh := ArrayMesh.new()
+	var plane := PlaneMesh.new()
 	plane.size = Vector2(size, size)
 	plane.subdivide_depth = 8
 	plane.subdivide_width = 8
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
 	mesh.surface_set_material(0, ShaderMaterial.new())
 
-	var mi = MeshInstance3D.new()
+	var mi := MeshInstance3D.new()
 	mi.mesh = mesh
 	mi.name = "mesh"
 		
 	return mi
 		
 func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Node3D:
-	var node = Node3D.new()
+	var node := Node3D.new()
 	if not is_water:
 		node.add_child(create_mesh(x, y, cs, r, subdivide))
 	else:
@@ -163,7 +166,7 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 	node.position.z = y
 	
 	if r > radius:
-		var coord = convert_position_to_coord(x, y, cs)
+		var coord := convert_position_to_coord(x, y, cs)
 		if not is_water and abs(coord.x) <= int(radius / 2) and abs(coord.y) <= int(radius / 2):
 			node.position.y = -100
 		else:
@@ -175,40 +178,41 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 	return node
 
 func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
-	var mesh = mi.mesh
-	var mdt = MeshDataTool.new()
+	var mesh := mi.mesh
+	var mdt := MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 
 	if base_coords.is_empty():
 		for i in range(mdt.get_vertex_count()):
 			base_coords.append(mdt.get_vertex(i))
 
-	var block = size / float(int(size * subdivide) + 1)
-	var bounds = size / 2.0
-	var rng = RandomNumberGenerator.new()
+	var block := size / float(int(size * subdivide) + 1)
+	var bounds := size / 2.0
+	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(str(x) + ":" + str(y))
+	var A := Vector3.ZERO
+	var v := Vector2.ZERO
 	for i in range(mdt.get_vertex_count()):
-		var A = mdt.get_vertex(i)
+		A = mdt.get_vertex(i)
 		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
-			var v = Vector2(rng.randf() * 2 - 1, rng.randf() * 2 - 1).normalized() * 0.25 * block
+			v = Vector2(rng.randf() * 2 - 1, rng.randf() * 2 - 1).normalized() * 0.25 * block
 			A.x = base_coords[i].x + v.x
 			A.z = base_coords[i].z + v.y
-		var Ah = blender.height(A.x + x, A.z + y)
-		A.y = Ah
+		A.y = blender.height(A.x + x, A.z + y)
 		mdt.set_vertex(i, A)
 
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
-	var mat = mesh.surface_get_material(0)
+	var mat := mesh.surface_get_material(0)
 	mat.shader = biome_shader
-	var R = size / float(int(size * subdivide_percent))
-	var texture_size = size / R
+	var R := size / float(int(size * subdivide_percent))
+	var texture_size := size / R
 	mat.set_shader_parameter("texture_width", texture_size)
 	mat.set_shader_parameter("texture_depth", texture_size)
 	mat.set_shader_parameter("temperature", blender.temperature_texture(x / R, y / R, texture_size, texture_size, R))
 	mat.set_shader_parameter("dryness", blender.dryness_texture(x / R, y / R, texture_size, texture_size, R))
 	if r <= radius:
-		var saved_children = mi.get_children().duplicate()
+		var saved_children := mi.get_children().duplicate()
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)
 		body.collision_layer = 1 << 0
@@ -216,13 +220,13 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 			mi.remove_child(n)
 		
 func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
-	var mesh = mi.mesh
-	var mat = mesh.surface_get_material(0)
+	var mesh := mi.mesh
+	var mat := mesh.surface_get_material(0)
 	mat.shader = water_shader
 	mat.set_shader_parameter("noise", water_noise)
 
 func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool):
-	var mi = node.get_node("mesh")
+	var mi := node.get_node("mesh")
 	if is_water:
 		update_water_mesh(mi, x, y, cs, r, subdivide)
 	else:
@@ -232,9 +236,9 @@ func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: floa
 
 
 func update_environment(x: float, y: float):
-	var old_position = player_position
+	var old_position := player_position
 	player_position = Vector2(x, y)
-	var delta = player_position - old_position
+	var delta := player_position - old_position
 	place_grass(Vector2(grass_size * sign(delta.x) * 2, grass_size * sign(delta.y) * 2))
 
 func update_chunk_environment(node: Node3D):
@@ -243,14 +247,14 @@ func update_chunk_environment(node: Node3D):
 func place_grass(delta: Vector2):
 	if not has_grass:
 		return
-	var ignore_delta = false
+	var ignore_delta := false
 	if grass_coords.is_empty():
 		init_grass()
 		ignore_delta = true
 	
 	var mm: MultiMesh = grass_mesh.multimesh
-	var no_hit = Ptr.new(false)
-	var t = Transform3D(Basis(), Vector3.ZERO)
+	var no_hit := Ptr.new(false)
+	var t := Transform3D(Basis(), Vector3.ZERO)
 	t = t.scaled_local(Vector3(100, 100, 100) * 2)
 	var horz := false
 	var vert := false
@@ -288,29 +292,29 @@ func init_grass():
 	if not has_grass:
 		return
 	var mm: MultiMesh = grass_mesh.multimesh
-	var i = 0
+	var i := 0
 	seed(0)
-	var R = 16
+	const R := 16
 	for _X in range(-grass_size, grass_size + 1, R * 2):
 		for y in range(-grass_size, grass_size + 1, R):
 			@warning_ignore("integer_division")
 			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R
 			for r in range(0, R + 1, 2):
-				var a = 0.0
+				var a := 0.0
 				while a <= PI * 2:
 					a += PI / 4.0 * (1.0 / (floor(r / 4.0) + 1))
-					var nx = cos(a) * r + x
-					var ny = sin(a) * r + y
-					var is_top_left = Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x - R, y - R), R)
-					var is_top_right = Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x + R, y - R), R)					
+					var nx := cos(a) * r + float(x)
+					var ny := sin(a) * r + float(y)
+					var is_top_left := Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x - R, y - R), R)
+					var is_top_right := Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x + R, y - R), R)					
 					if (is_top_left or is_top_right):
 						continue
-					var p = Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
+					var p := Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
 					grass_coords.append(p)
 					i += 1
 					if r == 0:
 						break
-			
+	print(i, " > ", mm.visible_instance_count, " .. ", mm.instance_count)
 	mm.visible_instance_count = i
 
 func set_player_coord_using_position(x: float, y: float, cs: float):

@@ -128,7 +128,7 @@ func build_keys():
 					keys[nKey] = Option.new()
 
 static func basic() -> Wand:
-	var result = Wand.new()
+	var result := Wand.new()
 	result.build_keys()
 	return result
 	
@@ -136,7 +136,7 @@ static func basic() -> Wand:
 func remove_mod(mod: String):
 	if mods.has(mod):
 		mods.erase(mod)
-		var to_remove = []
+		var to_remove := []
 		for key in keys:
 			if key.size() > 1 and key.find(mod) != -1:
 				to_remove.append(key)
@@ -153,7 +153,7 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 		return picked
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
 		return null
-	var opt_spell = opt.next_spell()
+	var opt_spell := opt.next_spell()
 	for s in book.spells:
 		if s.name == opt_spell:
 			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD:
@@ -165,7 +165,7 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 
 func action_down(action: String, book: MagicBook) -> Spell:
 	current_actions[action] = 0
-	var best_candidate = []
+	var best_candidate := []
 	for key in keys:
 		if key.size() > current_actions.size():
 			continue

@@ -5,7 +5,7 @@ enum Kind { ANY, SPELLS, WANDS }
 
 @onready var magic_book: Control = $MagicBook
 @onready var wand_case: Control = $WandCase
-var current_index = 0
+var current_index := 0
 
 var is_showing: bool = false
 

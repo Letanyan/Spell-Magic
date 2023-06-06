@@ -8,8 +8,8 @@ extends CharacterBody3D
 @onready var animator: AnimationPlayer = $Pivot/AnimationPlayer 
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
 
-var velocity_movement = VelocityMovement.player()
-var spell_caster = SpellCaster.new(SpellCaster.Entity.PLAYER)
+var velocity_movement := VelocityMovement.player()
+var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
 
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
@@ -28,7 +28,7 @@ func _input(event):
 	pass
 	
 func pan_camera(movement: Vector2):
-	var damping = 0.75
+	var damping := 0.75
 	cam_pivot.rotate_y(-movement.x * damping / 180 * PI)
 	cam_arm.rotate_x(-movement.y * damping / 180 * PI / 3)
 	cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
@@ -40,8 +40,8 @@ func add_shake(amount: float):
 	shake_intensity += amount
 
 func _physics_process(delta):
-	var menu_showing = is_menu_showing.call()
-	var movement = velocity_movement.update(delta, vitals, 14, self)
+	var menu_showing: bool = is_menu_showing.call()
+	var movement := velocity_movement.update(delta, vitals, 14, self)
 	if not menu_showing:
 		velocity = movement["velocity"]
 		move_and_slide()
@@ -60,8 +60,8 @@ func _physics_process(delta):
 			animator.play("Man_Run", 1)
 			
 		if velocity:
-			var space = get_world_3d().space
-			var state = PhysicsServer3D.space_get_direct_state(space)
+			var space := get_world_3d().space
+			var state := PhysicsServer3D.space_get_direct_state(space)
 			player_moved.emit(delta, state)
 			var rect: ColorRect = get_node("CanvasLayer/ColorRect")
 			if position.y + 2.0 < Globals.sea_level():
@@ -69,20 +69,20 @@ func _physics_process(delta):
 			else:
 				rect.material.set_shader_parameter("underwater", 0.0)
 		
-	var rate = 0.05 if velocity.length() == 0 else 0.01
+	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
 	cam_arm.spring_length = 1 + camera_target_velocity
 	
 	if shake_intensity > 0.0:
-		var intensity = clamp(shake_intensity, 0, 1) ** 2
+		var intensity := clampf(shake_intensity, 0, 1) ** 2
 		if is_zero_approx(intensity):
 			shake_intensity = 0.0
 		else:
 			shake_intensity = clamp(lerp(shake_intensity, 0.0, 0.05), 0.0, 1.0)
-		var t = fmod(Time.get_unix_time_from_system(), 1000000)
-		var dx = camera_shake_noise.get_noise_3d(t, 0, 0)
-		var dy = camera_shake_noise.get_noise_3d(0, t, 0)
-		var dz = camera_shake_noise.get_noise_3d(0, 0, t)
+		var t := fmod(Time.get_unix_time_from_system(), 1000000)
+		var dx := camera_shake_noise.get_noise_3d(t, 0, 0)
+		var dy := camera_shake_noise.get_noise_3d(0, t, 0)
+		var dz := camera_shake_noise.get_noise_3d(0, 0, t)
 		cam.rotation.x = (dx * intensity) * (2 * PI / 8)
 		cam.rotation.y = (dy * intensity) * (2 * PI / 8)
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
