@@ -93,7 +93,7 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 		var offset = tracking_offset.get(p.name, Vector3.ZERO)
 		if t == null or !p.is_inside_tree():
 			return default
-		if t is CollisionShape3D:
+		if t is CollisionShape3D and t.is_inside_tree():
 			var vec: Vector3 = ((t.global_position + offset) - p.global_position).normalized()
 			var dir: Vector3 = lerp(position, vec, 0.0166667).normalized()
 			tracking_position[p.name] = dir

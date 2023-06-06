@@ -314,7 +314,7 @@ func init_grass():
 					i += 1
 					if r == 0:
 						break
-	print(i, " > ", mm.visible_instance_count, " .. ", mm.instance_count)
+						
 	mm.visible_instance_count = i
 
 func set_player_coord_using_position(x: float, y: float, cs: float):

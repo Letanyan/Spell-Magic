@@ -82,8 +82,8 @@ func operator_precedes(op1: Token, op2: Token) -> bool:
 	return false
 
 func compute(vars: Dictionary, display: bool = false) -> float:
-	var tape: Array[float] = [] 
-	
+	var tape: PackedFloat64Array = [] 
+	var tape_index := 0
 	for expr in expression:
 		var e: Token = expr
 		if e.kind == Token.Kind.ERROR:
@@ -91,65 +91,106 @@ func compute(vars: Dictionary, display: bool = false) -> float:
 			return 0
 			
 		if e.kind == Token.Kind.NUMBER:
-			tape.append(e.raw.to_float())
-		elif e.kind == Token.Kind.VAR:
-			if e.raw.begins_with("-"):
-				tape.append(-vars.get(e.raw.right(-1), 0.0))
+			if tape_index == tape.size():
+				tape.append(e.raw.to_float())
 			else:
-				tape.append(vars.get(e.raw, 0.0))
+				tape[tape_index] = e.raw.to_float()
+			tape_index += 1
+		elif e.kind == Token.Kind.VAR:
+			var value := 0.0
+			if e.raw.begins_with("-"):
+				value = -vars.get(e.raw.right(-1), 0.0)
+			else:
+				value = vars.get(e.raw, 0.0)
+			if tape_index == tape.size():
+				tape.append(value)
+			else:
+				tape[tape_index] = value			
+			tape_index += 1
 		elif e.kind == Token.Kind.OP:
-			var b: float = tape.pop_back()
-			var a: float = tape.pop_back()
+			tape_index -= 1
+			var b: float = tape[tape_index]
+			tape_index -= 1
+			var a: float = tape[tape_index]
 			if b == null:
 				error = "incomplete expression"
 				return 0.0
 			if a == null:
 				error = "incomplete expression"
 				return 0.0
+			var value := 0.0
 			match e.raw:
-				"+": tape.append(a + b)
-				"-": tape.append(a - b)
-				"*": tape.append(a * b)
-				"/": tape.append(a / b)
-				"^": tape.append(a ** b)
+				"+": value = a + b
+				"-": value = a - b
+				"*": value = a * b
+				"/": value = a / b
+				"^": value = a ** b
+			if tape_index == tape.size():
+				tape.append(value)
+			else:
+				tape[tape_index] = value
+			tape_index += 1
 		elif e.kind == Token.Kind.PREFIX_OP:
-			var a: float = tape.pop_back()
+			tape_index -= 1
+			var a: float = tape[tape_index]
+			var value := 0.0
 			match e.raw:
-				"-": tape.append(-a)
-				"+": tape.append(a)
-		elif e.kind ==Token.Kind.FUNC:
-			var a: float = tape.pop_back()
+				"-": value = -a
+				"+": value = a
+			if tape_index == tape.size():
+				tape.append(value)
+			else:
+				tape[tape_index] = value
+			tape_index += 1
+		elif e.kind == Token.Kind.FUNC:
+			tape_index -= 1
+			var a: float = tape[tape_index]
+			var value := 0.0
 			match e.raw:
-				"sin": tape.append(sin(a))
-				"cos": tape.append(cos(a))
-				"tan": tape.append(tan(a))
+				"sin": value = sin(a)
+				"cos": value = cos(a)
+				"tan": value = tan(a)
 				
-				"sinh": tape.append(sinh(a))
-				"cosh": tape.append(cosh(a))
-				"tanh": tape.append(tanh(a))
+				"sinh": value = sinh(a)
+				"cosh": value = cosh(a)
+				"tanh": value = tanh(a)
 				
-				"asin": tape.append(asin(a))
-				"acos": tape.append(acos(a))
-				"atan": tape.append(atan(a))
+				"asin": value = asin(a)
+				"acos": value = acos(a)
+				"atan": value = atan(a)
 				
-				"inv": tape.append(1.0 / a if a != 0.0 else 0.0)
-				"mod": tape.append(fmod(tape.pop_back(), a) if a != 0 else 0.0)
-				"div": tape.append(floor(tape.pop_back() / a) if a != 0 else 0.0)
-				"floor": tape.append(floor(a))
-				"ceil": tape.append(ceil(a))
-				"round": tape.append(round(a))
+				"inv": value = 1.0 / a if a != 0.0 else 0.0
+				"mod":
+					tape_index -= 1
+					value = fmod(tape[tape_index], a) if a != 0 else 0.0
+				"div":
+					tape_index -= 1
+					value = floor(tape[tape_index] / a) if a != 0 else 0.0
+				"floor": value = floor(a)
+				"ceil": value = ceil(a)
+				"round": value = round(a)
 				
-				"max": tape.append(max(tape.pop_back(), a))
-				"min": tape.append(min(tape.pop_back(), a))
+				"max":
+					tape_index -= 1
+					value = max(tape[tape_index], a)
+				"min": 
+					tape_index -= 1
+					value = min(tape[tape_index], a)
 				
-				"lt": tape.append(1 if a < 0 else 0)
-				"gt": tape.append(1 if a > 0 else 0)
-				"lte": tape.append(1 if a <= 0 else 0)
-				"gte": tape.append(1 if a >= 0 else 0)
-				"eq": tape.append(1 if a == 0 else 0)
-				"neq": tape.append(1 if a != 0 else 0)
+				"lt": value = 1 if a < 0 else 0
+				"gt": value = 1 if a > 0 else 0
+				"lte": value = 1 if a <= 0 else 0
+				"gte": value = 1 if a >= 0 else 0
+				"eq": value = 1 if a == 0 else 0
+				"neq": value = 1 if a != 0 else 0
+				
+			if tape_index == tape.size():
+				tape.append(value)
+			else:
+				tape[tape_index] = value
+			tape_index += 1
 				
 	if tape.is_empty():
 		return 0
 	
-	return tape.back()
+	return tape[tape_index - 1]
