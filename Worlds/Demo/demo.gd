@@ -49,7 +49,8 @@ func _ready():
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var b = chunker.blender.biome(player.position.x, player.position.z)
+	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
+	var b = chunker.blender.biome
 	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	pass
 	
@@ -135,9 +136,9 @@ func update_terrain(state: PhysicsDirectSpaceState3D):
 	var updated_chunks = chunks.get("updated", [])
 
 	await get_tree().physics_frame
-#	var items = update_population_at(updated_chunks, state)
-#	for item in items:
-#		add_child(item)
+	var items = update_population_at(updated_chunks, state)
+	for item in items:
+		add_child(item)
 	
 	chunker.update_environment(player.position.x, player.position.z)
 	

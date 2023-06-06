@@ -131,7 +131,8 @@ func group_spawn_points(spacing: float) -> Dictionary:
 	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
 		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
 			var p = Vector2(coord.x * chunk_size + x, coord.y * chunk_size + y)
-			var biome = blender.biome(p.x, p.y)
+			blender.compute_biome_distances(p.x, p.y)
+			var biome = blender.biome
 			var found_subset = false
 			for i in range(result.size()):
 				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):

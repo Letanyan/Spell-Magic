@@ -77,7 +77,7 @@ const biome_colors = [
 	Vector3(0.16, 0.53, 0.16),
 	Vector3(0, 1, 1)
 ]
-var _distances = [
+var distances = [
 	0.0,
 	0.0,
 	0.0,
@@ -88,6 +88,9 @@ var _distances = [
 	0.0,
 	0.0,
 ]
+var biome := World.Biome.GRASSLAND
+var color := Color.WHITE
+var total_size := 0.0
 
 func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
@@ -160,49 +163,45 @@ static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
 func height(x: float, y: float) -> float:
 	var result = 0.0
 	
-	var dict = compute_biome_distances(x, y)
-	var total_size = dict["total"]
+	compute_biome_distances(x, y)
 	
 	var X = snapped(x, 0.0001)
 	var Y = snapped(y, 0.0001)
 	
-	result += hfil_curve.sample(hfil_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[0] / total_size)
-	result += otherworld_curve.sample(otherworld_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[1] / total_size)
-	result += tundra_curve.sample(tundra_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[2] / total_size)
-	result += savannah_curve.sample(savannah_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[3] / total_size)
-	result += jungle_curve.sample(jungle_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[4] / total_size)
-	result += desert_curve.sample(desert_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[5] / total_size)
-	result += forest_curve.sample(forest_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[6] / total_size)
-	result += grassland_curve.sample(grassland_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[7] / total_size)
-	result += taiga_curve.sample(taiga_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - _distances[8] / total_size)
+	result += hfil_curve.sample(hfil_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[0] / total_size)
+	result += otherworld_curve.sample(otherworld_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[1] / total_size)
+	result += tundra_curve.sample(tundra_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[2] / total_size)
+	result += savannah_curve.sample(savannah_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[3] / total_size)
+	result += jungle_curve.sample(jungle_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[4] / total_size)
+	result += desert_curve.sample(desert_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[5] / total_size)
+	result += forest_curve.sample(forest_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[6] / total_size)
+	result += grassland_curve.sample(grassland_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[7] / total_size)
+	result += taiga_curve.sample(taiga_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[8] / total_size)
 	
 	return result
 
-func compute_biome_distances(x: float, y: float) -> Dictionary:
+func compute_biome_distances(x: float, y: float):
 	var d := dryness.get_noise_2d(x, y) / 2 + 0.5
 	var t := temperature.get_noise_2d(x, y) / 2 + 0.5
 	
 	var p := Vector2(d, t)
 	var min_distance := INF
 	var pos := 0
-	var total := 0.0
-	var color := Vector3(1, 1, 1)
+	total_size = 0.0
+	var clr := Vector3(1, 1, 1)
 	var dist := 0.0
 	var c := Vector3.ZERO
 	for i in range(biome_locations.size()):
 		dist = p.distance_to(biome_locations[i])
-		_distances[i] = dist
-		total += dist
+		distances[i] = dist
+		total_size += dist
 		c = lerp(biome_colors[i], Vector3(1, 1, 1), dist)
 		if dist <= 1.0:
-			color = color * c
+			clr = clr * c
 		if dist < min_distance:
 			min_distance = dist
 			pos = i
 	
-	var clr = Color(color.x, color.y, color.z)
-	return {"distances": _distances, "biome": biome_list[pos], "total": total, "color": clr}
-	
-func biome(x: float, y: float) -> World.Biome:
-	return compute_biome_distances(x, y)["biome"]
+	biome = biome_list[pos]
+	color = Color(clr.x, clr.y, clr.z)
 

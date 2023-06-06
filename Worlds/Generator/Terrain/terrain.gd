@@ -249,42 +249,38 @@ func place_grass(delta: Vector2):
 		ignore_delta = true
 	
 	var mm: MultiMesh = grass_mesh.multimesh
-
+	var no_hit = Ptr.new(false)
+	var t = Transform3D(Basis(), Vector3.ZERO)
+	t = t.scaled_local(Vector3(100, 100, 100) * 2)
+	var horz := false
+	var vert := false
+	var pos := Vector3.ZERO
+	var p := Vector3.ZERO
+	var wh := 0.0
+	var clr := Color.WHITE
 	for i in range(mm.visible_instance_count):
-		var pos: Vector3 = grass_coords[i]
-		var horz = pos.x > player_position.x + grass_size or pos.x < player_position.x - grass_size
-		var vert = pos.z > player_position.y + grass_size or pos.z < player_position.y - grass_size
-		var dist = Vector2(pos.x, pos.z).distance_to(player_position) / grass_size
-		if dist < 1.0:
-			dist = 1.0
-		else:
-			dist = (1.0 - (dist - 1.0))
-
+		pos = grass_coords[i]
+		horz = pos.x > player_position.x + grass_size or pos.x < player_position.x - grass_size
+		vert = pos.z > player_position.y + grass_size or pos.z < player_position.y - grass_size
+		
 		if horz or vert or ignore_delta:
-			var p = Vector3(pos.x + delta.x * (1 if horz else 0), 0, pos.z + delta.y * (1 if vert else 0))
-			var biome_dict = blender.compute_biome_distances(p.x, p.z)
-			if biome_dict["biome"] != World.Biome.GRASSLAND:
+			p.x = pos.x + delta.x * (1 if horz else 0)
+			p.z = pos.z + delta.y * (1 if vert else 0)
+			blender.compute_biome_distances(p.x, p.z)
+			if blender.biome != World.Biome.GRASSLAND:
 				p.y = -1000
 			else:
-				var no_hit = Ptr.new(false)
-				var wh = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
+				no_hit.data = false
+				wh = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
 				if no_hit.data or wh < Globals.sea_level():
 					p.y = -1000
 				else:
 					p.y = wh
-			var clr: Color = biome_dict["color"]
+			clr = blender.color
 			clr.a = p.z
 			mm.set_instance_custom_data(i, clr)
 			grass_coords[i] = p
-			var t = Transform3D(Basis(), p)
-			t = t.scaled_local(Vector3(100, 100, 100) * 2 * dist)
-			mm.set_instance_transform(i, t)
-		else:
-			var p = pos
-			grass_coords[i] = p
-			var t = Transform3D(Basis(), p)
-			t = t.scaled_local(Vector3(100, 100, 100) * 2 * dist)
-			mm.set_instance_transform(i, t)
+			mm.set_instance_transform(i, t.translated(p))
 			
 		
 	

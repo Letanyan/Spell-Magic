@@ -59,7 +59,8 @@ func random_terrain(biome: World.Biome) -> World.Foliage:
 		
 	
 func spawn(world: Node3D, x: float, y: float, spacing: float) -> Node3D:
-	var biome = blender.biome(x, y)
+	blender.compute_biome_distances(x, y)
+	var biome = blender.biome
 	
 	var result = null
 	var displace = 0.0
