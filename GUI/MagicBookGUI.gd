@@ -246,6 +246,8 @@ func _on_x_text_changed(new_text):
 	book.spells[current_index].x_expr = e
 	if e.error.length() > 0:
 		error_label.text = "x: " + e.error
+	else:
+		error_label.text = ""
 	update_spells_that_chain_to_current_spell()
 
 func _on_y_text_changed(new_text):
@@ -256,6 +258,8 @@ func _on_y_text_changed(new_text):
 	book.spells[current_index].y_expr = e
 	if e.error.length() > 0:
 		error_label.text = "y: " + e.error
+	else:
+		error_label.text = ""
 	update_spells_that_chain_to_current_spell()
 
 func _on_z_text_changed(new_text):
@@ -266,6 +270,8 @@ func _on_z_text_changed(new_text):
 	book.spells[current_index].z_expr = e
 	if e.error.length() > 0:
 		error_label.text = "z: " + e.error
+	else:
+		error_label.text = ""
 	update_spells_that_chain_to_current_spell()
 
 func _on_r_text_changed(new_text):
@@ -276,6 +282,8 @@ func _on_r_text_changed(new_text):
 	book.spells[current_index].r_expr = e
 	if e.error.length() > 0:
 		error_label.text = "r: " + e.error
+	else:
+		error_label.text = ""
 	update_spells_that_chain_to_current_spell()
 
 func _on_N_text_changed(new_text):
@@ -307,6 +315,8 @@ func _on_D_text_changed(new_text):
 	book.spells[current_index].d_expr = e
 	if e.error.length() > 0:
 		error_label.text = "D: " + e.error
+	else:
+		error_label.text = ""
 	update_spells_that_chain_to_current_spell()
 
 func _on_chain_text_changed(new_text):

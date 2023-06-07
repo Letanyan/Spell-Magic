@@ -221,9 +221,11 @@ text = "is bomb"
 [node name="error_label" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 34.0
-offset_top = 536.0
-offset_right = 752.0
-offset_bottom = 559.0
+offset_top = 472.0
+offset_right = 848.0
+offset_bottom = 495.0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="view_chain_button" type="Button" parent="container"]
 layout_mode = 0

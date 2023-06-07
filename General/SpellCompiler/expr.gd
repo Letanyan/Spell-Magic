@@ -3,7 +3,9 @@ class_name Expr
 #var expression: Array[Token]
 #var error: String
 var back: GDExpr
-var error: String = ""
+var error: String:
+	get:
+		return back.error
 
 func _init(expr: String):
 	back = GDExpr.new()
@@ -90,6 +92,8 @@ func operator_precedes(op1: Token, op2: Token) -> bool:
 	return false
 
 func compute(vars: Dictionary, display: bool = false) -> float:
+	if not back.error.is_empty():
+		return 0.0
 	return back.compute(vars)
 	
 #	var tape: PackedFloat64Array = [] 
