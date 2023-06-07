@@ -348,9 +348,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 func update_spell(t: float, vars: Dictionary):
 	if not is_active():
 		return
-	vars.merge(fixed_vars)
-	vars["n"] = n
-	vars["t"] = t - time_start
+	fixed_vars["t"] = t - time_start
 	var p = spell.calculate_location(vars)
 	var er = spell.calculate_size(vars)
 	update_shape(er, false)

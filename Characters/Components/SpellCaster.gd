@@ -24,10 +24,10 @@ func update(body, delta):
 		var p: SpellBody = particles[i]
 		
 		if p.is_active():
-			var vars := spell_variables(body, false, p)
+			spell_variables(p.fixed_vars, body, false, p)
 			if entity == Entity.PLAYER:
-				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, vars)
-			p.update_spell(t, vars)
+				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
+			p.update_spell(t, p.fixed_vars)
 			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
@@ -41,8 +41,7 @@ func update(body, delta):
 		particles.remove_at(i)
 		
 
-func spell_variables(body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
-	var result = {}
+func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
 	var prefix := "" if fixed else "t"
 	result[prefix + "x"] = body.position.x
 	result[prefix + "y"] = body.position.y
@@ -109,8 +108,9 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 			
 	
 func all_spell_variables(body: Node3D, p: SpellBody) -> Dictionary:
-	var result := spell_variables(body, true, p)
-	result.merge(spell_variables(body, false, p))
+	var result := {}
+	spell_variables(result, body, true, p)
+	spell_variables(result, body, false, p)
 	return result
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
@@ -142,9 +142,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
 		tracking_offset[p.name] = spell_offset
-		var temps_vars := vars.duplicate()
-		temps_vars["n"] = p.n
-		var delay := spell.calculate_delay(temps_vars)
+		var delay := spell.calculate_delay(p.fixed_vars)
 		start_particle(delay, body, p, insert)
 		
 func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
@@ -162,7 +160,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
 	if not p.spell.is_bomb:
-		p.fixed_vars.merge(spell_variables(body, true, p), true)
+		spell_variables(p.fixed_vars, body, true, p)
 	insert.call(p)
 
 func set_up_collision(world: Node3D, p: SpellBody):

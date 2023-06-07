@@ -80,6 +80,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	result.x = x_expr.compute(vars)
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
+	
 	if not only_delta:
 		result += (vars["rel_pos"] if follow else vars["abs_pos"])
 	return result
@@ -138,7 +139,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["P"] = power
 	fixed_vars["D"] = delay
 	fixed_vars["pi"] = PI
-	fixed_vars["n"] = n
+	fixed_vars["n"] = float(n)
 	fixed_vars["M"] = mana_cost
 	fixed_vars["C"] = charge
 	charge = 0.0
