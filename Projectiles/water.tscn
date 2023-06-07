@@ -23,6 +23,7 @@ width = 32
 curve = SubResource("Curve_e4atl")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tnio6"]
+resource_local_to_scene = true
 emission_shape = 1
 emission_sphere_radius = 0.5
 direction = Vector3(0, 0, -1)

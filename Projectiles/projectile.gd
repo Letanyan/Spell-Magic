@@ -98,6 +98,16 @@ func get_spell_transform() -> Transform3D:
 		return get_node("source/area/shape").global_transform
 	else:
 		return global_transform
+		
+func get_spell_collision_mask() -> int:
+	match spell.element:
+		Spell.Element.FIRE: return get_node("source/area").collision_mask
+		Spell.Element.WATER: return get_node("source/area").collision_mask
+		Spell.Element.ROCK: return get_node("body").collision_mask
+		Spell.Element.AIR: return get_node("source/area").collision_mask
+		Spell.Element.ICE: return get_node("source/area").collision_mask
+		Spell.Element.ELECTRIC: return get_node("source/area").collision_mask
+		_: return ~0
 
 func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	var is_world  : int = body.collision_layer & 0b0001 != 0
@@ -237,6 +247,7 @@ func update_shape(r: float, ignore_time: bool):
 			particles.process_material.emission_sphere_radius = r
 			particles.process_material.initial_velocity_max = r * 2
 			particles.process_material.scale_max = r * 2
+			particles.process_material.scale_min = r * 2.0 / 3.0
 			
 		Spell.Element.AIR:
 			var m_shape: CollisionShape3D = get_node("source/area/shape")
@@ -269,8 +280,9 @@ func update_shape(r: float, ignore_time: bool):
 			get_node("shape_cast").shape.radius = r
 			
 			var source: GPUParticles3D = get_node("source")
+			source.process_material.emission_sphere_radius = r
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
-			mat.set_shader_parameter("len", r * 1.2)
+			mat.set_shader_parameter("len", r * 5)
 			var body := get_node("body")
 			body.mesh.radius = r
 			body.mesh.height = r * 2

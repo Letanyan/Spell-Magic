@@ -23,6 +23,7 @@ width = 64
 curve = SubResource("Curve_acxw5")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qcqdi"]
+resource_local_to_scene = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 1, 0)
 emission_ring_height = 0.0
@@ -40,6 +41,7 @@ color = Color(0.501961, 1, 0.501961, 0.501961)
 color_ramp = SubResource("GradientTexture1D_rlncl")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e01aq"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_qxk8k")
 shader_parameter/alpha = 1.0

@@ -193,6 +193,12 @@ pan_back={
 3d_physics/layer_9="electric"
 3d_physics/layer_10="world_object"
 
+[physics]
+
+3d/physics_engine="JoltPhysics3D"
+3d/solver/solver_iterations=2
+3d/solver/contact_recycle_radius=0.1
+
 [rendering]
 
 mesh_lod/lod_change/threshold_pixels=0.5

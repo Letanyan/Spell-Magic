@@ -106,6 +106,30 @@ static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Tran
 	query.exclude = [p] + exclude
 	return space_state.collide_shape(query)
 	
+static func get_intersections_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int = ~1, exclude: Array = []) -> Array[Dictionary]:
+	var space_state := p.get_world_3d().direct_space_state
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.collision_mask = mask
+	query.shape = shape
+	query.transform = transform
+	query.exclude = [p] + exclude
+	
+	"""
+	find Quaternion `q` such `v1` rotated by `q` will give `v2`.
+	assuming `v1` and `v2` are not parallel.
+	
+	Quaternion q;
+	vector a = crossproduct(v1, v2);
+	q.xyz = a;
+	q.w = sqrt((v1.Length ^ 2) * (v2.Length ^ 2)) + dotproduct(v1, v2);
+	q = normalize(q)
+	
+	if `v1` is parallel to `v2` `dot(v1,v2) = 1` return Identity quaternion. 
+	If `v1` is opposite to `v2` dot(v1,v2) = -1` return `q = <1, 0, 0, PI>` 
+	"""
+	
+	return space_state.intersect_shape(query, 32)
+	
 
 static func get_ray_collision(p: Node3D, from: Vector3, direction: Vector3, mask: int) -> Vector3:
 	var space_state := p.get_world_3d().direct_space_state

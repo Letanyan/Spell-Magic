@@ -32,6 +32,7 @@ func _ready():
 	menu.setup(book, case)
 	
 	wand = case.wands[0]
+	wand.ignore_cooldown = true
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 	

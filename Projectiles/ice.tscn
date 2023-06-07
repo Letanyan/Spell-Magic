@@ -15,6 +15,7 @@ gradient = SubResource("Gradient_k3a7i")
 width = 32
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p7bpa"]
+resource_local_to_scene = true
 emission_shape = 3
 emission_box_extents = Vector3(1, 0.2, 1)
 particle_flag_align_y = true

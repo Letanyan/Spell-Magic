@@ -1,10 +1,10 @@
-[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://bl62n1br63yeb"]
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bl62n1br63yeb"]
 
 [sub_resource type="Shader" id="Shader_wsris"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.2.stable's StandardMaterial3D.
 
 shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,shadows_disabled;
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
 uniform float point_size : hint_range(0,128);
@@ -19,10 +19,7 @@ uniform vec3 uv1_offset;
 uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 
-//uniform sampler2D wind_noise: source_color;
-//uniform float wind_speed = 0.0001;
-
-uniform float wind_speed = 0.2;
+uniform float wind_speed_multiplier = 0.2;
 uniform float wind_strength = 0.2;
 // How big, in world space, is the noise texture
 // wind will tile every wind_texture_tile_size
@@ -33,6 +30,7 @@ uniform sampler2D wind_horizontal_direction : hint_default_black;
 uniform sampler2D color_ramp : hint_default_black;
 // we need a tiling noise here!
 uniform sampler2D wind_noise : hint_default_black;
+uniform sampler2D wind_speed_change : hint_default_white;
 
 uniform vec3 character_position;
 uniform float character_radius = 3.0;
@@ -49,6 +47,7 @@ void vertex() {
 	
 	vec4 world_coord = INV_VIEW_MATRIX * vec4(VERTEX, 0);
 	
+	float wind_speed = texture(wind_speed_change, vec2(0.5, TIME * wind_speed_multiplier)).r;
 	vec2 wind_dir = vec2(
 		texture(wind_horizontal_direction, vec2(TIME * wind_speed * 0.1, 0.5 + instance_custom.a)).r * 2.0 - 1.0,
 		texture(wind_horizontal_direction, vec2(0.5 + instance_custom.a, TIME * wind_speed * 0.1)).r * 2.0 - 1.0
@@ -84,7 +83,7 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	albedo_tex = instance_custom;
+	albedo_tex = mix(instance_custom, instance_custom * 1.5, 1.0 - UV.y);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
@@ -112,6 +111,15 @@ seamless = true
 seamless_blend_skirt = 0.5
 noise = SubResource("FastNoiseLite_f62im")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_671tw"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sauca"]
+width = 64
+height = 64
+seamless = true
+seamless_blend_skirt = 0.321
+noise = SubResource("FastNoiseLite_671tw")
+
 [resource]
 render_priority = 0
 shader = SubResource("Shader_wsris")
@@ -125,7 +133,7 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/wind_speed = 1.0
+shader_parameter/wind_speed_multiplier = 0.002
 shader_parameter/wind_strength = 0.002
 shader_parameter/wind_texture_tile_size = 20.0
 shader_parameter/wind_vertical_strength = 0.0
@@ -134,3 +142,4 @@ shader_parameter/character_radius = 3.0
 shader_parameter/character_push_strength = 1.0
 shader_parameter/wind_horizontal_direction = SubResource("NoiseTexture2D_852bt")
 shader_parameter/wind_noise = SubResource("NoiseTexture2D_vwbtf")
+shader_parameter/wind_speed_change = SubResource("NoiseTexture2D_sauca")

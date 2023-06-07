@@ -17,8 +17,8 @@ void fragment() {
 
 void vertex() {
 //	VERTEX.y = (VERTEX.y - 0.5) * 0.0 + sin(VERTEX.y + TIME);
-	VERTEX.xz *= width;
-	VERTEX.y = VERTEX.y * len;
+	VERTEX.xz *= width * (sin(UV.y * 2.0 * PI + TIME) / 2.0 + 0.5);
+	VERTEX.y = VERTEX.y * len * sin(UV.y + TIME);
 	float fft = 0.0;
 	float comp_count = 0.0;
 	for (int i = 0; i < comps.length(); i++) {

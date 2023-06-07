@@ -111,7 +111,7 @@ func _init():
 	keys = {}
 	last_use = {}
 	picked = null
-	ignore_cooldown = true
+	ignore_cooldown = false
 	current_actions = {}
 	build_keys()
 
@@ -226,7 +226,6 @@ func save_dict():
 		"keys": {},
 		"picked": picked.save_dict() if picked != null else {},
 		"mods": mods,
-		"ignore_cooldown": ignore_cooldown,
 	}
 	for key in keys:
 		result["keys"][key] = keys[key].save_dict()
@@ -235,7 +234,6 @@ func save_dict():
 func load_dict(dict: Dictionary):
 	name = dict["name"]
 	mods = dict["mods"]
-	ignore_cooldown = dict.get("ignore_cooldown", true)
 	picked = Spell.new()
 #	picked.load_dict(dict["picked"])
 	for k in dict["keys"]:

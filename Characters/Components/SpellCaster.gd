@@ -35,10 +35,12 @@ func update(body, delta):
 			tracking_node.erase(p.name)
 			should_remove.append(i)
 
-	should_remove.reverse()
-	for i in should_remove:
+	var idx = should_remove.size() - 1
+	while idx >= 0:
+		var i = should_remove[idx]
 		particles[i].stop_emitting()
 		particles.remove_at(i)
+		idx -= 1
 		
 
 func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
