@@ -1,12 +1,5 @@
 class_name GrasslandGen
 
-const ENEMY_SPAWN_PROB: Dictionary = {
-	World.Enemy.UNDEAD: 0.01
-}
-
-const FOLIAGE_SPAWN_PROB: Dictionary = {
-	World.Foliage.TREE_ROUND: 0.01
-}
 
 enum GRASSLAND_STRUCTURES_KIND {
 	NONE,

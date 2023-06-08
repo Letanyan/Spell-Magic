@@ -179,3 +179,8 @@ func set_up_collision(world: Node3D, p: SpellBody):
 
 func pass_projectile_hit(spell: Spell, time: float):
 	projectile_hit.emit(spell, time)
+
+func free_particles():
+	for p in particles:
+		p.free_particle()
+	particles.clear()

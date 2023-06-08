@@ -8,11 +8,11 @@ class VectorEdge:
 		p = a
 		q = b
 		
-static func vertices(parent: Node3D, shape: Shape3D) -> Array:
+static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 	if shape is CylinderShape3D:
 		var bottom := parent.global_position
 		var radius: float = shape.radius * 2
-		var result := []
+		var result: PackedVector3Array = []
 		var pivot := Vector3(radius, 0, 0)
 		var p := bottom + pivot
 		result.append(p)
@@ -23,7 +23,7 @@ static func vertices(parent: Node3D, shape: Shape3D) -> Array:
 	elif shape is BoxShape3D:
 		var bottom := parent.global_position
 		var radius: float = max(shape.size.x, max(shape.size.y, shape.size.z))
-		var result := []
+		var result: PackedVector3Array = []
 		var pivot := Vector3(radius, 0, 0)
 		var p := bottom + pivot
 		result.append(p)
@@ -97,7 +97,7 @@ static func get_point_intersection(p: Node3D, target: Vector3) -> CollisionShape
 			break
 	return c
 
-static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int, exclude: Array = []) -> Array[Vector3]:
+static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int, exclude: Array = []) -> PackedVector3Array:
 	var space_state := p.get_world_3d().direct_space_state
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.collision_mask = mask

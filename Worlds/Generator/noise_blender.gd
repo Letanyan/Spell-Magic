@@ -123,7 +123,6 @@ func _init(d: FastNoiseLite, t: FastNoiseLite):
 	taiga_noise.frequency = 0.0005
 	tundra_noise.frequency = 0.0005
 	
-	
 func dryness_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return texture(dryness, x, y, w, h, scale)
 	
@@ -141,33 +140,14 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale
 	result.normalize = false
 	return result
 
-static func parallel_sort_by_values(keys: Array, values: Array) -> Array:
-	var swapped = false
-	while not swapped:
-		swapped = false
-		for i in range(keys.size()):
-			if values[i - 1] > values[i]:
-				var v = values[i - 1]
-				values[i - 1] = values[i]
-				values[i] = v
-				var k = keys[i - 1]
-				keys[i - 1] = keys[i]
-				keys[i] = k
-				swapped = true
-				
-		if not swapped:
-			break
-	
-	return keys
-
 func height(x: float, y: float) -> float:
 	var result := 0.0
-	
+
 	compute_biome_distances(x, y)
-	
+
 	var X := snappedf(x, 0.0001)
 	var Y := snappedf(y, 0.0001)
-	
+
 	result += hfil_curve.sample(hfil_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[0] / total_size)
 	result += otherworld_curve.sample(otherworld_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[1] / total_size)
 	result += tundra_curve.sample(tundra_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[2] / total_size)
@@ -177,13 +157,13 @@ func height(x: float, y: float) -> float:
 	result += forest_curve.sample(forest_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[6] / total_size)
 	result += grassland_curve.sample(grassland_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[7] / total_size)
 	result += taiga_curve.sample(taiga_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[8] / total_size)
-	
+
 	return result
 
 func compute_biome_distances(x: float, y: float):
 	var d := dryness.get_noise_2d(x, y) / 2 + 0.5
 	var t := temperature.get_noise_2d(x, y) / 2 + 0.5
-	
+
 	var p := Vector2(d, t)
 	var min_distance := INF
 	var pos := 0
@@ -201,7 +181,7 @@ func compute_biome_distances(x: float, y: float):
 		if dist < min_distance:
 			min_distance = dist
 			pos = i
-	
+
 	biome = biome_list[pos]
 	color = Color(clr.x, clr.y, clr.z)
 

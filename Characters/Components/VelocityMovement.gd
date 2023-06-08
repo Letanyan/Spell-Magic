@@ -58,6 +58,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
 		vital_tick = 0
+		if body.position.y < Globals.sea_level():
+			var underwater = clamp(Globals.sea_level() - body.position.y, 0.0, 10.0) / 10.0
+			vitals.wetness.apply(underwater)
 
 	
 	var direction := Vector3.ZERO

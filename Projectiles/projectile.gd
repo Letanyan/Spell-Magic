@@ -434,3 +434,7 @@ func cast_spell(insert: Callable, next_spell: Spell):
 
 func pass_projectile_up(p_spell: Spell, time: float):
 	projectile_hit.emit(p_spell, time)
+
+func free_particle():
+	spell_caster.free_particles()
+	queue_free()

@@ -43,6 +43,12 @@ func pan_camera(movement: Vector2):
 	cam_pivot.rotate_y(-movement.x * damping / 180 * PI)
 	cam_arm.rotate_x(-movement.y * damping / 180 * PI / 3)
 	cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
+	
+	var size := -movement.length()
+	if vitals.wetness.value > vitals.wetness.min_value and position.y > Globals.sea_level():
+		vitals.wetness.apply(size / 50_000.0)
+	if vitals.freeze.value > vitals.freeze.min_value:
+		vitals.wetness.apply(size / 75_000.0)
 
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse

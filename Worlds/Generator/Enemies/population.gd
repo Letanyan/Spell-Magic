@@ -119,7 +119,7 @@ func spawn_random_foliage(biome_prob: Dictionary, state: PhysicsDirectSpaceState
 func spawn_random_building(biome_prob: Dictionary, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	return spawn_building(random_building(biome_prob), state, x, y, spacing)
 	
-static func contains_neighbour_point(collection: Array, point: Vector2, spacing: float) -> bool:
+static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
 	for p in collection:
 		if p.distance_to(point) <= spacing:
 			return true
@@ -160,6 +160,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
 	
 func despawn_all_from_world(world: Node3D):
 	for habitant in inhabitants:
+		habitant.spell_caster.free_particles()
 		habitant.queue_free()
 	for f in garden:
 		f.queue_free()

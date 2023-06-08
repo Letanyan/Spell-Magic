@@ -20,6 +20,9 @@ class Stat:
 	func apply_ignoring_resistance(amount: float):
 		value = clamp(value + amount, min_value, max_value)
 		
+	func apply(p: float):
+		apply_ignoring_resistance(amount_of_change(p))
+		
 	func update_per_tick() -> float:
 		apply_ignoring_resistance(change_per_tick)
 		return change_per_tick

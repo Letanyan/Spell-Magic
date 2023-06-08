@@ -26,7 +26,7 @@ var water_chunks_location := PackedVector2Array()
 var water_chunks: Array[Node3D] = []
 
 var grass_mesh: MultiMeshInstance3D
-var grass_coords: Array[Vector3] = []
+var grass_coords: PackedVector3Array = []
 
 var base_coords: PackedVector3Array = []
 
@@ -285,6 +285,7 @@ func place_grass(delta: Vector2):
 			mm.set_instance_custom_data(i, clr)
 			grass_coords[i] = p
 			mm.set_instance_transform(i, t.translated(p))
+			
 			
 		
 	
