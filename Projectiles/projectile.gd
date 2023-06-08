@@ -21,6 +21,7 @@ var to_remove := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	spell_caster.projectile_hit.connect(pass_projectile_up)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 
@@ -164,7 +165,6 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			# Look at `_on_area_entered` for implementation
 			pass
 	
-	projectile_hit.emit(spell, Time.get_unix_time_from_system())
 	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
@@ -193,7 +193,6 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
-	projectile_hit.emit(spell, Time.get_unix_time_from_system())
 	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
@@ -311,6 +310,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 	if target.length() > 1.0 or target.distance_to(shape_cast.target_position) > 1.0:
 		shape_cast.target_position = target
 	var count := shape_cast.get_collision_count()
+	if count > 0:
+		projectile_hit.emit(spell, Time.get_unix_time_from_system())
 	for i in range(count):
 		var obj := shape_cast.get_collider(i)
 		var point := shape_cast.get_collision_point(i)
@@ -430,3 +431,6 @@ func free_after(duration: float):
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, null, insert, next_spell)
+
+func pass_projectile_up(p_spell: Spell, time: float):
+	projectile_hit.emit(p_spell, time)

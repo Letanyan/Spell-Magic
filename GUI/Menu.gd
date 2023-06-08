@@ -3,7 +3,7 @@ extends Control
 
 enum Kind { ANY, SPELLS, WANDS }
 
-@onready var magic_book: Control = $MagicBook
+@onready var magic_book: MagicBookGUI = $MagicBook
 @onready var wand_case: Control = $WandCase
 var current_index := 0
 
@@ -37,6 +37,7 @@ func update_index(index):
 		1: wand_case.visible = true
 
 func _on_spells_pressed():
+	magic_book.duplicate_book()
 	update_index(0)
 
 func _on_wands_pressed():

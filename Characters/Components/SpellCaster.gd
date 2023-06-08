@@ -11,6 +11,7 @@ var tracking_position: Dictionary = {}
 var tracking_offset: Dictionary = {}
 
 signal projectile_hit
+signal not_enough_mana_for_spell
 
 func _init(e: Entity):
 	entity = e
@@ -119,10 +120,10 @@ func all_spell_variables(body: Node3D, p: SpellBody) -> Dictionary:
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 	if vitals != null:
-		if vitals.mana.value >= spell.mana_cost or ignore_mana_cost:
-			vitals.mana.apply_ignoring_resistance(-spell.mana_cost)
+		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
+			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
 		else:
-			print("not enough mana")
+			not_enough_mana_for_spell.emit(spell)
 			return
 			
 	var node_to_track = null
@@ -164,9 +165,9 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
-	p.projectile_hit.connect(pass_projectile_hit)
 	if not p.spell.is_bomb:
 		spell_variables(p.fixed_vars, body, true, p)
+	p.projectile_hit.connect(pass_projectile_hit)
 	insert.call(p)
 
 func set_up_collision(world: Node3D, p: SpellBody):

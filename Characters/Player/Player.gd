@@ -24,7 +24,7 @@ signal spell_was_cast
 var vitals: Vitals
 
 func _ready():
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 1))
+	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
 	emit_vitals_signal()
 	velocity = Vector3.ZERO
 	spell_caster.projectile_hit.connect(give_back_mana_after_hit)
@@ -118,6 +118,7 @@ func update_entity_info(info: EntityInfo):
 func give_back_mana_after_hit(spell: Spell, time: float):
 	var c := spell.cooldown
 	var u = magic_book.last_use.get(spell.name, 0.0)
-	var t = (1.0 - minf((time - u) / (c + spell.mana_cost), 1.0)) * spell.mana_cost
+	var v = minf((time - u) / (c + spell.mana_cost), 1.0)
+	var t = (1.0 - (-1.5 * (v ** 3.0 / 3.0 - v))) * spell.mana_cost / float(spell.count)
 	vitals.mana.apply_ignoring_resistance(t)
 	

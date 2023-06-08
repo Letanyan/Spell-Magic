@@ -26,6 +26,7 @@ func _ready():
 	
 	book = MagicBook.new()
 	book.load()
+	book.rebuild_spell_chains()
 	
 	case = WandCase.new()
 	case.load()

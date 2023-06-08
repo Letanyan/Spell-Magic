@@ -1,3 +1,4 @@
+class_name MagicBookGUI
 extends Control
 
 @onready var sort_button: MenuButton = $SortButton
@@ -15,10 +16,7 @@ var filter_chain := ""
 var book: MagicBook:
 	set(value):
 		book = value
-		var i := 0 
-		for s in book.spells:
-			s.id = i
-			i += 1
+		duplicate_book()
 		update_spells_list()
 		reload_list()
 
@@ -60,6 +58,13 @@ func _ready():
 	filter_popup.connect("id_pressed", filter_popup_selected)
 	
 	$container.visible = false
+	
+	
+func duplicate_book():
+	for i in book.spells.size():
+		var s = book.spells[i].duplicate()
+		book.spells[i] = s
+		s.id = i
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -364,12 +369,7 @@ func update_cooldown():
 func update_spells_that_chain_to_current_spell():
 	if current_index < 0:
 		return
-	var spell: Spell = book.spells[current_index]
-				
-	if spell.name != "":
-		for s in book.spells:
-			if s.chain != null and s.chain.name == spell.name and s.name != spell.name:
-				s.chain = spell
+	book.rebuild_spell_chains()
 
 func _on_view_chain_button_pressed():
 	var n := chain_edit.text

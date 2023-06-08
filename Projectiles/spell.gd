@@ -72,6 +72,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 func duplicate() -> Spell:
 	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost)
 	result.chain = chain
+	result.chain_cast_kind = chain_cast_kind
 	result.name = name
 	return result
 	
@@ -86,7 +87,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	return result
 	
 func calculate_size(vars: Dictionary) -> float:
-	var result := clampf(r_expr.compute(vars), 0.01, 10)
+	var result := clampf(r_expr.compute(vars), 0.5, 10)
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:
@@ -105,13 +106,19 @@ func impulse_length() -> float:
 		_:
 			return 0
 			
-func calculate_cooldown():
+func calculate_cooldown() -> float:
 	var chain_cost := 0.0
 	var basic_cost := (power / 100.0 + 1.0) * count + duration - mana_cost
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
 	cooldown = basic_cost + chain_cost
 	return cooldown
+	
+func actual_mana_cost() -> float:
+	var result := mana_cost
+	if chain != null:
+		result += chain.actual_mana_cost() * count
+	return result
 	
 const fire = preload("res://Projectiles/fire.tscn")
 const rock = preload("res://Projectiles/rock.tscn")
