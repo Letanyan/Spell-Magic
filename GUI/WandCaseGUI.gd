@@ -13,6 +13,8 @@ var case: WandCase:
 var current_index = -1
 var use_current_wand: Callable
 
+signal new_wand_selected
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -92,3 +94,4 @@ func _on_use_pressed():
 		return
 	case.selected_wand = current_index
 	use_current_wand.call(current_index)
+	new_wand_selected.emit(case.wands[current_index])

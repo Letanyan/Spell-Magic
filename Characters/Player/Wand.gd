@@ -99,17 +99,17 @@ const ps_keys = {
 var name: String
 var mods: Dictionary
 var keys: Dictionary
-var last_use: Dictionary
 var picked: Spell
 var ignore_cooldown: bool
 
 var current_actions: Dictionary
 
+signal spell_on_cooldown
+
 func _init():
 	name = ""
 	mods = {}
 	keys = {}
-	last_use = {}
 	picked = null
 	ignore_cooldown = false
 	current_actions = {}
@@ -185,12 +185,11 @@ func action_down(action: String, book: MagicBook) -> Spell:
 			var s = find_spell(best_candidate, book)
 			if s == null:
 				return null
-			var used = last_use.get(s.name, 0)
-			if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
-				last_use[s.name] = Time.get_unix_time_from_system()
+			if book.can_use_spell(s):
+				book.use_spell(s)
 				return s
 			else:
-				print(Time.get_unix_time_from_system() - used, " > ", s.cooldown)
+				spell_on_cooldown.emit(s)
 				return null
 	return null
 	
@@ -207,14 +206,13 @@ func action_up(action: String, book: MagicBook):
 			var opt: Option = keys[key]
 			if opt.kind == Kind.FIRE_HOLD:
 				var s = find_spell(key, book)
-				var used = last_use.get(s.name, 0)
-				if Time.get_unix_time_from_system() - used > s.cooldown or ignore_cooldown:
-					last_use[s.name] = Time.get_unix_time_from_system()
+				if book.can_use_spell(s):
+					book.use_spell(s)
 					current_actions.erase(action)
 					s.charge = Time.get_unix_time_from_system() - opt.start_hold
 					return s
 				else:
-					print(Time.get_unix_time_from_system() - used, " > ", s.cooldown)
+					spell_on_cooldown.emit(s)
 					current_actions.erase(action)
 					return null
 	current_actions.erase(action)

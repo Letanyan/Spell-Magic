@@ -1,0 +1,230 @@
+[gd_scene load_steps=25 format=3 uid="uid://gy4oggrqctjx"]
+
+[ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bx3k2"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y404m"]
+bg_color = Color(0, 0.698039, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kulh5"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7p3b"]
+bg_color = Color(0, 0.47451, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Gradient" id="Gradient_8acjo"]
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v36m7"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uowok"]
+width = 56
+height = 56
+color_ramp = SubResource("Gradient_8acjo")
+noise = SubResource("FastNoiseLite_v36m7")
+
+[sub_resource type="Gradient" id="Gradient_o1qi4"]
+colors = PackedColorArray(1, 0, 0, 0, 1, 1, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ye0oi"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xw26k"]
+width = 56
+height = 56
+color_ramp = SubResource("Gradient_o1qi4")
+noise = SubResource("FastNoiseLite_ye0oi")
+
+[sub_resource type="Gradient" id="Gradient_ogdry"]
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l8fd1"]
+noise_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3il6k"]
+width = 56
+height = 56
+color_ramp = SubResource("Gradient_ogdry")
+noise = SubResource("FastNoiseLite_l8fd1")
+
+[sub_resource type="Gradient" id="Gradient_14lwe"]
+colors = PackedColorArray(0, 0, 1, 0, 0, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v2krx"]
+noise_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r678a"]
+width = 56
+height = 56
+color_ramp = SubResource("Gradient_14lwe")
+noise = SubResource("FastNoiseLite_v2krx")
+
+[sub_resource type="Gradient" id="Gradient_sc1pe"]
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_e0t6k"]
+noise_type = 2
+fractal_octaves = 1
+fractal_lacunarity = 1.0
+domain_warp_enabled = true
+domain_warp_amplitude = 90.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 4
+domain_warp_fractal_lacunarity = 3.0
+domain_warp_fractal_gain = 0.05
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_roide"]
+width = 56
+height = 56
+seamless_blend_skirt = 0.0
+color_ramp = SubResource("Gradient_sc1pe")
+noise = SubResource("FastNoiseLite_e0t6k")
+
+[sub_resource type="Gradient" id="Gradient_ux0vl"]
+colors = PackedColorArray(0, 0, 0.729412, 1, 0, 0.517647, 1, 0)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2ur1d"]
+width = 56
+height = 56
+color_ramp = SubResource("Gradient_ux0vl")
+noise = SubResource("FastNoiseLite_e0t6k")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pvp5j"]
+bg_color = Color(0, 0, 0, 0.113725)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sdxao"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bddbh")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 576.0
+offset_right = 719.0
+offset_bottom = 603.0
+theme_override_styles/background = SubResource("StyleBoxFlat_bx3k2")
+theme_override_styles/fill = SubResource("StyleBoxFlat_y404m")
+value = 50.0
+show_percentage = false
+
+[node name="ManaBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 608.0
+offset_right = 720.0
+offset_bottom = 635.0
+theme_override_styles/background = SubResource("StyleBoxFlat_kulh5")
+theme_override_styles/fill = SubResource("StyleBoxFlat_y7p3b")
+value = 50.0
+show_percentage = false
+
+[node name="BurningBar" type="TextureProgressBar" parent="."]
+layout_mode = 0
+offset_left = 376.0
+offset_top = 576.0
+offset_right = 432.0
+offset_bottom = 632.0
+step = 0.001
+value = 75.0
+fill_mode = 3
+texture_under = SubResource("NoiseTexture2D_uowok")
+texture_progress = SubResource("NoiseTexture2D_xw26k")
+
+[node name="FreezeBar" type="TextureProgressBar" parent="."]
+layout_mode = 0
+offset_left = 312.0
+offset_top = 576.0
+offset_right = 368.0
+offset_bottom = 632.0
+step = 0.001
+value = 75.0
+fill_mode = 3
+texture_under = SubResource("NoiseTexture2D_3il6k")
+texture_progress = SubResource("NoiseTexture2D_r678a")
+
+[node name="WetBar" type="TextureProgressBar" parent="."]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 576.0
+offset_right = 304.0
+offset_bottom = 632.0
+step = 0.001
+value = 75.0
+fill_mode = 3
+texture_under = SubResource("NoiseTexture2D_roide")
+texture_progress = SubResource("NoiseTexture2D_2ur1d")
+
+[node name="CooldownList" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 248.0
+offset_bottom = 8.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_selected_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/guide_color = Color(0, 0, 0, 0)
+theme_override_constants/v_separation = 1
+theme_override_constants/line_separation = 1
+theme_override_constants/outline_size = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pvp5j")
+theme_override_styles/selected = SubResource("StyleBoxFlat_sdxao")
+auto_height = true
+
+[node name="SpellCooldownTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="SpellCooldownTimer" to="." method="update_spell_cooldowns"]

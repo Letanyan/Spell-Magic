@@ -17,15 +17,24 @@ const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.t
 var is_menu_showing: Callable
 
 signal player_moved
+signal vital_update
+signal spell_was_cast
 
 var vitals: Vitals
 
 func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 1))
+	emit_vitals_signal()
 	velocity = Vector3.ZERO
 
 func _input(event):
 	pass
+	
+func emit_vitals_signal():
+	vital_update.emit(vitals)
+	
+func emit_spell_was_cast(s: Spell):
+	spell_was_cast.emit(s)
 	
 func pan_camera(movement: Vector2):
 	var damping := 0.75
@@ -42,6 +51,7 @@ func add_shake(amount: float):
 func _physics_process(delta):
 	var menu_showing: bool = is_menu_showing.call()
 	var movement := velocity_movement.update(delta, vitals, 14, self)
+	emit_vitals_signal()
 	if not menu_showing:
 		velocity = movement["velocity"]
 		move_and_slide()
@@ -91,6 +101,8 @@ func _physics_process(delta):
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, vitals, insert, next_spell)
+	emit_vitals_signal()
+	emit_spell_was_cast(next_spell)
 
 func _on_wet_area_body_entered(body):
 	print(body)

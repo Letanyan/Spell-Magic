@@ -2,6 +2,7 @@ extends Node3D
 
 @onready var player: Player = $Player
 @onready var menu: Menu = $Menu
+@onready var hud: HUD = $HUD
 
 @export var noise_temperature: Noise
 @export var noise_dryness: Noise
@@ -31,8 +32,8 @@ func _ready():
 	
 	menu.setup(book, case)
 	
+	book.ignore_cooldown = true
 	wand = case.wands[0]
-	wand.ignore_cooldown = true
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 	
@@ -46,6 +47,10 @@ func _ready():
 	skybox.day_time = 14
 	
 	player.is_menu_showing = func(): return menu.is_showing
+	hud.player = player
+	hud.book = book
+	hud.wand = wand
+	menu.wand_case.new_wand_selected.connect(hud.set_wand)
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -84,8 +89,10 @@ func _input(event):
 	if event.is_action_pressed("menu"):
 		if menu.is_showing:
 			menu.close()
+			hud.show()
 		else:
 			menu.open(Menu.Kind.ANY)
+			hud.hide()
 			
 	if not menu.is_showing and event.is_action_pressed("magic_book"):
 		menu.open(Menu.Kind.SPELLS)

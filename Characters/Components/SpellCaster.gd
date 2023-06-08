@@ -116,13 +116,13 @@ func all_spell_variables(body: Node3D, p: SpellBody) -> Dictionary:
 	return result
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
-	if vitals != null and not ignore_mana_cost:
-		if vitals.mana.value >= spell.mana_cost:
-			vitals.mana.apply_ignoring_resistance(spell.mana_cost)
+	if vitals != null:
+		if vitals.mana.value >= spell.mana_cost or ignore_mana_cost:
+			vitals.mana.apply_ignoring_resistance(-spell.mana_cost)
 		else:
 			print("not enough mana")
 			return
-	
+			
 	var node_to_track = null
 	var cdir = Vector3.ZERO
 	if entity == Entity.PLAYER:
@@ -133,6 +133,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 		node_to_track = Navigator.get_ray_intersection(body, cam.global_position - Vector3.UP, cam.global_position - Vector3.UP + cdir * 500)
 		if node_to_track == null:
 			node_to_track = cdir
+			
 			
 	# it's fine that a projectile doesn't have a target set yet at the start
 	# since by default camera direction equals target direction at start
