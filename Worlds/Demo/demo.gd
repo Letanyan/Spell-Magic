@@ -47,6 +47,7 @@ func _ready():
 	skybox.day_time = 14
 	
 	player.is_menu_showing = func(): return menu.is_showing
+	player.magic_book = book
 	hud.player = player
 	hud.book = book
 	hud.wand = wand

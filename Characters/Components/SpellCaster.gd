@@ -10,6 +10,8 @@ var tracking_node: Dictionary = {}
 var tracking_position: Dictionary = {}
 var tracking_offset: Dictionary = {}
 
+signal projectile_hit
+
 func _init(e: Entity):
 	entity = e
 	ignore_mana_cost = true
@@ -162,6 +164,7 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
+	p.projectile_hit.connect(pass_projectile_hit)
 	if not p.spell.is_bomb:
 		spell_variables(p.fixed_vars, body, true, p)
 	insert.call(p)
@@ -172,3 +175,6 @@ func set_up_collision(world: Node3D, p: SpellBody):
 	NavigationServer3D.agent_set_map(new_agent_rid, default_3d_map_rid)
 	NavigationServer3D.agent_set_radius(new_agent_rid, 5)
 	NavigationServer3D.agent_set_position(new_agent_rid, p.global_position)
+
+func pass_projectile_hit(spell: Spell, time: float):
+	projectile_hit.emit(spell, time)

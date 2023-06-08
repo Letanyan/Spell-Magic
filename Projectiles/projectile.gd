@@ -1,7 +1,7 @@
 class_name SpellBody
 extends Node3D
 
-signal world_hit
+signal projectile_hit
 
 var spell: Spell
 var n: int
@@ -164,6 +164,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			# Look at `_on_area_entered` for implementation
 			pass
 	
+	projectile_hit.emit(spell, Time.get_unix_time_from_system())
 	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
@@ -192,6 +193,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				expire_now(self, body)
 				
+	projectile_hit.emit(spell, Time.get_unix_time_from_system())
 	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
