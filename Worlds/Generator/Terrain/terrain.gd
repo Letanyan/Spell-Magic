@@ -64,7 +64,7 @@ func init_chunks(x: float, y: float) -> Array[Node3D]:
 		var gm := MultiMesh.new()
 		gm.transform_format = MultiMesh.TRANSFORM_3D
 		gm.use_custom_data = true
-		gm.instance_count = 25_542
+		gm.instance_count = 32_175
 		gm.visible_instance_count = 0
 		gm.mesh = load("res://Models/Grass/grass_02_mesh_lod2.tres")
 		grass_mesh = MultiMeshInstance3D.new()
@@ -258,7 +258,7 @@ func place_grass(delta: Vector2):
 	var mm: MultiMesh = grass_mesh.multimesh
 	var no_hit := Ptr.new(false)
 	var t := Transform3D(Basis(), Vector3.ZERO)
-	t = t.scaled_local(Vector3(100, 100, 100) * 2)
+	t = t.scaled_local(Vector3(1, 1, 1) * 200)
 	var nt := t
 	var horz := false
 	var vert := false
@@ -297,7 +297,8 @@ func place_grass(delta: Vector2):
 				nt.basis.y = new_y
 				nt.basis.x = -nt.basis.z.cross(new_y)
 				nt.basis = nt.basis.orthonormalized()
-				nt = nt.scaled_local(Vector3(100, 100, 100) * 2)
+				nt = nt.rotated_local(Vector3.UP, randf() * 2 * PI)
+				nt = nt.scaled_local(Vector3(1, 1, 1) * 200)
 			mm.set_instance_transform(i, nt.translated(p))
 		
 	
@@ -307,7 +308,7 @@ func init_grass():
 	var mm: MultiMesh = grass_mesh.multimesh
 	var i := 0
 	seed(0)
-	const R := 6
+	const R := 4
 	for _X in range(-grass_size, grass_size + 1, R * 2):
 		for y in range(-grass_size, grass_size + 1, R):
 			@warning_ignore("integer_division")
