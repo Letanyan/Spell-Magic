@@ -17,6 +17,7 @@ var player_coord: Vector2 = Vector2.ZERO
 var biome_shader := preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 var water_shader := preload("res://Worlds/SkyBox/water.gdshader")
 var water_noise := preload("res://Worlds/SkyBox/water_noise.tres")
+var water_ripples_noise := preload("res://Worlds/SkyBox/ripples_noise.tres")
 
 var loaded_chunks_location := PackedVector2Array()
 var loaded_chunks: Array[Node3D] = []
@@ -225,6 +226,7 @@ func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: f
 	var mat := mesh.surface_get_material(0)
 	mat.shader = water_shader
 	mat.set_shader_parameter("noise", water_noise)
+	mat.set_shader_parameter("ripples", water_ripples_noise)
 
 func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool):
 	var mi := node.get_node("mesh")
