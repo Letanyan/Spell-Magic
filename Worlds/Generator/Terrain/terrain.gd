@@ -30,8 +30,8 @@ var grass_coords: PackedVector3Array = []
 
 var base_coords: PackedVector3Array = []
 
-func _init(d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3):
-	subdivide_percent = 1.0 / 16.0
+func _init(d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0):
+	subdivide_percent = subdivide
 	blender = NoiseBlender.new(d, t)
 	chunk_size = cs
 	grass_size = cs * 0.5
@@ -63,9 +63,9 @@ func init_chunks(x: float, y: float) -> Array[Node3D]:
 		var gm := MultiMesh.new()
 		gm.transform_format = MultiMesh.TRANSFORM_3D
 		gm.use_custom_data = true
-		gm.instance_count = 21_000
+		gm.instance_count = 25_542
 		gm.visible_instance_count = 0
-		gm.mesh = load("res://Models/Grass/grass_02_mesh.tres")
+		gm.mesh = load("res://Models/Grass/grass_02_mesh_lod2.tres")
 		grass_mesh = MultiMeshInstance3D.new()
 		grass_mesh.multimesh = gm
 		result.append(grass_mesh)
@@ -200,6 +200,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 			A.z = base_coords[i].z + v.y
 		A.y = blender.height(A.x + x, A.z + y)
 		mdt.set_vertex(i, A)
+	
 
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
@@ -256,10 +257,12 @@ func place_grass(delta: Vector2):
 	var no_hit := Ptr.new(false)
 	var t := Transform3D(Basis(), Vector3.ZERO)
 	t = t.scaled_local(Vector3(100, 100, 100) * 2)
+	var nt := t
 	var horz := false
 	var vert := false
 	var pos := Vector3.ZERO
 	var p := Vector3.ZERO
+	var whn := Vector3.ZERO
 	var wh := 0.0
 	var clr := Color.WHITE
 	for i in range(mm.visible_instance_count):
@@ -275,8 +278,10 @@ func place_grass(delta: Vector2):
 				p.y = -1000
 			else:
 				no_hit.data = false
-				wh = Navigator.get_world_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
-				if no_hit.data or wh < Globals.sea_level():
+				var normal_height = Navigator.get_world_normal_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
+				wh = normal_height.get("position", Vector3.ZERO).y
+				whn = normal_height.get("normal", Vector3.ZERO)
+				if no_hit.data or wh < Globals.sea_level() or whn.distance_to(Vector3.UP) > 1 / sqrt(2.0):
 					p.y = -1000
 				else:
 					p.y = wh
@@ -284,9 +289,14 @@ func place_grass(delta: Vector2):
 			clr.a = p.z
 			mm.set_instance_custom_data(i, clr)
 			grass_coords[i] = p
-			mm.set_instance_transform(i, t.translated(p))
-			
-			
+			nt = t
+			if no_hit.data == false and whn:
+				var new_y = whn.normalized()
+				nt.basis.y = new_y
+				nt.basis.x = -nt.basis.z.cross(new_y)
+				nt.basis = nt.basis.orthonormalized()
+				nt = nt.scaled_local(Vector3(100, 100, 100) * 2)
+			mm.set_instance_transform(i, nt.translated(p))
 		
 	
 func init_grass():
@@ -295,7 +305,7 @@ func init_grass():
 	var mm: MultiMesh = grass_mesh.multimesh
 	var i := 0
 	seed(0)
-	const R := 16
+	const R := 6
 	for _X in range(-grass_size, grass_size + 1, R * 2):
 		for y in range(-grass_size, grass_size + 1, R):
 			@warning_ignore("integer_division")
@@ -310,7 +320,7 @@ func init_grass():
 					var is_top_right := Geometry2D.is_point_in_circle(Vector2(nx, ny), Vector2(x + R, y - R), R)					
 					if (is_top_left or is_top_right):
 						continue
-					var p := Vector3(nx, 1000, ny) + Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
+					var p := Vector3(nx, 1000, ny) + Vector3(randf() - 0.5, 0, randf() - 0.5)
 					grass_coords.append(p)
 					i += 1
 					if r == 0:

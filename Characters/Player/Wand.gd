@@ -99,7 +99,7 @@ const ps_keys = {
 var name: String
 var mods: Dictionary
 var keys: Dictionary
-var picked: Spell
+var picked: String
 var ignore_cooldown: bool
 
 var current_actions: Dictionary
@@ -110,7 +110,7 @@ func _init():
 	name = ""
 	mods = {}
 	keys = {}
-	picked = null
+	picked = ""
 	ignore_cooldown = false
 	current_actions = {}
 	build_keys()
@@ -150,7 +150,10 @@ func add_mod(mod: String):
 func find_spell(key: Array, book: MagicBook) -> Spell:
 	var opt: Option = keys[key]
 	if opt.kind == Kind.FIRE_PICKED:
-		return picked
+		for s in book.spells:
+			if s.name == picked:
+				return s
+		return null
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
 		return null
 	var opt_spell := opt.next_spell()
@@ -159,7 +162,7 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD:
 				return s
 			elif opt.kind == Kind.PICK:
-				picked = s
+				picked = s.name
 				return null
 	return null
 
@@ -222,7 +225,6 @@ func save_dict():
 	var result = {
 		"name": name,
 		"keys": {},
-		"picked": picked.save_dict() if picked != null else {},
 		"mods": mods,
 	}
 	for key in keys:
@@ -232,8 +234,7 @@ func save_dict():
 func load_dict(dict: Dictionary):
 	name = dict["name"]
 	mods = dict["mods"]
-	picked = Spell.new()
-#	picked.load_dict(dict["picked"])
+	picked = ""
 	for k in dict["keys"]:
 		var opt = Option.new()
 		opt.load_dict(dict["keys"][k])

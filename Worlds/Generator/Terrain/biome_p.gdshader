@@ -69,11 +69,12 @@ void fragment() {
 	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
 	
 	vec3 color = biome_color(v, UV);
-	//	float norm_angle = distance(vec3(0, 1, 0), normalize(NORMAL));
-	//	if (norm_angle > inversesqrt(8.0)) {
-	//		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(8.0)), 5.0), 0.0, 1.0);
-	//		color = mix(color, vec3(0.15), 0.25);
-	//	}
+	
+	float norm_angle = distance(vec3(0, 1, 0), -normalize(cross(dFdx(v.xyz), dFdy(v.xyz))));
+	if (norm_angle > inversesqrt(2)) {
+		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(2.0)), 5.0), 0.0, 1.0);
+		color = mix(color, vec3(0.15), blend);
+	}
 
 	ALBEDO = color;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));

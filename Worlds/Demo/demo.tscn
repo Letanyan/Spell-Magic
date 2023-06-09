@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=18 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_6wr6k"]
@@ -61,10 +61,19 @@ ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_u3tt4"]
+frequency = 0.3381
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_plqxk"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_u3tt4")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eggur"]
 render_priority = 0
 shader = ExtResource("6_xo78l")
 shader_parameter/noise = ExtResource("7_67weq")
+shader_parameter/ripples = SubResource("NoiseTexture2D_plqxk")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_f4gnr"]
 material = SubResource("ShaderMaterial_eggur")

@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded;
+//render_mode unshaded;
 
 uniform float alpha = 1.0;
 uniform float period = 2.0;
@@ -11,8 +11,9 @@ uniform vec3 color: source_color = vec3(1);
 uniform float comps[8];
 
 void fragment() {
-	ALBEDO = use_vertex_color ? COLOR.rgb : color;
+	ALBEDO = (use_vertex_color ? COLOR.rgb : color) * 2.0;
 	ALPHA = use_vertex_color ? COLOR.a : alpha;
+	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 }
 
 void vertex() {

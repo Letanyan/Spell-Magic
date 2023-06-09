@@ -37,7 +37,6 @@ func update_index(index):
 		1: wand_case.visible = true
 
 func _on_spells_pressed():
-	magic_book.duplicate_book()
 	update_index(0)
 
 func _on_wands_pressed():
@@ -47,8 +46,11 @@ func open(kind: Kind):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	visible = true
 	is_showing = true
+	if magic_book.visible and kind == Kind.ANY:
+		magic_book.duplicate_book()
 	match kind:
 		Kind.SPELLS:
+			magic_book.duplicate_book()
 			_on_spells_pressed()
 		Kind.WANDS:
 			_on_wands_pressed()

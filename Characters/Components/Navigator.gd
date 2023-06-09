@@ -130,6 +130,15 @@ static func get_intersections_from_shape(p: Node3D, shape: Shape3D, transform: T
 	
 	return space_state.intersect_shape(query, 32)
 	
+static func rotation_vector(from: Vector3, to: Vector3) -> Quaternion:
+	var q := Quaternion.IDENTITY
+	var a := from.cross(to)
+	q.x = a.x
+	q.y = a.y
+	q.z = a.z
+	q.w = sqrt(from.length_squared() * to.length_squared()) + from.dot(to)
+	q = q.normalized()
+	return q
 
 static func get_ray_collision(p: Node3D, from: Vector3, direction: Vector3, mask: int) -> Vector3:
 	var space_state := p.get_world_3d().direct_space_state
@@ -164,6 +173,16 @@ static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z
 	else:
 		no_hit.data = false
 		return result.get("position", Vector3.ZERO).y
+		
+static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit = Ptr.new(false)) -> Dictionary:
+	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
+	var result := space_state.intersect_ray(query)
+	if result.is_empty():
+		no_hit.data = true
+		return {}
+	else:
+		no_hit.data = false
+		return result
 	
 static func build_graph(p: Node3D, current_position: Vector3, target: Vector3) -> Dictionary:
 	var obj := get_ray_intersection(p, current_position, target)

@@ -41,7 +41,7 @@ func _ready():
 	noise_temperature.frequency = 0.0001
 	noise_dryness.frequency = 0.0001
 	
-	chunker = Terrain.new(noise_dryness, noise_temperature, 256, 2)
+	chunker = Terrain.new(noise_dryness, noise_temperature, 256, 2, 0.0625)
 	build_terrain()
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)

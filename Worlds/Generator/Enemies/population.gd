@@ -56,10 +56,20 @@ func random_foliage(probs: Dictionary) -> World.Foliage:
 func random_building(probs: Dictionary) -> World.Building:
 	return random_entity_from_distribution(probs) as World.Building
 	
-func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool):
+func always_valid(normal: Dictionary) -> bool:
+	return true
+	
+func on_flat_surface(distance: float) -> Callable:
+	return func(normal: Dictionary) -> bool:
+		return normal.get("normal", Vector3.ZERO).distance_to(Vector3.UP) < distance
+	
+func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, condition: Callable = always_valid):
 	if entity != null:
-		var wh := Navigator.get_world_height(state, pos.x, pos.z) + pos.y
+		var world_normal = Navigator.get_world_normal_height(state, pos.x, pos.z)
+		var wh: float = world_normal.get("position", 0).y + pos.y
 		if wh < Globals.sea_level():
+			return null
+		if not condition.call(world_normal):
 			return null
 		entity.position.x = pos.x
 		entity.position.y = wh
@@ -108,7 +118,7 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			result.name = World.Building.keys()[building] + str(rng.randi())
 	
-	return prepare_entity(state, result, pos, false)
+	return prepare_entity(state, result, pos, false, on_flat_surface(0.1))
 	
 func spawn_random_enemy(biome_prob: Dictionary, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
 	return spawn_enemy(random_enemy(biome_prob), state, x, y, spacing)

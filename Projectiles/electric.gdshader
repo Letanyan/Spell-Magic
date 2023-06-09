@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded;
+//render_mode unshaded;
 
 
 
@@ -9,6 +9,7 @@ uniform float speed = 1.0;
 
 void fragment() {
 	vec4 color = mix(start_color, end_color, 1.0 - (cos(TIME * speed) / 2.0 + 0.5));
-	ALBEDO = color.rgb;
+	ALBEDO = color.rgb * 2.0;
 	ALPHA = color.a;
+	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 }
