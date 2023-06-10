@@ -27,6 +27,9 @@ class Stat:
 		apply_ignoring_resistance(change_per_tick)
 		return change_per_tick
 		
+	func percentage() -> float:
+		return value / (max_value - min_value)
+		
 
 var health: Stat
 var mana: Stat

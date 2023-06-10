@@ -47,7 +47,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if p != null:
 					result.append(p)		
 			FOREST_STRUCTURES_KIND.HORDE:
-				if area.size() < 100:
+				if area.size() - index < 100:
 					index += 1
 					continue
 				var count = pop.rng.randi_range(4, 16)

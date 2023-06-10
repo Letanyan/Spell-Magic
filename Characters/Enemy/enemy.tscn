@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cl1hh2keowpj4"]
+[gd_scene load_steps=11 format=3 uid="uid://cl1hh2keowpj4"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/enemy.gd" id="1_ois7t"]
+[ext_resource type="Shader" path="res://Characters/Enemy/dissolve.gdshader" id="2_wpnb3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tjkv7"]
 size = Vector3(0.4, 0.9, 0.2)
@@ -14,6 +15,23 @@ albedo_color = Color(1, 0.0431373, 0.0666667, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_qdqeg"]
 material = SubResource("StandardMaterial3D_ey633")
 size = Vector3(0.4, 0.9, 0.2)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ys4sj"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ccnqf"]
+noise = SubResource("FastNoiseLite_ys4sj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3d3om"]
+render_priority = 0
+shader = ExtResource("2_wpnb3")
+shader_parameter/ratio = 0.0
+shader_parameter/emission_color = Color(1, 1, 1, 1)
+shader_parameter/emission_amount = null
+shader_parameter/burn_size = null
+shader_parameter/dissolve_amount = null
+shader_parameter/noise = SubResource("NoiseTexture2D_ccnqf")
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_c0eyt"]
 
 [node name="enemy" type="CharacterBody3D"]
 collision_layer = 4
@@ -35,5 +53,9 @@ shape = SubResource("BoxShape3D_uxob1")
 [node name="mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 mesh = SubResource("BoxMesh_qdqeg")
+surface_material_override/0 = SubResource("ShaderMaterial_3d3om")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_c0eyt")
+}

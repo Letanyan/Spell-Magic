@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://biu6f1jx7is76"]
+
+[sub_resource type="Gradient" id="Gradient_4gvkm"]
+colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uxvb4"]
+gradient = SubResource("Gradient_4gvkm")
+width = 32
+
+[sub_resource type="Curve" id="Curve_orqv0"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.244898, 0.309091), -1.76326, -1.76326, 0, 0, Vector2(0.742857, 0.8), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_mui11"]
+width = 32
+curve = SubResource("Curve_orqv0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_44c0a"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 15.0
+radial_accel_max = 22.39
+scale_curve = SubResource("CurveTexture_mui11")
+color_ramp = SubResource("GradientTexture1D_uxvb4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhtjm"]
+shading_mode = 0
+albedo_color = Color(0, 0.46, 1.5, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_8rc0f"]
+material = SubResource("StandardMaterial3D_dhtjm")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 2
+
+[node name="enemy_die" type="Node3D"]
+
+[node name="source" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 600
+one_shot = true
+explosiveness = 0.5
+visibility_aabb = AABB(-3.53409, -1.19925, -3.27105, 7.00859, 11.7845, 6.23972)
+process_material = SubResource("ParticleProcessMaterial_44c0a")
+draw_pass_1 = SubResource("SphereMesh_8rc0f")

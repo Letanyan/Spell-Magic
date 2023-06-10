@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dw8a544srleke"]
+[gd_scene load_steps=10 format=3 uid="uid://dw8a544srleke"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Mole/mole.gd" id="1_m74wm"]
+[ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="2_s41hr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hp82j"]
 size = Vector3(1, 5, 0.2)
@@ -20,12 +21,18 @@ material = SubResource("StandardMaterial3D_kee3k")
 size = Vector3(1, 5, 0.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_btq68"]
-albedo_color = Color(0, 0.0313726, 0, 1)
+albedo_color = Color(1, 0.0313726, 0, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_jbygy"]
 material = SubResource("StandardMaterial3D_btq68")
 radius = 1.0
 height = 0.5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_deayx"]
+resource_local_to_scene = true
+material = ExtResource("2_s41hr")
+size = Vector2(1, 0.1)
+orientation = 2
 
 [node name="mole" type="CharacterBody3D"]
 collision_layer = 4
@@ -53,3 +60,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03048, -0.174184)
 mesh = SubResource("SphereMesh_jbygy")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="HealthBar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.14465, 0)
+mesh = SubResource("PlaneMesh_deayx")

@@ -173,6 +173,9 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 	if is_enemy:
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+		if body.vitals.health.value <= body.vitals.health.min_value:
+			body.vitals_signal.emit(body.index_in_population, body.vitals)
+			body.die()
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	var body := area.get_parent_node_3d()
@@ -201,6 +204,9 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 	if is_enemy:
 		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+		if body.vitals.health.value <= body.vitals.health.min_value:
+			body.vitals_signal.emit(body.index_in_population, body.vitals)
+			body.die()
 
 func update_shape(r: float, ignore_time: bool):
 	if r == most_recent_radius:

@@ -9,7 +9,7 @@ var chunk_size: float
 
 var is_ready := false
 
-var inhabitants: Array[Enemy] = []
+var inhabitants: Dictionary = {}
 var garden: Array[Node3D] = []
 
 const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
@@ -76,7 +76,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		entity.position.z = pos.z
 		if is_enemy:
 			entity.player = player
-			inhabitants.append(entity)
+			entity.index_in_population = inhabitants.size()
+			inhabitants[inhabitants.size()] = entity
 		else:
 			garden.append(entity)
 	return entity
@@ -86,7 +87,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 	var pos := Vector3(x, 0, y)
 	match enemy:
 		World.Enemy.UNDEAD:
-			result = undead.instantiate()
+			result = undead.instantiate() as Enemy
 			result.name = "Undead" + str(rng.randi())
 		World.Enemy.BAT:
 			result = bat.instantiate()
@@ -94,6 +95,8 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.MOLE:
 			result = mole.instantiate()
 			result.name = "Mole" + str(rng.randi())
+			
+	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
 	
 func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
@@ -154,6 +157,13 @@ func group_spawn_points(spacing: float) -> Dictionary:
 				biomes.append(biome)
 	return {"points": result, "biomes": biomes}
 	
+static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary) -> PackedInt64Array:
+	var indices: PackedInt64Array = []
+	for i in range(offset, area.size()):
+		if point.distance_to(area[i]) < distance and not exluding.has(i):
+			indices.append(i)
+	return indices
+	
 func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
 	const spacing = 16.0
 	var areas := group_spawn_points(spacing)
@@ -169,7 +179,8 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
 	return result
 	
 func despawn_all_from_world(world: Node3D):
-	for habitant in inhabitants:
+	for habitant_index in inhabitants:
+		var habitant = inhabitants[habitant_index]
 		habitant.spell_caster.free_particles()
 		habitant.queue_free()
 	for f in garden:
@@ -178,13 +189,23 @@ func despawn_all_from_world(world: Node3D):
 	garden.clear()
 
 func update_info():
-	for habitant in inhabitants:
+	for habitant_index in inhabitants:
+		var habitant = inhabitants[habitant_index]
 		if abs(habitant.position.distance_to(player.position)) < habitant.vitals.perception.value:
 			habitant.knowledge.update_entry_from(player)
-		for other in inhabitants:
+		for other_index in inhabitants:
+			var other = inhabitants[other_index]
 			if habitant != other and abs(habitant.position.distance_to(other.position)) < habitant.vitals.perception.value:
 				habitant.knowledge.update_entry_from(other)
-	for habitant in inhabitants:
+	for habitant_index in inhabitants:
+		var habitant = inhabitants[habitant_index]
 		for object in garden:
 			if abs(habitant.position.distance_to(object.position)) < habitant.vitals.perception.value:
 				habitant.knowledge.update_entry_from(object)
+
+func habitant_vitals_update(index: int, vitals: Vitals):
+	if index <= -1:
+		return
+	if vitals.health.value <= vitals.health.min_value:
+		inhabitants[index].index_in_population = -1
+		inhabitants.erase(index)

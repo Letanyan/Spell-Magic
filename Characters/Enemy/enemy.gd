@@ -20,6 +20,11 @@ var animation_map: Dictionary
 var behavior_tick: int = 0
 var spell_tick: int = 0
 
+var index_in_population: int = -1
+signal vitals_signal
+@onready var health_bar: MeshInstance3D = $HealthBar
+
+
 func _ready():
 	animation_map = {}
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
@@ -46,6 +51,11 @@ func _physics_process(delta):
 	increment_ticks()
 
 	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)
+	vitals_signal.emit(index_in_population, vitals)
+	if vitals.health.value <= vitals.health.min_value:
+		die()
+	update_vitals_display()
+	
 	if velocity_movement.impulse != Vector3.ZERO:
 		velocity = movement["velocity"]
 		move_and_slide()
@@ -108,3 +118,25 @@ func update_behaviour():
 
 func handle_damage():
 	pass
+	
+func death_box() -> Vector3:
+	return Vector3(1, 1, 1)
+	
+func die():
+	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
+	var source = explosion.get_node("source")
+	source.process_material.emission_box_extents = death_box()
+	
+	explosion.position = position
+	explosion.global_transform = global_transform
+	var world := get_parent_node_3d()
+	world.add_child(explosion)
+	source.emitting = true
+	spell_caster.free_particles()
+	queue_free()
+	await world.get_tree().create_timer(source.lifetime + 0.1).timeout
+	world.remove_child(explosion)
+	
+
+func update_vitals_display():
+	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
