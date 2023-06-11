@@ -7,7 +7,7 @@ enum Biome {
 }
 
 enum Enemy {
-	NONE, UNDEAD, BAT, MOLE
+	NONE, UNDEAD, BAT, MOLE, HUMAN
 }
 
 enum Foliage {
@@ -17,5 +17,6 @@ enum Foliage {
 
 enum Building {
 	NONE,
-	FANTASY_VALLEY_SINGLE, FANTASY_VALLEY_DOUBLE
+	FANTASY_VALLEY_SINGLE, FANTASY_VALLEY_DOUBLE,
+	FANTASY_WELL
 }

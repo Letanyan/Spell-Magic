@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode depth_prepass_alpha;
+//render_mode depth_prepass_alpha;
 
 uniform float ratio;
 uniform sampler2D noise;
@@ -15,5 +15,6 @@ void fragment() {
 	float sample = texture(noise, UV).r;
 	float emission_value = 1.0 - smoothstep(dissolve_amount, dissolve_amount + burn_size, sample);
 	EMISSION = vec3(emission_value * emission_amount * emission_color.rgb);
+	ALBEDO = vec3(0);
 	ALPHA = smoothstep(dissolve_amount - burn_size, dissolve_amount, sample);
 }

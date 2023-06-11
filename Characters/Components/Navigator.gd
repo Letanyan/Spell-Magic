@@ -290,7 +290,7 @@ static func neighbours(p: Node3D, from: Vector3, directions: int, distance: floa
 			direction = direction.rotated(Vector3.UP, angle)
 	return result
 	
-static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: float = 2.0) -> Array[Vector3]:	
+static func astar(p: Node3D, target: Vector3, margin: float = 0.1, distance: float = 2.0) -> Array[Vector3]:	
 	var start := p.global_position
 	var open := {start: true}
 	var came_from := {}
@@ -299,6 +299,10 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 	var f_score := {}
 	f_score[start] = start.distance_to(target)
 	var max_look_up = 200.0 / distance
+	
+	var total_distance := start.distance_to(target)
+	if total_distance < distance * 2:
+		distance = total_distance / 8.0
 	
 	while open.size() > 0:
 		var current = minimum_score(open, f_score)
@@ -325,7 +329,7 @@ static func astar(p: Node3D, target: Vector3, margin: float = 2.0, distance: flo
 static func will_collide(p: Node3D, target: Vector3) -> bool:
 	return get_ray_intersection(p, p.global_position, target) != null
 	
-static func find_target(p: Node3D, target: Vector3, margin: float = 4.0, distance: float = 2.0) -> Vector3:
+static func find_target(p: Node3D, target: Vector3, margin: float = 0.1, distance: float = 2.0) -> Vector3:
 	if p.global_position.distance_to(target) > 200.0 / distance:
 		return target
 	if not will_collide(p, target):

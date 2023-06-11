@@ -15,6 +15,7 @@ var garden: Array[Node3D] = []
 const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
 const bat = preload("res://Characters/Enemy/Bat/bat.tscn")
 const mole = preload("res://Characters/Enemy/Mole/mole.tscn")
+const human = preload("res://Characters/Enemy/Human/human.tscn")
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
@@ -95,6 +96,9 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.MOLE:
 			result = mole.instantiate()
 			result.name = "Mole" + str(rng.randi())
+		World.Enemy.HUMAN:
+			result = human.instantiate()
+			result.name = "Human" + str(rng.randi())
 			
 	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
@@ -114,14 +118,22 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(x, 0, y)
+	var ground_angle := 0.0
 	match building:
 		World.Building.FANTASY_VALLEY_SINGLE, World.Building.FANTASY_VALLEY_DOUBLE:
 			result = Buildings.make(building, rng)
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			result.name = World.Building.keys()[building] + str(rng.randi())
+			ground_angle = 0.1
+		World.Building.FANTASY_WELL:
+			result = Buildings.make(building, rng)
+			pos.x += spacing * rng.randf_range(-0.25, 0.25)
+			pos.z += spacing * rng.randf_range(-0.25, 0.25)
+			result.name = World.Building.keys()[building] + str(rng.randi())
+			ground_angle = 0.2
 	
-	return prepare_entity(state, result, pos, false, on_flat_surface(0.1))
+	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
 	
 func spawn_random_enemy(biome_prob: Dictionary, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
 	return spawn_enemy(random_enemy(biome_prob), state, x, y, spacing)

@@ -100,6 +100,9 @@ func update_vitals() -> Array:
 		health.apply_ignoring_resistance(-int(burning.value * health.value / 100.0))
 		result.append({"dmg": int(burning.value * health.value / 100.0), "el": Spell.Element.FIRE})
 		
+	hunger.update_per_tick()
+	thirst.update_per_tick()
+		
 	return result
 
 func wetness_scale():

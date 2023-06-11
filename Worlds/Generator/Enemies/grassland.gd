@@ -55,19 +55,38 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					continue
 				index += 1
 				var candidates = Population.points_around(area[index], 100.0, index, area, exclusion)
+				
+				var w: Buildings
+				for i in range(0, candidates.size()):
+					var j = candidates[i]
+					var pos = area[j]
+					w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
+					if w != null:
+						exclusion[j] = true
+						result.append(w)
+						candidates.remove_at(i)
+						break
+				
 				var max_limit = rng.randi_range(1, 10)
 				for i in range(0, candidates.size()):
 					var j = candidates[i]
 					var pos = area[j]
-					exclusion[j] = true
 					var p: Node3D
+					var house_size := 0
 					if rng.randf() < 0.7:
 						p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
+						house_size = pop.random_entity_from_distribution({1: 0.9, 2: 0.05})
 					else:
 						p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
+						house_size = pop.random_entity_from_distribution({1: 0.1, 2: 0.5, 3: 0.2, 4: 0.1})
 					if p != null:
 						max_limit -= 1
+						exclusion[j] = true
 						result.append(p)
+						for k in house_size:
+							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
+							n.stored_entity_knowledge.append(w)
+							result.append(n)
 					if max_limit <= 0:
 						break
 					

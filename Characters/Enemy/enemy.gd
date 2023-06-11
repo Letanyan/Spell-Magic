@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 var movement_target_position: Vector3 = Vector3.ZERO
 
-@onready var animator: AnimationPlayer = $AnimationPlayer
+var animator: AnimationPlayer
 
 var velocity_movement: VelocityMovement
 
@@ -24,10 +24,17 @@ var index_in_population: int = -1
 signal vitals_signal
 @onready var health_bar: MeshInstance3D = $HealthBar
 
+var stored_entity_knowledge: Array = []
 
 func _ready():
 	animation_map = {}
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
+	if not self is Human:
+		animator = $AnimationPlayer
+		
+func update_stored_entity_knowledge():
+	for e in stored_entity_knowledge:
+		knowledge.update_entry_from(e)
 	
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -65,6 +72,7 @@ func _physics_process(delta):
 				velocity = movement["velocity"]
 				move_and_slide()
 			PathStyle.Mover.ABSOLUTE:
+				velocity = movement["absolute"]
 				position += movement["absolute"]
 			PathStyle.Mover.ABSOLUTE_XZ:
 				var v: Vector3 = movement["absolute"]
@@ -73,6 +81,7 @@ func _physics_process(delta):
 				if position.y < g:
 					position.y = g
 					t.y = 0
+				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
 			look_at(player.position)
@@ -92,17 +101,13 @@ func _physics_process(delta):
 	spell_caster.update(self, delta)
 
 	if velocity != Vector3.ZERO:
-		if is_on_floor():
-			if velocity.length() > 1:
-				play_animation("walk", 1)
-			else:
-				play_animation("run", 1)
+		if velocity.length() > 5:
+			play_animation("run", 1)
+		else:
+			play_animation("walk", 1)
 	else:
-		if is_on_floor():
-			play_animation("idle", 1)
+		play_animation("idle", 1)
 
-	if not is_on_floor_only():
-		play_animation("run", 1)
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, vitals, insert, next_spell)

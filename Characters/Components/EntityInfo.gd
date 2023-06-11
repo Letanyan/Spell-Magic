@@ -10,7 +10,7 @@ enum Food {
 
 enum Kind {
 	PLAYER, ENEMY, 
-	UNDEAD, BAT, MOLE,
+	UNDEAD, BAT, MOLE, HUMAN,
 	TREE, BUILDING
 }
 
@@ -20,6 +20,7 @@ var liquid: Liquid
 var liquid_amount: float
 var food: Food
 var food_amount: float
+var bounds: CollisionShape3D
 
 func _init(type: Kind, pos: Vector3, _liquid := Liquid.NONE, l_amount: float = 0, _food := Food.NONE, f_amount: float = 0):
 	kind = type
@@ -28,3 +29,4 @@ func _init(type: Kind, pos: Vector3, _liquid := Liquid.NONE, l_amount: float = 0
 	liquid_amount = l_amount
 	food = _food
 	food_amount = f_amount
+	bounds = null

@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3 uid="uid://3e0yfcwmk22f"]
+
+[ext_resource type="Script" path="res://Characters/Enemy/Human/human.gd" id="1_abgt0"]
+[ext_resource type="PackedScene" uid="uid://cfmjmhpvsgexr" path="res://Characters/Male_Casual.glb" id="1_apnv5"]
+[ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="3_omtj4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x3siy"]
+size = Vector3(0.7, 1.9, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ucqvw"]
+size = Vector3(0.7, 1.9, 0.3)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_i7q2b"]
+material = ExtResource("3_omtj4")
+size = Vector2(1, 0.1)
+orientation = 2
+
+[node name="human" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 593
+script = ExtResource("1_abgt0")
+
+[node name="Male_Casual" parent="." instance=ExtResource("1_apnv5")]
+transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 0, 0, 0)
+
+[node name="HumanArmature" parent="Male_Casual" index="0"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Male_Casual/HumanArmature" index="0"]
+bones/1/position = Vector3(0.176024, 0.453438, -0.406535)
+bones/1/rotation = Quaternion(-0.00248549, 0.37207, 0.923865, -0.0896127)
+bones/2/position = Vector3(0.00523516, 1.98913, 0.207135)
+bones/2/rotation = Quaternion(-0.000517528, 0.003643, 2.44276e-05, 0.999993)
+bones/4/rotation = Quaternion(0.0805747, 4.36544e-07, 4.99135e-08, 0.996749)
+bones/5/rotation = Quaternion(0.0112436, -8.3187e-07, 2.74498e-09, 0.999937)
+bones/6/rotation = Quaternion(0.0821065, 8.07851e-06, 0.000140984, 0.996624)
+bones/7/rotation = Quaternion(-0.115399, -0.000198484, 0.00300092, 0.993315)
+bones/9/rotation = Quaternion(-0.532198, -0.415734, -0.636555, 0.372461)
+bones/10/rotation = Quaternion(-0.119802, -0.0534351, -0.308729, 0.942061)
+bones/13/rotation = Quaternion(-0.627352, 0.010712, -0.105104, 0.771536)
+bones/14/position = Vector3(0.0955369, 0.0770474, -0.0190328)
+bones/14/rotation = Quaternion(0.127051, 0.888615, -0.127116, 0.421975)
+bones/15/rotation = Quaternion(-0.414007, -0.837936, 0.176949, 0.308465)
+bones/17/rotation = Quaternion(-0.584495, 0.37839, 0.615796, 0.368757)
+bones/18/rotation = Quaternion(-0.116507, -0.0390615, 0.0684992, 0.990055)
+bones/21/position = Vector3(-0.128887, -0.0700095, -0.0165861)
+bones/21/rotation = Quaternion(-0.194684, 0.863447, 0.0340954, 0.464106)
+bones/22/rotation = Quaternion(-0.0919325, 0.855665, 0.503118, 0.0791109)
+bones/23/rotation = Quaternion(-0.567521, 0.0206296, 0.0581925, 0.821041)
+bones/24/rotation = Quaternion(0.949058, -0.0296354, -0.0243522, 0.312758)
+bones/25/rotation = Quaternion(0.65644, -1.07612e-08, -4.1474e-08, 0.754378)
+bones/26/rotation = Quaternion(0.974097, 0.0383458, 0.0379803, 0.219595)
+bones/27/rotation = Quaternion(0.380847, -1.016e-07, 4.21953e-08, 0.924638)
+bones/29/position = Vector3(-0.13202, 0.0600924, -0.0382976)
+bones/29/rotation = Quaternion(2.57776e-06, 0.695549, 0.718478, 2.62291e-06)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_x3siy")
+
+[node name="WetArea" type="Area3D" parent="."]
+collision_layer = 36
+collision_mask = 0
+
+[node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("BoxShape3D_ucqvw")
+
+[node name="HealthBar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.89131, 0)
+mesh = SubResource("PlaneMesh_i7q2b")
+
+[editable path="Male_Casual"]
