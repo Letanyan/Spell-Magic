@@ -20,62 +20,70 @@ var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elev
 var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
 var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
 
+"""
+	WATER,
+	GRASSLAND, TAIGA, FOREST, DESERT, JUNGLE, SAVANNAH, TUNDRA,
+	OTHERWORLD, HFIL
+"""
+
 var noise_list: Array[FastNoiseLite] = [
-	hfil_noise,
-	otherworld_noise,
-	tundra_noise,
-	savannah_noise,
-	jungle_noise,
-	desert_noise,
-	forest_noise,
+	grassland_noise, # padding for water
 	grassland_noise,
 	taiga_noise,
+	forest_noise,
+	desert_noise,
+	jungle_noise,
+	savannah_noise,
+	tundra_noise,
+	otherworld_noise,
+	hfil_noise,
 ]
 
 var curve_list: Array[Curve] = [
-	hfil_curve,
-	otherworld_curve,
-	tundra_curve,
-	savannah_curve,
-	jungle_curve,
-	desert_curve,
-	forest_curve,
+	grassland_curve, # padding for water
 	grassland_curve,
 	taiga_curve,
+	forest_curve,
+	desert_curve,
+	jungle_curve,
+	savannah_curve,
+	tundra_curve,
+	otherworld_curve,
+	hfil_curve,
 ]
 
 const biome_list: Array[World.Biome] = [
-	World.Biome.HFIL,
-	World.Biome.OTHERWORLD,
-	World.Biome.TUNDRA,
-	World.Biome.SAVANNAH,
-	World.Biome.JUNGLE,
-	World.Biome.DESERT,
-	World.Biome.FOREST,
 	World.Biome.GRASSLAND,
 	World.Biome.TAIGA,
+	World.Biome.FOREST,
+	World.Biome.DESERT,
+	World.Biome.JUNGLE,
+	World.Biome.SAVANNAH,
+	World.Biome.TUNDRA,
+	World.Biome.OTHERWORLD,
+	World.Biome.HFIL,
 ]
 const biome_locations: PackedVector2Array = [
-	Vector2(1, 1), # hfil
-	Vector2(1, 0), # otherworld
-	Vector2(0, 0), # tundra
-	Vector2(0.75, 0.75), # savannah
-	Vector2(0.25, 0.75), # jungle
-	Vector2(0.75, 1.0), # desert
-	Vector2(0.5, 0.75), # forest
 	Vector2(0.5, 0.5), # grassland
 	Vector2(0.25, 0.75), # taiga
+	Vector2(0.5, 0.75), # forest
+	Vector2(0.75, 1.0), # desert
+	Vector2(0.25, 0.75), # jungle
+	Vector2(0.75, 0.75), # savannah
+	Vector2(0, 0), # tundra
+	Vector2(1, 0), # otherworld
+	Vector2(1, 1), # hfil
 ]
 const biome_colors: PackedVector3Array = [
-	Vector3(1, 0, 0),
-	Vector3(0, 0, 0),
-	Vector3(1, 1, 1),
-	Vector3(1, 0.5, 0),
-	Vector3(0, 0.25, 0.25),
-	Vector3(1, 1, 0),
-	Vector3(0.282, 0.133, 0.0),
 	Vector3(0.16, 0.53, 0.16),
-	Vector3(0, 1, 1)
+	Vector3(0, 1, 1),
+	Vector3(0.282, 0.133, 0.0),
+	Vector3(1, 1, 0),
+	Vector3(0, 0.25, 0.25),
+	Vector3(1, 0.5, 0),
+	Vector3(1, 1, 1),
+	Vector3(0, 0, 0),
+	Vector3(1, 0, 0),
 ]
 var distances: PackedFloat64Array = [
 	0.0,
@@ -185,3 +193,11 @@ func compute_biome_distances(x: float, y: float):
 	biome = biome_list[pos]
 	color = Color(clr.x, clr.y, clr.z)
 
+func grass_height(b: World.Biome, x: float, y: float) -> float:
+	var n := noise_list[b].get_noise_2d(x, y) / 2.0 + 0.5
+	var e := curve_list[b].sample(n) / curve_list[b].max_value
+	var s := smoothstep(0.25, 1.0, e)
+	if s == 0:
+		return snapped(e * 4, 0.1)
+	else:
+		return 0.5 + s

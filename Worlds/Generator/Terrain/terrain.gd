@@ -276,17 +276,14 @@ func place_grass(delta: Vector2):
 			p.x = pos.x + delta.x * (1 if horz else 0)
 			p.z = pos.z + delta.y * (1 if vert else 0)
 			blender.compute_biome_distances(p.x, p.z)
-			if blender.biome != World.Biome.GRASSLAND:
-				p.y = -1000
+			no_hit.data = false
+			var normal_height = Navigator.get_world_normal_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
+			wh = normal_height.get("position", Vector3.ZERO).y
+			whn = normal_height.get("normal", Vector3.ZERO)
+			if no_hit.data or wh < Globals.sea_level() or whn.distance_to(Vector3.UP) > 1 / sqrt(2.0):
+				p.y = -10000
 			else:
-				no_hit.data = false
-				var normal_height = Navigator.get_world_normal_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
-				wh = normal_height.get("position", Vector3.ZERO).y
-				whn = normal_height.get("normal", Vector3.ZERO)
-				if no_hit.data or wh < Globals.sea_level() or whn.distance_to(Vector3.UP) > 1 / sqrt(2.0):
-					p.y = -1000
-				else:
-					p.y = wh
+				p.y = wh
 			clr = blender.color
 			clr.a = p.z
 			mm.set_instance_custom_data(i, clr)
@@ -298,7 +295,10 @@ func place_grass(delta: Vector2):
 				nt.basis.x = -nt.basis.z.cross(new_y)
 				nt.basis = nt.basis.orthonormalized()
 				nt = nt.rotated_local(Vector3.UP, randf() * 2 * PI)
-				nt = nt.scaled_local(Vector3(1, 1, 1) * 200)
+				var h = blender.grass_height(blender.biome, -p.x, -p.y)
+				if h == 0:
+					p.y = -10000
+				nt = nt.scaled_local(Vector3(1, h, 1) * 200)
 			mm.set_instance_transform(i, nt.translated(p))
 		
 	
