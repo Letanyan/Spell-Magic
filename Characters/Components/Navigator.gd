@@ -278,9 +278,9 @@ static func reconstruct_path(came_from: Dictionary, target: Vector3) -> Array[Ve
 		result.insert(0, current)
 	return result
 	
-static func neighbours(p: Node3D, from: Vector3, directions: int, distance: float) -> Array[Vector3]:
+static func neighbours(p: Node3D, from: Vector3, directions: int, distance: float, target: Vector3) -> Array[Vector3]:
 	var result: Array[Vector3] = [from + Vector3(0, distance, 0), from + Vector3(0, -distance, 0)]
-	var direction := Vector3(1, 0, 0)
+	var direction := (from - target).normalized()
 	var angle := 2 * PI / float(directions)
 	for y in range(-1, 2):
 		for a in range(directions):
@@ -290,7 +290,7 @@ static func neighbours(p: Node3D, from: Vector3, directions: int, distance: floa
 			direction = direction.rotated(Vector3.UP, angle)
 	return result
 	
-static func astar(p: Node3D, target: Vector3, margin: float = 0.1, distance: float = 2.0) -> Array[Vector3]:	
+static func astar(p: Node3D, target: Vector3, margin: float = 1.0, max_distance: float = 2.0) -> Array[Vector3]:	
 	var start := p.global_position
 	var open := {start: true}
 	var came_from := {}
@@ -298,20 +298,25 @@ static func astar(p: Node3D, target: Vector3, margin: float = 0.1, distance: flo
 	g_score[start] = 0.0
 	var f_score := {}
 	f_score[start] = start.distance_to(target)
+	var distance := max_distance
 	var max_look_up = 200.0 / distance
 	
-	var total_distance := start.distance_to(target)
-	if total_distance < distance * 2:
-		distance = total_distance / 8.0
-	
+#	var best_distance := INF
+#	var closest_point := start
 	while open.size() > 0:
 		var current = minimum_score(open, f_score)
 		
-		if current.distance_to(target) <= margin:
+		var current_distance := current.distance_to(target)
+#		if current_distance < best_distance:
+#			best_distance = current_distance
+#			closest_point = current
+		if current_distance <= margin:
 			return reconstruct_path(came_from, current)
 			
+		distance = min(current_distance / 2.0, max_distance)
+			
 		open.erase(current)
-		for n in neighbours(p, current, 8, distance):
+		for n in neighbours(p, current, 8, distance, target):
 			var tentative: float = g_score[current] + distance
 			if tentative < g_score.get(n, INF):
 				came_from[n] = current
@@ -322,14 +327,17 @@ static func astar(p: Node3D, target: Vector3, margin: float = 0.1, distance: flo
 					
 		max_look_up -= 1
 		if max_look_up <= 0:
-			return [target]
+			# Maybe use `closest_point` instead? But that could lead to the agent
+			# getting stuck in a local minima. Using the current path adds some 
+			# non-determinism to help the agent find other paths?
+			return reconstruct_path(came_from, current)
 				
 	return [target]
 	
 static func will_collide(p: Node3D, target: Vector3) -> bool:
 	return get_ray_intersection(p, p.global_position, target) != null
 	
-static func find_target(p: Node3D, target: Vector3, margin: float = 0.1, distance: float = 2.0) -> Vector3:
+static func find_target(p: Node3D, target: Vector3, margin: float = 1.0, distance: float = 2.0) -> Vector3:
 	if p.global_position.distance_to(target) > 200.0 / distance:
 		return target
 	if not will_collide(p, target):

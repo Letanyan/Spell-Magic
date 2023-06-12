@@ -19,7 +19,6 @@ static func make(kind: World.Building, rng: RandomNumberGenerator) -> Buildings:
 	result.get_node("RootNode").rotate(Vector3.UP, r)
 	
 	result.entity_kind = kind
-	
 	var body := StaticBody3D.new()
 	body.collision_layer = 1 << 9
 	var box := CollisionShape3D.new()

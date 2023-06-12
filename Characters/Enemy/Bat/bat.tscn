@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dyeclaveumfmu"]
+[gd_scene load_steps=11 format=3 uid="uid://dyeclaveumfmu"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Bat/bat.gd" id="1_8k3qi"]
 [ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="2_71cnk"]
@@ -28,41 +28,7 @@ material = SubResource("StandardMaterial3D_ku4as")
 radius = 0.25
 height = 0.5
 
-[sub_resource type="Animation" id="Animation_b8drh"]
-resource_name = "die"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("mesh/MeshInstance3D:mesh:material:next_pass:shader_parameter/ratio")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 1.0]
-}
-
-[sub_resource type="Animation" id="Animation_ev5bx"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("mesh/MeshInstance3D:mesh:material:next_pass:shader_parameter/ratio")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pvb16"]
-_data = {
-"RESET": SubResource("Animation_ev5bx"),
-"die": SubResource("Animation_b8drh")
-}
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_6sav4"]
 resource_local_to_scene = true
