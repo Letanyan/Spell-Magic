@@ -29,10 +29,12 @@ var stored_entity_knowledge: Dictionary = {}
 
 var action_state: Knowledge.Action
 var action_is_satisfied: bool = false
+var choices: Dictionary = {}
 
 func _ready():
 	animation_map = {}
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
+	choices = {}
 	if not self is Human:
 		animator = $AnimationPlayer
 		
@@ -153,23 +155,26 @@ func update_vitals_display():
 
 func update_state():
 	var has_updated := false
+	var actions: Dictionary = knowledge.actions
 	if knowledge.has_been_updated:
-		var actions := knowledge.actions_list()
-		var choices := {}
-		var total_weight := 0.0
-		for action in actions:
-			var w := hormones.weight_for_action(action, vitals)
-			total_weight += w
-			choices[action] = w
-		for action in choices:
-			choices[action] = choices[action] / total_weight
-		var new_state = Population.random_entity_from_distribution(randf(), choices)
+		knowledge.has_been_updated = false
+		actions = knowledge.actions_list()
 		
-		if new_state != action_state:
-			action_state = new_state
-			has_updated = true
-		else:
-			has_updated = false
+	var total_weight := 0.0
+	for action_key in actions:
+		var action = actions[action_key]
+		var w := hormones.weight_for_action(action, vitals)
+		total_weight += w
+		choices[action] = w
+	for action in choices:
+		choices[action] = choices[action] / total_weight
+	var new_state = Population.random_entity_from_distribution(randf(), choices)
+	
+	if new_state != action_state:
+		action_state = new_state
+		has_updated = true
+	else:
+		has_updated = false
 			
 	if has_updated:
 		update_action_is_satisfied()

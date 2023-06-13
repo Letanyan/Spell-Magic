@@ -5,6 +5,8 @@ var none_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
+var water_path: PathStyle
+var water_source: Vector3
 
 func _ready():
 	super._ready()
@@ -47,11 +49,14 @@ func update_behaviour():
 	if super.update_state():
 		match action_state.kind:
 			Knowledge.ActionKind.WALK:
-				var source := action_state.entity.position
-				current_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(source)
+				current_path = idle_path
 			Knowledge.ActionKind.DRINK:
 				var source := action_state.entity.position
-				current_path = PathStyle.new(randf()).towards(source, 0, 0).speed(2).use_physics()
+				if water_path != null and water_source == source:
+					current_path = water_path
+				else:
+					water_path = PathStyle.new(randf()).towards(source, 0, 0).speed(2).use_physics()
+					current_path = water_path
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

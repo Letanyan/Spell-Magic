@@ -4,12 +4,14 @@ var entries: Dictionary
 var kinds: Dictionary
 var ignore: bool
 var has_been_updated: bool
+var actions: Dictionary
 
 func _init(kind_list: Dictionary, should_ignore: bool):
 	entries = {}
 	kinds = kind_list
 	ignore = should_ignore
 	has_been_updated = true
+	actions = {}
 	
 func update_entry_from(entity):
 	var info = entries.get(entity.name, null)
@@ -20,6 +22,7 @@ func update_entry_from(entity):
 			has_been_updated = true
 	else:
 		has_been_updated = has_been_updated or entity.update_entity_info(info)
+	
 
 func direct_entry(name: String, info: EntityInfo):
 	entries[name] = info
@@ -38,13 +41,13 @@ class Action:
 		kind = k
 	
 
-func actions_list() -> Array[Action]:
-	var result: Array[Action] = []
+func actions_list() -> Dictionary:
 	for k in entries:
 		var info: EntityInfo = entries[k]
-		if info.liquid == EntityInfo.Liquid.WATER:
-			result.append(Action.new(info, ActionKind.DRINK))
-		if info.kind == EntityInfo.Kind.BASE:
-			result.append(Action.new(info, ActionKind.WALK))
-			
-	return result
+		if not actions.has(k):
+			if info.liquid == EntityInfo.Liquid.WATER:
+				actions[k] = Action.new(info, ActionKind.DRINK)
+			if info.kind == EntityInfo.Kind.BASE:
+				actions[k] = Action.new(info, ActionKind.WALK)
+	
+	return actions

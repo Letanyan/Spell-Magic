@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://3e0yfcwmk22f"]
 
-[ext_resource type="Script" path="res://Characters/Enemy/Human/human.gd" id="1_abgt0"]
 [ext_resource type="PackedScene" uid="uid://cfmjmhpvsgexr" path="res://Characters/Male_Casual.glb" id="1_apnv5"]
+[ext_resource type="Script" path="res://Characters/Enemy/Human/human.gd" id="1_sqggf"]
 [ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="3_omtj4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x3siy"]
@@ -18,7 +18,7 @@ orientation = 2
 [node name="human" type="CharacterBody3D"]
 collision_layer = 4
 collision_mask = 593
-script = ExtResource("1_abgt0")
+script = ExtResource("1_sqggf")
 
 [node name="Male_Casual" parent="." instance=ExtResource("1_apnv5")]
 transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 0, 0, 0)
