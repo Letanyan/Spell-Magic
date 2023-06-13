@@ -69,6 +69,7 @@ func init_chunks(x: float, y: float) -> Array[Node3D]:
 		gm.mesh = load("res://Models/Grass/grass_02_mesh_lod2.tres")
 		grass_mesh = MultiMeshInstance3D.new()
 		grass_mesh.multimesh = gm
+		grass_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		result.append(grass_mesh)
 	return result
 	

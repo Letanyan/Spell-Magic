@@ -23,7 +23,7 @@ var to_remove := false
 func _ready():
 	spell_caster.projectile_hit.connect(pass_projectile_up)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
-		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
+		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, null)
 
 func _physics_process(delta):
 	spell_caster.update(self, delta)
@@ -166,7 +166,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			pass
 	
 	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
-		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
+		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 	if is_player:
 		body.emit_vitals_signal()
@@ -197,7 +197,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				expire_now(self, body)
 				
 	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
-		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain)
+		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 	if is_player:
 		body.emit_vitals_signal()
@@ -435,8 +435,8 @@ func free_after(duration: float):
 				max_duration = 0
 		to_remove = true
 
-func cast_spell(insert: Callable, next_spell: Spell):
-	spell_caster.cast_spell(self, null, insert, next_spell)
+func cast_spell(insert: Callable, next_spell: Spell, target: Node3D):
+	spell_caster.cast_spell(self, null, insert, next_spell, target)
 
 func pass_projectile_up(p_spell: Spell, time: float):
 	projectile_hit.emit(p_spell, time)

@@ -34,7 +34,7 @@ func update(body, delta):
 			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
-				p.cast_spell(func(np): if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
+				p.cast_spell(func(np): if np != null: p.call_deferred("add_sibling", np), p.spell.chain, null)
 			tracking_node.erase(p.name)
 			should_remove.append(i)
 
@@ -63,8 +63,12 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			
 		Entity.ENEMY:
 			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized()
+			
 		Entity.PROJECTILE:
 			cdir = -body.velocity.normalized()
+			if p != null:
+				var hit_on := (body.position - p.position).normalized()
+				track = get_direction_to_tracking(body, p, hit_on)
 	
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
@@ -87,6 +91,13 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "cz"] = c.z
 	
 	result["abs_pos" if fixed else "rel_pos"] = body.position
+	
+	if p != null:
+		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )
+		var origin = lerp(old_origin, (body.position - p.position).normalized(), 0.0166667).normalized()
+		result[prefix + "X"] = origin.x
+		result[prefix + "Y"] = origin.y
+		result[prefix + "Z"] = origin.z
 		
 	return result
 	
@@ -101,7 +112,7 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 		var offset = tracking_offset.get(p.name, Vector3.ZERO)
 		if t == null or !p.is_inside_tree():
 			return default
-		if t is CollisionShape3D and t.is_inside_tree():
+		if t is Node3D and t.is_inside_tree():
 			var vec: Vector3 = ((t.global_position + offset) - p.global_position).normalized()
 			var dir: Vector3 = lerp(position, vec, 0.0166667).normalized()
 			tracking_position[p.name] = dir
@@ -112,13 +123,13 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 			return default
 			
 	
-func all_spell_variables(body: Node3D, p: SpellBody) -> Dictionary:
+func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Dictionary:
 	var result := {}
 	spell_variables(result, body, true, p)
 	spell_variables(result, body, false, p)
 	return result
 
-func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null):
 	if vitals != null:
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
 			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
@@ -136,18 +147,22 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell):
 		node_to_track = Navigator.get_ray_intersection(body, cam.global_position - Vector3.UP, cam.global_position - Vector3.UP + cdir * 500)
 		if node_to_track == null:
 			node_to_track = cdir
+	elif entity == Entity.PROJECTILE:
+		node_to_track = target
 			
 			
 	# it's fine that a projectile doesn't have a target set yet at the start
 	# since by default camera direction equals target direction at start
-	var vars := all_spell_variables(body, null)
+	var vars := all_spell_variables(body, null, spell)
 	var ps := spell.get_particles(vars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p in ps:
+		p.name += str(randi())
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
 		tracking_offset[p.name] = spell_offset
+		spell_variables(p.fixed_vars, body, false, p)
 		var delay := spell.calculate_delay(p.fixed_vars)
 		start_particle(delay, body, p, insert)
 		
