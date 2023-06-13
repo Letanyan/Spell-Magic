@@ -13,6 +13,7 @@ var player: Player
 var behaviour: Behaviour
 var vitals: Vitals
 var knowledge: Knowledge
+var hormones: Hormones
 var current_path: PathStyle
 
 var animation_map: Dictionary
@@ -24,7 +25,10 @@ var index_in_population: int = -1
 signal vitals_signal
 @onready var health_bar: MeshInstance3D = $HealthBar
 
-var stored_entity_knowledge: Array = []
+var stored_entity_knowledge: Dictionary = {}
+
+var action_state: Knowledge.Action
+var action_is_satisfied: bool = false
 
 func _ready():
 	animation_map = {}
@@ -34,7 +38,7 @@ func _ready():
 		
 func update_stored_entity_knowledge():
 	for e in stored_entity_knowledge:
-		knowledge.update_entry_from(e)
+		knowledge.direct_entry(e, stored_entity_knowledge[e])
 	
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -115,8 +119,9 @@ func cast_spell(insert: Callable, next_spell: Spell):
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.ENEMY, position)
 
-func update_entity_info(info: EntityInfo):
+func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
+	return true
 
 func update_behaviour():
 	pass
@@ -145,3 +150,42 @@ func die():
 
 func update_vitals_display():
 	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
+
+func update_state():
+	var has_updated := false
+	if knowledge.has_been_updated:
+		var actions := knowledge.actions_list()
+		var choices := {}
+		var total_weight := 0.0
+		for action in actions:
+			var w := hormones.weight_for_action(action, vitals)
+			total_weight += w
+			choices[action] = w
+		for action in choices:
+			choices[action] = choices[action] / total_weight
+		var new_state = Population.random_entity_from_distribution(randf(), choices)
+		
+		if new_state != action_state:
+			action_state = new_state
+			has_updated = true
+		else:
+			has_updated = false
+			
+	if has_updated:
+		update_action_is_satisfied()
+			
+	if action_is_satisfied:
+		hormones.update_from_action(action_state)
+		vitals.update_from_action(action_state)
+			
+	return has_updated
+		
+func update_action_is_satisfied():
+	if action_state == null:
+		action_is_satisfied = false
+		return
+	match action_state.kind:
+		Knowledge.ActionKind.WALK:
+			action_is_satisfied = true
+		Knowledge.ActionKind.DRINK:
+			action_is_satisfied = action_state.entity.position.distance_to(position) <= action_state.entity.bounds.shape.radius * 2

@@ -26,7 +26,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 		if exclusion.has(index):
 			index += 1
 			continue
-		var struct := pop.random_entity_from_distribution(GRASSLAND_STRUCTURE) as GRASSLAND_STRUCTURES_KIND
+		var struct := Population.random_entity_from_distribution(rng.randf(), GRASSLAND_STRUCTURE) as GRASSLAND_STRUCTURES_KIND
 		match struct:
 			GRASSLAND_STRUCTURES_KIND.NONE:
 				index += 1
@@ -75,17 +75,20 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var house_size := 0
 					if rng.randf() < 0.7:
 						p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
-						house_size = pop.random_entity_from_distribution({1: 0.9, 2: 0.05})
+						house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.9, 2: 0.05})
 					else:
 						p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
-						house_size = pop.random_entity_from_distribution({1: 0.1, 2: 0.5, 3: 0.2, 4: 0.1})
+						house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.5, 3: 0.2, 4: 0.1})
 					if p != null:
 						max_limit -= 1
 						exclusion[j] = true
 						result.append(p)
 						for k in house_size:
 							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
-							n.stored_entity_knowledge.append(w)
+							n.stored_entity_knowledge[w.name] = w.entity_info()
+							var info = p.entity_info()
+							info.kind = EntityInfo.Kind.BASE
+							n.stored_entity_knowledge[p.name] = info
 							result.append(n)
 					if max_limit <= 0:
 						break

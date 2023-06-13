@@ -60,5 +60,5 @@ func _ready() -> void:
 func entity_info():
 	return _entity_info
 	
-func update_entity_info(info: EntityInfo):
-	pass
+func update_entity_info(info: EntityInfo) -> bool:
+	return false

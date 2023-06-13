@@ -9,7 +9,7 @@ enum Food {
 }
 
 enum Kind {
-	PLAYER, ENEMY, 
+	PLAYER, ENEMY, BASE,
 	UNDEAD, BAT, MOLE, HUMAN,
 	TREE, BUILDING
 }

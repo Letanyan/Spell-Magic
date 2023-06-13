@@ -17,8 +17,10 @@ const FOREST_STRUCTURES: Dictionary = {
 static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array:
 	var result: Array[Node3D] = []
 	var index := 0
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(pop.coord)
 	while index < area.size() - 1:
-		var struct = pop.random_entity_from_distribution(FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
+		var struct = Population.random_entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
 				index += 1

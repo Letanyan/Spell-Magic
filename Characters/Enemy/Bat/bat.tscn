@@ -1,6 +1,5 @@
-[gd_scene load_steps=11 format=3 uid="uid://dyeclaveumfmu"]
+[gd_scene load_steps=10 format=3 uid="uid://dyeclaveumfmu"]
 
-[ext_resource type="Script" path="res://Characters/Enemy/Bat/bat.gd" id="1_8k3qi"]
 [ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="2_71cnk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1vebu"]
@@ -39,7 +38,6 @@ orientation = 2
 [node name="bat" type="CharacterBody3D"]
 collision_layer = 4
 collision_mask = 593
-script = ExtResource("1_8k3qi")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)

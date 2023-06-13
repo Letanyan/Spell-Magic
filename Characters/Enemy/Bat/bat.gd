@@ -16,6 +16,8 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
+	hormones = Hormones.new(0.7, 1.0, -0.75, 0)
+	
 	idle_path = PathStyle.new(randf()).circle_path(5, 10).set_origin(position).speed(7).use_absolute().align_y_to_origin()
 	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 5).set_use_player_as_origin().speed(10).use_absolute().align_y_to_origin().look_at_player()
 	current_path = idle_path
@@ -56,8 +58,9 @@ func attack_state() -> AttackPatterns:
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.BAT, position)
 
-func update_entity_info(info: EntityInfo):
+func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
+	return true
 
 
 func update_behaviour():

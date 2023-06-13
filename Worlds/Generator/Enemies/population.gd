@@ -28,12 +28,11 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-func random_entity_from_distribution(probs: Dictionary) -> int:
+static func random_entity_from_distribution(r: float, probs: Dictionary, default = 0):
 	var keys := probs.keys()
 	if keys.size() == 0:
-		return 0
+		return default
 	
-	var r := rng.randf()
 	if keys.size() == 1:
 		var i = keys[0]
 		return keys[0] if r < probs[i] else 0
@@ -46,16 +45,16 @@ func random_entity_from_distribution(probs: Dictionary) -> int:
 			return i
 		base = next_base
 	
-	return 0
+	return default
 	
 func random_enemy(probs: Dictionary) -> World.Enemy:
-	return random_entity_from_distribution(probs) as World.Enemy
+	return Population.random_entity_from_distribution(rng.randf(), probs) as World.Enemy
 	
 func random_foliage(probs: Dictionary) -> World.Foliage:
-	return random_entity_from_distribution(probs) as World.Foliage
+	return Population.random_entity_from_distribution(rng.randf(), probs) as World.Foliage
 	
 func random_building(probs: Dictionary) -> World.Building:
-	return random_entity_from_distribution(probs) as World.Building
+	return Population.random_entity_from_distribution(rng.randf(), probs) as World.Building
 	
 func always_valid(normal: Dictionary) -> bool:
 	return true

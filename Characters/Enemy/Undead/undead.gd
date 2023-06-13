@@ -19,6 +19,8 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10
 	
+	hormones = Hormones.new(-1.0, 1.0, -1.0, 1.0)
+	
 	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
 	attack_path = PathStyle.new(randf()).towards_player(0, 1).speed(2).use_physics()
 	current_path = idle_path
@@ -62,8 +64,9 @@ func attack_state() -> AttackPatterns:
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
 
-func update_entity_info(info: EntityInfo):
+func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
+	return true
 
 
 func update_behaviour():

@@ -1,11 +1,11 @@
 class_name Vitals
 
 class Stat:
-	var min_value: float
-	var max_value: float
-	var value: float
-	var change_per_tick: float
-	var resistance: float
+	@export var min_value: float
+	@export var max_value: float
+	@export var value: float
+	@export var change_per_tick: float
+	@export var resistance: float
 	
 	func _init(v: float, min_v: float, max_v: float, change: float = 0, res: float = 0):
 		value = v
@@ -15,7 +15,7 @@ class Stat:
 		resistance = res
 		
 	func amount_of_change(p: float) -> float:
-		return (1 - resistance) * p
+		return clampf((1 - resistance) * p, min_value, max_value)
 		
 	func apply_ignoring_resistance(amount: float):
 		value = clamp(value + amount, min_value, max_value)
@@ -181,3 +181,10 @@ static func build_explosion(world: Node3D, amount: int, element: Spell.Element, 
 	await world.get_tree().create_timer(source.lifetime + 0.1).timeout
 	world.remove_child(explosion)
 	explosion.queue_free()
+
+func update_from_action(action: Knowledge.Action):
+	match action.kind:
+		Knowledge.ActionKind.WALK:
+			return
+		Knowledge.ActionKind.DRINK:
+			thirst.apply(action.entity.liquid_amount)

@@ -81,3 +81,6 @@ static func make(kind: World.Foliage, rng: RandomNumberGenerator) -> Trees:
 				
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.TREE, position)
+	
+func update_entity_info(info: EntityInfo) -> bool:
+	return false
