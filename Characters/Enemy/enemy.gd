@@ -8,6 +8,7 @@ var animator: AnimationPlayer
 var velocity_movement: VelocityMovement
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
+var invunerable := 0
 
 var player: Player
 var behaviour: Behaviour
@@ -51,6 +52,8 @@ func add_shake(amount: float):
 func increment_ticks():
 	behavior_tick += 1
 	spell_tick += 1
+	if invunerable > 0:
+		invunerable -= 1
 	
 func play_animation(animation: String, blend: float):
 	var anim = animation_map.get(animation, "")

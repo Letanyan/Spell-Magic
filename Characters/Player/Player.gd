@@ -10,6 +10,7 @@ extends CharacterBody3D
 
 var velocity_movement := VelocityMovement.player()
 var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
+var invunerable := 0
 var magic_book: MagicBook
 
 var camera_target_velocity: float = 0
@@ -57,6 +58,8 @@ func add_shake(amount: float):
 	shake_intensity += amount
 
 func _physics_process(delta):
+	if invunerable > 0:
+		invunerable -= 1
 	var menu_showing: bool = is_menu_showing.call()
 	var movement := velocity_movement.update(delta, vitals, 14, self)
 	emit_vitals_signal()

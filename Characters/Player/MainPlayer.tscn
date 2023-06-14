@@ -99,7 +99,7 @@ shape = SubResource("BoxShape3D_4v8dt")
 
 [node name="WetArea" type="Area3D" parent="."]
 collision_layer = 34
-collision_mask = 0
+collision_mask = 256
 
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)

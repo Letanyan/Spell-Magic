@@ -65,18 +65,18 @@ func actual_duration() -> float:
 func impulse() -> Vector3:
 	match spell.element:
 		Spell.Element.ROCK:
-			return velocity.normalized() * (spell.power * 1.5) 
+			return velocity.normalized() * spell.power
 		Spell.Element.AIR:
 			return velocity.normalized() * (spell.power * 2.0)
 			
 		Spell.Element.FIRE:
-			return velocity.normalized() * spell.power * 1
+			return velocity.normalized() * spell.power * 0.25
 		Spell.Element.WATER:
-			return velocity.normalized() * spell.power * 0.5
+			return velocity.normalized() * spell.power * 0.1
 		Spell.Element.ELECTRIC:
-			return velocity.normalized() * spell.power
+			return Vector3.ZERO
 		Spell.Element.ICE:
-			return velocity.normalized() * spell.power
+			return Vector3.ZERO
 			
 			
 		_:
@@ -117,12 +117,16 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	
 	var is_world_object : int = body.collision_layer & (1 << 9) != 0
 	var is_rock  : int = body.collision_layer & 0b1_0000 != 0
+	var is_water : int = body.collision_layer & 0b10_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
+	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
+	if invunerable:
+		print(body.invunerable)
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
-			elif is_enemy or is_player:
+			elif (is_enemy or is_player) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.FIRE, spell.power)
 				expire_now(self, body)
@@ -133,21 +137,21 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				elif is_rock:
 					lose_control(self, body)
 					body.apply_central_impulse(impulse())
-				elif is_enemy or is_player:
+				elif (is_enemy or is_player) and not invunerable:
 					CharacterCollision.handle(body, self)
 					dmg = body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
 					lose_control(self, body)
 		Spell.Element.WATER:
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
-			elif is_enemy or is_player:
+			elif (is_enemy or is_player) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.WATER, spell.power)
 				expire_now(self, body)
 		Spell.Element.AIR:
 			if is_world or is_world_object:
 				nothing(self, body)
-			elif is_player or is_enemy:
+			elif (is_player or is_enemy) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.AIR, spell.power)
 				nothing(self, body)
@@ -157,25 +161,32 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 		Spell.Element.ICE:
 			if is_world or is_rock or is_world_object:
 				nothing(self, body)
-			elif is_player or is_enemy:
+			elif (is_player or is_enemy) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.power)
 				nothing(self, body)
 		Spell.Element.ELECTRIC:
-			# Look at `_on_area_entered` for implementation
-			pass
+			if is_world or is_rock or is_world_object:
+				expire_now(self, body)
+			elif (is_player or is_enemy) and is_water:
+				# Look at `_on_area_entered` for implementation
+				pass
 	
-	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
-		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
-	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
-	if is_player:
-		body.emit_vitals_signal()
-		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
-	if is_enemy:
-		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
-		if body.vitals.health.value <= body.vitals.health.min_value:
-			body.vitals_signal.emit(body.index_in_population, body.vitals)
-			body.die()
+	if not invunerable:
+		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
+			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
+		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
+		if is_player:
+			body.emit_vitals_signal()
+			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+			body.invunerable = 20
+		if is_enemy:
+			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+			if body.vitals.health.value <= body.vitals.health.min_value:
+				body.vitals_signal.emit(body.index_in_population, body.vitals)
+				body.die()
+			else:
+				body.invunerable = 20
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	var body := area.get_parent_node_3d()
@@ -187,26 +198,33 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	var is_rock  : int = area.collision_layer & 0b1_0000 != 0
 	var is_water : int = area.collision_layer & 0b10_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
+	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
 	match spell.element:
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
-				expire_now(self, body)
-			elif (is_player or is_enemy) and is_water:
+				# Look at `_on_area_entered` for implementation
+				pass
+			elif (is_player or is_enemy) and is_water and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
-				expire_now(self, body)
+				nothing(self, body)
 				
-	if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
-		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
-	Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
-	if is_player:
-		body.emit_vitals_signal()
-		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
-	if is_enemy:
-		body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
-		if body.vitals.health.value <= body.vitals.health.min_value:
-			body.vitals_signal.emit(body.index_in_population, body.vitals)
-			body.die()
+	
+	if not invunerable:
+		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
+			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
+		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
+		if is_player:
+			body.emit_vitals_signal()
+			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+			body.invunerable = 20
+		if is_enemy:
+			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
+			if body.vitals.health.value <= body.vitals.health.min_value:
+				body.vitals_signal.emit(body.index_in_population, body.vitals)
+				body.die()
+			else:
+				body.invunerable = 20
 
 func update_shape(r: float, ignore_time: bool):
 	if r == most_recent_radius:
