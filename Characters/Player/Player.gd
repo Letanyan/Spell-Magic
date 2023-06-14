@@ -41,8 +41,11 @@ func emit_spell_was_cast(s: Spell):
 	
 func pan_camera(movement: Vector2):
 	var damping := 0.75
-	cam_pivot.rotate_y(-movement.x * damping / 180 * PI)
-	cam_arm.rotate_x(-movement.y * damping / 180 * PI / 3)
+	const T := 5.0
+	const S := 1.5
+	var exp_movement := Vector2(abs(movement.x / T) ** S * sign(movement.x), abs(movement.y / T) ** S * sign(movement.y))
+	cam_pivot.rotate_y(-exp_movement.x * damping / 180 * PI)
+	cam_arm.rotate_x(-exp_movement.y * damping / 180 * PI / 3)
 	cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
 	
 	var size := -movement.length()

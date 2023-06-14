@@ -18,7 +18,7 @@ class Stat:
 		return clampf((1 - resistance) * p, min_value, max_value)
 		
 	func apply_ignoring_resistance(amount: float):
-		value = clamp(value + amount, min_value, max_value)
+		value = clampf(value + amount, min_value, max_value)
 		
 	func apply(p: float):
 		apply_ignoring_resistance(amount_of_change(p))
@@ -58,7 +58,7 @@ func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _we
 func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 	match kind:
 		Spell.Element.FIRE:
-			var amount = burning.amount_of_change(power)
+			var amount = burning.amount_of_change(power / 100.0)
 			if wetness.value <= 0 and freeze.value <= 0:
 				burning.apply_ignoring_resistance(amount)
 			else:
@@ -66,7 +66,7 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			wetness.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(-amount * 1.5)
 		Spell.Element.WATER:
-			var amount = wetness.amount_of_change(power)
+			var amount = wetness.amount_of_change(power / 100.0)
 			if burning.value <= 0:
 				wetness.apply_ignoring_resistance(amount)
 			else:
@@ -74,7 +74,7 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			burning.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(amount * freeze.value)
 		Spell.Element.ICE:
-			var amount = freeze.amount_of_change(wetness.value * power)
+			var amount = freeze.amount_of_change(wetness.value * power / 100.0)
 			if wetness.value > 0:
 				freeze.apply_ignoring_resistance(amount)
 				wetness.apply_ignoring_resistance(-amount)
@@ -97,8 +97,9 @@ func update_vitals() -> Array:
 	var result = [{"dmg": h, "el": Spell.Element.FIRE}]
 	mana.update_per_tick()
 	if burning.value > 0:
-		health.apply_ignoring_resistance(-int(burning.value * health.value / 100.0))
-		result.append({"dmg": int(burning.value * health.value / 100.0), "el": Spell.Element.FIRE})
+		var burn_damage := int(burning.value * health.max_value * 0.05)
+		health.apply_ignoring_resistance(-burn_damage)
+		result.append({"dmg": burn_damage, "el": Spell.Element.FIRE})
 		
 	hunger.update_per_tick()
 	thirst.update_per_tick()

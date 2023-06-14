@@ -120,8 +120,6 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	var is_water : int = body.collision_layer & 0b10_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
 	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
-	if invunerable:
-		print(body.invunerable)
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object:
