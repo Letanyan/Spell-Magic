@@ -29,7 +29,7 @@ signal vitals_signal
 var stored_entity_knowledge: Dictionary = {}
 
 var action_state: Knowledge.Action
-var action_is_satisfied: bool = false
+var action_is_satisfied: bool = true
 var choices: Dictionary = {}
 
 func _ready():
@@ -87,9 +87,10 @@ func _physics_process(delta):
 				var v: Vector3 = movement["absolute"]
 				var t: Vector3 = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if position.y < g:
+				if position.y < g or position.y > g:
 					position.y = g
 					t.y = 0
+					v.y = 0
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
@@ -157,40 +158,43 @@ func update_vitals_display():
 	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
 
 func update_state():
-	var has_updated := false
-	var actions: Dictionary = knowledge.actions
-	if knowledge.has_been_updated:
-		knowledge.has_been_updated = false
-		actions = knowledge.actions_list()
+	update_action_is_satisfied()
+	if randf() < (0.9 if action_is_satisfied else 0.01):
+		var has_updated := false
+		var actions: Dictionary = knowledge.actions
 		
-	var total_weight := 0.0
-	for action_key in actions:
-		var action = actions[action_key]
-		var w := hormones.weight_for_action(action, vitals)
-		total_weight += w
-		choices[action] = w
-	for action in choices:
-		choices[action] = choices[action] / total_weight
-	var new_state = Population.random_entity_from_distribution(randf(), choices)
-	
-	if new_state != action_state:
-		action_state = new_state
-		has_updated = true
+		if knowledge.has_been_updated:
+			knowledge.has_been_updated = false
+			actions = knowledge.actions_list()
+			
+		var total_weight := 0.0
+		for action_key in actions:
+			var action = actions[action_key]
+			var w := hormones.weight_for_action(action, vitals)
+			total_weight += w
+			choices[action] = w
+		for action in choices:
+			choices[action] = choices[action] / total_weight
+		var new_state = Population.random_entity_from_distribution(randf(), choices)
+		
+		if new_state != action_state:
+			action_state = new_state
+			has_updated = true
+			action_is_satisfied = false
+		else:
+			has_updated = false
+				
+		if action_is_satisfied:
+			hormones.update_from_action(action_state)
+			vitals.update_from_action(action_state)
+				
+		return has_updated
 	else:
-		has_updated = false
-			
-	if has_updated:
-		update_action_is_satisfied()
-			
-	if action_is_satisfied:
-		hormones.update_from_action(action_state)
-		vitals.update_from_action(action_state)
-			
-	return has_updated
+		return false
 		
 func update_action_is_satisfied():
 	if action_state == null:
-		action_is_satisfied = false
+		action_is_satisfied = true
 		return
 	match action_state.kind:
 		Knowledge.ActionKind.WALK:

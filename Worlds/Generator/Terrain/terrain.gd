@@ -316,7 +316,7 @@ func init_grass():
 			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R
 			for r in range(0, R + 1, 2):
 				var a := 0.0
-				while a <= PI * 2:
+				while a < PI * 2:
 					a += PI / 4.0 * (1.0 / (floor(r / 4.0) + 1))
 					var nx := cos(a) * r + float(x)
 					var ny := sin(a) * r + float(y)

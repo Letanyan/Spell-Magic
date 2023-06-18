@@ -200,7 +200,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	match spell.element:
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
-				# Look at `_on_area_entered` for implementation
+				# Look at `_on_body_entered` for implementation
 				pass
 			elif (is_player or is_enemy) and is_water and not invunerable:
 				CharacterCollision.handle(body, self)
