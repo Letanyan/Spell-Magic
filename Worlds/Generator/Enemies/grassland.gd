@@ -5,7 +5,7 @@ enum GRASSLAND_STRUCTURES_KIND {
 	NONE,
 	TREE_ROUND, TREE_BRANCHED,
 	VILLAGE,
-	UNDEAD
+	UNDEAD, WALKER
 }
 
 const GRASSLAND_STRUCTURE = {
@@ -13,6 +13,7 @@ const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.025,
 	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.0005,
 	GRASSLAND_STRUCTURES_KIND.UNDEAD: 0.01,
+	GRASSLAND_STRUCTURES_KIND.WALKER: 0.05
 }
 
 
@@ -46,6 +47,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				index += 1
 				var pos := area[index]
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
+				if p != null:
+					result.append(p)
+			GRASSLAND_STRUCTURES_KIND.WALKER:
+				index += 1
+				var pos := area[index]
+				var p := pop.spawn_enemy(World.Enemy.WALKER, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.VILLAGE:

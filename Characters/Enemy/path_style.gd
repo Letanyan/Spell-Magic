@@ -114,6 +114,22 @@ func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	path.calculate_distance()
 	kind = Kind.PATH
 	return self
+	
+func random_points_in_disc(min_radius: float, max_radius: float, count: int) -> PathStyle:
+	path = Pathway.new()
+	var dist := max_radius - min_radius
+	var p := Vector3(randf_range(min_radius, max_radius) * cos(randf_range(-PI, PI)), 0, randf_range(min_radius, max_radius) * sin(randf_range(-PI, PI)))
+	path.add(Segment.linear(Vector3.ZERO, p))
+	for i in range(count - 1):
+		var q := Vector3(randf_range(min_radius, max_radius) * cos(randf_range(-PI, PI)), 0, randf_range(min_radius, max_radius) * sin(randf_range(-PI, PI))).normalized() * (dist + min_radius)
+#		var m := (p + q) / 2.0
+#		path.add(Segment.quad(p, q, m))
+		path.add(Segment.linear(p, q))
+		p = q
+	path.add(Segment.linear(p, Vector3.ZERO))
+	path.calculate_distance()
+	kind = Kind.PATH
+	return self
 
 func next_position(me: Enemy, player: Player) -> Vector3:
 	var t := float(Time.get_unix_time_from_system() + seed_offset * 2 * PI)

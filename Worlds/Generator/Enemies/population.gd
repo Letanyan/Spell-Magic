@@ -16,6 +16,7 @@ const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
 const bat = preload("res://Characters/Enemy/Bat/bat.tscn")
 const mole = preload("res://Characters/Enemy/Mole/mole.tscn")
 const human = preload("res://Characters/Enemy/Human/human.tscn")
+const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
@@ -98,6 +99,9 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.HUMAN:
 			result = human.instantiate()
 			result.name = "Human" + str(rng.randi())
+		World.Enemy.WALKER:
+			result = walker.instantiate()
+			result.name = "Walker" + str(rng.randi())
 			
 	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
