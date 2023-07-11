@@ -5,6 +5,7 @@ enum Kind { ANY, SPELLS, WANDS }
 
 @onready var magic_book: MagicBookGUI = $MagicBook
 @onready var wand_case: Control = $WandCase
+@onready var artifacts: ArtifactsGUI = $Artifacts
 var current_index := 0
 
 var is_showing: bool = false
@@ -24,23 +25,29 @@ func _process(delta):
 
 func update_index(index):
 	save_changes()
+	const MAX_INDEX = 2 # used for wrap around
 	if index < 0:
-		current_index = 1
-	elif index > 1:
+		current_index = MAX_INDEX
+	elif index > MAX_INDEX:
 		current_index = 0
 	else:
 		current_index = index
 	magic_book.visible = false
 	wand_case.visible = false
+	artifacts.visible = false
 	match index:
 		0: magic_book.visible = true
 		1: wand_case.visible = true
+		2: artifacts.visible = true
 
 func _on_spells_pressed():
 	update_index(0)
 
 func _on_wands_pressed():
 	update_index(1)
+
+func _on_artifacts_pressed() -> void:
+	update_index(2)
 
 func open(kind: Kind):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

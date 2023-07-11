@@ -115,13 +115,12 @@ func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	kind = Kind.PATH
 	return self
 	
-func random_points_in_disc(min_radius: float, max_radius: float, count: int) -> PathStyle:
+func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var dist := max_radius - min_radius
-	var p := Vector3(randf_range(min_radius, max_radius) * cos(randf_range(-PI, PI)), 0, randf_range(min_radius, max_radius) * sin(randf_range(-PI, PI)))
+	var p := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
 	path.add(Segment.linear(Vector3.ZERO, p))
 	for i in range(count - 1):
-		var q := Vector3(randf_range(min_radius, max_radius) * cos(randf_range(-PI, PI)), 0, randf_range(min_radius, max_radius) * sin(randf_range(-PI, PI))).normalized() * (dist + min_radius)
+		var q := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
 #		var m := (p + q) / 2.0
 #		path.add(Segment.quad(p, q, m))
 		path.add(Segment.linear(p, q))

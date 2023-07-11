@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://c0eqpohrkp1r7"]
+
+[ext_resource type="Script" path="res://GUI/ArtifactsGUI.gd" id="1_75vy4"]
+[ext_resource type="Script" path="res://GUI/InfinityGrid.gd" id="1_riawq"]
+[ext_resource type="Script" path="res://GUI/GridTile.gd" id="3_pyat7"]
+
+[node name="Artifacts" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_75vy4")
+
+[node name="artifacts_list" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 56.0
+offset_right = 272.0
+offset_bottom = 640.0
+
+[node name="artifact_grid" type="Container" parent="."]
+clip_contents = true
+layout_mode = 0
+offset_left = 280.0
+offset_top = 56.0
+offset_right = 1144.0
+offset_bottom = 640.0
+mouse_filter = 0
+script = ExtResource("1_riawq")
+cell_size = Vector2(128, 128)
+
+[node name="GridTile2" type="Control" parent="artifact_grid"]
+layout_mode = 2
+script = ExtResource("3_pyat7")
+color = Color(0, 0, 1, 1)
+
+[node name="GridTile" type="Control" parent="artifact_grid"]
+layout_mode = 2
+script = ExtResource("3_pyat7")
+color = Color(1, 0, 0, 1)
+
+[connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]

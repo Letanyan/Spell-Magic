@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbcpki4bla0ph"]
+
+[ext_resource type="Script" path="res://GUI/GridTile.gd" id="1_f2f21"]
+
+[node name="GridTile" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_f2f21")
