@@ -17,6 +17,7 @@ var has_init_terrain_population = false
 var book: MagicBook
 var case: WandCase
 var wand: Wand
+var artifacts: Artifacts
 
 var knowledge_tick: int
 
@@ -31,7 +32,19 @@ func _ready():
 	case = WandCase.new()
 	case.load()
 	
-	menu.setup(book, case)
+	artifacts = Artifacts.new()
+	artifacts.load()
+	
+#	for i in ["flower", "feather", "goblet", "sands", "crown"]:
+#		var artifact := Artifact.new()
+#		artifact.name = i
+#		artifact.top = Artifact.Option.make_random()
+#		artifact.bottom = Artifact.Option.make_random()
+#		artifact.left = Artifact.Option.make_random()
+#		artifact.right = Artifact.Option.make_random()
+#		artifacts.collection.append(artifact)
+	
+	menu.setup(book, case, artifacts)
 	
 	book.ignore_cooldown = true
 	wand = case.wands[0]

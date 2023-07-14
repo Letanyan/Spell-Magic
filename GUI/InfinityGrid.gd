@@ -5,7 +5,7 @@ extends Container
 @export var cell_size: Vector2 = Vector2(32, 32)
 @export var offset: Vector2 = Vector2.ZERO
 @export var line_width: float = 1.0
-@export var line_color: Color = Color.WHITE
+@export var line_color: Color = Color(1, 1, 1, 0.5)
 @export var background_color: Color = Color(0, 0, 0, 0.75)
 
 var selected_cell_coord = null
@@ -15,12 +15,18 @@ var current_offset := Vector2.ZERO
 
 var child_grid := {}
 
+signal on_cell_selected(coord: Vector2)
+signal on_cell_unselected(coord: Vector2)
+signal on_cell_clicked(coord: Vector2, mouse_button_index: int)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	child_grid[Vector2(1, 1)] = $GridTile
-	child_grid[Vector2(0, 0)] = $GridTile2 
 	pass # Replace with function body.
 
+func add_grid_tile(n: Control, coord: Vector2):
+	add_child(n)
+	child_grid[coord] = n
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -53,7 +59,7 @@ func _draw() -> void:
 	draw_line(Vector2(size.x, size.y), Vector2(size.x, 0), line_color, line_width, true)
 	
 	if selected_cell_coord != null:
-		draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), line_color)
+		draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
 func _input(event):
 	if not visible:
@@ -73,10 +79,14 @@ func _input(event):
 					m_pos -= offset
 					m_pos /= cell_size
 					m_pos = floor(m_pos)
-					if m_pos == selected_cell_coord:
-						selected_cell_coord = null
-					else:
-						selected_cell_coord = m_pos
+					on_cell_clicked.emit(m_pos, event.button_index)
+					if event.button_index == 1:
+						if m_pos == selected_cell_coord:
+							selected_cell_coord = null
+							on_cell_unselected.emit(m_pos)
+						else:
+							selected_cell_coord = m_pos
+							on_cell_selected.emit(m_pos)
 					queue_redraw()
 					queue_sort()
 			current_offset = Vector2.ZERO

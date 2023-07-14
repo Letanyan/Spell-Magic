@@ -10,9 +10,10 @@ var current_index := 0
 
 var is_showing: bool = false
 
-func setup(book: MagicBook, case: WandCase):
+func setup(book: MagicBook, case: WandCase, artifaces: Artifacts):
 	magic_book.book = book
 	wand_case.case = case
+	artifacts.artifacts = artifaces
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -80,3 +81,5 @@ func save_changes():
 		magic_book.book.save()
 	if wand_case.visible:
 		wand_case.case.save()
+	if artifacts.visible:
+		artifacts.artifacts.save()
