@@ -53,6 +53,20 @@ class Option:
 		element = dict["element"] as Element
 		amount = dict["amount"]
 		
+	func amount_as_tuple() -> Vector2:
+		match effect:
+			Effect.BOOST_PERCENTAGE, Effect.REDUCE_PERCENTAGE:
+				return Vector2(0, amount)
+			Effect.BOOST_FLAT, Effect.REDUCE_FLAT:
+				return Vector2(amount, 0)
+		return Vector2.ZERO
+		
+	func element_event() -> int:
+		return event * (element + 1)
+	
+	func element_effect() -> int:
+		return effect * (element + 1)
+		
 	func player_deals_damage() -> int:
 		if effect != Effect.NONE:
 			match effect:
@@ -79,7 +93,7 @@ class Option:
 	func element_description() -> String:
 		match element:
 			Element.ANY:
-				return "A"
+				return "X"
 			Element.FIRE:
 				return "F"
 			Element.WATER:

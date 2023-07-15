@@ -31,6 +31,7 @@ func update_list_and_grid():
 		var v = artifacts.connected[a]
 		var g := GridTile.new()
 		g.artifact = a
+		g.highlighted = artifacts.active_options.get(v, {})
 		g.color = Color(0.1, 0.1, 0.1)
 		artifact_grid.add_grid_tile(g, v)
 
