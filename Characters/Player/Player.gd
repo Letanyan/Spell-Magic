@@ -12,6 +12,7 @@ var velocity_movement := VelocityMovement.player()
 var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
 var invunerable := 0
 var magic_book: MagicBook
+var artifacts: Artifacts
 
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
@@ -23,6 +24,9 @@ signal vital_update
 signal spell_was_cast
 
 var vitals: Vitals
+
+var spell_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
+var damage_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
 
 func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
@@ -114,10 +118,16 @@ func _physics_process(delta):
 	spell_caster.deferred_update(self, delta)
 
 func cast_spell(insert: Callable, next_spell: Spell):
-	spell_caster.cast_spell(self, vitals, insert, next_spell)
+	var new_spell := next_spell.duplicate()
+	for e in spell_modifier:
+		if e == new_spell.element or e == Artifact.Element.ANY:
+			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
+	spell_caster.cast_spell(self, vitals, insert, new_spell)
 	emit_vitals_signal()
 	emit_spell_was_cast(next_spell)
-
+	update_artifact_effects(Artifact.Event.DEAL, next_spell)
+			
+		
 func _on_wet_area_body_entered(body):
 	print(body)
 	
@@ -133,4 +143,28 @@ func give_back_mana_after_hit(spell: Spell, time: float):
 	var v = minf((time - u) / (c + spell.mana_cost), 1.0)
 	var t = (1.0 - (-1.5 * (v ** 3.0 / 3.0 - v))) * spell.mana_cost / float(spell.count)
 	vitals.mana.apply_ignoring_resistance(t)
+	
+func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
+	for event in artifacts.effects:
+		var duration = event.x
+		var event_kind = event.y / Artifact.Element.size()
+		var event_el = event.y % Artifact.Element.size()
+		if event_kind == event_to_match and event_el == spell.element or event_el == Artifact.Element.ANY:
+			for effect in artifacts.effects[event]:
+				var amount = artifacts.effects[event][effect]
+				var effect_kind = effect / Artifact.Element.size()
+				var effect_el = effect % Artifact.Element.size()
+				if not spell_modifier.has(effect_el):
+					spell_modifier[effect_el] = Vector2.ZERO
+				if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+					spell_modifier[effect_el] += amount
+					get_tree().create_timer(duration).timeout.connect(func(): spell_modifier[effect_el] -= amount)
+					
+				if not damage_modifier.has(effect_el):
+					damage_modifier[effect_el] = Vector2.ZERO
+				if effect_kind == Artifact.Effect.REDUCE_FLAT or effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					damage_modifier[effect_el] += amount
+					get_tree().create_timer(duration).timeout.connect(func(): damage_modifier[effect_el] -= amount)
+					
+	vitals.damage_modifier = damage_modifier
 	

@@ -62,6 +62,7 @@ func _ready():
 	
 	player.is_menu_showing = func(): return menu.is_showing
 	player.magic_book = book
+	player.artifacts = artifacts
 	hud.player = player
 	hud.book = book
 	hud.wand = wand

@@ -15,8 +15,8 @@ enum Event {
 }
 
 enum Element {
-	ANY, FIRE, WATER, AIR, ROCK, ELECTRIC, ICE,
-	MANA, HEALTH
+	FIRE, WATER, ROCK, AIR, ICE, ELECTRIC,
+	MANA, HEALTH, ANY
 }
 
 class Option:
@@ -61,11 +61,11 @@ class Option:
 				return Vector2(amount, 0)
 		return Vector2.ZERO
 		
-	func element_event() -> int:
-		return event * (element + 1)
+	func element_event() -> Vector2i:
+		return Vector2i(amount, event * Element.size() + element)
 	
 	func element_effect() -> int:
-		return effect * (element + 1)
+		return effect * Element.size() + element
 		
 	func player_deals_damage() -> int:
 		if effect != Effect.NONE:
@@ -89,6 +89,9 @@ class Option:
 		if effect == Effect.BOOST_PERCENTAGE or effect == Effect.REDUCE_PERCENTAGE:
 			result += "%"
 		return result
+		
+	func duration_description() -> String:
+		return ("%d" % amount) + "s"
 		
 	func element_description() -> String:
 		match element:

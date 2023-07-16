@@ -33,7 +33,7 @@ func draw_option(offset: Vector2, option: Artifact.Option, highlight: bool):
 		draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, font_color)
 		draw_string(f, center - Vector2(v.x / 2, w.y / 2) + offset - mask * u, dir, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, font_color)
 	elif option.event != Artifact.Event.NONE:
-		var amount := option.element_description()
+		var amount := option.duration_description() + " " + option.element_description()
 		var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
 		var dir := "=>" if option.player_deals_damage() == 1 else "<="
 		var v := f.get_string_size(dir, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
