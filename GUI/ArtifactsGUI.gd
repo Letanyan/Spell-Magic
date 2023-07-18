@@ -42,10 +42,7 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 	if list_clicked: # double click
 		if artifact_grid.selected_cell_coord != null:
 			var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))
-			if artifact == null:
-				return
-			artifacts.connect_to_grid(artifact, artifact_grid.selected_cell_coord)
-			update_list_and_grid()
+			attempt_place_artifact(artifact, at_position)
 		
 	list_clicked = true
 
@@ -62,11 +59,48 @@ func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) 
 		if selected.size() == 0:
 			return
 		var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0]))
-		if artifact == null:
-			return
-		artifacts.connect_to_grid(artifact, coord)
-		update_list_and_grid()
+		attempt_place_artifact(artifact, coord)
 
+func attempt_place_artifact(artifact: Artifact, coord: Vector2):
+	if artifact == null:
+		return
+	if artifacts.get_artifact_at_coord(coord) != null:
+		return
+		
+	# Check artifact fits with top artifact
+	var other = artifacts.get_artifact_at_coord(coord + Vector2(0, -1))
+	if other != null:
+		var ok1 : bool = other.bottom.event != Artifact.Event.NONE and artifact.top.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.bottom.effect != Artifact.Effect.NONE and artifact.top.event != Artifact.Event.NONE
+		if not (ok1 or ok2):
+			return
+			
+	# Check artifact fits with bottom artifact	
+	other = artifacts.get_artifact_at_coord(coord + Vector2(0, 1))
+	if other != null:
+		var ok1 : bool = other.top.event != Artifact.Event.NONE and artifact.bottom.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.top.effect != Artifact.Effect.NONE and artifact.bottom.event != Artifact.Event.NONE
+		if not (ok1 or ok2):
+			return
+			
+	# Check artifact fits with left artifact
+	other = artifacts.get_artifact_at_coord(coord + Vector2(-1, 0))
+	if other != null:
+		var ok1 : bool = other.right.event != Artifact.Event.NONE and artifact.left.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.right.effect != Artifact.Effect.NONE and artifact.left.event != Artifact.Event.NONE
+		if not (ok1 or ok2):
+			return
+			
+	# Check artifact fits with right artifact
+	other = artifacts.get_artifact_at_coord(coord + Vector2(1, 0))
+	if other != null:
+		var ok1 : bool = other.left.event != Artifact.Event.NONE and artifact.right.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.left.effect != Artifact.Effect.NONE and artifact.right.event != Artifact.Event.NONE
+		if not (ok1 or ok2):
+			return
+			
+	artifacts.connect_to_grid(artifact, coord)
+	update_list_and_grid()
 
 func _on_artifacts_list_item_selected(index: int) -> void:
 	var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))
