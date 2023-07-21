@@ -19,39 +19,46 @@ enum Element {
 	MANA, HEALTH, ANY
 }
 
+enum Pattern {
+	CIRCLE, SQUARE, TRIANGLE
+}
+
 class Option:
 	var effect: Effect
 	var event: Event
 	var element: Element
-	var amount: float
+	var amount: int
+	var pattern: Pattern
 	
 	static func empty() -> Option:
-		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0)
+		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0, Pattern.CIRCLE)
 		
-	static func make_event(ev: Event, el: Element, am: float) -> Option:
-		return Option.new(Effect.NONE, ev, el, am)
+	static func make_event(ev: Event, el: Element, am: int, pt: Pattern) -> Option:
+		return Option.new(Effect.NONE, ev, el, am, pt)
 		
-	static func make_effect(ef: Effect, el: Element, am: float) -> Option:
-		return Option.new(ef, Event.NONE, el, am)
+	static func make_effect(ef: Effect, el: Element, am: int, pt: Pattern) -> Option:
+		return Option.new(ef, Event.NONE, el, am, pt)
 		
 	static func make_random() -> Option:
 		var flip := randi_range(0, 1)
-		return Option.new(randi_range(1, 4) * flip, randi_range(1, 2) * (1 - flip), randi_range(0, 8), randi_range(1, 100))
+		return Option.new(randi_range(1, 4) * flip, randi_range(1, 2) * (1 - flip), randi_range(0, 8), randi_range(1, 100), randi_range(0, Pattern.size() - 1))
 	
-	func _init(ef: Effect, ev: Event, el: Element, am: float):
+	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern):
 		effect = ef
 		event = ev
 		element = el
 		amount = am
+		pattern = pt
 		
 	func save_dict() -> Dictionary:
-		return {"effect": effect, "event": event, "element": element, "amount": amount}
+		return {"effect": effect, "event": event, "element": element, "amount": amount, "pattern": pattern}
 		
 	func load_dict(dict: Dictionary):
 		effect = dict["effect"] as Effect
 		event = dict["event"] as Event
 		element = dict["element"] as Element
 		amount = dict["amount"]
+		pattern = dict.get("pattern", 0)
 		
 	func amount_as_tuple() -> Vector2:
 		match effect:
@@ -92,6 +99,13 @@ class Option:
 		
 	func duration_description() -> String:
 		return ("%d" % amount) + "s"
+		
+	func pattern_description() -> String:
+		match pattern:
+			Pattern.CIRCLE: return "()"
+			Pattern.SQUARE: return "[]"
+			Pattern.TRIANGLE: return "/\\"
+		return "X"
 		
 	func element_description() -> String:
 		match element:

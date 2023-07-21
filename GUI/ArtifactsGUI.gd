@@ -67,12 +67,21 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2):
 	if artifacts.get_artifact_at_coord(coord) != null:
 		return
 		
+	const WARN_COLOR = Color.RED
+	const WARN_INTERVAL = 0.05
+	const WARN_COUNT = 10
+		
 	# Check artifact fits with top artifact
 	var other = artifacts.get_artifact_at_coord(coord + Vector2(0, -1))
 	if other != null:
 		var ok1 : bool = other.bottom.event != Artifact.Event.NONE and artifact.top.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.bottom.effect != Artifact.Effect.NONE and artifact.top.event != Artifact.Event.NONE
+		var ok3 : bool = other.bottom.pattern == artifact.top.pattern
+		if not ok3:
+			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			return
 		if not (ok1 or ok2):
+			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	# Check artifact fits with bottom artifact	
@@ -80,7 +89,12 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2):
 	if other != null:
 		var ok1 : bool = other.top.event != Artifact.Event.NONE and artifact.bottom.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.top.effect != Artifact.Effect.NONE and artifact.bottom.event != Artifact.Event.NONE
+		var ok3 : bool = other.top.pattern == artifact.bottom.pattern
+		if not ok3:
+			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			return
 		if not (ok1 or ok2):
+			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	# Check artifact fits with left artifact
@@ -88,7 +102,12 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2):
 	if other != null:
 		var ok1 : bool = other.right.event != Artifact.Event.NONE and artifact.left.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.right.effect != Artifact.Effect.NONE and artifact.left.event != Artifact.Event.NONE
+		var ok3 : bool = other.right.pattern == artifact.left.pattern
+		if not ok3:
+			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			return
 		if not (ok1 or ok2):
+			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	# Check artifact fits with right artifact
@@ -96,7 +115,12 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2):
 	if other != null:
 		var ok1 : bool = other.left.event != Artifact.Event.NONE and artifact.right.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.left.effect != Artifact.Effect.NONE and artifact.right.event != Artifact.Event.NONE
+		var ok3 : bool = other.left.pattern == artifact.right.pattern
+		if not ok3:
+			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			return
 		if not (ok1 or ok2):
+			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	artifacts.connect_to_grid(artifact, coord)
