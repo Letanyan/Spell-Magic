@@ -39,7 +39,6 @@ func build_active_options():
 	for c in connected:
 		var v = connected[c]
 		update_active_options(c, v)
-	prints(effects)
 	
 func update_active_options(artifact: Artifact, coord: Vector2):
 	const TOP := 0

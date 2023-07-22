@@ -42,7 +42,7 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 	if list_clicked: # double click
 		if artifact_grid.selected_cell_coord != null:
 			var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))
-			attempt_place_artifact(artifact, at_position)
+			attempt_place_artifact(artifact, artifact_grid.selected_cell_coord)
 		
 	list_clicked = true
 
@@ -68,61 +68,69 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2):
 		return
 		
 	const WARN_COLOR = Color.RED
-	const WARN_INTERVAL = 0.05
-	const WARN_COUNT = 10
+	const WARN_INTERVAL = 0.1
+	const WARN_COUNT = 5
+	var check_count := 0
 		
 	# Check artifact fits with top artifact
 	var other = artifacts.get_artifact_at_coord(coord + Vector2(0, -1))
 	if other != null:
+		check_count += 1
 		var ok1 : bool = other.bottom.event != Artifact.Event.NONE and artifact.top.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.bottom.effect != Artifact.Effect.NONE and artifact.top.event != Artifact.Event.NONE
 		var ok3 : bool = other.bottom.pattern == artifact.top.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	# Check artifact fits with bottom artifact	
 	other = artifacts.get_artifact_at_coord(coord + Vector2(0, 1))
 	if other != null:
+		check_count += 1
 		var ok1 : bool = other.top.event != Artifact.Event.NONE and artifact.bottom.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.top.effect != Artifact.Effect.NONE and artifact.bottom.event != Artifact.Event.NONE
 		var ok3 : bool = other.top.pattern == artifact.bottom.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	# Check artifact fits with left artifact
 	other = artifacts.get_artifact_at_coord(coord + Vector2(-1, 0))
 	if other != null:
+		check_count += 1
 		var ok1 : bool = other.right.event != Artifact.Event.NONE and artifact.left.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.right.effect != Artifact.Effect.NONE and artifact.left.event != Artifact.Event.NONE
 		var ok3 : bool = other.right.pattern == artifact.left.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
 	# Check artifact fits with right artifact
 	other = artifacts.get_artifact_at_coord(coord + Vector2(1, 0))
 	if other != null:
+		check_count += 1
 		var ok1 : bool = other.left.event != Artifact.Event.NONE and artifact.right.effect != Artifact.Effect.NONE
 		var ok2 : bool = other.left.effect != Artifact.Effect.NONE and artifact.right.event != Artifact.Event.NONE
 		var ok3 : bool = other.left.pattern == artifact.right.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
+	if check_count <= 0:
+		return
+		
 	artifacts.connect_to_grid(artifact, coord)
 	update_list_and_grid()
 

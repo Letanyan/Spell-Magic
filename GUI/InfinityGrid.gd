@@ -18,6 +18,9 @@ var child_grid := {}
 signal on_cell_selected(coord: Vector2)
 signal on_cell_unselected(coord: Vector2)
 signal on_cell_clicked(coord: Vector2, mouse_button_index: int)
+signal on_cell_double_clicked(coord: Vector2, mouse_button_index: int)
+
+var double_click_timer: Dictionary = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -80,6 +83,11 @@ func _input(event):
 					m_pos /= cell_size
 					m_pos = floor(m_pos)
 					on_cell_clicked.emit(m_pos, event.button_index)
+					if double_click_timer.get(event.button_index, false):
+						on_cell_double_clicked.emit(m_pos, event.button_index)
+					else:
+						get_tree().create_timer(0.3).timeout.connect(func(): double_click_timer[event.button_index] = false)
+						double_click_timer[event.button_index] = true
 					if event.button_index == 1:
 						if m_pos == selected_cell_coord:
 							selected_cell_coord = null
