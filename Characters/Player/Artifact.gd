@@ -128,6 +128,37 @@ class Option:
 			Element.MANA:
 				return "M"
 		return ""
+		
+	func element_color() -> Color:
+		match element:
+			Element.ANY:
+				return Color.NAVAJO_WHITE
+			Element.FIRE:
+				return Color.RED
+			Element.WATER:
+				return Color.BLUE
+			Element.AIR:
+				return Color.GREEN
+			Element.ROCK:
+				return Color.SADDLE_BROWN
+			Element.ELECTRIC:
+				return Color.YELLOW
+			Element.ICE:
+				return Color.DEEP_SKY_BLUE
+			Element.HEALTH:
+				return Color.DARK_GREEN
+			Element.MANA:
+				return Color.DARK_BLUE
+		return Color.DEEP_PINK
+		
+	func color() -> Color:
+		var result := element_color()
+		if effect != Effect.NONE:
+			return result.lightened(0.5)
+		elif event != Event.NONE:
+			return result
+		return result
+				
 	
 	func description() -> String:
 		if effect == Effect.NONE and event == Event.NONE:

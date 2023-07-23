@@ -93,8 +93,14 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 		draw_arc(a, size.x * 0.33, s, e, 32, pattern_color, 1, true)
 
 func get_label_color(index: int) -> Dictionary:
-	var BASE = {0: Color.WHITE, 1: Color.WHITE, 2: Color.WHITE}	
-	var HIGH = {0: Color.DEEP_PINK, 1: Color.DEEP_PINK, 2: Color.DEEP_PINK}
+	var BASE = {0: Color.WHITE, 1: Color.WHITE, 2: Color.WHITE}
+	var high_color := Color.WHITE
+	match index:
+		0: high_color = artifact.top.color()
+		1: high_color = artifact.right.color()
+		2: high_color = artifact.bottom.color()
+		3: high_color = artifact.left.color()
+	var HIGH = {0: high_color, 1: high_color, 2: high_color}
 	
 	var result : Dictionary = HIGH if highlighted.get(index, false) else BASE
 	

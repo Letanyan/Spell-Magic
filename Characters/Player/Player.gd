@@ -154,17 +154,36 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 				var amount = artifacts.effects[event][effect]
 				var effect_kind = effect / Artifact.Element.size()
 				var effect_el = effect % Artifact.Element.size()
-				if not spell_modifier.has(effect_el):
-					spell_modifier[effect_el] = Vector2.ZERO
-				if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
-					spell_modifier[effect_el] += amount
-					get_tree().create_timer(duration).timeout.connect(func(): spell_modifier[effect_el] -= amount)
-					
-				if not damage_modifier.has(effect_el):
-					damage_modifier[effect_el] = Vector2.ZERO
-				if effect_kind == Artifact.Effect.REDUCE_FLAT or effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
-					damage_modifier[effect_el] += amount
-					get_tree().create_timer(duration).timeout.connect(func(): damage_modifier[effect_el] -= amount)
+				if effect_el == Artifact.Element.HEALTH:
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						vitals.health.apply(amount.x)
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						vitals.health.apply(vitals.health.value * amount.y / 100.0)
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						vitals.health.apply(-amount.x)
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						vitals.health.apply(vitals.health.value * -amount.y / 100.0)
+				elif effect_el == Artifact.Element.MANA:
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						vitals.mana.apply(amount.x)
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						vitals.mana.apply(vitals.mana.value * amount.y / 100.0)
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						vitals.mana.apply(-amount.x)
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						vitals.mana.apply(vitals.mana.value * -amount.y / 100.0)
+				else:
+					if not spell_modifier.has(effect_el):
+						spell_modifier[effect_el] = Vector2.ZERO
+					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						spell_modifier[effect_el] += amount
+						get_tree().create_timer(duration).timeout.connect(func(): spell_modifier[effect_el] -= amount)
+						
+					if not damage_modifier.has(effect_el):
+						damage_modifier[effect_el] = Vector2.ZERO
+					if effect_kind == Artifact.Effect.REDUCE_FLAT or effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						damage_modifier[effect_el] += amount
+						get_tree().create_timer(duration).timeout.connect(func(): damage_modifier[effect_el] -= amount)
 					
 	vitals.damage_modifier = damage_modifier
 	
