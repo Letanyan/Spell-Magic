@@ -160,11 +160,11 @@ func load():
 	active_options = data.get("active_options", {})
 	effects = data.get("effects", {})
 	for d in data["artifacts"]:
-		var w = Artifact.new()
+		var w = Artifact.new("")
 		w.load_dict(d)
 		collection.append(w)
 	for c in data["connected"]:
-		var w = Artifact.new()
+		var w = Artifact.new("")
 		w.load_dict(c)
 		for a in collection:
 			if a.name == w.name:

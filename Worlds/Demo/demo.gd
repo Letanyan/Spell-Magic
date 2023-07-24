@@ -173,7 +173,14 @@ func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) ->
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
 		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player)
+		pop.on_enemy_death.connect(enemy_drops_artifact)
 		result.append_array(pop.spawn_all_into_world(state))
 		population[loc] = pop
 		
 	return result
+
+func enemy_drops_artifact(artifact: Artifact):
+	if artifact == null:
+		return
+	artifacts.collection.append(artifact)
+	print(artifacts.collection.size())

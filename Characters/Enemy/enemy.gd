@@ -24,6 +24,7 @@ var spell_tick: int = 0
 
 var index_in_population: int = -1
 signal vitals_signal
+signal on_death(artifact_drop: Artifact)
 @onready var health_bar: MeshInstance3D = $HealthBar
 
 var stored_entity_knowledge: Dictionary = {}
@@ -143,6 +144,8 @@ func die():
 	var source = explosion.get_node("source")
 	source.process_material.emission_box_extents = death_box()
 	
+	on_death.emit(drop_artifact())
+	
 	explosion.position = position
 	explosion.global_transform = global_transform
 	var world := get_parent_node_3d()
@@ -201,3 +204,6 @@ func update_action_is_satisfied():
 			action_is_satisfied = true
 		Knowledge.ActionKind.DRINK:
 			action_is_satisfied = action_state.entity.position.distance_to(position) <= action_state.entity.bounds.shape.radius * 2
+
+func drop_artifact() -> Artifact:
+	return null

@@ -39,9 +39,20 @@ class Option:
 	static func make_effect(ef: Effect, el: Element, am: int, pt: Pattern) -> Option:
 		return Option.new(ef, Event.NONE, el, am, pt)
 		
-	static func make_random() -> Option:
-		var flip := randi_range(0, 1)
-		return Option.new(randi_range(1, 4) * flip, randi_range(1, 2) * (1 - flip), randi_range(0, 8), randi_range(1, 100), randi_range(0, Pattern.size() - 1))
+	static func make_random(
+		is_ef: float = 0.5, 
+		ef_prob: Dictionary = {Effect.BOOST_PERCENTAGE: 0.1, Effect.BOOST_FLAT: 0.1, Effect.REDUCE_PERCENTAGE: 0.1, Effect.REDUCE_FLAT: 0.1}, 
+		ev_prob: Dictionary = {Event.RECEIVE: 0.1, Event.DEAL: 0.1}, 
+		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1}, 
+		amount_range: Vector2i = Vector2i(0, 100), 
+		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
+		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
+		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
+		var ev := Population.random_entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
+		var el := Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+		var am := randi_range(amount_range.x, amount_range.y)
+		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
+		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern):
 		effect = ef
@@ -208,15 +219,20 @@ class Option:
 				result += "M"
 				
 		return result
+						
 					
-					
-					
-
 var name: String
-var top: Option = Option.empty()
-var right: Option = Option.empty()
-var bottom: Option = Option.empty()
-var left: Option = Option.empty()
+var top: Option
+var right: Option
+var bottom: Option
+var left: Option
+
+func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b: Option = Option.empty(), l: Option = Option.empty()):
+	name = n
+	top = t
+	right = r
+	bottom = b
+	left = l
 
 func save_dict() -> Dictionary:
 	return {"name": name, "top": top.save_dict(), "left": left.save_dict(), 

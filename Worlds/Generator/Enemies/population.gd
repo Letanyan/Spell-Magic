@@ -18,6 +18,8 @@ const mole = preload("res://Characters/Enemy/Mole/mole.tscn")
 const human = preload("res://Characters/Enemy/Human/human.tscn")
 const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
 
+signal on_enemy_death(drop_artifact: Artifact)
+
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
 	coord = _coord
@@ -29,14 +31,15 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-static func random_entity_from_distribution(r: float, probs: Dictionary, default = 0):
+# probs: (prob: float -> value: Variant)
+# probs is a dictionary where each key has its 'value' as a probability of being chosen
+static func random_entity_from_distribution(r: float, probs: Dictionary, default = 0) -> Variant:
 	var keys := probs.keys()
 	if keys.size() == 0:
 		return default
 	
 	if keys.size() == 1:
-		var i = keys[0]
-		return keys[0] if r < probs[i] else 0
+		return keys[0]
 		
 	var base := 0.0
 	for n in range(0, keys.size()):
@@ -103,6 +106,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 			result = walker.instantiate()
 			result.name = "Walker" + str(rng.randi())
 			
+	result.on_death.connect(on_enemy_death_update)
 	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
 	
@@ -224,3 +228,6 @@ func habitant_vitals_update(index: int, vitals: Vitals):
 	if vitals.health.value <= vitals.health.min_value:
 		inhabitants[index].index_in_population = -1
 		inhabitants.erase(index)
+
+func on_enemy_death_update(drop_artifact: Artifact):
+	on_enemy_death.emit(drop_artifact)

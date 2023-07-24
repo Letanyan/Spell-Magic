@@ -48,6 +48,7 @@ func _on_wands_pressed():
 	update_index(1)
 
 func _on_artifacts_pressed() -> void:
+	artifacts.update_list_and_grid()
 	update_index(2)
 
 func open(kind: Kind):
