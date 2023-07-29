@@ -74,7 +74,7 @@ func _physics_process(delta):
 		velocity = movement["velocity"]
 		move_and_slide()
 		var direction = movement["direction"]
-		if direction != Vector3.ZERO:
+		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():
 				if velocity.length() < 1:
 					animator.play("Man_Walk", 1)
@@ -118,6 +118,9 @@ func _physics_process(delta):
 	spell_caster.deferred_update(self, delta)
 
 func cast_spell(insert: Callable, next_spell: Spell):
+	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
+		return
+	
 	var new_spell := next_spell.duplicate()
 	for e in spell_modifier:
 		if e == new_spell.element or e == Artifact.Element.ANY:

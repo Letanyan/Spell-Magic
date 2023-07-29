@@ -103,7 +103,7 @@ func _physics_process(delta):
 		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos)
 		behavior_tick = 0
 
-	if spell_tick == 30:
+	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
 		var spell := attack_state().choose_spell(vitals, behaviour)
 		if spell != null:
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)

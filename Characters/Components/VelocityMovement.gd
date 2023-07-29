@@ -46,7 +46,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		new_velocity = new_velocity.normalized()
 		if length < 1.0:
 			new_velocity *= length
-		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value)
+		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
+		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value) * stun_value
 
 		navigation_velocity = new_velocity
 
@@ -72,8 +73,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
 		if true or body.is_on_floor():
-			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value) * input_len
-			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value) * input_len
+			var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
+			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value) * input_len * stun_value
+			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value) * input_len * stun_value
 	else:
 		target_velocity.x = 0
 		target_velocity.z = 0

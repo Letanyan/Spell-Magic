@@ -117,7 +117,6 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	
 	var is_world_object : int = body.collision_layer & (1 << 9) != 0
 	var is_rock  : int = body.collision_layer & 0b1_0000 != 0
-	var is_water : int = body.collision_layer & 0b10_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
 	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
 	match spell.element:
@@ -166,11 +165,12 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
 				expire_now(self, body)
-			elif (is_player or is_enemy) and is_water:
+			elif (is_player or is_enemy):
+				dmg = {} # set to empty so we know we can skip doing invunerable stuff
 				# Look at `_on_area_entered` for implementation
 				pass
 	
-	if not invunerable:
+	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
@@ -207,9 +207,11 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.power)
 				nothing(self, body)
+		_:
+			dmg = {}
 				
 	
-	if not invunerable:
+	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)

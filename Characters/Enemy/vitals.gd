@@ -38,6 +38,7 @@ var aggression: Stat
 var burning: Stat
 var wetness: Stat
 var freeze: Stat
+var stun: Stat
 
 var hunger: Stat
 var thirst: Stat
@@ -46,12 +47,13 @@ var perception: Stat
 var damage_modifier: Dictionary # Artifact.Element -> Vector2 (flat, percentage)
 
 
-func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _wetness := Stat.new(0, 0, 1, -0.001), _freeze := Stat.new(0, 0, 1, -0.01)):
+func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _wetness := Stat.new(0, 0, 1, -0.001), _freeze := Stat.new(0, 0, 1, -0.01), _stun := Stat.new(0, 0, 1.0, -0.25)):
 	health = _health
 	mana = _mana
 	burning = _burning
 	wetness = _wetness
 	freeze = _freeze
+	stun = _stun
 	hunger = Stat.new(0, 0, 0)
 	thirst = Stat.new(0, 0, 0)
 	perception = Stat.new(50, 0, 100)
@@ -84,14 +86,16 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			if burning.value > 0:
 				power = power * 0.25
 			burning.apply_ignoring_resistance(-amount)
+		Spell.Element.ELECTRIC:
+			var amount = stun.amount_of_change(power / 100.0)
+			stun.apply_ignoring_resistance(amount)
 			
 	for e in damage_modifier:
 		if e == kind or e == Artifact.Element.ANY:
 			power = power * (1.0 - damage_modifier[e].y) - damage_modifier[e].x
 	health.apply_ignoring_resistance(-power)
-	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value)
+	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
 	print("element: ", Spell.name_from_element(kind))
-	print(wetness_scale())
 	
 	return {"dmg": power, "el": kind}
 
@@ -99,6 +103,7 @@ func update_vitals() -> Array:
 	freeze.update_per_tick()
 	wetness.update_per_tick()
 	burning.update_per_tick()
+	stun.update_per_tick()
 	var h = health.update_per_tick()
 	var result = [{"dmg": h, "el": Spell.Element.FIRE}]
 	mana.update_per_tick()

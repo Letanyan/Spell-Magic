@@ -39,7 +39,6 @@ offset_top = 464.0
 offset_right = 184.0
 offset_bottom = 640.0
 script = ExtResource("3_pyat7")
-color = null
 
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
 [connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
