@@ -99,7 +99,7 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 	
 	return {"dmg": power, "el": kind}
 
-func update_vitals() -> Array:
+func update_vitals(body: Node3D) -> Array:
 	freeze.update_per_tick()
 	wetness.update_per_tick()
 	burning.update_per_tick()
@@ -114,6 +114,21 @@ func update_vitals() -> Array:
 		
 	hunger.update_per_tick()
 	thirst.update_per_tick()
+	
+	var effect: Node3D
+	if burning.value == 0.0:
+		effect = body.find_child("burn_effect", false, false)
+		if effect != null:
+			body.remove_child(effect)
+	if stun.value == 0.0:
+		effect = body.find_child("stun_effect", false, false)
+		if effect != null:
+			body.remove_child(effect)
+	if wetness.value == 0.0:
+		effect = body.find_child("wet_effect", false, false)
+		if effect != null:
+			body.remove_child(effect)
+			
 		
 	return result
 
@@ -136,11 +151,14 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 	
 	if show_exp:
 		for location in locations:
-			build_explosion(world, int(amount), element, location, r, v)
+			build_explosion(world, body, int(amount), element, location, r, v)
 
-static func build_explosion(world: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3):
+static func build_explosion(world: Node3D, body: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3):
 	var explosion: Node3D
 	var source: GPUParticles3D
+	
+	var visual_effect: Node3D = null
+	var visual_source: GPUParticles3D = null
 	match element:
 		Spell.Element.FIRE:
 			explosion = load("res://Projectiles/explosion/fire_exp.tscn").instantiate()
@@ -150,6 +168,16 @@ static func build_explosion(world: Node3D, amount: int, element: Spell.Element, 
 			source.process_material.scale_max = r * 2
 			source.process_material.initial_velocity_max = r * 2
 			source.amount = amount
+			
+			if not body.has_node("burn_effect"):
+				visual_effect = load("res://Projectiles/explosion/fire_exp.tscn").instantiate()
+				visual_effect.name = "burn_effect"
+				visual_source = visual_effect.get_node("source")
+				visual_source.process_material.emission_sphere_radius = r
+				visual_source.process_material.scale_min = r * 2
+				visual_source.process_material.scale_max = r * 2
+				visual_source.process_material.initial_velocity_max = r * 2
+				visual_source.amount = amount
 		Spell.Element.WATER:
 			explosion = load("res://Projectiles/explosion/water_exp.tscn").instantiate()
 			source = explosion.get_node("source")
@@ -157,6 +185,15 @@ static func build_explosion(world: Node3D, amount: int, element: Spell.Element, 
 			source.process_material.initial_velocity_max = r * 2
 			source.process_material.scale_max = r * 2
 			source.amount = amount
+			
+			if not body.has_node("wet_effect"):
+				visual_effect = load("res://Projectiles/explosion/water_exp.tscn").instantiate()
+				visual_effect.name = "wet_effect"
+				visual_source = visual_effect.get_node("source")
+				visual_source.process_material.emission_sphere_radius = r
+				visual_source.process_material.initial_velocity_max = r * 2
+				visual_source.process_material.scale_max = r * 2
+				visual_source.amount = amount
 		Spell.Element.ROCK:
 			explosion = load("res://Projectiles/explosion/rock_exp.tscn").instantiate()
 			source = explosion.get_node("source")
@@ -186,6 +223,23 @@ static func build_explosion(world: Node3D, amount: int, element: Spell.Element, 
 			mat.set_shader_parameter("len", r * 1.2)
 			source.process_material.emission_ring_radius = r
 			source.amount = amount
+			
+			if not body.has_node("stun_effect"):
+				visual_effect = load("res://Projectiles/explosion/electric_exp.tscn").instantiate()
+				visual_effect.name = "stun_effect"
+				visual_source = visual_effect.get_node("source")
+				var visual_mat: ShaderMaterial = visual_source.draw_pass_1.surface_get_material(0)
+				visual_mat.set_shader_parameter("len", r * 1.2)
+				visual_source.process_material.emission_ring_radius = r
+				visual_source.amount = amount
+			
+			
+	if visual_effect != null and (body is Enemy or body is Player):
+		visual_effect.position = body.to_local(location)
+		visual_source.one_shot = false
+		visual_source.explosiveness = 0.0
+		visual_source.emitting = true
+		body.add_child(visual_effect)
 			
 	explosion.position = world.to_local(location)
 	world.add_child(explosion)

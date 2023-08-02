@@ -52,7 +52,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		navigation_velocity = new_velocity
 
 	if vital_tick == 60:
-		var h := vitals.update_vitals()
+		var h := vitals.update_vitals(body)
 		for dmg in h:
 			Vitals.apply_damage(body.get_parent(), body, dmg["dmg"], dmg["el"], true, false, [])
 		var wet_area := body.get_node("WetArea")
