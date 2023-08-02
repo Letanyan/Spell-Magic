@@ -116,20 +116,41 @@ func update_vitals(body: Node3D) -> Array:
 	thirst.update_per_tick()
 	
 	var effect: Node3D
-	if burning.value == 0.0:
-		effect = body.find_child("burn_effect", false, false)
-		if effect != null:
+	
+	effect = body.find_child("burn_effect", false, false)
+	if effect != null:
+		if burning.value == 0.0:
 			body.remove_child(effect)
-	if stun.value == 0.0:
-		effect = body.find_child("stun_effect", false, false)
-		if effect != null:
-			body.remove_child(effect)
-	if wetness.value == 0.0:
-		effect = body.find_child("wet_effect", false, false)
-		if effect != null:
-			body.remove_child(effect)
-			
+		else:
+			var source = effect.get_node("source")
+			source.process_material.scale_min = burning.value
+			source.process_material.scale_max = burning.value
 		
+	effect = body.find_child("stun_effect", false, false)
+	if effect != null:
+		if stun.value == 0.0:
+			body.remove_child(effect)
+		else:
+			var source = effect.get_node("source")
+			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
+			mat.set_shader_parameter("len", 2.5 * stun.value)
+			
+	effect = body.find_child("wet_effect", false, false)
+	if effect != null:
+		if wetness.value == 0.0:
+			body.remove_child(effect)
+		else:
+			var source = effect.get_node("source")
+			source.process_material.scale_max = wetness.value
+			
+	effect = body.find_child("freeze_effect", false, false)
+	if effect != null:
+		if freeze.value == 0.0:
+			body.remove_child(effect)
+		else:
+			var source = effect.get_node("source")
+			source.amount = int(freeze.value * 100)
+				
 	return result
 
 func wetness_scale():
@@ -216,6 +237,12 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 			source = explosion.get_node("source")
 			source.process_material.emission_ring_radius = r
 			source.amount = amount
+			
+			if not body.has_node("freeze_effect"):
+				visual_effect = load("res://Projectiles/explosion/ice_exp.tscn").instantiate()
+				visual_source = visual_effect.get_node("source")
+				visual_source.process_material.emission_ring_radius = r
+				visual_source.amount = amount
 		Spell.Element.ELECTRIC:
 			explosion = load("res://Projectiles/explosion/electric_exp.tscn").instantiate()
 			source = explosion.get_node("source")
