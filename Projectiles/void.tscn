@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://dgdyy3dwir84s"]
+
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i25j6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_10v83"]
+size = Vector3(0, 0, 0)
+
+[node name="void" type="Node3D"]
+script = ExtResource("1_i25j6")
+
+[node name="shape_cast" type="ShapeCast3D" parent="."]
+shape = SubResource("BoxShape3D_10v83")

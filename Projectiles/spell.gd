@@ -1,6 +1,6 @@
 class_name Spell
 
-enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
+enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC, VOID }
 enum ChainCastKind { START, END, HIT }
 
 @export var element: Element
@@ -108,7 +108,11 @@ func impulse_length() -> float:
 			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
-	var basic_cost := (power / 100.0 + 1.0) * (1.0 if count == 1 else count * 0.98) + duration - mana_cost
+	var basic_cost: float 
+	if element == Element.VOID:
+		basic_cost = 0.0
+	else:
+		basic_cost = (power / 100.0 + 1.0) * (1.0 if count == 1 else count * 0.98) + duration - mana_cost
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
 	cooldown = basic_cost + chain_cost
@@ -126,6 +130,7 @@ const water = preload("res://Projectiles/water.tscn")
 const air = preload("res://Projectiles/air.tscn")
 const ice = preload("res://Projectiles/ice.tscn")
 const electric = preload("res://Projectiles/electric.tscn")
+const _void = preload("res://Projectiles/void.tscn")
 	
 func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	var fixed_vars := {}
@@ -158,6 +163,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 		Element.AIR: p = air.instantiate()
 		Element.ICE: p = ice.instantiate()
 		Element.ELECTRIC: p = electric.instantiate()
+		Element.VOID: p = _void.instantiate()
 		_: p = fire.instantiate()
 			
 	p.fixed_vars = fixed_vars
@@ -234,6 +240,7 @@ static func name_from_element(el: Element) -> String:
 		Element.AIR: return "Air"
 		Element.ICE: return "Ice"
 		Element.ELECTRIC: return "Electric"
+		Element.VOID: return "Void"
 		_: return ""
 
 static func element_from_name(_name: String) -> Element:
@@ -244,6 +251,7 @@ static func element_from_name(_name: String) -> Element:
 		"air": return Element.AIR
 		"ice": return Element.ICE
 		"electric": return Element.ELECTRIC
+		"void": return Element.VOID
 		_: return Element.FIRE
 
 static func color_from_element(el: Element) -> Color:
@@ -254,4 +262,5 @@ static func color_from_element(el: Element) -> Color:
 		Element.AIR: return Color.GREEN_YELLOW
 		Element.ICE: return Color.DODGER_BLUE
 		Element.ELECTRIC: return Color.YELLOW
+		Element.VOID: return Color.BLACK
 		_: return Color.WHITE

@@ -78,6 +78,8 @@ func impulse() -> Vector3:
 		Spell.Element.ICE:
 			return Vector3.ZERO
 			
+		Spell.Element.VOID:
+			return Vector3.ZERO
 			
 		_:
 			return Vector3.ZERO
@@ -90,6 +92,7 @@ func get_shape() -> Shape3D:
 		Spell.Element.AIR: return get_node("source/area/shape").shape
 		Spell.Element.ICE: return get_node("source/area/shape").shape
 		Spell.Element.ELECTRIC: return get_node("body/area/shape").shape
+		Spell.Element.VOID: return BoxShape3D.new()
 		_: return BoxShape3D.new()
 
 func get_spell_transform() -> Transform3D:
@@ -108,6 +111,7 @@ func get_spell_collision_mask() -> int:
 		Spell.Element.AIR: return get_node("source/area").collision_mask
 		Spell.Element.ICE: return get_node("source/area").collision_mask
 		Spell.Element.ELECTRIC: return get_node("source/area").collision_mask
+		Spell.Element.VOID: return 0
 		_: return ~0
 
 func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
@@ -169,6 +173,8 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				dmg = {} # set to empty so we know we can skip doing invunerable stuff
 				# Look at `_on_area_entered` for implementation
 				pass
+		Spell.Element.VOID:
+			pass
 	
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
@@ -320,6 +326,9 @@ func update_shape(r: float, ignore_time: bool):
 			body.mesh.radius = r
 			body.mesh.height = r * 2
 			
+		Spell.Element.VOID:
+			pass
+			
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary):
@@ -392,6 +401,9 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		Spell.Element.ELECTRIC:
 			position = p
 			
+		Spell.Element.VOID:
+			position = p
+			
 func update_spell(t: float, vars: Dictionary):
 	if not is_active():
 		return
@@ -443,9 +455,14 @@ func stop_emitting():
 			area.collision_mask = 0
 			free_after(particles.lifetime)
 			
+		Spell.Element.VOID:
+			free_after(0.0)
+			
 func free_after(duration: float):
 	if get_parent() != null and get_tree() != null:
 		var max_duration: float = duration
+		if max_duration <= 0.0 and not spell_caster.particles.is_empty():
+			max_duration = 0.1
 		while max_duration > 0:
 			await get_tree().create_timer(max_duration, false, true).timeout
 			max_duration = actual_duration()

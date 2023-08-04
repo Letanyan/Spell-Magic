@@ -7,7 +7,7 @@ var sort_popup: PopupMenu = null
 var sort_selected: int = 0
 var sort_order: int = 0
 @onready var filter_button: MenuButton = $FilterButton
-const TOTAL_FILTER_ITEMS = 9
+const TOTAL_FILTER_ITEMS = 10
 var filter_popup: PopupMenu = null
 var filter_options := {}
 var filter_chain := ""
@@ -170,9 +170,10 @@ func update_spells_list():
 		q0 = q0 or filter_options.get(3, false) and spell.element == Spell.Element.ROCK
 		q0 = q0 or filter_options.get(4, false) and spell.element == Spell.Element.ICE
 		q0 = q0 or filter_options.get(5, false) and spell.element == Spell.Element.ELECTRIC
-		q0 = q0 or filter_options.get(6, false) and spell.is_bomb
-		q0 = q0 or filter_options.get(7, false) and spell.follow
-		q0 = q0 or filter_options.get(8, false) and (spell.chain != null and spell.chain.name == filter_chain)
+		q0 = q0 or filter_options.get(6, false) and spell.element == Spell.Element.VOID
+		q0 = q0 or filter_options.get(7, false) and spell.is_bomb
+		q0 = q0 or filter_options.get(8, false) and spell.follow
+		q0 = q0 or filter_options.get(9, false) and (spell.chain != null and spell.chain.name == filter_chain)
 		if q0:
 			spells_index_map[k] = spell.id
 			k += 1
