@@ -108,7 +108,7 @@ func impulse_length() -> float:
 			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
-	var basic_cost := (power / 100.0 + 1.0) * count + duration - mana_cost
+	var basic_cost := (power / 100.0 + 1.0) * (1.0 if count == 1 else count * 0.98) + duration - mana_cost
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
 	cooldown = basic_cost + chain_cost
