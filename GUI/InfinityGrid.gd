@@ -65,7 +65,7 @@ func _draw() -> void:
 		draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
 func _input(event):
-	if not visible:
+	if not is_visible_in_tree():
 		return
 	
 	if event is InputEventMouseButton:
