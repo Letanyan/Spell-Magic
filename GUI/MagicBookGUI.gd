@@ -45,6 +45,7 @@ var spells_index_map := {}
 
 @onready var mana_edit: LineEdit = $container/mana/edit
 @onready var cooldown_label: Label = $container/cooldown
+@onready var mana_cost: Label = $container/mana_cost
 
 @onready var error_label: Label = $container/error_label
 
@@ -365,6 +366,7 @@ func update_cooldown():
 		return
 	book.spells[current_index].calculate_cooldown()
 	cooldown_label.text = "Cooldown: " + ("%.2f" % book.spells[current_index].cooldown) + "s"
+	mana_cost.text = "Total Mana Cost: " + ("%.0f" % book.spells[current_index].actual_mana_cost())
 	
 
 func update_spells_that_chain_to_current_spell():
