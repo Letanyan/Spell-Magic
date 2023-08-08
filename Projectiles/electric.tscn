@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://8p44w2bikis2"]
 
-[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_qx5re"]
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_pf3b3"]
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
 [ext_resource type="Shader" path="res://Projectiles/electric.gdshader" id="3_8dbc8"]
 
@@ -64,7 +64,7 @@ rings = 8
 resource_local_to_scene = true
 
 [node name="electric" type="Node3D"]
-script = ExtResource("1_qx5re")
+script = ExtResource("1_pf3b3")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_htuie")

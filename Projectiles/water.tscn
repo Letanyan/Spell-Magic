@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://ci5156f25r5no"]
 
-[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_fir5h"]
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ygggg"]
 resource_local_to_scene = true
@@ -104,7 +104,7 @@ rings = 4
 resource_local_to_scene = true
 
 [node name="water" type="Node3D"]
-script = ExtResource("1_fir5h")
+script = ExtResource("1_dkd3k")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_ygggg")

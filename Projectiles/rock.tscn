@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://bs31awp6oeunh"]
 
-[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i3esg"]
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_1st15"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3hxed"]
 resource_local_to_scene = true
@@ -58,6 +58,8 @@ colors = PackedColorArray(0.788235, 0.54902, 0.435294, 1, 1, 1, 1, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dqfwf"]
 noise_type = 2
+frequency = 0.0005
+fractal_octaves = 4
 cellular_distance_function = 3
 cellular_return_type = 0
 
@@ -67,7 +69,8 @@ noise = SubResource("FastNoiseLite_dqfwf")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_obdun"]
 noise_type = 2
-fractal_type = 0
+frequency = 0.0005
+fractal_octaves = 4
 cellular_distance_function = 3
 cellular_return_type = 0
 domain_warp_frequency = 1.0
@@ -105,7 +108,7 @@ resource_local_to_scene = true
 resource_local_to_scene = true
 
 [node name="rock" type="Node3D"]
-script = ExtResource("1_i3esg")
+script = ExtResource("1_1st15")
 
 [node name="body" type="RigidBody3D" parent="."]
 collision_layer = 16

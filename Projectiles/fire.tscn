@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://ded2wbijwa0uu"]
 
-[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_tkofl"]
+[ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_ku5ha"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_i6n1l"]
 resource_local_to_scene = true
@@ -12,24 +12,24 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 0, 1, 1, 0.68, 0, 1, 1, 0, 0, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_lctcp"]
 gradient = SubResource("Gradient_k1smn")
 
-[sub_resource type="Curve" id="Curve_27q22"]
-_data = [Vector2(0, 0.545455), 0.0, 0.0, 0, 0, Vector2(0.480583, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_ou0qk"]
+_data = [Vector2(0, 0.481818), 0.0, 0.0, 0, 0, Vector2(0.514286, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_bf4tm"]
-width = 32
-curve = SubResource("Curve_27q22")
+[sub_resource type="CurveTexture" id="CurveTexture_drmjp"]
+width = 64
+curve = SubResource("Curve_ou0qk")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_omybi"]
 resource_local_to_scene = true
 emission_shape = 1
 emission_sphere_radius = 0.5
 direction = Vector3(0, 1, 0)
-spread = 0.0
 gravity = Vector3(0, 0, 0)
 initial_velocity_max = 1.0
 angular_velocity_max = 5.0
-scale_curve = SubResource("CurveTexture_bf4tm")
+scale_min = 0.0
+scale_curve = SubResource("CurveTexture_drmjp")
 color_ramp = SubResource("GradientTexture1D_lctcp")
 
 [sub_resource type="Shader" id="Shader_k21ab"]
@@ -95,14 +95,14 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_6bos1")
 radius = 0.25
 height = 0.5
-radial_segments = 6
-rings = 4
+radial_segments = 5
+rings = 3
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_21upn"]
 resource_local_to_scene = true
 
 [node name="fire" type="Node3D"]
-script = ExtResource("1_tkofl")
+script = ExtResource("1_ku5ha")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_i6n1l")
@@ -113,7 +113,6 @@ debug_shape_custom_color = Color(0, 0, 1, 1)
 [node name="source" type="GPUParticles3D" parent="."]
 cast_shadow = 0
 amount = 80
-randomness = 1.0
 process_material = SubResource("ParticleProcessMaterial_omybi")
 draw_pass_1 = SubResource("SphereMesh_1reub")
 
