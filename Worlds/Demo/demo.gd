@@ -21,19 +21,22 @@ var artifacts: Artifacts
 
 var knowledge_tick: int
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
+var settings: WorldSettings
+
+func setup(_settings: WorldSettings) -> void:
+	settings = _settings
+	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	book = MagicBook.new()
-	book.load()
+	book.read(settings.world_name)
 	book.rebuild_spell_chains()
 	
 	case = WandCase.new()
-	case.load()
+	case.read(settings.world_name)
 	
 	artifacts = Artifacts.new()
-	artifacts.load()
+	artifacts.read(settings.world_name)
 	
 #	for i in ["flower", "feather", "goblet", "sands", "crown"]:
 #		var artifact := Artifact.new()
@@ -44,17 +47,34 @@ func _ready():
 #		artifact.right = Artifact.Option.make_random()
 #		artifacts.collection.append(artifact)
 	
-	menu.setup(book, case, artifacts)
+	noise_temperature.frequency = 0.0001
+	noise_dryness.frequency = 0.0001
+	noise_dryness.seed = settings.sed
+	noise_temperature.seed = settings.sed
+	
+	var game_settings := GameSettings.new()
+	game_settings.read()
+	game_settings.last_world = settings.world_name
+	game_settings.save()
+	
+	
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	if book == null:
+		var _settings := WorldSettings.new()
+		_settings.world_name = "empty"
+		_settings.sed = 0 
+		setup(_settings)
+		
+	menu.setup(book, case, artifacts, settings)
 	
 	book.ignore_cooldown = true
 	wand = case.wands[0]
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
-	
-	noise_temperature.frequency = 0.0001
-	noise_dryness.frequency = 0.0001
-	
-	chunker = Terrain.new(noise_dryness, noise_temperature, 256, 2, 0.0625)
+		
+	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
@@ -108,6 +128,8 @@ func _input(event):
 			hud.show()
 		else:
 			menu.open(Menu.Kind.ANY)
+			settings.player_position = player.position
+			settings.save()
 			hud.hide()
 			
 	if not menu.is_showing and event.is_action_pressed("magic_book"):
@@ -184,3 +206,6 @@ func enemy_drops_artifact(artifact: Artifact):
 		return
 	artifacts.collection.append(artifact)
 	print(artifacts.collection.size())
+
+func quit_to_main_menu():
+	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")

@@ -67,6 +67,16 @@ offset_right = 738.0
 offset_bottom = 41.0
 text = "Artifacts"
 
+[node name="Quit" type="Button" parent="Tabbar"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 39.0
+text = "Quit
+"
+
 [connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]
 [connection signal="pressed" from="Tabbar/Artifacts" to="." method="_on_artifacts_pressed"]
+[connection signal="pressed" from="Tabbar/Quit" to="." method="_on_quit_pressed"]

@@ -117,7 +117,7 @@ func color_for_biome(_biome: World.Biome) -> Color:
 var dryness: FastNoiseLite
 var temperature: FastNoiseLite
 
-func _init(d: FastNoiseLite, t: FastNoiseLite):
+func _init(d: FastNoiseLite, t: FastNoiseLite, s: int):
 	dryness = d
 	temperature = t
 	
@@ -130,6 +130,16 @@ func _init(d: FastNoiseLite, t: FastNoiseLite):
 	savannah_noise.frequency = 0.0005
 	taiga_noise.frequency = 0.0005
 	tundra_noise.frequency = 0.0005
+	
+	grassland_noise.seed = s
+	jungle_noise.seed = s
+	desert_noise.seed = s
+	forest_noise.seed = s
+	hfil_noise.seed = s
+	otherworld_noise.seed = s
+	savannah_noise.seed = s
+	taiga_noise.seed = s
+	tundra_noise.seed = s
 	
 func dryness_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return texture(dryness, x, y, w, h, scale)

@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://oko6g6intlvw"]
+
+[ext_resource type="Script" path="res://GUI/Menu/NewGame.gd" id="1_g78rx"]
+
+[node name="NewGame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g78rx")
+
+[node name="SaveName" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 384.0
+offset_right = 640.0
+offset_bottom = 424.0
+placeholder_text = "Save Name"
+
+[node name="Seed" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 448.0
+offset_right = 640.0
+offset_bottom = 488.0
+placeholder_text = "Seed"
+
+[node name="Create" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 512.0
+offset_right = 640.0
+offset_bottom = 543.0
+text = "Create"
+
+[node name="Cancel" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 576.0
+offset_right = 640.0
+offset_bottom = 607.0
+text = "Cancel"
+
+[connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]

@@ -4,15 +4,15 @@ var spells: Array[Spell]
 var last_use: Dictionary
 var ignore_cooldown: bool
 
-func save():
-	var file = FileAccess.open("user://magic_book.json", FileAccess.WRITE)
+func save(world_name: String):
+	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.WRITE)
 	var data = []
 	for s in spells:
 		data.append(s.save_dict())
 	file.store_var(data)
 	
-func load():
-	var file = FileAccess.open("user://magic_book.json", FileAccess.READ)
+func read(world_name: String):
+	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.READ)
 	last_use = {}
 	ignore_cooldown = false
 	if not file:

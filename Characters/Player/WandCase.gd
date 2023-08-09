@@ -3,15 +3,15 @@ class_name WandCase
 var wands: Array
 var selected_wand: int
 
-func save():
-	var file = FileAccess.open("user://wand_case.json", FileAccess.WRITE)
+func save(world_name: String):
+	var file = FileAccess.open("user://worlds/%s/wand_case.json" % (world_name), FileAccess.WRITE)
 	var data = []
 	for w in wands:
 		data.append(w.save_dict())
 	file.store_var({"wands": data, "selected": selected_wand})
 	
-func load():
-	var file = FileAccess.open("user://wand_case.json", FileAccess.READ)
+func read(world_name: String):
+	var file = FileAccess.open("user://worlds/%s/wand_case.json" % (world_name), FileAccess.READ)
 	if not file:
 		wands = [Wand.basic()]
 		selected_wand = 0

@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://coiibq4rb4gvs"]
+
+[ext_resource type="Script" path="res://GUI/Menu/MainMenu.gd" id="1_76i3t"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_76i3t")
+
+[node name="Continue" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 456.0
+offset_right = 640.0
+offset_bottom = 487.0
+text = "Continue"
+
+[node name="NewGame" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 496.0
+offset_right = 640.0
+offset_bottom = 527.0
+text = "New Game"
+
+[node name="Load" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 536.0
+offset_right = 640.0
+offset_bottom = 567.0
+text = "Load
+"
+
+[connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="NewGame" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="Load" to="." method="_on_load_pressed"]

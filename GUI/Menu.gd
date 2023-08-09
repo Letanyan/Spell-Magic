@@ -9,11 +9,13 @@ enum Kind { ANY, SPELLS, WANDS }
 var current_index := 0
 
 var is_showing: bool = false
+var settings: WorldSettings
 
-func setup(book: MagicBook, case: WandCase, artifaces: Artifacts):
+func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _settings: WorldSettings):
 	magic_book.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
+	settings = _settings
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -79,8 +81,12 @@ func _gui_input(event: InputEvent) -> void:
 
 func save_changes():
 	if magic_book.visible:
-		magic_book.book.save()
+		magic_book.book.save(settings.world_name)
 	if wand_case.visible:
-		wand_case.case.save()
+		wand_case.case.save(settings.world_name)
 	if artifacts.visible:
-		artifacts.artifacts.save()
+		artifacts.artifacts.save(settings.world_name)
+
+
+func _on_quit_pressed() -> void:
+	get_node("/root/Demo").quit_to_main_menu()

@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://cevyetu4agssv"]
+
+[ext_resource type="Script" path="res://GUI/Menu/LoadGame.gd" id="1_t0cvo"]
+
+[node name="LoadGame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t0cvo")
+
+[node name="WorldsList" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 384.0
+offset_top = 64.0
+offset_right = 704.0
+offset_bottom = 536.0
+
+[node name="Load" type="Button" parent="."]
+layout_mode = 0
+offset_left = 384.0
+offset_top = 544.0
+offset_right = 704.0
+offset_bottom = 575.0
+text = "Load"
+
+[node name="Cancel" type="Button" parent="."]
+layout_mode = 0
+offset_left = 384.0
+offset_top = 600.0
+offset_right = 704.0
+offset_bottom = 631.0
+text = "Cancel"
+
+[connection signal="pressed" from="Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]

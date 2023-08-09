@@ -134,8 +134,8 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 				else:
 					active_options[other_coord][RIGHT] = true
 
-func save():
-	var file = FileAccess.open("user://artifacts.json", FileAccess.WRITE)
+func save(world_name: String):
+	var file = FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
 	var data = []
 	for a in collection:
 		data.append(a.save_dict())
@@ -144,8 +144,8 @@ func save():
 		connections[c.save_dict()] = connected[c]
 	file.store_var({"artifacts": data, "connected": connections, "active_options": active_options, "effects": effects})
 	
-func load():
-	var file = FileAccess.open("user://artifacts.json", FileAccess.READ)
+func read(world_name: String):
+	var file = FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.READ)
 	if not file:
 		collection = []
 		connected = {}

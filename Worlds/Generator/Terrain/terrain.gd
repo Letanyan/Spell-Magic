@@ -31,9 +31,9 @@ var grass_coords: PackedVector3Array = []
 
 var base_coords: PackedVector3Array = []
 
-func _init(d: FastNoiseLite, t: FastNoiseLite, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0):
+func _init(d: FastNoiseLite, t: FastNoiseLite, s: int, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0):
 	subdivide_percent = subdivide
-	blender = NoiseBlender.new(d, t)
+	blender = NoiseBlender.new(d, t, s)
 	chunk_size = cs
 	grass_size = cs * 0.5
 	radius = r
