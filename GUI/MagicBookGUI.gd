@@ -51,6 +51,8 @@ var spells_index_map := {}
 
 var current_index := -1
 
+var errors_list := {}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sort_popup = sort_button.get_popup()
@@ -77,6 +79,12 @@ func _on_spell_index_item_selected(index):
 	var spell: Spell = book.spells[current_index]
 	
 	duplicate_button.disabled = index < 0
+	
+	for i in range(Spell.Element.size()):
+		element_combo.set_item_disabled(i, not book.settings.check_if_has_spell_element(Spell.Element.values()[i]))
+	for i in range(Spell.ChainCastKind.size()):
+		chain_combo.set_item_disabled(i, not book.settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i]))
+	
 	
 	name_edit.text = spell.name
 	
@@ -216,6 +224,8 @@ func add_spell(spell: Spell):
 		name_edit.select_all()
 		
 func _on_create_pressed():
+	if book.spells.size() >= book.settings.max_spells_in_book:
+		return
 	var spell := Spell.new()
 	spell.name = "New Spell"
 	add_spell(spell)
@@ -252,9 +262,9 @@ func _on_x_text_changed(new_text):
 	var e := Expr.new(new_text)
 	book.spells[current_index].x_expr = e
 	if e.error.length() > 0:
-		error_label.text = "x: " + e.error
+		errors_list["x"] = e.error
 	else:
-		error_label.text = ""
+		errors_list.erase("x")
 	update_spells_that_chain_to_current_spell()
 
 func _on_y_text_changed(new_text):
@@ -264,9 +274,9 @@ func _on_y_text_changed(new_text):
 	var e := Expr.new(new_text)
 	book.spells[current_index].y_expr = e
 	if e.error.length() > 0:
-		error_label.text = "y: " + e.error
+		errors_list["y"] = e.error
 	else:
-		error_label.text = ""
+		errors_list.erase("y")
 	update_spells_that_chain_to_current_spell()
 
 func _on_z_text_changed(new_text):
@@ -276,9 +286,9 @@ func _on_z_text_changed(new_text):
 	var e := Expr.new(new_text)
 	book.spells[current_index].z_expr = e
 	if e.error.length() > 0:
-		error_label.text = "z: " + e.error
+		errors_list["z"] = e.error
 	else:
-		error_label.text = ""
+		errors_list.erase("z")
 	update_spells_that_chain_to_current_spell()
 
 func _on_r_text_changed(new_text):
@@ -288,29 +298,44 @@ func _on_r_text_changed(new_text):
 	var e := Expr.new(new_text)
 	book.spells[current_index].r_expr = e
 	if e.error.length() > 0:
-		error_label.text = "r: " + e.error
+		errors_list["r"] = e.error
 	else:
-		error_label.text = ""
+		errors_list.erase("r")
 	update_spells_that_chain_to_current_spell()
 
 func _on_N_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].count = clamp(new_text.to_int(), 1, 25)
+	var raw: int = new_text.to_int()
+	book.spells[current_index].count = clamp(raw, 1, book.settings.max_N)
+	if raw > book.settings.max_N:
+		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.max_N]
+	else:
+		errors_list.erase("N")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_P_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].power = clamp(new_text.to_float(), 0.0, 100.0)
+	var raw: float = new_text.to_float()
+	book.spells[current_index].power = clamp(raw, 0.0, book.settings.max_P)
+	if raw > book.settings.max_P:
+		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.max_P]
+	else:
+		errors_list.erase("P")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_T_text_changed(new_text):
 	if current_index < 0:
 		return
-	book.spells[current_index].duration = clamp(new_text.to_float(), 0.0166667, 25.0)
+	var raw: float = new_text.to_float()
+	book.spells[current_index].duration = clamp(raw, 0.0166667, book.settings.max_T)
+	if raw > book.settings.max_T:
+		errors_list["T"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.max_T]
+	else:
+		errors_list.erase("T")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
@@ -321,9 +346,9 @@ func _on_D_text_changed(new_text):
 	var e := Expr.new(new_text)
 	book.spells[current_index].d_expr = e
 	if e.error.length() > 0:
-		error_label.text = "D: " + e.error
+		errors_list["D"] = e.error
 	else:
-		error_label.text = ""
+		errors_list.erase("D")
 	update_spells_that_chain_to_current_spell()
 
 func _on_chain_text_changed(new_text):
@@ -372,6 +397,12 @@ func update_cooldown():
 func update_spells_that_chain_to_current_spell():
 	if current_index < 0:
 		return
+	if not errors_list.is_empty():
+		var last_error : String = errors_list.values()[errors_list.size() - 1]
+		var last_key : String = errors_list.keys()[errors_list.size() - 1]
+		error_label.text = "%s: %s" % [last_key, last_error]
+	else:
+		error_label.text = ""
 	book.rebuild_spell_chains()
 
 func _on_view_chain_button_pressed():

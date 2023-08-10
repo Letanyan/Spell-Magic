@@ -30,6 +30,7 @@ func setup(_settings: WorldSettings) -> void:
 	
 	book = MagicBook.new()
 	book.read(settings.world_name)
+	book.settings = settings
 	book.rebuild_spell_chains()
 	
 	case = WandCase.new()

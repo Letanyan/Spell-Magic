@@ -4,6 +4,8 @@ var spells: Array[Spell]
 var last_use: Dictionary
 var ignore_cooldown: bool
 
+var settings: WorldSettings # set by the world
+
 func save(world_name: String):
 	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.WRITE)
 	var data = []
@@ -15,6 +17,7 @@ func read(world_name: String):
 	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.READ)
 	last_use = {}
 	ignore_cooldown = false
+	settings = null
 	if not file:
 		spells = []
 		return 
@@ -31,6 +34,7 @@ func _init():
 	spells = []
 	last_use = {}
 	ignore_cooldown = false
+	settings = null
 	
 func add(spell: Spell):
 	spells.append(spell)
