@@ -202,11 +202,15 @@ func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) ->
 		
 	return result
 
-func enemy_drops_artifact(artifact: Artifact):
-	if artifact == null:
-		return
-	artifacts.collection.append(artifact)
-	print(artifacts.collection.size())
+func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
+	if artifact != null:
+		artifacts.collection.append(artifact)
+	var enemy_kind = enemy.world_enemy_enum()
+	if settings.enemies_killed.has(enemy_kind):
+		settings.enemies_killed[enemy_kind] += 1
+	else:
+		settings.enemies_killed[enemy_kind] = 1
+	print(settings.enemies_killed)
 
 func quit_to_main_menu():
 	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")

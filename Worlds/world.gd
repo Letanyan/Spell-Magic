@@ -7,6 +7,8 @@ enum Biome {
 }
 
 enum Enemy {
+	# !! WARNING: When adding new cases ensure `world_enemy_enum` method on `Enemy` 
+	# is updated to reflect new case added here. 
 	NONE, UNDEAD, BAT, MOLE, HUMAN, WALKER
 }
 
@@ -20,3 +22,4 @@ enum Building {
 	FANTASY_VALLEY_SINGLE, FANTASY_VALLEY_DOUBLE,
 	FANTASY_WELL
 }
+

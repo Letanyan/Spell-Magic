@@ -229,5 +229,5 @@ func habitant_vitals_update(index: int, vitals: Vitals):
 		inhabitants[index].index_in_population = -1
 		inhabitants.erase(index)
 
-func on_enemy_death_update(drop_artifact: Artifact):
-	on_enemy_death.emit(drop_artifact)
+func on_enemy_death_update(enemy: Enemy, drop_artifact: Artifact):
+	on_enemy_death.emit(enemy, drop_artifact)

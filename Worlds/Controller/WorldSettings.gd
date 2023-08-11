@@ -27,7 +27,9 @@ var max_P := 1
 var max_mana := 100.0
 var max_health := 100.0
 
-var max_spells_in_book := 4 
+var max_spells_in_book := 4
+
+var enemies_killed := {} # {World.Enemy: int}
 
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) == 1
@@ -46,7 +48,9 @@ func save():
 		"name": world_name, "player": {"position": player_position}, "seed": sed,
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
 		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P,
-		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book
+		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
+		
+		"enemies_killed": enemies_killed
 	})
 
 func read(filename: String):
@@ -66,3 +70,5 @@ func read(filename: String):
 	max_mana = data.get("max_mana", 100.0)
 	max_health = data.get("max_health", 100.0)
 	max_spells_in_book = data.get("max_spells_in_book", 4)
+	
+	enemies_killed = data.get("enemies_killed", {})

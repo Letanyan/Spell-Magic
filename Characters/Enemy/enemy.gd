@@ -144,7 +144,7 @@ func die():
 	var source = explosion.get_node("source")
 	source.process_material.emission_box_extents = death_box()
 	
-	on_death.emit(drop_artifact())
+	on_death.emit(get_node("."), drop_artifact())
 	
 	explosion.position = position
 	explosion.global_transform = global_transform
@@ -207,3 +207,16 @@ func update_action_is_satisfied():
 
 func drop_artifact() -> Artifact:
 	return null
+
+func world_enemy_enum() -> World.Enemy:
+	var n = get_node(".")
+	if n is Undead:
+		return World.Enemy.UNDEAD
+	elif n is Mole:
+		return World.Enemy.MOLE
+	elif n is Walker:
+		return World.Enemy.WALKER
+	elif n is Bat:
+		return World.Enemy.BAT
+	
+	return World.Enemy.NONE
