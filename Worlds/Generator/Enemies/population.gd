@@ -70,7 +70,7 @@ func on_flat_surface(distance: float) -> Callable:
 func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, condition: Callable = always_valid):
 	if entity != null:
 		var world_normal = Navigator.get_world_normal_height(state, pos.x, pos.z)
-		var wh: float = world_normal.get("position", 0).y + pos.y
+		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		if wh < Globals.sea_level():
 			return null
 		if not condition.call(world_normal):

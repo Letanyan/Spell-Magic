@@ -75,6 +75,11 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 		
+	# Forest location for world seed 0
+#	player.position.x = 800
+#	player.position.y = 700
+#	player.position.z = 2300
+		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
 	
@@ -210,7 +215,6 @@ func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
 		settings.enemies_killed[enemy_kind] += 1
 	else:
 		settings.enemies_killed[enemy_kind] = 1
-	print(settings.enemies_killed)
 
 func quit_to_main_menu():
 	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")
