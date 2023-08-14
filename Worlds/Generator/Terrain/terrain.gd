@@ -313,7 +313,9 @@ func init_grass():
 	for _X in range(-grass_size, grass_size + 1, R * 2):
 		for y in range(-grass_size, grass_size + 1, R):
 			@warning_ignore("integer_division")
-			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R
+			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R + player_position.x
+			@warning_ignore("narrowing_conversion")
+			y += player_position.y
 			for r in range(0, R + 1, 2):
 				var a := 0.0
 				while a < PI * 2:

@@ -81,19 +81,19 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if area.size() - index < 100:
 					index += 1
 					continue
-				var count_tree = pop.rng.randi_range(2, 8)
+				var count_tree = pop.rng.randi_range(20, 30)
 				var origin := area[index]
 				var x := origin.x
 				var y := origin.y
 				var v := Vector2(1, 0)
 				for i in range(count_tree):
 					index += 1
-					var count = pop.rng.randi_range(4, 18)
+					var count = pop.rng.randi_range(5, 10)
 					for j in range(count):
 						x += v.x * spacing
 						y += v.y * spacing
 						var p: Node3D
-						if pop.rng.randf_range(0, 1.0) < 0.9:
+						if pop.rng.randf_range(0, 1.0) < 0.95:
 							p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, x, y, spacing)
 						else:
 							p = pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)

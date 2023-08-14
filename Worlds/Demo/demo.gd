@@ -76,9 +76,9 @@ func _ready():
 		wand = case.wands[id]
 		
 	# Forest location for world seed 0
-#	player.position.x = 800
-#	player.position.y = 700
-#	player.position.z = 2300
+	player.position.x = 800
+	player.position.y = 700
+	player.position.z = 2300
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
@@ -124,7 +124,7 @@ func _physics_process(delta):
 		var items := update_population_at(chunker.loaded_chunks_location, state)
 		for item in items:
 			add_child(item)
-		player.position.y = Navigator.get_world_height(state, 0, 0)
+		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
 
 func _input(event):
