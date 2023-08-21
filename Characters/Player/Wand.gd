@@ -197,27 +197,36 @@ func action_down(action: String, book: MagicBook) -> Spell:
 	return null
 	
 func action_up(action: String, book: MagicBook):
+	var best_candidate := []
 	for key in keys:
-		if key.size() != current_actions.size():
+		if key.size() > current_actions.size():
 			continue
 		var found = true
-		for k in current_actions:
-			if key.find(k) == -1:
+#		for k in current_actions:
+#			if key.find(k) == -1:
+#				found = false
+#				break
+		for k in key:
+			if not current_actions.has(k):
 				found = false
 				break
-		if found:
-			var opt: Option = keys[key]
-			if opt.kind == Kind.FIRE_HOLD:
-				var s = find_spell(key, book)
-				if book.can_use_spell(s):
-					book.use_spell(s)
-					current_actions.erase(action)
-					s.charge = Time.get_unix_time_from_system() - opt.start_hold
-					return s
-				else:
-					spell_on_cooldown.emit(s)
-					current_actions.erase(action)
-					return null
+		if found and key.size() > best_candidate.size():
+			best_candidate = key
+			
+#	print(best_candidate)
+	if not best_candidate.is_empty():
+		var opt: Option = keys[best_candidate]
+		if opt.kind == Kind.FIRE_HOLD:
+			var s = find_spell(best_candidate, book)
+			if book.can_use_spell(s):
+				book.use_spell(s)
+				current_actions.erase(action)
+				s.charge = Time.get_unix_time_from_system() - opt.start_hold
+				return s
+			else:
+				spell_on_cooldown.emit(s)
+				current_actions.erase(action)
+				return null
 	current_actions.erase(action)
 	return null
 

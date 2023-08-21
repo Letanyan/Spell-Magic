@@ -53,19 +53,19 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "z"] = body.position.z
 
 	var cdir := Vector3.ZERO
-	var track := Vector3.ZERO
+	var track := Vector3.ZERO # position of enemy that was hit by raycast 
 	match entity:
 		Entity.PLAYER:
 			var cam_pivot := body.get_node("CamPivot")
 			var cam := body.get_node("CamPivot/Arm/Lens")
-			cdir = ((body.global_position + cam_pivot.position) - cam.global_position).normalized()
+			cdir = ((body.global_position + cam_pivot.position) - cam.global_position).normalized() # direction from camera
 			track = get_direction_to_tracking(body, p, cdir)
 			
 		Entity.ENEMY:
-			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized()
+			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized() # direction to player
 			
 		Entity.PROJECTILE:
-			cdir = -body.velocity.normalized()
+			cdir = -body.velocity.normalized() 
 			if p != null:
 				var hit_on := (body.position - p.position).normalized()
 				track = get_direction_to_tracking(body, p, hit_on)
@@ -78,7 +78,7 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "V"] = track.y
 	result[prefix + "W"] = track.z
 	
-	var c := Vector3.ZERO 
+	var c := Vector3.ZERO # character facing direction
 	match entity:
 		Entity.PLAYER:
 			c = Vector3(0, 0, -1).rotated(Vector3.UP, body.get_node("Pivot").rotation.y)
@@ -92,7 +92,7 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	
 	result["abs_pos" if fixed else "rel_pos"] = body.position
 	
-	if p != null:
+	if p != null: # direction from character to spell
 		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )
 		var origin = lerp(old_origin, (body.position - p.position).normalized(), 0.0166667).normalized()
 		result[prefix + "X"] = origin.x
