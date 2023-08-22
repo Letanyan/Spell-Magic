@@ -68,12 +68,14 @@ static func make(kind: World.Foliage, rng: RandomNumberGenerator) -> Trees:
 	
 	var body := StaticBody3D.new()
 	body.collision_layer = 1 << 9
+	body.name = "static"
 	var box := CollisionShape3D.new()
 	box.name = "shape"
 	box.shape = CylinderShape3D.new()
 	box.shape.height = 4 * s
 	box.shape.radius = 0.25 * s
 	box.position.y = 2 * s
+#	box.disabled = true
 	body.add_child(box)
 	result.add_child(body)
 		

@@ -69,10 +69,10 @@ script = ExtResource("1_v4ejs")
 [node name="RootNode" type="Node3D" parent="."]
 
 [node name="Tree_02_LOD0" type="MeshInstance3D" parent="RootNode"]
-visible = false
 mesh = SubResource("ArrayMesh_ep4v8")
 skeleton = NodePath("")
 
 [node name="Tree_02_LOD1" type="MeshInstance3D" parent="RootNode"]
+visible = false
 mesh = SubResource("ArrayMesh_yu2i5")
 skeleton = NodePath("")

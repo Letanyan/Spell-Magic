@@ -116,6 +116,8 @@ func calculate_cooldown() -> float:
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
 	cooldown = basic_cost + chain_cost
+	if cooldown < 0.0:
+		cooldown = 0.0
 	return cooldown
 	
 func actual_mana_cost() -> float:
