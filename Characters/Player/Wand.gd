@@ -165,7 +165,8 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 	return null
 
 func action_down(action: String, book: MagicBook) -> Spell:
-	current_actions[action] = 0
+	if action != "":
+		current_actions[action] = 0
 	var best_candidate := []
 	for key in keys:
 		if key.size() > current_actions.size():

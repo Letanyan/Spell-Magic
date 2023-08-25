@@ -94,7 +94,6 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 		var port := body.get_viewport()
 		var pos := port.get_visible_rect().size / 2.0
 		result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
-		print(port.get_camera_3d().project_ray_origin(pos), " ", pos)
 	else:
 		result["abs_pos" if fixed else "rel_pos"] = body.position
 	

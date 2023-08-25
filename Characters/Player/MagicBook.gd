@@ -51,8 +51,9 @@ func use_spell(spell: Spell):
 		s = s.chain
 	
 func can_use_spell(spell: Spell) -> bool:
-	var used = last_use.get(spell.name, 0)
-	return Time.get_unix_time_from_system() - used > spell.cooldown or ignore_cooldown
+	var elapsed = Time.get_unix_time_from_system() - last_use.get(spell.name, 0)
+	return is_equal_approx(elapsed, spell.cooldown) or elapsed > spell.cooldown or ignore_cooldown
+	
 
 func rebuild_spell_chains():
 	for s in spells:

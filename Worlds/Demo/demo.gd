@@ -157,13 +157,24 @@ func _input(event):
 	if not menu.is_showing:
 		for k in wand.basic_keys:
 			var s: Spell = null
+			var is_down := false
 			if event.is_action_pressed(k):
 				s = wand.action_down(k, book)
+				is_down = true
 			if event.is_action_released(k):
 				s = wand.action_up(k, book)
 			if s != null:
-				player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
+				cast_spell_with_recusive_check_for_rapid_fire(s, is_down)
+				
 
+func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
+	player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
+	if is_down:
+		get_tree().create_timer(s.cooldown + 0.02).timeout.connect(func(): 
+			s = wand.action_down("", book)
+			if s != null:
+				cast_spell_with_recusive_check_for_rapid_fire(s, true)
+		)
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
 	terrain_update_interval += delta
