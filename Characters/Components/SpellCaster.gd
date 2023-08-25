@@ -15,7 +15,7 @@ signal not_enough_mana_for_spell
 
 func _init(e: Entity):
 	entity = e
-	ignore_mana_cost = true
+	ignore_mana_cost = false
 	
 func deferred_update(body, delta):
 	call_deferred("update", body, delta)
@@ -90,7 +90,13 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "cy"] = c.y
 	result[prefix + "cz"] = c.z
 	
-	result["abs_pos" if fixed else "rel_pos"] = body.position
+	if entity == Entity.PLAYER:
+		var port := body.get_viewport()
+		var pos := port.get_visible_rect().size / 2.0
+		result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
+		print(port.get_camera_3d().project_ray_origin(pos), " ", pos)
+	else:
+		result["abs_pos" if fixed else "rel_pos"] = body.position
 	
 	if p != null: # direction from character to spell
 		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )

@@ -137,8 +137,9 @@ func _on_wet_area_body_entered(body):
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.PLAYER, position)
 
-func update_entity_info(info: EntityInfo):
+func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
+	return true
 
 func give_back_mana_after_hit(spell: Spell, time: float):
 	var c := spell.cooldown

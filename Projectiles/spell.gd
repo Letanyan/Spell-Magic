@@ -87,7 +87,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	return result
 	
 func calculate_size(vars: Dictionary) -> float:
-	var result := clampf(r_expr.compute(vars), 0.5, 10)
+	var result := clampf(r_expr.compute(vars), 0.05, 10)
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:

@@ -100,7 +100,6 @@ var name: String
 var mods: Dictionary
 var keys: Dictionary
 var picked: String
-var ignore_cooldown: bool
 
 var current_actions: Dictionary
 
@@ -111,7 +110,6 @@ func _init():
 	mods = {}
 	keys = {}
 	picked = ""
-	ignore_cooldown = false
 	current_actions = {}
 	build_keys()
 

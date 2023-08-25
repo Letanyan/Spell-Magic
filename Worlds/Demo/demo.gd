@@ -70,7 +70,7 @@ func _ready():
 		
 	menu.setup(book, case, artifacts, settings)
 	
-	book.ignore_cooldown = true
+#	book.ignore_cooldown = true
 	wand = case.wands[0]
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
@@ -79,6 +79,7 @@ func _ready():
 	player.position.x = 800
 	player.position.y = 700
 	player.position.z = 2300
+#	player.spell_caster.ignore_mana_cost = true
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
