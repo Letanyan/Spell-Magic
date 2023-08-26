@@ -91,6 +91,8 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			stun.apply_ignoring_resistance(amount)
 		Spell.Element.AIR:
 			power = 0.0
+		Spell.Element.VOID:
+			power = 0.0
 			
 	for e in damage_modifier:
 		if e == kind or e == Artifact.Element.ANY:

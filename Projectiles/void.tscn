@@ -1,12 +1,37 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgdyy3dwir84s"]
+[gd_scene load_steps=6 format=3 uid="uid://dgdyy3dwir84s"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i25j6"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_10v83"]
-size = Vector3(0, 0, 0)
+[sub_resource type="SphereShape3D" id="SphereShape3D_sl378"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tshma"]
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0, 0, 0, 0.368627)
+
+[sub_resource type="SphereMesh" id="SphereMesh_5q8f3"]
+material = SubResource("StandardMaterial3D_tshma")
+radial_segments = 16
+rings = 8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_42hc4"]
 
 [node name="void" type="Node3D"]
 script = ExtResource("1_i25j6")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
-shape = SubResource("BoxShape3D_10v83")
+shape = SubResource("SphereShape3D_sl378")
+target_position = Vector3(0, 0, 0)
+collision_mask = 535
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_5q8f3")
+
+[node name="area" type="Area3D" parent="mesh"]
+collision_layer = 1024
+collision_mask = 535
+monitoring = false
+monitorable = false
+
+[node name="shape" type="CollisionShape3D" parent="mesh/area"]
+shape = SubResource("SphereShape3D_42hc4")

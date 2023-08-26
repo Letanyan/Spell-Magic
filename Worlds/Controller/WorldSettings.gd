@@ -32,10 +32,10 @@ var max_spells_in_book := 4
 var enemies_killed := {} # {World.Enemy: int}
 
 func check_if_has_spell_element(el: Spell.Element) -> bool:
-	return has_spell_element & (1 << el) == 1
+	return has_spell_element & (1 << el) != 0
 
 func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
-	return has_spell_element & (1 << el) == 1
+	return has_chain_method & (1 << el) != 0
 
 func save():
 	var dir := DirAccess.open("user://")

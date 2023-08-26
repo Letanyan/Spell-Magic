@@ -92,7 +92,7 @@ func get_shape() -> Shape3D:
 		Spell.Element.AIR: return get_node("source/area/shape").shape
 		Spell.Element.ICE: return get_node("source/area/shape").shape
 		Spell.Element.ELECTRIC: return get_node("body/area/shape").shape
-		Spell.Element.VOID: return BoxShape3D.new()
+		Spell.Element.VOID: return get_node("mesh/area/shape").shape
 		_: return BoxShape3D.new()
 
 func get_spell_transform() -> Transform3D:
@@ -111,7 +111,7 @@ func get_spell_collision_mask() -> int:
 		Spell.Element.AIR: return get_node("source/area").collision_mask
 		Spell.Element.ICE: return get_node("source/area").collision_mask
 		Spell.Element.ELECTRIC: return get_node("source/area").collision_mask
-		Spell.Element.VOID: return 0
+		Spell.Element.VOID: return get_node("mesh/area").collision_mask
 		_: return ~0
 
 func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
@@ -174,7 +174,12 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				# Look at `_on_area_entered` for implementation
 				pass
 		Spell.Element.VOID:
-			pass
+			if is_world or is_rock or is_world_object:
+				expire_now(self, body)
+			elif (is_enemy or is_player) and not invunerable:
+				CharacterCollision.handle(body, self)
+				dmg = body.vitals.handle_damage(Spell.Element.VOID, spell.power)
+				expire_now(self, body)
 	
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
@@ -327,8 +332,13 @@ func update_shape(r: float, ignore_time: bool):
 			body.mesh.height = r * 2
 			
 		Spell.Element.VOID:
-			pass
-			
+			var mesh: SphereMesh = get_node("mesh").mesh
+			var shape: CollisionShape3D = get_node("mesh/area/shape")
+			mesh.radius = r
+			mesh.height = r * 2
+			shape.shape.radius = r
+			get_node("shape_cast").shape.radius = r
+			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary):
