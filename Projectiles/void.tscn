@@ -6,13 +6,15 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tshma"]
 transparency = 1
+shading_mode = 2
+diffuse_mode = 3
 vertex_color_use_as_albedo = true
-albedo_color = Color(0, 0, 0, 0.368627)
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_5q8f3"]
 material = SubResource("StandardMaterial3D_tshma")
-radial_segments = 16
-rings = 8
+radial_segments = 12
+rings = 6
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_42hc4"]
 
