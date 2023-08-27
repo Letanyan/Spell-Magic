@@ -27,7 +27,9 @@ func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float 
 	has_navigation_target = false
 	
 static func player() -> VelocityMovement:
-	return VelocityMovement.new(12 * 1, 150, 150)
+	var desired_speed = 12.0
+	var s = (60.0 / 21.0) * 0.85
+	return VelocityMovement.new(s * desired_speed, 150, 150)
 
 func increment_ticks():
 	vital_tick += 1

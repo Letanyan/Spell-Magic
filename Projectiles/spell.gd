@@ -39,12 +39,13 @@ var d_expr: Expr
 
 var follow: bool
 var is_bomb: bool
+var player_is_origin: bool
 var cooldown: float
 var charge: float
 
 var id: int = -1
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0):
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
 	x = _x
 	y = _y
 	z = _z
@@ -59,6 +60,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	
 	follow = _follow
 	is_bomb = _is_bomb
+	player_is_origin = _player_is_origin
 	charge = 0.0
 	
 	x_expr = Expr.new(x)
@@ -70,7 +72,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	chain_cast_kind = ChainCastKind.START
 	
 func duplicate() -> Spell:
-	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost)
+	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
@@ -202,7 +204,7 @@ func save_dict():
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
-		"name": name, "id": id, "mana": mana_cost
+		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin
 	}
 
 func load_dict(dict: Dictionary):
@@ -225,6 +227,7 @@ func load_dict(dict: Dictionary):
 	id = dict.get("id", -1)
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
+	player_is_origin = dict.get("player_is_origin", true)
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)

@@ -42,6 +42,7 @@ var spells_index_map := {}
 @onready var chain_combo: OptionButton = $container/chain_combo
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
+@onready var player_is_origin: CheckButton = $container/player_is_origin
 
 @onready var mana_edit: LineEdit = $container/mana/edit
 @onready var cooldown_label: Label = $container/cooldown
@@ -105,6 +106,7 @@ func _on_spell_index_item_selected(index):
 	chain_combo.selected = spell.chain_cast_kind
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
+	player_is_origin.button_pressed = spell.player_is_origin
 	$container.visible = true
 	
 	filter_popup.set_item_disabled(TOTAL_FILTER_ITEMS - 1, false)
@@ -149,6 +151,7 @@ func _on_save_pressed():
 	
 	spell.follow = is_rel.button_pressed
 	spell.is_bomb = is_bomb.button_pressed
+	spell.player_is_origin = player_is_origin.button_pressed
 	reload_list()
 	
 func update_spells_list():
@@ -377,6 +380,12 @@ func _on_is_bomb_toggled(button_pressed):
 	if current_index < 0:
 		return
 	book.spells[current_index].is_bomb = button_pressed
+	update_spells_that_chain_to_current_spell()
+	
+func _on_player_is_origin_toggled(button_pressed):
+	if current_index < 0:
+		return
+	book.spells[current_index].player_is_origin = button_pressed
 	update_spells_that_chain_to_current_spell()
 	
 func _on_M_text_changed(new_text):

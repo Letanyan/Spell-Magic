@@ -179,6 +179,9 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 			build_explosion(world, body, int(amount), element, location, r, v)
 
 static func build_explosion(world: Node3D, body: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3):
+	if element == Spell.Element.VOID:
+		return
+	
 	var explosion: Node3D
 	var source: GPUParticles3D
 	

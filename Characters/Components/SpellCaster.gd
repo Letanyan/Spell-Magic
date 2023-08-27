@@ -27,7 +27,7 @@ func update(body, delta):
 		var p: SpellBody = particles[i]
 		
 		if p.is_active():
-			spell_variables(p.fixed_vars, body, false, p)
+			spell_variables(p.fixed_vars, body, false, p, p.spell)
 			if entity == Entity.PLAYER:
 				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
 			p.update_spell(t, p.fixed_vars)
@@ -46,7 +46,7 @@ func update(body, delta):
 		idx -= 1
 		
 
-func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody) -> Dictionary:
+func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody, s: Spell) -> Dictionary:
 	var prefix := "" if fixed else "t"
 	result[prefix + "x"] = body.position.x
 	result[prefix + "y"] = body.position.y
@@ -90,7 +90,7 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "cy"] = c.y
 	result[prefix + "cz"] = c.z
 	
-	if entity == Entity.PLAYER:
+	if entity == Entity.PLAYER and not s.player_is_origin:
 		var port := body.get_viewport()
 		var pos := port.get_visible_rect().size / 2.0
 		result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
@@ -130,8 +130,8 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 	
 func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Dictionary:
 	var result := {}
-	spell_variables(result, body, true, p)
-	spell_variables(result, body, false, p)
+	spell_variables(result, body, true, p, spell)
+	spell_variables(result, body, false, p, spell)
 	return result
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null):
@@ -167,7 +167,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
 		tracking_offset[p.name] = spell_offset
-		spell_variables(p.fixed_vars, body, false, p)
+		spell_variables(p.fixed_vars, body, false, p, p.spell)
 		var delay := spell.calculate_delay(p.fixed_vars)
 		start_particle(delay, body, p, insert)
 		
@@ -186,7 +186,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
 	if not p.spell.is_bomb:
-		spell_variables(p.fixed_vars, body, true, p)
+		spell_variables(p.fixed_vars, body, true, p, p.spell)
 	p.projectile_hit.connect(pass_projectile_hit)
 	insert.call(p)
 
