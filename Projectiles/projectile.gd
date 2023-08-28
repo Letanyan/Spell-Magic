@@ -161,7 +161,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				nothing(self, body)
 		Spell.Element.ICE:
 			if is_world or is_rock or is_world_object:
-				nothing(self, body)
+				expire_now(self, body)
 			elif (is_player or is_enemy) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.power)

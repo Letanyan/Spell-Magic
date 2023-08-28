@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
-@onready var animator: AnimationPlayer = $Pivot/AnimationPlayer 
+@onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
 
 var velocity_movement := VelocityMovement.player()
@@ -77,15 +77,15 @@ func _physics_process(delta):
 		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():
 				if velocity.length() < 1:
-					animator.play("Man_Walk", 1)
+					animator.play("Walk", 1)
 				else:
-					animator.play("Man_Run", 1)
+					animator.play("Run", 1)
 		else:
 			if is_on_floor():
-				animator.play("Man_Idle", 1)
+				animator.play("Idle", 1)
 			
 		if not is_on_floor_only():
-			animator.play("Man_Run", 1)
+			animator.play("Run", 1)
 			
 		if velocity:
 			var space := get_world_3d().space

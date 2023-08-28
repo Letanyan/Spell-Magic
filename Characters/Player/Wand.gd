@@ -1,6 +1,6 @@
 class_name Wand
 
-enum Kind { NONE, FIRE, PICK, FIRE_PICKED, FIRE_HOLD, MOD  }
+enum Kind { NONE, FIRE, PICK, FIRE_PICKED, FIRE_HOLD, RAPID_FIRE, RAPID_SELECT, MOD  }
 
 class Option:
 	var kind: Kind
@@ -147,7 +147,7 @@ func add_mod(mod: String):
 	
 func find_spell(key: Array, book: MagicBook) -> Spell:
 	var opt: Option = keys[key]
-	if opt.kind == Kind.FIRE_PICKED:
+	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.RAPID_SELECT:
 		for s in book.spells:
 			if s.name == picked:
 				return s
@@ -157,14 +157,14 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 	var opt_spell := opt.next_spell()
 	for s in book.spells:
 		if s.name == opt_spell:
-			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD:
+			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.RAPID_FIRE:
 				return s
 			elif opt.kind == Kind.PICK:
 				picked = s.name
 				return null
 	return null
 
-func action_down(action: String, book: MagicBook) -> Spell:
+func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) -> Spell:
 	if action != "":
 		current_actions[action] = 0
 	var best_candidate := []
@@ -181,9 +181,10 @@ func action_down(action: String, book: MagicBook) -> Spell:
 				
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
+		is_rapid_fire.data = true if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT else false
 		if opt.kind == Kind.FIRE_HOLD:
 			keys[best_candidate].start_hold = Time.get_unix_time_from_system()
-		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK:
+		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
 			var s = find_spell(best_candidate, book)
 			if s == null:
 				return null

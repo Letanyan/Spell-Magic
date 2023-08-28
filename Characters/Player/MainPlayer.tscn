@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://cs66h1r8861hy"]
+[gd_scene load_steps=10 format=3 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="PackedScene" uid="uid://cfmjmhpvsgexr" path="res://Characters/Male_Casual.glb" id="2_p05k3"]
+[ext_resource type="PackedScene" uid="uid://cl4j3cjn55fxo" path="res://Characters/King.gltf" id="3_hkyyd"]
 [ext_resource type="Shader" path="res://Worlds/Demo/screen.gdshader" id="3_hukkp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4v8dt"]
@@ -55,10 +56,15 @@ script = ExtResource("1_pc14x")
 [node name="Pivot" parent="." instance=ExtResource("2_p05k3")]
 transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 0, 0, 0)
 
-[node name="HumanArmature" parent="Pivot" index="0"]
+[node name="King" parent="Pivot" instance=ExtResource("3_hkyyd")]
+transform = Transform3D(-2.6, 0, -2.27299e-07, 0, 2.6, 0, 2.27299e-07, 0, -2.6, 0, 0, 0)
+
+[node name="HumanArmature" parent="Pivot" index="1"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+visible = false
 
 [node name="Skeleton3D" parent="Pivot/HumanArmature" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 bones/1/position = Vector3(0.308129, 1.57758, -1.7529)
 bones/1/rotation = Quaternion(-1.25458e-06, -0.279569, 0.960126, 2.2448e-06)
 bones/2/position = Vector3(0.00524594, 2.11752, 0.209788)
@@ -125,5 +131,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+color = Color(1, 0.5, 0, 1)
 
 [editable path="Pivot"]

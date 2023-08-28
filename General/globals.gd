@@ -9,3 +9,9 @@ static func invf(v: float) -> float:
 		return 1.0 / 0.0000000001
 	else:
 		return 1.0 / v
+
+class Ref extends RefCounted:
+	var data
+	
+	func _init(value) -> void:
+		data = value

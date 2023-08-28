@@ -75,11 +75,11 @@ const biome_locations: PackedVector2Array = [
 	Vector2(1, 1), # hfil
 ]
 const biome_colors: PackedVector3Array = [
-	Vector3(0.16, 0.53, 0.16),
+	Vector3(0.23, 0.83, 0.23),
 	Vector3(0, 1, 1),
-	Vector3(0.282, 0.133, 0.0),
+	Vector3(0.55, 0.28, 0.0),
 	Vector3(1, 1, 0),
-	Vector3(0, 0.25, 0.25),
+	Vector3(0, 0.4, 0.0),
 	Vector3(1, 0.5, 0),
 	Vector3(1, 1, 1),
 	Vector3(0, 0, 0),
@@ -102,7 +102,7 @@ var total_size := 0.0
 
 func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
-		World.Biome.WATER: return Color(0, 0, 1)
+		World.Biome.WATER: return Color(0.2, 0.5, 1)
 		World.Biome.TAIGA: return Color(0, 1, 1)
 		World.Biome.GRASSLAND: return Color(0, 1, 0)
 		World.Biome.FOREST: return Color(0, 0.5, 0.5)

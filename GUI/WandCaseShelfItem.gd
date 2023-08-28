@@ -17,7 +17,7 @@ func _ready():
 	key.text = Wand.key_description(store_key)
 	spell.text = ", ".join(store_spell)
 	cast_combo.selected = store_action
-	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED
+	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.RAPID_SELECT
 	if store_key.size() > 1:
 		cast_combo.set_item_disabled(5, true)
 	else:
@@ -31,7 +31,7 @@ func _process(delta):
 func _on_cast_combo_selected(id):
 	if id > -1:
 		action_changed.call(store_action as Wand.Kind, id as Wand.Kind)
-		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED
+		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT
 
 func _on_spell_text_changed(new_text):
 	spell_changed.call(new_text)

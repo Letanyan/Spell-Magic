@@ -158,21 +158,23 @@ func _input(event):
 		for k in wand.basic_keys:
 			var s: Spell = null
 			var is_down := false
+			var is_rapid_fire := Globals.Ref.new(false)
 			if event.is_action_pressed(k):
-				s = wand.action_down(k, book)
+				s = wand.action_down(k, book, is_rapid_fire)
 				is_down = true
 			if event.is_action_released(k):
 				s = wand.action_up(k, book)
 			if s != null:
-				cast_spell_with_recusive_check_for_rapid_fire(s, is_down)
+				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data)
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
 	player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
 	if is_down:
 		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func(): 
-			s = wand.action_down("", book)
-			if s != null:
+			var is_rapid_fire := Globals.Ref.new(false)
+			s = wand.action_down("", book, is_rapid_fire)
+			if s != null and is_rapid_fire.data:
 				cast_spell_with_recusive_check_for_rapid_fire(s, true)
 		)
 
