@@ -77,15 +77,15 @@ func _physics_process(delta):
 		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():
 				if velocity.length() < 1:
-					animator.play("Walk", 1)
+					animator.play("Slow Running", 1)
 				else:
-					animator.play("Run", 1)
+					animator.play("Fast Running", 1)
 		else:
 			if is_on_floor():
 				animator.play("Idle", 1)
 			
 		if not is_on_floor_only():
-			animator.play("Run", 1)
+			animator.play("Fast Running", 1)
 			
 		if velocity:
 			var space := get_world_3d().space

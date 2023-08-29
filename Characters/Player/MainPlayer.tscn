@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="PackedScene" uid="uid://cfmjmhpvsgexr" path="res://Characters/Male_Casual.glb" id="2_p05k3"]
-[ext_resource type="PackedScene" uid="uid://cl4j3cjn55fxo" path="res://Characters/King.gltf" id="3_hkyyd"]
+[ext_resource type="PackedScene" uid="uid://c3brgwmbu1mb0" path="res://Characters/king.glb" id="3_5dbqr"]
 [ext_resource type="Shader" path="res://Worlds/Demo/screen.gdshader" id="3_hukkp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4v8dt"]
@@ -56,15 +56,11 @@ script = ExtResource("1_pc14x")
 [node name="Pivot" parent="." instance=ExtResource("2_p05k3")]
 transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 0, 0, 0)
 
-[node name="King" parent="Pivot" instance=ExtResource("3_hkyyd")]
-transform = Transform3D(-2.6, 0, -2.27299e-07, 0, 2.6, 0, 2.27299e-07, 0, -2.6, 0, 0, 0)
-
-[node name="HumanArmature" parent="Pivot" index="1"]
+[node name="HumanArmature" parent="Pivot" index="0"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 visible = false
 
 [node name="Skeleton3D" parent="Pivot/HumanArmature" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 bones/1/position = Vector3(0.308129, 1.57758, -1.7529)
 bones/1/rotation = Quaternion(-1.25458e-06, -0.279569, 0.960126, 2.2448e-06)
 bones/2/position = Vector3(0.00524594, 2.11752, 0.209788)
@@ -81,6 +77,9 @@ bones/26/rotation = Quaternion(0.825002, 0.00130818, 0.00576806, 0.565098)
 bones/27/rotation = Quaternion(0.409299, -1.03264e-07, 4.28357e-08, 0.9124)
 bones/29/position = Vector3(-0.311257, 0.640309, 1.25603)
 bones/29/rotation = Quaternion(3.27445e-06, 0.881808, 0.471609, 1.81963e-06)
+
+[node name="King" parent="Pivot" instance=ExtResource("3_5dbqr")]
+transform = Transform3D(-2.6, 0, -2.27299e-07, 0, 2.6, 0, 2.27299e-07, 0, -2.6, 0, 0, 0)
 
 [node name="CamPivot" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
