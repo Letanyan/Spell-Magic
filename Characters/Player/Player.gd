@@ -71,6 +71,16 @@ func _physics_process(delta):
 	var movement := velocity_movement.update(delta, vitals, 14, self)
 	emit_vitals_signal()
 	if not menu_showing:
+#		var dir = Input.get_axis("move_forward", "move_back")
+#		translate(Vector3(0, 0, 1) * dir * delta * 3)
+#
+#		var adir = Input.get_axis("move_left", "move_right")
+#		translate(Vector3(-1, 0, 0) * adir * delta * 3)
+#
+#		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
+#		if position.y < g or position.y > g:
+#			position.y = g
+		
 		velocity = movement["velocity"]
 		move_and_slide()
 		var direction = movement["direction"]
@@ -83,10 +93,10 @@ func _physics_process(delta):
 		else:
 			if is_on_floor():
 				animator.play("Idle", 1)
-			
+
 		if not is_on_floor_only():
 			animator.play("Fast Running", 1)
-			
+
 		if velocity:
 			var space := get_world_3d().space
 			var state := PhysicsServer3D.space_get_direct_state(space)
@@ -98,7 +108,7 @@ func _physics_process(delta):
 				rect.material.set_shader_parameter("underwater", 0.0)
 		
 	var rate := 0.05 if velocity.length() == 0 else 0.01
-	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
+	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 1.0), rate)
 	cam_arm.spring_length = 1 + camera_target_velocity
 	
 	if shake_intensity > 0.0:

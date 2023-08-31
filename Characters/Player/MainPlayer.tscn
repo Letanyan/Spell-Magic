@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="PackedScene" uid="uid://cfmjmhpvsgexr" path="res://Characters/Male_Casual.glb" id="2_p05k3"]
-[ext_resource type="PackedScene" uid="uid://c3brgwmbu1mb0" path="res://Characters/king.glb" id="3_5dbqr"]
 [ext_resource type="Shader" path="res://Worlds/Demo/screen.gdshader" id="3_hukkp"]
+[ext_resource type="PackedScene" uid="uid://dq6iuydg8j33d" path="res://Characters/Player/King.tscn" id="3_rbx0l"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4v8dt"]
 size = Vector3(0.7, 1.9, 0.3)
@@ -78,7 +78,7 @@ bones/27/rotation = Quaternion(0.409299, -1.03264e-07, 4.28357e-08, 0.9124)
 bones/29/position = Vector3(-0.311257, 0.640309, 1.25603)
 bones/29/rotation = Quaternion(3.27445e-06, 0.881808, 0.471609, 1.81963e-06)
 
-[node name="King" parent="Pivot" instance=ExtResource("3_5dbqr")]
+[node name="King" parent="Pivot" instance=ExtResource("3_rbx0l")]
 transform = Transform3D(-2.6, 0, -2.27299e-07, 0, 2.6, 0, 2.27299e-07, 0, -2.6, 0, 0, 0)
 
 [node name="CamPivot" type="Marker3D" parent="."]
