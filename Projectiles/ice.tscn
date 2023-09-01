@@ -92,8 +92,8 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="SphereMesh" id="SphereMesh_b25tq"]
 material = SubResource("ShaderMaterial_n2y1k")
-radius = 0.1
-height = 0.2
+radius = 0.15
+height = 0.3
 radial_segments = 4
 rings = 2
 

@@ -1,8 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dq6iuydg8j33d"]
+[gd_scene load_steps=2 format=3 uid="uid://dq6iuydg8j33d"]
 
 [ext_resource type="PackedScene" uid="uid://c3brgwmbu1mb0" path="res://Characters/king.glb" id="1_s5ll3"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_l8shf"]
 
 [node name="King" instance=ExtResource("1_s5ll3")]
 
@@ -140,16 +138,3 @@ bones/163/rotation = Quaternion(0.0106538, 8.90228e-09, 0.999943, 1.47713e-09)
 bones/165/rotation = Quaternion(0.269315, 0.00616185, 0.00871686, 0.962993)
 bones/167/position = Vector3(-0.122928, 0.315958, 0.407038)
 bones/167/rotation = Quaternion(-0.707107, 3.95127e-09, 2.63418e-09, 0.707107)
-
-[node name="SkeletonIK3D" type="SkeletonIK3D" parent="Armature/Skeleton3D" index="4"]
-process_priority = 1
-root_bone = &"mixamorig_Hips"
-tip_bone = &"mixamorig_RightFoot"
-target_node = NodePath("../../Node3D")
-
-[node name="Node3D" type="Node3D" parent="Armature" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.997463, 1.16079)
-visible = false
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Armature/Node3D" index="0"]
-mesh = SubResource("SphereMesh_l8shf")

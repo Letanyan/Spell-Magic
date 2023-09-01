@@ -25,7 +25,7 @@ static func none() -> AttackPatterns:
 	return AttackPatterns.new([], [], false, 0.0)
 	
 func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spell:
-	if not randf() < aggression:
+	if randf() > aggression:
 		return null
 		
 	var range_start := 0.0

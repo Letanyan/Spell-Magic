@@ -191,7 +191,7 @@ func compute_biome_distances(x: float, y: float):
 	var c := Vector3.ZERO
 	for i in range(biome_locations.size()):
 		dist = p.distance_to(biome_locations[i])
-		distances[i] = dist
+		distances[i] = dist ** 5.0
 		total_size += dist
 		c = lerp(biome_colors[i], Vector3(1, 1, 1), dist)
 		if dist <= 1.0:

@@ -56,10 +56,11 @@ func increment_ticks():
 	if invunerable > 0:
 		invunerable -= 1
 	
-func play_animation(animation: String, blend: float):
+func play_animation(animation: String, blend: float, wait_for_completion: bool, speed: float = 1.0):
 	var anim = animation_map.get(animation, "")
 	if anim != "":
-		animator.play(anim, blend) 
+		if animator.current_animation.is_empty() or animator.current_animation_length - animator.current_animation_position < 0.1:
+			animator.play(anim, blend, speed)
 
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)
@@ -106,6 +107,7 @@ func _physics_process(delta):
 	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
 		var spell := attack_state().choose_spell(vitals, behaviour)
 		if spell != null:
+			play_animation("attack", 1.0, true)
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 
@@ -113,11 +115,11 @@ func _physics_process(delta):
 
 	if velocity != Vector3.ZERO:
 		if velocity.length() > 5:
-			play_animation("run", 1)
+			play_animation("run", 1, false)
 		else:
-			play_animation("walk", 1)
+			play_animation("walk", 1, false)
 	else:
-		play_animation("idle", 1)
+		play_animation("idle", 1, false)
 
 
 func cast_spell(insert: Callable, next_spell: Spell):

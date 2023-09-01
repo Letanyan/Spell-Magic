@@ -19,7 +19,7 @@ func _ready():
 	hormones = Hormones.new(0.7, 1.0, -0.75, 0)
 	
 	idle_path = PathStyle.new(randf()).circle_path(5, 10).set_origin(position).speed(7).use_absolute().align_y_to_origin()
-	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 5).set_use_player_as_origin().speed(10).use_absolute().align_y_to_origin().look_at_player()
+	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 2).set_use_player_as_origin().speed(2).use_absolute().align_y_to_origin().look_at_player()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.BAT: true}, false)
@@ -28,24 +28,30 @@ func _ready():
 	
 	random_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 1000, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5 + u * 5", "v * t * 5 + v * 5", "w * t * 5 + w * 5", "1", 0.1, 2000, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 3000, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 10 + u * 2", "v * t * 10 + v * 2", "w * t * 10 + w * 2", "1", 0.1, 1000, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2", "w * t * 5 + w * 2", "1", 0.1, 2000, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 15 + u * 2", "v * t * 15 + v * 2", "w * t * 15 + w * 2", "1", 0.1, 3000, Spell.Element.ELECTRIC, 1),
 		],
-		[ 5, 3, 2 ],
+		[ 3, 10, 2 ],
 		false,
-		0.5
+		0.15
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5 + 1", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5 + 1", "w * t * 5", "1", 0.1, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 5", "v * t * 5 + 1", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
 		],
 		[ 1, 2, 1 ],
 		true
 	)
+	
+	animation_map["run"] = "Fast_Flying"
+	animation_map["idle"] = "Flying_Idle"
+	animation_map["walk"] = "Flying_Idle"
+	animation_map["attack"] = "HEadbutt"
+#	animation_is_nested = true
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
