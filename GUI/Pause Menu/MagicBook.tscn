@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dwlh6xe128lt6"]
 
-[ext_resource type="Script" path="res://GUI/MagicBookGUI.gd" id="1_1c5yt"]
+[ext_resource type="Script" path="res://GUI/Pause Menu/MagicBookGUI.gd" id="1_1c5yt"]
 
 [node name="MagicBook" type="Control"]
 layout_mode = 3
@@ -241,7 +241,7 @@ offset_left = 432.0
 offset_top = 456.0
 offset_right = 816.0
 offset_bottom = 482.0
-text = "Total Mana Cost: 0"
+text = "Total M Cost: 0"
 
 [node name="cooldown" type="Label" parent="container"]
 layout_mode = 0
@@ -273,19 +273,19 @@ offset_right = 820.0
 offset_bottom = 55.0
 item_count = 7
 selected = 0
-popup/item_0/text = "Fire"
+popup/item_0/text = "Void"
 popup/item_0/id = 0
-popup/item_1/text = "Water"
+popup/item_1/text = "Fire"
 popup/item_1/id = 1
-popup/item_2/text = "Rock"
+popup/item_2/text = "Water"
 popup/item_2/id = 2
-popup/item_3/text = "Air"
+popup/item_3/text = "Rock"
 popup/item_3/id = 3
-popup/item_4/text = "Ice"
+popup/item_4/text = "Air"
 popup/item_4/id = 4
-popup/item_5/text = "Electric"
+popup/item_5/text = "Ice"
 popup/item_5/id = 5
-popup/item_6/text = "Void"
+popup/item_6/text = "Electric"
 popup/item_6/id = 6
 
 [node name="chain_combo" type="OptionButton" parent="container"]
@@ -359,25 +359,25 @@ offset_bottom = 104.0
 text = "Filter"
 flat = false
 item_count = 10
-popup/item_0/text = "Fire"
+popup/item_0/text = "Void"
 popup/item_0/checkable = 1
 popup/item_0/id = 0
-popup/item_1/text = "Water"
+popup/item_1/text = "Fire"
 popup/item_1/checkable = 1
 popup/item_1/id = 1
-popup/item_2/text = "Air"
+popup/item_2/text = "Water"
 popup/item_2/checkable = 1
 popup/item_2/id = 2
-popup/item_3/text = "Rock"
+popup/item_3/text = "Air"
 popup/item_3/checkable = 1
 popup/item_3/id = 3
-popup/item_4/text = "Ice"
+popup/item_4/text = "Rock"
 popup/item_4/checkable = 1
 popup/item_4/id = 4
-popup/item_5/text = "Electric"
+popup/item_5/text = "Ice"
 popup/item_5/checkable = 1
 popup/item_5/id = 5
-popup/item_6/text = "Void"
+popup/item_6/text = "Electric"
 popup/item_6/checkable = 1
 popup/item_6/id = 6
 popup/item_7/text = "Is Bomb"

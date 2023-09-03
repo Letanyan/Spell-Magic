@@ -1,6 +1,6 @@
 class_name Spell
 
-enum Element { FIRE, WATER, ROCK, AIR, ICE, ELECTRIC, VOID }
+enum Element { VOID, FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
 enum ChainCastKind { START, END, HIT }
 
 @export var element: Element
@@ -11,17 +11,17 @@ enum ChainCastKind { START, END, HIT }
 @export var r: String
 @export var power: float:
 	set(value):
-		power = clamp(value, 0, 100)
+		power = clamp(value, 0, WorldSettings.LIMIT_P)
 @export var duration: float:
 	set(value):
-		duration = clamp(value, 0.0166667, 25)
+		duration = clamp(value, 0.0166667, WorldSettings.LIMIT_T)
 @export var count: int:
 	set(value):
-		count = clamp(value, 1, 25)
+		count = clamp(value, 1, WorldSettings.LIMIT_N)
 @export var delay: String
 @export var mana_cost: float = 0.0:
 	set(value):
-		mana_cost = clamp(value, 0, 100)
+		mana_cost = clamp(value, 0, WorldSettings.LIMIT_MANA)
 var chain_cast_kind: ChainCastKind:
 	set(value):
 		chain_cast_kind = value

@@ -15,8 +15,9 @@ enum Event {
 }
 
 enum Element {
+	ANY, # is used as an offset so the next 6 elements map to Spell.Element 
 	FIRE, WATER, ROCK, AIR, ICE, ELECTRIC,
-	MANA, HEALTH, ANY
+	MANA, HEALTH
 }
 
 enum Pattern {

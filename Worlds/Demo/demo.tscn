@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_6wr6k"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="3_j80hc"]
-[ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Menu.tscn" id="3_luuj6"]
+[ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Pause Menu/Menu.tscn" id="3_luuj6"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="3_xhsh1"]
 [ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="3_xlx08"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/water.gdshader" id="6_xo78l"]

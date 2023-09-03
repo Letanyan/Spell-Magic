@@ -68,6 +68,7 @@ func _ready():
 		_settings.sed = 0 
 		setup(_settings)
 		
+	settings.currency = 10000
 	menu.setup(book, case, artifacts, settings)
 	
 #	book.ignore_cooldown = true

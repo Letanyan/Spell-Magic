@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cl6anb75utdrn"]
 
-[ext_resource type="Script" path="res://GUI/WandCaseShelfItem.gd" id="1_kx7hf"]
+[ext_resource type="Script" path="res://GUI/Pause Menu/WandCaseShelfItem.gd" id="1_kx7hf"]
 
 [node name="WandCaseShelfItem" type="Control"]
 custom_minimum_size = Vector2(800, 48)

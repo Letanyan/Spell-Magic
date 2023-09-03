@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b1jnhv7ky6aap"]
 
-[ext_resource type="Script" path="res://GUI/WandCaseGUI.gd" id="1_1fquc"]
+[ext_resource type="Script" path="res://GUI/Pause Menu/WandCaseGUI.gd" id="1_1fquc"]
 
 [node name="WandCase" type="Control"]
 layout_mode = 3

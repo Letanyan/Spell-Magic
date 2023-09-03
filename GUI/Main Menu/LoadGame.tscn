@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cevyetu4agssv"]
 
-[ext_resource type="Script" path="res://GUI/Menu/LoadGame.gd" id="1_t0cvo"]
+[ext_resource type="Script" path="res://GUI/Main Menu/LoadGame.gd" id="1_t0cvo"]
 
 [node name="LoadGame" type="Control"]
 layout_mode = 3

@@ -4,32 +4,59 @@ var world_name: String
 var player_position: Vector3
 var sed: int
 
-const HAS_FIRE := 1 << 0
-const HAS_WATER := 1 << 1
-const HAS_ROCK := 1 << 2
-const HAS_AIR := 1 << 3
-const HAS_ICE := 1 << 4
-const HAS_ELECTRIC := 1 << 5
-const HAS_VOID := 1 << 6
-var has_spell_element := 0
+const HAS_VOID := 1 << 0
+const HAS_FIRE := 1 << 1
+const HAS_WATER := 1 << 2
+const HAS_ROCK := 1 << 3
+const HAS_AIR := 1 << 4
+const HAS_ICE := 1 << 5
+const HAS_ELECTRIC := 1 << 6
+var has_spell_element := 0b1
+var cost_spell_element := 100
 
 const HAS_CHAIN_ON_START := 1 << 0
 const HAS_CHAIN_ON_END := 1 << 1
 const HAS_CHAIN_ON_HIT := 1 << 2
 var has_chain_method := 0
+var cost_chain_method := 100
 
+var upgrade_r := 0.1
 var max_r := 0.1
+var cost_r := 10
+const LIMIT_r := 5.0
+var upgrade_T := 1.0
 var max_T := 1.0
+var cost_T := 10
+const LIMIT_T := 25.0
+var upgrade_N := 1
 var max_N := 1
+var cost_N := 10
+const LIMIT_N := 25
+var upgrade_D := 1.0
 var max_D := 0.0
+var cost_D := 10
+const LIMIT_D := 30.0
+var upgrade_P := 5
 var max_P := 1
+var cost_P := 10
+const LIMIT_P := 1000
 
+var upgrade_mana := 10.0
 var max_mana := 100.0
+var cost_mana := 10
+const LIMIT_MANA := 1000 
+var upgrade_health := 10.0
 var max_health := 100.0
+var cost_health := 10
+const LIMIT_HEALTH := 1000.0
 
+var upgrade_spells_in_book := 2
 var max_spells_in_book := 4
+var cost_spells_in_book := 25
+const LIMIT_SPELLS_IN_BOOK := 200
 
 var enemies_killed := {} # {World.Enemy: int}
+var currency := 1000
 
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) != 0
@@ -50,7 +77,15 @@ func save():
 		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P,
 		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
 		
-		"enemies_killed": enemies_killed
+		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
+		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P,
+		"cost_mana": cost_mana, "cost_health": cost_health, "cost_spells_in_book": cost_spells_in_book,
+		
+		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P,
+		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
+		
+		"enemies_killed": enemies_killed,
+		"currency": currency
 	})
 
 func read(filename: String):
@@ -60,7 +95,7 @@ func read(filename: String):
 	player_position = data["player"]["position"]
 	sed = data["seed"]
 	
-	has_spell_element = data.get("has_spell_element", 0)
+	has_spell_element = data.get("has_spell_element", 0b1)
 	has_chain_method = data.get("has_chain_method", 0)
 	max_r = data.get("max_r", 1)
 	max_T = data.get("max_T", 1.0)
@@ -71,4 +106,25 @@ func read(filename: String):
 	max_health = data.get("max_health", 100.0)
 	max_spells_in_book = data.get("max_spells_in_book", 4)
 	
+	cost_spell_element = data.get("cost_spell_element", 100)
+	cost_chain_method = data.get("cost_chain_method", 100)
+	cost_r = data.get("cost_r", 10)
+	cost_T = data.get("cost_T", 10)
+	cost_N = data.get("cost_N", 10)
+	cost_D = data.get("cost_D", 10)
+	cost_P = data.get("cost_P", 10)
+	cost_mana = data.get("cost_mana", 10)
+	cost_health = data.get("cost_health", 10)
+	cost_spells_in_book = data.get("cost_spells_in_book", 25)
+	
+	upgrade_r = data.get("upgrade_r", 0.1)
+	upgrade_T = data.get("upgrade_T", 1.0)
+	upgrade_N = data.get("upgrade_N", 1)
+	upgrade_D = data.get("upgrade_D", 1.0)
+	upgrade_P = data.get("upgrade_P", 5)
+	upgrade_mana = data.get("upgrade_mana", 10.0)
+	upgrade_health = data.get("upgrade_health", 10.0)
+	upgrade_spells_in_book = data.get("upgrade_spells_in_book", 2)
+	
 	enemies_killed = data.get("enemies_killed", {})
+	currency = data.get("currency", 0)

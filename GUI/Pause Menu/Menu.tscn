@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b185ji0u0kuxo"]
+[gd_scene load_steps=6 format=3 uid="uid://b185ji0u0kuxo"]
 
-[ext_resource type="Script" path="res://GUI/Menu.gd" id="1_op10b"]
-[ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/MagicBook.tscn" id="1_ufdyg"]
-[ext_resource type="PackedScene" uid="uid://b1jnhv7ky6aap" path="res://GUI/WandCase.tscn" id="2_4jtlr"]
-[ext_resource type="PackedScene" uid="uid://c0eqpohrkp1r7" path="res://GUI/Artifacts.tscn" id="4_setqv"]
+[ext_resource type="Script" path="res://GUI/Pause Menu/Menu.gd" id="1_op10b"]
+[ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="1_ufdyg"]
+[ext_resource type="PackedScene" uid="uid://b1jnhv7ky6aap" path="res://GUI/Pause Menu/WandCase.tscn" id="2_4jtlr"]
+[ext_resource type="PackedScene" uid="uid://c0eqpohrkp1r7" path="res://GUI/Pause Menu/Artifacts.tscn" id="4_setqv"]
+[ext_resource type="PackedScene" uid="uid://lbdwf4vi4u7w" path="res://GUI/Pause Menu/Upgrades.tscn" id="5_85var"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -24,6 +25,10 @@ visible = false
 visible = false
 layout_mode = 1
 
+[node name="Upgrades" parent="." instance=ExtResource("5_85var")]
+visible = false
+layout_mode = 1
+
 [node name="Tabbar" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 10
@@ -34,49 +39,57 @@ grow_horizontal = 2
 [node name="Spells" type="Button" parent="Tabbar"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.481337
-anchor_top = 0.2
-anchor_right = 0.481337
-anchor_bottom = 0.2
-offset_left = -26.5
+anchor_left = 0.411555
+anchor_top = 0.204082
+anchor_right = 0.411892
+anchor_bottom = 0.204082
+offset_left = -26.1118
 offset_right = 26.5
 offset_bottom = 31.0
 grow_horizontal = 2
 text = "Spells"
-metadata/_edit_use_anchors_ = true
 
 [node name="Wands" type="Button" parent="Tabbar"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.540365
-anchor_top = 0.2
-anchor_right = 0.540365
-anchor_bottom = 0.2
+anchor_left = 0.47092
+anchor_top = 0.163265
+anchor_right = 0.47092
+anchor_bottom = 0.163265
 offset_left = -30.5
+offset_top = 2.0
 offset_right = 30.5
-offset_bottom = 31.0
+offset_bottom = 33.0
 grow_horizontal = 2
 text = "Wands"
-metadata/_edit_use_anchors_ = true
 
 [node name="Artifacts" type="Button" parent="Tabbar"]
 layout_mode = 0
-offset_left = 664.0
+offset_left = 584.0
 offset_top = 10.0
-offset_right = 738.0
+offset_right = 658.0
 offset_bottom = 41.0
 text = "Artifacts"
 
 [node name="Quit" type="Button" parent="Tabbar"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 8.0
+offset_top = 10.0
 offset_right = 72.0
-offset_bottom = 39.0
+offset_bottom = 41.0
 text = "Quit
 "
+
+[node name="Upgrades" type="Button" parent="Tabbar"]
+layout_mode = 0
+offset_left = 664.0
+offset_top = 10.0
+offset_right = 746.0
+offset_bottom = 41.0
+text = "Upgrades"
 
 [connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]
 [connection signal="pressed" from="Tabbar/Artifacts" to="." method="_on_artifacts_pressed"]
 [connection signal="pressed" from="Tabbar/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Tabbar/Upgrades" to="." method="_on_upgrades_pressed"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://oko6g6intlvw"]
 
-[ext_resource type="Script" path="res://GUI/Menu/NewGame.gd" id="1_g78rx"]
+[ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
 
 [node name="NewGame" type="Control"]
 layout_mode = 3

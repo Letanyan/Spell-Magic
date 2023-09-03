@@ -50,7 +50,7 @@ func _ready():
 	animation_map["run"] = "Fast_Flying"
 	animation_map["idle"] = "Flying_Idle"
 	animation_map["walk"] = "Flying_Idle"
-	animation_map["attack"] = "HEadbutt"
+	animation_map["attack"] = "Headbutt"
 #	animation_is_nested = true
 
 func attack_state() -> AttackPatterns:

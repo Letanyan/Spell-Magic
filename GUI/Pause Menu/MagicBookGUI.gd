@@ -176,13 +176,13 @@ func update_spells_list():
 	for i in range(spells_list.size()):
 		var spell: Spell = spells_list[i]
 		var q0 := filter_options.is_empty()
-		q0 = q0 or filter_options.get(0, false) and spell.element == Spell.Element.FIRE
-		q0 = q0 or filter_options.get(1, false) and spell.element == Spell.Element.WATER
-		q0 = q0 or filter_options.get(2, false) and spell.element == Spell.Element.AIR
-		q0 = q0 or filter_options.get(3, false) and spell.element == Spell.Element.ROCK
-		q0 = q0 or filter_options.get(4, false) and spell.element == Spell.Element.ICE
-		q0 = q0 or filter_options.get(5, false) and spell.element == Spell.Element.ELECTRIC
-		q0 = q0 or filter_options.get(6, false) and spell.element == Spell.Element.VOID
+		q0 = q0 or filter_options.get(0, false) and spell.element == Spell.Element.VOID
+		q0 = q0 or filter_options.get(1, false) and spell.element == Spell.Element.FIRE
+		q0 = q0 or filter_options.get(2, false) and spell.element == Spell.Element.WATER
+		q0 = q0 or filter_options.get(3, false) and spell.element == Spell.Element.AIR
+		q0 = q0 or filter_options.get(4, false) and spell.element == Spell.Element.ROCK
+		q0 = q0 or filter_options.get(5, false) and spell.element == Spell.Element.ICE
+		q0 = q0 or filter_options.get(6, false) and spell.element == Spell.Element.ELECTRIC
 		q0 = q0 or filter_options.get(7, false) and spell.is_bomb
 		q0 = q0 or filter_options.get(8, false) and spell.follow
 		q0 = q0 or filter_options.get(9, false) and (spell.chain != null and spell.chain.name == filter_chain)

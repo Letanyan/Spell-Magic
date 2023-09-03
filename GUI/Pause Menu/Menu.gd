@@ -1,11 +1,12 @@
 class_name Menu
 extends Control
 
-enum Kind { ANY, SPELLS, WANDS }
+enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES }
 
 @onready var magic_book: MagicBookGUI = $MagicBook
 @onready var wand_case: Control = $WandCase
 @onready var artifacts: ArtifactsGUI = $Artifacts
+@onready var upgrades: UpgradesGUI = $Upgrades
 var current_index := 0
 
 var is_showing: bool = false
@@ -15,6 +16,7 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _settings: Wor
 	magic_book.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
+	upgrades.world_settings = _settings
 	settings = _settings
 
 # Called when the node enters the scene tree for the first time.
@@ -28,7 +30,7 @@ func _process(delta):
 
 func update_index(index):
 	save_changes()
-	const MAX_INDEX = 2 # used for wrap around
+	const MAX_INDEX = 3 # used for wrap around
 	if index < 0:
 		current_index = MAX_INDEX
 	elif index > MAX_INDEX:
@@ -38,10 +40,12 @@ func update_index(index):
 	magic_book.visible = false
 	wand_case.visible = false
 	artifacts.visible = false
+	upgrades.visible = false
 	match index:
 		0: magic_book.visible = true
 		1: wand_case.visible = true
 		2: artifacts.visible = true
+		3: upgrades.visible = true
 
 func _on_spells_pressed():
 	update_index(0)
@@ -50,8 +54,10 @@ func _on_wands_pressed():
 	update_index(1)
 
 func _on_artifacts_pressed() -> void:
-	artifacts.update_list_and_grid()
 	update_index(2)
+	
+func _on_upgrades_pressed() -> void:
+	update_index(3)
 
 func open(kind: Kind):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -65,6 +71,11 @@ func open(kind: Kind):
 			_on_spells_pressed()
 		Kind.WANDS:
 			_on_wands_pressed()
+		Kind.ARTIFACTS:
+			artifacts.update_list_and_grid()
+			_on_artifacts_pressed()
+		Kind.UPGRADES:
+			_on_upgrades_pressed()
 
 func close():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -86,6 +97,8 @@ func save_changes():
 		wand_case.case.save(settings.world_name)
 	if artifacts.visible:
 		artifacts.artifacts.save(settings.world_name)
+	if upgrades.visible:
+		upgrades.world_settings.save()
 
 
 func _on_quit_pressed() -> void:

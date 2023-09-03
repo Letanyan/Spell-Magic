@@ -1,0 +1,409 @@
+[gd_scene load_steps=2 format=3 uid="uid://lbdwf4vi4u7w"]
+
+[ext_resource type="Script" path="res://GUI/Pause Menu/UpgradesGUI.gd" id="1_sw7ix"]
+
+[node name="Upgrades" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sw7ix")
+
+[node name="container" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 56.0
+offset_right = 1144.0
+offset_bottom = 640.0
+
+[node name="max_H" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 520.0
+offset_right = 145.0
+offset_bottom = 546.0
+text = "Max Health"
+
+[node name="current" type="Label" parent="container/max_H"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 320.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_H"]
+layout_mode = 0
+offset_left = 328.0
+offset_right = 428.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_H/upgrade"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="max_P" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 208.0
+offset_right = 142.0
+offset_bottom = 234.0
+text = "Max P"
+
+[node name="current" type="Label" parent="container/max_P"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 320.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_P"]
+layout_mode = 0
+offset_left = 328.0
+offset_right = 428.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_P/upgrade"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="max_M" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 400.0
+offset_right = 137.0
+offset_bottom = 426.0
+text = "Max M"
+
+[node name="current" type="Label" parent="container/max_M"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 320.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_M"]
+layout_mode = 0
+offset_left = 328.0
+offset_right = 428.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_M/upgrade"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="max_spell_count" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 80.0
+offset_right = 200.0
+offset_bottom = 106.0
+text = "Max Spells in Book"
+
+[node name="current" type="Label" parent="container/max_spell_count"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 320.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_spell_count"]
+layout_mode = 0
+offset_left = 328.0
+offset_right = 428.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_spell_count/upgrade"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="elements" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 144.0
+offset_right = 128.0
+offset_bottom = 170.0
+text = "Elements
+"
+
+[node name="Rock" type="Button" parent="container/elements"]
+layout_mode = 0
+offset_left = 528.0
+offset_right = 628.0
+offset_bottom = 31.0
+text = "Rock"
+
+[node name="cost" type="Label" parent="container/elements/Rock"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Ice" type="Button" parent="container/elements"]
+layout_mode = 0
+offset_left = 640.0
+offset_right = 740.0
+offset_bottom = 31.0
+text = "Ice"
+
+[node name="cost" type="Label" parent="container/elements/Ice"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 100.0
+offset_bottom = 58.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Electric" type="Button" parent="container/elements"]
+layout_mode = 0
+offset_left = 752.0
+offset_right = 852.0
+offset_bottom = 31.0
+text = "Electric"
+
+[node name="cost" type="Label" parent="container/elements/Electric"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 100.0
+offset_bottom = 58.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Fire" type="Button" parent="container/elements"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 292.0
+offset_bottom = 31.0
+text = "Fire"
+
+[node name="cost" type="Label" parent="container/elements/Fire"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Water" type="Button" parent="container/elements"]
+layout_mode = 0
+offset_left = 304.0
+offset_right = 404.0
+offset_bottom = 31.0
+text = "Water"
+
+[node name="cost" type="Label" parent="container/elements/Water"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 100.0
+offset_bottom = 58.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Air" type="Button" parent="container/elements"]
+layout_mode = 0
+offset_left = 416.0
+offset_right = 516.0
+offset_bottom = 31.0
+text = "Air"
+
+[node name="cost" type="Label" parent="container/elements/Air"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 100.0
+offset_bottom = 58.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="max_N" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 336.0
+offset_right = 215.0
+offset_bottom = 362.0
+text = "Max N"
+
+[node name="current" type="Label" parent="container/max_N"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 320.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_N"]
+layout_mode = 0
+offset_left = 328.0
+offset_right = 428.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_N/upgrade"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="max_T" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 272.0
+offset_right = 203.0
+offset_bottom = 298.0
+text = "Max T"
+
+[node name="current" type="Label" parent="container/max_T"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 320.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_T"]
+layout_mode = 0
+offset_left = 328.0
+offset_right = 428.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_T/upgrade"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="chain_methods" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 464.0
+offset_right = 176.0
+offset_bottom = 490.0
+text = "Chain Methods"
+
+[node name="at_start" type="Button" parent="container/chain_methods"]
+layout_mode = 0
+offset_left = 192.0
+offset_right = 292.0
+offset_bottom = 31.0
+text = "At Start"
+
+[node name="cost" type="Label" parent="container/chain_methods/at_start"]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 100.0
+offset_bottom = 57.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="at_end" type="Button" parent="container/chain_methods"]
+layout_mode = 0
+offset_left = 304.0
+offset_right = 404.0
+offset_bottom = 31.0
+text = "At End"
+
+[node name="cost" type="Label" parent="container/chain_methods/at_end"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 100.0
+offset_bottom = 58.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="on_hit" type="Button" parent="container/chain_methods"]
+layout_mode = 0
+offset_left = 416.0
+offset_right = 516.0
+offset_bottom = 31.0
+text = "On Hit"
+
+[node name="cost" type="Label" parent="container/chain_methods/on_hit"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 100.0
+offset_bottom = 58.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Currency" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 824.0
+offset_top = 8.0
+offset_right = 1120.0
+offset_bottom = 34.0
+text = "Currency: 0"
+horizontal_alignment = 2
+
+[connection signal="pressed" from="container/max_H/upgrade" to="." method="_on_max_H_upgrade_pressed"]
+[connection signal="pressed" from="container/max_P/upgrade" to="." method="_on_max_P_upgrade_pressed"]
+[connection signal="pressed" from="container/max_M/upgrade" to="." method="_on_max_M_upgrade_pressed"]
+[connection signal="pressed" from="container/max_spell_count/upgrade" to="." method="_on_max_spell_count_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Rock" to="." method="_on_rock_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Ice" to="." method="_on_ice_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Electric" to="." method="_on_electric_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Fire" to="." method="_on_fire_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Water" to="." method="_on_water_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Air" to="." method="_on_air_upgrade_pressed"]
+[connection signal="pressed" from="container/max_N/upgrade" to="." method="_on_max_N_upgrade_pressed"]
+[connection signal="pressed" from="container/max_T/upgrade" to="." method="_on_max_T_upgrade_pressed"]
+[connection signal="pressed" from="container/chain_methods/at_start" to="." method="_on_at_start_upgrade_pressed"]
+[connection signal="pressed" from="container/chain_methods/at_end" to="." method="_on_at_end_upgrade_pressed"]
+[connection signal="pressed" from="container/chain_methods/on_hit" to="." method="_on_on_hit_upgrade_pressed"]

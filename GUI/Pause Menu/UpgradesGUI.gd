@@ -1,0 +1,212 @@
+class_name UpgradesGUI
+extends Control
+
+var world_settings: WorldSettings:
+	set(value):
+		world_settings = value
+		update_state()
+
+@onready var max_P_current: Label = $container/max_P/current
+@onready var max_P_upgrade: Button = $container/max_P/upgrade
+@onready var max_P_cost: Label = $container/max_P/upgrade/cost
+
+@onready var max_N_current: Label = $container/max_N/current
+@onready var max_N_upgrade: Button = $container/max_N/upgrade
+@onready var max_N_cost: Label = $container/max_N/upgrade/cost
+
+@onready var max_M_current: Label = $container/max_M/current
+@onready var max_M_upgrade: Button = $container/max_M/upgrade
+@onready var max_M_cost: Label = $container/max_M/upgrade/cost
+
+@onready var max_T_current: Label = $container/max_T/current
+@onready var max_T_upgrade: Button = $container/max_T/upgrade
+@onready var max_T_cost: Label = $container/max_T/upgrade/cost
+
+@onready var max_H_current: Label = $container/max_H/current
+@onready var max_H_upgrade: Button = $container/max_H/upgrade
+@onready var max_H_cost: Label = $container/max_H/upgrade/cost
+
+@onready var max_spell_count_current: Label = $container/max_spell_count/current
+@onready var max_spell_count_upgrade: Button = $container/max_spell_count/upgrade
+@onready var max_spell_count_cost: Label = $container/max_spell_count/upgrade/cost
+
+@onready var element_fire_upgrade: Button = $container/elements/Fire
+@onready var element_fire_cost: Label = $container/elements/Fire/cost
+@onready var element_water_upgrade: Button = $container/elements/Water
+@onready var element_water_cost: Label = $container/elements/Water/cost
+@onready var element_air_upgrade: Button = $container/elements/Air
+@onready var element_air_cost: Label = $container/elements/Air/cost
+@onready var element_rock_upgrade: Button = $container/elements/Rock
+@onready var element_rock_cost: Label = $container/elements/Rock/cost
+@onready var element_ice_upgrade: Button = $container/elements/Ice
+@onready var element_ice_cost: Label = $container/elements/Ice/cost
+@onready var element_electric_upgrade: Button = $container/elements/Electric
+@onready var element_electric_cost: Label = $container/elements/Electric/cost
+
+@onready var chain_at_start_upgrade: Button = $container/chain_methods/at_start
+@onready var chain_at_start_cost: Label = $container/chain_methods/at_start/cost
+@onready var chain_at_end_upgrade: Button = $container/chain_methods/at_end
+@onready var chain_at_end_cost: Label = $container/chain_methods/at_end/cost
+@onready var chain_on_hit_upgrade: Button = $container/chain_methods/on_hit
+@onready var chain_on_hit_cost: Label = $container/chain_methods/on_hit/cost
+
+@onready var currency: Label = $container/Currency
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+func update_state():
+	max_spell_count_current.text = str(world_settings.max_spells_in_book)
+	max_P_current.text = str(world_settings.max_P)
+	max_N_current.text = str(world_settings.max_N)
+	max_T_current.text = str(world_settings.max_T)
+	max_M_current.text = str(world_settings.max_mana)
+	max_H_current.text = str(world_settings.max_health)
+	
+	element_fire_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.FIRE)
+	element_water_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.WATER)
+	element_air_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.AIR)
+	element_rock_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.ROCK)
+	element_ice_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.ICE)
+	element_electric_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.ELECTRIC)
+	
+	chain_at_start_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.START)
+	chain_at_end_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
+	chain_on_hit_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
+	
+	max_spell_count_cost.text = str(world_settings.cost_spells_in_book)
+	max_P_cost.text = str(world_settings.cost_P)
+	max_N_cost.text = str(world_settings.cost_N)
+	max_T_cost.text = str(world_settings.cost_T)
+	max_M_cost.text = str(world_settings.cost_mana)
+	max_H_cost.text = str(world_settings.cost_health)
+	
+	element_fire_cost.text = str(world_settings.cost_spell_element)
+	element_water_cost.text = str(world_settings.cost_spell_element)
+	element_air_cost.text = str(world_settings.cost_spell_element)
+	element_rock_cost.text = str(world_settings.cost_spell_element)
+	element_ice_cost.text = str(world_settings.cost_spell_element)
+	element_electric_cost.text = str(world_settings.cost_spell_element)
+	
+	chain_at_start_cost.text = str(world_settings.cost_chain_method)
+	chain_at_end_cost.text = str(world_settings.cost_chain_method)
+	chain_on_hit_cost.text = str(world_settings.cost_chain_method)
+	
+	currency.text = "Currency: " + str(world_settings.currency)
+	
+	max_spell_count_upgrade.disabled = world_settings.max_spells_in_book >= WorldSettings.LIMIT_SPELLS_IN_BOOK
+	max_P_upgrade.disabled = world_settings.max_P >= WorldSettings.LIMIT_P
+	max_T_upgrade.disabled = world_settings.max_T >= WorldSettings.LIMIT_T
+	max_N_upgrade.disabled = world_settings.max_N >= WorldSettings.LIMIT_N
+	max_H_upgrade.disabled = world_settings.max_health >= WorldSettings.LIMIT_HEALTH
+	max_M_upgrade.disabled = world_settings.max_mana >= WorldSettings.LIMIT_MANA
+	
+	max_spell_count_upgrade.text = "+ " + str(world_settings.upgrade_spells_in_book)
+	max_P_upgrade.text = "+ " + str(world_settings.upgrade_P)
+	max_T_upgrade.text = "+ " + str(world_settings.upgrade_T)
+	max_N_upgrade.text = "+ " + str(world_settings.upgrade_N)
+	max_H_upgrade.text = "+ " + str(world_settings.upgrade_health)
+	max_M_upgrade.text = "+ " + str(world_settings.upgrade_mana)
+	
+
+func can_upgrade(cost) -> bool:
+	if world_settings.currency >= cost:
+		world_settings.currency -= cost
+		return true
+	return false
+
+func _on_max_spell_count_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spells_in_book) and world_settings.max_spells_in_book < world_settings.LIMIT_SPELLS_IN_BOOK:
+		return
+	world_settings.max_spells_in_book += world_settings.upgrade_spells_in_book
+	update_state()
+
+func _on_fire_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spell_element):
+		return
+	world_settings.has_spell_element |= (1 << Spell.Element.FIRE)
+	update_state()
+
+func _on_water_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spell_element):
+		return
+	world_settings.has_spell_element |= (1 << Spell.Element.WATER)
+	update_state()
+	
+func _on_air_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spell_element):
+		return
+	world_settings.has_spell_element |= (1 << Spell.Element.AIR)
+	update_state()
+
+func _on_rock_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spell_element):
+		return
+	world_settings.has_spell_element |= (1 << Spell.Element.ROCK)
+	update_state()
+
+func _on_ice_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spell_element):
+		return
+	world_settings.has_spell_element |= (1 << Spell.Element.ICE)
+	update_state()
+
+func _on_electric_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_spell_element):
+		return
+	world_settings.has_spell_element |= (1 << Spell.Element.ELECTRIC)
+	update_state()
+
+func _on_max_P_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_P) and world_settings.max_P < world_settings.LIMIT_P:
+		return
+	world_settings.max_P += world_settings.upgrade_P
+	update_state()
+
+func _on_max_T_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_T) and world_settings.max_T < world_settings.LIMIT_T:
+		return
+	world_settings.max_T += world_settings.upgrade_T
+	update_state()
+
+func _on_max_N_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_N) and world_settings.max_N < world_settings.LIMIT_N:
+		return
+	world_settings.max_N += world_settings.upgrade_N
+	update_state()
+
+func _on_max_M_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_mana) and world_settings.max_mana < world_settings.LIMIT_MANA:
+		return
+	world_settings.max_mana += world_settings.upgrade_mana
+	update_state()
+
+func _on_at_start_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_chain_method):
+		return
+	world_settings.has_chain_method &= Spell.ChainCastKind.START
+	update_state()
+
+func _on_at_end_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_chain_method):
+		return
+	world_settings.has_chain_method &= Spell.ChainCastKind.END
+	update_state()
+
+func _on_on_hit_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_chain_method):
+		return
+	world_settings.has_chain_method &= Spell.ChainCastKind.HIT
+	update_state()
+
+func _on_max_H_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_health) and world_settings.max_health < world_settings.LIMIT_HEALTH:
+		return
+	world_settings.max_health += world_settings.upgrade_health
+	update_state()
+	

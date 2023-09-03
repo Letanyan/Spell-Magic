@@ -34,7 +34,7 @@ func _on_wand_index_item_selected(index):
 		container.remove_child(c)
 		
 	for w in wand.keys:
-		var item = load("res://GUI/WandCaseShelfItem.tscn").instantiate()
+		var item = load("res://GUI/Pause Menu/WandCaseShelfItem.tscn").instantiate()
 		item.store_key = w
 		item.store_action = wand.keys[w].kind
 		item.store_spell = wand.keys[w].spell
