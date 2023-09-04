@@ -848,15 +848,15 @@ _data = {
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dem0g"]
-size = Vector3(1, 0.9, 0.5)
+size = Vector3(4, 3.6, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_66vvs"]
-size = Vector3(1, 0.9, 0.5)
+size = Vector3(4, 3.6, 2)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_i0mxv"]
 resource_local_to_scene = true
 material = ExtResource("2_71cnk")
-size = Vector2(1, 0.1)
+size = Vector2(2, 0.2)
 orientation = 2
 
 [node name="bat" type="CharacterBody3D"]
@@ -865,7 +865,7 @@ collision_mask = 593
 script = ExtResource("1_wipqu")
 
 [node name="CharacterArmature" type="Node3D" parent="."]
-transform = Transform3D(-0.25, 0, 2.18557e-08, 0, 0.25, 0, -2.18557e-08, 0, -0.25, 0, 0, 0)
+transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, 0, 0, 0)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="CharacterArmature"]
 bones/0/name = "Root"
@@ -970,11 +970,11 @@ libraries = {
 }
 
 [node name="Collision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 shape = SubResource("BoxShape3D_dem0g")
 
 [node name="WetArea" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 collision_layer = 36
 collision_mask = 256
 
@@ -982,5 +982,5 @@ collision_mask = 256
 shape = SubResource("BoxShape3D_66vvs")
 
 [node name="HealthBar" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.14597, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.97495, 0)
 mesh = SubResource("PlaneMesh_i0mxv")

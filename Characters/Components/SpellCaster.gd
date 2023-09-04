@@ -56,9 +56,12 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	var track := Vector3.ZERO # position of enemy that was hit by raycast 
 	match entity:
 		Entity.PLAYER:
-			var cam_pivot := body.get_node("CamPivot")
-			var cam := body.get_node("CamPivot/Arm/Lens")
-			cdir = ((body.global_position + cam_pivot.position) - cam.global_position).normalized() # direction from camera
+#			var cam_pivot := body.get_node("CamPivot")
+#			var cam := body.get_node("CamPivot/Arm/Lens")
+#			cdir = ((body.global_position + cam_pivot.position) - cam.global_position).normalized() # direction from camera
+			var port := body.get_viewport()
+			var pos := port.get_visible_rect().size / 2.0
+			cdir = port.get_camera_3d().project_ray_normal(pos)
 			track = get_direction_to_tracking(body, p, cdir)
 			
 		Entity.ENEMY:
@@ -145,11 +148,16 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	var node_to_track = null
 	var cdir = Vector3.ZERO
 	if entity == Entity.PLAYER:
-		var cam_pivot := body.get_node("CamPivot")
-		var cam := body.get_node("CamPivot/Arm/Lens")
-		var base: Vector3 = body.global_position + cam_pivot.position
-		cdir = (base - cam.global_position).normalized()
-		node_to_track = Navigator.get_ray_intersection(body, cam.global_position - Vector3.UP, cam.global_position - Vector3.UP + cdir * 500)
+#		var cam_pivot := body.get_node("CamPivot")
+#		var cam := body.get_node("CamPivot/Arm/Lens")
+#		var base: Vector3 = body.global_position + cam_pivot.position
+#		cdir = (base - cam.global_position).normalized()
+		
+		var port := body.get_viewport()
+		var pos := port.get_visible_rect().size / 2.0
+		var coord := port.get_camera_3d().project_ray_origin(pos)
+		cdir = port.get_camera_3d().project_ray_normal(pos)
+		node_to_track = Navigator.get_ray_intersection(body, coord, coord + cdir * 500)
 		if node_to_track == null:
 			node_to_track = cdir
 	elif entity == Entity.PROJECTILE:

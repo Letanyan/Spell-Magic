@@ -4,7 +4,7 @@
 
 [sub_resource type="Gradient" id="Gradient_dmsxn"]
 offsets = PackedFloat32Array(0, 0.177143)
-colors = PackedColorArray(1, 1, 0.12549, 1, 1, 1, 1, 0)
+colors = PackedColorArray(0.454902, 0, 0.501961, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ya8v8"]
 gradient = SubResource("Gradient_dmsxn")
@@ -21,7 +21,7 @@ initial_velocity_min = 1.0
 initial_velocity_max = 1.0
 angle_min = 360.0
 angle_max = 360.0
-color = Color(1, 1, 0, 1)
+color = Color(1, 0, 1, 1)
 color_ramp = SubResource("GradientTexture1D_ya8v8")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o7bmt"]

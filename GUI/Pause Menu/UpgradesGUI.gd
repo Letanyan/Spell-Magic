@@ -79,25 +79,25 @@ func update_state():
 	chain_at_end_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
 	chain_on_hit_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
-	max_spell_count_cost.text = str(world_settings.cost_spells_in_book)
-	max_P_cost.text = str(world_settings.cost_P)
-	max_N_cost.text = str(world_settings.cost_N)
-	max_T_cost.text = str(world_settings.cost_T)
-	max_M_cost.text = str(world_settings.cost_mana)
-	max_H_cost.text = str(world_settings.cost_health)
+	max_spell_count_cost.text = "$" + str(world_settings.cost_spells_in_book)
+	max_P_cost.text = "$" + str(world_settings.cost_P)
+	max_N_cost.text = "$" + str(world_settings.cost_N)
+	max_T_cost.text = "$" + str(world_settings.cost_T)
+	max_M_cost.text = "$" + str(world_settings.cost_mana)
+	max_H_cost.text = "$" + str(world_settings.cost_health)
 	
-	element_fire_cost.text = str(world_settings.cost_spell_element)
-	element_water_cost.text = str(world_settings.cost_spell_element)
-	element_air_cost.text = str(world_settings.cost_spell_element)
-	element_rock_cost.text = str(world_settings.cost_spell_element)
-	element_ice_cost.text = str(world_settings.cost_spell_element)
-	element_electric_cost.text = str(world_settings.cost_spell_element)
+	element_fire_cost.text = "$" + str(world_settings.cost_spell_element)
+	element_water_cost.text = "$" + str(world_settings.cost_spell_element)
+	element_air_cost.text = "$" + str(world_settings.cost_spell_element)
+	element_rock_cost.text = "$" + str(world_settings.cost_spell_element)
+	element_ice_cost.text = "$" + str(world_settings.cost_spell_element)
+	element_electric_cost.text = "$" + str(world_settings.cost_spell_element)
 	
-	chain_at_start_cost.text = str(world_settings.cost_chain_method)
-	chain_at_end_cost.text = str(world_settings.cost_chain_method)
-	chain_on_hit_cost.text = str(world_settings.cost_chain_method)
+	chain_at_start_cost.text = "$" + str(world_settings.cost_chain_method)
+	chain_at_end_cost.text = "$" + str(world_settings.cost_chain_method)
+	chain_on_hit_cost.text = "$" + str(world_settings.cost_chain_method)
 	
-	currency.text = "Currency: " + str(world_settings.currency)
+	currency.text = "Currency: $" + str(world_settings.currency)
 	
 	max_spell_count_upgrade.disabled = world_settings.max_spells_in_book >= WorldSettings.LIMIT_SPELLS_IN_BOOK
 	max_P_upgrade.disabled = world_settings.max_P >= WorldSettings.LIMIT_P

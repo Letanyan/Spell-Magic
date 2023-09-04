@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://lbdwf4vi4u7w"]
+[gd_scene load_steps=4 format=3 uid="uid://lbdwf4vi4u7w"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/UpgradesGUI.gd" id="1_sw7ix"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_o3kcg"]
+color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_6wbvy"]
+color = Color(1, 1, 1, 1)
+vertical = true
 
 [node name="Upgrades" type="Control"]
 layout_mode = 3
@@ -20,16 +27,16 @@ offset_bottom = 640.0
 
 [node name="max_H" type="Label" parent="container"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 520.0
-offset_right = 145.0
-offset_bottom = 546.0
+offset_left = 616.0
+offset_top = 424.0
+offset_right = 705.0
+offset_bottom = 450.0
 text = "Max Health"
 
 [node name="current" type="Label" parent="container/max_H"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 320.0
+offset_left = 160.0
+offset_right = 288.0
 offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
@@ -37,17 +44,17 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_H"]
 layout_mode = 0
-offset_left = 328.0
-offset_right = 428.0
+offset_left = 296.0
+offset_right = 396.0
 offset_bottom = 31.0
 text = "+ 5
 "
 
 [node name="cost" type="Label" parent="container/max_H/upgrade"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -55,15 +62,15 @@ vertical_alignment = 1
 [node name="max_P" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 56.0
-offset_top = 208.0
+offset_top = 256.0
 offset_right = 142.0
-offset_bottom = 234.0
+offset_bottom = 282.0
 text = "Max P"
 
 [node name="current" type="Label" parent="container/max_P"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 320.0
+offset_left = 159.0
+offset_right = 287.0
 offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
@@ -71,51 +78,53 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_P"]
 layout_mode = 0
-offset_left = 328.0
-offset_right = 428.0
+offset_left = 295.0
+offset_right = 395.0
 offset_bottom = 31.0
 text = "+ 5
 "
 
 [node name="cost" type="Label" parent="container/max_P/upgrade"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="max_M" type="Label" parent="container"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 400.0
-offset_right = 137.0
-offset_bottom = 426.0
+offset_left = 616.0
+offset_top = 344.0
+offset_right = 697.0
+offset_bottom = 370.0
 text = "Max M"
 
 [node name="current" type="Label" parent="container/max_M"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 320.0
-offset_bottom = 26.0
+offset_left = 160.0
+offset_top = -1.0
+offset_right = 288.0
+offset_bottom = 25.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_M"]
 layout_mode = 0
-offset_left = 328.0
-offset_right = 428.0
-offset_bottom = 31.0
+offset_left = 296.0
+offset_top = -1.0
+offset_right = 396.0
+offset_bottom = 30.0
 text = "+ 5
 "
 
 [node name="cost" type="Label" parent="container/max_M/upgrade"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -130,8 +139,8 @@ text = "Max Spells in Book"
 
 [node name="current" type="Label" parent="container/max_spell_count"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 320.0
+offset_left = 160.0
+offset_right = 288.0
 offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
@@ -139,17 +148,17 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_spell_count"]
 layout_mode = 0
-offset_left = 328.0
-offset_right = 428.0
+offset_left = 296.0
+offset_right = 396.0
 offset_bottom = 31.0
 text = "+ 5
 "
 
 [node name="cost" type="Label" parent="container/max_spell_count/upgrade"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = 104.0
+offset_right = 204.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -157,16 +166,16 @@ vertical_alignment = 1
 [node name="elements" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 56.0
-offset_top = 144.0
+offset_top = 160.0
 offset_right = 128.0
-offset_bottom = 170.0
+offset_bottom = 186.0
 text = "Elements
 "
 
 [node name="Rock" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 528.0
-offset_right = 628.0
+offset_left = 495.0
+offset_right = 595.0
 offset_bottom = 31.0
 text = "Rock"
 
@@ -181,8 +190,8 @@ vertical_alignment = 1
 
 [node name="Ice" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 640.0
-offset_right = 740.0
+offset_left = 607.0
+offset_right = 707.0
 offset_bottom = 31.0
 text = "Ice"
 
@@ -197,8 +206,8 @@ vertical_alignment = 1
 
 [node name="Electric" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 752.0
-offset_right = 852.0
+offset_left = 719.0
+offset_right = 819.0
 offset_bottom = 31.0
 text = "Electric"
 
@@ -213,8 +222,8 @@ vertical_alignment = 1
 
 [node name="Fire" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 292.0
+offset_left = 159.0
+offset_right = 259.0
 offset_bottom = 31.0
 text = "Fire"
 
@@ -229,8 +238,8 @@ vertical_alignment = 1
 
 [node name="Water" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 304.0
-offset_right = 404.0
+offset_left = 271.0
+offset_right = 371.0
 offset_bottom = 31.0
 text = "Water"
 
@@ -245,8 +254,8 @@ vertical_alignment = 1
 
 [node name="Air" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 416.0
-offset_right = 516.0
+offset_left = 383.0
+offset_right = 483.0
 offset_bottom = 31.0
 text = "Air"
 
@@ -262,49 +271,51 @@ vertical_alignment = 1
 [node name="max_N" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 56.0
-offset_top = 336.0
+offset_top = 344.0
 offset_right = 215.0
-offset_bottom = 362.0
+offset_bottom = 370.0
 text = "Max N"
 
 [node name="current" type="Label" parent="container/max_N"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 320.0
-offset_bottom = 26.0
+offset_left = 159.0
+offset_top = -1.0
+offset_right = 287.0
+offset_bottom = 25.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_N"]
 layout_mode = 0
-offset_left = 328.0
-offset_right = 428.0
-offset_bottom = 31.0
+offset_left = 295.0
+offset_top = -1.0
+offset_right = 395.0
+offset_bottom = 30.0
 text = "+ 5
 "
 
 [node name="cost" type="Label" parent="container/max_N/upgrade"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="max_T" type="Label" parent="container"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 272.0
-offset_right = 203.0
-offset_bottom = 298.0
+offset_left = 616.0
+offset_top = 256.0
+offset_right = 763.0
+offset_bottom = 282.0
 text = "Max T"
 
 [node name="current" type="Label" parent="container/max_T"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 320.0
+offset_left = 160.0
+offset_right = 288.0
 offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
@@ -312,17 +323,17 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_T"]
 layout_mode = 0
-offset_left = 328.0
-offset_right = 428.0
+offset_left = 296.0
+offset_right = 396.0
 offset_bottom = 31.0
 text = "+ 5
 "
 
 [node name="cost" type="Label" parent="container/max_T/upgrade"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -330,15 +341,15 @@ vertical_alignment = 1
 [node name="chain_methods" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 56.0
-offset_top = 464.0
+offset_top = 424.0
 offset_right = 176.0
-offset_bottom = 490.0
+offset_bottom = 450.0
 text = "Chain Methods"
 
 [node name="at_start" type="Button" parent="container/chain_methods"]
 layout_mode = 0
-offset_left = 192.0
-offset_right = 292.0
+offset_left = 159.0
+offset_right = 259.0
 offset_bottom = 31.0
 text = "At Start"
 
@@ -353,8 +364,8 @@ vertical_alignment = 1
 
 [node name="at_end" type="Button" parent="container/chain_methods"]
 layout_mode = 0
-offset_left = 304.0
-offset_right = 404.0
+offset_left = 271.0
+offset_right = 371.0
 offset_bottom = 31.0
 text = "At End"
 
@@ -369,8 +380,8 @@ vertical_alignment = 1
 
 [node name="on_hit" type="Button" parent="container/chain_methods"]
 layout_mode = 0
-offset_left = 416.0
-offset_right = 516.0
+offset_left = 383.0
+offset_right = 483.0
 offset_bottom = 31.0
 text = "On Hit"
 
@@ -391,6 +402,51 @@ offset_right = 1120.0
 offset_bottom = 34.0
 text = "Currency: 0"
 horizontal_alignment = 2
+
+[node name="HSeparator6" type="HSeparator" parent="container"]
+offset_top = 28.0
+offset_right = 1136.0
+offset_bottom = 60.0
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator5" type="HSeparator" parent="container"]
+offset_top = 472.0
+offset_right = 1136.0
+offset_bottom = 504.0
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator2" type="HSeparator" parent="container"]
+offset_top = 208.0
+offset_right = 1136.0
+offset_bottom = 240.0
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator3" type="HSeparator" parent="container"]
+offset_top = 384.0
+offset_right = 1136.0
+offset_bottom = 416.0
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator" type="HSeparator" parent="container"]
+layout_mode = 0
+offset_top = 120.0
+offset_right = 1136.0
+offset_bottom = 152.0
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator4" type="HSeparator" parent="container"]
+offset_top = 296.0
+offset_right = 1136.0
+offset_bottom = 328.0
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="VSeparator" type="VSeparator" parent="container"]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 224.0
+offset_right = 600.0
+offset_bottom = 488.0
+theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
 [connection signal="pressed" from="container/max_H/upgrade" to="." method="_on_max_H_upgrade_pressed"]
 [connection signal="pressed" from="container/max_P/upgrade" to="." method="_on_max_P_upgrade_pressed"]
