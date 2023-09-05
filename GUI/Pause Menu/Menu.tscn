@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://b185ji0u0kuxo"]
+[gd_scene load_steps=7 format=3 uid="uid://b185ji0u0kuxo"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/Menu.gd" id="1_op10b"]
 [ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="1_ufdyg"]
+[ext_resource type="Theme" uid="uid://dojuv2wrram1y" path="res://GUI/MinimalUI/MinimalUI.tres" id="1_w6mb2"]
 [ext_resource type="PackedScene" uid="uid://b1jnhv7ky6aap" path="res://GUI/Pause Menu/WandCase.tscn" id="2_4jtlr"]
 [ext_resource type="PackedScene" uid="uid://c0eqpohrkp1r7" path="res://GUI/Pause Menu/Artifacts.tscn" id="4_setqv"]
 [ext_resource type="PackedScene" uid="uid://lbdwf4vi4u7w" path="res://GUI/Pause Menu/Upgrades.tscn" id="5_85var"]
@@ -13,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_w6mb2")
 script = ExtResource("1_op10b")
 
 [node name="MagicBook" parent="." instance=ExtResource("1_ufdyg")]
