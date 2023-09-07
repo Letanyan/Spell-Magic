@@ -17,7 +17,7 @@ func _process(delta: float) -> void:
 
 
 func _on_new_game_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Menu/NewGame.tscn")
+	get_tree().change_scene_to_file("res://GUI/Main Menu/NewGame.tscn")
 
 
 func _on_continue_pressed() -> void:
@@ -34,4 +34,4 @@ func _on_continue_pressed() -> void:
 
 
 func _on_load_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Menu/LoadGame.tscn")
+	get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")

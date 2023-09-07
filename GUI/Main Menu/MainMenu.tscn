@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://coiibq4rb4gvs"]
+[gd_scene load_steps=3 format=3 uid="uid://coiibq4rb4gvs"]
 
+[ext_resource type="Theme" uid="uid://dojuv2wrram1y" path="res://GUI/MinimalUI/MinimalUI.tres" id="1_1pj0h"]
 [ext_resource type="Script" path="res://GUI/Main Menu/MainMenu.gd" id="1_76i3t"]
 
 [node name="MainMenu" type="Control"]
@@ -9,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_1pj0h")
 script = ExtResource("1_76i3t")
 
 [node name="Continue" type="Button" parent="."]

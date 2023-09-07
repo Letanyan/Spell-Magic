@@ -1,7 +1,7 @@
 class_name GridTile
 extends Control
 
-@export var color: Color
+@export var color: Color = Color(0, 0.0, 0.0, 0.5)
 var artifact: Artifact
 var highlighted: Dictionary # int -> bool
 var warning: Dictionary # int -> Color

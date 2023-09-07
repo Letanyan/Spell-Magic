@@ -12,7 +12,7 @@ func _process(delta: float) -> void:
 
 
 func _on_cancel_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")
+	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
 
 func _on_create_pressed() -> void:

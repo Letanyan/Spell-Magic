@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=3 format=3 uid="uid://oko6g6intlvw"]
 
+[ext_resource type="Theme" uid="uid://dojuv2wrram1y" path="res://GUI/MinimalUI/MinimalUI.tres" id="1_7uwfa"]
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
 
 [node name="NewGame" type="Control"]
@@ -9,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_7uwfa")
 script = ExtResource("1_g78rx")
 
 [node name="SaveName" type="TextEdit" parent="."]
