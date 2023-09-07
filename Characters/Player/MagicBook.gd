@@ -17,7 +17,6 @@ func read(world_name: String):
 	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.READ)
 	last_use = {}
 	ignore_cooldown = false
-	settings = null
 	if not file:
 		spells = []
 		return 
@@ -28,6 +27,8 @@ func read(world_name: String):
 	for d in data:
 		var s = Spell.new()
 		s.load_dict(d)
+		s.limit_r = settings.max_r
+		s.limit_v = settings.max_v
 		spells.append(s)
 	
 func _init():
@@ -63,3 +64,7 @@ func rebuild_spell_chains():
 					s.chain = t
 					break
 			
+func update_spell_limits(v: float, r: float):
+	for s in spells:
+		s.limit_v = v
+		s.limit_r = r

@@ -21,7 +21,10 @@ var has_chain_method := 0
 var cost_chain_method := 100
 
 var upgrade_r := 0.1
-var max_r := 0.1
+var max_r := 0.1:
+	set(value):
+		max_r = value
+		max_radius_updated.emit(value)
 var cost_r := 10
 const LIMIT_r := 5.0
 var upgrade_T := 1.0
@@ -40,6 +43,13 @@ var upgrade_P := 5
 var max_P := 1
 var cost_P := 10
 const LIMIT_P := 1000
+var upgrade_v := 2.5
+var max_v := 2.5:
+	set(value):
+		max_v = value
+		max_velocity_updated.emit(value)
+var cost_v := 10
+const LIMIT_v := 100.0
 
 var upgrade_mana := 10.0
 var max_mana := 100.0
@@ -58,6 +68,9 @@ const LIMIT_SPELLS_IN_BOOK := 200
 var enemies_killed := {} # {World.Enemy: int}
 var currency := 1000
 
+signal max_velocity_updated(value: float)
+signal max_radius_updated(value: float)
+
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) != 0
 
@@ -74,14 +87,14 @@ func save():
 	file.store_var({
 		"name": world_name, "player": {"position": player_position}, "seed": sed,
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
-		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P,
+		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P, "max_v": max_v,
 		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
 		
 		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
-		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P,
+		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P, "cost_v": cost_v,
 		"cost_mana": cost_mana, "cost_health": cost_health, "cost_spells_in_book": cost_spells_in_book,
 		
-		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P,
+		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P, "upgrade_v": upgrade_v,
 		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
 		
 		"enemies_killed": enemies_killed,
@@ -102,6 +115,7 @@ func read(filename: String):
 	max_N = data.get("max_N", 1)
 	max_D = data.get("max_D", 0.0)
 	max_P = data.get("max_P", 1.0)
+	max_v = data.get("max_v", 2.5)
 	max_mana = data.get("max_mana", 100.0)
 	max_health = data.get("max_health", 100.0)
 	max_spells_in_book = data.get("max_spells_in_book", 4)
@@ -113,6 +127,7 @@ func read(filename: String):
 	cost_N = data.get("cost_N", 10)
 	cost_D = data.get("cost_D", 10)
 	cost_P = data.get("cost_P", 10)
+	cost_v = data.get("cost_v", 10)
 	cost_mana = data.get("cost_mana", 10)
 	cost_health = data.get("cost_health", 10)
 	cost_spells_in_book = data.get("cost_spells_in_book", 25)
@@ -122,6 +137,7 @@ func read(filename: String):
 	upgrade_N = data.get("upgrade_N", 1)
 	upgrade_D = data.get("upgrade_D", 1.0)
 	upgrade_P = data.get("upgrade_P", 5)
+	upgrade_v = data.get("upgrade_v", 2.5)
 	upgrade_mana = data.get("upgrade_mana", 10.0)
 	upgrade_health = data.get("upgrade_health", 10.0)
 	upgrade_spells_in_book = data.get("upgrade_spells_in_book", 2)

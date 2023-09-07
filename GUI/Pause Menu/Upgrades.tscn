@@ -341,9 +341,9 @@ vertical_alignment = 1
 [node name="chain_methods" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 56.0
-offset_top = 424.0
+offset_top = 512.0
 offset_right = 176.0
-offset_bottom = 450.0
+offset_bottom = 538.0
 text = "Chain Methods"
 
 [node name="at_start" type="Button" parent="container/chain_methods"]
@@ -445,8 +445,75 @@ layout_mode = 0
 offset_left = 544.0
 offset_top = 224.0
 offset_right = 600.0
-offset_bottom = 488.0
+offset_bottom = 584.0
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
+
+[node name="max_r" type="Label" parent="container"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 424.0
+offset_right = 215.0
+offset_bottom = 450.0
+text = "Max R"
+
+[node name="current" type="Label" parent="container/max_r"]
+offset_left = 159.0
+offset_top = -1.0
+offset_right = 287.0
+offset_bottom = 25.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_r"]
+offset_left = 295.0
+offset_top = -1.0
+offset_right = 395.0
+offset_bottom = 30.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_r/upgrade"]
+layout_mode = 0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="max_v" type="Label" parent="container"]
+offset_left = 616.0
+offset_top = 520.0
+offset_right = 775.0
+offset_bottom = 546.0
+text = "Max Velocity"
+
+[node name="current" type="Label" parent="container/max_v"]
+offset_left = 159.0
+offset_top = -1.0
+offset_right = 287.0
+offset_bottom = 25.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/max_v"]
+offset_left = 295.0
+offset_top = -1.0
+offset_right = 395.0
+offset_bottom = 30.0
+text = "+ 5
+"
+
+[node name="cost" type="Label" parent="container/max_v/upgrade"]
+layout_mode = 0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="container/max_H/upgrade" to="." method="_on_max_H_upgrade_pressed"]
 [connection signal="pressed" from="container/max_P/upgrade" to="." method="_on_max_P_upgrade_pressed"]
@@ -463,3 +530,5 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 [connection signal="pressed" from="container/chain_methods/at_start" to="." method="_on_at_start_upgrade_pressed"]
 [connection signal="pressed" from="container/chain_methods/at_end" to="." method="_on_at_end_upgrade_pressed"]
 [connection signal="pressed" from="container/chain_methods/on_hit" to="." method="_on_on_hit_upgrade_pressed"]
+[connection signal="pressed" from="container/max_r/upgrade" to="." method="_on_max_R_upgrade_pressed"]
+[connection signal="pressed" from="container/max_v/upgrade" to="." method="_on_max_v_upgrade_pressed"]

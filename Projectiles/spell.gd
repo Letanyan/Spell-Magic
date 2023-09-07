@@ -45,6 +45,9 @@ var charge: float
 
 var id: int = -1
 
+var limit_r: float = WorldSettings.LIMIT_r
+var limit_v: float = WorldSettings.LIMIT_v
+
 func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
 	x = _x
 	y = _y
@@ -76,6 +79,8 @@ func duplicate() -> Spell:
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
+	result.limit_r = limit_r
+	result.limit_v = limit_v
 	return result
 	
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
@@ -84,12 +89,23 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	result.y = y_expr.compute(vars)
 	result.z = z_expr.compute(vars)
 	
+	if vars.has("old_pos") and not only_delta:
+		var old_pos = vars["old_pos"]
+		var t = vars.get("t", 0.0)
+		var origin_len = vars.get("origin", Vector3.ZERO).length()
+		var velocity = (old_pos - result) * 60.0
+		result = result.normalized() * (clampf(velocity.length(), 0, limit_v) * t + origin_len)
+	vars["old_pos"] = result
+	if not vars.has("origin") and not only_delta:
+		vars["origin"] = result
+	
 	if not only_delta:
 		result += (vars["rel_pos"] if follow else vars["abs_pos"])
+	
 	return result
 	
 func calculate_size(vars: Dictionary) -> float:
-	var result := clampf(r_expr.compute(vars), 0.05, 10)
+	var result := clampf(r_expr.compute(vars), 0.05, limit_r)
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:

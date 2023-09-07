@@ -29,9 +29,16 @@ func setup(_settings: WorldSettings) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	book = MagicBook.new()
-	book.read(settings.world_name)
 	book.settings = settings
+	book.read(settings.world_name)
 	book.rebuild_spell_chains()
+	
+	settings.max_velocity_updated.connect(func(v):
+		book.update_spell_limits(v, settings.max_r)
+	)
+	settings.max_radius_updated.connect(func(r):
+		book.update_spell_limits(settings.max_v, r)
+	)
 	
 	case = WandCase.new()
 	case.read(settings.world_name)

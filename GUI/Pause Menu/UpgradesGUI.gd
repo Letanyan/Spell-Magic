@@ -10,6 +10,10 @@ var world_settings: WorldSettings:
 @onready var max_P_upgrade: Button = $container/max_P/upgrade
 @onready var max_P_cost: Label = $container/max_P/upgrade/cost
 
+@onready var max_v_current: Label = $container/max_v/current
+@onready var max_v_upgrade: Button = $container/max_v/upgrade
+@onready var max_v_cost: Label = $container/max_v/upgrade/cost
+
 @onready var max_N_current: Label = $container/max_N/current
 @onready var max_N_upgrade: Button = $container/max_N/upgrade
 @onready var max_N_cost: Label = $container/max_N/upgrade/cost
@@ -17,6 +21,10 @@ var world_settings: WorldSettings:
 @onready var max_M_current: Label = $container/max_M/current
 @onready var max_M_upgrade: Button = $container/max_M/upgrade
 @onready var max_M_cost: Label = $container/max_M/upgrade/cost
+
+@onready var max_r_current: Label = $container/max_r/current
+@onready var max_r_upgrade: Button = $container/max_r/upgrade
+@onready var max_r_cost: Label = $container/max_r/upgrade/cost
 
 @onready var max_T_current: Label = $container/max_T/current
 @onready var max_T_upgrade: Button = $container/max_T/upgrade
@@ -63,9 +71,11 @@ func _process(delta: float) -> void:
 func update_state():
 	max_spell_count_current.text = str(world_settings.max_spells_in_book)
 	max_P_current.text = str(world_settings.max_P)
+	max_v_current.text = str(world_settings.max_v)
 	max_N_current.text = str(world_settings.max_N)
 	max_T_current.text = str(world_settings.max_T)
 	max_M_current.text = str(world_settings.max_mana)
+	max_r_current.text = str(world_settings.max_r)
 	max_H_current.text = str(world_settings.max_health)
 	
 	element_fire_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.FIRE)
@@ -81,9 +91,11 @@ func update_state():
 	
 	max_spell_count_cost.text = "$" + str(world_settings.cost_spells_in_book)
 	max_P_cost.text = "$" + str(world_settings.cost_P)
+	max_v_cost.text = "$" + str(world_settings.cost_v)
 	max_N_cost.text = "$" + str(world_settings.cost_N)
 	max_T_cost.text = "$" + str(world_settings.cost_T)
 	max_M_cost.text = "$" + str(world_settings.cost_mana)
+	max_r_cost.text = "$" + str(world_settings.cost_r)
 	max_H_cost.text = "$" + str(world_settings.cost_health)
 	
 	element_fire_cost.text = "$" + str(world_settings.cost_spell_element)
@@ -101,17 +113,21 @@ func update_state():
 	
 	max_spell_count_upgrade.disabled = world_settings.max_spells_in_book >= WorldSettings.LIMIT_SPELLS_IN_BOOK
 	max_P_upgrade.disabled = world_settings.max_P >= WorldSettings.LIMIT_P
+	max_v_upgrade.disabled = world_settings.max_v >= WorldSettings.LIMIT_v
 	max_T_upgrade.disabled = world_settings.max_T >= WorldSettings.LIMIT_T
 	max_N_upgrade.disabled = world_settings.max_N >= WorldSettings.LIMIT_N
 	max_H_upgrade.disabled = world_settings.max_health >= WorldSettings.LIMIT_HEALTH
 	max_M_upgrade.disabled = world_settings.max_mana >= WorldSettings.LIMIT_MANA
+	max_r_upgrade.disabled = world_settings.max_r >= WorldSettings.LIMIT_r
 	
 	max_spell_count_upgrade.text = "+ " + str(world_settings.upgrade_spells_in_book)
 	max_P_upgrade.text = "+ " + str(world_settings.upgrade_P)
+	max_v_upgrade.text = "+ " + str(world_settings.upgrade_v)
 	max_T_upgrade.text = "+ " + str(world_settings.upgrade_T)
 	max_N_upgrade.text = "+ " + str(world_settings.upgrade_N)
 	max_H_upgrade.text = "+ " + str(world_settings.upgrade_health)
 	max_M_upgrade.text = "+ " + str(world_settings.upgrade_mana)
+	max_r_upgrade.text = "+ " + str(world_settings.upgrade_r)
 	
 
 func can_upgrade(cost) -> bool:
@@ -167,6 +183,12 @@ func _on_max_P_upgrade_pressed() -> void:
 		return
 	world_settings.max_P += world_settings.upgrade_P
 	update_state()
+	
+func _on_max_v_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_v) and world_settings.max_v < world_settings.LIMIT_v:
+		return
+	world_settings.max_v += world_settings.upgrade_v
+	update_state()
 
 func _on_max_T_upgrade_pressed() -> void:
 	if not can_upgrade(world_settings.cost_T) and world_settings.max_T < world_settings.LIMIT_T:
@@ -184,6 +206,12 @@ func _on_max_M_upgrade_pressed() -> void:
 	if not can_upgrade(world_settings.cost_mana) and world_settings.max_mana < world_settings.LIMIT_MANA:
 		return
 	world_settings.max_mana += world_settings.upgrade_mana
+	update_state()
+	
+func _on_max_R_upgrade_pressed() -> void:
+	if not can_upgrade(world_settings.cost_r) and world_settings.max_r < world_settings.LIMIT_r:
+		return
+	world_settings.max_r += world_settings.upgrade_r
 	update_state()
 
 func _on_at_start_upgrade_pressed() -> void:
