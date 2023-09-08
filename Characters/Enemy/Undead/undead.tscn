@@ -1,9 +1,9 @@
-[gd_scene load_steps=22 format=3 uid="uid://cqvqvhk36ldhe"]
+[gd_scene load_steps=24 format=3 uid="uid://cqvqvhk36ldhe"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Undead/undead.gd" id="1_mdj1x"]
 [ext_resource type="Material" uid="uid://d2brs1yndser8" path="res://Characters/Enemy/Undead/skin.tres" id="2_2p0i4"]
 [ext_resource type="Material" uid="uid://cma3sosowprss" path="res://Characters/Enemy/Undead/cloth.tres" id="3_x7eml"]
-[ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="4_rjwb8"]
+[ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/health_bar.tscn" id="4_m60sc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tjkv7"]
 size = Vector3(0.7, 1.9, 0.3)
@@ -245,10 +245,75 @@ _data = {
 "undead_walk": SubResource("Animation_t63ca")
 }
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_k2wmf"]
+[sub_resource type="Shader" id="Shader_gf6xx"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,unshaded;
+uniform vec4 foreground : source_color;
+uniform vec4 background : source_color;
+uniform float percentage;
+uniform float corner_radius;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(normalize(cross(INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0), MODEL_MATRIX[3]);
+	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	if (UV.x < percentage) {
+		ALBEDO = foreground.rgb * albedo_tex.rgb;
+		ALPHA = foreground.a;
+	} else {
+		ALBEDO = background.rgb * albedo_tex.rgb;
+		ALPHA = background.a;
+	}
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s004u"]
 resource_local_to_scene = true
-material = ExtResource("4_rjwb8")
-size = Vector2(1, 0.1)
+render_priority = 0
+shader = SubResource("Shader_gf6xx")
+shader_parameter/foreground = Color(0, 1, 0, 0.827451)
+shader_parameter/background = Color(0, 0, 0, 0.623529)
+shader_parameter/percentage = 0.5
+shader_parameter/corner_radius = 8.0
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Plane(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_64x53"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_s004u")
+size = Vector2(2, 0.2)
 orientation = 2
 
 [node name="enemy" type="CharacterBody3D"]
@@ -342,6 +407,5 @@ libraries = {
 "": SubResource("AnimationLibrary_o6bo6")
 }
 
-[node name="HealthBar" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.96067, 0)
-mesh = SubResource("PlaneMesh_k2wmf")
+[node name="HealthBar" parent="." instance=ExtResource("4_m60sc")]
+mesh = SubResource("PlaneMesh_64x53")

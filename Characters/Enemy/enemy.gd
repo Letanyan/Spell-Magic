@@ -16,6 +16,7 @@ var vitals: Vitals
 var knowledge: Knowledge
 var hormones: Hormones
 var current_path: PathStyle
+var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
 
 var animation_map: Dictionary
 
@@ -26,6 +27,7 @@ var index_in_population: int = -1
 signal vitals_signal
 signal on_death(artifact_drop: Artifact)
 @onready var health_bar: MeshInstance3D = $HealthBar
+@onready var level_text: Label3D = $HealthBar/Level
 
 var stored_entity_knowledge: Dictionary = {}
 
@@ -37,6 +39,7 @@ func _ready():
 	animation_map = {}
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	choices = {}
+	level_text.text = str(int(level))
 	if not self is Human:
 		animator = $AnimationPlayer
 		

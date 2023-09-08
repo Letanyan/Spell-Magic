@@ -1,7 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://dw8a544srleke"]
+[gd_scene load_steps=12 format=3 uid="uid://dw8a544srleke"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Mole/mole.gd" id="1_m74wm"]
-[ext_resource type="Material" uid="uid://br37q8cfmx7in" path="res://Characters/Enemy/health_bar_material.tres" id="2_s41hr"]
+[ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/health_bar.tscn" id="2_jvdp3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hp82j"]
 size = Vector3(1, 5, 0.2)
@@ -28,10 +28,75 @@ material = SubResource("StandardMaterial3D_btq68")
 radius = 1.0
 height = 0.5
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_deayx"]
+[sub_resource type="Shader" id="Shader_gf6xx"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,unshaded;
+uniform vec4 foreground : source_color;
+uniform vec4 background : source_color;
+uniform float percentage;
+uniform float corner_radius;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(normalize(cross(INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0), MODEL_MATRIX[3]);
+	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	if (UV.x < percentage) {
+		ALBEDO = foreground.rgb * albedo_tex.rgb;
+		ALPHA = foreground.a;
+	} else {
+		ALBEDO = background.rgb * albedo_tex.rgb;
+		ALPHA = background.a;
+	}
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u407m"]
 resource_local_to_scene = true
-material = ExtResource("2_s41hr")
-size = Vector2(1, 0.1)
+render_priority = 0
+shader = SubResource("Shader_gf6xx")
+shader_parameter/foreground = Color(0, 1, 0, 0.827451)
+shader_parameter/background = Color(0, 0, 0, 0.623529)
+shader_parameter/percentage = 0.5
+shader_parameter/corner_radius = 8.0
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Plane(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_yj7gm"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_u407m")
+size = Vector2(2, 0.2)
 orientation = 2
 
 [node name="mole" type="CharacterBody3D"]
@@ -61,6 +126,6 @@ mesh = SubResource("SphereMesh_jbygy")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
-[node name="HealthBar" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.14465, 0)
-mesh = SubResource("PlaneMesh_deayx")
+[node name="HealthBar" parent="." instance=ExtResource("2_jvdp3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
+mesh = SubResource("PlaneMesh_yj7gm")

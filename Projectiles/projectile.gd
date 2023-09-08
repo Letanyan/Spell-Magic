@@ -394,7 +394,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 				if v == Vector3.UP:
 					v = Vector3(0.1, 0.9, 0.1).normalized()
 				var dir : Vector3 = global_position + v * 10
-				look_at(dir)
+				if not Vector3.UP.cross(dir - global_position).is_zero_approx():
+					look_at(dir)
 			
 		Spell.Element.ICE:
 			position = p

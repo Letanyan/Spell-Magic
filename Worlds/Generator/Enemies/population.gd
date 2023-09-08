@@ -106,6 +106,8 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 			result = walker.instantiate()
 			result.name = "Walker" + str(rng.randi())
 			
+	result.level = Vector2(x, y).length() / 1000.0
+	result.level += rng.randi_range(0, result.level * 0.2)
 	result.on_death.connect(on_enemy_death_update)
 	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
