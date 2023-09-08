@@ -32,6 +32,7 @@ func setup(_settings: WorldSettings) -> void:
 	book.settings = settings
 	book.read(settings.world_name)
 	book.rebuild_spell_chains()
+	book.ignore_cooldown = true
 	
 	settings.max_velocity_updated.connect(func(v):
 		book.update_spell_limits(v, settings.max_r)
@@ -87,7 +88,7 @@ func _ready():
 	player.position.x = 800
 	player.position.y = 700
 	player.position.z = 2300
-#	player.spell_caster.ignore_mana_cost = true
+	player.spell_caster.ignore_mana_cost = true
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()

@@ -91,11 +91,13 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	
 	if vars.has("old_pos") and not only_delta:
 		var old_pos = vars["old_pos"]
+		vars["old_pos"] = result
 		var t = vars.get("t", 0.0)
-		var origin_len = vars.get("origin", Vector3.ZERO).length()
-		var velocity = (old_pos - result) * 60.0
-		result = result.normalized() * (clampf(velocity.length(), 0, limit_v) * t + origin_len)
-	vars["old_pos"] = result
+		var origin = vars.get("origin", Vector3.ZERO)
+		var velocity = (result - old_pos) * (1 / vars.get("__frame_time", 60.0))
+		result = velocity.normalized() * (clampf(velocity.length(), 0, limit_v) * t) + origin
+	else:
+		vars["old_pos"] = result
 	if not vars.has("origin") and not only_delta:
 		vars["origin"] = result
 	
