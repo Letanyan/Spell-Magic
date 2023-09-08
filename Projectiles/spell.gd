@@ -47,6 +47,8 @@ var id: int = -1
 
 var limit_r: float = WorldSettings.LIMIT_r
 var limit_v: float = WorldSettings.LIMIT_v
+var buff_r: float = 0.0
+var buff_v: float = 0.0
 
 func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
 	x = _x
@@ -81,6 +83,8 @@ func duplicate() -> Spell:
 	result.name = name
 	result.limit_r = limit_r
 	result.limit_v = limit_v
+	result.buff_r = buff_r
+	result.buff_v = buff_v
 	return result
 	
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
@@ -95,7 +99,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 		var t = vars.get("t", 0.0)
 		var origin = vars.get("origin", Vector3.ZERO)
 		var velocity = (result - old_pos) * (1 / vars.get("__frame_time", 60.0))
-		result = velocity.normalized() * (clampf(velocity.length(), 0, limit_v) * t) + origin
+		result = velocity.normalized() * (clampf(velocity.length(), 0, limit_v + buff_v) * t) + origin
 	else:
 		vars["old_pos"] = result
 	if not vars.has("origin") and not only_delta:
@@ -107,7 +111,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	return result
 	
 func calculate_size(vars: Dictionary) -> float:
-	var result := clampf(r_expr.compute(vars), 0.05, limit_r)
+	var result := clampf(r_expr.compute(vars), 0.05, limit_r + buff_r)
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:

@@ -20,6 +20,9 @@ func connect_to_grid(artifact: Artifact, coord: Vector2):
 func unconnect_from_grid(artifact: Artifact):
 	connected.erase(artifact)
 	build_active_options()
+	
+func is_empty() -> bool:
+	return connected.is_empty()
 
 func get_artifact_by_name(name: String) -> Artifact:
 	for c in collection:

@@ -127,7 +127,7 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2):
 			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			return
 			
-	if check_count <= 0:
+	if check_count <= 0 and not artifacts.is_empty():
 		return
 		
 	artifacts.connect_to_grid(artifact, coord)

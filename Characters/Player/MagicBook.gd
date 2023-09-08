@@ -53,8 +53,12 @@ func use_spell(spell: Spell):
 	
 func can_use_spell(spell: Spell) -> bool:
 	var elapsed = Time.get_unix_time_from_system() - last_use.get(spell.name, 0)
-	return is_equal_approx(elapsed, spell.cooldown) or elapsed > spell.cooldown or ignore_cooldown
-	
+	var cond: bool = is_equal_approx(elapsed, spell.cooldown) or elapsed > spell.cooldown or ignore_cooldown
+	cond = cond and spell.count <= settings.max_N + settings.buff_N
+	cond = cond and spell.duration <= settings.max_T + settings.buff_T
+	cond = cond and spell.power <= settings.max_P + settings.buff_P
+	cond = cond and spell.actual_mana_cost() <= settings.max_mana + settings.buff_mana
+	return cond
 
 func rebuild_spell_chains():
 	for s in spells:
@@ -68,3 +72,8 @@ func update_spell_limits(v: float, r: float):
 	for s in spells:
 		s.limit_v = v
 		s.limit_r = r
+		
+func update_spell_buff_limits(v: float, r: float):
+	for s in spells:
+		s.buff_v = v
+		s.buff_r = r

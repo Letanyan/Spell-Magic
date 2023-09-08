@@ -247,6 +247,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 			
 			if not body.has_node("freeze_effect"):
 				visual_effect = load("res://Projectiles/explosion/ice_exp.tscn").instantiate()
+				visual_effect.name = "freeze_effect"
 				visual_source = visual_effect.get_node("source")
 				visual_source.process_material.emission_ring_radius = r
 				visual_source.amount = amount

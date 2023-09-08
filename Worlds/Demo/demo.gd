@@ -34,6 +34,7 @@ func setup(_settings: WorldSettings) -> void:
 	book.rebuild_spell_chains()
 	book.ignore_cooldown = true
 	
+	book.update_spell_limits(settings.max_v, settings.max_r)
 	settings.max_velocity_updated.connect(func(v):
 		book.update_spell_limits(v, settings.max_r)
 	)
@@ -47,9 +48,8 @@ func setup(_settings: WorldSettings) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
-#	for i in ["flower", "feather", "goblet", "sands", "crown"]:
-#		var artifact := Artifact.new()
-#		artifact.name = i
+#	for i in ["flower 2", "feather 2", "goblet 2", "sands 2", "crown 2"]:
+#		var artifact := Artifact.new(i)
 #		artifact.top = Artifact.Option.make_random()
 #		artifact.bottom = Artifact.Option.make_random()
 #		artifact.left = Artifact.Option.make_random()
@@ -89,6 +89,12 @@ func _ready():
 	player.position.y = 700
 	player.position.z = 2300
 	player.spell_caster.ignore_mana_cost = true
+	player.spell_velocity_was_buffed.connect(func(v):
+		book.update_spell_buff_limits(v, settings.buff_r)
+	)
+	player.spell_radius_was_buffed.connect(func(r):
+		book.update_spell_buff_limits(settings.buff_v, r)
+	)
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
@@ -189,6 +195,7 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
 	terrain_update_interval += delta
+	
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
 		update_terrain(state)

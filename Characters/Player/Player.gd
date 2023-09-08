@@ -22,6 +22,8 @@ var is_menu_showing: Callable
 signal player_moved
 signal vital_update
 signal spell_was_cast
+signal spell_velocity_was_buffed
+signal spell_radius_was_buffed
 
 var vitals: Vitals
 
@@ -176,6 +178,86 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						vitals.mana.apply(-amount.x)
 					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
 						vitals.mana.apply(vitals.mana.value * -amount.y / 100.0)
+				elif effect_el == Artifact.Element.POWER:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.max_P * amount.y / 100.0
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						value = -magic_book.settings.max_P * amount.y / 100.0
+					magic_book.settings.buff_P += value
+					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_P -= value)
+				elif effect_el == Artifact.Element.COUNT:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.max_N * amount.y / 100.0
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						value = -magic_book.settings.max_N * amount.y / 100.0
+					magic_book.settings.buff_N += value
+					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_N -= value)
+				elif effect_el == Artifact.Element.DURATION:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.max_T * amount.y / 100.0
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						value = -magic_book.settings.max_T * amount.y / 100.0
+					magic_book.settings.buff_T += value
+					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_T -= value)
+				elif effect_el == Artifact.Element.MANA_BUMP:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.max_mana * amount.y / 100.0
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						value = -magic_book.settings.max_mana * amount.y / 100.0
+					magic_book.settings.buff_mana += value
+					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_mana -= value)
+				elif effect_el == Artifact.Element.SPELL_VELOCITY:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.max_v * amount.y / 100.0
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						value = -magic_book.settings.max_v * amount.y / 100.0
+					magic_book.settings.buff_v += value
+					spell_velocity_was_buffed.emit(magic_book.settings.buff_v)
+					get_tree().create_timer(duration).timeout.connect(func(): 
+						magic_book.settings.buff_v -= value
+						spell_velocity_was_buffed.emit(magic_book.settings.buff_v)
+					)
+				elif effect_el == Artifact.Element.SPELL_RADIUS:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.max_r * amount.x / 100.0
+					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+						value = -magic_book.settings.max_r * amount.x / 100.0
+					magic_book.settings.buff_r += value
+					spell_radius_was_buffed.emit(magic_book.settings.buff_r)
+					get_tree().create_timer(duration).timeout.connect(func(): 
+						magic_book.settings.buff_r -= value
+						spell_radius_was_buffed.emit(magic_book.settings.buff_r)
+					)
 				else:
 					if not spell_modifier.has(effect_el):
 						spell_modifier[effect_el] = Vector2.ZERO

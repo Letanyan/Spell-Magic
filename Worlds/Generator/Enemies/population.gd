@@ -31,8 +31,8 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location():
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-# probs: (prob: float -> value: Variant)
-# probs is a dictionary where each key has its 'value' as a probability of being chosen
+# probs: (prob: Variant -> float)
+# probs is a dictionary where each key has its 'value' as a value of being choosen relative to other siblings
 static func random_entity_from_distribution(r: float, probs: Dictionary, default = 0) -> Variant:
 	var keys := probs.keys()
 	if keys.size() == 0:
@@ -41,10 +41,14 @@ static func random_entity_from_distribution(r: float, probs: Dictionary, default
 	if keys.size() == 1:
 		return keys[0]
 		
+	var sum := 0.0
+	for n in probs.values():
+		sum += n
+		
 	var base := 0.0
 	for n in range(0, keys.size()):
 		var i = keys[n]
-		var next_base : float = base + probs[i]
+		var next_base : float = base + probs[i] / sum
 		if base <= r and r < next_base:
 			return i
 		base = next_base
