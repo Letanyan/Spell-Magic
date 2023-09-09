@@ -4,6 +4,7 @@ extends CharacterBody3D
 var movement_target_position: Vector3 = Vector3.ZERO
 
 var animator: AnimationPlayer
+var animation_finished_payload = {}
 
 var velocity_movement: VelocityMovement
 
@@ -42,6 +43,14 @@ func _ready():
 	level_text.text = str(int(level))
 	if not self is Human:
 		animator = $AnimationPlayer
+		animator.animation_finished.connect(handle_animation_finished)
+		
+func handle_animation_finished(title: String):
+	if animation_finished_payload.has(title):
+		var action = animation_finished_payload[title]
+		animation_finished_payload.erase(title)
+		action.call()
+		
 		
 func update_stored_entity_knowledge():
 	for e in stored_entity_knowledge:
@@ -59,11 +68,13 @@ func increment_ticks():
 	if invunerable > 0:
 		invunerable -= 1
 	
-func play_animation(animation: String, blend: float, wait_for_completion: bool, speed: float = 1.0):
+func play_animation(animation: String, blend: float, wait_for_completion = null):
 	var anim = animation_map.get(animation, "")
-	if anim != "":
+	if anim != "" and animation_finished_payload.is_empty():
 		if animator.current_animation.is_empty() or animator.current_animation_length - animator.current_animation_position < 0.1:
-			animator.play(anim, blend, speed)
+			if wait_for_completion != null:
+				animation_finished_payload[anim] = wait_for_completion
+			animator.play(anim, blend, 1.0)
 
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)
@@ -110,7 +121,7 @@ func _physics_process(delta):
 	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
 		var spell := attack_state().choose_spell(vitals, behaviour)
 		if spell != null:
-			play_animation("attack", 1.0, true)
+			play_animation("attack", 1.0)
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 
@@ -118,11 +129,11 @@ func _physics_process(delta):
 
 	if velocity != Vector3.ZERO:
 		if velocity.length() > 5:
-			play_animation("run", 1, false)
+			play_animation("run", 1)
 		else:
-			play_animation("walk", 1, false)
+			play_animation("walk", 1)
 	else:
-		play_animation("idle", 1, false)
+		play_animation("idle", 1)
 
 
 func cast_spell(insert: Callable, next_spell: Spell):
@@ -150,16 +161,18 @@ func die():
 	source.process_material.emission_box_extents = death_box()
 	
 	on_death.emit(get_node("."), drop_artifact())
-	
-	explosion.position = position
-	explosion.global_transform = global_transform
-	var world := get_parent_node_3d()
-	world.add_child(explosion)
-	source.emitting = true
-	spell_caster.free_particles()
-	queue_free()
-	await world.get_tree().create_timer(source.lifetime + 0.1).timeout
-	world.remove_child(explosion)
+		
+	play_animation("death", 1, func():
+		explosion.position = position
+		explosion.global_transform = global_transform
+		var world := get_parent_node_3d()
+		world.add_child(explosion)
+		source.emitting = true
+		spell_caster.free_particles()
+		queue_free()
+		await world.get_tree().create_timer(source.lifetime + 0.1).timeout
+		world.remove_child(explosion)
+	)
 	
 
 func update_vitals_display():

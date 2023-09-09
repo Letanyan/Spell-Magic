@@ -49,6 +49,12 @@ func _ready():
 		[ 2, 5, 3 ],
 		true
 	)
+	
+	animation_map["run"] = "Run"
+	animation_map["idle"] = "Idle"
+	animation_map["walk"] = "Walk"
+	animation_map["attack"] = "Weapon"
+	animation_map["death"] = "Death"
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:

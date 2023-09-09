@@ -14,6 +14,7 @@ var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: float = 0
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
+var on_hit_casts := {}
 
 var fixed_vars: Dictionary
 
@@ -175,14 +176,15 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				pass
 		Spell.Element.VOID:
 			if is_world or is_rock or is_world_object:
-				expire_now(self, body)
+				nothing(self, body)
 			elif (is_enemy or is_player) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.VOID, spell.power)
-				expire_now(self, body)
+				nothing(self, body)
 	
 	if not invunerable and dmg != {}:
-		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
+		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(body):
+			on_hit_casts[body] = true
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player:
@@ -223,7 +225,8 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				
 	
 	if not invunerable and dmg != {}:
-		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null:
+		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(area):
+			on_hit_casts[area] = true
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player:
