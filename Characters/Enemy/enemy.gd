@@ -174,7 +174,6 @@ func die():
 		world.remove_child(explosion)
 	)
 	
-
 func update_vitals_display():
 	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
 

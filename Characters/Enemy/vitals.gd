@@ -167,7 +167,11 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 	
 	if show_label:	
 		var lbl = load("res://Projectiles/explosion/BodyMessage.tscn").instantiate()
-		lbl.position.y = 2.0
+		var collision: CollisionShape3D = body.get_node("Collision")
+		if collision.shape is BoxShape3D:
+			lbl.position.y = collision.shape.size.y
+		elif collision.shape is SphereShape3D:
+			lbl.position.y = collision.shape.radius
 		lbl.text = str(int(amount))
 		body.add_child(lbl)
 		var clr = Spell.color_from_element(element)

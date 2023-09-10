@@ -19,6 +19,9 @@ var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 var is_menu_showing: Callable
 
+var animation_finished_payload = {}
+var animation_map: Dictionary
+
 signal player_moved
 signal vital_update
 signal spell_was_cast
@@ -35,6 +38,15 @@ func _ready():
 	emit_vitals_signal()
 	velocity = Vector3.ZERO
 	spell_caster.projectile_hit.connect(give_back_mana_after_hit)
+	animator.animation_finished.connect(handle_animation_finished)
+	animation_map = {}
+	animation_map["run"] = "Running"
+	animation_map["walk"] = "Walk"
+	animation_map["idle"] = "Idle"
+	animation_map["attack"] = "Attack"
+	animation_map["death"] = "Death"
+	animation_map["hit"] = "Hit"
+	
 
 func _input(event):
 	pass
@@ -60,6 +72,19 @@ func pan_camera(movement: Vector2):
 	if vitals.freeze.value > vitals.freeze.min_value:
 		vitals.wetness.apply(size / 75_000.0)
 
+func handle_animation_finished(title: String):
+	if animation_finished_payload.has(title):
+		var action = animation_finished_payload[title]
+		animation_finished_payload.erase(title)
+		action.call()
+
+func play_animation(animation: String, blend: float, wait_for_completion = null):
+	var anim = animation_map.get(animation, "")
+	if anim != "" and animation_finished_payload.is_empty():
+		if wait_for_completion != null:
+			animation_finished_payload[anim] = wait_for_completion
+		animator.play(anim, blend, 1.0)
+
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
 	
@@ -79,15 +104,15 @@ func _physics_process(delta):
 		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():
 				if velocity.length() < 1:
-					animator.play("Slow Running", 1)
+					play_animation("walk", 1)
 				else:
-					animator.play("Fast Running", 1)
+					play_animation("run", 1)
 		else:
 			if is_on_floor():
-				animator.play("Idle", 1)
+				play_animation("idle", 1)
 			
 		if not is_on_floor_only():
-			animator.play("Fast Running", 1)
+			play_animation("run", 1)
 			
 		if velocity:
 			var space := get_world_3d().space
@@ -127,6 +152,7 @@ func cast_spell(insert: Callable, next_spell: Spell):
 	for e in spell_modifier:
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
+	play_animation("attack", 1.0)
 	spell_caster.cast_spell(self, vitals, insert, new_spell)
 	emit_vitals_signal()
 	emit_spell_was_cast(next_spell)

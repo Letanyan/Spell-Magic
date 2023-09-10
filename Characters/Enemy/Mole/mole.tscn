@@ -1,7 +1,6 @@
-[gd_scene load_steps=30 format=3 uid="uid://csk3od634aod2"]
+[gd_scene load_steps=29 format=3 uid="uid://csk3od634aod2"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Mole/mole.gd" id="1_m74wm"]
-[ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/health_bar.tscn" id="2_jvdp3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_awhm0"]
 resource_name = "Monkroose_Main"
@@ -4538,7 +4537,7 @@ size = Vector3(1.5, 3, 1.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_86okx"]
 size = Vector3(1.5, 3, 1.5)
 
-[sub_resource type="Shader" id="Shader_naqd2"]
+[sub_resource type="Shader" id="Shader_gf6xx"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
 
 shader_type spatial;
@@ -4585,10 +4584,10 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u407m"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_evd2k"]
 resource_local_to_scene = true
 render_priority = 0
-shader = SubResource("Shader_naqd2")
+shader = SubResource("Shader_gf6xx")
 shader_parameter/foreground = Color(0, 1, 0, 0.827451)
 shader_parameter/background = Color(0, 0, 0, 0.623529)
 shader_parameter/percentage = 0.5
@@ -4603,9 +4602,9 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_bq3s4"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_qarff"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_u407m")
+material = SubResource("ShaderMaterial_evd2k")
 size = Vector2(2, 0.2)
 orientation = 2
 
@@ -4655,7 +4654,7 @@ bones/5/parent = 4
 bones/5/rest = Transform3D(1, -2.02206e-07, -1.64512e-06, -1.16556e-07, 0.981495, -0.191487, 1.6534e-06, 0.191487, 0.981495, -1.94403e-12, 0.298578, -8.77009e-09)
 bones/5/enabled = true
 bones/5/position = Vector3(-1.94403e-12, 0.298578, -8.77009e-09)
-bones/5/rotation = Quaternion(0.00982637, -8.32297e-07, 2.19743e-09, 0.999952)
+bones/5/rotation = Quaternion(0.0961896, -8.28473e-07, 2.15124e-08, 0.995363)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/name = "Neck"
 bones/6/parent = 5
@@ -4802,14 +4801,14 @@ bones/26/parent = 25
 bones/26/rest = Transform3D(0.943853, -0.330365, -6.70552e-08, 0.329818, 0.942289, 0.0575396, -0.019009, -0.054309, 0.998343, -8.01541e-09, 0.24245, -2.17289e-07)
 bones/26/enabled = true
 bones/26/position = Vector3(-8.01541e-09, 0.24245, -2.17289e-07)
-bones/26/rotation = Quaternion(-0.352085, 0.0399518, 0.261516, 0.897803)
+bones/26/rotation = Quaternion(-0.0283749, 0.00482238, 0.167482, 0.985455)
 bones/26/scale = Vector3(1, 1, 1)
 bones/27/name = "Pinky3.R"
 bones/27/parent = 26
 bones/27/rest = Transform3D(0.99985, 0.0168994, 0.003667, -0.0172927, 0.977108, 0.212043, 3.3353e-07, -0.212075, 0.977253, 1.13429e-08, 0.115946, 3.78263e-07)
 bones/27/enabled = true
 bones/27/position = Vector3(1.13429e-08, 0.115946, 3.78263e-07)
-bones/27/rotation = Quaternion(-0.624876, -0.0621056, -0.0610276, 0.775853)
+bones/27/rotation = Quaternion(-0.106641, 0.00092196, -0.00859736, 0.99426)
 bones/27/scale = Vector3(1, 1, 1)
 bones/28/name = "Middle1.R"
 bones/28/parent = 24
@@ -4823,14 +4822,14 @@ bones/29/parent = 28
 bones/29/rest = Transform3D(0.999577, 0.0290153, 0.00174384, -0.028668, 0.974144, 0.224102, 0.00480363, -0.224057, 0.974564, -9.66247e-09, 0.262723, 8.28295e-08)
 bones/29/enabled = true
 bones/29/position = Vector3(-9.66247e-09, 0.262723, 8.28295e-08)
-bones/29/rotation = Quaternion(-0.510454, -0.0201786, 0.0861193, 0.855344)
+bones/29/rotation = Quaternion(-0.112771, -0.000769943, -0.014515, 0.993515)
 bones/29/scale = Vector3(1, 1, 1)
 bones/30/name = "Middle3.R"
 bones/30/parent = 29
 bones/30/rest = Transform3D(0.999995, -0.00245959, 0.00203291, 0.00254108, 0.999152, -0.0411037, -0.00193008, 0.0411087, 0.999153, -6.67359e-08, 0.118643, 6.93877e-08)
 bones/30/enabled = true
 bones/30/position = Vector3(-6.67359e-08, 0.118643, 6.93877e-08)
-bones/30/rotation = Quaternion(-0.527099, -0.0349146, 0.0715488, 0.846066)
+bones/30/rotation = Quaternion(0.0205575, 0.000990958, 0.00125043, 0.999787)
 bones/30/scale = Vector3(1, 1, 1)
 bones/31/name = "Index1.R"
 bones/31/parent = 24
@@ -4844,14 +4843,14 @@ bones/32/parent = 31
 bones/32/rest = Transform3D(0.890754, 0.449148, -0.0694475, -0.453482, 0.888498, -0.0701765, 0.0301844, 0.0940032, 0.995114, 1.60773e-07, 0.289612, -1.84956e-07)
 bones/32/enabled = true
 bones/32/position = Vector3(1.60773e-07, 0.289612, -1.84956e-07)
-bones/32/rotation = Quaternion(-0.373965, -0.0142687, -0.143299, 0.916194)
+bones/32/rotation = Quaternion(0.0422539, -0.0256417, -0.232305, 0.971386)
 bones/32/scale = Vector3(1, 1, 1)
 bones/33/name = "Index3.R"
 bones/33/parent = 32
 bones/33/rest = Transform3D(0.999206, -0.0398443, 3.49944e-07, 0.0393763, 0.987472, 0.152804, -0.00608871, -0.152683, 0.988257, -5.14018e-08, 0.095403, 1.31686e-08)
 bones/33/enabled = true
 bones/33/position = Vector3(-5.14018e-08, 0.095403, 1.31686e-08)
-bones/33/rotation = Quaternion(-0.636407, -0.0269334, 0.160936, 0.753897)
+bones/33/rotation = Quaternion(-0.0766121, 0.00152706, 0.0198675, 0.996862)
 bones/33/scale = Vector3(1, 1, 1)
 bones/34/name = "Thumb1.R"
 bones/34/parent = 24
@@ -4865,7 +4864,7 @@ bones/35/parent = 34
 bones/35/rest = Transform3D(0.909936, 0.414749, 3.12179e-06, -0.414631, 0.909678, 0.0237961, 0.00986657, -0.0216542, 0.999717, 5.31474e-08, 0.279948, -4.57492e-08)
 bones/35/enabled = true
 bones/35/position = Vector3(5.31474e-08, 0.279948, -4.57492e-08)
-bones/35/rotation = Quaternion(-0.685943, -0.169033, -0.270985, 0.653817)
+bones/35/rotation = Quaternion(-0.0116282, -0.00252351, -0.212192, 0.977155)
 bones/35/scale = Vector3(1, 1, 1)
 bones/36/name = "UpperLeg.L"
 bones/36/parent = 2
@@ -4938,6 +4937,13 @@ collision_mask = 256
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 shape = SubResource("BoxShape3D_86okx")
 
-[node name="HealthBar" parent="." instance=ExtResource("2_jvdp3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
-mesh = SubResource("PlaneMesh_bq3s4")
+[node name="HealthBar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.16936, 0)
+mesh = SubResource("PlaneMesh_qarff")
+
+[node name="Level" type="Label3D" parent="HealthBar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+pixel_size = 0.01
+billboard = 2
+text = "1"
+outline_size = 4

@@ -1,7 +1,6 @@
-[gd_scene load_steps=31 format=3 uid="uid://xuojcxn1kkuf"]
+[gd_scene load_steps=30 format=3 uid="uid://xuojcxn1kkuf"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Walker/walker.gd" id="1_cx0va"]
-[ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/health_bar.tscn" id="4_g1mgq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uhpyg"]
 resource_name = "Yeti_Main"
@@ -4556,7 +4555,10 @@ _data = {
 [sub_resource type="BoxShape3D" id="BoxShape3D_622oo"]
 size = Vector3(1.5, 2.5, 1.5)
 
-[sub_resource type="Shader" id="Shader_lkqx3"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_8nfnt"]
+size = Vector3(1.5, 2.5, 1.5)
+
+[sub_resource type="Shader" id="Shader_gf6xx"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
 
 shader_type spatial;
@@ -4603,10 +4605,10 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lhryf"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yc7g6"]
 resource_local_to_scene = true
 render_priority = 0
-shader = SubResource("Shader_lkqx3")
+shader = SubResource("Shader_gf6xx")
 shader_parameter/foreground = Color(0, 1, 0, 0.827451)
 shader_parameter/background = Color(0, 0, 0, 0.623529)
 shader_parameter/percentage = 0.5
@@ -4621,14 +4623,11 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_37cji"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_ochil"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_lhryf")
+material = SubResource("ShaderMaterial_yc7g6")
 size = Vector2(2, 0.2)
 orientation = 2
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_8nfnt"]
-size = Vector3(1.5, 2.5, 1.5)
 
 [node name="undead" type="CharacterBody3D"]
 script = ExtResource("1_cx0va")
@@ -4951,10 +4950,6 @@ libraries = {
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
 shape = SubResource("BoxShape3D_622oo")
 
-[node name="HealthBar" parent="." instance=ExtResource("4_g1mgq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
-mesh = SubResource("PlaneMesh_37cji")
-
 [node name="WetArea" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
 collision_layer = 36
@@ -4962,3 +4957,14 @@ collision_mask = 256
 
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 shape = SubResource("BoxShape3D_8nfnt")
+
+[node name="HealthBar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.78243, 0)
+mesh = SubResource("PlaneMesh_ochil")
+
+[node name="Level" type="Label3D" parent="HealthBar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+pixel_size = 0.01
+billboard = 2
+text = "1"
+outline_size = 4
