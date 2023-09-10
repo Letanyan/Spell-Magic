@@ -5,6 +5,8 @@ var movement_target_position: Vector3 = Vector3.ZERO
 
 var animator: AnimationPlayer
 var animation_finished_payload = {}
+var last_animation_to_idle := []
+var last_animation_name := ""
 
 var velocity_movement: VelocityMovement
 
@@ -69,12 +71,34 @@ func increment_ticks():
 		invunerable -= 1
 	
 func play_animation(animation: String, blend: float, wait_for_completion = null):
+#	var anim = animation_map.get(animation, "")
+#	if anim != "" and animation_finished_payload.is_empty():
+##		if animator.current_animation.is_empty() or animator.current_animation_length - animator.current_animation_position < 0.1:
+#			if animation == "idle":
+#				animator.queue(anim)
+#				return
+#			if wait_for_completion != null:
+#				animation_finished_payload[anim] = wait_for_completion
+#			animator.play(anim, blend, 1.0)
 	var anim = animation_map.get(animation, "")
 	if anim != "" and animation_finished_payload.is_empty():
-		if animator.current_animation.is_empty() or animator.current_animation_length - animator.current_animation_position < 0.1:
-			if wait_for_completion != null:
-				animation_finished_payload[anim] = wait_for_completion
-			animator.play(anim, blend, 1.0)
+		if animation == "idle" and not animator.current_animation.is_empty():
+			if not (last_animation_name == "run" or last_animation_name == "walk" or last_animation_name == "jog" or last_animation_name == "idle"):
+				var rem = (animator.current_animation_length - animator.current_animation_position)
+				var tag := Time.get_unix_time_from_system()
+				last_animation_to_idle.append(tag)
+				get_tree().create_timer(rem).timeout.connect(func():
+					if last_animation_to_idle.is_empty() or last_animation_to_idle[last_animation_to_idle.size() - 1] != tag:
+						return
+					last_animation_to_idle.clear()
+					last_animation_name = animation
+					animator.play(anim, blend, 1.0)
+				)
+				return
+		if wait_for_completion != null:
+			animation_finished_payload[anim] = wait_for_completion
+		last_animation_name = animation
+		animator.play(anim, blend, 1.0)
 
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)

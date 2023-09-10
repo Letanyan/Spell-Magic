@@ -21,6 +21,8 @@ var is_menu_showing: Callable
 
 var animation_finished_payload = {}
 var animation_map: Dictionary
+var last_animation_to_idle := []
+var last_animation_name := ""
 
 signal player_moved
 signal vital_update
@@ -81,8 +83,22 @@ func handle_animation_finished(title: String):
 func play_animation(animation: String, blend: float, wait_for_completion = null):
 	var anim = animation_map.get(animation, "")
 	if anim != "" and animation_finished_payload.is_empty():
+		if animation == "idle" and not animator.current_animation.is_empty():
+			if not (last_animation_name == "run" or last_animation_name == "walk" or last_animation_name == "jog" or last_animation_name == "idle"):
+				var rem = (animator.current_animation_length - animator.current_animation_position)
+				var tag := Time.get_unix_time_from_system()
+				last_animation_to_idle.append(tag)
+				get_tree().create_timer(rem).timeout.connect(func():
+					if last_animation_to_idle.is_empty() or last_animation_to_idle[last_animation_to_idle.size() - 1] != tag:
+						return
+					last_animation_to_idle.clear()
+					last_animation_name = animation
+					animator.play(anim, blend, 1.0)
+				)
+				return
 		if wait_for_completion != null:
 			animation_finished_payload[anim] = wait_for_completion
+		last_animation_name = animation
 		animator.play(anim, blend, 1.0)
 
 func add_impulse(impulse: Vector3):
