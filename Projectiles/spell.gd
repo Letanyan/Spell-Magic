@@ -43,6 +43,8 @@ var player_is_origin: bool
 var cooldown: float
 var charge: float
 
+var constants: Dictionary = {}
+
 var id: int = -1
 
 var limit_r: float = WorldSettings.LIMIT_r
@@ -50,7 +52,7 @@ var limit_v: float = WorldSettings.LIMIT_v
 var buff_r: float = 0.0
 var buff_v: float = 0.0
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 0.1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
 	x = _x
 	y = _y
 	z = _z
@@ -67,6 +69,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	is_bomb = _is_bomb
 	player_is_origin = _player_is_origin
 	charge = 0.0
+	constants = {}
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
@@ -85,6 +88,7 @@ func duplicate() -> Spell:
 	result.limit_v = limit_v
 	result.buff_r = buff_r
 	result.buff_v = buff_v
+	result.constants = constants
 	return result
 	
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
@@ -180,6 +184,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["C"] = charge
 	charge = 0.0
 	fixed_vars.merge(fvars, true)
+	fixed_vars.merge(constants, true)
 	
 	var p: SpellBody
 	match element:
@@ -226,7 +231,8 @@ func save_dict():
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
-		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin
+		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
+		"constants": constants
 	}
 
 func load_dict(dict: Dictionary):
@@ -250,6 +256,7 @@ func load_dict(dict: Dictionary):
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
 	player_is_origin = dict.get("player_is_origin", true)
+	constants = dict.get("constants", {})
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)

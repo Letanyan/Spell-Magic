@@ -190,14 +190,14 @@ text = "chain"
 [node name="edit" type="LineEdit" parent="container/chain"]
 layout_mode = 0
 offset_left = 64.0
-offset_right = 376.0
+offset_right = 378.0
 offset_bottom = 31.0
 
 [node name="is_rel" type="CheckButton" parent="container"]
 layout_mode = 0
-offset_left = 32.0
+offset_left = 34.0
 offset_top = 416.0
-offset_right = 412.0
+offset_right = 414.0
 offset_bottom = 447.0
 text = "follow player"
 
@@ -307,9 +307,18 @@ popup/item_2/id = 2
 layout_mode = 0
 offset_left = 34.0
 offset_top = 352.0
-offset_right = 414.0
+offset_right = 416.0
 offset_bottom = 383.0
 text = "player is origin"
+
+[node name="constants" type="TextEdit" parent="container"]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 360.0
+offset_right = 820.0
+offset_bottom = 440.0
+wrap_mode = 1
+scroll_smooth = true
 
 [node name="SortButton" type="MenuButton" parent="."]
 layout_mode = 0
@@ -420,4 +429,5 @@ text = "Duplicate"
 [connection signal="item_selected" from="container/element_combo" to="." method="_on_element_combo_selected"]
 [connection signal="item_selected" from="container/chain_combo" to="." method="_on_chain_combo_selected"]
 [connection signal="toggled" from="container/player_is_origin" to="." method="_on_player_is_origin_toggled"]
+[connection signal="text_changed" from="container/constants" to="." method="_on_constants_text_changed"]
 [connection signal="pressed" from="Duplicate" to="." method="_on_duplicate_pressed"]
