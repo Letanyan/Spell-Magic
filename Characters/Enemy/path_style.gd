@@ -1,6 +1,6 @@
 class_name PathStyle
 
-enum Kind { ORIGIN, CIRCLE, PATH }
+enum Kind { ORIGIN, CIRCLE, PATH, EXPR }
 enum CoordY { GROUND, ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER }
@@ -11,6 +11,9 @@ var max_radius := 10.0
 var movement_speed := 2.0
 var origin := Vector3.ZERO
 var path: Pathway = null
+var expr_x: Expr = null
+var expr_y: Expr = null
+var expr_z: Expr = null
 var use_player_as_origin: bool
 var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE_XZ
@@ -129,6 +132,13 @@ func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
 	path.calculate_distance()
 	kind = Kind.PATH
 	return self
+	
+func use_expr(x: String, y: String, z: String):
+	expr_x = Expr.new(x)
+	expr_y = Expr.new(y)
+	expr_z = Expr.new(z)
+	kind = Kind.EXPR
+	return self
 
 func next_position(me: Enemy, player: Player) -> Vector3:
 	var t := float(Time.get_unix_time_from_system() + seed_offset * 2 * PI)
@@ -156,6 +166,12 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			var v = path.position_at_distance(dist) + origin
 			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
 			return Vector3(v.x, y, v.z)
+			
+		Kind.EXPR:
+			var vars := {"s": movement_speed, "t": t, "pi": PI}
+			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)) + origin
+			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
+			return Vector3(v.x, y, v.z) 
 
 
 	return Vector3.ZERO

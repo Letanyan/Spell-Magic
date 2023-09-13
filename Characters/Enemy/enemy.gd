@@ -4,9 +4,7 @@ extends CharacterBody3D
 var movement_target_position: Vector3 = Vector3.ZERO
 
 var animator: AnimationPlayer
-var animation_finished_payload = {}
-var last_animation_to_idle := []
-var last_animation_name := ""
+var animation_tree: AnimationTree
 
 var velocity_movement: VelocityMovement
 
@@ -20,8 +18,6 @@ var knowledge: Knowledge
 var hormones: Hormones
 var current_path: PathStyle
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
-
-var animation_map: Dictionary
 
 var behavior_tick: int = 0
 var spell_tick: int = 0
@@ -39,19 +35,12 @@ var action_is_satisfied: bool = true
 var choices: Dictionary = {}
 
 func _ready():
-	animation_map = {}
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	choices = {}
 	level_text.text = str(int(level))
 	if not self is Human:
 		animator = $AnimationPlayer
-		animator.animation_finished.connect(handle_animation_finished)
-		
-func handle_animation_finished(title: String):
-	if animation_finished_payload.has(title):
-		var action = animation_finished_payload[title]
-		animation_finished_payload.erase(title)
-		action.call()
+		animation_tree = $AnimationTree
 		
 		
 func update_stored_entity_knowledge():
@@ -70,35 +59,12 @@ func increment_ticks():
 	if invunerable > 0:
 		invunerable -= 1
 	
-func play_animation(animation: String, blend: float, wait_for_completion = null):
-#	var anim = animation_map.get(animation, "")
-#	if anim != "" and animation_finished_payload.is_empty():
-##		if animator.current_animation.is_empty() or animator.current_animation_length - animator.current_animation_position < 0.1:
-#			if animation == "idle":
-#				animator.queue(anim)
-#				return
-#			if wait_for_completion != null:
-#				animation_finished_payload[anim] = wait_for_completion
-#			animator.play(anim, blend, 1.0)
-	var anim = animation_map.get(animation, "")
-	if anim != "" and animation_finished_payload.is_empty():
-		if animation == "idle" and not animator.current_animation.is_empty():
-			if not (last_animation_name == "run" or last_animation_name == "walk" or last_animation_name == "jog" or last_animation_name == "idle"):
-				var rem = (animator.current_animation_length - animator.current_animation_position)
-				var tag := Time.get_unix_time_from_system()
-				last_animation_to_idle.append(tag)
-				get_tree().create_timer(rem).timeout.connect(func():
-					if last_animation_to_idle.is_empty() or last_animation_to_idle[last_animation_to_idle.size() - 1] != tag:
-						return
-					last_animation_to_idle.clear()
-					last_animation_name = animation
-					animator.play(anim, blend, 1.0)
-				)
-				return
-		if wait_for_completion != null:
-			animation_finished_payload[anim] = wait_for_completion
-		last_animation_name = animation
-		animator.play(anim, blend, 1.0)
+func play_animation(animation: String):
+	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+	var current := playback.get_current_node()
+	if current != "death" and current != animation:
+		playback.travel(animation)
+
 
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)
@@ -113,16 +79,19 @@ func _physics_process(delta):
 	update_vitals_display()
 	
 	if velocity_movement.impulse != Vector3.ZERO:
-		velocity = movement["velocity"]
-		move_and_slide()
+		if invunerable == 0:
+			velocity = movement["velocity"]
+			move_and_slide()
 	else:
 		match current_path.mover:
 			PathStyle.Mover.PHYSICS:
-				velocity = movement["velocity"]
-				move_and_slide()
+				if invunerable == 0:
+					velocity = movement["velocity"]
+					move_and_slide()
 			PathStyle.Mover.ABSOLUTE:
-				velocity = movement["absolute"]
-				position += movement["absolute"]
+				if invunerable == 0:
+					velocity = movement["absolute"]
+					position += movement["absolute"]
 			PathStyle.Mover.ABSOLUTE_XZ:
 				var v: Vector3 = movement["absolute"]
 				var t: Vector3 = movement["target"]
@@ -131,10 +100,12 @@ func _physics_process(delta):
 					position.y = g
 					t.y = 0
 					v.y = 0
-				velocity = Vector3(v.x, v.y + t.y, v.z)
-				position += Vector3(v.x, v.y + t.y, v.z)
+				if invunerable == 0:
+					velocity = Vector3(v.x, v.y + t.y, v.z)
+					position += Vector3(v.x, v.y + t.y, v.z)
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
-			look_at(player.position)
+			var goal_position := position + velocity * 10
+			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
 
 	if behavior_tick == 30:
 		update_behaviour()
@@ -145,7 +116,7 @@ func _physics_process(delta):
 	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
 		var spell := attack_state().choose_spell(vitals, behaviour)
 		if spell != null:
-			play_animation("attack", 1.0)
+			play_animation("attack")
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 
@@ -153,11 +124,11 @@ func _physics_process(delta):
 
 	if velocity != Vector3.ZERO:
 		if velocity.length() > 5:
-			play_animation("run", 1)
+			play_animation("run")
 		else:
-			play_animation("walk", 1)
+			play_animation("walk")
 	else:
-		play_animation("idle", 1)
+		play_animation("idle")
 
 
 func cast_spell(insert: Callable, next_spell: Spell):
@@ -186,17 +157,18 @@ func die():
 	
 	on_death.emit(get_node("."), drop_artifact())
 		
-	play_animation("death", 1, func():
-		explosion.position = position
-		explosion.global_transform = global_transform
-		var world := get_parent_node_3d()
-		world.add_child(explosion)
-		source.emitting = true
-		spell_caster.free_particles()
-		queue_free()
-		await world.get_tree().create_timer(source.lifetime + 0.1).timeout
-		world.remove_child(explosion)
-	)
+	play_animation("death")
+	
+	var world := get_parent_node_3d()
+	await world.get_tree().create_timer(animator.get_animation("Death").length + 0.1).timeout
+	explosion.position = position
+	explosion.global_transform = global_transform
+	world.add_child(explosion)
+	source.emitting = true
+	spell_caster.free_particles()
+	queue_free()
+	await world.get_tree().create_timer(source.lifetime + 0.1).timeout
+	world.remove_child(explosion)
 	
 func update_vitals_display():
 	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())

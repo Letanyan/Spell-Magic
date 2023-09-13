@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=12 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_6wr6k"]
@@ -6,9 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Pause Menu/Menu.tscn" id="3_luuj6"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="3_xhsh1"]
 [ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="3_xlx08"]
-[ext_resource type="Shader" path="res://Worlds/SkyBox/water.gdshader" id="6_xo78l"]
-[ext_resource type="Texture2D" uid="uid://xty8pnig0wg0" path="res://Worlds/SkyBox/water_noise.tres" id="7_67weq"]
-[ext_resource type="Texture2D" uid="uid://g8g6vo15nq7i" path="res://Worlds/SkyBox/ripples_noise.tres" id="9_6ma6i"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_2xukv"]
 seed = 32
@@ -52,34 +49,15 @@ shader_parameter/sun_sunset_color = Color(10, 0, 0, 1)
 shader_parameter/sun_size = 0.2
 shader_parameter/sun_blur = 10.0
 
-[sub_resource type="Sky" id="Sky_ntni5"]
+[sub_resource type="Sky" id="Sky_gfknk"]
 sky_material = SubResource("ShaderMaterial_xs1mr")
 
 [sub_resource type="Environment" id="Environment_e47ut"]
 background_mode = 2
-sky = SubResource("Sky_ntni5")
+sky = SubResource("Sky_gfknk")
 ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_eggur"]
-render_priority = 0
-shader = ExtResource("6_xo78l")
-shader_parameter/noise = ExtResource("7_67weq")
-shader_parameter/ripples = ExtResource("9_6ma6i")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_f4gnr"]
-material = SubResource("ShaderMaterial_eggur")
-size = Vector2(256, 256)
-subdivide_width = 8
-subdivide_depth = 8
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_teehb"]
-albedo_color = Color(0, 0.407843, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_a6cqh"]
-material = SubResource("StandardMaterial3D_teehb")
-size = Vector3(10, 10, 20)
 
 [node name="Demo" type="Node3D"]
 script = ExtResource("1_f83i4")
@@ -122,13 +100,5 @@ offset_bottom = 32.0
 grow_horizontal = 0
 text = "FPS: 0"
 horizontal_alignment = 2
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9259, 0, 0.0454941)
-mesh = SubResource("PlaneMesh_f4gnr")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
-transform = Transform3D(0.991243, -3.65461e-09, 0.132049, 0.0792368, 0.799957, -0.594803, -0.105633, 0.600057, 0.792952, 0, 0, 0)
-mesh = SubResource("BoxMesh_a6cqh")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]

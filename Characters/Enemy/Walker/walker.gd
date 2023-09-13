@@ -11,9 +11,6 @@ var attack_path: PathStyle
 func _ready():
 	super._ready()
 	
-	animation_map["idle"] = "undead_idle"
-	animation_map["walk"] = "undead_walk"
-	
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
@@ -31,9 +28,9 @@ func _ready():
 	
 	random_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 7", "v * t * 7 + 4", "w * t * 7", "1", 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 10", "v * t * 10 + 4", "w * t * 10", "1", 0.1, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + 6", "w * t * 5 + w*3", "1", 0.1, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 7 + u*3", "v * t * 7 + 6", "w * t * 7 + w*3", "1", 0.1, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 10 + u*3", "v * t * 10 + 6", "w * t * 10 + w*3", "1", 0.1, 5, Spell.Element.FIRE, 1),
 		],
 		[ 15, 3, 2 ],
 		false,
@@ -42,20 +39,13 @@ func _ready():
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 25, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 50, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 75, 5, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + v*6", "w * t * 5 + w*3", "1", 25, 5, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + v*6", "w * t * 5 + w*3", "1", 50, 5, Spell.Element.ELECTRIC, 1),
+			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + v*6", "w * t * 5 + w*3", "1", 75, 5, Spell.Element.ELECTRIC, 1),
 		],
 		[ 2, 5, 3 ],
 		true
 	)
-	
-	animation_map["run"] = "Run"
-	animation_map["idle"] = "Idle"
-	animation_map["walk"] = "Walk"
-	animation_map["attack"] = "Weapon"
-	animation_map["death"] = "Death"
-	animation_map["hit"] = "HitReact"
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:

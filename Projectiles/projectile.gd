@@ -191,7 +191,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			body.emit_vitals_signal()
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 			body.invunerable = 20
-			body.play_animation("hit", 1, func(): pass)
+			body.play_animation("hit", 1)
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 		if is_enemy:
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
@@ -200,7 +200,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				body.die()
 			else:
 				body.invunerable = 20
-				body.play_animation("hit", 1, func(): pass)
+				body.play_animation("on_hit")
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	var body := area.get_parent_node_3d()
@@ -235,7 +235,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 			body.emit_vitals_signal()
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 			body.invunerable = 20
-			body.play_animation("hit", 1, func(): pass)
+			body.play_animation("hit", 1)
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 		if is_enemy:
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
@@ -244,7 +244,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				body.die()
 			else:
 				body.invunerable = 20
-				body.play_animation("hit", 1, func(): pass)
+				body.play_animation("on_hit")
 
 func update_shape(r: float, ignore_time: bool):
 	if r == most_recent_radius:

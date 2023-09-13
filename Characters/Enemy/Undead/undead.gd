@@ -11,9 +11,6 @@ var attack_path: PathStyle
 func _ready():
 	super._ready()
 	
-	animation_map["idle"] = "undead_idle"
-	animation_map["walk"] = "undead_walk"
-	
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
@@ -49,13 +46,6 @@ func _ready():
 		[ 2, 5, 3 ],
 		true
 	)
-	
-	animation_map["run"] = "Run"
-	animation_map["idle"] = "Idle"
-	animation_map["walk"] = "Walk"
-	animation_map["attack"] = "Weapon"
-	animation_map["death"] = "Death"
-	animation_map["hit"] = "HitReact"
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:

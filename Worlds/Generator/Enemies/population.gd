@@ -95,7 +95,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 	var pos := Vector3(x, 0, y)
 	match enemy:
 		World.Enemy.UNDEAD:
-			result = undead.instantiate() as Enemy
+			result = undead.instantiate()
 			result.name = "Undead" + str(rng.randi())
 		World.Enemy.BAT:
 			result = bat.instantiate()
@@ -111,10 +111,36 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 			result.name = "Walker" + str(rng.randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
-	result.level += rng.randi_range(0, int(result.level * 0.2))
+	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
 	result.on_death.connect(on_enemy_death_update)
 	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
+	
+static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
+	var result: Enemy = null
+	match enemy:
+		World.Enemy.UNDEAD:
+			result = undead.instantiate()
+			result.name = "Undead" + str(randi())
+		World.Enemy.BAT:
+			result = bat.instantiate()
+			result.name = "Bat" + str(randi())
+		World.Enemy.MOLE:
+			result = mole.instantiate()
+			result.name = "Mole" + str(randi())
+		World.Enemy.HUMAN:
+			result = human.instantiate()
+			result.name = "Human" + str(randi())
+		World.Enemy.WALKER:
+			result = walker.instantiate()
+			result.name = "Walker" + str(randi())
+			
+	result.level = Vector2(x, y).length() / 1000.0
+	result.level += randi_range(0, int(result.level * 0.2)) + 1.0
+	result.player = _player
+	result.position = Vector3(x, y, z)
+	return result
+
 	
 func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result: Node3D = null

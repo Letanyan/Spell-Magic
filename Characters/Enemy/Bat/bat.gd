@@ -18,8 +18,9 @@ func _ready():
 	
 	hormones = Hormones.new(0.7, 1.0, -0.75, 0)
 	
-	idle_path = PathStyle.new(randf()).circle_path(5, 10).set_origin(position).speed(7).use_absolute().align_y_to_origin()
-	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 2).set_use_player_as_origin().speed(2).use_absolute().align_y_to_origin().look_at_player()
+	idle_path = PathStyle.new(randf()).circle_path(5, 10).set_origin(position).speed(clamp(level * 1.1, 1, 14)).use_absolute().align_y_to_origin()
+#	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 2).set_use_player_as_origin().speed(clamp(level * 1.25, 1, 14)).use_absolute().align_y_to_origin().look_at_player()
+	attack_path = PathStyle.new(randf()).use_expr("cos(t/pi*s)*15", "sin(t/pi)*5+10", "sin(t/pi*s)*15").set_use_player_as_origin().speed(clamp(level * 1.25, 1, 14)).use_absolute().align_y_to_origin().look_at_player()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.BAT: true}, false)
@@ -46,13 +47,6 @@ func _ready():
 		[ 1, 2, 1 ],
 		true
 	)
-	
-	animation_map["run"] = "Fast_Flying"
-	animation_map["idle"] = "Flying_Idle"
-	animation_map["walk"] = "Flying_Idle"
-	animation_map["attack"] = "Headbutt"
-	animation_map["death"] = "Death"
-	animation_map["hit"] = "HitReact"
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:

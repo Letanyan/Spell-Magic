@@ -13,10 +13,6 @@ func _ready():
 	
 	animator = $Male_Casual/AnimationPlayer
 	
-	animation_map["idle"] = "Man_Idle"
-	animation_map["walk"] = "Man_Walk"
-	animation_map["run"] = "Man_Run"
-	
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
