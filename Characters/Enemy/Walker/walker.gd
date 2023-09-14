@@ -19,7 +19,7 @@ func _ready():
 	hormones = Hormones.new(-1.0, 1.0, -1.0, 1.0)
 	
 	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
-	attack_path = PathStyle.new(randf()).random_points_in_disc(7, 15, 8).speed(5).use_physics().set_use_player_as_origin().look_at_player()
+	attack_path = PathStyle.new(randf()).random_points_in_disc(7, 15, 8).speed(6).use_physics().set_use_player_as_origin().look_at_player()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.UNDEAD: true}, false)

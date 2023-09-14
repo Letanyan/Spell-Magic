@@ -5055,6 +5055,7 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_51m7e")
 anim_player = NodePath("../AnimationPlayer")
 active = true
+root_motion_track = NodePath("CharacterArmature/Skeleton3D:Root")
 parameters/playback = SubResource("AnimationNodeStateMachinePlayback_8vlyo")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
