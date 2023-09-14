@@ -47,6 +47,8 @@ func _ready():
 		[ 1, 2, 1 ],
 		true
 	)
+	
+	animation_map["attack"] = "Headbutt"
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:

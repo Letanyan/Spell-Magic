@@ -184,7 +184,7 @@ func _input(event):
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
-	player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
+	player.cast_spell(func(p): if p != null: add_child(p), s)
 	if is_down:
 		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func(): 
 			var is_rapid_fire := Globals.Ref.new(false)

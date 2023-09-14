@@ -5,6 +5,7 @@ var movement_target_position: Vector3 = Vector3.ZERO
 
 var animator: AnimationPlayer
 var animation_tree: AnimationTree
+var animation_map: Dictionary
 
 var velocity_movement: VelocityMovement
 
@@ -38,6 +39,7 @@ func _ready():
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	choices = {}
 	level_text.text = str(int(level))
+	animation_map = {}
 	if not self is Human:
 		animator = $AnimationPlayer
 		animation_tree = $AnimationTree
@@ -65,6 +67,10 @@ func play_animation(animation: String):
 	if current != "death" and current != animation:
 		playback.travel(animation)
 
+func can_move() -> bool:
+#	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+#	var current := playback.get_current_node()
+	return invunerable == 0 # and (current == "idle" or current == "walk" or current == "run")
 
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)
@@ -79,30 +85,40 @@ func _physics_process(delta):
 	update_vitals_display()
 	
 	if velocity_movement.impulse != Vector3.ZERO:
-		if invunerable == 0:
+		if can_move():
 			velocity = movement["velocity"]
 			move_and_slide()
 	else:
 		match current_path.mover:
 			PathStyle.Mover.PHYSICS:
-				if invunerable == 0:
+				if can_move():
 					velocity = movement["velocity"]
-					move_and_slide()
+				else:
+					velocity = movement["impulse"]
+				move_and_slide()
 			PathStyle.Mover.ABSOLUTE:
-				if invunerable == 0:
+				if can_move():
 					velocity = movement["absolute"]
 					position += movement["absolute"]
+				else:
+					velocity = movement["impulse"]
+					position += movement["impulse"]
 			PathStyle.Mover.ABSOLUTE_XZ:
-				var v: Vector3 = movement["absolute"]
-				var t: Vector3 = movement["target"]
+				var v: Vector3 
+				var t: Vector3
+				if can_move():
+					v = movement["absolute"]
+					t = movement["target"]
+				else:
+					v = movement["impulse"]
+					t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 				if position.y < g or position.y > g:
 					position.y = g
 					t.y = 0
 					v.y = 0
-				if invunerable == 0:
-					velocity = Vector3(v.x, v.y + t.y, v.z)
-					position += Vector3(v.x, v.y + t.y, v.z)
+				velocity = Vector3(v.x, v.y + t.y, v.z)
+				position += Vector3(v.x, v.y + t.y, v.z)
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
 			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
@@ -117,7 +133,8 @@ func _physics_process(delta):
 		var spell := attack_state().choose_spell(vitals, behaviour)
 		if spell != null:
 			play_animation("attack")
-			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
+			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"]).length / 2.0).timeout
+			cast_spell(func(p): if p != null: add_sibling(p), spell)
 		spell_tick = 0
 
 	spell_caster.update(self, delta)

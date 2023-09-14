@@ -7,6 +7,7 @@ extends CharacterBody3D
 
 @onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
+@onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
 
 var velocity_movement := VelocityMovement.player()
 var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
@@ -18,11 +19,6 @@ var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 var is_menu_showing: Callable
-
-var animation_finished_payload = {}
-var animation_map: Dictionary
-var last_animation_to_idle := []
-var last_animation_name := ""
 
 signal player_moved
 signal vital_update
@@ -40,14 +36,6 @@ func _ready():
 	emit_vitals_signal()
 	velocity = Vector3.ZERO
 	spell_caster.projectile_hit.connect(give_back_mana_after_hit)
-	animator.animation_finished.connect(handle_animation_finished)
-	animation_map = {}
-	animation_map["run"] = "Running"
-	animation_map["walk"] = "Walk"
-	animation_map["idle"] = "Idle"
-	animation_map["attack"] = "Attack"
-	animation_map["death"] = "Death"
-	animation_map["hit"] = "Hit"
 	
 
 func _input(event):
@@ -74,32 +62,18 @@ func pan_camera(movement: Vector2):
 	if vitals.freeze.value > vitals.freeze.min_value:
 		vitals.wetness.apply(size / 75_000.0)
 
-func handle_animation_finished(title: String):
-	if animation_finished_payload.has(title):
-		var action = animation_finished_payload[title]
-		animation_finished_payload.erase(title)
-		action.call()
 
-func play_animation(animation: String, blend: float, wait_for_completion = null):
-	var anim = animation_map.get(animation, "")
-	if anim != "" and animation_finished_payload.is_empty():
-		if animation == "idle" and not animator.current_animation.is_empty():
-			if not (last_animation_name == "run" or last_animation_name == "walk" or last_animation_name == "jog" or last_animation_name == "idle"):
-				var rem = (animator.current_animation_length - animator.current_animation_position)
-				var tag := Time.get_unix_time_from_system()
-				last_animation_to_idle.append(tag)
-				get_tree().create_timer(rem).timeout.connect(func():
-					if last_animation_to_idle.is_empty() or last_animation_to_idle[last_animation_to_idle.size() - 1] != tag:
-						return
-					last_animation_to_idle.clear()
-					last_animation_name = animation
-					animator.play(anim, blend, 1.0)
-				)
-				return
-		if wait_for_completion != null:
-			animation_finished_payload[anim] = wait_for_completion
-		last_animation_name = animation
-		animator.play(anim, blend, 1.0)
+func play_animation(animation: String):
+	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+	var current := playback.get_current_node()
+	if current != "death" and current != animation:
+		playback.travel(animation)
+
+func can_move() -> bool:
+#	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+#	var current := playback.get_current_node()
+#	print(current)
+	return invunerable == 0
 
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -114,21 +88,25 @@ func _physics_process(delta):
 	var movement := velocity_movement.update(delta, vitals, 14, self)
 	emit_vitals_signal()
 	if not menu_showing:
-		velocity = movement["velocity"]
-		move_and_slide()
+		if can_move():
+			velocity = movement["velocity"]
+			move_and_slide()
+		else:
+			velocity = movement["impulse"]
+			move_and_slide()
 		var direction = movement["direction"]
 		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():
 				if velocity.length() < 1:
-					play_animation("walk", 1)
+					play_animation("walk")
 				else:
-					play_animation("run", 1)
+					play_animation("run")
 		else:
 			if is_on_floor():
-				play_animation("idle", 1)
+				play_animation("battle_idle")
 			
 		if not is_on_floor_only():
-			play_animation("run", 1)
+			play_animation("run")
 			
 		if velocity:
 			var space := get_world_3d().space
@@ -168,7 +146,8 @@ func cast_spell(insert: Callable, next_spell: Spell):
 	for e in spell_modifier:
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
-	play_animation("attack", 1.0)
+	play_animation("attack")
+	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	spell_caster.cast_spell(self, vitals, insert, new_spell)
 	emit_vitals_signal()
 	emit_spell_was_cast(next_spell)

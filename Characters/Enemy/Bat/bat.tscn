@@ -887,15 +887,12 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tub71"]
 xfade_time = 0.25
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_baekp"]
 xfade_time = 0.1
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xrads"]
 xfade_time = 0.25
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4u3ln"]
 xfade_time = 0.25
@@ -969,7 +966,7 @@ states/run/position = Vector2(355, 398)
 states/walk/node = SubResource("AnimationNodeAnimation_pkmpj")
 states/walk/position = Vector2(523, 130)
 transitions = ["idle", "death", SubResource("AnimationNodeStateMachineTransition_tldbe"), "walk", "death", SubResource("AnimationNodeStateMachineTransition_s07p1"), "on_hit", "death", SubResource("AnimationNodeStateMachineTransition_6k81j"), "run", "death", SubResource("AnimationNodeStateMachineTransition_jqenf"), "attack", "death", SubResource("AnimationNodeStateMachineTransition_bhdu1"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_3kw4r"), "attack", "walk", SubResource("AnimationNodeStateMachineTransition_tub71"), "attack", "on_hit", SubResource("AnimationNodeStateMachineTransition_baekp"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_xrads"), "on_hit", "run", SubResource("AnimationNodeStateMachineTransition_4u3ln"), "on_hit", "attack", SubResource("AnimationNodeStateMachineTransition_ompwp"), "on_hit", "idle", SubResource("AnimationNodeStateMachineTransition_jta0s"), "on_hit", "walk", SubResource("AnimationNodeStateMachineTransition_bc2nj"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_nu8r0"), "idle", "on_hit", SubResource("AnimationNodeStateMachineTransition_danbo"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_63tju"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_gr1en"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_t8cl2"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_1j2e8"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_vyl28"), "run", "on_hit", SubResource("AnimationNodeStateMachineTransition_f4odi"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_teq2p"), "walk", "attack", SubResource("AnimationNodeStateMachineTransition_77p70"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_jrofs"), "walk", "on_hit", SubResource("AnimationNodeStateMachineTransition_mxk1o"), "Start", "idle", SubResource("AnimationNodeStateMachineTransition_4d4qv")]
-graph_offset = Vector2(-49, -17)
+graph_offset = Vector2(-66, 129)
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_o6c2a"]
 

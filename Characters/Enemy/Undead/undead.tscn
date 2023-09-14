@@ -4593,7 +4593,6 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fvvmy"]
 xfade_time = 0.25
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ci4rq"]
 xfade_time = 0.25
@@ -4601,7 +4600,6 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f2aup"]
 xfade_time = 0.25
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w52kw"]
 xfade_time = 0.1
@@ -4652,6 +4650,7 @@ states/Walk/position = Vector2(441, 116)
 states/Weapon/node = SubResource("AnimationNodeAnimation_cvp8h")
 states/Weapon/position = Vector2(82, 290)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_iuxla"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_1wdpc"), "Idle", "Run", SubResource("AnimationNodeStateMachineTransition_nkwvf"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_j3bv1"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_lwr0s"), "Walk", "HitReact", SubResource("AnimationNodeStateMachineTransition_olpdr"), "Run", "HitReact", SubResource("AnimationNodeStateMachineTransition_7ab2i"), "Walk", "Weapon", SubResource("AnimationNodeStateMachineTransition_gc81u"), "Run", "Weapon", SubResource("AnimationNodeStateMachineTransition_nig4j"), "HitReact", "Walk", SubResource("AnimationNodeStateMachineTransition_i4cx7"), "Weapon", "Idle", SubResource("AnimationNodeStateMachineTransition_dopwh"), "HitReact", "Idle", SubResource("AnimationNodeStateMachineTransition_50vu2"), "Weapon", "Run", SubResource("AnimationNodeStateMachineTransition_fvvmy"), "HitReact", "Run", SubResource("AnimationNodeStateMachineTransition_ci4rq"), "Weapon", "Walk", SubResource("AnimationNodeStateMachineTransition_f2aup"), "Idle", "HitReact", SubResource("AnimationNodeStateMachineTransition_w52kw"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_m0l8p"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_5qyv0"), "Idle", "Weapon", SubResource("AnimationNodeStateMachineTransition_0piw5"), "Weapon", "HitReact", SubResource("AnimationNodeStateMachineTransition_jvjse"), "HitReact", "Weapon", SubResource("AnimationNodeStateMachineTransition_px5ok"), "Idle", "Death", SubResource("AnimationNodeStateMachineTransition_1ryxj"), "Weapon", "Death", SubResource("AnimationNodeStateMachineTransition_h506w"), "Run", "Death", SubResource("AnimationNodeStateMachineTransition_cd54x"), "HitReact", "Death", SubResource("AnimationNodeStateMachineTransition_utcge"), "Walk", "Death", SubResource("AnimationNodeStateMachineTransition_7xbj5")]
+graph_offset = Vector2(-127, 153)
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_g2oyt"]
 
