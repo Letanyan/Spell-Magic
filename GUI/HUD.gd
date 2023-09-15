@@ -9,6 +9,8 @@ extends Control
 
 @onready var cooldown_list: ItemList = $CooldownList
 
+@onready var wand_mapping: ItemList = $WandMapping
+
 var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
@@ -26,6 +28,7 @@ var wand: Wand: set = set_wand
 var book: MagicBook:
 	set(value):
 		book = value
+		
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -40,6 +43,11 @@ func _process(delta: float) -> void:
 func set_wand(value: Wand):
 	wand = value
 	wand.spell_on_cooldown.connect(spell_on_cooldown)
+	wand.action_updated.connect(update_wand_mappings)
+	wand.spell_updated.connect(update_wand_mappings)
+	wand.picked_spell_changed.connect(update_wand_mappings)
+	update_wand_mappings()
+	update_spell_cooldowns()
 
 func update_hud_with_vitals(vitals: Vitals):
 	health_bar.value = vitals.health.value
@@ -121,5 +129,35 @@ func update_spell_cooldowns():
 		mana_bar.add_theme_stylebox_override("background", style)
 		not_enough_mana_alert = 0.0
 		
+	if cooldown_list.item_count == 0:
+		cooldown_list.hide()
+	else:
+		cooldown_list.show()
 		
+func update_wand_mappings():
+	wand_mapping.clear()
+	for k in wand.keys:
+		var s: Wand.Option = wand.keys[k]
+		var kd = Wand.key_description(k)
+		match s.kind:
+			Wand.Kind.FIRE:
+				wand_mapping.add_item(kd + " > " + ("" if s.spell.is_empty() else s.spell[0]))
+			Wand.Kind.FIRE_HOLD:
+				wand_mapping.add_item(kd + " -> " + ("" if s.spell.is_empty() else s.spell[0]))
+			Wand.Kind.RAPID_FIRE:
+				wand_mapping.add_item(kd + " >> " + ("" if s.spell.is_empty() else s.spell[0]))
+				
+			Wand.Kind.PICK:
+				wand_mapping.add_item(kd + " : (" + ",".join(s.spell) + ")")
+			Wand.Kind.FIRE_PICKED:
+				wand_mapping.add_item(kd + " :> " + wand.picked)
+			Wand.Kind.FIRE_PICKED_HOLD:
+				wand_mapping.add_item(kd + " :-> " + wand.picked)
+			Wand.Kind.RAPID_SELECT:
+				wand_mapping.add_item(kd + " :>> " + wand.picked)
 	
+	if wand_mapping.item_count == 0:
+		wand_mapping.hide()
+	else:
+		wand_mapping.show()
+		

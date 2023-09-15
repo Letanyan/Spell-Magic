@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=23 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="StyleBox" uid="uid://dcy1b4vlmwy68" path="res://GUI/HUD_progress_bar_bg.tres" id="2_m4fwh"]
@@ -118,17 +118,6 @@ height = 56
 color_ramp = SubResource("Gradient_ux0vl")
 noise = SubResource("FastNoiseLite_e0t6k")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pvp5j"]
-bg_color = Color(0, 0, 0, 0.113725)
-border_blend = true
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sdxao"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
 [node name="HUD" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -201,7 +190,7 @@ layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 248.0
-offset_bottom = 8.0
+offset_bottom = 16.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_selected_color = Color(1, 0, 0, 1)
@@ -210,8 +199,31 @@ theme_override_colors/guide_color = Color(0, 0, 0, 0)
 theme_override_constants/v_separation = 1
 theme_override_constants/line_separation = 0
 theme_override_constants/outline_size = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_pvp5j")
-theme_override_styles/selected = SubResource("StyleBoxFlat_sdxao")
+auto_height = true
+
+[node name="WandMapping" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -248.0
+offset_top = -8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_selected_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/guide_color = Color(0, 0, 0, 0)
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 1
+theme_override_constants/icon_margin = 0
+theme_override_constants/line_separation = 0
+theme_override_constants/outline_size = 0
 auto_height = true
 
 [node name="SpellCooldownTimer" type="Timer" parent="."]

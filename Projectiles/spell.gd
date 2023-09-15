@@ -89,6 +89,7 @@ func duplicate() -> Spell:
 	result.buff_r = buff_r
 	result.buff_v = buff_v
 	result.constants = constants
+	result.charge = charge
 	return result
 	
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:

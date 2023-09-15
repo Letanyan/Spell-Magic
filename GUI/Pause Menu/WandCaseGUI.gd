@@ -45,10 +45,12 @@ func _on_wand_index_item_selected(index):
 				all_spells[i] = all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
 			wand.keys[w].spell = all_spells
 			wand.keys[w].spell_index = all_spells.size() - 1
+			wand.spell_updated.emit()
 		
 		item.action_changed = func(from: Wand.Kind, to: Wand.Kind) -> bool:
 			item.store_action = to
 			wand.keys[w].kind = to
+			wand.action_updated.emit()
 			if to == Wand.Kind.MOD:
 				wand.add_mod(w[0])
 				_on_wand_index_item_selected(current_index)
