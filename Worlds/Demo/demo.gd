@@ -109,6 +109,9 @@ func _ready():
 	hud.book = book
 	hud.wand = wand
 	menu.wand_case.new_wand_selected.connect(hud.set_wand)
+	
+	menu.settings.settings_changed.connect(hud.update_settings)
+	hud.update_settings(settings)
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.

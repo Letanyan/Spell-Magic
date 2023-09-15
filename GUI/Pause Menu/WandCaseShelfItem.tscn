@@ -37,7 +37,7 @@ vertical_alignment = 1
 
 [node name="spell" type="LineEdit" parent="."]
 layout_mode = 0
-offset_left = 501.0
+offset_left = 504.0
 offset_top = 8.0
 offset_right = 800.0
 offset_bottom = 41.0
@@ -46,8 +46,8 @@ offset_bottom = 41.0
 layout_mode = 0
 offset_left = 344.0
 offset_top = 8.0
-offset_right = 485.0
-offset_bottom = 39.0
+offset_right = 496.0
+offset_bottom = 41.0
 item_count = 9
 selected = 0
 popup/item_0/text = "None"

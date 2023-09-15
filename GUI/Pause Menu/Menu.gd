@@ -1,23 +1,25 @@
 class_name Menu
 extends Control
 
-enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES }
+enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES, SETTINGS }
 
 @onready var magic_book: MagicBookGUI = $MagicBook
 @onready var wand_case: Control = $WandCase
 @onready var artifacts: ArtifactsGUI = $Artifacts
 @onready var upgrades: UpgradesGUI = $Upgrades
+@onready var settings: SettingsGUI = $Settings
 var current_index := 0
 
 var is_showing: bool = false
-var settings: WorldSettings
+var world_settings: WorldSettings
 
-func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _settings: WorldSettings):
+func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings):
 	magic_book.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
-	upgrades.world_settings = _settings
-	settings = _settings
+	upgrades.world_settings = _world_settings
+	settings.world_settings = _world_settings
+	world_settings = _world_settings
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,7 +32,7 @@ func _process(delta):
 
 func update_index(index):
 	save_changes()
-	const MAX_INDEX = 3 # used for wrap around
+	const MAX_INDEX = 4 # used for wrap around
 	if index < 0:
 		current_index = MAX_INDEX
 	elif index > MAX_INDEX:
@@ -41,11 +43,13 @@ func update_index(index):
 	wand_case.visible = false
 	artifacts.visible = false
 	upgrades.visible = false
+	settings.visible = false
 	match index:
 		0: magic_book.visible = true
 		1: wand_case.visible = true
 		2: artifacts.visible = true
 		3: upgrades.visible = true
+		4: settings.visible = true
 
 func _on_spells_pressed():
 	update_index(0)
@@ -58,6 +62,9 @@ func _on_artifacts_pressed() -> void:
 	
 func _on_upgrades_pressed() -> void:
 	update_index(3)
+	
+func _on_settings_pressed() -> void:
+	update_index(4)
 
 func open(kind: Kind):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -76,6 +83,9 @@ func open(kind: Kind):
 			_on_artifacts_pressed()
 		Kind.UPGRADES:
 			_on_upgrades_pressed()
+		Kind.SETTINGS:
+			settings.update_controls()
+			_on_settings_pressed()
 
 func close():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -92,14 +102,17 @@ func _gui_input(event: InputEvent) -> void:
 
 func save_changes():
 	if magic_book.visible:
-		magic_book.book.save(settings.world_name)
+		magic_book.book.save(world_settings.world_name)
 	if wand_case.visible:
-		wand_case.case.save(settings.world_name)
+		wand_case.case.save(world_settings.world_name)
 	if artifacts.visible:
-		artifacts.artifacts.save(settings.world_name)
+		artifacts.artifacts.save(world_settings.world_name)
 	if upgrades.visible:
 		upgrades.world_settings.save()
+	if settings.visible:
+		settings.world_settings.save()
 
 
 func _on_quit_pressed() -> void:
 	get_node("/root/Demo").quit_to_main_menu()
+

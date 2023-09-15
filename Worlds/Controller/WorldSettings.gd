@@ -4,6 +4,8 @@ var world_name: String
 var player_position: Vector3
 var sed: int
 
+var hud_settings: HUDSettings
+
 const HAS_VOID := 1 << 0
 const HAS_FIRE := 1 << 1
 const HAS_WATER := 1 << 2
@@ -105,7 +107,9 @@ func save():
 		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
 		
 		"enemies_killed": enemies_killed,
-		"currency": currency
+		"currency": currency,
+		
+		"hud_settings": hud_settings.save_dict()
 	})
 
 func read(filename: String):
@@ -151,3 +155,6 @@ func read(filename: String):
 	
 	enemies_killed = data.get("enemies_killed", {})
 	currency = data.get("currency", 0)
+	
+	hud_settings = HUDSettings.new()
+	hud_settings.load_dict(data.get("hud_settings", {}))

@@ -161,3 +161,8 @@ func update_wand_mappings():
 	else:
 		wand_mapping.show()
 		
+func update_settings(settings: WorldSettings):
+	if settings.hud_settings.hide_wand_mappings:
+		wand_mapping.hide()
+	else:
+		wand_mapping.show()
