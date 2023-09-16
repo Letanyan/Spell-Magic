@@ -114,5 +114,5 @@ func save_changes():
 
 
 func _on_quit_pressed() -> void:
-	get_node("/root/Demo").quit_to_main_menu()
+	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 

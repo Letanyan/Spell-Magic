@@ -250,4 +250,4 @@ func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
 		settings.enemies_killed[enemy_kind] = 1
 
 func quit_to_main_menu():
-	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")
+	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")

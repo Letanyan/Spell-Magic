@@ -14,21 +14,20 @@ outline_color = Color(0, 0, 0, 1)
 [node name="WandCaseShelfItem" type="Control"]
 custom_minimum_size = Vector2(800, 48)
 layout_mode = 3
-anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -352.0
-offset_bottom = -600.0
+offset_bottom = 48.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_r3nyl")
 script = ExtResource("1_kx7hf")
 
 [node name="key" type="Label" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.33
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 336.0
+offset_right = -8.0
 offset_bottom = 41.0
 text = "LB + X"
 label_settings = SubResource("LabelSettings_xg88r")
@@ -36,17 +35,23 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="spell" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = 504.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+offset_left = 24.0
 offset_top = 8.0
-offset_right = 800.0
+offset_right = -8.0
 offset_bottom = 41.0
 
 [node name="cast_combo" type="OptionButton" parent="."]
-layout_mode = 0
-offset_left = 344.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.43
+anchor_right = 0.43
+offset_left = -80.0
 offset_top = 8.0
-offset_right = 496.0
+offset_right = 72.0
 offset_bottom = 41.0
 item_count = 9
 selected = 0

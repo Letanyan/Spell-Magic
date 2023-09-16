@@ -27,25 +27,25 @@ var spells_index_map := {}
 		
 @onready var name_edit: LineEdit = $container/name_edit
 
-@onready var x_edit: LineEdit = $container/x/edit
-@onready var y_edit: LineEdit = $container/y/edit
-@onready var z_edit: LineEdit = $container/z/edit
-@onready var r_edit: LineEdit = $container/r/edit
+@onready var x_edit: LineEdit = $container/x_edit
+@onready var y_edit: LineEdit = $container/y_edit
+@onready var z_edit: LineEdit = $container/z_edit
+@onready var r_edit: LineEdit = $container/r_edit
 
-@onready var power_edit: LineEdit = $container/power/edit
-@onready var duration_edit: LineEdit = $container/duration/edit
-@onready var delay_edit: LineEdit = $container/delay/edit
-@onready var count_edit: LineEdit = $container/count/edit
+@onready var power_edit: LineEdit = $container/power_edit
+@onready var duration_edit: LineEdit = $container/duration_edit
+@onready var delay_edit: LineEdit = $container/delay_edit
+@onready var count_edit: LineEdit = $container/count_edit
 
 @onready var element_combo: OptionButton = $container/element_combo
-@onready var chain_edit: LineEdit = $container/chain/edit
+@onready var chain_edit: LineEdit = $container/chain_edit
 @onready var chain_combo: OptionButton = $container/chain_combo
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
 @onready var player_is_origin: CheckButton = $container/player_is_origin
 @onready var expressions: TextEdit = $container/expressions
 
-@onready var mana_edit: LineEdit = $container/mana/edit
+@onready var mana_edit: LineEdit = $container/mana_edit
 @onready var cooldown_label: Label = $container/cooldown
 @onready var mana_cost: Label = $container/mana_cost
 
@@ -479,6 +479,14 @@ func _on_constants_text_changed() -> void:
 			result[atoms[0].lstrip(" \t").rstrip(" \t")] = atoms[1]
 	
 	book.spells[current_index].expression_strings = result
+	
+	for k in book.spells[current_index].expressions:
+		var e: Expr = book.spells[current_index].expressions[k]
+		if e.error.length() > 0:
+			errors_list[k] = e.error
+		else:
+			errors_list.erase(k)
+	
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	

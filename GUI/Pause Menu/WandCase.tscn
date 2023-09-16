@@ -4,38 +4,55 @@
 
 [node name="WandCase" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_1fquc")
 
 [node name="WandIndex" type="ItemList" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 52.0
 offset_right = 248.0
-offset_bottom = 584.0
+offset_bottom = -64.0
 
 [node name="create" type="Button" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 592.0
+offset_top = -56.0
 offset_right = 248.0
-offset_bottom = 640.0
+offset_bottom = -8.0
+grow_vertical = 0
 text = "Create"
 
 [node name="delete" type="Button" parent="."]
-layout_mode = 0
-offset_left = 896.0
-offset_top = 592.0
-offset_right = 1016.0
-offset_bottom = 640.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -56.0
+offset_right = -136.0
+offset_bottom = -8.0
 text = "Delete"
 
 [node name="panel" type="Panel" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 256.0
 offset_top = 52.0
-offset_right = 1152.0
-offset_bottom = 584.0
+offset_bottom = -64.0
 
 [node name="scroll" type="ScrollContainer" parent="panel"]
 layout_mode = 1
@@ -44,23 +61,35 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 3
 
-[node name="container" type="HFlowContainer" parent="panel/scroll"]
+[node name="container" type="VBoxContainer" parent="panel/scroll"]
 layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
 
 [node name="name" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = 264.0
-offset_top = 600.0
-offset_right = 888.0
-offset_bottom = 631.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 256.0
+offset_top = -56.0
+offset_right = -264.0
+offset_bottom = -8.0
 
 [node name="use" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1024.0
-offset_top = 592.0
-offset_right = 1142.0
-offset_bottom = 640.0
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -56.0
+offset_right = -10.0
+offset_bottom = -8.0
 text = "Use Wand"
 
 [connection signal="item_selected" from="WandIndex" to="." method="_on_wand_index_item_selected"]

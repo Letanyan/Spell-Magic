@@ -7,7 +7,7 @@ var case: WandCase:
 		current_index = value.selected_wand
 		reload_list()
 
-@onready var container: HFlowContainer = $panel/scroll/container
+@onready var container: VBoxContainer = $panel/scroll/container
 @onready var name_edit: LineEdit = $name
 
 var current_index = -1
@@ -88,7 +88,7 @@ func _on_name_text_changed(new_text):
 	if current_index < 0:
 		return
 	case.wands[current_index].name = new_text
-	reload_list()
+	wand_index.set_item_text(current_index, new_text)
 
 
 func _on_use_pressed():
