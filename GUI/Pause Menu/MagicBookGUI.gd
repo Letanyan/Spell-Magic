@@ -43,7 +43,7 @@ var spells_index_map := {}
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
 @onready var player_is_origin: CheckButton = $container/player_is_origin
-@onready var constants: TextEdit = $container/constants
+@onready var expressions: TextEdit = $container/expressions
 
 @onready var mana_edit: LineEdit = $container/mana/edit
 @onready var cooldown_label: Label = $container/cooldown
@@ -109,9 +109,9 @@ func _on_spell_index_item_selected(index):
 	is_bomb.button_pressed = spell.is_bomb
 	player_is_origin.button_pressed = spell.player_is_origin
 	
-	constants.text = ""
-	for n in spell.constants:
-		constants.text += "%s %.2f\n" % [n, spell.constants[n]]
+	expressions.text = ""
+	for n in spell.expression_strings:
+		expressions.text += "%s = %s\n" % [n, spell.expression_strings[n]]
 	
 	$container.visible = true
 	
@@ -471,14 +471,14 @@ func _on_constants_text_changed() -> void:
 		return
 	
 	var result := {}
-	var text: String = $container/constants.text
+	var text: String = expressions.text
 	var definitions = text.split("\n", false)
 	for def in definitions:
-		var atoms = def.split(" ", false)
+		var atoms = def.split("=", false)
 		if atoms.size() == 2:
-			result[atoms[0]] = atoms[1].to_float()
+			result[atoms[0].lstrip(" \t").rstrip(" \t")] = atoms[1]
 	
-	book.spells[current_index].constants = result
+	book.spells[current_index].expression_strings = result
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	

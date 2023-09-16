@@ -43,7 +43,9 @@ var player_is_origin: bool
 var cooldown: float
 var charge: float
 
-var constants: Dictionary = {}
+var expression_strings: Dictionary = {}
+var expressions: Dictionary = {}
+		
 
 var id: int = -1
 
@@ -69,7 +71,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	is_bomb = _is_bomb
 	player_is_origin = _player_is_origin
 	charge = 0.0
-	constants = {}
+	expression_strings = {}
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
@@ -88,7 +90,8 @@ func duplicate() -> Spell:
 	result.limit_v = limit_v
 	result.buff_r = buff_r
 	result.buff_v = buff_v
-	result.constants = constants
+	result.expression_strings = expression_strings
+	result.build_expressions()
 	result.charge = charge
 	return result
 	
@@ -134,6 +137,14 @@ func impulse_length() -> float:
 			return power * 10
 		_:
 			return 0
+	
+func build_expressions():
+	for k in expression_strings:
+		expressions[k] = Expr.new(expression_strings[k])
+	
+func compute_expressions(fvars: Dictionary):
+	for k in expressions:
+		fvars[k] = expressions[k].compute(fvars)
 			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
@@ -185,7 +196,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["C"] = charge
 	charge = 0.0
 	fixed_vars.merge(fvars, true)
-	fixed_vars.merge(constants, true)
+	compute_expressions(fixed_vars)
 	
 	var p: SpellBody
 	match element:
@@ -233,7 +244,7 @@ func save_dict():
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
-		"constants": constants
+		"expression_strings": expression_strings
 	}
 
 func load_dict(dict: Dictionary):
@@ -257,13 +268,14 @@ func load_dict(dict: Dictionary):
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
 	player_is_origin = dict.get("player_is_origin", true)
-	constants = dict.get("constants", {})
+	expression_strings = dict.get("expression_strings", {})
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
 	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
+	build_expressions()
 	
 	calculate_cooldown()
 	
