@@ -217,11 +217,12 @@ func action_up(action: String, book: MagicBook):
 		if found and key.size() > best_candidate.size():
 			best_candidate = key
 			
-#	print(best_candidate)
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
 		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
 			var s = find_spell(best_candidate, book)
+			if s == null:
+				return null
 			if book.can_use_spell(s):
 				book.use_spell(s)
 				current_actions.erase(action)

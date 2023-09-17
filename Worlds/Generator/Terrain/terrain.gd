@@ -85,6 +85,7 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 	var should_update := false
 	var loc := Vector2.ZERO
 	var origin_delta := Vector2.ZERO
+	var should_exclude_update: bool = false
 	for i in range(chunks.size()):
 		loc = locations[i]
 		should_update = false
@@ -100,10 +101,12 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 		if delta.y == 1 and loc.y == (old_coord.y - rad) * cs:
 			loc.y = (current_coord.y + rad) * cs
 			should_update = true
-			
+
+		should_exclude_update = false			
 		if r > radius:
 			origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
 			if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
+				should_exclude_update = true
 				chunks[i].position.y = -100	
 			else:
 				chunks[i].position.y = 0.0 if not is_water else Globals.sea_level()
@@ -112,7 +115,8 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			removed_locations.append(locations[i])
 			updated_locations.append(loc)
 			locations[i] = loc
-			update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r, subdivide, is_water)
+			if not should_exclude_update:
+				update_chunk_with_size(chunks[i], loc.x, loc.y, cs, r, subdivide, is_water)
 			
 	return {"removed": removed_locations, "updated": updated_locations}
 	
@@ -183,6 +187,11 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	var mesh := mi.mesh
 	var mdt := MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
+	
+	var R := size / float(int(size * subdivide_percent))
+	var texture_size := size / R
+	var temperature_texture: NoiseTexture2D = blender.temperature_texture(x / R, y / R, texture_size, texture_size, R)
+	var dryness_texture: NoiseTexture2D = blender.dryness_texture(x / R, y / R, texture_size, texture_size, R)
 
 	if base_coords.is_empty():
 		for i in range(mdt.get_vertex_count()):
@@ -208,12 +217,10 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mdt.commit_to_surface(mesh)
 	var mat := mesh.surface_get_material(0)
 	mat.shader = biome_shader
-	var R := size / float(int(size * subdivide_percent))
-	var texture_size := size / R
 	mat.set_shader_parameter("texture_width", texture_size)
 	mat.set_shader_parameter("texture_depth", texture_size)
-	mat.set_shader_parameter("temperature", blender.temperature_texture(x / R, y / R, texture_size, texture_size, R))
-	mat.set_shader_parameter("dryness", blender.dryness_texture(x / R, y / R, texture_size, texture_size, R))
+	mat.set_shader_parameter("temperature", temperature_texture)
+	mat.set_shader_parameter("dryness", dryness_texture)
 	if r <= radius:
 		var saved_children := mi.get_children().duplicate()
 		mi.create_trimesh_collision()

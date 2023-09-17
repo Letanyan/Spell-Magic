@@ -88,12 +88,8 @@ func _physics_process(delta):
 	var movement := velocity_movement.update(delta, vitals, 14, self)
 	emit_vitals_signal()
 	if not menu_showing:
-		if can_move():
-			velocity = movement["velocity"]
-			move_and_slide()
-		else:
-			velocity = movement["impulse"]
-			move_and_slide()
+		velocity = movement["velocity"]
+		move_and_slide()
 		var direction = movement["direction"]
 		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():

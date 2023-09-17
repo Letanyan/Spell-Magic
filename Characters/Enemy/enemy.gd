@@ -85,33 +85,21 @@ func _physics_process(delta):
 	update_vitals_display()
 	
 	if velocity_movement.impulse != Vector3.ZERO:
-		if can_move():
-			velocity = movement["velocity"]
-			move_and_slide()
+		velocity = movement["velocity"]
+		move_and_slide()
 	else:
 		match current_path.mover:
 			PathStyle.Mover.PHYSICS:
-				if can_move():
-					velocity = movement["velocity"]
-				else:
-					velocity = movement["impulse"]
+				velocity = movement["velocity"]
 				move_and_slide()
 			PathStyle.Mover.ABSOLUTE:
-				if can_move():
-					velocity = movement["absolute"]
-					position += movement["absolute"]
-				else:
-					velocity = movement["impulse"]
-					position += movement["impulse"]
+				velocity = movement["absolute"]
+				position += movement["absolute"]
 			PathStyle.Mover.ABSOLUTE_XZ:
 				var v: Vector3 
 				var t: Vector3
-				if can_move():
-					v = movement["absolute"]
-					t = movement["target"]
-				else:
-					v = movement["impulse"]
-					t = movement["target"]
+				v = movement["absolute"]
+				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 				if position.y < g or position.y > g:
 					position.y = g

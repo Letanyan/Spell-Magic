@@ -151,8 +151,8 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale
 	var result := NoiseTexture2D.new()
 	result.noise = noise.duplicate(true)
 	result.noise.frequency *= scale
-	result.noise.offset.x = x - w / 2
-	result.noise.offset.y = y - h / 2
+	result.noise.offset.x = x - w / 2.0
+	result.noise.offset.y = y - h / 2.0
 	result.width = int(w + 2)
 	result.height = int(h + 2)
 	result.normalize = false
@@ -179,9 +179,9 @@ func height(x: float, y: float) -> float:
 	return result
 
 func compute_biome_distances(x: float, y: float):
-	var d := dryness.get_noise_2d(x, y) / 2 + 0.5
-	var t := temperature.get_noise_2d(x, y) / 2 + 0.5
-
+	var d := dryness.get_noise_2d(x, y) / 2.0 + 0.5
+	var t := temperature.get_noise_2d(x, y) / 2.0 + 0.5
+	
 	var p := Vector2(d, t)
 	var min_distance := INF
 	var pos := 0
@@ -191,7 +191,7 @@ func compute_biome_distances(x: float, y: float):
 	var c := Vector3.ZERO
 	for i in range(biome_locations.size()):
 		dist = p.distance_to(biome_locations[i])
-		distances[i] = dist ** 5.0
+		distances[i] = dist * dist
 		total_size += dist
 		c = lerp(biome_colors[i], Vector3(1, 1, 1), dist)
 		if dist <= 1.0:
