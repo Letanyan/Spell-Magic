@@ -62,6 +62,10 @@ func pan_camera(movement: Vector2):
 	if vitals.freeze.value > vitals.freeze.min_value:
 		vitals.wetness.apply(size / 75_000.0)
 
+func current_animation_is(animation: String) -> bool:
+	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+	var current := playback.get_current_node()
+	return current == animation
 
 func play_animation(animation: String):
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
@@ -102,7 +106,10 @@ func _physics_process(delta):
 				play_animation("battle_idle")
 			
 		if not is_on_floor_only():
-			play_animation("run")
+			play_animation("fall")
+		elif current_animation_is("fall"):
+			play_animation("land")
+			
 			
 		if velocity:
 			var space := get_world_3d().space
