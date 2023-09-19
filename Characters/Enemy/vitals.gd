@@ -283,7 +283,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 	explosion.position = world.to_local(location)
 	world.add_child(explosion)
 	source.emitting = true
-	await world.get_tree().create_timer(source.lifetime + 0.1).timeout
+	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 	world.remove_child(explosion)
 	explosion.queue_free()
 

@@ -50,7 +50,6 @@ void fragment() {
 	NORMAL_MAP = texture(texture_normal,base_uv).rgb;
 	NORMAL_MAP_DEPTH = normal_scale;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
-	ALPHA = 0.15;
 }
 "
 

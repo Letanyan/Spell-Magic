@@ -151,6 +151,7 @@ func cast_spell(insert: Callable, next_spell: Spell):
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
 	play_animation("attack")
 	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
+	await get_tree().physics_frame
 	spell_caster.cast_spell(self, vitals, insert, new_spell)
 	emit_vitals_signal()
 	emit_spell_was_cast(next_spell)

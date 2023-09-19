@@ -440,7 +440,7 @@ func stop_emitting():
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(particles.lifetime)
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ROCK:
 			free_after(0)
@@ -450,21 +450,21 @@ func stop_emitting():
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(particles.lifetime)
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.AIR:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(particles.lifetime)
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ICE:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(particles.lifetime)
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ELECTRIC:
 			var particles: GPUParticles3D = get_node("source")
@@ -473,7 +473,7 @@ func stop_emitting():
 			body.visible = false
 			var area: Area3D = get_node("body/area")
 			area.collision_mask = 0
-			free_after(particles.lifetime)
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.VOID:
 			free_after(0.0)
@@ -493,6 +493,7 @@ func free_after(duration: float):
 		to_remove = true
 
 func cast_spell(insert: Callable, next_spell: Spell, target: Node3D):
+	await get_tree().physics_frame
 	spell_caster.cast_spell(self, null, insert, next_spell, target)
 
 func pass_projectile_up(p_spell: Spell, time: float):

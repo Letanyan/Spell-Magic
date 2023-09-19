@@ -45,6 +45,5 @@ emitting = false
 amount = 100
 one_shot = true
 explosiveness = 0.5
-randomness = 1.0
 process_material = SubResource("ParticleProcessMaterial_be67v")
 draw_pass_1 = SubResource("SphereMesh_orbll")

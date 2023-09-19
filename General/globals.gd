@@ -15,3 +15,6 @@ class Ref extends RefCounted:
 	
 	func _init(value) -> void:
 		data = value
+
+static func particle_system_lifetime(p: GPUParticles3D) -> float:
+	return p.lifetime * (1.0 + 1.0 - p.explosiveness) + 0.1

@@ -126,7 +126,8 @@ func _physics_process(delta):
 		if spell != null:
 			play_animation("attack")
 			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"]).length / 2.0).timeout
-			cast_spell(func(p): if p != null: add_sibling(p), spell)
+			await get_tree().physics_frame
+			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
 		spell_tick = 0
 
 	spell_caster.update(self, delta)
@@ -176,7 +177,7 @@ func die():
 	source.emitting = true
 	spell_caster.free_particles()
 	queue_free()
-	await world.get_tree().create_timer(source.lifetime + 0.1).timeout
+	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 	world.remove_child(explosion)
 	
 func update_vitals_display():

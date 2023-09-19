@@ -197,6 +197,10 @@ pan_back={
 3d_physics/layer_9="electric"
 3d_physics/layer_10="world_object"
 
+[physics]
+
+3d/run_on_separate_thread=true
+
 [rendering]
 
 mesh_lod/lod_change/threshold_pixels=0.5
