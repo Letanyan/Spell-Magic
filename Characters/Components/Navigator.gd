@@ -164,6 +164,17 @@ static func get_ray_intersection(p: Node3D, from: Vector3, target: Vector3) -> C
 			break
 	return c
 	
+static func get_shape_intersection(p: Node3D, from: Vector3, target: Vector3, shape: Shape3D, transform: Transform3D) -> bool:
+	var space_state := p.get_world_3d().direct_space_state
+	var query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+	query.collision_mask = ~1
+	query.exclude = [p]
+	query.shape = shape
+	query.transform = transform
+	var result := space_state.intersect_shape(query, 4)
+	return not result.is_empty()
+	
+	
 static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit = Ptr.new(false)) -> float:
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
@@ -278,19 +289,22 @@ static func reconstruct_path(came_from: Dictionary, target: Vector3) -> Array[Ve
 		result.insert(0, current)
 	return result
 	
-static func neighbours(p: Node3D, from: Vector3, directions: int, distance: float, target: Vector3) -> Array[Vector3]:
+static func neighbours(p: Node3D, from: Vector3, directions: int, distance: float, target: Vector3, margin: float = 0.0) -> Array[Vector3]:
 	var result: Array[Vector3] = [from + Vector3(0, distance, 0), from + Vector3(0, -distance, 0)]
 	var direction := (from - target).normalized()
 	var angle := 2 * PI / float(directions)
+	var shape := SphereShape3D.new()
+	shape.radius = margin
+	var transform := Transform3D.IDENTITY
 	for y in range(-1, 2):
 		for a in range(directions):
 			var to := from + direction * distance + Vector3(0, y, 0) * distance
-			if get_ray_intersection(p, from, to) == null:
+			if not get_shape_intersection(p, from, to, shape, transform.translated(to)):
 				result.append(to)
 			direction = direction.rotated(Vector3.UP, angle)
 	return result
 	
-static func astar(p: Node3D, target: Vector3, margin: float = 1.0, max_distance: float = 2.0) -> Array[Vector3]:	
+static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, max_step_distance: float = 2.0, margin_from_obs: float = 0.0) -> Array[Vector3]:	
 	var start := p.global_position
 	var open := {start: true}
 	var came_from := {}
@@ -298,7 +312,7 @@ static func astar(p: Node3D, target: Vector3, margin: float = 1.0, max_distance:
 	g_score[start] = 0.0
 	var f_score := {}
 	f_score[start] = start.distance_to(target)
-	var distance := max_distance
+	var distance := max_step_distance
 	var max_look_up = 200.0 / distance
 	
 #	var best_distance := INF
@@ -310,13 +324,13 @@ static func astar(p: Node3D, target: Vector3, margin: float = 1.0, max_distance:
 #		if current_distance < best_distance:
 #			best_distance = current_distance
 #			closest_point = current
-		if current_distance <= margin:
+		if current_distance <= margin_from_target:
 			return reconstruct_path(came_from, current)
 			
-		distance = min(current_distance / 2.0, max_distance)
+		distance = min(current_distance / 2.0, max_step_distance)
 			
 		open.erase(current)
-		for n in neighbours(p, current, 8, distance, target):
+		for n in neighbours(p, current, 8, distance, target, margin_from_obs):
 			var tentative: float = g_score[current] + distance
 			if tentative < g_score.get(n, INF):
 				came_from[n] = current
@@ -337,15 +351,18 @@ static func astar(p: Node3D, target: Vector3, margin: float = 1.0, max_distance:
 static func will_collide(p: Node3D, target: Vector3) -> bool:
 	return get_ray_intersection(p, p.global_position, target) != null
 	
-static func find_target(p: Node3D, target: Vector3, margin: float = 1.0, distance: float = 2.0) -> Vector3:
-	if p.global_position.distance_to(target) > 200.0 / distance:
+static func find_target(p: Node3D, target: Vector3, margin_from_target: float = 2.0, step_distance: float = 2.0, margin_from_obs: float = 3.0) -> Vector3:
+	if p.global_position.distance_to(target) > 200.0 / step_distance:
+		print("A")
 		return target
 	if not will_collide(p, target):
+		prints("B:", p.global_position, "->", target)
 		return target
 	var target_in_shape := get_point_intersection(p, target)
 	if target_in_shape != null:
 		var candidates := vertices(target_in_shape, target_in_shape.shape)
 		if candidates.size() <= 0:
+			print("C")
 			return target
 		var result: Vector3 = candidates[0]
 		var max_res := INF
@@ -355,8 +372,9 @@ static func find_target(p: Node3D, target: Vector3, margin: float = 1.0, distanc
 				result = c
 		target = result
 				
-	var path := astar(p, target, margin, distance)
+	var path := astar(p, target, margin_from_target, step_distance, margin_from_obs)
 	if path.is_empty():
+		print("D")
 		return target
 	var next: Vector3 = path[0]
 	while not path.is_empty():

@@ -14,7 +14,7 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 10
+	vitals.perception.value = 10 * 4
 	
 	hormones = Hormones.new(-1.0, 1.0, -1.0, 1.0)
 	

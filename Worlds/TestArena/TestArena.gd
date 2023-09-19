@@ -47,8 +47,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
 	add_child(undead)
-	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, 20)
-	add_child(bat)
+#	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, 20)
+#	add_child(bat)
 #	var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
 #	add_child(walker)
 	

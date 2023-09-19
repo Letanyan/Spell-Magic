@@ -115,6 +115,10 @@ func _physics_process(delta):
 		update_behaviour()
 		var next_pos := current_path.next_position(self, player)
 		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos)
+		if velocity_movement.target_position != next_pos:
+			prints(velocity_movement.target_position, next_pos)
+		else:
+			print("---")
 		behavior_tick = 0
 
 	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
