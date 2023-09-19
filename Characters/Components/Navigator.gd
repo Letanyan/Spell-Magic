@@ -296,12 +296,17 @@ static func neighbours(p: Node3D, from: Vector3, directions: int, distance: floa
 	var shape := SphereShape3D.new()
 	shape.radius = margin
 	var transform := Transform3D.IDENTITY
-	for y in range(-1, 2):
-		for a in range(directions):
-			var to := from + direction * distance + Vector3(0, y, 0) * distance
-			if not get_shape_intersection(p, from, to, shape, transform.translated(to)):
-				result.append(to)
-			direction = direction.rotated(Vector3.UP, angle)
+	for it in range(1, 3):
+		for y in range(-1, 2):
+			for a in range(directions):
+				var to := from + direction * distance * it + Vector3(0, y, 0) * distance * it
+				if not get_shape_intersection(p, from, to, shape, transform.translated(to)):
+					result.append(to)
+				direction = direction.rotated(Vector3.UP, angle)
+				
+		# if the smallest step had at least one movement then break else try looking furthur out.
+		if not result.is_empty(): 
+			break
 	return result
 	
 static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, max_step_distance: float = 2.0, margin_from_obs: float = 0.0) -> Array[Vector3]:	

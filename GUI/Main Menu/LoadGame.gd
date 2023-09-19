@@ -9,8 +9,15 @@ func _ready() -> void:
 		dir.make_dir("worlds")
 	dir.change_dir("worlds")
 	var worlds := dir.get_directories()
+	var times := []
 	for world in worlds:
-		$WorldsList.add_item(world)
+		var f := FileAccess.get_modified_time("user://worlds/%s/settings.json" % world)
+		times.append([world, f])
+		
+	times.sort_custom(func(a, b): return a[1] > b[1])	
+		
+	for t in times:
+		$WorldsList.add_item("%s (%s)" % [t[0], Time.get_datetime_string_from_unix_time(t[1], true)])
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
