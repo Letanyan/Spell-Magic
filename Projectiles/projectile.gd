@@ -426,7 +426,7 @@ func update_spell(t: float, vars: Dictionary):
 	if not is_active():
 		return
 	fixed_vars["t"] = t - time_start
-	vars["__frame_time"] = t - vars.get("__last_frame_time", time_start)
+	vars["__frame_time"] = max(t - vars.get("__last_frame_time", time_start), 0.000001)
 	vars["__last_frame_time"] = t
 	var p = spell.calculate_location(vars)
 	var er = spell.calculate_size(vars)

@@ -358,16 +358,13 @@ static func will_collide(p: Node3D, target: Vector3) -> bool:
 	
 static func find_target(p: Node3D, target: Vector3, margin_from_target: float = 2.0, step_distance: float = 2.0, margin_from_obs: float = 3.0) -> Vector3:
 	if p.global_position.distance_to(target) > 200.0 / step_distance:
-		print("A")
 		return target
 	if not will_collide(p, target):
-		prints("B:", p.global_position, "->", target)
 		return target
 	var target_in_shape := get_point_intersection(p, target)
 	if target_in_shape != null:
 		var candidates := vertices(target_in_shape, target_in_shape.shape)
 		if candidates.size() <= 0:
-			print("C")
 			return target
 		var result: Vector3 = candidates[0]
 		var max_res := INF
@@ -379,7 +376,6 @@ static func find_target(p: Node3D, target: Vector3, margin_from_target: float = 
 				
 	var path := astar(p, target, margin_from_target, step_distance, margin_from_obs)
 	if path.is_empty():
-		print("D")
 		return target
 	var next: Vector3 = path[0]
 	while not path.is_empty():
