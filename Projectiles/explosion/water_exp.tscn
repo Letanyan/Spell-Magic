@@ -1,4 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://cxtrqt12eq34o"]
+[gd_scene load_steps=9 format=3 uid="uid://cxtrqt12eq34o"]
+
+[ext_resource type="Shader" path="res://Projectiles/water_droplet.gdshader" id="1_172ln"]
 
 [sub_resource type="Gradient" id="Gradient_cc2r1"]
 interpolation_mode = 2
@@ -20,20 +22,29 @@ curve = SubResource("Curve_d16al")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qpmlj"]
 emission_shape = 1
 emission_sphere_radius = 0.5
-direction = Vector3(0, 0, -1)
+direction = Vector3(0, 0, 0)
 spread = 0.0
 gravity = Vector3(0, -1, 0)
-initial_velocity_max = 1.0
 scale_min = 0.3
 scale_curve = SubResource("CurveTexture_20bab")
 color_ramp = SubResource("GradientTexture1D_1ccbm")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5otlk"]
-shading_mode = 0
-vertex_color_use_as_albedo = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vd0r0"]
+render_priority = 0
+shader = ExtResource("1_172ln")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
 
 [sub_resource type="SphereMesh" id="SphereMesh_peij8"]
-material = SubResource("StandardMaterial3D_5otlk")
+material = SubResource("ShaderMaterial_vd0r0")
 radius = 0.25
 height = 0.5
 radial_segments = 8

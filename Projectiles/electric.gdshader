@@ -1,8 +1,6 @@
 shader_type spatial;
 //render_mode unshaded;
 
-
-
 uniform vec4 start_color: source_color = vec4(0, 0, 0, 1);
 uniform vec4 end_color: source_color = vec4(1, 1, 1, 1);
 uniform float speed = 1.0;

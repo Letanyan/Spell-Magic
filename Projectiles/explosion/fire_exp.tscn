@@ -1,4 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://nvx12omqgpe2"]
+[gd_scene load_steps=9 format=3 uid="uid://nvx12omqgpe2"]
+
+[ext_resource type="Shader" path="res://Projectiles/fire.gdshader" id="1_vy5ia"]
 
 [sub_resource type="Gradient" id="Gradient_ce2kv"]
 offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
@@ -26,12 +28,22 @@ initial_velocity_max = 1.0
 scale_curve = SubResource("CurveTexture_jbj8g")
 color_ramp = SubResource("GradientTexture1D_7he8g")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t0aey"]
-shading_mode = 0
-vertex_color_use_as_albedo = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1j032"]
+render_priority = 0
+shader = ExtResource("1_vy5ia")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
 
 [sub_resource type="SphereMesh" id="SphereMesh_orbll"]
-material = SubResource("StandardMaterial3D_t0aey")
+material = SubResource("ShaderMaterial_1j032")
 radius = 0.25
 height = 0.5
 radial_segments = 6
