@@ -75,6 +75,7 @@ collision_mask = 567
 collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]
+sorting_offset = 1.0
 cast_shadow = 0
 amount = 80
 lifetime = 2.0
