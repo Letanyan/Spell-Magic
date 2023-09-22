@@ -6,6 +6,10 @@ var sed: int
 
 var hud_settings: HUDSettings
 
+enum PurchaseError {
+	NONE, NOT_ENOUGH_CURRENCY, UPGRADE_IS_OVER_LIMIT
+}
+
 const HAS_VOID := 1 << 0
 const HAS_FIRE := 1 << 1
 const HAS_WATER := 1 << 2
@@ -13,7 +17,7 @@ const HAS_ROCK := 1 << 3
 const HAS_AIR := 1 << 4
 const HAS_ICE := 1 << 5
 const HAS_ELECTRIC := 1 << 6
-var has_spell_element := 0b1
+var has_spell_element := 0b11
 var cost_spell_element := 100
 
 const HAS_CHAIN_ON_START := 1 << 0
@@ -85,6 +89,128 @@ func check_if_has_spell_element(el: Spell.Element) -> bool:
 
 func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
 	return has_chain_method & (1 << el) != 0
+
+func purchase_spells_in_book() -> PurchaseError:
+	if currency < cost_spells_in_book:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_spells_in_book + upgrade_spells_in_book > LIMIT_SPELLS_IN_BOOK:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_spells_in_book += upgrade_spells_in_book
+	currency -= cost_spells_in_book
+	return PurchaseError.NONE
+	
+func purchase_health() -> PurchaseError:
+	if currency < cost_health:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_health + upgrade_health > LIMIT_HEALTH:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_health += upgrade_health
+	currency -= cost_health
+	return PurchaseError.NONE
+
+func purchase_mana() -> PurchaseError:
+	if currency < cost_mana:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_mana + upgrade_mana > LIMIT_MANA:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_mana += upgrade_mana
+	currency -= cost_mana
+	return PurchaseError.NONE
+	
+	
+func purchase_v() -> PurchaseError:
+	if currency < cost_v:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_v + upgrade_v > LIMIT_v:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_v += upgrade_v
+	currency -= cost_v
+	return PurchaseError.NONE
+
+func purchase_P() -> PurchaseError:
+	if currency < cost_P:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_P + upgrade_P > LIMIT_P:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_P += upgrade_P
+	currency -= cost_P
+	return PurchaseError.NONE
+
+func purchase_D() -> PurchaseError:
+	if currency < cost_D:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_D + upgrade_D > LIMIT_D:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_D += upgrade_D
+	currency -= cost_D
+	return PurchaseError.NONE
+	
+func purchase_N() -> PurchaseError:
+	if currency < cost_N:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_N + upgrade_N > LIMIT_N:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_N += upgrade_N
+	currency -= cost_N
+	return PurchaseError.NONE
+	
+func purchase_T() -> PurchaseError:
+	if currency < cost_T:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_T + upgrade_T > LIMIT_T:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_T += upgrade_T
+	currency -= cost_T
+	return PurchaseError.NONE
+
+func purchase_r() -> PurchaseError:
+	if currency < cost_r:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_r + upgrade_r > LIMIT_r:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_r += upgrade_r
+	currency -= cost_r
+	return PurchaseError.NONE
+	
+func purchase_spell_element(el: Spell.Element) -> PurchaseError:
+	if currency < cost_spell_element:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if check_if_has_spell_element(el):
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	has_spell_element |= (1 << el)
+	currency -= cost_spell_element
+	return PurchaseError.NONE
+	
+func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
+	if currency < cost_spell_element:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if check_if_has_chain_method(cm):
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	has_spell_element |= (1 << cm)
+	currency -= cost_chain_method
+	return PurchaseError.NONE
 
 func save():
 	var dir := DirAccess.open("user://")

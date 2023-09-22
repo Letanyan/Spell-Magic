@@ -63,6 +63,8 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			
 		Entity.ENEMY:
 			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized() # direction to player
+			result["l"] = body.level
+			result["fl"] = body.level / 100.0
 			
 		Entity.PROJECTILE:
 			cdir = -body.velocity.normalized() 
@@ -134,7 +136,7 @@ func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Dictionary
 	spell_variables(result, body, false, p, spell)
 	return result
 
-func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null):
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Dictionary = {}):
 	if vitals != null:
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
 			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
@@ -159,6 +161,9 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	# it's fine that a projectile doesn't have a target set yet at the start
 	# since by default camera direction equals target direction at start
 	var vars := all_spell_variables(body, null, spell)
+	if inherited_vars.has("l"): # copy enemy level vars
+		vars["l"] = inherited_vars["l"]
+		vars["fl"] = inherited_vars["fl"]
 	var ps := spell.get_particles(vars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p in ps:

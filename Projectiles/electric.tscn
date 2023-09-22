@@ -53,8 +53,8 @@ subdivide_height = 16
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g1ktx"]
 render_priority = 0
 shader = ExtResource("3_8dbc8")
-shader_parameter/start_color = Color(0.745098, 0, 0.615686, 0.752941)
-shader_parameter/end_color = Color(0.486275, 0, 0.568627, 0.752941)
+shader_parameter/start_color = Color(0.745098, 0, 0.615686, 1)
+shader_parameter/end_color = Color(0.486275, 0, 0.568627, 1)
 shader_parameter/speed = 10.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_sdaq3"]
@@ -79,6 +79,7 @@ cast_shadow = 0
 amount = 80
 lifetime = 2.0
 interpolate = false
+visibility_aabb = AABB(-2.16439, -2.3909, -2.06765, 4.28472, 4.93733, 4.21857)
 transform_align = 3
 process_material = SubResource("ParticleProcessMaterial_06km0")
 draw_pass_1 = SubResource("BoxMesh_a4wuh")

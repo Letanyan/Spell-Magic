@@ -494,7 +494,7 @@ func free_after(duration: float):
 
 func cast_spell(insert: Callable, next_spell: Spell, target: Node3D):
 	await get_tree().physics_frame
-	spell_caster.cast_spell(self, null, insert, next_spell, target)
+	spell_caster.cast_spell(self, null, insert, next_spell, target, fixed_vars)
 
 func pass_projectile_up(p_spell: Spell, time: float):
 	projectile_hit.emit(p_spell, time)

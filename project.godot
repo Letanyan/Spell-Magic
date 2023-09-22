@@ -201,7 +201,3 @@ pan_back={
 
 3d/run_on_separate_thread=true
 3d/physics_engine="GodotPhysics3D"
-
-[rendering]
-
-mesh_lod/lod_change/threshold_pixels=0.5

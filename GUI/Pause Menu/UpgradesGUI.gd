@@ -68,7 +68,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func update_state():
+func update_state(purchase_error: WorldSettings.PurchaseError):
 	max_spell_count_current.text = str(world_settings.max_spells_in_book)
 	max_P_current.text = str(world_settings.max_P)
 	max_v_current.text = str(world_settings.max_v)
@@ -128,113 +128,72 @@ func update_state():
 	max_H_upgrade.text = "+ " + str(world_settings.upgrade_health)
 	max_M_upgrade.text = "+ " + str(world_settings.upgrade_mana)
 	max_r_upgrade.text = "+ " + str(world_settings.upgrade_r)
-	
-
-func can_upgrade(cost) -> bool:
-	if world_settings.currency >= cost:
-		world_settings.currency -= cost
-		return true
-	return false
 
 func _on_max_spell_count_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spells_in_book) and world_settings.max_spells_in_book < world_settings.LIMIT_SPELLS_IN_BOOK:
-		return
-	world_settings.max_spells_in_book += world_settings.upgrade_spells_in_book
-	update_state()
+	var err := world_settings.purchase_spells_in_book()
+	update_state(err)
 
 func _on_fire_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spell_element):
-		return
-	world_settings.has_spell_element |= (1 << Spell.Element.FIRE)
-	update_state()
+	var err := world_settings.purchase_spell_element(Spell.Element.FIRE)
+	update_state(err)
 
 func _on_water_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spell_element):
-		return
-	world_settings.has_spell_element |= (1 << Spell.Element.WATER)
-	update_state()
+	var err := world_settings.purchase_spell_element(Spell.Element.WATER)
+	update_state(err)
 	
 func _on_air_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spell_element):
-		return
-	world_settings.has_spell_element |= (1 << Spell.Element.AIR)
-	update_state()
+	var err := world_settings.purchase_spell_element(Spell.Element.AIR)
+	update_state(err)
 
 func _on_rock_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spell_element):
-		return
-	world_settings.has_spell_element |= (1 << Spell.Element.ROCK)
-	update_state()
+	var err := world_settings.purchase_spell_element(Spell.Element.ROCK)
+	update_state(err)
 
 func _on_ice_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spell_element):
-		return
-	world_settings.has_spell_element |= (1 << Spell.Element.ICE)
-	update_state()
+	var err := world_settings.purchase_spell_element(Spell.Element.ICE)
+	update_state(err)
 
 func _on_electric_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_spell_element):
-		return
-	world_settings.has_spell_element |= (1 << Spell.Element.ELECTRIC)
-	update_state()
+	var err := world_settings.purchase_spell_element(Spell.Element.ELECTRIC)
+	update_state(err)
 
 func _on_max_P_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_P) and world_settings.max_P < world_settings.LIMIT_P:
-		return
-	world_settings.max_P += world_settings.upgrade_P
-	update_state()
+	var err := world_settings.purchase_P()
+	update_state(err)
 	
 func _on_max_v_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_v) and world_settings.max_v < world_settings.LIMIT_v:
-		return
-	world_settings.max_v += world_settings.upgrade_v
-	update_state()
+	var err := world_settings.purchase_v()
+	update_state(err)
 
 func _on_max_T_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_T) and world_settings.max_T < world_settings.LIMIT_T:
-		return
-	world_settings.max_T += world_settings.upgrade_T
-	update_state()
+	var err := world_settings.purchase_T()
+	update_state(err)
 
 func _on_max_N_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_N) and world_settings.max_N < world_settings.LIMIT_N:
-		return
-	world_settings.max_N += world_settings.upgrade_N
-	update_state()
+	var err := world_settings.purchase_N()
+	update_state(err)
 
 func _on_max_M_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_mana) and world_settings.max_mana < world_settings.LIMIT_MANA:
-		return
-	world_settings.max_mana += world_settings.upgrade_mana
-	update_state()
+	var err := world_settings.purchase_mana()
+	update_state(err)
 	
 func _on_max_R_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_r) and world_settings.max_r < world_settings.LIMIT_r:
-		return
-	world_settings.max_r += world_settings.upgrade_r
-	update_state()
+	var err := world_settings.purchase_r()
+	update_state(err)
 
 func _on_at_start_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_chain_method):
-		return
-	world_settings.has_chain_method &= Spell.ChainCastKind.START
-	update_state()
+	var err := world_settings.purchase_chain_method(Spell.ChainCastKind.START)
+	update_state(err)
 
 func _on_at_end_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_chain_method):
-		return
-	world_settings.has_chain_method &= Spell.ChainCastKind.END
-	update_state()
+	var err := world_settings.purchase_chain_method(Spell.ChainCastKind.END)
+	update_state(err)
 
 func _on_on_hit_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_chain_method):
-		return
-	world_settings.has_chain_method &= Spell.ChainCastKind.HIT
-	update_state()
+	var err := world_settings.purchase_chain_method(Spell.ChainCastKind.HIT)
+	update_state(err)
 
 func _on_max_H_upgrade_pressed() -> void:
-	if not can_upgrade(world_settings.cost_health) and world_settings.max_health < world_settings.LIMIT_HEALTH:
-		return
-	world_settings.max_health += world_settings.upgrade_health
-	update_state()
+	var err := world_settings.purchase_health()
+	update_state(err)
 	

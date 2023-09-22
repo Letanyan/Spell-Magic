@@ -2,7 +2,7 @@ class_name Walker
 extends Enemy
 
 var none_pattern: AttackPatterns
-var random_pattern: AttackPatterns
+var default_pattern: AttackPatterns
 var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
@@ -19,20 +19,20 @@ func _ready():
 	hormones = Hormones.new(-1.0, 1.0, -1.0, 1.0)
 	
 	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
-	attack_path = PathStyle.new(randf()).random_points_in_disc(7, 15, 8).speed(6).use_physics().set_use_player_as_origin().look_at_player()
+	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
 	current_path = idle_path
 	
 	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.UNDEAD: true}, false)
 	
 	none_pattern = AttackPatterns.none()
 	
-	random_pattern = AttackPatterns.new(
+	default_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + 6", "w * t * 5 + w*3", "1", 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 7 + u*3", "v * t * 7 + 6", "w * t * 7 + w*3", "1", 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 10 + u*3", "v * t * 10 + 6", "w * t * 10 + w*3", "1", 0.1, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u*(3 + 3*t)", "v*(3 + 3*t) + 2", "w*(3 + 3*t)", "1 + 2*fl", level * level * 2, 5, Spell.Element.ICE, 1),
+			Spell.new(false, "u*(3 + 200*fl*t)", "v*(3 + 200*fl*t) + 0.5*-1*t*t + 2", "w*(3 + 200*fl*t)", "1 + r0 * fl * 10", 5 * level ** 3, 5, Spell.Element.ROCK, 1),
+			Spell.new(false, "u*(3 + t*fl*100)", "v*(3 + t*fl*100) + 2", "w*(3 + t*fl*100)", "1 + fl*5", level * 0.5, 5, Spell.Element.WATER, 1),
 		],
-		[ 15, 3, 2 ],
+		[ 3, 7, 2 ],
 		false,
 		0.25
 	)
@@ -55,10 +55,10 @@ func attack_state() -> AttackPatterns:
 		return none_pattern
 	elif vitals.health.value >= 50:
 		health_bar.visible = true
-		return random_pattern
+		return default_pattern
 	else:
 		health_bar.visible = true
-		return sequence_pattern
+		return default_pattern
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
