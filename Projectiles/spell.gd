@@ -188,7 +188,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["rn7"] = randf()
 	fixed_vars["rn8"] = randf()
 	fixed_vars["rn9"] = randf()
-	fixed_vars["N"] = count
+	fixed_vars["N"] = float(count)
 	fixed_vars["T"] = duration
 	fixed_vars["P"] = power
 	fixed_vars["D"] = delay
