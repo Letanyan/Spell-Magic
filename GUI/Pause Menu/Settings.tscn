@@ -29,4 +29,13 @@ offset_right = 312.0
 offset_bottom = 48.0
 text = "Hide Wand Mappings"
 
+[node name="HideWandModifierHints" type="CheckButton" parent="Tabs/HUD"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 49.0
+offset_right = 312.0
+offset_bottom = 80.0
+text = "Hide Wand Modifier Hints"
+
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
+[connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]

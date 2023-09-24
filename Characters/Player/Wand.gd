@@ -107,6 +107,8 @@ signal spell_on_cooldown
 signal spell_updated
 signal action_updated
 signal picked_spell_changed
+signal key_down
+signal key_up
 
 func _init():
 	name = ""
@@ -127,6 +129,23 @@ func build_keys():
 				nKey.insert(0, m)
 				if not keys.has(nKey):
 					keys[nKey] = Option.new()
+
+func get_bound_keys() -> Dictionary:
+	var result := {}
+	for key in keys:
+		var is_valid := true
+		var mod_count := 0
+		for ca in current_actions:
+			if not mods.has(ca):
+				continue
+			mod_count += 1
+			if key.find(ca) == -1:
+				is_valid = false
+				break
+		if is_valid and key.size() - mod_count == 1:
+			result[key] = keys[key]
+			
+	return result
 
 static func basic() -> Wand:
 	var result := Wand.new()
@@ -191,13 +210,17 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
 			var s = find_spell(best_candidate, book)
 			if s == null:
+				key_down.emit()
 				return null
 			if book.can_use_spell(s):
 				book.use_spell(s)
+				key_down.emit()
 				return s
 			else:
 				spell_on_cooldown.emit(s)
+				key_down.emit()
 				return null
+	key_down.emit()
 	return null
 	
 func action_up(action: String, book: MagicBook):
@@ -222,17 +245,21 @@ func action_up(action: String, book: MagicBook):
 		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
 			var s = find_spell(best_candidate, book)
 			if s == null:
+				key_up.emit()
 				return null
 			if book.can_use_spell(s):
 				book.use_spell(s)
 				current_actions.erase(action)
 				s.charge = Time.get_unix_time_from_system() - opt.start_hold
+				key_up.emit()
 				return s
 			else:
 				spell_on_cooldown.emit(s)
 				current_actions.erase(action)
+				key_up.emit()
 				return null
 	current_actions.erase(action)
+	key_up.emit()
 	return null
 
 func save_dict():

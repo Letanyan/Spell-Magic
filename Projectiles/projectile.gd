@@ -476,7 +476,7 @@ func stop_emitting():
 			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.VOID:
-			free_after(0.0)
+			free_after(1.0)
 			
 func free_after(duration: float):
 	if get_parent() != null and get_tree() != null:

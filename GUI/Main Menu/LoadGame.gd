@@ -1,6 +1,7 @@
 extends Control
 
 var dir: DirAccess
+var filenames: Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,6 +18,7 @@ func _ready() -> void:
 	times.sort_custom(func(a, b): return a[1] > b[1])	
 		
 	for t in times:
+		filenames.append(t[0])
 		$WorldsList.add_item("%s (%s)" % [t[0], Time.get_datetime_string_from_unix_time(t[1], true)])
 
 
@@ -35,7 +37,7 @@ func _on_load_pressed() -> void:
 	if selected.is_empty():
 		return
 	
-	var world_name = list.get_item_text(selected[0])
+	var world_name = filenames[selected[0]]
 	var settings := WorldSettings.new()
 	settings.read(world_name)
 	var demo = load("res://Worlds/Demo/demo.tscn").instantiate()

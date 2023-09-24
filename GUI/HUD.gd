@@ -15,6 +15,8 @@ var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
+var hide_wand_modifier_hints: bool = false
+
 var player: Player:
 	set(value):
 		player = value
@@ -46,6 +48,8 @@ func set_wand(value: Wand):
 	wand.action_updated.connect(update_wand_mappings)
 	wand.spell_updated.connect(update_wand_mappings)
 	wand.picked_spell_changed.connect(update_wand_mappings)
+	wand.key_up.connect(update_wand_mappings)
+	wand.key_down.connect(update_wand_mappings)
 	update_wand_mappings()
 	update_spell_cooldowns()
 
@@ -136,7 +140,14 @@ func update_spell_cooldowns():
 		
 func update_wand_mappings():
 	wand_mapping.clear()
-	for k in wand.keys:
+	
+	if not hide_wand_modifier_hints and wand.mods.size() > 0:
+		var modifier_keys := ""
+		for m in wand.mods:
+			modifier_keys += Wand.key_description([m]) + " "
+		wand_mapping.add_item(modifier_keys)
+	
+	for k in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
 		var kd = Wand.key_description(k)
 		match s.kind:
@@ -162,7 +173,9 @@ func update_wand_mappings():
 		wand_mapping.show()
 		
 func update_settings(settings: WorldSettings):
+	hide_wand_modifier_hints = settings.hud_settings.hide_wand_modifier_hints
 	if settings.hud_settings.hide_wand_mappings:
 		wand_mapping.hide()
 	else:
 		wand_mapping.show()
+	update_wand_mappings()

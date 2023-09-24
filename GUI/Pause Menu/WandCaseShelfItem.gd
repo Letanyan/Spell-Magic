@@ -19,9 +19,9 @@ func _ready():
 	cast_combo.selected = store_action
 	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.RAPID_SELECT
 	if store_key.size() > 1:
-		cast_combo.set_item_disabled(5, true)
+		cast_combo.set_item_disabled(8, true)
 	else:
-		cast_combo.set_item_disabled(5, false)
+		cast_combo.set_item_disabled(8, false)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

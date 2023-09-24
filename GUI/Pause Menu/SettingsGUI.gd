@@ -23,3 +23,8 @@ func update_controls():
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
 	settings_changed.emit(world_settings)
+
+
+func _on_hide_wand_modifier_hints_toggled(button_pressed: bool) -> void:
+	world_settings.hud_settings.hide_wand_modifier_hints = button_pressed
+	settings_changed.emit(world_settings)

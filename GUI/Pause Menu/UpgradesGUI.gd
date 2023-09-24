@@ -4,7 +4,7 @@ extends Control
 var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
-		update_state()
+		update_state(WorldSettings.PurchaseError.NONE)
 
 @onready var max_P_current: Label = $container/max_P/current
 @onready var max_P_upgrade: Button = $container/max_P/upgrade
