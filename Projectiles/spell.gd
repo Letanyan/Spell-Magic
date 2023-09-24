@@ -104,11 +104,10 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	if vars.has("old_pos") and not only_delta:
 		var old_pos = vars["old_pos"]
 		vars["old_pos"] = result
-		var t = vars.get("t", 0.0)
 		var origin = vars.get("origin", Vector3.ZERO)
-		var velocity = (result - old_pos) * (1 / vars.get("__frame_time", 60.0))
-		if velocity != Vector3.ZERO:
-			result = velocity.normalized() * (clampf(velocity.length(), 0, limit_v + buff_v) * t) + origin
+		var velocity = (result - old_pos) * vars.get("__frame_time", 0.0166667)
+		if not velocity.is_zero_approx():
+			result = old_pos + velocity.normalized() * clampf(velocity.length(), 0, limit_v + buff_v)
 		else:
 			result = origin
 	else:
