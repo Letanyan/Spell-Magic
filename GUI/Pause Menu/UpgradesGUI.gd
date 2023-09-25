@@ -38,6 +38,8 @@ var world_settings: WorldSettings:
 @onready var max_spell_count_upgrade: Button = $container/max_spell_count/upgrade
 @onready var max_spell_count_cost: Label = $container/max_spell_count/upgrade/cost
 
+@onready var element_void_upgrade: Button = $container/elements/Void
+@onready var element_void_cost: Label = $container/elements/Void/cost
 @onready var element_fire_upgrade: Button = $container/elements/Fire
 @onready var element_fire_cost: Label = $container/elements/Fire/cost
 @onready var element_water_upgrade: Button = $container/elements/Water
@@ -78,6 +80,7 @@ func update_state(purchase_error: WorldSettings.PurchaseError):
 	max_r_current.text = str(world_settings.max_r)
 	max_H_current.text = str(world_settings.max_health)
 	
+	element_void_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.VOID)
 	element_fire_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.FIRE)
 	element_water_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.WATER)
 	element_air_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.AIR)
@@ -98,6 +101,7 @@ func update_state(purchase_error: WorldSettings.PurchaseError):
 	max_r_cost.text = "$" + str(world_settings.cost_r)
 	max_H_cost.text = "$" + str(world_settings.cost_health)
 	
+	element_void_cost.text = "$" + str(world_settings.cost_spell_element)
 	element_fire_cost.text = "$" + str(world_settings.cost_spell_element)
 	element_water_cost.text = "$" + str(world_settings.cost_spell_element)
 	element_air_cost.text = "$" + str(world_settings.cost_spell_element)
@@ -131,6 +135,10 @@ func update_state(purchase_error: WorldSettings.PurchaseError):
 
 func _on_max_spell_count_upgrade_pressed() -> void:
 	var err := world_settings.purchase_spells_in_book()
+	update_state(err)
+	
+func _on_void_upgrade_pressed() -> void:
+	var err := world_settings.purchase_spell_element(Spell.Element.VOID)
 	update_state(err)
 
 func _on_fire_upgrade_pressed() -> void:

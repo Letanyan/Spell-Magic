@@ -345,15 +345,14 @@ func update_shape(r: float, ignore_time: bool):
 			mesh.height = r * 2
 			shape.shape.radius = r
 			get_node("shape_cast").shape.radius = r
-			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
+#			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 	var next_pos : Vector3 = p - (vars["rel_pos"] if spell.follow else vars["abs_pos"])
 	if started:
-		velocity = next_pos - old_pos
-		var dist := velocity.length() * 60
-		velocity = velocity.normalized() * clampf(dist, -1, 1)
+		velocity = (next_pos - old_pos) * vars.get("__frame_time", 0.0166667)
+		velocity = velocity.normalized()
 	old_pos = next_pos
 	started = true
 
@@ -378,10 +377,15 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		Spell.Element.FIRE:
 			position = p
 			var particles: GPUParticles3D = get_node("source")
-			particles.process_material.direction = (-velocity.normalized() + Vector3.UP).normalized()
+			particles.process_material.direction = (-velocity + Vector3.UP).normalized()
 		
 		Spell.Element.ROCK:
 			position = p
+			var rot_axis := Vector3.UP.cross(velocity).normalized()
+			var rot_ang := Vector3.UP.angle_to(velocity)
+			if rot_axis:
+				rotate_object_local(rot_axis, rot_ang * vars.get("__frame_time", 0.0166667))
+			
 				
 		Spell.Element.WATER:
 			position = p
@@ -443,7 +447,7 @@ func stop_emitting():
 			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ROCK:
-			free_after(0)
+			free_after(0.1)
 			
 		Spell.Element.WATER:
 			var particles: GPUParticles3D = get_node("source")
@@ -476,7 +480,7 @@ func stop_emitting():
 			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.VOID:
-			free_after(1.0)
+			free_after(0.1)
 			
 func free_after(duration: float):
 	if get_parent() != null and get_tree() != null:

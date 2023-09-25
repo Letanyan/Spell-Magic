@@ -17,7 +17,7 @@ const HAS_ROCK := 1 << 3
 const HAS_AIR := 1 << 4
 const HAS_ICE := 1 << 5
 const HAS_ELECTRIC := 1 << 6
-var has_spell_element := 0b11
+var has_spell_element := 0b10 # Start with only fire
 var cost_spell_element := 100
 
 const HAS_CHAIN_ON_START := 1 << 0

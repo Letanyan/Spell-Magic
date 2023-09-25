@@ -271,6 +271,8 @@ func load_dict(dict: Dictionary):
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
 	player_is_origin = dict.get("player_is_origin", true)
 	expression_strings = dict.get("expression_strings", {})
+	for e in expression_strings:
+		expression_strings[e] = expression_strings[e].lstrip(" \t\n").rstrip(" \t\n")
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
