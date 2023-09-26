@@ -104,16 +104,13 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	if vars.has("old_pos") and not only_delta:
 		var old_pos = vars["old_pos"]
 		vars["old_pos"] = result
-		var origin = vars.get("origin", Vector3.ZERO)
 		var velocity = (result - old_pos) * vars.get("__frame_time", 0.0166667)
 		if not velocity.is_zero_approx():
 			result = old_pos + velocity.normalized() * clampf(velocity.length(), 0, limit_v + buff_v)
 		else:
-			result = origin
+			result = old_pos
 	else:
 		vars["old_pos"] = result
-	if not vars.has("origin") and not only_delta:
-		vars["origin"] = result
 	
 	if not only_delta:
 		result += (vars["rel_pos"] if follow else vars["abs_pos"])
@@ -216,6 +213,15 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	p.position = calculate_location(fixed_vars)
 	var er := calculate_size(fixed_vars)
 	p.update_shape(er, true)
+	
+	if element == Element.ROCK:
+		var origin: Vector3 = fixed_vars.get("abs_pos", Vector3.ZERO)
+		var dir: Vector3 = origin.direction_to(p.position)
+		var rot_axis = dir.cross(Vector3.BACK).normalized()
+		var rot_angle = dir.angle_to(Vector3.BACK)
+		if not rot_axis.is_zero_approx():
+			p.rotate_object_local(rot_axis, rot_angle)
+	
 	return p
 		
 func get_particles(fvars: Dictionary) -> Array:

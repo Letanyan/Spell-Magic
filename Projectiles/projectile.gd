@@ -384,7 +384,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var rot_axis := Vector3.UP.cross(velocity).normalized()
 			var rot_ang := Vector3.UP.angle_to(velocity)
 			if rot_axis:
-				rotate_object_local(rot_axis, rot_ang * vars.get("__frame_time", 0.0166667))
+				rotate(rot_axis, rot_ang * vars.get("__frame_time", 0.0166667))
 			
 				
 		Spell.Element.WATER:
