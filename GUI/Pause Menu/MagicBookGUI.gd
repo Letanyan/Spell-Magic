@@ -316,7 +316,7 @@ func _on_N_text_changed(new_text):
 	if current_index < 0:
 		return
 	var raw: int = new_text.to_int()
-	book.spells[current_index].count = clamp(raw, 1, book.settings.max_N + book.settings.buff_N)
+	book.spells[current_index].count = raw
 	if raw > book.settings.max_N + book.settings.buff_N:
 		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.max_N + book.settings.buff_N]
 	else:
@@ -328,7 +328,7 @@ func _on_P_text_changed(new_text):
 	if current_index < 0:
 		return
 	var raw: float = new_text.to_float()
-	book.spells[current_index].power = clamp(raw, 0.0, book.settings.max_P + book.settings.buff_P)
+	book.spells[current_index].power = raw
 	if raw > book.settings.max_P + book.settings.buff_P:
 		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.max_P + book.settings.buff_P]
 	else:
@@ -340,7 +340,7 @@ func _on_T_text_changed(new_text):
 	if current_index < 0:
 		return
 	var raw: float = new_text.to_float()
-	book.spells[current_index].duration = clamp(raw, 0.0166667, book.settings.max_T + book.settings.buff_T)
+	book.spells[current_index].duration = raw
 	if raw > book.settings.max_T + book.settings.buff_T:
 		errors_list["T"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.max_T + book.settings.buff_T]
 	else:
@@ -398,7 +398,7 @@ func _on_M_text_changed(new_text):
 	if current_index < 0:
 		return
 	var raw: float = new_text.to_float()
-	book.spells[current_index].mana_cost = clamp(raw, 0.0, book.settings.max_mana + book.settings.buff_mana)
+	book.spells[current_index].mana_cost = raw
 	if raw > book.settings.max_mana + book.settings.buff_mana:
 		errors_list["M"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.max_mana + book.settings.buff_mana]
 	else:

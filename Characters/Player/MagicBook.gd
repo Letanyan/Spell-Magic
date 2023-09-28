@@ -3,6 +3,7 @@ class_name MagicBook
 var spells: Array[Spell]
 var last_use: Dictionary
 var ignore_cooldown: bool
+enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION }
 
 var settings: WorldSettings # set by the world
 
@@ -51,14 +52,24 @@ func use_spell(spell: Spell):
 		last_use[s.name] = t
 		s = s.chain
 	
-func can_use_spell(spell: Spell) -> bool:
+func can_use_spell(spell: Spell) -> DisallowSpellReason:
 	var elapsed = Time.get_unix_time_from_system() - last_use.get(spell.name, 0)
-	var cond: bool = is_equal_approx(elapsed, spell.cooldown) or elapsed > spell.cooldown or ignore_cooldown
-	cond = cond and spell.count <= settings.max_N + settings.buff_N
-	cond = cond and spell.duration <= settings.max_T + settings.buff_T
-	cond = cond and spell.power <= settings.max_P + settings.buff_P
-	cond = cond and spell.actual_mana_cost() <= settings.max_mana + settings.buff_mana
-	return cond
+	if elapsed < spell.cooldown and not ignore_cooldown:
+		return DisallowSpellReason.COOLDOWN
+		
+	if spell.count > settings.max_N + settings.buff_N:
+		return DisallowSpellReason.COUNT
+		
+	if spell.duration > settings.max_T + settings.buff_T:
+		return DisallowSpellReason.DURATION
+		
+	if spell.power > settings.max_P + settings.buff_P:
+		return DisallowSpellReason.POWER
+		
+	if spell.actual_mana_cost() > settings.max_mana + settings.buff_mana:
+		return DisallowSpellReason.MANA
+		
+	return DisallowSpellReason.NONE
 
 func rebuild_spell_chains():
 	for s in spells:

@@ -229,4 +229,17 @@ auto_height = true
 [node name="SpellCooldownTimer" type="Timer" parent="."]
 autostart = true
 
+[node name="NotificationLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.284
+anchor_right = 1.0
+anchor_bottom = 0.284
+offset_left = 752.0
+offset_top = -120.032
+offset_bottom = 31.968
+grow_horizontal = 0
+horizontal_alignment = 2
+max_lines_visible = 4
+
 [connection signal="timeout" from="SpellCooldownTimer" to="." method="update_spell_cooldowns"]

@@ -11,6 +11,9 @@ extends Control
 
 @onready var wand_mapping: ItemList = $WandMapping
 
+@onready var notification_label: Label = $NotificationLabel
+var notifications: Dictionary = {} # Message -> Expire after n seconds
+
 var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
@@ -45,6 +48,7 @@ func _process(delta: float) -> void:
 func set_wand(value: Wand):
 	wand = value
 	wand.spell_on_cooldown.connect(spell_on_cooldown)
+	wand.spell_disallowed.connect(spell_was_disallowed)
 	wand.action_updated.connect(update_wand_mappings)
 	wand.spell_updated.connect(update_wand_mappings)
 	wand.picked_spell_changed.connect(update_wand_mappings)
@@ -80,7 +84,20 @@ func not_enough_mana_for_spell(spell: Spell):
 	not_enough_mana_alert = Time.get_unix_time_from_system()
 	var style: StyleBoxFlat = load("res://GUI/HUD_progress_bar_bg.tres")
 	style.bg_color = Color(1, 0, 0.3, 1)
+	# FIXME: change border color to red
 	mana_bar.add_theme_stylebox_override("background", style)
+	
+func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason):
+	match reason:
+		MagicBook.DisallowSpellReason.MANA:
+			not_enough_mana_for_spell(spell)
+			notifications["'%s' requires M %.1f" % [spell.name, spell.actual_mana_cost()] ] = 5
+		MagicBook.DisallowSpellReason.POWER:
+			notifications["'%s' requires P %d upgrade" % [spell.name, spell.power] ] = 5
+		MagicBook.DisallowSpellReason.COUNT:
+			notifications["'%s' requires N %d upgrade" % [spell.name, spell.count] ] = 5
+		MagicBook.DisallowSpellReason.DURATION:
+			notifications["'%s' requires T %.1f upgrade" % [spell.name, spell.duration]] = 5
 	
 func spell_was_cast(s: Spell):
 	var t := Time.get_unix_time_from_system()
@@ -126,6 +143,11 @@ func update_spell_cooldowns():
 		cooldown_list.remove_item(idx)
 		i -= 1
 		
+	if cooldown_list.item_count == 0:
+		cooldown_list.hide()
+	else:
+		cooldown_list.show()
+		
 	var mana_alert_time := Time.get_unix_time_from_system() - not_enough_mana_alert
 	if not_enough_mana_alert != 0.0 and mana_alert_time > 5:
 		var style: StyleBoxFlat = load("res://GUI/HUD_progress_bar_bg.tres")
@@ -133,10 +155,30 @@ func update_spell_cooldowns():
 		mana_bar.add_theme_stylebox_override("background", style)
 		not_enough_mana_alert = 0.0
 		
-	if cooldown_list.item_count == 0:
-		cooldown_list.hide()
-	else:
-		cooldown_list.show()
+	draw_notifications()
+	
+		
+func show_notification(message: String, duration: int):
+	notifications[message] = duration
+	draw_notifications()
+	
+func draw_notifications():
+	var to_erase := []
+	var count := 0
+	notification_label.text = ""
+	for n in notifications:
+		var d = notifications[n]
+		if d <= 0:
+			to_erase.append(n)
+		else:
+			notifications[n] -= 1
+			count += 1
+			notification_label.text += n + "\n"
+		if count >= 4:
+			break
+			
+	for n in to_erase:
+		notifications.erase(n)
 		
 func update_wand_mappings():
 	wand_mapping.clear()

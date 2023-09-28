@@ -104,6 +104,7 @@ var picked: String
 var current_actions: Dictionary
 
 signal spell_on_cooldown
+signal spell_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason)
 signal spell_updated
 signal action_updated
 signal picked_spell_changed
@@ -212,14 +213,21 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 			if s == null:
 				key_down.emit()
 				return null
-			if book.can_use_spell(s):
-				book.use_spell(s)
-				key_down.emit()
-				return s
-			else:
-				spell_on_cooldown.emit(s)
-				key_down.emit()
-				return null
+				
+			var can_use: MagicBook.DisallowSpellReason = book.can_use_spell(s)
+			match can_use:
+				MagicBook.DisallowSpellReason.NONE:
+					book.use_spell(s)
+					key_down.emit()
+					return s
+				MagicBook.DisallowSpellReason.MANA, MagicBook.DisallowSpellReason.POWER, MagicBook.DisallowSpellReason.COUNT, MagicBook.DisallowSpellReason.DURATION:
+					spell_disallowed.emit(s, can_use)
+					key_down.emit()
+					return null
+				MagicBook.DisallowSpellReason.COOLDOWN:
+					spell_on_cooldown.emit(s)
+					key_down.emit()
+					return null
 	key_down.emit()
 	return null
 	
