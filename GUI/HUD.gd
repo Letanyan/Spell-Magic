@@ -11,14 +11,14 @@ extends Control
 
 @onready var wand_mapping: ItemList = $WandMapping
 
-@onready var notification_label: Label = $NotificationLabel
+@onready var notification_label: RichTextLabel = $NotificationLabel
 var notifications: Dictionary = {} # Message -> Expire after n seconds
 
 var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
-var hide_wand_modifier_hints: bool = false
+var hud_settings: HUDSettings = null
 
 var player: Player:
 	set(value):
@@ -26,7 +26,6 @@ var player: Player:
 		player.vital_update.connect(update_hud_with_vitals)
 		update_hud_with_vitals(player.vitals)
 		player.spell_was_cast.connect(spell_was_cast)
-		player.spell_caster.not_enough_mana_for_spell.connect(not_enough_mana_for_spell)
 
 var wand: Wand: set = set_wand
 		
@@ -37,7 +36,6 @@ var book: MagicBook:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
 	$SpellCooldownTimer.start()
 
 
@@ -47,7 +45,6 @@ func _process(delta: float) -> void:
 	
 func set_wand(value: Wand):
 	wand = value
-	wand.spell_on_cooldown.connect(spell_on_cooldown)
 	wand.spell_disallowed.connect(spell_was_disallowed)
 	wand.action_updated.connect(update_wand_mappings)
 	wand.spell_updated.connect(update_wand_mappings)
@@ -84,20 +81,27 @@ func not_enough_mana_for_spell(spell: Spell):
 	not_enough_mana_alert = Time.get_unix_time_from_system()
 	var style: StyleBoxFlat = load("res://GUI/HUD_progress_bar_bg.tres")
 	style.bg_color = Color(1, 0, 0.3, 1)
-	# FIXME: change border color to red
+	style.border_color = Color(1, 0, 0.3, 1)
 	mana_bar.add_theme_stylebox_override("background", style)
+	
+func bbcode(message: String, font_size: int = 18, color: String = "#F05", outline_color: String = "#000", outline_size: int = 4) -> String:
+	return "[outline_color=%s][outline_size=%d][color=%s][font_size=%d]%s[/font_size][/color][/outline_size][/outline_color]" % [outline_color, outline_size, color, font_size, message]
+	
 	
 func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason):
 	match reason:
+		MagicBook.DisallowSpellReason.COOLDOWN:
+			spell_on_cooldown(spell)
+			show_notification(bbcode("'%s' is on cooldown" % spell.name), 5)	
 		MagicBook.DisallowSpellReason.MANA:
 			not_enough_mana_for_spell(spell)
-			notifications["'%s' requires M %.1f" % [spell.name, spell.actual_mana_cost()] ] = 5
+			show_notification(bbcode("'%s' requires M %.1f" % [spell.name, spell.actual_mana_cost()]), 5)		
 		MagicBook.DisallowSpellReason.POWER:
-			notifications["'%s' requires P %d upgrade" % [spell.name, spell.power] ] = 5
+			show_notification(bbcode("'%s' requires P %d upgrade" % [spell.name, spell.power]), 5)
 		MagicBook.DisallowSpellReason.COUNT:
-			notifications["'%s' requires N %d upgrade" % [spell.name, spell.count] ] = 5
+			show_notification(bbcode("'%s' requires N %d upgrade" % [spell.name, spell.count]), 5)
 		MagicBook.DisallowSpellReason.DURATION:
-			notifications["'%s' requires T %.1f upgrade" % [spell.name, spell.duration]] = 5
+			show_notification(bbcode("'%s' requires T %.1f upgrade" % [spell.name, spell.duration]), 5)
 	
 func spell_was_cast(s: Spell):
 	var t := Time.get_unix_time_from_system()
@@ -143,10 +147,7 @@ func update_spell_cooldowns():
 		cooldown_list.remove_item(idx)
 		i -= 1
 		
-	if cooldown_list.item_count == 0:
-		cooldown_list.hide()
-	else:
-		cooldown_list.show()
+	cooldown_list.visible = not((hud_settings != null and hud_settings.hide_cooldown_timings) or cooldown_list.item_count == 0) 
 		
 	var mana_alert_time := Time.get_unix_time_from_system() - not_enough_mana_alert
 	if not_enough_mana_alert != 0.0 and mana_alert_time > 5:
@@ -165,7 +166,7 @@ func show_notification(message: String, duration: int):
 func draw_notifications():
 	var to_erase := []
 	var count := 0
-	notification_label.text = ""
+	var result: String = "[right]\n"
 	for n in notifications:
 		var d = notifications[n]
 		if d <= 0:
@@ -173,17 +174,19 @@ func draw_notifications():
 		else:
 			notifications[n] -= 1
 			count += 1
-			notification_label.text += n + "\n"
+			result += n + "\n"
 		if count >= 4:
 			break
 			
+	result += "[/right]"
+	notification_label.text = result
 	for n in to_erase:
 		notifications.erase(n)
 		
 func update_wand_mappings():
 	wand_mapping.clear()
 	
-	if not hide_wand_modifier_hints and wand.mods.size() > 0:
+	if (hud_settings != null and not hud_settings.hide_wand_modifier_hints) and wand.mods.size() > 0:
 		var modifier_keys := ""
 		for m in wand.mods:
 			modifier_keys += Wand.key_description([m]) + " "
@@ -209,15 +212,24 @@ func update_wand_mappings():
 			Wand.Kind.RAPID_SELECT:
 				wand_mapping.add_item(kd + " :>> " + wand.picked)
 	
-	if wand_mapping.item_count == 0:
-		wand_mapping.hide()
+	if hud_settings != null and hud_settings.hide_wand_mappings:
+		wand_mapping.visible = false
 	else:
-		wand_mapping.show()
+		wand_mapping.visible = wand_mapping.item_count != 0
 		
 func update_settings(settings: WorldSettings):
-	hide_wand_modifier_hints = settings.hud_settings.hide_wand_modifier_hints
-	if settings.hud_settings.hide_wand_mappings:
-		wand_mapping.hide()
-	else:
-		wand_mapping.show()
+	hud_settings = settings.hud_settings
+	
+	wand_mapping.visible = not hud_settings.hide_wand_mappings
+	notification_label.visible = not hud_settings.hide_notifications
+	
+	burning_bar.visible = not hud_settings.hide_status_effects
+	freeze_bar.visible = not hud_settings.hide_status_effects
+	wet_bar.visible = not hud_settings.hide_status_effects
+	
+	health_bar.visible = not hud_settings.hide_health_mana
+	mana_bar.visible = not hud_settings.hide_health_mana
+	
+	cooldown_list.visible = cooldown_list.visible and not hud_settings.hide_cooldown_timings
+		
 	update_wand_mappings()
