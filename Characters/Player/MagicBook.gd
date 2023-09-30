@@ -59,11 +59,17 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 		
 	if spell.count > settings.max_N + settings.buff_N:
 		return DisallowSpellReason.COUNT
+	elif spell.count > settings.LIMIT_N:
+		return DisallowSpellReason.COUNT
 		
 	if spell.duration > settings.max_T + settings.buff_T:
 		return DisallowSpellReason.DURATION
+	elif spell.duration > settings.LIMIT_T:
+		return DisallowSpellReason.DURATION
 		
 	if spell.power > settings.max_P + settings.buff_P:
+		return DisallowSpellReason.POWER
+	elif spell.power > settings.LIMIT_P:
 		return DisallowSpellReason.POWER
 		
 	if spell.actual_mana_cost() > settings.max_mana + settings.buff_mana:

@@ -183,17 +183,13 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	fixed_vars["rn7"] = randf()
 	fixed_vars["rn8"] = randf()
 	fixed_vars["rn9"] = randf()
-	fixed_vars["N"] = float(count)
 	fixed_vars["T"] = duration
 	fixed_vars["P"] = power
-	fixed_vars["D"] = delay
-	fixed_vars["pi"] = PI
 	fixed_vars["n"] = float(n)
-	fixed_vars["M"] = mana_cost
-	fixed_vars["C"] = charge
-	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	compute_expressions(fixed_vars)
+	fixed_vars["D"] = d_expr.compute(fixed_vars)
+	
 	
 	var p: SpellBody
 	match element:
@@ -235,6 +231,11 @@ func get_particles(fvars: Dictionary) -> Array:
 	fixed_vars["r7"] = randf()
 	fixed_vars["r8"] = randf()
 	fixed_vars["r9"] = randf()
+	fixed_vars["pi"] = PI
+	fixed_vars["N"] = float(count)
+	fixed_vars["M"] = mana_cost
+	fixed_vars["C"] = charge
+	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	for i in range(count):
 		var p := get_particle(i, fixed_vars)

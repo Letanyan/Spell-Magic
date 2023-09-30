@@ -312,9 +312,13 @@ func _on_r_text_changed(new_text):
 		errors_list.erase("r")
 	update_spells_that_chain_to_current_spell()
 
-func _on_N_text_changed(new_text):
+func _on_N_text_changed(new_text: String):
 	if current_index < 0:
 		return
+	if not new_text.is_valid_int():
+		errors_list["N"] = "'%s' is not a valid number" % new_text
+	else:
+		errors_list.erase("N")
 	var raw: int = new_text.to_int()
 	book.spells[current_index].count = raw
 	if raw > book.settings.max_N + book.settings.buff_N:
@@ -324,9 +328,13 @@ func _on_N_text_changed(new_text):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_P_text_changed(new_text):
+func _on_P_text_changed(new_text: String):
 	if current_index < 0:
 		return
+	if not new_text.is_valid_float():
+		errors_list["P"] = "'%s' is not a valid number" % new_text
+	else:
+		errors_list.erase("P")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].power = raw
 	if raw > book.settings.max_P + book.settings.buff_P:
@@ -336,9 +344,13 @@ func _on_P_text_changed(new_text):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_T_text_changed(new_text):
+func _on_T_text_changed(new_text: String):
 	if current_index < 0:
 		return
+	if not new_text.is_valid_float():
+		errors_list["T"] = "'%s' is not a valid number" % new_text
+	else:
+		errors_list.erase("T")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].duration = raw
 	if raw > book.settings.max_T + book.settings.buff_T:
@@ -348,7 +360,7 @@ func _on_T_text_changed(new_text):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_D_text_changed(new_text):
+func _on_D_text_changed(new_text: String):
 	if current_index < 0:
 		return
 	book.spells[current_index].delay = new_text
@@ -360,7 +372,7 @@ func _on_D_text_changed(new_text):
 		errors_list.erase("D")
 	update_spells_that_chain_to_current_spell()
 
-func _on_chain_text_changed(new_text):
+func _on_chain_text_changed(new_text: String):
 	if current_index < 0:
 		return
 	var spell: Spell = book.spells[current_index]

@@ -29,7 +29,6 @@ project/assembly_name="Spell Magic"
 
 [editor]
 
-version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
 
 [input]
