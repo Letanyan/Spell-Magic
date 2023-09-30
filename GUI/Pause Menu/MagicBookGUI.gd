@@ -55,6 +55,8 @@ var current_index := -1
 
 var errors_list := {}
 
+var old_chain_text: String = ""
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sort_popup = sort_button.get_popup()
@@ -104,6 +106,7 @@ func _on_spell_index_item_selected(index):
 	
 	element_combo.selected = spell.element
 	chain_edit.text = spell.chain.name if spell.chain else ""
+	old_chain_text = chain_edit.text
 	chain_combo.selected = spell.chain_cast_kind
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
@@ -377,14 +380,21 @@ func _on_chain_text_changed(new_text: String):
 		return
 	var spell: Spell = book.spells[current_index]
 	
-	var n := chain_edit.text
+	var n: String = book.autocomplete(old_chain_text, chain_edit)
+	
 	if n == "":
 		spell.chain = null
 	elif n != spell.name:
+		spell.chain = null
 		for s in book.spells:
 			if s.name == n:
 				spell.chain = s
+		if spell.chain == null:
+			errors_list["chain"] = "'%s' does not exists" % n
+		else:
+			errors_list.erase("chain")
 				
+	old_chain_text = n
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 

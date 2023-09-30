@@ -12,6 +12,8 @@ var case: WandCase:
 
 var current_index = -1
 var use_current_wand: Callable
+var book: MagicBook
+var spell_errors := {}
 
 signal new_wand_selected
 
@@ -41,8 +43,19 @@ func _on_wand_index_item_selected(index):
 		
 		item.spell_changed = func(text: String):
 			var all_spells := text.split(",", false)
+			var errors := []
 			for i in range(all_spells.size()):
-				all_spells[i] = all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
+				var n := all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
+				if not book.spell_exists(n):
+					errors.append(n)
+				all_spells[i] = n
+				
+			if errors.is_empty():
+				item.key.label_settings.font_color = Color.WHITE
+				item.key.text = Wand.key_description(item.store_key)
+			else:
+				item.key.label_settings.font_color = Color.CRIMSON
+				item.key.text = "Missing: " + ", ".join(errors)
 			wand.keys[w].spell = all_spells
 			wand.keys[w].spell_index = all_spells.size() - 1
 			wand.spell_updated.emit()
@@ -60,6 +73,8 @@ func _on_wand_index_item_selected(index):
 				_on_wand_index_item_selected(current_index)
 				return true
 			return false
+			
+		item.autocomplete = book.autocomplete
 			
 		container.add_child(item)
 

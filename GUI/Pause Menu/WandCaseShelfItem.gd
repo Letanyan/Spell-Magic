@@ -11,11 +11,16 @@ var store_spell: Array = []
 
 var spell_changed: Callable
 var action_changed: Callable
+var autocomplete: Callable
+
+var old_text: String = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	key.text = Wand.key_description(store_key)
 	spell.text = ", ".join(store_spell)
+	_on_spell_text_changed(", ".join(store_spell))
+#	spell_changed.call(spell.text)
 	cast_combo.selected = store_action
 	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.RAPID_SELECT
 	if store_key.size() > 1:
@@ -35,4 +40,6 @@ func _on_cast_combo_selected(id):
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text):
-	spell_changed.call(new_text)
+	var updated_text: String = autocomplete.call(old_text, spell)
+	spell_changed.call(updated_text)
+	old_text = updated_text

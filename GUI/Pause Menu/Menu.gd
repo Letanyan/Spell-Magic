@@ -15,6 +15,7 @@ var world_settings: WorldSettings
 
 func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings):
 	magic_book.book = book
+	wand_case.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
 	upgrades.world_settings = _world_settings

@@ -7,6 +7,7 @@
 font_weight = 800
 
 [sub_resource type="LabelSettings" id="LabelSettings_xg88r"]
+resource_local_to_scene = true
 font = SubResource("SystemFont_hklrj")
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
@@ -18,22 +19,22 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 48.0
 grow_horizontal = 2
-grow_vertical = 2
 theme = ExtResource("1_r3nyl")
 script = ExtResource("1_kx7hf")
 
 [node name="key" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.33
+anchor_right = 0.333
 offset_left = 8.0
 offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 41.0
+offset_right = 0.384003
+offset_bottom = 40.0
 text = "LB + X"
 label_settings = SubResource("LabelSettings_xg88r")
 horizontal_alignment = 1
 vertical_alignment = 1
+clip_text = true
 
 [node name="spell" type="LineEdit" parent="."]
 layout_mode = 1

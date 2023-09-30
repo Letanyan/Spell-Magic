@@ -94,3 +94,48 @@ func update_spell_buff_limits(v: float, r: float):
 	for s in spells:
 		s.buff_v = v
 		s.buff_r = r
+
+func spell_exists(n: String) -> bool:
+	for s in spells:
+		if s.name == n:
+			return true
+	return false
+
+func autocomplete(old_text: String, edit: LineEdit) -> String:
+	var text := edit.text
+	if old_text.length() > text.length():
+		return text
+	var eidx := edit.caret_column
+	var sidx := edit.caret_column
+	if sidx == text.length():
+		sidx -= 1
+	while sidx >= 0:
+		if text[sidx] in " \n\t":
+			break
+		sidx -= 1
+	sidx += 1
+	
+	if sidx == eidx:
+		return text
+		
+	var prefix := text.substr(sidx, eidx - sidx)
+	
+	var complete := ""
+	for s in spells:
+		if s.name.begins_with(prefix):
+			complete = s.name
+			break
+			
+	if complete.is_empty():
+		return text
+		
+	var suffix := complete.substr(eidx - sidx, complete.length() - (eidx - sidx))
+		
+	edit.insert_text_at_caret(suffix)
+	edit.select(eidx, eidx + suffix.length())
+	
+	return edit.text
+	
+	
+	
+	
