@@ -48,12 +48,9 @@ func update(body, delta):
 
 func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody, s: Spell) -> Dictionary:
 	var prefix := "" if fixed else "t"
-	result[prefix + "x"] = body.position.x
-	result[prefix + "y"] = body.position.y
-	result[prefix + "z"] = body.position.z
 
 	var cdir := Vector3.ZERO
-	var track := Vector3.ZERO # position of enemy that was hit by raycast 
+	var track := Vector3.ZERO # direction to enemy that was hit by raycast 
 	match entity:
 		Entity.PLAYER:
 			var port := body.get_viewport()
@@ -75,6 +72,9 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
 	result[prefix + "w"] = cdir.z
+	result[prefix + "ru"] = Vector3(1, 0, 0).angle_to(cdir)
+	result[prefix + "rv"] = Vector3(0, 1, 0).angle_to(cdir)
+	result[prefix + "rw"] = Vector3(0, 0, 1).angle_to(cdir)
 	
 	result[prefix + "U"] = track.x
 	result[prefix + "V"] = track.y
@@ -91,6 +91,9 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "cx"] = c.x
 	result[prefix + "cy"] = c.y
 	result[prefix + "cz"] = c.z
+	result[prefix + "rcx"] = Vector3(1, 0, 0).angle_to(c)
+	result[prefix + "rcy"] = Vector3(0, 1, 0).angle_to(c)
+	result[prefix + "rcz"] = Vector3(0, 0, 1).angle_to(c)
 	
 	if entity == Entity.PLAYER and not s.player_is_origin:
 		var port := body.get_viewport()

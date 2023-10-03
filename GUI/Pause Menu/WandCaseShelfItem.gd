@@ -20,7 +20,6 @@ func _ready():
 	key.text = Wand.key_description(store_key)
 	spell.text = ", ".join(store_spell)
 	_on_spell_text_changed(", ".join(store_spell))
-#	spell_changed.call(spell.text)
 	cast_combo.selected = store_action
 	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.RAPID_SELECT
 	if store_key.size() > 1:
