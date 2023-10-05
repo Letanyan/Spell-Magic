@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bayn6retdbrwm"]
+[gd_scene load_steps=22 format=3 uid="uid://bayn6retdbrwm"]
 
 [ext_resource type="Script" path="res://Worlds/TestArena/TestArena.gd" id="1_so5kd"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_g4l27"]
@@ -49,15 +49,104 @@ ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hmbhn"]
-albedo_color = Color(0, 0.337255, 0, 1)
+[sub_resource type="Shader" id="Shader_xdkw7"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.1.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+}
+
+
+
+
+
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	
+	ALBEDO = vec3(UV.x / 8.0, 0, UV.y / 8.0);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dnpfu"]
+render_priority = 0
+shader = SubResource("Shader_xdkw7")
+shader_parameter/albedo = Color(0, 0.337255, 0, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6qqcb"]
-material = SubResource("StandardMaterial3D_hmbhn")
+material = SubResource("ShaderMaterial_dnpfu")
 size = Vector3(1000, 0.5, 1000)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ewebh"]
 data = PackedVector3Array(-500, 0.25, 500, 500, 0.25, 500, -500, -0.25, 500, 500, 0.25, 500, 500, -0.25, 500, -500, -0.25, 500, 500, 0.25, -500, -500, 0.25, -500, 500, -0.25, -500, -500, 0.25, -500, -500, -0.25, -500, 500, -0.25, -500, 500, 0.25, 500, 500, 0.25, -500, 500, -0.25, 500, 500, 0.25, -500, 500, -0.25, -500, 500, -0.25, 500, -500, 0.25, -500, -500, 0.25, 500, -500, -0.25, -500, -500, 0.25, 500, -500, -0.25, 500, -500, -0.25, -500, 500, 0.25, 500, -500, 0.25, 500, 500, 0.25, -500, -500, 0.25, 500, -500, 0.25, -500, 500, 0.25, -500, -500, -0.25, 500, 500, -0.25, 500, -500, -0.25, -500, 500, -0.25, 500, 500, -0.25, -500, -500, -0.25, -500)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84r31"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_72t17"]
+material = SubResource("StandardMaterial3D_84r31")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oox1y"]
+albedo_color = Color(1, 0.580392, 0.580392, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_fh87i"]
+material = SubResource("StandardMaterial3D_oox1y")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_foqro"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_4c0co"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_foqro")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e6lrj"]
+albedo_color = Color(0, 0.611765, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_xr5cq"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_e6lrj")
+radius = 50.0
+height = 100.0
 
 [node name="TestArena" type="Node3D"]
 script = ExtResource("1_so5kd")
@@ -108,3 +197,19 @@ mesh = SubResource("BoxMesh_6qqcb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_ewebh")
+
+[node name="ZSphere" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 720.193, 1127.6, 0)
+mesh = SubResource("SphereMesh_72t17")
+
+[node name="ZSphere2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -548.394, 1127.6, 0)
+mesh = SubResource("SphereMesh_fh87i")
+
+[node name="XSphere" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1105.99, 669.898)
+mesh = SubResource("SphereMesh_4c0co")
+
+[node name="XSphere2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1105.99, -668.555)
+mesh = SubResource("SphereMesh_xr5cq")

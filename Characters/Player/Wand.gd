@@ -28,6 +28,8 @@ class Option:
 		start_hold = 0.0
 		
 	func next_spell() -> String:
+		if spell.size() <= 0:
+			return ""
 		spell_index += 1
 		if spell_index >= spell.size():
 			spell_index = 0

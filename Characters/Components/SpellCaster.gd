@@ -72,9 +72,9 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
 	result[prefix + "w"] = cdir.z
-	result[prefix + "ru"] = Vector3(1, 0, 0).angle_to(cdir)
-	result[prefix + "rv"] = Vector3(0, 1, 0).angle_to(cdir)
-	result[prefix + "rw"] = Vector3(0, 0, 1).angle_to(cdir)
+	result[prefix + "ru"] = cdir.signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rv"] = cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+	result[prefix + "rw"] = cdir.signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	result[prefix + "U"] = track.x
 	result[prefix + "V"] = track.y
@@ -91,14 +91,17 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "cx"] = c.x
 	result[prefix + "cy"] = c.y
 	result[prefix + "cz"] = c.z
-	result[prefix + "rcx"] = Vector3(1, 0, 0).angle_to(c)
-	result[prefix + "rcy"] = Vector3(0, 1, 0).angle_to(c)
-	result[prefix + "rcz"] = Vector3(0, 0, 1).angle_to(c)
+	result[prefix + "rcx"] = c.signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rcy"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+	result[prefix + "rcz"] = c.signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
-	if entity == Entity.PLAYER and not s.player_is_origin:
-		var port := body.get_viewport()
-		var pos := port.get_visible_rect().size / 2.0
-		result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
+	if s.player_is_origin:
+		if entity == Entity.PLAYER:
+			var port := body.get_viewport()
+			var pos := port.get_visible_rect().size / 2.0
+			result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
+		else:
+			result["abs_pos" if fixed else "rel_pos"] = body.position + cdir
 	else:
 		result["abs_pos" if fixed else "rel_pos"] = body.position
 	
