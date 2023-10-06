@@ -28,7 +28,7 @@ layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 104.0
+offset_top = 144.0
 offset_right = 272.0
 offset_bottom = -64.0
 grow_vertical = 2
@@ -256,7 +256,7 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 352.0
 offset_bottom = 383.0
-text = "follow player"
+text = "follow body"
 
 [node name="Delete" type="Button" parent="container"]
 layout_mode = 1
@@ -404,7 +404,7 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 288.0
 offset_bottom = 320.0
-text = "player is origin"
+text = "body is origin"
 
 [node name="expressions" type="TextEdit" parent="container"]
 layout_mode = 1
@@ -466,7 +466,7 @@ offset_right = 192.0
 offset_bottom = 96.0
 text = "Filter"
 flat = false
-item_count = 10
+item_count = 11
 popup/item_0/text = "Void"
 popup/item_0/checkable = 1
 popup/item_0/id = 0
@@ -488,16 +488,19 @@ popup/item_5/id = 5
 popup/item_6/text = "Electric"
 popup/item_6/checkable = 1
 popup/item_6/id = 6
-popup/item_7/text = "Is Bomb"
+popup/item_7/text = "Body is Origin"
 popup/item_7/checkable = 1
 popup/item_7/id = 7
-popup/item_8/text = "Follow Player"
+popup/item_8/text = "Is Bomb"
 popup/item_8/checkable = 1
 popup/item_8/id = 8
-popup/item_9/text = "Chains"
+popup/item_9/text = "Follow Body"
 popup/item_9/checkable = 1
 popup/item_9/id = 9
-popup/item_9/disabled = true
+popup/item_10/text = "Chains"
+popup/item_10/checkable = 1
+popup/item_10/id = 10
+popup/item_10/disabled = true
 
 [node name="Duplicate" type="Button" parent="."]
 layout_mode = 0
@@ -507,6 +510,14 @@ offset_right = 112.0
 offset_bottom = 96.0
 disabled = true
 text = "Duplicate"
+
+[node name="SearchLineEdit" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 104.0
+offset_right = 272.0
+offset_bottom = 135.0
+placeholder_text = "Search"
 
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
@@ -530,3 +541,4 @@ text = "Duplicate"
 [connection signal="toggled" from="container/player_is_origin" to="." method="_on_player_is_origin_toggled"]
 [connection signal="text_changed" from="container/expressions" to="." method="_on_constants_text_changed"]
 [connection signal="pressed" from="Duplicate" to="." method="_on_duplicate_pressed"]
+[connection signal="text_changed" from="SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]

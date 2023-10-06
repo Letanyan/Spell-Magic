@@ -7,7 +7,7 @@ var sort_popup: PopupMenu = null
 var sort_selected: int = 0
 var sort_order: int = 0
 @onready var filter_button: MenuButton = $FilterButton
-const TOTAL_FILTER_ITEMS = 10
+const TOTAL_FILTER_ITEMS = 11
 var filter_popup: PopupMenu = null
 var filter_options := {}
 var filter_chain := ""
@@ -50,6 +50,8 @@ var spells_index_map := {}
 @onready var mana_cost: Label = $container/mana_cost
 
 @onready var error_label: Label = $container/error_label
+
+@onready var search_line_edit: LineEdit = $SearchLineEdit
 
 var current_index := -1
 
@@ -184,18 +186,50 @@ func update_spells_list():
 	var k = 0
 	for i in range(spells_list.size()):
 		var spell: Spell = spells_list[i]
-		var q0 := filter_options.is_empty()
-		q0 = q0 or filter_options.get(0, false) and spell.element == Spell.Element.VOID
-		q0 = q0 or filter_options.get(1, false) and spell.element == Spell.Element.FIRE
-		q0 = q0 or filter_options.get(2, false) and spell.element == Spell.Element.WATER
-		q0 = q0 or filter_options.get(3, false) and spell.element == Spell.Element.AIR
-		q0 = q0 or filter_options.get(4, false) and spell.element == Spell.Element.ROCK
-		q0 = q0 or filter_options.get(5, false) and spell.element == Spell.Element.ICE
-		q0 = q0 or filter_options.get(6, false) and spell.element == Spell.Element.ELECTRIC
-		q0 = q0 or filter_options.get(7, false) and spell.is_bomb
-		q0 = q0 or filter_options.get(8, false) and spell.follow
-		q0 = q0 or filter_options.get(9, false) and (spell.chain != null and spell.chain.name == filter_chain)
-		if q0:
+		var search_text: String = search_line_edit.text
+		var q0 := filter_options.is_empty() and search_text.is_empty()
+		var has_element: bool = false
+		if filter_options.get(0, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.VOID
+		if filter_options.get(1, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.FIRE
+		if filter_options.get(2, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.WATER
+		if filter_options.get(3, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.AIR
+		if filter_options.get(4, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.ROCK
+		if filter_options.get(5, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.ICE
+		if filter_options.get(6, false):
+			has_element = true
+			q0 = q0 or spell.element == Spell.Element.ELECTRIC
+		var q1 := q0 or not has_element
+		if filter_options.get(7, false):
+			q1 = q1 and spell.player_is_origin
+		if filter_options.get(8, false):
+			q1 = q1 and spell.is_bomb
+		if filter_options.get(9, false):
+			q1 = q1 and spell.follow
+		if filter_options.get(10, false):
+			q1 = q1 and (spell.chain != null and spell.chain.name == filter_chain)
+		if not search_text.is_empty():
+			var s0 = spell.name.contains(search_text)
+			if not s0 and spell.chain != null:
+				s0 = spell.chain.name.contains(search_text)
+			if not s0:
+				for e in spell.expression_strings:
+					if e.contains(search_text):
+						s0 = true
+						break
+			q1 = q1 and s0
+		if q1:
 			spells_index_map[k] = spell.id
 			k += 1
 		
@@ -512,3 +546,8 @@ func _on_constants_text_changed() -> void:
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	
+
+
+func _on_search_line_edit_text_changed(new_text: String) -> void:
+	update_spells_list()
+	reload_list()
