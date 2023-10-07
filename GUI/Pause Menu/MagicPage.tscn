@@ -261,12 +261,14 @@ anchors_preset = -1
 anchor_top = 1.028
 anchor_right = 1.009
 anchor_bottom = 1.028
-offset_left = 32.0
-offset_top = -56.128
-offset_right = -103.776
-offset_bottom = -25.128
+offset_left = 16.0
+offset_top = -56.144
+offset_right = -194.368
+offset_bottom = -25.144
 horizontal_alignment = 1
 vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="view_chain_button" type="Button" parent="container"]
 layout_mode = 1
@@ -393,6 +395,19 @@ offset_bottom = -48.0
 wrap_mode = 1
 scroll_smooth = true
 
+[node name="Duplicate" type="Button" parent="container"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -176.0
+offset_top = -40.0
+offset_right = -94.0
+offset_bottom = -9.0
+text = "Duplicate"
+
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
 [connection signal="text_changed" from="container/x_edit" to="." method="_on_x_text_changed"]
 [connection signal="text_changed" from="container/y_edit" to="." method="_on_y_text_changed"]
@@ -412,3 +427,4 @@ scroll_smooth = true
 [connection signal="item_selected" from="container/chain_combo" to="." method="_on_chain_combo_selected"]
 [connection signal="toggled" from="container/player_is_origin" to="." method="_on_player_is_origin_toggled"]
 [connection signal="text_changed" from="container/expressions" to="." method="_on_constants_text_changed"]
+[connection signal="pressed" from="container/Duplicate" to="." method="_on_duplicate_pressed"]

@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwlh6xe128lt6"]
+[gd_scene load_steps=5 format=3 uid="uid://dwlh6xe128lt6"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicBookGUI.gd" id="1_1c5yt"]
 [ext_resource type="PackedScene" uid="uid://etbb6djyr1vu" path="res://GUI/Pause Menu/MagicPage.tscn" id="2_4a14e"]
+[ext_resource type="Texture2D" uid="uid://blw258p6yk2fv" path="res://GUI/Images/sort-amount-down-alt.png" id="3_4muhc"]
+[ext_resource type="Texture2D" uid="uid://dcbtumvlx8tsw" path="res://GUI/Images/filter.png" id="4_md7o6"]
 
 [node name="MagicBook" type="Control"]
 layout_mode = 3
@@ -29,25 +31,25 @@ offset_top = -56.0
 offset_right = 272.0
 offset_bottom = -16.0
 grow_vertical = 0
-text = "Write New Spell"
+text = "Create New Spell"
 
 [node name="SpellIndex" type="ItemList" parent="."]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 144.0
+offset_top = 96.0
 offset_right = 272.0
 offset_bottom = -64.0
 grow_vertical = 2
 
 [node name="SortButton" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 200.0
+offset_left = 40.0
 offset_top = 56.0
-offset_right = 272.0
-offset_bottom = 96.0
-text = "Sort"
+offset_right = 64.0
+offset_bottom = 87.0
+icon = ExtResource("3_4muhc")
 flat = false
 item_count = 9
 popup/item_0/text = "Name"
@@ -82,11 +84,11 @@ popup/item_8/id = 8
 
 [node name="FilterButton" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 120.0
+offset_left = 8.0
 offset_top = 56.0
-offset_right = 192.0
-offset_bottom = 96.0
-text = "Filter"
+offset_right = 32.0
+offset_bottom = 87.0
+icon = ExtResource("4_md7o6")
 flat = false
 item_count = 11
 popup/item_0/text = "Void"
@@ -124,24 +126,14 @@ popup/item_10/checkable = 1
 popup/item_10/id = 10
 popup/item_10/disabled = true
 
-[node name="Duplicate" type="Button" parent="."]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 56.0
-offset_right = 112.0
-offset_bottom = 96.0
-disabled = true
-text = "Duplicate"
-
 [node name="SearchLineEdit" type="LineEdit" parent="."]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 104.0
+offset_left = 72.0
+offset_top = 56.0
 offset_right = 272.0
-offset_bottom = 135.0
+offset_bottom = 87.0
 placeholder_text = "Search"
 
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
-[connection signal="pressed" from="Duplicate" to="." method="_on_duplicate_pressed"]
 [connection signal="text_changed" from="SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]

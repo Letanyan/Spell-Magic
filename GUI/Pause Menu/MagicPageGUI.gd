@@ -36,6 +36,7 @@ var old_chain_text: String = ""
 signal spell_name_changed(new_text: String)
 signal request_to_view_spell(spell_name: String)
 signal delete_spell(index: int)
+signal duplicate_spell(index: int)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -336,3 +337,9 @@ func _on_delete_pressed() -> void:
 		return
 	book.spells.remove_at(current_index)
 	delete_spell.emit(current_index)
+
+
+func _on_duplicate_pressed() -> void:
+	if current_index < 0:
+		return
+	duplicate_spell.emit(current_index)

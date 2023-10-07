@@ -42,6 +42,7 @@ func _ready():
 	page.spell_name_changed.connect(func(n: String): reload_list())
 	page.request_to_view_spell.connect(view_new_spell)
 	page.delete_spell.connect(delete_spell_at_index)
+	page.duplicate_spell.connect(duplicate_spell_at_index)
 	
 	
 func duplicate_book():
@@ -177,10 +178,8 @@ func _on_create_pressed():
 	spell.name = "New Spell"
 	add_spell(spell)
 
-func _on_duplicate_pressed():
-	if current_index < 0:
-		return
-	var spell: Spell = book.spells[current_index].duplicate()
+func duplicate_spell_at_index(index: int):
+	var spell: Spell = book.spells[index].duplicate()
 	spell.name += " (Copy)"
 	add_spell(spell)
 
