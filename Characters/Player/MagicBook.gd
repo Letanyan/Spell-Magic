@@ -110,7 +110,7 @@ func autocomplete(old_text: String, edit: LineEdit) -> String:
 	if sidx == text.length():
 		sidx -= 1
 	while sidx >= 0:
-		if text[sidx] in " \n\t":
+		if text[sidx] in " \n\t,":
 			break
 		sidx -= 1
 	sidx += 1

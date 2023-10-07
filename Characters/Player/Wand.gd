@@ -34,6 +34,23 @@ class Option:
 		if spell_index >= spell.size():
 			spell_index = 0
 		return spell[spell_index]
+		
+	func display_rotated_spells_list() -> String:
+		if spell.size() == 0:
+			return ""
+		var result := ""
+		var i := spell_index + 1
+		if i >= spell.size():
+			i = 0
+		while true:
+			result += spell[i] + ","
+			if i == spell_index:
+				break
+			i += 1
+			if i >= spell.size():
+				i = 0
+		result = result.substr(0, result.length() - 1)
+		return result
 
 const basic_keys = [
 	"LT",

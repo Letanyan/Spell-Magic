@@ -215,7 +215,7 @@ func update_wand_mappings():
 				wand_mapping.add_item(kd + " >> " + ("" if s.spell.is_empty() else s.spell[0]))
 				
 			Wand.Kind.PICK:
-				wand_mapping.add_item(kd + " : (" + ",".join(s.spell) + ")")
+				wand_mapping.add_item(kd + " : (" + s.display_rotated_spells_list() + ")")
 			Wand.Kind.FIRE_PICKED:
 				wand_mapping.add_item(kd + " :> " + wand.picked)
 			Wand.Kind.FIRE_PICKED_HOLD:
