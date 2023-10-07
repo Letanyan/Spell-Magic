@@ -102,6 +102,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 		expressions.editable = false
 		$container/Delete.disabled = true
 		$container/view_chain_button.disabled = true
+		$container/Duplicate.disabled = true
 		
 func update_cooldown():
 	if current_index < 0:

@@ -69,9 +69,18 @@ offset_right = 312.0
 offset_bottom = 207.0
 text = "Hide Cooldown Timings"
 
+[node name="HideStatsView" type="CheckButton" parent="Tabs/HUD"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 207.0
+offset_right = 312.0
+offset_bottom = 238.0
+text = "Hide Stats View"
+
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideNotifications" to="." method="_on_hide_notifications_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideStatusEffects" to="." method="_on_hide_status_effects_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideHealthAndMana" to="." method="_on_hide_health_and_mana_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideCooldownTimings" to="." method="_on_hide_cooldown_timings_toggled"]
+[connection signal="toggled" from="Tabs/HUD/HideStatsView" to="." method="_on_hide_stats_view_toggled"]

@@ -188,11 +188,11 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player:
-			body.emit_vitals_signal()
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 			body.invunerable = 20
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
+			body.emit_vitals_signal()
 		if is_enemy:
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 			if body.vitals.health.value <= body.vitals.health.min_value:
@@ -232,11 +232,11 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, body)
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player:
-			body.emit_vitals_signal()
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 			body.invunerable = 20
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
+			body.emit_vitals_signal()
 		if is_enemy:
 			body.add_shake(clamp(dmg["dmg"] / 100.0, 0.0, 1.0))
 			if body.vitals.health.value <= body.vitals.health.min_value:

@@ -14,10 +14,13 @@ extends Control
 @onready var notification_label: RichTextLabel = $NotificationLabel
 var notifications: Dictionary = {} # Message -> Expire after n seconds
 
+@onready var stats_view: StatsView = $StatsView
+
 var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
+var world_settings: WorldSettings = null
 var hud_settings: HUDSettings = null
 
 var player: Player:
@@ -44,6 +47,13 @@ func _process(delta: float) -> void:
 	pass
 	
 func set_wand(value: Wand):
+	if wand != null:
+		wand.spell_disallowed.disconnect(spell_was_disallowed)
+		wand.action_updated.disconnect(update_wand_mappings)
+		wand.spell_updated.disconnect(update_wand_mappings)
+		wand.picked_spell_changed.disconnect(update_wand_mappings)
+		wand.key_up.disconnect(update_wand_mappings)
+		wand.key_down.disconnect(update_wand_mappings)
 	wand = value
 	wand.spell_disallowed.connect(spell_was_disallowed)
 	wand.action_updated.connect(update_wand_mappings)
@@ -65,6 +75,7 @@ func update_hud_with_vitals(vitals: Vitals):
 	freeze_bar.max_value = vitals.freeze.max_value
 	wet_bar.value = vitals.wetness.value
 	wet_bar.max_value = vitals.wetness.max_value
+	update_stats_view()
 
 func spell_on_cooldown(spell: Spell):
 	var i := 0
@@ -218,6 +229,7 @@ func update_wand_mappings():
 		wand_mapping.visible = wand_mapping.item_count != 0
 		
 func update_settings(settings: WorldSettings):
+	world_settings = settings
 	hud_settings = settings.hud_settings
 	
 	wand_mapping.visible = not hud_settings.hide_wand_mappings
@@ -231,5 +243,36 @@ func update_settings(settings: WorldSettings):
 	mana_bar.visible = not hud_settings.hide_health_mana
 	
 	cooldown_list.visible = cooldown_list.visible and not hud_settings.hide_cooldown_timings
+	
+	stats_view.visible = not hud_settings.hide_stats_view
 		
+	update_stats_view()
 	update_wand_mappings()
+
+func update_stats_view():
+	if not stats_view.visible or world_settings == null:
+		return
+	
+	var ws := world_settings
+	var sv := stats_view
+	sv.health.text = "%d" % [ws.max_health]
+	sv.mana.text = "%d+%d" % [ws.max_mana, ws.buff_mana]
+	sv.r.text = "%d+%d" % [ws.max_r, ws.buff_r]
+	sv.T.text = "%d+%d" % [ws.max_T, ws.buff_T]
+	sv.N.text = "%d+%d" % [ws.max_N, ws.buff_N]
+	sv.P.text = "%d+%d" % [ws.max_P, ws.buff_P]
+	
+	var v: Vector2 = Vector2.ZERO
+	sv.fireDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]
+	sv.fireRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.FIRE, v).y, player.damage_resistance.get(Spell.Element.FIRE, v).x]
+	sv.waterDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.WATER, v).y, player.spell_modifier.get(Spell.Element.WATER, v).x]
+	sv.waterRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.WATER, v).y, player.damage_resistance.get(Spell.Element.WATER, v).x]
+	sv.rockDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.ROCK, v).y, player.spell_modifier.get(Spell.Element.ROCK, v).x]
+	sv.rockRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.ROCK, v).y, player.damage_resistance.get(Spell.Element.ROCK, v).x]
+	sv.airDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.AIR, v).y, player.spell_modifier.get(Spell.Element.AIR, v).x]
+	sv.airRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.AIR, v).y, player.damage_resistance.get(Spell.Element.AIR, v).x]
+	sv.iceDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.ICE, v).y, player.spell_modifier.get(Spell.Element.ICE, v).x]
+	sv.iceRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.ICE, v).y, player.damage_resistance.get(Spell.Element.ICE, v).x]
+	sv.electricDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.ELECTRIC, v).y, player.spell_modifier.get(Spell.Element.ELECTRIC, v).x]
+	sv.electricRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.ELECTRIC, v).y, player.damage_resistance.get(Spell.Element.ELECTRIC, v).x]
+	

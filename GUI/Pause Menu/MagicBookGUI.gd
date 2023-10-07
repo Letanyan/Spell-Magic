@@ -23,7 +23,6 @@ var book: MagicBook:
 var spells_index_map := {}
 
 @onready var create_button: Button = $Create
-@onready var duplicate_button: Button = $Duplicate
 
 @onready var search_line_edit: LineEdit = $SearchLineEdit
 
@@ -59,8 +58,6 @@ func _process(delta):
 func _on_spell_index_item_selected(index):
 	current_index = spells_index_map[index]
 	var spell: Spell = book.spells[current_index]
-	
-	duplicate_button.disabled = index < 0
 	
 	page.display_spell(book, spell, current_index)
 	

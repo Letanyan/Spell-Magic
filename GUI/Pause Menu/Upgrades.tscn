@@ -519,7 +519,7 @@ offset_left = 56.0
 offset_top = 424.0
 offset_right = 215.0
 offset_bottom = 450.0
-text = "Max R"
+text = "Max r"
 
 [node name="current" type="Label" parent="container/max_r"]
 layout_mode = 0

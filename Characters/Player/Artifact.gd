@@ -2,10 +2,12 @@ class_name Artifact
 
 enum Effect {
 	NONE,
+	# refers to increases players damage
 	BOOST_PERCENTAGE,
 	BOOST_FLAT,
-	REDUCE_PERCENTAGE,
-	REDUCE_FLAT
+	# refers to lowering players resistance
+	RESISTANCE_PERCENTAGE,
+	RESISTANCE_FLAT
 }
 
 enum Event {
@@ -44,7 +46,7 @@ class Option:
 		
 	static func make_random(
 		is_ef: float = 0.5, 
-		ef_prob: Dictionary = {Effect.BOOST_PERCENTAGE: 0.1, Effect.BOOST_FLAT: 0.1, Effect.REDUCE_PERCENTAGE: 0.1, Effect.REDUCE_FLAT: 0.1}, 
+		ef_prob: Dictionary = {Effect.BOOST_PERCENTAGE: 0.1, Effect.BOOST_FLAT: 0.1, Effect.RESISTANCE_PERCENTAGE: 0.1, Effect.RESISTANCE_FLAT: 0.1}, 
 		ev_prob: Dictionary = {Event.RECEIVE: 0.1, Event.DEAL: 0.1}, 
 		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
@@ -79,9 +81,9 @@ class Option:
 		
 	func amount_as_tuple() -> Vector2:
 		match effect:
-			Effect.BOOST_PERCENTAGE, Effect.REDUCE_PERCENTAGE:
+			Effect.BOOST_PERCENTAGE, Effect.RESISTANCE_PERCENTAGE:
 				return Vector2(0, amount)
-			Effect.BOOST_FLAT, Effect.REDUCE_FLAT:
+			Effect.BOOST_FLAT, Effect.RESISTANCE_FLAT:
 				return Vector2(amount, 0)
 		return Vector2.ZERO
 		
@@ -96,7 +98,7 @@ class Option:
 			match effect:
 				Effect.BOOST_PERCENTAGE, Effect.BOOST_FLAT:
 					return 1
-				Effect.REDUCE_PERCENTAGE, Effect.REDUCE_FLAT:
+				Effect.RESISTANCE_PERCENTAGE, Effect.RESISTANCE_FLAT:
 					return -1
 		elif event != Event.NONE:
 			match event:
@@ -110,7 +112,7 @@ class Option:
 		if effect == Effect.NONE:
 			return ""
 		var result := ("+" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "-") + ("%d" % amount)
-		if effect == Effect.BOOST_PERCENTAGE or effect == Effect.REDUCE_PERCENTAGE:
+		if effect == Effect.BOOST_PERCENTAGE or effect == Effect.RESISTANCE_PERCENTAGE:
 			result += "%"
 		return result
 		
@@ -178,6 +180,18 @@ class Option:
 				return Color.DARK_GREEN
 			Element.MANA:
 				return Color.DARK_BLUE
+			Element.POWER:
+				return Color.REBECCA_PURPLE
+			Element.DURATION:
+				return Color.TEAL
+			Element.COUNT:
+				return Color.DARK_ORANGE
+			Element.MANA_BUMP:
+				return Color.MIDNIGHT_BLUE
+			Element.SPELL_VELOCITY:
+				return Color.GREEN_YELLOW
+			Element.SPELL_RADIUS:
+				return Color.DARK_RED
 		return Color.DEEP_PINK
 		
 	func color() -> Color:
@@ -195,11 +209,11 @@ class Option:
 		
 		var result := ""
 		if effect != Effect.NONE:
-			result = ("+" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "-") + ("%d" % amount)
+			result = ("DMG" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "RES") + ("%d " % amount)
 			match effect:
 				Effect.BOOST_PERCENTAGE:
 					result += "%"
-				Effect.REDUCE_PERCENTAGE:
+				Effect.RESISTANCE_PERCENTAGE:
 					result += "%"
 			result += " "
 		elif event != Event.NONE:

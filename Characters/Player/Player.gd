@@ -29,7 +29,7 @@ signal spell_radius_was_buffed
 var vitals: Vitals
 
 var spell_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
-var damage_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
+var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
 
 func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
@@ -153,9 +153,9 @@ func cast_spell(insert: Callable, next_spell: Spell):
 	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	await get_tree().physics_frame
 	spell_caster.cast_spell(self, vitals, insert, new_spell)
-	emit_vitals_signal()
 	emit_spell_was_cast(next_spell)
 	update_artifact_effects(Artifact.Event.DEAL, next_spell)
+	emit_vitals_signal()
 			
 		
 func _on_wet_area_body_entered(body):
@@ -190,18 +190,18 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						vitals.health.apply(amount.x)
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						vitals.health.apply(vitals.health.value * amount.y / 100.0)
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						vitals.health.apply(-amount.x)
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						vitals.health.apply(vitals.health.value * -amount.y / 100.0)
 				elif effect_el == Artifact.Element.MANA:
 					if effect_kind == Artifact.Effect.BOOST_FLAT:
 						vitals.mana.apply(amount.x)
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						vitals.mana.apply(vitals.mana.value * amount.y / 100.0)
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						vitals.mana.apply(-amount.x)
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						vitals.mana.apply(vitals.mana.value * -amount.y / 100.0)
 				elif effect_el == Artifact.Element.POWER:
 					var value := 0.0
@@ -209,9 +209,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = amount.x
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						value = magic_book.settings.max_P * amount.y / 100.0
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = -amount.x
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = -magic_book.settings.max_P * amount.y / 100.0
 					magic_book.settings.buff_P += value
 					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_P -= value)
@@ -221,9 +221,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = amount.x
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						value = magic_book.settings.max_N * amount.y / 100.0
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = -amount.x
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = -magic_book.settings.max_N * amount.y / 100.0
 					magic_book.settings.buff_N += value
 					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_N -= value)
@@ -233,9 +233,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = amount.x
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						value = magic_book.settings.max_T * amount.y / 100.0
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = -amount.x
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = -magic_book.settings.max_T * amount.y / 100.0
 					magic_book.settings.buff_T += value
 					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_T -= value)
@@ -245,9 +245,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = amount.x
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						value = magic_book.settings.max_mana * amount.y / 100.0
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = -amount.x
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = -magic_book.settings.max_mana * amount.y / 100.0
 					magic_book.settings.buff_mana += value
 					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.buff_mana -= value)
@@ -257,9 +257,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = amount.x
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						value = magic_book.settings.max_v * amount.y / 100.0
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = -amount.x
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = -magic_book.settings.max_v * amount.y / 100.0
 					magic_book.settings.buff_v += value
 					spell_velocity_was_buffed.emit(magic_book.settings.buff_v)
@@ -273,9 +273,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = amount.x
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 						value = magic_book.settings.max_r * amount.x / 100.0
-					elif effect_kind == Artifact.Effect.REDUCE_FLAT:
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = -amount.x
-					elif effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = -magic_book.settings.max_r * amount.x / 100.0
 					magic_book.settings.buff_r += value
 					spell_radius_was_buffed.emit(magic_book.settings.buff_r)
@@ -290,11 +290,11 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						spell_modifier[effect_el] += amount
 						get_tree().create_timer(duration).timeout.connect(func(): spell_modifier[effect_el] -= amount)
 						
-					if not damage_modifier.has(effect_el):
-						damage_modifier[effect_el] = Vector2.ZERO
-					if effect_kind == Artifact.Effect.REDUCE_FLAT or effect_kind == Artifact.Effect.REDUCE_PERCENTAGE:
-						damage_modifier[effect_el] += amount
-						get_tree().create_timer(duration).timeout.connect(func(): damage_modifier[effect_el] -= amount)
+					if not damage_resistance.has(effect_el):
+						damage_resistance[effect_el] = Vector2.ZERO
+					if effect_kind == Artifact.Effect.RESISTANCE_FLAT or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
+						damage_resistance[effect_el] += amount
+						get_tree().create_timer(duration).timeout.connect(func(): damage_resistance[effect_el] -= amount)
 					
-	vitals.damage_modifier = damage_modifier
+	vitals.damage_resistance = damage_resistance
 	

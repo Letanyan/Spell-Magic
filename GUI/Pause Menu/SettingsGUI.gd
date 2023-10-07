@@ -24,6 +24,7 @@ func update_controls():
 	$Tabs/HUD/HideStatusEffects.button_pressed = world_settings.hud_settings.hide_status_effects
 	$Tabs/HUD/HideHealthAndMana.button_pressed = world_settings.hud_settings.hide_health_mana
 	$Tabs/HUD/HideCooldownTimings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
+	$Tabs/HUD/HideStatsView.button_pressed = world_settings.hud_settings.hide_stats_view
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -52,4 +53,9 @@ func _on_hide_health_and_mana_toggled(button_pressed: bool) -> void:
 
 func _on_hide_cooldown_timings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_cooldown_timings = button_pressed
+	settings_changed.emit(world_settings)
+
+
+func _on_hide_stats_view_toggled(button_pressed: bool) -> void:
+	world_settings.hud_settings.hide_stats_view = button_pressed
 	settings_changed.emit(world_settings)

@@ -44,7 +44,7 @@ var hunger: Stat
 var thirst: Stat
 var perception: Stat
 
-var damage_modifier: Dictionary # Artifact.Element -> Vector2 (flat, percentage)
+var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat, percentage)
 
 
 func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _wetness := Stat.new(0, 0, 1, -0.001), _freeze := Stat.new(0, 0, 1, -0.01), _stun := Stat.new(0, 0, 1.0, -0.25)):
@@ -58,7 +58,7 @@ func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _we
 	thirst = Stat.new(0, 0, 0)
 	perception = Stat.new(50, 0, 100)
 	aggression = Stat.new(0, 0, 1)
-	damage_modifier = {}
+	damage_resistance = {}
 
 func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 	match kind:
@@ -94,9 +94,9 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 		Spell.Element.VOID:
 			power = 0.0
 			
-	for e in damage_modifier:
+	for e in damage_resistance:
 		if e == kind or e == Artifact.Element.ANY:
-			power = power * (1.0 - damage_modifier[e].y) - damage_modifier[e].x
+			power = power * (1.0 - damage_resistance[e].y) - damage_resistance[e].x
 	health.apply_ignoring_resistance(-power)
 	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
 	print("element: ", Spell.name_from_element(kind))
