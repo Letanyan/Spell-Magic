@@ -8,59 +8,59 @@ var world_settings: WorldSettings:
 
 @onready var max_P_current: Label = $container/max_P/current
 @onready var max_P_upgrade: Button = $container/max_P/upgrade
-@onready var max_P_cost: Label = $container/max_P/upgrade/cost
+@onready var max_P_cost: RichTextLabel = $container/max_P/upgrade/cost
 
 @onready var max_v_current: Label = $container/max_v/current
 @onready var max_v_upgrade: Button = $container/max_v/upgrade
-@onready var max_v_cost: Label = $container/max_v/upgrade/cost
+@onready var max_v_cost: RichTextLabel = $container/max_v/upgrade/cost
 
 @onready var max_N_current: Label = $container/max_N/current
 @onready var max_N_upgrade: Button = $container/max_N/upgrade
-@onready var max_N_cost: Label = $container/max_N/upgrade/cost
+@onready var max_N_cost: RichTextLabel = $container/max_N/upgrade/cost
 
 @onready var max_M_current: Label = $container/max_M/current
 @onready var max_M_upgrade: Button = $container/max_M/upgrade
-@onready var max_M_cost: Label = $container/max_M/upgrade/cost
+@onready var max_M_cost: RichTextLabel = $container/max_M/upgrade/cost
 
 @onready var max_r_current: Label = $container/max_r/current
 @onready var max_r_upgrade: Button = $container/max_r/upgrade
-@onready var max_r_cost: Label = $container/max_r/upgrade/cost
+@onready var max_r_cost: RichTextLabel = $container/max_r/upgrade/cost
 
 @onready var max_T_current: Label = $container/max_T/current
 @onready var max_T_upgrade: Button = $container/max_T/upgrade
-@onready var max_T_cost: Label = $container/max_T/upgrade/cost
+@onready var max_T_cost: RichTextLabel = $container/max_T/upgrade/cost
 
 @onready var max_H_current: Label = $container/max_H/current
 @onready var max_H_upgrade: Button = $container/max_H/upgrade
-@onready var max_H_cost: Label = $container/max_H/upgrade/cost
+@onready var max_H_cost: RichTextLabel = $container/max_H/upgrade/cost
 
 @onready var max_spell_count_current: Label = $container/max_spell_count/current
 @onready var max_spell_count_upgrade: Button = $container/max_spell_count/upgrade
-@onready var max_spell_count_cost: Label = $container/max_spell_count/upgrade/cost
+@onready var max_spell_count_cost: RichTextLabel = $container/max_spell_count/upgrade/cost
 
 @onready var element_void_upgrade: Button = $container/elements/Void
-@onready var element_void_cost: Label = $container/elements/Void/cost
+@onready var element_void_cost: RichTextLabel = $container/elements/Void/cost
 @onready var element_fire_upgrade: Button = $container/elements/Fire
-@onready var element_fire_cost: Label = $container/elements/Fire/cost
+@onready var element_fire_cost: RichTextLabel = $container/elements/Fire/cost
 @onready var element_water_upgrade: Button = $container/elements/Water
-@onready var element_water_cost: Label = $container/elements/Water/cost
+@onready var element_water_cost: RichTextLabel = $container/elements/Water/cost
 @onready var element_air_upgrade: Button = $container/elements/Air
-@onready var element_air_cost: Label = $container/elements/Air/cost
+@onready var element_air_cost: RichTextLabel = $container/elements/Air/cost
 @onready var element_rock_upgrade: Button = $container/elements/Rock
-@onready var element_rock_cost: Label = $container/elements/Rock/cost
+@onready var element_rock_cost: RichTextLabel = $container/elements/Rock/cost
 @onready var element_ice_upgrade: Button = $container/elements/Ice
-@onready var element_ice_cost: Label = $container/elements/Ice/cost
+@onready var element_ice_cost: RichTextLabel = $container/elements/Ice/cost
 @onready var element_electric_upgrade: Button = $container/elements/Electric
-@onready var element_electric_cost: Label = $container/elements/Electric/cost
+@onready var element_electric_cost: RichTextLabel = $container/elements/Electric/cost
 
 @onready var chain_at_start_upgrade: Button = $container/chain_methods/at_start
-@onready var chain_at_start_cost: Label = $container/chain_methods/at_start/cost
+@onready var chain_at_start_cost: RichTextLabel = $container/chain_methods/at_start/cost
 @onready var chain_at_end_upgrade: Button = $container/chain_methods/at_end
-@onready var chain_at_end_cost: Label = $container/chain_methods/at_end/cost
+@onready var chain_at_end_cost: RichTextLabel = $container/chain_methods/at_end/cost
 @onready var chain_on_hit_upgrade: Button = $container/chain_methods/on_hit
-@onready var chain_on_hit_cost: Label = $container/chain_methods/on_hit/cost
+@onready var chain_on_hit_cost: RichTextLabel = $container/chain_methods/on_hit/cost
 
-@onready var currency: Label = $container/Currency
+@onready var currency: RichTextLabel = $container/Currency
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -92,28 +92,29 @@ func update_state(purchase_error: WorldSettings.PurchaseError):
 	chain_at_end_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
 	chain_on_hit_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
-	max_spell_count_cost.text = "$" + str(world_settings.cost_spells_in_book)
-	max_P_cost.text = "$" + str(world_settings.cost_P)
-	max_v_cost.text = "$" + str(world_settings.cost_v)
-	max_N_cost.text = "$" + str(world_settings.cost_N)
-	max_T_cost.text = "$" + str(world_settings.cost_T)
-	max_M_cost.text = "$" + str(world_settings.cost_mana)
-	max_r_cost.text = "$" + str(world_settings.cost_r)
-	max_H_cost.text = "$" + str(world_settings.cost_health)
+	var coin_suffix := " [img]res://GUI/Images/coins.svg[/img][/center]"
+	max_spell_count_cost.text = "[center]" + str(world_settings.cost_spells_in_book) + coin_suffix
+	max_P_cost.text = "[center]" + str(world_settings.cost_P) + coin_suffix
+	max_v_cost.text = "[center]" + str(world_settings.cost_v) + coin_suffix
+	max_N_cost.text = "[center]" + str(world_settings.cost_N) + coin_suffix
+	max_T_cost.text = "[center]" + str(world_settings.cost_T) + coin_suffix
+	max_M_cost.text = "[center]" + str(world_settings.cost_mana) + coin_suffix
+	max_r_cost.text = "[center]" + str(world_settings.cost_r) + coin_suffix
+	max_H_cost.text = "[center]" + str(world_settings.cost_health) + coin_suffix
 	
-	element_void_cost.text = "$" + str(world_settings.cost_spell_element)
-	element_fire_cost.text = "$" + str(world_settings.cost_spell_element)
-	element_water_cost.text = "$" + str(world_settings.cost_spell_element)
-	element_air_cost.text = "$" + str(world_settings.cost_spell_element)
-	element_rock_cost.text = "$" + str(world_settings.cost_spell_element)
-	element_ice_cost.text = "$" + str(world_settings.cost_spell_element)
-	element_electric_cost.text = "$" + str(world_settings.cost_spell_element)
+	element_void_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_fire_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_water_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_air_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_rock_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_ice_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_electric_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
 	
-	chain_at_start_cost.text = "$" + str(world_settings.cost_chain_method)
-	chain_at_end_cost.text = "$" + str(world_settings.cost_chain_method)
-	chain_on_hit_cost.text = "$" + str(world_settings.cost_chain_method)
+	chain_at_start_cost.text = "[center]" + str(world_settings.cost_chain_method) + coin_suffix
+	chain_at_end_cost.text = "[center]" + str(world_settings.cost_chain_method) + coin_suffix
+	chain_on_hit_cost.text = "[center]" + str(world_settings.cost_chain_method) + coin_suffix
 	
-	currency.text = "Currency: $" + str(world_settings.currency)
+	currency.text = "[right]" + str(world_settings.currency) + " [img]res://GUI/Images/coins.svg[/img][/right]"
 	
 	max_spell_count_upgrade.disabled = world_settings.max_spells_in_book >= WorldSettings.LIMIT_SPELLS_IN_BOOK
 	max_P_upgrade.disabled = world_settings.max_P >= WorldSettings.LIMIT_P

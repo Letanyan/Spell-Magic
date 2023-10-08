@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dwlh6xe128lt6"]
+[gd_scene load_steps=7 format=3 uid="uid://dwlh6xe128lt6"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicBookGUI.gd" id="1_1c5yt"]
 [ext_resource type="PackedScene" uid="uid://etbb6djyr1vu" path="res://GUI/Pause Menu/MagicPage.tscn" id="2_4a14e"]
 [ext_resource type="Texture2D" uid="uid://cai14oap1d1th" path="res://GUI/Images/sort.svg" id="3_owmtw"]
+[ext_resource type="Texture2D" uid="uid://c5q0dsx5on4jd" path="res://GUI/Images/add.svg" id="3_rr417"]
 [ext_resource type="Texture2D" uid="uid://btvwo1cile4kb" path="res://GUI/Images/filter.svg" id="4_f8nsx"]
+[ext_resource type="Texture2D" uid="uid://bbnsunymlyphy" path="res://GUI/Images/search.svg" id="6_ve4us"]
 
 [node name="MagicBook" type="Control"]
 layout_mode = 3
@@ -32,6 +34,7 @@ offset_right = 272.0
 offset_bottom = -16.0
 grow_vertical = 0
 text = "Create New Spell"
+icon = ExtResource("3_rr417")
 
 [node name="SpellIndex" type="ItemList" parent="."]
 layout_mode = 1
@@ -133,6 +136,7 @@ offset_top = 56.0
 offset_right = 272.0
 offset_bottom = 87.0
 placeholder_text = "Search"
+right_icon = ExtResource("6_ve4us")
 
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]

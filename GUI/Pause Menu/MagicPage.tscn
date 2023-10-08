@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=11 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
+[ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
 [ext_resource type="Texture2D" uid="uid://b44g28n50yfr1" path="res://GUI/Images/void.svg" id="2_lmkyc"]
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="3_b0u8s"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="4_c0fet"]
@@ -8,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bmpgkw1tq23ok" path="res://GUI/Images/wind.svg" id="6_sr8s6"]
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="7_s7nf7"]
 [ext_resource type="Texture2D" uid="uid://dh6xbrgomcoq8" path="res://GUI/Images/electric.svg" id="8_hbxe4"]
+[ext_resource type="Texture2D" uid="uid://ckh44temenbma" path="res://GUI/Images/duplicate.svg" id="10_ne1rx"]
 
 [node name="MagicPage" type="Control"]
 layout_mode = 3
@@ -237,12 +239,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -88.0
+offset_left = -96.0
 offset_top = -40.0
-offset_right = -8.0
+offset_right = -11.0
 offset_bottom = -8.0
 text = "Delete
 "
+icon = ExtResource("2_ap1iy")
 
 [node name="is_bomb" type="CheckButton" parent="container"]
 layout_mode = 1
@@ -261,7 +264,7 @@ anchor_right = 1.009
 anchor_bottom = 1.028
 offset_left = 16.0
 offset_top = -56.144
-offset_right = -194.368
+offset_right = -226.368
 offset_bottom = -25.144
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -407,13 +410,14 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -176.0
+offset_left = -208.0
 offset_top = -40.0
-offset_right = -94.0
-offset_bottom = -9.0
+offset_right = -100.0
+offset_bottom = -8.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Duplicate"
+icon = ExtResource("10_ne1rx")
 
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
 [connection signal="text_changed" from="container/x_edit" to="." method="_on_x_text_changed"]
