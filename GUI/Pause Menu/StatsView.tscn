@@ -1,9 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cqoqd11ks5vm4"]
+[gd_scene load_steps=3 format=3 uid="uid://cqoqd11ks5vm4"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/StatsView.gd" id="1_mc58t"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_y5lki"]
-font_size = 12
 
 [sub_resource type="LabelSettings" id="LabelSettings_1eye5"]
 font_size = 12
@@ -22,206 +19,195 @@ layout_mode = 0
 offset_right = 272.0
 offset_bottom = 248.0
 
-[node name="Health" type="Label" parent="container"]
+[node name="Health" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 72.0
-offset_bottom = 34.0
-text = "Health"
-label_settings = SubResource("LabelSettings_y5lki")
-vertical_alignment = 1
+offset_bottom = 28.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/health.svg[/img] Health[/font_size]"
+scroll_active = false
 
-[node name="M" type="Label" parent="container"]
+[node name="M" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 8.0
 offset_right = 200.0
-offset_bottom = 34.0
-text = "M"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 28.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/mana.svg[/img] M[/font_size]"
+scroll_active = false
 
-[node name="Velocity" type="Label" parent="container"]
+[node name="Velocity" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 32.0
 offset_right = 72.0
-offset_bottom = 58.0
-text = "Velocity"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 52.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/velocity.svg[/img] Speed[/font_size]"
+scroll_active = false
 
-[node name="r" type="Label" parent="container"]
+[node name="r" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 32.0
 offset_right = 200.0
-offset_bottom = 58.0
-text = "r"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 52.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/radius.svg[/img] r[/font_size]"
+scroll_active = false
 
-[node name="P" type="Label" parent="container"]
+[node name="P" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 80.0
 offset_right = 72.0
-offset_bottom = 106.0
-text = "P"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 100.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/power.svg[/img] P[/font_size]"
+scroll_active = false
 
-[node name="T" type="Label" parent="container"]
+[node name="T" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 56.0
 offset_right = 72.0
-offset_bottom = 82.0
-text = "T"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 76.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/time.svg[/img] T[/font_size]"
+scroll_active = false
 
-[node name="N" type="Label" parent="container"]
+[node name="N" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 56.0
 offset_right = 200.0
-offset_bottom = 82.0
-text = "N"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 76.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/count.svg[/img] N[/font_size]"
+scroll_active = false
 
-[node name="Fire DMG" type="Label" parent="container"]
+[node name="Fire DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 104.0
 offset_right = 72.0
-offset_bottom = 130.0
-text = "F DMG"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 124.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/fire.svg[/img] DMG[/font_size]"
+scroll_active = false
 
-[node name="Fire RES" type="Label" parent="container"]
+[node name="Fire RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 104.0
 offset_right = 200.0
-offset_bottom = 130.0
-text = "F RES"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 124.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/fire.svg[/img] RES[/font_size]"
 
-[node name="Water DMG" type="Label" parent="container"]
+[node name="Water DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 128.0
 offset_right = 72.0
-offset_bottom = 154.0
-text = "W DMG"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 148.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/water.svg[/img] DMG[/font_size]"
 
-[node name="Water RES" type="Label" parent="container"]
+[node name="Water RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 128.0
 offset_right = 200.0
-offset_bottom = 154.0
-text = "W RES"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 148.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/water.svg[/img] RES[/font_size]"
 
-[node name="Rock DMG" type="Label" parent="container"]
+[node name="Rock DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 152.0
 offset_right = 72.0
-offset_bottom = 178.0
-text = "R DMG"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 172.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/rock.svg[/img] DMG[/font_size]"
+scroll_active = false
 
-[node name="Rock RES" type="Label" parent="container"]
+[node name="Rock RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 152.0
 offset_right = 200.0
-offset_bottom = 178.0
-text = "R RES"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 172.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/rock.svg[/img] RES[/font_size]"
 
-[node name="Air DMG" type="Label" parent="container"]
+[node name="Air DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 176.0
 offset_right = 72.0
-offset_bottom = 202.0
-text = "A DMG"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 196.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/wind.svg[/img] DMG[/font_size]"
 
-[node name="Air RES" type="Label" parent="container"]
+[node name="Air RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 176.0
 offset_right = 200.0
-offset_bottom = 202.0
-text = "A RES"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 196.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/wind.svg[/img] RES[/font_size]"
 
-[node name="Ice DMG" type="Label" parent="container"]
+[node name="Ice DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 200.0
 offset_right = 72.0
-offset_bottom = 226.0
-text = "I DMG"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 220.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/ice.svg[/img] DMG[/font_size]"
 
-[node name="Ice RES" type="Label" parent="container"]
+[node name="Ice RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 200.0
 offset_right = 200.0
-offset_bottom = 226.0
-text = "I RES"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 220.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/ice.svg[/img] RES[/font_size]"
 
-[node name="Electric DMG" type="Label" parent="container"]
+[node name="Electric DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 224.0
 offset_right = 72.0
-offset_bottom = 250.0
-text = "E DMG"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 244.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/electric.svg[/img] DMG[/font_size]"
 
-[node name="Electric RES" type="Label" parent="container"]
+[node name="Electric RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 152.0
 offset_top = 224.0
 offset_right = 200.0
-offset_bottom = 250.0
-text = "E RES"
-label_settings = SubResource("LabelSettings_1eye5")
-vertical_alignment = 1
+offset_bottom = 244.0
+bbcode_enabled = true
+text = "[font_size=12][img=l,16x16]res://GUI/Images/electric.svg[/img] RES[/font_size]"
 
 [node name="Value Health" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 72.0
 offset_top = 8.0
 offset_right = 136.0
-offset_bottom = 34.0
+offset_bottom = 28.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value M" type="Label" parent="container"]
@@ -229,11 +215,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 8.0
 offset_right = 264.0
-offset_bottom = 34.0
+offset_bottom = 28.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Velocity" type="Label" parent="container"]
@@ -241,11 +226,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 32.0
 offset_right = 136.0
-offset_bottom = 58.0
+offset_bottom = 52.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value r" type="Label" parent="container"]
@@ -253,11 +237,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 32.0
 offset_right = 264.0
-offset_bottom = 58.0
+offset_bottom = 52.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value T" type="Label" parent="container"]
@@ -265,11 +248,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 56.0
 offset_right = 136.0
-offset_bottom = 82.0
+offset_bottom = 76.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value N" type="Label" parent="container"]
@@ -277,11 +259,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 56.0
 offset_right = 264.0
-offset_bottom = 82.0
+offset_bottom = 76.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value P" type="Label" parent="container"]
@@ -289,11 +270,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 80.0
 offset_right = 136.0
-offset_bottom = 106.0
+offset_bottom = 100.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Fire DMG" type="Label" parent="container"]
@@ -301,11 +281,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 104.0
 offset_right = 136.0
-offset_bottom = 130.0
+offset_bottom = 124.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Fire RES" type="Label" parent="container"]
@@ -313,11 +292,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 104.0
 offset_right = 264.0
-offset_bottom = 130.0
+offset_bottom = 124.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Water DMG" type="Label" parent="container"]
@@ -325,11 +303,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 128.0
 offset_right = 136.0
-offset_bottom = 154.0
+offset_bottom = 148.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Water RES" type="Label" parent="container"]
@@ -337,11 +314,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 128.0
 offset_right = 264.0
-offset_bottom = 154.0
+offset_bottom = 148.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Rock DMG" type="Label" parent="container"]
@@ -349,11 +325,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 152.0
 offset_right = 136.0
-offset_bottom = 178.0
+offset_bottom = 172.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Rock RES" type="Label" parent="container"]
@@ -361,11 +336,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 152.0
 offset_right = 264.0
-offset_bottom = 178.0
+offset_bottom = 172.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Air DMG" type="Label" parent="container"]
@@ -373,11 +347,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 176.0
 offset_right = 136.0
-offset_bottom = 202.0
+offset_bottom = 196.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Air RES" type="Label" parent="container"]
@@ -385,11 +358,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 176.0
 offset_right = 264.0
-offset_bottom = 202.0
+offset_bottom = 196.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Ice DMG" type="Label" parent="container"]
@@ -397,11 +369,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 200.0
 offset_right = 136.0
-offset_bottom = 226.0
+offset_bottom = 220.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Ice RES" type="Label" parent="container"]
@@ -409,11 +380,10 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 200.0
 offset_right = 264.0
-offset_bottom = 226.0
+offset_bottom = 220.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Electric DMG" type="Label" parent="container"]
@@ -421,11 +391,10 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 224.0
 offset_right = 136.0
-offset_bottom = 250.0
+offset_bottom = 244.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true
 
 [node name="Value Electric RES" type="Label" parent="container"]
@@ -433,9 +402,8 @@ layout_mode = 0
 offset_left = 200.0
 offset_top = 224.0
 offset_right = 264.0
-offset_bottom = 250.0
+offset_bottom = 244.0
 text = "100"
 label_settings = SubResource("LabelSettings_1eye5")
 horizontal_alignment = 2
-vertical_alignment = 1
 clip_text = true

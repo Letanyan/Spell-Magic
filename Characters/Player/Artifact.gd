@@ -93,20 +93,34 @@ class Option:
 	func element_effect() -> int:
 		return effect * Element.size() + element
 		
-	func player_deals_damage() -> int:
+	func direction_texture() -> Texture2D:
 		if effect != Effect.NONE:
-			match effect:
-				Effect.BOOST_PERCENTAGE, Effect.BOOST_FLAT:
-					return 1
-				Effect.RESISTANCE_PERCENTAGE, Effect.RESISTANCE_FLAT:
-					return -1
+			return effect_texture()
 		elif event != Event.NONE:
-			match event:
-				Event.RECEIVE:
-					return -1
-				Event.DEAL:
-					return 1		
-		return 0
+			return event_texture()
+		return preload("res://GUI/Images/sword.svg")
+		
+	func is_effect() -> bool:
+		if effect != Effect.NONE:
+			return true
+		else:
+			return false
+		
+	func effect_texture() -> Texture2D:
+		match effect:
+			Effect.BOOST_PERCENTAGE, Effect.BOOST_FLAT:
+				return preload("res://GUI/Images/sword.svg")
+			Effect.RESISTANCE_PERCENTAGE, Effect.RESISTANCE_FLAT:
+				return preload("res://GUI/Images/shield.svg")
+		return preload("res://GUI/Images/sword.svg")
+		
+	func event_texture() -> Texture2D:
+		match event:
+			Event.RECEIVE:
+				return preload("res://GUI/Images/take.svg")
+			Event.DEAL:
+				return preload("res://GUI/Images/deal.svg")
+		return preload("res://GUI/Images/deal.svg")
 		
 	func amount_description() -> String:
 		if effect == Effect.NONE:
@@ -159,6 +173,40 @@ class Option:
 			Element.SPELL_RADIUS:
 				return "r"
 		return ""
+		
+	func element_texture() -> Texture2D:
+		match element:
+			Element.ANY:
+				return preload("res://GUI/Images/infinity.svg")
+			Element.FIRE:
+				return preload("res://GUI/Images/fire.svg")
+			Element.WATER:
+				return preload("res://GUI/Images/water.svg")
+			Element.AIR:
+				return preload("res://GUI/Images/wind.svg")
+			Element.ROCK:
+				return preload("res://GUI/Images/rock.svg")
+			Element.ELECTRIC:
+				return preload("res://GUI/Images/electric.svg")
+			Element.ICE:
+				return preload("res://GUI/Images/ice.svg")
+			Element.HEALTH:
+				return preload("res://GUI/Images/health.svg")
+			Element.MANA:
+				return preload("res://GUI/Images/mana.svg")
+			Element.POWER:
+				return preload("res://GUI/Images/power.svg")
+			Element.DURATION:
+				return preload("res://GUI/Images/time.svg")
+			Element.COUNT:
+				return preload("res://GUI/Images/count.svg")
+			Element.MANA_BUMP:
+				return preload("res://GUI/Images/mana.svg")
+			Element.SPELL_VELOCITY:
+				return preload("res://GUI/Images/velocity.svg")
+			Element.SPELL_RADIUS:
+				return preload("res://GUI/Images/radius.svg")
+		return preload("res://GUI/Images/infinity.svg")
 		
 	func element_color() -> Color:
 		match element:

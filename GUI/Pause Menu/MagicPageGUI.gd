@@ -63,11 +63,11 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 	z_edit.text = spell.z
 	r_edit.text = spell.r
 	
-	power_edit.text = "%.2f" % spell.power
+	power_edit.text = "%d" % spell.power
 	duration_edit.text = "%.2f" % spell.duration
 	delay_edit.text = spell.delay
 	count_edit.text = "%d" % spell.count
-	mana_edit.text = "%.2f" % spell.mana_cost
+	mana_edit.text = "%d" % spell.mana_cost
 	update_cooldown()
 	
 	element_combo.selected = spell.element
@@ -109,7 +109,7 @@ func update_cooldown():
 		return
 	book.spells[current_index].calculate_cooldown()
 	cooldown_label.text = "Cooldown: " + ("%.2f" % book.spells[current_index].cooldown) + "s"
-	mana_cost.text = "Total Mana Cost: " + ("%.2f" % book.spells[current_index].actual_mana_cost())
+	mana_cost.text = "Total (Inc. chain): " + ("%.2f" % book.spells[current_index].actual_mana_cost())
 	
 func _on_name_edit_text_changed(new_text):
 	if current_index < 0:
@@ -284,7 +284,7 @@ func _on_M_text_changed(new_text):
 	var raw: float = new_text.to_float()
 	book.spells[current_index].mana_cost = raw
 	if raw > book.settings.max_mana + book.settings.buff_mana:
-		errors_list["M"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.max_mana + book.settings.buff_mana]
+		errors_list["M"] = "Value of %ds exceeds maximum of %ds" % [raw, book.settings.max_mana + book.settings.buff_mana]
 	else:
 		errors_list.erase("T")
 	update_cooldown()

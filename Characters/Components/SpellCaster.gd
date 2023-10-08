@@ -96,14 +96,14 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "rcz"] = c.signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	if s.player_is_origin:
+		result["abs_pos" if fixed else "rel_pos"] = body.position
+	else:
 		if entity == Entity.PLAYER:
 			var port := body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
 			result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
 		else:
 			result["abs_pos" if fixed else "rel_pos"] = body.position + cdir
-	else:
-		result["abs_pos" if fixed else "rel_pos"] = body.position
 	
 	if p != null: # direction from character to spell
 		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )

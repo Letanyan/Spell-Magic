@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicBookGUI.gd" id="1_1c5yt"]
 [ext_resource type="PackedScene" uid="uid://etbb6djyr1vu" path="res://GUI/Pause Menu/MagicPage.tscn" id="2_4a14e"]
-[ext_resource type="Texture2D" uid="uid://blw258p6yk2fv" path="res://GUI/Images/sort-amount-down-alt.png" id="3_4muhc"]
-[ext_resource type="Texture2D" uid="uid://dcbtumvlx8tsw" path="res://GUI/Images/filter.png" id="4_md7o6"]
+[ext_resource type="Texture2D" uid="uid://cai14oap1d1th" path="res://GUI/Images/sort.svg" id="3_owmtw"]
+[ext_resource type="Texture2D" uid="uid://btvwo1cile4kb" path="res://GUI/Images/filter.svg" id="4_f8nsx"]
 
 [node name="MagicBook" type="Control"]
 layout_mode = 3
@@ -45,11 +45,11 @@ grow_vertical = 2
 
 [node name="SortButton" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 40.0
+offset_left = 48.0
 offset_top = 56.0
-offset_right = 64.0
-offset_bottom = 87.0
-icon = ExtResource("3_4muhc")
+offset_right = 80.0
+offset_bottom = 88.0
+icon = ExtResource("3_owmtw")
 flat = false
 item_count = 9
 popup/item_0/text = "Name"
@@ -86,9 +86,9 @@ popup/item_8/id = 8
 layout_mode = 0
 offset_left = 8.0
 offset_top = 56.0
-offset_right = 32.0
-offset_bottom = 87.0
-icon = ExtResource("4_md7o6")
+offset_right = 40.0
+offset_bottom = 88.0
+icon = ExtResource("4_f8nsx")
 flat = false
 item_count = 11
 popup/item_0/text = "Void"
@@ -128,7 +128,7 @@ popup/item_10/disabled = true
 
 [node name="SearchLineEdit" type="LineEdit" parent="."]
 layout_mode = 0
-offset_left = 72.0
+offset_left = 88.0
 offset_top = 56.0
 offset_right = 272.0
 offset_bottom = 87.0

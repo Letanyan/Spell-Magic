@@ -13,6 +13,7 @@ cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
 [sub_resource type="StyleBoxFlat" id="1"]
+content_margin_left = 4.0
 bg_color = Color(0, 0, 0, 0.501961)
 border_width_left = 1
 border_width_top = 1
@@ -21,12 +22,14 @@ border_width_bottom = 1
 border_color = Color(0.282353, 0.282353, 0.282353, 1)
 
 [sub_resource type="StyleBoxFlat" id="2"]
+content_margin_left = 4.0
 bg_color = Color(1, 1, 1, 0)
 border_width_bottom = 1
 border_color = Color(0.282353, 0.282353, 0.282353, 1)
 expand_margin_bottom = 3.0
 
 [sub_resource type="StyleBoxFlat" id="3"]
+content_margin_left = 4.0
 bg_color = Color(0, 0, 0, 0.752941)
 border_width_left = 1
 border_width_top = 1
@@ -35,6 +38,7 @@ border_width_bottom = 1
 border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="4"]
+content_margin_left = 4.0
 bg_color = Color(0.129412, 0.129412, 0.129412, 1)
 border_width_left = 1
 border_width_top = 1

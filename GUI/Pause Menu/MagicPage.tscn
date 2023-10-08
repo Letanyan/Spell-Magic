@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=9 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
+[ext_resource type="Texture2D" uid="uid://b44g28n50yfr1" path="res://GUI/Images/void.svg" id="2_lmkyc"]
+[ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="3_b0u8s"]
+[ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="4_c0fet"]
+[ext_resource type="Texture2D" uid="uid://bcljg3lbivvke" path="res://GUI/Images/rock.svg" id="5_8gpm1"]
+[ext_resource type="Texture2D" uid="uid://bmpgkw1tq23ok" path="res://GUI/Images/wind.svg" id="6_sr8s6"]
+[ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="7_s7nf7"]
+[ext_resource type="Texture2D" uid="uid://dh6xbrgomcoq8" path="res://GUI/Images/electric.svg" id="8_hbxe4"]
 
 [node name="MagicPage" type="Control"]
 layout_mode = 3
@@ -23,182 +30,173 @@ anchor_right = 1.0
 offset_left = 16.0
 offset_top = 8.0
 offset_right = -248.0
-offset_bottom = 39.0
+offset_bottom = 40.0
 size_flags_vertical = 4
 
-[node name="x" type="Label" parent="container"]
+[node name="x" type="RichTextLabel" parent="container"]
 layout_mode = 2
 offset_left = 8.0
 offset_top = 58.0
-offset_right = 40.0
+offset_right = 56.0
 offset_bottom = 90.0
 rotation = -0.00125103
-text = "x"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16]x[/font_size][/center]"
 
 [node name="x_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 57.96
-offset_right = -4.22406
+offset_right = -6.0
 offset_bottom = 89.96
-metadata/_edit_use_anchors_ = true
 
-[node name="y" type="Label" parent="container"]
+[node name="y" type="RichTextLabel" parent="container"]
 layout_mode = 2
 offset_left = 8.0
 offset_top = 104.0
-offset_right = 40.0
+offset_right = 56.0
 offset_bottom = 136.0
-text = "y
+bbcode_enabled = true
+text = "[center][font_size=16]y[/font_size][/center]
 "
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="y_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 104.0
-offset_right = -4.22403
+offset_right = -6.0
 offset_bottom = 136.0
 
-[node name="z" type="Label" parent="container"]
+[node name="z" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 152.0
-offset_right = 40.0
+offset_right = 56.0
 offset_bottom = 184.0
-text = "z"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16]z[/font_size][/center]"
 
 [node name="z_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 152.0
-offset_right = -4.22403
+offset_right = -6.0
 offset_bottom = 184.0
 grow_horizontal = 0
 
-[node name="r" type="Label" parent="container"]
+[node name="r" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 200.0
-offset_right = 40.0
+offset_right = 56.0
 offset_bottom = 232.0
-text = "r"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16][img=l,16x16]res://GUI/Images/radius.svg[/img] r[/font_size][/center]"
 
 [node name="r_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 200.0
-offset_right = -4.22403
+offset_right = -6.0
 offset_bottom = 232.0
 grow_horizontal = 0
 
-[node name="power" type="Label" parent="container"]
+[node name="power" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -0.22403
+offset_left = -0.22406
 offset_top = 200.0
-offset_right = 31.776
+offset_right = 47.7759
 offset_bottom = 232.0
-text = "P"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16][img=l,16x16]res://GUI/Images/power.svg[/img] P[/font_size][/center]"
 
 [node name="power_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 200.0
 offset_right = -8.0
 offset_bottom = 232.0
 grow_horizontal = 0
 
-[node name="duration" type="Label" parent="container"]
+[node name="duration" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -0.22403
+offset_left = -0.22406
 offset_top = 58.0
-offset_right = 31.776
+offset_right = 47.7759
 offset_bottom = 90.0
-text = "T"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16][img=l,16x16]res://GUI/Images/time.svg[/img] T[/font_size][/center]"
+scroll_active = false
 
 [node name="duration_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 58.0
 offset_right = -8.0
 offset_bottom = 90.0
 grow_horizontal = 0
 
-[node name="count" type="Label" parent="container"]
+[node name="count" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -0.22403
+offset_left = -0.22406
 offset_top = 152.0
-offset_right = 31.776
+offset_right = 47.7759
 offset_bottom = 184.0
-text = "N
-"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16][img=l,16x16]res://GUI/Images/count.svg[/img] N[/font_size][/center]"
 
 [node name="count_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 152.0
 offset_right = -8.0
 offset_bottom = 184.0
 grow_horizontal = 0
 
-[node name="delay" type="Label" parent="container"]
+[node name="delay" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -0.22403
+offset_left = -0.22406
 offset_top = 104.0
-offset_right = 31.776
+offset_right = 47.7759
 offset_bottom = 136.0
-text = "D"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16]D[/font_size][/center]"
 
 [node name="delay_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
-offset_left = 40.0
+offset_left = 56.0
 offset_top = 104.0
 offset_right = -8.0
 offset_bottom = 136.0
@@ -292,7 +290,7 @@ offset_top = 392.0
 offset_right = -0.22403
 offset_bottom = 424.0
 grow_horizontal = 0
-text = "Total M Cost: 0"
+text = "Total (Inc. chain): 0"
 vertical_alignment = 1
 
 [node name="cooldown" type="Label" parent="container"]
@@ -308,23 +306,23 @@ offset_bottom = -48.0
 text = "Cooldown: 0s"
 vertical_alignment = 1
 
-[node name="mana" type="Label" parent="container"]
+[node name="mana" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 392.0
-offset_right = 40.0
+offset_right = 56.0
 offset_bottom = 424.0
-text = "M"
-horizontal_alignment = 1
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16][img=l,16x16]res://GUI/Images/mana.svg[/img] M[/font_size][/center]"
+scroll_active = false
 
 [node name="mana_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.491
-offset_left = 40.0
+offset_left = 64.0
 offset_top = 392.0
-offset_right = -224.224
+offset_right = -224.632
 offset_bottom = 424.0
 
 [node name="element_combo" type="OptionButton" parent="container"]
@@ -340,18 +338,25 @@ grow_horizontal = 0
 item_count = 7
 selected = 0
 popup/item_0/text = "Void"
+popup/item_0/icon = ExtResource("2_lmkyc")
 popup/item_0/id = 0
 popup/item_1/text = "Fire"
+popup/item_1/icon = ExtResource("3_b0u8s")
 popup/item_1/id = 1
 popup/item_2/text = "Water"
+popup/item_2/icon = ExtResource("4_c0fet")
 popup/item_2/id = 2
 popup/item_3/text = "Rock"
+popup/item_3/icon = ExtResource("5_8gpm1")
 popup/item_3/id = 3
 popup/item_4/text = "Air"
+popup/item_4/icon = ExtResource("6_sr8s6")
 popup/item_4/id = 4
 popup/item_5/text = "Ice"
+popup/item_5/icon = ExtResource("7_s7nf7")
 popup/item_5/id = 5
 popup/item_6/text = "Electric"
+popup/item_6/icon = ExtResource("8_hbxe4")
 popup/item_6/id = 6
 
 [node name="chain_combo" type="OptionButton" parent="container"]

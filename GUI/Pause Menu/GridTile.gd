@@ -50,15 +50,19 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 		amount = option.duration_description()
 		
 	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
-	var dir: String
-	if option.player_deals_damage() == 1:
-		dir = option.element_description() + "=> "
-	else:
-		dir = "<= " + option.element_description()
-	var v := f.get_string_size(dir, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
+
+	var v := Vector2(32, 16)
 	var u := Vector2(max(w.x, v.x) + 4, (w.y + v.y) + 4)
 	draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, label_color_top)
-	draw_string(f, center - Vector2(v.x / 2, w.y / 2) + offset - mask * u, dir, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, label_color_bottom)
+	
+	var dir_pos: Vector2 = center - Vector2(v.x / 2, w.y / 2) + offset - mask * u
+	if option.is_effect():
+		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+		draw_texture_rect(option.direction_texture(), Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+	else:
+		draw_texture_rect(option.direction_texture(), Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+		
 	
 	if option.pattern == Artifact.Pattern.TRIANGLE:
 		var a: Vector2 = center + offset + (-size / 2.5) * inv_mask
