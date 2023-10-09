@@ -202,7 +202,7 @@ theme_override_constants/line_separation = 0
 theme_override_constants/outline_size = 0
 auto_height = true
 
-[node name="WandMapping" type="ItemList" parent="."]
+[node name="WandMappingPanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -215,17 +215,17 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 0
 grow_vertical = 0
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_selected_color = Color(1, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/guide_color = Color(0, 0, 0, 0)
-theme_override_constants/h_separation = 0
-theme_override_constants/v_separation = 1
-theme_override_constants/icon_margin = 0
-theme_override_constants/line_separation = 0
-theme_override_constants/outline_size = 0
-auto_height = true
+
+[node name="WandMapping" type="RichTextLabel" parent="WandMappingPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.978
+offset_bottom = 5.92799
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
 
 [node name="StatsView" parent="." instance=ExtResource("3_3d5vo")]
 layout_mode = 1

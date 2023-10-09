@@ -9,7 +9,7 @@ extends Control
 
 @onready var cooldown_list: ItemList = $CooldownList
 
-@onready var wand_mapping: ItemList = $WandMapping
+@onready var wand_mapping: RichTextLabel = $WandMappingPanel/WandMapping
 
 @onready var notification_label: RichTextLabel = $NotificationLabel
 var notifications: Dictionary = {} # Message -> Expire after n seconds
@@ -195,38 +195,46 @@ func draw_notifications():
 		notifications.erase(n)
 		
 func update_wand_mappings():
-	wand_mapping.clear()
+	const SIZE := 16
+	wand_mapping.text = ("[font_size=%d]" % SIZE)
 	
 	if (hud_settings != null and not hud_settings.hide_wand_modifier_hints) and wand.mods.size() > 0:
 		var modifier_keys := ""
 		for m in wand.mods:
-			modifier_keys += Wand.key_description([m]) + " "
-		wand_mapping.add_item(modifier_keys)
+			modifier_keys += Wand.key_images([m]) + " "
+		wand_mapping.text += " Modifiers: " + modifier_keys + "\n"
 	
 	for k in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
-		var kd = Wand.key_description(k)
+		var kd = " " + Wand.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
-				wand_mapping.add_item(kd + " > " + ("" if s.spell.is_empty() else s.spell[0]))
+				wand_mapping.text += kd + " [b]Cast[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 			Wand.Kind.FIRE_HOLD:
-				wand_mapping.add_item(kd + " -> " + ("" if s.spell.is_empty() else s.spell[0]))
+				wand_mapping.text += kd + " [b]Charge[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 			Wand.Kind.RAPID_FIRE:
-				wand_mapping.add_item(kd + " >> " + ("" if s.spell.is_empty() else s.spell[0]))
+				wand_mapping.text += kd + " [b]Rapid[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 				
 			Wand.Kind.PICK:
-				wand_mapping.add_item(kd + " : (" + s.display_rotated_spells_list() + ")")
+				wand_mapping.text += kd + " ([b]Choose[/b]): " + s.display_rotated_spells_list() + "\n"
 			Wand.Kind.FIRE_PICKED:
-				wand_mapping.add_item(kd + " :> " + wand.picked)
+				wand_mapping.text += kd + " ([b]Cast[/b]): " + wand.picked + "\n"
 			Wand.Kind.FIRE_PICKED_HOLD:
-				wand_mapping.add_item(kd + " :-> " + wand.picked)
+				wand_mapping.text += kd + " ([b]Charge[/b]): " + wand.picked + "\n"
 			Wand.Kind.RAPID_SELECT:
-				wand_mapping.add_item(kd + " :>> " + wand.picked)
+				wand_mapping.text += kd + " ([b]Rapid[/b]): " + wand.picked + "\n"
 	
+	wand_mapping.text += "[/font_size]"
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:
-		wand_mapping.visible = wand_mapping.item_count != 0
+		wand_mapping.visible = wand_mapping.text.length() > 0
+	
+	$WandMappingPanel.visible = wand_mapping.visible
+	$WandMappingPanel.size = wand_mapping.size
+	$WandMappingPanel.position.y = get_viewport_rect().size.y - 8 - wand_mapping.size.y
+	# NOTE (HACK): Set again to make sure the panel size is correct after resizing the label
+	$WandMappingPanel.size = wand_mapping.size
 		
 func update_settings(settings: WorldSettings):
 	world_settings = settings
