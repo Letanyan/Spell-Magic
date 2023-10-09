@@ -51,11 +51,11 @@ func _on_wand_index_item_selected(index):
 				all_spells[i] = n
 				
 			if errors.is_empty():
-				item.key.label_settings.font_color = Color.WHITE
-				item.key.text = Wand.key_description(item.store_key)
+#				item.key.label_settings.font_color = Color.WHITE
+				item.key.text = "[center]" + Wand.key_images(item.store_key) + "[/center]"
 			else:
-				item.key.label_settings.font_color = Color.CRIMSON
-				item.key.text = "Missing: " + ", ".join(errors)
+#				item.key.label_settings.font_color = Color.CRIMSON
+				item.key.text = "[center][color=#f33]Missing: " + ", ".join(errors) + "[/color][/center]"
 			wand.keys[w].spell = all_spells
 			wand.keys[w].spell_index = all_spells.size() - 1
 			wand.spell_updated.emit()

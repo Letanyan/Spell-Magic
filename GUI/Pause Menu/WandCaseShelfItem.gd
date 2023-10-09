@@ -1,7 +1,7 @@
 class_name WandCaseShelfItem
 extends Control
 
-@onready var key: Label = $key
+@onready var key: RichTextLabel = $key
 @onready var cast_combo: OptionButton = $cast_combo
 @onready var spell: LineEdit = $spell
 
@@ -17,7 +17,7 @@ var old_text: String = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	key.text = Wand.key_description(store_key)
+	key.text = "[center]" + Wand.key_images(store_key) + "[/center]"
 	spell.text = ", ".join(store_spell)
 	_on_spell_text_changed(", ".join(store_spell))
 	cast_combo.selected = store_action

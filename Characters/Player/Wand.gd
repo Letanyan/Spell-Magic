@@ -94,6 +94,27 @@ const pc_keys = {
 	"move_right": "D",
 }
 
+const pc_images = {
+	"LT": "[img=32]res://addons/controller_icons/assets/key/shift.png[/img]",
+	"LB": "[img=32]res://addons/controller_icons/assets/key/ctrl.png[/img]",
+	"RT": "[img=32]res://addons/controller_icons/assets/mouse/left.png[/img]",
+	"RB": "[img=32]res://addons/controller_icons/assets/mouse/right.png[/img]",
+	"S": "[img=32]res://addons/controller_icons/assets/key/space.png[/img]",
+	"W": "[img=32]res://addons/controller_icons/assets/key/r.png[/img]",
+	"E": "[img=32]res://addons/controller_icons/assets/key/e.png[/img]",
+	"N": "[img=32]res://addons/controller_icons/assets/key/q.png[/img]",
+	"UP": "[img=32]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
+	"DOWN": "[img=32]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
+	"LEFT": "[img=32]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
+	"RIGHT": "[img=32]res://addons/controller_icons/assets/key/arrow_right.png[/img]",
+	"L3": "[img=32]res://addons/controller_icons/assets/key/z.png[/img]",
+	"R3": "[img=32]res://addons/controller_icons/assets/key/alt.png[/img]",
+	"move_forward": "[img=32]res://addons/controller_icons/assets/key/w.png[/img]",
+	"move_left": "[img=32]res://addons/controller_icons/assets/key/a.png[/img]",
+	"move_back": "[img=32]res://addons/controller_icons/assets/key/s.png[/img]",
+	"move_right": "[img=32]res://addons/controller_icons/assets/key/d.png[/img]",
+}
+
 const ps_keys = {
 	"LT": "L2",
 	"LB": "L1",
@@ -311,4 +332,10 @@ static func key_description(key: Array) -> String:
 	var text = pc_keys[key[0]]
 	for i in range(1, key.size()):
 		text += " + " + pc_keys[key[i]]
+	return text
+	
+static func key_images(key: Array) -> String:
+	var text = pc_images[key[0]]
+	for i in range(1, key.size()):
+		text += " + " + pc_images[key[i]]
 	return text

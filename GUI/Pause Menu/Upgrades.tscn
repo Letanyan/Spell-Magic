@@ -46,6 +46,7 @@ offset_left = 48.0
 offset_top = 424.0
 offset_right = 88.0
 offset_bottom = 464.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_H"]
 layout_mode = 1
@@ -136,6 +137,7 @@ offset_left = 48.0
 offset_top = 344.0
 offset_right = 88.0
 offset_bottom = 384.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_M"]
 layout_mode = 1
@@ -409,6 +411,7 @@ offset_left = 48.0
 offset_top = 256.0
 offset_right = 88.0
 offset_bottom = 296.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_T"]
 layout_mode = 1
@@ -561,6 +564,7 @@ offset_left = 48.0
 offset_top = 520.0
 offset_right = 88.0
 offset_bottom = 560.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_v"]
 layout_mode = 1

@@ -256,6 +256,7 @@ func update_stats_view():
 	var ws := world_settings
 	var sv := stats_view
 	sv.health.text = "%d" % [ws.max_health]
+	sv.velocity.text = "%d+%d" % [ws.max_v, ws.buff_v]
 	sv.mana.text = "%d+%d" % [ws.max_mana, ws.buff_mana]
 	sv.r.text = "%d+%d" % [ws.max_r, ws.buff_r]
 	sv.T.text = "%d+%d" % [ws.max_T, ws.buff_T]

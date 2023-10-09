@@ -1,16 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cl6anb75utdrn"]
+[gd_scene load_steps=3 format=3 uid="uid://cl6anb75utdrn"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/WandCaseShelfItem.gd" id="1_kx7hf"]
 [ext_resource type="Theme" uid="uid://dojuv2wrram1y" path="res://GUI/MinimalUI/MinimalUI.tres" id="1_r3nyl"]
-
-[sub_resource type="SystemFont" id="SystemFont_hklrj"]
-font_weight = 800
-
-[sub_resource type="LabelSettings" id="LabelSettings_xg88r"]
-resource_local_to_scene = true
-font = SubResource("SystemFont_hklrj")
-outline_size = 1
-outline_color = Color(0, 0, 0, 1)
 
 [node name="WandCaseShelfItem" type="Control"]
 custom_minimum_size = Vector2(800, 48)
@@ -22,7 +13,7 @@ grow_horizontal = 2
 theme = ExtResource("1_r3nyl")
 script = ExtResource("1_kx7hf")
 
-[node name="key" type="Label" parent="."]
+[node name="key" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.333
@@ -30,11 +21,9 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 0.384003
 offset_bottom = 40.0
-text = "LB + X"
-label_settings = SubResource("LabelSettings_xg88r")
-horizontal_alignment = 1
-vertical_alignment = 1
-clip_text = true
+bbcode_enabled = true
+text = "[center][img=32x32]res://addons/controller_icons/assets/ps5/l2.png[/img] + [img=32x32]res://addons/controller_icons/assets/ps5/cross.png[/img][/center]"
+scroll_active = false
 
 [node name="spell" type="LineEdit" parent="."]
 layout_mode = 1
