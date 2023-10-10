@@ -45,7 +45,7 @@ func update_index(index):
 	artifacts.visible = false
 	upgrades.visible = false
 	settings.visible = false
-	match index:
+	match current_index:
 		0: magic_book.visible = true
 		1: wand_case.visible = true
 		2: artifacts.visible = true
@@ -100,6 +100,11 @@ func _gui_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("LB"):
 		update_index(current_index - 1)
 	
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("RB"):
+		update_index(current_index + 1)
+	elif event.is_action_pressed("LB"):
+		update_index(current_index - 1)
 
 func save_changes():
 	if magic_book.visible:

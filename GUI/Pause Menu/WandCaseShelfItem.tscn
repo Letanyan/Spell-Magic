@@ -25,16 +25,6 @@ bbcode_enabled = true
 text = "[center][img=32x32]res://addons/controller_icons/assets/ps5/l2.png[/img] + [img=32x32]res://addons/controller_icons/assets/ps5/cross.png[/img][/center]"
 scroll_active = false
 
-[node name="spell" type="LineEdit" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 1.0
-offset_left = 24.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 41.0
-
 [node name="cast_combo" type="OptionButton" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -65,5 +55,15 @@ popup/item_7/id = 7
 popup/item_8/text = "Modifier Key"
 popup/item_8/id = 8
 
-[connection signal="text_changed" from="spell" to="." method="_on_spell_text_changed"]
+[node name="spell" type="LineEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 41.0
+
 [connection signal="item_selected" from="cast_combo" to="." method="_on_cast_combo_selected"]
+[connection signal="text_changed" from="spell" to="." method="_on_spell_text_changed"]

@@ -1,14 +1,9 @@
 extends Control
 
-var settings: GameSettings
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	settings = GameSettings.new()
-	settings.read()
-	
-	$Continue.disabled = settings.last_world == ""
+	$Continue.disabled = GlobalData.game_settings.last_world == ""
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -22,7 +17,7 @@ func _on_new_game_pressed() -> void:
 
 func _on_continue_pressed() -> void:
 	var world_settings := WorldSettings.new()
-	world_settings.read(settings.last_world)
+	world_settings.read(GlobalData.game_settings.last_world)
 	
 	var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	demo.setup(world_settings)

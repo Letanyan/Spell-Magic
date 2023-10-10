@@ -27,6 +27,9 @@ extends Control
 
 @onready var error_label: Label = $container/error_label
 
+@onready var duplicate_button: Button = $container/Duplicate
+@onready var delete_button: Button = $container/Delete
+
 var errors_list := {}
 
 var book: MagicBook
@@ -37,6 +40,7 @@ signal spell_name_changed(new_text: String)
 signal request_to_view_spell(spell_name: String)
 signal delete_spell(index: int)
 signal duplicate_spell(index: int)
+signal return_focus
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -344,3 +348,156 @@ func _on_duplicate_pressed() -> void:
 	if current_index < 0:
 		return
 	duplicate_spell.emit(current_index)
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree():
+		return
+		
+	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
+	
+	if name_edit.has_focus():
+		if direction.x > 0:
+			element_combo.grab_focus()
+		if direction.y > 0:
+			x_edit.grab_focus()
+	elif element_combo.has_focus():
+		if direction.x < 0:
+			name_edit.grab_focus()
+		if direction.y > 0:
+			power_edit.grab_focus()
+	elif x_edit.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			duration_edit.grab_focus()
+		if direction.y < 0:
+			name_edit.grab_focus()
+		if direction.y > 0:
+			y_edit.grab_focus()
+	elif y_edit.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			delay_edit.grab_focus()
+		if direction.y < 0:
+			x_edit.grab_focus()
+		if direction.y > 0:
+			z_edit.grab_focus()
+	elif z_edit.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			count_edit.grab_focus()
+		if direction.y < 0:
+			y_edit.grab_focus()
+		if direction.y > 0:
+			r_edit.grab_focus()
+	elif r_edit.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			power_edit.grab_focus()
+		if direction.y < 0:
+			z_edit.grab_focus()
+		if direction.y > 0:
+			chain_edit.grab_focus()
+	elif duration_edit.has_focus():
+		if direction.x < 0:
+			x_edit.emit()
+		if direction.y < 0:
+			name_edit.grab_focus()
+		if direction.y > 0:
+			delay_edit.grab_focus()
+	elif delay_edit.has_focus():
+		if direction.x < 0:
+			y_edit.emit()
+		if direction.y < 0:
+			duration_edit.grab_focus()
+		if direction.y > 0:
+			count_edit.grab_focus()
+	elif count_edit.has_focus():
+		if direction.x < 0:
+			z_edit.emit()
+		if direction.y < 0:
+			delay_edit.grab_focus()
+		if direction.y > 0:
+			power_edit.grab_focus()
+	elif power_edit.has_focus():
+		if direction.x < 0:
+			r_edit.emit()
+		if direction.y < 0:
+			count_edit.grab_focus()
+		if direction.y > 0:
+			chain_combo.grab_focus()
+	elif chain_edit.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			expressions.grab_focus()
+		if direction.y < 0:
+			r_edit.grab_focus()
+		if direction.y > 0:
+			player_is_origin.grab_focus()
+	elif chain_combo.has_focus():
+		if direction.x < 0:
+			chain_edit.emit()
+		if direction.y < 0:
+			power_edit.grab_focus()
+		if direction.y > 0:
+			expressions.grab_focus()
+	elif player_is_origin.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			expressions.grab_focus()
+		if direction.y < 0:
+			chain_edit.grab_focus()
+		if direction.y > 0:
+			is_bomb.grab_focus()
+	elif is_bomb.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			expressions.grab_focus()
+		if direction.y < 0:
+			player_is_origin.grab_focus()
+		if direction.y > 0:
+			is_rel.grab_focus()
+	elif is_rel.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			expressions.grab_focus()
+		if direction.y < 0:
+			is_bomb.grab_focus()
+		if direction.y > 0:
+			mana_edit.grab_focus()
+	elif mana_edit.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			expressions.grab_focus()
+		if direction.y < 0:
+			is_rel.grab_focus()
+		if direction.y > 0:
+			duplicate_button.grab_focus()
+	elif expressions.has_focus():
+		if direction.x < 0:
+			player_is_origin.emit()
+		if direction.y < 0:
+			power_edit.grab_focus()
+		if direction.y > 0:
+			duplicate_button.grab_focus()
+	elif duplicate_button.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			delete_button.grab_focus()
+		if direction.y < 0:
+			mana_edit.grab_focus()
+	elif delete_button.has_focus():
+		if direction.x < 0:
+			duplicate_button.emit()
+		if direction.y < 0:
+			expressions.grab_focus()
+	

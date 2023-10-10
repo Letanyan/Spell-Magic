@@ -10,6 +10,10 @@ var case: WandCase:
 @onready var container: VBoxContainer = $panel/scroll/container
 @onready var name_edit: LineEdit = $name
 
+@onready var create_button: Button = $create
+@onready var delete_button: Button = $delete
+@onready var use_button: Button = $use
+
 var current_index = -1
 var use_current_wand: Callable
 var book: MagicBook
@@ -35,11 +39,19 @@ func _on_wand_index_item_selected(index):
 	for c in container.get_children():
 		container.remove_child(c)
 		
+	var prev_item: WandCaseShelfItem = null
 	for w in wand.keys:
 		var item = load("res://GUI/Pause Menu/WandCaseShelfItem.tscn").instantiate()
 		item.store_key = w
 		item.store_action = wand.keys[w].kind
 		item.store_spell = wand.keys[w].spell
+		
+		item.return_focus.connect(func(): wand_index.grab_focus())
+		if prev_item != null:
+			item.move_up_request.connect(func(): prev_item.grab_focus())
+		if prev_item != null:
+			prev_item.move_down_request.connect(func(): item.grab_focus())
+		prev_item = item
 		
 		item.spell_changed = func(text: String):
 			var all_spells := text.split(",", false)
@@ -52,7 +64,7 @@ func _on_wand_index_item_selected(index):
 				
 			if errors.is_empty():
 #				item.key.label_settings.font_color = Color.WHITE
-				item.key.text = "[center]" + Wand.key_images(item.store_key) + "[/center]"
+				item.key.text = "[center]" + GlobalData.controller.key_images(item.store_key) + "[/center]"
 			else:
 #				item.key.label_settings.font_color = Color.CRIMSON
 				item.key.text = "[center][color=#f33]Missing: " + ", ".join(errors) + "[/color][/center]"
@@ -112,3 +124,44 @@ func _on_use_pressed():
 	case.selected_wand = current_index
 	use_current_wand.call(current_index)
 	new_wand_selected.emit(case.wands[current_index])
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or not has_focus():
+		return
+		
+	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
+	
+	if wand_index.has_focus():
+		if direction.x > 0:
+			container.grab_focus()
+		if direction.y > 0:
+			create_button.grab_focus()
+	elif create_button.has_focus():
+		if direction.x > 0:
+			name_edit.grab_focus()
+		if direction.y < 0:
+			wand_index.grab_focus()
+	elif container.has_focus():
+		if direction.x < 0:
+			wand_index.grab_focus()
+		if direction.y > 0:
+			name_edit.grab_focus()
+	elif name_edit.has_focus():
+		if direction.x < 0:
+			create_button.grab_focus()
+		if direction.x > 0:
+			delete_button.grab_focus()
+		if direction.y < 0:
+			container.grab_focus()
+	elif delete_button.has_focus():
+		if direction.x < 0:
+			name_edit.grab_focus()
+		if direction.x > 0:
+			use_button.grab_focus()
+		if direction.y < 0:
+			container.grab_focus()
+	elif use_button.has_focus():
+		if direction.x < 0:
+			delete_button.grab_focus()
+		if direction.y < 0:
+			container.grab_focus()

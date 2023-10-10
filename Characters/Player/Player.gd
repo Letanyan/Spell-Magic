@@ -93,8 +93,9 @@ func _physics_process(delta):
 	emit_vitals_signal()
 	if not menu_showing:
 		velocity = movement["velocity"]
-		move_and_slide()
 		var direction = movement["direction"]
+		velocity_movement.rotate_character(get_node("."), direction)
+		move_and_slide()
 		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 			if is_on_floor():
 				if velocity.length() < 1:

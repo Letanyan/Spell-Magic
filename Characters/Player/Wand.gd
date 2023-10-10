@@ -73,69 +73,6 @@ const basic_keys = [
 	"move_back"
 ]
 
-const pc_keys = {
-	"LT": "shift",
-	"LB": "ctrl",
-	"RT": "left mouse",
-	"RB": "right mouse",
-	"S": "space",
-	"W": "R",
-	"E": "E",
-	"N": "Q",
-	"UP": "up",
-	"DOWN": "down",
-	"LEFT": "left",
-	"RIGHT": "right",
-	"L3": "Z",
-	"R3": "alt",
-	"move_forward": "W",
-	"move_left": "A",
-	"move_back": "S",
-	"move_right": "D",
-}
-
-const pc_images = {
-	"LT": "[img=%d]res://addons/controller_icons/assets/key/shift.png[/img]",
-	"LB": "[img=%d]res://addons/controller_icons/assets/key/ctrl.png[/img]",
-	"RT": "[img=%d]res://addons/controller_icons/assets/mouse/left.png[/img]",
-	"RB": "[img=%d]res://addons/controller_icons/assets/mouse/right.png[/img]",
-	"S": "[img=%d]res://addons/controller_icons/assets/key/space.png[/img]",
-	"W": "[img=%d]res://addons/controller_icons/assets/key/r.png[/img]",
-	"E": "[img=%d]res://addons/controller_icons/assets/key/e.png[/img]",
-	"N": "[img=%d]res://addons/controller_icons/assets/key/q.png[/img]",
-	"UP": "[img=%d]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
-	"DOWN": "[img=%d]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
-	"LEFT": "[img=%d]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
-	"RIGHT": "[img=%d]res://addons/controller_icons/assets/key/arrow_right.png[/img]",
-	"L3": "[img=%d]res://addons/controller_icons/assets/key/z.png[/img]",
-	"R3": "[img=%d]res://addons/controller_icons/assets/key/alt.png[/img]",
-	"move_forward": "[img=%d]res://addons/controller_icons/assets/key/w.png[/img]",
-	"move_left": "[img=%d]res://addons/controller_icons/assets/key/a.png[/img]",
-	"move_back": "[img=%d]res://addons/controller_icons/assets/key/s.png[/img]",
-	"move_right": "[img=%d]res://addons/controller_icons/assets/key/d.png[/img]",
-}
-
-const ps_keys = {
-	"LT": "L2",
-	"LB": "L1",
-	"RT": "R2",
-	"RB": "R1",
-	"S": "Cross",
-	"W": "Square",
-	"E": "Circle",
-	"N": "Triangle",
-	"UP": "Up",
-	"DOWN": "Down",
-	"LEFT": "Left",
-	"RIGHT": "Right",
-	"L3": "L3",
-	"R3": "R3",
-	"move_forward": "Move Forward",
-	"move_left": "Move Left",
-	"move_back": "Move Back",
-	"move_right": "Move Right",
-}
-
 var name: String
 var mods: Dictionary
 var keys: Dictionary
@@ -327,15 +264,3 @@ func load_dict(dict: Dictionary):
 		var opt = Option.new()
 		opt.load_dict(dict["keys"][k])
 		keys[k] = opt
-
-static func key_description(key: Array) -> String:
-	var text = pc_keys[key[0]]
-	for i in range(1, key.size()):
-		text += " + " + pc_keys[key[i]]
-	return text
-	
-static func key_images(key: Array, size: int = 32) -> String:
-	var text = (pc_images[key[0]] % size)
-	for i in range(1, key.size()):
-		text += " + " + (pc_images[key[i]] % size)
-	return text

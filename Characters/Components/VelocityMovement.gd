@@ -105,18 +105,28 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	result["impulse"] = impulse
 	
 	if body.has_node("CamPivot"):
-		if direction != Vector3.ZERO:
-			var pivot: Node3D = body.get_node("Pivot")
-			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
-			var collision: Node3D = body.get_node("Collision")
-			collision.rotation.y = pivot.rotation.y
-			var wet_area: Node3D = body.get_node("WetArea")
-			wet_area.rotation.y = pivot.rotation.y
+		pass
+#		if direction != Vector3.ZERO:
+#			var pivot: Node3D = body.get_node("Pivot")
+#			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
+#			var collision: Node3D = body.get_node("Collision")
+#			collision.rotation.y = pivot.rotation.y
+#			var wet_area: Node3D = body.get_node("WetArea")
+#			wet_area.rotation.y = pivot.rotation.y
 	else:
 		if navigation_velocity != Vector3.ZERO:
 			body.rotation.y = lerp_angle(body.rotation.y, atan2(-navigation_velocity.x, -navigation_velocity.z), 0.3)
 		
 	return result
+
+func rotate_character(body: Player, direction: Vector3):
+	if direction != Vector3.ZERO:
+		var pivot: Node3D = body.get_node("Pivot")
+		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
+		var collision: Node3D = body.get_node("Collision")
+		collision.rotation.y = pivot.rotation.y
+		var wet_area: Node3D = body.get_node("WetArea")
+		wet_area.rotation.y = pivot.rotation.y
 
 static func get_input_strength(negative_x: String, positive_x: String, negative_y: String, positive_y: String, deadzone: float = 0.05) -> Vector2:
 	var left := Input.get_action_raw_strength(negative_x)

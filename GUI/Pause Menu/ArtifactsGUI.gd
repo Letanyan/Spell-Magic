@@ -139,3 +139,16 @@ func _on_artifacts_list_item_selected(index: int) -> void:
 		return
 	artifact_preview.artifact = artifact
 	artifact_preview.queue_redraw()
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or not has_focus():
+		return
+		
+	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
+	
+	if artifacts_list.has_focus():
+		if direction.x > 0:
+			artifact_grid.grab_focus()
+	elif artifact_grid.has_focus():
+		if direction.x < 0:
+			artifacts_list.grab_focus()

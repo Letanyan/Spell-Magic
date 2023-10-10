@@ -15,9 +15,13 @@ var autocomplete: Callable
 
 var old_text: String = ""
 
+signal move_down_request
+signal move_up_request
+signal return_focus
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	key.text = "[center]" + Wand.key_images(store_key) + "[/center]"
+	key.text = "[center]" + GlobalData.controller.key_images(store_key) + "[/center]"
 	spell.text = ", ".join(store_spell)
 	_on_spell_text_changed(", ".join(store_spell))
 	cast_combo.selected = store_action
@@ -42,3 +46,23 @@ func _on_spell_text_changed(new_text):
 	var updated_text: String = autocomplete.call(old_text, spell)
 	spell_changed.call(updated_text)
 	old_text = updated_text
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or not has_focus():
+		return
+		
+	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
+	
+	if cast_combo.has_focus():
+		if direction.x < 0:
+			return_focus.emit()
+		if direction.x > 0:
+			spell.grab_focus()
+	elif spell.has_focus():
+		if direction.x < 0:
+			cast_combo.grab_focus()
+			
+	if direction.y > 0:
+		move_down_request.emit()
+	if direction.y < 0:
+		move_up_request.emit()

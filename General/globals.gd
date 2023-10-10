@@ -18,3 +18,12 @@ class Ref extends RefCounted:
 
 static func particle_system_lifetime(p: GPUParticles3D) -> float:
 	return p.lifetime * (1.0 + 1.0 - p.explosiveness) + 0.1
+
+var game_settings: GameSettings = null
+var controller: Controller = null
+
+func _ready() -> void:
+	game_settings = GameSettings.new()
+	game_settings.read()
+	
+	controller = Controller.new()

@@ -23,6 +23,7 @@ layout_mode = 1
 
 [node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
 visible = false
+layout_mode = 1
 
 [node name="Artifacts" parent="." instance=ExtResource("4_setqv")]
 visible = false

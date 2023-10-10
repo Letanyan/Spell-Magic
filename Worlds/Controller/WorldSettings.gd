@@ -5,6 +5,7 @@ var player_position: Vector3
 var sed: int
 
 var hud_settings: HUDSettings
+var camera_settings: CameraSettings
 
 enum PurchaseError {
 	NONE, NOT_ENOUGH_CURRENCY, UPGRADE_IS_OVER_LIMIT
@@ -235,7 +236,8 @@ func save():
 		"enemies_killed": enemies_killed,
 		"currency": currency,
 		
-		"hud_settings": hud_settings.save_dict()
+		"hud_settings": hud_settings.save_dict(),
+		"camera_settings": camera_settings.save_dict()
 	})
 
 func read(filename: String):
@@ -284,3 +286,6 @@ func read(filename: String):
 	
 	hud_settings = HUDSettings.new()
 	hud_settings.load_dict(data.get("hud_settings", {}))
+	
+	camera_settings = CameraSettings.new()
+	camera_settings.load_dict(data.get("camera_settings", {}))

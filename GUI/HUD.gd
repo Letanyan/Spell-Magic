@@ -201,12 +201,12 @@ func update_wand_mappings():
 	if (hud_settings != null and not hud_settings.hide_wand_modifier_hints) and wand.mods.size() > 0:
 		var modifier_keys := ""
 		for m in wand.mods:
-			modifier_keys += Wand.key_images([m]) + " "
+			modifier_keys += GlobalData.controller.key_images([m]) + " "
 		wand_mapping.text += " Modifiers: " + modifier_keys + "\n"
 	
 	for k in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
-		var kd = " " + Wand.key_images(k, int(SIZE * 1.5) )
+		var kd = " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
 				wand_mapping.text += kd + " [b]Cast[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
@@ -216,7 +216,7 @@ func update_wand_mappings():
 				wand_mapping.text += kd + " [b]Rapid[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 				
 			Wand.Kind.PICK:
-				wand_mapping.text += kd + " ([b]Choose[/b]): " + s.display_rotated_spells_list() + "\n"
+				wand_mapping.text += kd + " [b]Choose[/b]: (" + s.display_rotated_spells_list() + ")\n"
 			Wand.Kind.FIRE_PICKED:
 				wand_mapping.text += kd + " ([b]Cast[/b]): " + wand.picked + "\n"
 			Wand.Kind.FIRE_PICKED_HOLD:
@@ -253,6 +253,8 @@ func update_settings(settings: WorldSettings):
 	cooldown_list.visible = cooldown_list.visible and not hud_settings.hide_cooldown_timings
 	
 	stats_view.visible = not hud_settings.hide_stats_view
+	
+	player.cam.fov = settings.camera_settings.fov
 		
 	update_stats_view()
 	update_wand_mappings()

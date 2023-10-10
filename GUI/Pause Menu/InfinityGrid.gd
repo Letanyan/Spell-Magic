@@ -64,7 +64,7 @@ func _draw() -> void:
 	if selected_cell_coord != null:
 		draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
-func _input(event):
+func _gui_input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	
@@ -104,4 +104,19 @@ func _input(event):
 			current_offset = event.position - mouse_down
 			queue_redraw()
 			queue_sort()
+	elif event is InputEventKey:
+		if Input.is_action_pressed("DOWN"):
+			selected_cell_coord += Vector2(0, 1)
+			accept_event()
+		if Input.is_action_pressed("UP"):
+			selected_cell_coord += Vector2(0, -1)
+			accept_event()
+		if Input.is_action_pressed("LEFT"):
+			selected_cell_coord += Vector2(-1, 0)
+			accept_event()
+		if Input.is_action_pressed("RIGHT"):
+			selected_cell_coord += Vector2(1, 0)
+			accept_event()
+		queue_redraw()
+		queue_sort()
 
