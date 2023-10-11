@@ -92,10 +92,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						result.append(p)
 						for k in house_size:
 							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
-							n.stored_entity_knowledge[w.name] = w.entity_info()
-							var info = p.entity_info()
-							info.kind = EntityInfo.Kind.BASE
-							n.stored_entity_knowledge[p.name] = info
 							result.append(n)
 					if max_limit <= 0:
 						break

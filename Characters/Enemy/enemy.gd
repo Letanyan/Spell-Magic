@@ -15,8 +15,6 @@ var invunerable := 0
 var player: Player
 var behaviour: Behaviour
 var vitals: Vitals
-var knowledge: Knowledge
-var hormones: Hormones
 var current_path: PathStyle
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
 
@@ -29,25 +27,14 @@ signal on_death(artifact_drop: Artifact)
 @onready var health_bar: MeshInstance3D = $HealthBar
 @onready var level_text: Label3D = $HealthBar/Level
 
-var stored_entity_knowledge: Dictionary = {}
-
-var action_state: Knowledge.Action
-var action_is_satisfied: bool = true
-var choices: Dictionary = {}
 
 func _ready():
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
-	choices = {}
 	level_text.text = str(int(level))
 	animation_map = {}
 	if not self is Human:
 		animator = $AnimationPlayer
 		animation_tree = $AnimationTree
-		
-		
-func update_stored_entity_knowledge():
-	for e in stored_entity_knowledge:
-		knowledge.direct_entry(e, stored_entity_knowledge[e])
 	
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -182,51 +169,6 @@ func die():
 	
 func update_vitals_display():
 	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
-
-func update_state():
-	update_action_is_satisfied()
-	if randf() < (0.9 if action_is_satisfied else 0.01):
-		var has_updated := false
-		var actions: Dictionary = knowledge.actions
-		
-		if knowledge.has_been_updated:
-			knowledge.has_been_updated = false
-			actions = knowledge.actions_list()
-			
-		var total_weight := 0.0
-		for action_key in actions:
-			var action = actions[action_key]
-			var w := hormones.weight_for_action(action, vitals)
-			total_weight += w
-			choices[action] = w
-		for action in choices:
-			choices[action] = choices[action] / total_weight
-		var new_state = Population.random_entity_from_distribution(randf(), choices)
-		
-		if new_state != action_state:
-			action_state = new_state
-			has_updated = true
-			action_is_satisfied = false
-		else:
-			has_updated = false
-				
-		if action_is_satisfied:
-			hormones.update_from_action(action_state)
-			vitals.update_from_action(action_state)
-				
-		return has_updated
-	else:
-		return false
-		
-func update_action_is_satisfied():
-	if action_state == null:
-		action_is_satisfied = true
-		return
-	match action_state.kind:
-		Knowledge.ActionKind.WALK:
-			action_is_satisfied = true
-		Knowledge.ActionKind.DRINK:
-			action_is_satisfied = action_state.entity.position.distance_to(position) <= action_state.entity.bounds.shape.radius * 2
 
 func drop_artifact() -> Artifact:
 	return null

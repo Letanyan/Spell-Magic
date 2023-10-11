@@ -286,10 +286,3 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 	world.remove_child(explosion)
 	explosion.queue_free()
-
-func update_from_action(action: Knowledge.Action):
-	match action.kind:
-		Knowledge.ActionKind.WALK:
-			return
-		Knowledge.ActionKind.DRINK:
-			thirst.apply(action.entity.liquid_amount)

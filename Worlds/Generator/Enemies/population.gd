@@ -243,21 +243,11 @@ func update_info():
 	for habitant_index in inhabitants:
 		var habitant = inhabitants[habitant_index]
 		var dist: float = habitant.position.distance_to(player.position) 
-		if dist < habitant.vitals.perception.value:
-			habitant.knowledge.update_entry_from(player)
 		var col: CollisionShape3D = habitant.get_node("./Collision")
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
 		col.disabled = dist > 50
 		area.disabled = col.disabled
-		for other_index in inhabitants:
-			var other = inhabitants[other_index]
-			if habitant != other and abs(habitant.position.distance_to(other.position)) < habitant.vitals.perception.value:
-				habitant.knowledge.update_entry_from(other)
-	for habitant_index in inhabitants:
-		var habitant = inhabitants[habitant_index]
-		for object in garden:
-			if habitant.position.distance_to(object.position) < habitant.vitals.perception.value:
-				habitant.knowledge.update_entry_from(object)
+	
 	for g in garden:
 		var s: CollisionShape3D = g.get_node("./static/shape")
 		if s != null:

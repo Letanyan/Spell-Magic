@@ -16,13 +16,9 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	hormones = Hormones.new(-1.0, 1.0, -1.0, 1.0)
-	
 	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
 	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
 	current_path = idle_path
-	
-	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.UNDEAD: true}, false)
 	
 	none_pattern = AttackPatterns.none()
 	

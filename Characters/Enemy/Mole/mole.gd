@@ -16,8 +16,6 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	hormones = Hormones.new(-0.5, 0.5, -0.5, 0.25)
-	
 	idle_path = PathStyle.new(randf()).circle_path(5, 0).set_origin(position).speed(7).use_absolute().align_y_to_origin()
 	
 	var R := 5.0
@@ -47,8 +45,6 @@ func _ready():
 	
 	attack_path = PathStyle.new(randf()).follow_path(p).set_use_player_as_origin().speed(5).use_absolute().align_y_to_origin()
 	current_path = idle_path
-	
-	knowledge = Knowledge.new({EntityInfo.Kind.PLAYER: true, EntityInfo.Kind.BAT: true}, false)
 	
 	none_pattern = AttackPatterns.none()
 	
