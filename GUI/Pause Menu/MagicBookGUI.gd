@@ -7,7 +7,7 @@ var sort_popup: PopupMenu = null
 var sort_selected: int = 0
 var sort_order: int = 0
 @onready var filter_button: MenuButton = $FilterButton
-const TOTAL_FILTER_ITEMS = 11
+const TOTAL_FILTER_ITEMS = 12
 var filter_popup: PopupMenu = null
 var filter_options := {}
 var filter_chain := ""
@@ -121,6 +121,8 @@ func update_spells_list():
 		if filter_options.get(9, false):
 			q1 = q1 and spell.follow
 		if filter_options.get(10, false):
+			q1 = q1 and spell.is_active
+		if filter_options.get(11, false):
 			q1 = q1 and (spell.chain != null and spell.chain.name == filter_chain)
 		if not search_text.is_empty():
 			var s0 = spell.name.contains(search_text)
@@ -144,7 +146,7 @@ func reload_list():
 #		spell_index.add_item(s.name)
 	for k in spells_index_map:
 		var s = book.spells[spells_index_map[k]]
-		spell_index.add_item(s.name)
+		spell_index.add_item(s.name, load("res://GUI/Images/check-full.svg") if s.is_active else load("res://GUI/Images/check-empty.svg"))
 	
 		
 func delete_spell_at_index(index: int):
@@ -170,9 +172,12 @@ func add_spell(spell: Spell):
 		page.name_edit.select_all()
 		
 func _on_create_pressed():
-	if book.spells.size() >= book.settings.max_spells_in_book:
-		return
 	var spell := Spell.new()
+	var active_count := 0
+	for s in book.spells:
+		if s.is_active:
+			active_count += 1
+	spell.is_active = active_count < book.settings.max_spells_in_book
 	spell.name = "New Spell"
 	add_spell(spell)
 
@@ -256,4 +261,25 @@ func _input(event: InputEvent) -> void:
 			filter_button.grab_focus()
 		if direction.y > 0:
 			create_button.grab_focus()
-	
+
+
+func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index == 1 and at_position.x < 32:
+		current_index = spells_index_map[index]
+		if current_index < 0:
+			return
+		
+		var spell: Spell = book.spells[current_index]
+		if spell.is_active:
+			spell.is_active = false
+			update_spells_list()
+			reload_list()
+		else:
+			var active_count := 0
+			for s in book.spells:
+				if s.is_active:
+					active_count += 1
+			if active_count < book.settings.max_spells_in_book:
+				spell.is_active = true
+				update_spells_list()
+				reload_list()

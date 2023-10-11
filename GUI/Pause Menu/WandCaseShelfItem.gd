@@ -46,6 +46,9 @@ func _on_spell_text_changed(new_text):
 	var updated_text: String = autocomplete.call(old_text, spell)
 	spell_changed.call(updated_text)
 	old_text = updated_text
+	
+func update_state():
+	spell_changed.call(spell.text)
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not has_focus():

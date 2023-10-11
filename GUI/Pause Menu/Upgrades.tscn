@@ -191,7 +191,7 @@ offset_bottom = 120.0
 layout_mode = 0
 offset_right = 144.0
 offset_bottom = 26.0
-text = "Max Spells in Book"
+text = "Max Active Spells"
 
 [node name="current" type="Label" parent="container/max_spell_count"]
 layout_mode = 0

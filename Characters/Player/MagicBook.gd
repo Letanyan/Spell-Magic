@@ -1,9 +1,9 @@
 class_name MagicBook
 
 var spells: Array[Spell]
-var last_use: Dictionary
+var last_use: Dictionary # [String: Unix.Time]
 var ignore_cooldown: bool
-enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION }
+enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, ACTIVE }
 
 var settings: WorldSettings # set by the world
 
@@ -25,11 +25,15 @@ func read(world_name: String):
 	if data == null:
 		spells = []
 		return
+	var active_count := 0
 	for d in data:
 		var s = Spell.new()
 		s.load_dict(d)
 		s.limit_r = settings.max_r
 		s.limit_v = settings.max_v
+		if s.is_active:
+			active_count += 1
+		s.is_active = s.is_active and active_count < settings.max_spells_in_book
 		spells.append(s)
 	
 func _init():
@@ -39,6 +43,11 @@ func _init():
 	settings = null
 	
 func add(spell: Spell):
+	var active_count := 0
+	for s in spells:
+		if s.is_active:
+			active_count += 1
+	spell.is_active = active_count < settings.max_spells_in_book
 	spells.append(spell)
 	
 func remove(i: int):
@@ -53,6 +62,9 @@ func use_spell(spell: Spell):
 		s = s.chain
 	
 func can_use_spell(spell: Spell) -> DisallowSpellReason:
+	if not spell.is_active:
+		return DisallowSpellReason.ACTIVE
+	
 	var elapsed = Time.get_unix_time_from_system() - last_use.get(spell.name, 0)
 	if elapsed < spell.cooldown and not ignore_cooldown:
 		return DisallowSpellReason.COOLDOWN
@@ -100,6 +112,12 @@ func spell_exists(n: String) -> bool:
 		if s.name == n:
 			return true
 	return false
+	
+func spell_with_name(n: String) -> Spell:
+	for s in spells:
+		if s.name == n:
+			return s
+	return null
 
 func autocomplete(old_text: String, edit: LineEdit) -> String:
 	var text := edit.text
@@ -122,7 +140,7 @@ func autocomplete(old_text: String, edit: LineEdit) -> String:
 	
 	var complete := ""
 	for s in spells:
-		if s.name.begins_with(prefix):
+		if s.is_active and s.name.begins_with(prefix):
 			complete = s.name
 			break
 			

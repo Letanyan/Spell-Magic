@@ -38,6 +38,7 @@ var d_expr: Expr
 var follow: bool
 var is_bomb: bool
 var player_is_origin: bool
+var is_active: bool
 var cooldown: float
 var charge: float
 
@@ -78,6 +79,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	d_expr = Expr.new(delay)
 	
 	chain_cast_kind = ChainCastKind.START
+	is_active = true
 	
 func duplicate() -> Spell:
 	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
@@ -91,6 +93,7 @@ func duplicate() -> Spell:
 	result.expression_strings = expression_strings
 	result.build_expressions()
 	result.charge = charge
+	result.is_active = is_active
 	return result
 	
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
@@ -252,7 +255,7 @@ func save_dict():
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
-		"expression_strings": expression_strings
+		"expression_strings": expression_strings, "is_active": is_active
 	}
 
 func load_dict(dict: Dictionary):
@@ -277,6 +280,7 @@ func load_dict(dict: Dictionary):
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
 	player_is_origin = dict.get("player_is_origin", true)
 	expression_strings = dict.get("expression_strings", {})
+	is_active = dict.get("is_active", false)
 	for e in expression_strings:
 		expression_strings[e] = expression_strings[e].lstrip(" \t\n").rstrip(" \t\n")
 	

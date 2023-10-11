@@ -196,35 +196,37 @@ func draw_notifications():
 		
 func update_wand_mappings():
 	const SIZE := 16
-	wand_mapping.text = ("[font_size=%d]" % SIZE)
+	var rich_text := ""
+	rich_text = "[font_size=%d]" % SIZE
 	
 	if (hud_settings != null and not hud_settings.hide_wand_modifier_hints) and wand.mods.size() > 0:
 		var modifier_keys := ""
 		for m in wand.mods:
 			modifier_keys += GlobalData.controller.key_images([m]) + " "
-		wand_mapping.text += " Modifiers: " + modifier_keys + "\n"
+		rich_text += " Modifiers: " + modifier_keys + "\n"
 	
 	for k in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
 		var kd = " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
-				wand_mapping.text += kd + " [b]Cast[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
+				rich_text += kd + " [b]Cast[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 			Wand.Kind.FIRE_HOLD:
-				wand_mapping.text += kd + " [b]Charge[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
+				rich_text += kd + " [b]Charge[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 			Wand.Kind.RAPID_FIRE:
-				wand_mapping.text += kd + " [b]Rapid[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
+				rich_text += kd + " [b]Rapid[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
 				
 			Wand.Kind.PICK:
-				wand_mapping.text += kd + " [b]Choose[/b]: (" + s.display_rotated_spells_list() + ")\n"
+				rich_text += kd + " [b]Choose[/b]: (" + s.display_rotated_spells_list() + ")\n"
 			Wand.Kind.FIRE_PICKED:
-				wand_mapping.text += kd + " ([b]Cast[/b]): " + wand.picked + "\n"
+				rich_text += kd + " ([b]Cast[/b]): " + wand.picked + "\n"
 			Wand.Kind.FIRE_PICKED_HOLD:
-				wand_mapping.text += kd + " ([b]Charge[/b]): " + wand.picked + "\n"
+				rich_text += kd + " ([b]Charge[/b]): " + wand.picked + "\n"
 			Wand.Kind.RAPID_SELECT:
-				wand_mapping.text += kd + " ([b]Rapid[/b]): " + wand.picked + "\n"
+				rich_text += kd + " ([b]Rapid[/b]): " + wand.picked + "\n"
 	
-	wand_mapping.text += "[/font_size]"
+	rich_text += "[/font_size]"
+	wand_mapping.text = rich_text
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:

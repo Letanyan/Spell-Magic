@@ -4,7 +4,7 @@ extends Control
 enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES, SETTINGS }
 
 @onready var magic_book: MagicBookGUI = $MagicBook
-@onready var wand_case: Control = $WandCase
+@onready var wand_case: WandCaseGUI = $WandCase
 @onready var artifacts: ArtifactsGUI = $Artifacts
 @onready var upgrades: UpgradesGUI = $Upgrades
 @onready var settings: SettingsGUI = $Settings
@@ -56,6 +56,7 @@ func _on_spells_pressed():
 	update_index(0)
 
 func _on_wands_pressed():
+	wand_case.update_wand_shelf_items()
 	update_index(1)
 
 func _on_artifacts_pressed() -> void:
@@ -78,6 +79,7 @@ func open(kind: Kind):
 			magic_book.duplicate_book()
 			_on_spells_pressed()
 		Kind.WANDS:
+			wand_case.reload_wand_shelf_items()
 			_on_wands_pressed()
 		Kind.ARTIFACTS:
 			artifacts.update_list_and_grid()

@@ -1,3 +1,4 @@
+class_name WandCaseGUI
 extends Control
 
 @onready var wand_index: ItemList = $WandIndex
@@ -30,7 +31,14 @@ func _ready():
 func _process(delta):
 	pass
 	
-func _on_wand_index_item_selected(index):
+func update_wand_shelf_items():
+	for c in container.get_children():
+		if c is WandCaseShelfItem:
+			c.update_state()
+	
+func reload_wand_shelf_items(index: int = current_index) -> void:
+	if index < 0:
+		return
 	var wand: Wand = case.wands[index]
 	current_index = index
 	
@@ -58,20 +66,21 @@ func _on_wand_index_item_selected(index):
 			var errors := []
 			for i in range(all_spells.size()):
 				var n := all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
-				if not book.spell_exists(n):
-					errors.append(n)
+				var s = book.spell_with_name(n)
+				if s == null:
+					errors.append("missing '" + n + "'")
+				elif not s.is_active:
+					errors.append("'" + s.name + "' is not active")
 				all_spells[i] = n
-				
+
 			if errors.is_empty():
-#				item.key.label_settings.font_color = Color.WHITE
 				item.key.text = "[center]" + GlobalData.controller.key_images(item.store_key) + "[/center]"
 			else:
-#				item.key.label_settings.font_color = Color.CRIMSON
-				item.key.text = "[center][color=#f33]Missing: " + ", ".join(errors) + "[/color][/center]"
+				item.key.text = "[center][color=#f33]" + ", ".join(errors) + "[/color][/center]"
 			wand.keys[w].spell = all_spells
 			wand.keys[w].spell_index = all_spells.size() - 1
 			wand.spell_updated.emit()
-		
+
 		item.action_changed = func(from: Wand.Kind, to: Wand.Kind) -> bool:
 			item.store_action = to
 			wand.keys[w].kind = to
@@ -89,13 +98,16 @@ func _on_wand_index_item_selected(index):
 		item.autocomplete = book.autocomplete
 			
 		container.add_child(item)
+	
+func _on_wand_index_item_selected(index):
+	reload_wand_shelf_items(index)
 
 func reload_list():
 	wand_index.clear()
 	for w in case.wands:
 		wand_index.add_item(w.name)
 	if current_index > -1:
-		_on_wand_index_item_selected(current_index)
+		reload_wand_shelf_items(current_index)
 	
 func _on_delete_pressed():
 	if current_index < 0:
@@ -108,7 +120,7 @@ func _on_create_pressed():
 	wand.name = "New Wand"
 	case.wands.append(wand)
 	reload_list()
-	_on_wand_index_item_selected(case.wands.size() - 1)
+	reload_wand_shelf_items(case.wands.size() - 1)
 
 
 func _on_name_text_changed(new_text):
