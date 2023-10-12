@@ -11,13 +11,13 @@ var z: String
 var r: String
 var power: float:
 	set(value):
-		power = clamp(value, 0, WorldSettings.LIMIT_P)
+		power = clamp(value, 0, UpgradeSettings.LIMIT_P)
 var duration: float:
 	set(value):
-		duration = clamp(value, 0.0166667, WorldSettings.LIMIT_T)
+		duration = clamp(value, 0.0166667, UpgradeSettings.LIMIT_T)
 var count: int:
 	set(value):
-		count = clamp(value, 1, WorldSettings.LIMIT_N)
+		count = clamp(value, 1, UpgradeSettings.LIMIT_N)
 var delay: String
 var mana_cost: float = 0.0
 var chain_cast_kind: ChainCastKind:
@@ -48,8 +48,8 @@ var expressions: Dictionary = {}
 
 var id: int = -1
 
-var limit_r: float = WorldSettings.LIMIT_r
-var limit_v: float = WorldSettings.LIMIT_v
+var limit_r: float = UpgradeSettings.LIMIT_r
+var limit_v: float = UpgradeSettings.LIMIT_v
 var buff_r: float = 0.0
 var buff_v: float = 0.0
 

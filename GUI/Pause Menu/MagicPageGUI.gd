@@ -56,9 +56,9 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 	current_index = index
 	
 	for i in range(Spell.Element.size()):
-		element_combo.set_item_disabled(i, not book.settings.check_if_has_spell_element(Spell.Element.values()[i]))
+		element_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_spell_element(Spell.Element.values()[i]))
 	for i in range(Spell.ChainCastKind.size()):
-		chain_combo.set_item_disabled(i, not book.settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i]))
+		chain_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i]))
 	
 	name_edit.text = spell.name
 	
@@ -190,8 +190,8 @@ func _on_N_text_changed(new_text: String):
 		errors_list.erase("N")
 	var raw: int = new_text.to_int()
 	book.spells[current_index].count = raw
-	if raw > book.settings.max_N + book.settings.buff_N:
-		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.max_N + book.settings.buff_N]
+	if raw > book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N:
+		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N]
 	else:
 		errors_list.erase("N")
 	update_cooldown()
@@ -206,8 +206,8 @@ func _on_P_text_changed(new_text: String):
 		errors_list.erase("P")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].power = raw
-	if raw > book.settings.max_P + book.settings.buff_P:
-		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.max_P + book.settings.buff_P]
+	if raw > book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P:
+		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P]
 	else:
 		errors_list.erase("P")
 	update_cooldown()
@@ -222,8 +222,8 @@ func _on_T_text_changed(new_text: String):
 		errors_list.erase("T")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].duration = raw
-	if raw > book.settings.max_T + book.settings.buff_T:
-		errors_list["T"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.max_T + book.settings.buff_T]
+	if raw > book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T:
+		errors_list["T"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T]
 	else:
 		errors_list.erase("T")
 	update_cooldown()
@@ -287,8 +287,8 @@ func _on_M_text_changed(new_text):
 		return
 	var raw: float = new_text.to_float()
 	book.spells[current_index].mana_cost = raw
-	if raw > book.settings.max_mana + book.settings.buff_mana:
-		errors_list["M"] = "Value of %ds exceeds maximum of %ds" % [raw, book.settings.max_mana + book.settings.buff_mana]
+	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
+		errors_list["M"] = "Value of %ds exceeds maximum of %ds" % [raw, book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana]
 	else:
 		errors_list.erase("T")
 	update_cooldown()

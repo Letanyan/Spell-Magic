@@ -18,7 +18,7 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	wand_case.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
-	upgrades.world_settings = _world_settings
+	upgrades.settings = _world_settings
 	settings.world_settings = _world_settings
 	world_settings = _world_settings
 
@@ -96,13 +96,10 @@ func close():
 	visible = false
 	save_changes()
 	
-func _gui_input(event: InputEvent) -> void:
-	if event.is_action_pressed("RB"):
-		update_index(current_index + 1)
-	elif event.is_action_pressed("LB"):
-		update_index(current_index - 1)
-	
 func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree():
+		return
+	
 	if event.is_action_pressed("RB"):
 		update_index(current_index + 1)
 	elif event.is_action_pressed("LB"):
@@ -116,7 +113,7 @@ func save_changes():
 	if artifacts.visible:
 		artifacts.artifacts.save(world_settings.world_name)
 	if upgrades.visible:
-		upgrades.world_settings.save()
+		upgrades.settings.save()
 	if settings.visible:
 		settings.world_settings.save()
 

@@ -177,7 +177,7 @@ func _on_create_pressed():
 	for s in book.spells:
 		if s.is_active:
 			active_count += 1
-	spell.is_active = active_count < book.settings.max_spells_in_book
+	spell.is_active = active_count < book.settings.upgrade_settings.max_spells_in_book
 	spell.name = "New Spell"
 	add_spell(spell)
 
@@ -279,7 +279,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 			for s in book.spells:
 				if s.is_active:
 					active_count += 1
-			if active_count < book.settings.max_spells_in_book:
+			if active_count < book.settings.upgrade_settings.max_spells_in_book:
 				spell.is_active = true
 				update_spells_list()
 				reload_list()

@@ -1,10 +1,10 @@
 class_name UpgradesGUI
 extends Control
 
-var world_settings: WorldSettings:
+var settings: WorldSettings:
 	set(value):
-		world_settings = value
-		update_state(WorldSettings.PurchaseError.NONE)
+		settings = value
+		update_state(UpgradeSettings.PurchaseError.NONE)
 
 @onready var max_P_current: Label = $container/max_P/current
 @onready var max_P_upgrade: Button = $container/max_P/upgrade
@@ -70,140 +70,140 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func update_state(purchase_error: WorldSettings.PurchaseError):
-	max_spell_count_current.text = str(world_settings.max_spells_in_book)
-	max_P_current.text = str(world_settings.max_P)
-	max_v_current.text = str(world_settings.max_v)
-	max_N_current.text = str(world_settings.max_N)
-	max_T_current.text = str(world_settings.max_T)
-	max_M_current.text = str(world_settings.max_mana)
-	max_r_current.text = str(world_settings.max_r)
-	max_H_current.text = str(world_settings.max_health)
+func update_state(purchase_error: UpgradeSettings.PurchaseError):
+	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book)
+	max_P_current.text = str(settings.upgrade_settings.max_P)
+	max_v_current.text = str(settings.upgrade_settings.max_v)
+	max_N_current.text = str(settings.upgrade_settings.max_N)
+	max_T_current.text = str(settings.upgrade_settings.max_T)
+	max_M_current.text = str(settings.upgrade_settings.max_mana)
+	max_r_current.text = str(settings.upgrade_settings.max_r)
+	max_H_current.text = str(settings.upgrade_settings.max_health)
 	
-	element_void_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.VOID)
-	element_fire_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.FIRE)
-	element_water_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.WATER)
-	element_air_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.AIR)
-	element_rock_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.ROCK)
-	element_ice_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.ICE)
-	element_electric_upgrade.disabled = world_settings.check_if_has_spell_element(Spell.Element.ELECTRIC)
+	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID)
+	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE)
+	element_water_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER)
+	element_air_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.AIR)
+	element_rock_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ROCK)
+	element_ice_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ICE)
+	element_electric_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ELECTRIC)
 	
-	chain_at_start_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.START)
-	chain_at_end_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
-	chain_on_hit_upgrade.disabled = world_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
+	chain_at_start_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.START)
+	chain_at_end_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
+	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
 	var coin_suffix := " [img]res://GUI/Images/coins.svg[/img][/center]"
-	max_spell_count_cost.text = "[center]" + str(world_settings.cost_spells_in_book) + coin_suffix
-	max_P_cost.text = "[center]" + str(world_settings.cost_P) + coin_suffix
-	max_v_cost.text = "[center]" + str(world_settings.cost_v) + coin_suffix
-	max_N_cost.text = "[center]" + str(world_settings.cost_N) + coin_suffix
-	max_T_cost.text = "[center]" + str(world_settings.cost_T) + coin_suffix
-	max_M_cost.text = "[center]" + str(world_settings.cost_mana) + coin_suffix
-	max_r_cost.text = "[center]" + str(world_settings.cost_r) + coin_suffix
-	max_H_cost.text = "[center]" + str(world_settings.cost_health) + coin_suffix
+	max_spell_count_cost.text = "[center]" + str(settings.upgrade_settings.cost_spells_in_book) + coin_suffix
+	max_P_cost.text = "[center]" + str(settings.upgrade_settings.cost_P) + coin_suffix
+	max_v_cost.text = "[center]" + str(settings.upgrade_settings.cost_v) + coin_suffix
+	max_N_cost.text = "[center]" + str(settings.upgrade_settings.cost_N) + coin_suffix
+	max_T_cost.text = "[center]" + str(settings.upgrade_settings.cost_T) + coin_suffix
+	max_M_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana) + coin_suffix
+	max_r_cost.text = "[center]" + str(settings.upgrade_settings.cost_r) + coin_suffix
+	max_H_cost.text = "[center]" + str(settings.upgrade_settings.cost_health) + coin_suffix
 	
-	element_void_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
-	element_fire_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
-	element_water_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
-	element_air_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
-	element_rock_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
-	element_ice_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
-	element_electric_cost.text = "[center]" + str(world_settings.cost_spell_element) + coin_suffix
+	element_void_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
+	element_fire_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
+	element_water_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
+	element_air_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
+	element_rock_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
+	element_ice_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
+	element_electric_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
 	
-	chain_at_start_cost.text = "[center]" + str(world_settings.cost_chain_method) + coin_suffix
-	chain_at_end_cost.text = "[center]" + str(world_settings.cost_chain_method) + coin_suffix
-	chain_on_hit_cost.text = "[center]" + str(world_settings.cost_chain_method) + coin_suffix
+	chain_at_start_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
+	chain_at_end_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
+	chain_on_hit_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
 	
-	currency.text = "[right]" + str(world_settings.currency) + " [img]res://GUI/Images/coins.svg[/img][/right]"
+	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img]res://GUI/Images/coins.svg[/img][/right]"
 	
-	max_spell_count_upgrade.disabled = world_settings.max_spells_in_book >= WorldSettings.LIMIT_SPELLS_IN_BOOK
-	max_P_upgrade.disabled = world_settings.max_P >= WorldSettings.LIMIT_P
-	max_v_upgrade.disabled = world_settings.max_v >= WorldSettings.LIMIT_v
-	max_T_upgrade.disabled = world_settings.max_T >= WorldSettings.LIMIT_T
-	max_N_upgrade.disabled = world_settings.max_N >= WorldSettings.LIMIT_N
-	max_H_upgrade.disabled = world_settings.max_health >= WorldSettings.LIMIT_HEALTH
-	max_M_upgrade.disabled = world_settings.max_mana >= WorldSettings.LIMIT_MANA
-	max_r_upgrade.disabled = world_settings.max_r >= WorldSettings.LIMIT_r
+	max_spell_count_upgrade.disabled = settings.upgrade_settings.max_spells_in_book >= UpgradeSettings.LIMIT_SPELLS_IN_BOOK
+	max_P_upgrade.disabled = settings.upgrade_settings.max_P >= UpgradeSettings.LIMIT_P
+	max_v_upgrade.disabled = settings.upgrade_settings.max_v >= UpgradeSettings.LIMIT_v
+	max_T_upgrade.disabled = settings.upgrade_settings.max_T >= UpgradeSettings.LIMIT_T
+	max_N_upgrade.disabled = settings.upgrade_settings.max_N >= UpgradeSettings.LIMIT_N
+	max_H_upgrade.disabled = settings.upgrade_settings.max_health >= UpgradeSettings.LIMIT_HEALTH
+	max_M_upgrade.disabled = settings.upgrade_settings.max_mana >= UpgradeSettings.LIMIT_MANA
+	max_r_upgrade.disabled = settings.upgrade_settings.max_r >= UpgradeSettings.LIMIT_r
 	
-	max_spell_count_upgrade.text = "+ " + str(world_settings.upgrade_spells_in_book)
-	max_P_upgrade.text = "+ " + str(world_settings.upgrade_P)
-	max_v_upgrade.text = "+ " + str(world_settings.upgrade_v)
-	max_T_upgrade.text = "+ " + str(world_settings.upgrade_T)
-	max_N_upgrade.text = "+ " + str(world_settings.upgrade_N)
-	max_H_upgrade.text = "+ " + str(world_settings.upgrade_health)
-	max_M_upgrade.text = "+ " + str(world_settings.upgrade_mana)
-	max_r_upgrade.text = "+ " + str(world_settings.upgrade_r)
+	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book)
+	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P)
+	max_v_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_v)
+	max_T_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_T)
+	max_N_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_N)
+	max_H_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_health)
+	max_M_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana)
+	max_r_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_r)
 
 func _on_max_spell_count_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spells_in_book()
+	var err := settings.upgrade_settings.purchase_spells_in_book()
 	update_state(err)
 	
 func _on_void_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.VOID)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.VOID)
 	update_state(err)
 
 func _on_fire_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.FIRE)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.FIRE)
 	update_state(err)
 
 func _on_water_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.WATER)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.WATER)
 	update_state(err)
 	
 func _on_air_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.AIR)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.AIR)
 	update_state(err)
 
 func _on_rock_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.ROCK)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ROCK)
 	update_state(err)
 
 func _on_ice_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.ICE)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ICE)
 	update_state(err)
 
 func _on_electric_upgrade_pressed() -> void:
-	var err := world_settings.purchase_spell_element(Spell.Element.ELECTRIC)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ELECTRIC)
 	update_state(err)
 
 func _on_max_P_upgrade_pressed() -> void:
-	var err := world_settings.purchase_P()
+	var err := settings.upgrade_settings.purchase_P()
 	update_state(err)
 	
 func _on_max_v_upgrade_pressed() -> void:
-	var err := world_settings.purchase_v()
+	var err := settings.upgrade_settings.purchase_v()
 	update_state(err)
 
 func _on_max_T_upgrade_pressed() -> void:
-	var err := world_settings.purchase_T()
+	var err := settings.upgrade_settings.purchase_T()
 	update_state(err)
 
 func _on_max_N_upgrade_pressed() -> void:
-	var err := world_settings.purchase_N()
+	var err := settings.upgrade_settings.purchase_N()
 	update_state(err)
 
 func _on_max_M_upgrade_pressed() -> void:
-	var err := world_settings.purchase_mana()
+	var err := settings.upgrade_settings.purchase_mana()
 	update_state(err)
 	
 func _on_max_R_upgrade_pressed() -> void:
-	var err := world_settings.purchase_r()
+	var err := settings.upgrade_settings.purchase_r()
 	update_state(err)
 
 func _on_at_start_upgrade_pressed() -> void:
-	var err := world_settings.purchase_chain_method(Spell.ChainCastKind.START)
+	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.START)
 	update_state(err)
 
 func _on_at_end_upgrade_pressed() -> void:
-	var err := world_settings.purchase_chain_method(Spell.ChainCastKind.END)
+	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.END)
 	update_state(err)
 
 func _on_on_hit_upgrade_pressed() -> void:
-	var err := world_settings.purchase_chain_method(Spell.ChainCastKind.HIT)
+	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.HIT)
 	update_state(err)
 
 func _on_max_H_upgrade_pressed() -> void:
-	var err := world_settings.purchase_health()
+	var err := settings.upgrade_settings.purchase_health()
 	update_state(err)
 	
 func _input(event: InputEvent) -> void:

@@ -113,6 +113,8 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason):
 			show_notification(bbcode("'%s' requires N %d upgrade" % [spell.name, spell.count]), 5)
 		MagicBook.DisallowSpellReason.DURATION:
 			show_notification(bbcode("'%s' requires T %.1f upgrade" % [spell.name, spell.duration]), 5)
+		MagicBook.DisallowSpellReason.ACTIVE:
+			show_notification(bbcode("'%s' is not active in magic book" % [spell.name]), 5)
 	
 func spell_was_cast(s: Spell):
 	var t := Time.get_unix_time_from_system()
@@ -265,7 +267,7 @@ func update_stats_view():
 	if not stats_view.visible or world_settings == null:
 		return
 	
-	var ws := world_settings
+	var ws := world_settings.upgrade_settings
 	var sv := stats_view
 	sv.health.text = "%d" % [ws.max_health]
 	sv.velocity.text = "%d+%d" % [ws.max_v, ws.buff_v]

@@ -31,12 +31,12 @@ func setup(_settings: WorldSettings) -> void:
 	book.rebuild_spell_chains()
 	book.ignore_cooldown = true
 	
-	book.update_spell_limits(settings.max_v, settings.max_r)
-	settings.max_velocity_updated.connect(func(v):
-		book.update_spell_limits(v, settings.max_r)
+	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
+	settings.upgrade_settings.max_velocity_updated.connect(func(v):
+		book.update_spell_limits(v, settings.upgrade_settings.max_r)
 	)
-	settings.max_radius_updated.connect(func(r):
-		book.update_spell_limits(settings.max_v, r)
+	settings.upgrade_settings.max_radius_updated.connect(func(r):
+		book.update_spell_limits(settings.upgrade_settings.max_v, r)
 	)
 	
 	case = WandCase.new()
@@ -68,7 +68,7 @@ func _ready():
 		_settings.read("empty")
 		setup(_settings)
 		
-	settings.currency = 10000
+	settings.upgrade_settings.currency = 10000
 	menu.setup(book, case, artifacts, settings)
 	
 #	book.ignore_cooldown = true
@@ -78,10 +78,10 @@ func _ready():
 		
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v):
-		book.update_spell_buff_limits(v, settings.buff_r)
+		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)
 	player.spell_radius_was_buffed.connect(func(r):
-		book.update_spell_buff_limits(settings.buff_v, r)
+		book.update_spell_buff_limits(settings.upgrade_settings.buff_v, r)
 	)
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)

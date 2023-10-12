@@ -19,7 +19,6 @@ offset_right = 1144.0
 offset_bottom = 640.0
 
 [node name="HUD" type="Panel" parent="Tabs"]
-visible = false
 layout_mode = 2
 
 [node name="HideWandMappings" type="CheckButton" parent="Tabs/HUD"]
@@ -79,6 +78,7 @@ offset_bottom = 238.0
 text = "Hide Stats View"
 
 [node name="Camera" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 
 [node name="FOV Label" type="Label" parent="Tabs/Camera"]
