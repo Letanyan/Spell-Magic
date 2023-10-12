@@ -6,6 +6,12 @@ var active_options: Dictionary = {} # Vector2 -> (int -> bool])
 
 var effects: Dictionary = {} # Artifact.Event -> Artifact.Effect -> (flat: int, ratio: float)
 
+func reset_by_deleting_all_artifacts():
+	collection = []
+	connected = {}
+	active_options = {}
+	effects = {}
+
 func unconnected() -> Array[Artifact]:
 	var result: Array[Artifact] = []
 	for c in collection:

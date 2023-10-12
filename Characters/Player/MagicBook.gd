@@ -42,6 +42,10 @@ func _init():
 	ignore_cooldown = false
 	settings = null
 	
+func reset_by_deleting_all_spells():
+	spells = []
+	last_use = {}
+	
 func add(spell: Spell):
 	var active_count := 0
 	for s in spells:

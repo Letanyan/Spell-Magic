@@ -8,6 +8,7 @@ var enemies_killed := {} # {World.Enemy: int}
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
 var upgrade_settings: UpgradeSettings
+var game_mode_settings: GameModeSettings
 
 func save():
 	var dir := DirAccess.open("user://")
@@ -22,7 +23,8 @@ func save():
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
-		"camera_settings": camera_settings.save_dict()
+		"camera_settings": camera_settings.save_dict(),
+		"game_mode_settings": game_mode_settings.save_dict(),
 	})
 
 func read(filename: String):
@@ -41,3 +43,6 @@ func read(filename: String):
 	
 	camera_settings = CameraSettings.new()
 	camera_settings.load_dict(data.get("camera_settings", {}))
+	
+	game_mode_settings = GameModeSettings.new()
+	game_mode_settings.load_dict(data.get("game_mode_settings", {}))

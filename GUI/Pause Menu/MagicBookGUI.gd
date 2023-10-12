@@ -148,12 +148,14 @@ func reload_list():
 		var s = book.spells[spells_index_map[k]]
 		spell_index.add_item(s.name, load("res://GUI/Images/check-full.svg") if s.is_active else load("res://GUI/Images/check-empty.svg"))
 	
-		
-func delete_spell_at_index(index: int):
+func update_book_without_selection():
 	current_index = -1
 	page.visible = false
 	update_spells_list()
 	reload_list()
+		
+func delete_spell_at_index(index: int):
+	update_book_without_selection()
 
 func add_spell(spell: Spell):
 	spell.id = book.spells.size()

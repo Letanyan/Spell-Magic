@@ -53,8 +53,8 @@ func setup(_settings: WorldSettings) -> void:
 #		artifact.right = Artifact.Option.make_random()
 #		artifacts.collection.append(artifact)
 	
-#	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
-#	add_child(undead)
+	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
+	add_child(undead)
 #	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, 20)
 #	add_child(bat)
 #	var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
@@ -69,6 +69,7 @@ func _ready():
 		setup(_settings)
 		
 	settings.upgrade_settings.currency = 10000
+	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	menu.setup(book, case, artifacts, settings)
 	
 #	book.ignore_cooldown = true
@@ -128,7 +129,6 @@ func _input(event):
 		else:
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
-			settings.save()
 			hud.hide()
 			
 	if not menu.is_showing and event.is_action_pressed("magic_book"):
@@ -172,7 +172,6 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
 	pass
-	
 
 func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
 	if artifact != null:
@@ -185,3 +184,33 @@ func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
 
 func quit_to_main_menu():
 	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")
+
+
+func _on_player_vital_update(vitals: Vitals) -> void:
+	if settings == null or settings.game_mode_settings == null:
+		return
+		
+	match settings.game_mode_settings.mode:
+		GameModeSettings.GameMode.RESPAWN:
+			if vitals.health.value > 0:
+				return
+				
+			vitals.health.value = vitals.health.max_value
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
+				artifacts.reset_by_deleting_all_artifacts()
+				menu.artifacts.update_list_and_grid()
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_UPGRADES == 0:
+				settings.upgrade_settings.reset_all_stats_to_default_values()
+				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
+				book.reset_by_deleting_all_spells()
+				case.reset_by_deleting_all_wands()
+				wand = case.wands[0]
+				menu.magic_book.update_book_without_selection()
+				menu.wand_case.reload_wand_shelf_items(0)
+			
+		GameModeSettings.GameMode.PERMADEATH:
+			if vitals.health.value > 0:
+				return
+			
+			get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")

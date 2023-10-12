@@ -83,6 +83,17 @@ func check_if_has_spell_element(el: Spell.Element) -> bool:
 func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
 	return has_chain_method & (1 << el) != 0
 
+func reset_all_stats_to_default_values():
+	max_r = 0.1
+	max_T = 1.0
+	max_N = 1
+	max_D = 0.0
+	max_P = 1
+	max_v = 2.5
+	max_mana = 100.0
+	max_health = 100.0
+	max_spells_in_book = 4
+
 func purchase_spells_in_book() -> PurchaseError:
 	if currency < cost_spells_in_book:
 		return PurchaseError.NOT_ENOUGH_CURRENCY

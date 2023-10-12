@@ -154,7 +154,6 @@ func _input(event):
 		else:
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
-			settings.save()
 			hud.hide()
 			
 	if not menu.is_showing and event.is_action_pressed("magic_book"):
@@ -248,6 +247,38 @@ func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
 		settings.enemies_killed[enemy_kind] += 1
 	else:
 		settings.enemies_killed[enemy_kind] = 1
+	
 
 func quit_to_main_menu():
 	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
+
+
+func _on_player_vital_update(vitals: Vitals) -> void:
+	if settings == null or settings.game_mode_settings == null:
+		return
+	
+	match settings.game_mode_settings.mode:
+		GameModeSettings.GameMode.RESPAWN:
+			if vitals.health.value > 0:
+				return
+				
+			vitals.health.value = vitals.health.max_value
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
+				artifacts.reset_by_deleting_all_artifacts()
+				menu.artifacts.update_list_and_grid()
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_UPGRADES == 0:
+				settings.upgrade_settings.reset_all_stats_to_default_values()
+				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
+				book.reset_by_deleting_all_spells()
+				case.reset_by_deleting_all_wands()
+				wand = case.wands[0]
+				menu.magic_book.update_book_without_selection()
+				menu.wand_case.reload_wand_shelf_items(0)
+			
+		GameModeSettings.GameMode.PERMADEATH:
+			if vitals.health.value > 0:
+				return
+			
+			#FIXME: maybe delete save file? but definitly do something more
+			get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")

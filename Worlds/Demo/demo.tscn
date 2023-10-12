@@ -102,3 +102,4 @@ text = "FPS: 0"
 horizontal_alignment = 2
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
+[connection signal="vital_update" from="Player" to="." method="_on_player_vital_update"]

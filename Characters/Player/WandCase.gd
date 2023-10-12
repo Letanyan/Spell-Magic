@@ -30,6 +30,9 @@ func read(world_name: String):
 func _init():
 	wands = []
 	
+func reset_by_deleting_all_wands():
+	wands = [Wand.basic()]
+	
 func add(wand: Spell):
 	wands.append(wand)
 	

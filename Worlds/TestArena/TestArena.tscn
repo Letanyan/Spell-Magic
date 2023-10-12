@@ -213,3 +213,6 @@ mesh = SubResource("SphereMesh_4c0co")
 [node name="XSphere2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1105.99, -668.555)
 mesh = SubResource("SphereMesh_xr5cq")
+
+[connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
+[connection signal="vital_update" from="Player" to="." method="_on_player_vital_update"]

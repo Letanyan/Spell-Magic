@@ -21,7 +21,7 @@ const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.t
 var is_menu_showing: Callable
 
 signal player_moved
-signal vital_update
+signal vital_update(vitals: Vitals)
 signal spell_was_cast
 signal spell_velocity_was_buffed
 signal spell_radius_was_buffed
