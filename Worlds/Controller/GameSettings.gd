@@ -1,10 +1,11 @@
 class_name GameSettings
 
 var last_world: String
+var default_world_settings: WorldSettings
 
 func save():
 	var file = FileAccess.open("user://settings.json", FileAccess.WRITE)
-	file.store_var({"last_world": last_world})
+	file.store_var({"last_world": last_world, "default_world_settings": default_world_settings.save_dict()})
 
 func read():
 	var file = FileAccess.open("user://settings.json", FileAccess.READ)
@@ -14,4 +15,7 @@ func read():
 	else:
 		data = {}
 	last_world = data.get("last_world", "")
+	
+	default_world_settings = WorldSettings.new()
+	default_world_settings.load_dict(data.get("default_world_settings", {})) 
 	

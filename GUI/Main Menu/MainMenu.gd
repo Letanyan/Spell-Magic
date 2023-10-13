@@ -30,3 +30,7 @@ func _on_continue_pressed() -> void:
 
 func _on_load_pressed() -> void:
 	get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
+
+
+func _on_settings_pressed() -> void:
+	get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")

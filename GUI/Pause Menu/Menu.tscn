@@ -36,6 +36,8 @@ layout_mode = 1
 [node name="Settings" parent="." instance=ExtResource("7_nxty0")]
 visible = false
 layout_mode = 1
+anchors_preset = -1
+offset_top = 48.0
 
 [node name="Tabbar" type="Panel" parent="."]
 layout_mode = 1

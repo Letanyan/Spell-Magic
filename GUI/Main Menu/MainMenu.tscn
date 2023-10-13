@@ -38,6 +38,15 @@ offset_bottom = 567.0
 text = "Load
 "
 
+[node name="Settings" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 576.0
+offset_right = 640.0
+offset_bottom = 608.0
+text = "Settings"
+
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="NewGame" to="." method="_on_new_game_pressed"]
 [connection signal="pressed" from="Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]

@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnyvjydavvxjx"]
+
+[ext_resource type="Script" path="res://GUI/Main Menu/SettingsMenu.gd" id="1_6yygw"]
+[ext_resource type="PackedScene" uid="uid://w4lonc2wt7at" path="res://GUI/Pause Menu/Settings.tscn" id="2_vkxxe"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6yygw")
+
+[node name="Settings" parent="." instance=ExtResource("2_vkxxe")]
+layout_mode = 1
+offset_top = 49.0
+
+[node name="Tabbar" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 48.0
+
+[node name="Back" type="Button" parent="Tabbar"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 88.0
+offset_bottom = 39.0
+text = "Back"
+
+[connection signal="pressed" from="Tabbar/Back" to="." method="_on_back_pressed"]
