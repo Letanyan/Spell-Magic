@@ -85,9 +85,10 @@ func _ready():
 		wand = case.wands[id]
 		
 	# Forest location for world seed 0
-	player.position.x = 800
-	player.position.y = 700
-	player.position.z = 2300
+#	player.position.x = 800
+#	player.position.y = 700
+#	player.position.z = 2300
+	player.position = settings.player_position
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v):
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)

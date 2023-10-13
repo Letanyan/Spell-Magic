@@ -1,6 +1,6 @@
 class_name GameModeSettings
 
-enum GameMode { PERMADEATH, RESPAWN }
+enum GameMode { PERMADEATH, RESPAWN, SANDBOX }
 
 const RESPAWN_WITH_SPELLS_AND_WANDS: int = 1 << 0
 const RESPAWN_WITH_UPGRADES: int = 1 << 1

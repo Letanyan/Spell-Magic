@@ -11,7 +11,7 @@ enum GRASSLAND_STRUCTURES_KIND {
 const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 0.025,
 	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.025,
-	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.0005,
+	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.000005,
 	GRASSLAND_STRUCTURES_KIND.UNDEAD: 0.01,
 	GRASSLAND_STRUCTURES_KIND.WALKER: 0.005
 }
@@ -91,7 +91,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						exclusion[j] = true
 						result.append(p)
 						for k in house_size:
-							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
+							var n: Bat = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
 							result.append(n)
 					if max_limit <= 0:
 						break

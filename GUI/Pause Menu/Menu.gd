@@ -116,7 +116,7 @@ func save_changes():
 		upgrades.settings.save()
 	if settings.visible:
 		settings.world_settings.save()
-	settings.save()
+	world_settings.save()
 
 
 func _on_quit_pressed() -> void:

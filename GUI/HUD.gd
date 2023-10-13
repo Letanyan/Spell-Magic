@@ -232,7 +232,7 @@ func update_wand_mappings():
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:
-		wand_mapping.visible = wand_mapping.text.length() > 0
+		wand_mapping.visible = rich_text != "[font_size=%d][/font_size]" % SIZE
 	
 	$WandMappingPanel.visible = wand_mapping.visible
 	$WandMappingPanel.size = wand_mapping.size

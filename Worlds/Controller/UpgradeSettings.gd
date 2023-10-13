@@ -11,7 +11,7 @@ const HAS_ROCK := 1 << 3
 const HAS_AIR := 1 << 4
 const HAS_ICE := 1 << 5
 const HAS_ELECTRIC := 1 << 6
-var has_spell_element := 0b10 # Start with only fire
+var has_spell_element := 0b11 # Start with fire and void
 var cost_spell_element := 100
 
 const HAS_CHAIN_ON_START := 1 << 0
@@ -44,7 +44,7 @@ var cost_D := 10
 var buff_D := 0.0
 const LIMIT_D := 30.0
 var upgrade_P := 5
-var max_P := 1
+var max_P := 10
 var cost_P := 10
 var buff_P := 0.0
 const LIMIT_P := 1000
