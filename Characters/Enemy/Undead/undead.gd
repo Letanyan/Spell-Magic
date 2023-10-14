@@ -24,11 +24,11 @@ func _ready():
 	
 	random_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 50, 5, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 50, 5, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 50, 5, Spell.Element.WATER, 1),
+			GlobalData.magic_book.spell_with_name("Rain"),
+			GlobalData.magic_book.spell_with_name("Blast"),
+			GlobalData.magic_book.spell_with_name("Ice-Slaps"),
 		],
-		[ 5, 3, 2 ],
+		[ 1, 5, 3 ],
 		false,
 		0.25
 	)
@@ -51,10 +51,10 @@ func attack_state() -> AttackPatterns:
 		return none_pattern
 	elif vitals.health.value >= 50:
 		health_bar.visible = true
-		return sequence_pattern
+		return random_pattern
 	else:
 		health_bar.visible = true
-		return random_pattern
+		return sequence_pattern
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)

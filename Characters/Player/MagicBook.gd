@@ -8,14 +8,20 @@ enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, ACTIVE 
 var settings: WorldSettings # set by the world
 
 func save(world_name: String):
-	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.WRITE)
+	save_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
+	
+func save_absolute_path(file_path: String):
+	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	var data = []
 	for s in spells:
 		data.append(s.save_dict())
 	file.store_var(data)
 	
 func read(world_name: String):
-	var file = FileAccess.open("user://worlds/%s/magic_book.json" % (world_name), FileAccess.READ)
+	read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
+		
+func read_absolute_path(file_path: String):
+	var file = FileAccess.open(file_path, FileAccess.READ)
 	last_use = {}
 	ignore_cooldown = false
 	if not file:

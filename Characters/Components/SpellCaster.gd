@@ -57,6 +57,8 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			var pos := port.get_visible_rect().size / 2.0
 			cdir = port.get_camera_3d().project_ray_normal(pos)
 			track = get_direction_to_tracking(body, p, cdir)
+			result["l"] = 100
+			result["fl"] = 1.0
 			
 		Entity.ENEMY:
 			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized() # direction to player
@@ -103,7 +105,7 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			var pos := port.get_visible_rect().size / 2.0
 			result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
 		else:
-			result["abs_pos" if fixed else "rel_pos"] = body.position + cdir
+			result["abs_pos" if fixed else "rel_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
 	
 	if p != null: # direction from character to spell
 		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )

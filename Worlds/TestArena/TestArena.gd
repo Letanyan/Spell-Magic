@@ -25,10 +25,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
-	book = MagicBook.new()
+	book = GlobalData.magic_book
 	book.settings = settings
-	book.read(settings.world_name)
-	book.rebuild_spell_chains()
 	book.ignore_cooldown = true
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
