@@ -51,12 +51,12 @@ func setup(_settings: WorldSettings) -> void:
 #		artifact.right = Artifact.Option.make_random()
 #		artifacts.collection.append(artifact)
 	
-	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
-	add_child(undead)
+#	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
+#	add_child(undead)
 #	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, 20)
 #	add_child(bat)
-#	var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
-#	add_child(walker)
+	var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
+	add_child(walker)
 	
 
 # Called when the node enters the scene tree for the first time.
@@ -86,7 +86,6 @@ func _ready():
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
 	skybox.day_time = 14
 	
-	player.is_menu_showing = func(): return menu.is_showing
 	player.magic_book = book
 	player.artifacts = artifacts
 	hud.player = player
@@ -122,9 +121,11 @@ func _physics_process(delta):
 func _input(event):
 	if event.is_action_pressed("menu"):
 		if menu.is_showing:
+			settings.is_paused = false
 			menu.close()
 			hud.show()
 		else:
+			settings.is_paused = true
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
 			hud.hide()

@@ -138,6 +138,7 @@ offset_left = -160.0
 offset_top = 8.0
 offset_right = -4.0
 offset_bottom = 48.0
+grow_horizontal = 0
 toggle_mode = true
 text = "Starting Upgrades"
 
@@ -170,7 +171,7 @@ offset_bottom = 28.0
 min_value = 1.0
 max_value = 1000.0
 step = 10.0
-value = 100.0
+value = 101.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/Health"]
@@ -183,6 +184,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Mana" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 51.0
 offset_right = 94.0
@@ -210,6 +212,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Velocity" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 91.0
 offset_right = 94.0
@@ -237,6 +240,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="SpellCount" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 131.0
 offset_right = 94.0
@@ -265,6 +269,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="T" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 171.0
 offset_right = 94.0
@@ -292,6 +297,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="r" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 211.0
 offset_right = 94.0
@@ -319,6 +325,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="P" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 250.0
 offset_right = 94.0
@@ -347,6 +354,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="N" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 291.0
 offset_right = 94.0

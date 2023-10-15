@@ -4,6 +4,7 @@ var world_name: String
 var player_position: Vector3
 var sed: int
 var enemies_killed := {} # {World.Enemy: int}
+var is_paused: bool
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
@@ -35,6 +36,7 @@ func load_dict(data: Dictionary):
 	player_position = data.get("player", {}).get("position", Vector3.ZERO)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})
+	is_paused = false
 	
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.load_dict(data.get("upgrade_settings", {}))

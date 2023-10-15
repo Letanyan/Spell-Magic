@@ -63,6 +63,9 @@ func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)
 
 func _physics_process(delta):
+	if player.magic_book.settings.is_paused:
+		return
+	
 	increment_ticks()
 
 	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)

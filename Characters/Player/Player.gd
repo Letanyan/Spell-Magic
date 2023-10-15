@@ -18,7 +18,6 @@ var artifacts: Artifacts
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
-var is_menu_showing: Callable
 
 signal player_moved
 signal vital_update(vitals: Vitals)
@@ -86,41 +85,44 @@ func add_shake(amount: float):
 	shake_intensity += amount
 
 func _physics_process(delta):
+	if magic_book.settings.is_paused:
+		return
+	
 	if invunerable > 0:
 		invunerable -= 1
-	var menu_showing: bool = is_menu_showing.call()
+		
 	var movement := velocity_movement.update(delta, vitals, 14, self)
 	emit_vitals_signal()
-	if not menu_showing:
-		velocity = movement["velocity"]
-		var direction = movement["direction"]
-		velocity_movement.rotate_character(get_node("."), direction)
-		move_and_slide()
-		if direction != Vector3.ZERO and velocity != Vector3.ZERO:
-			if is_on_floor():
-				if velocity.length() < 1:
-					play_animation("walk")
-				else:
-					play_animation("run")
-		else:
-			if is_on_floor():
-				play_animation("battle_idle")
-			
-		if not is_on_floor_only():
-			play_animation("fall")
-		elif current_animation_is("fall"):
-			play_animation("land")
-			
-			
-		if velocity:
-			var space := get_world_3d().space
-			var state := PhysicsServer3D.space_get_direct_state(space)
-			player_moved.emit(delta, state)
-			var rect: ColorRect = get_node("CanvasLayer/ColorRect")
-			if position.y + 2.0 < Globals.sea_level():
-				rect.material.set_shader_parameter("underwater", 0.5)
+	
+	velocity = movement["velocity"]
+	var direction = movement["direction"]
+	velocity_movement.rotate_character(get_node("."), direction)
+	move_and_slide()
+	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
+		if is_on_floor():
+			if velocity.length() < 1:
+				play_animation("walk")
 			else:
-				rect.material.set_shader_parameter("underwater", 0.0)
+				play_animation("run")
+	else:
+		if is_on_floor():
+			play_animation("battle_idle")
+		
+	if not is_on_floor_only():
+		play_animation("fall")
+	elif current_animation_is("fall"):
+		play_animation("land")
+		
+		
+	if velocity:
+		var space := get_world_3d().space
+		var state := PhysicsServer3D.space_get_direct_state(space)
+		player_moved.emit(delta, state)
+		var rect: ColorRect = get_node("CanvasLayer/ColorRect")
+		if position.y + 2.0 < Globals.sea_level():
+			rect.material.set_shader_parameter("underwater", 0.5)
+		else:
+			rect.material.set_shader_parameter("underwater", 0.0)
 		
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
@@ -151,7 +153,7 @@ func cast_spell(insert: Callable, next_spell: Spell):
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
 	play_animation("attack")
-	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
+#	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	await get_tree().physics_frame
 	spell_caster.cast_spell(self, vitals, insert, new_spell)
 	emit_spell_was_cast(next_spell)

@@ -24,13 +24,12 @@ func _ready():
 	
 	default_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u*(3 + 3*t)", "v*(3 + 3*t) + 2", "w*(3 + 3*t)", "1 + 2*fl", level * level * 2, 5, Spell.Element.ICE, 1),
-			Spell.new(false, "u*(3 + 200*fl*t)", "v*(3 + 200*fl*t) + 0.5*-1*t*t + 2", "w*(3 + 200*fl*t)", "1 + r0 * fl * 10", 5 * level ** 3, 5, Spell.Element.ROCK, 1),
-			Spell.new(false, "u*(3 + t*fl*100)", "v*(3 + t*fl*100) + 2", "w*(3 + t*fl*100)", "1 + fl*5", level * 0.5, 5, Spell.Element.WATER, 1),
+			GlobalData.magic_book.spell_with_name("Rain"),
+			GlobalData.magic_book.spell_with_name("Ice-Slaps"),
 		],
-		[ 3, 7, 2 ],
+		[ 1, 4 ],
 		false,
-		0.25
+		0.1
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -45,13 +44,24 @@ func _ready():
 	
 	animation_map["attack"] = "Weapon"
 
+func __default_pattern() -> AttackPatterns:
+	return AttackPatterns.new(
+		[
+			GlobalData.magic_book.spell_with_name("Rain"),
+			GlobalData.magic_book.spell_with_name("Ice-Slaps"),
+		],
+		[ 1, 4 ],
+		false,
+		0.1
+	)
+
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		health_bar.visible = false
 		return none_pattern
 	elif vitals.health.value >= 50:
 		health_bar.visible = true
-		return default_pattern
+		return __default_pattern()
 	else:
 		health_bar.visible = true
 		return default_pattern

@@ -61,7 +61,7 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			result["fl"] = 1.0
 			
 		Entity.ENEMY:
-			cdir = (body.player.global_position - (body.global_position + Vector3(0, 1.9, 0))).normalized() # direction to player
+			cdir = (body.player.global_position - body.global_position).normalized() # direction to player
 			result["l"] = body.level
 			result["fl"] = body.level / 100.0
 			

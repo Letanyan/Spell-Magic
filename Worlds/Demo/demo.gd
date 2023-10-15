@@ -103,7 +103,6 @@ func _ready():
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
 	skybox.day_time = 14
 	
-	player.is_menu_showing = func(): return menu.is_showing
 	player.magic_book = book
 	player.artifacts = artifacts
 	hud.player = player
@@ -150,9 +149,11 @@ func _physics_process(delta):
 func _input(event):
 	if event.is_action_pressed("menu"):
 		if menu.is_showing:
+			player.magic_book.is_paused = false
 			menu.close()
 			hud.show()
 		else:
+			player.magic_book.is_paused = true			
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
 			hud.hide()
