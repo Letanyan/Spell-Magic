@@ -43,7 +43,7 @@ func _on_cast_combo_selected(id):
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text):
-	var updated_text: String = autocomplete.call(old_text, spell)
+	var updated_text: String = autocomplete.call(old_text, spell, true)
 	spell_changed.call(updated_text)
 	old_text = updated_text
 	

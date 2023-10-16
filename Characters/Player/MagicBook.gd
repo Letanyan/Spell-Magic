@@ -129,7 +129,7 @@ func spell_with_name(n: String) -> Spell:
 			return s
 	return null
 
-func autocomplete(old_text: String, edit: LineEdit) -> String:
+func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool) -> String:
 	var text := edit.text
 	if old_text.length() > text.length():
 		return text
@@ -150,7 +150,7 @@ func autocomplete(old_text: String, edit: LineEdit) -> String:
 	
 	var complete := ""
 	for s in spells:
-		if s.is_active and s.name.begins_with(prefix):
+		if (s.is_active or not suggest_only_active) and s.name.begins_with(prefix):
 			complete = s.name
 			break
 			

@@ -71,7 +71,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 	duration_edit.text = "%.2f" % spell.duration
 	delay_edit.text = spell.delay
 	count_edit.text = "%d" % spell.count
-	mana_edit.text = "%d" % spell.mana_cost
+	mana_edit.text = "%.2f" % spell.mana_cost
 	update_cooldown()
 	
 	element_combo.selected = spell.element
@@ -113,7 +113,10 @@ func update_cooldown():
 		return
 	book.spells[current_index].calculate_cooldown()
 	cooldown_label.text = "Cooldown: " + ("%.2f" % book.spells[current_index].cooldown) + "s"
-	mana_cost.text = "Total (Inc. chain): " + ("%.2f" % book.spells[current_index].actual_mana_cost())
+	if book.spells[current_index].chain != null:
+		mana_cost.text = "Total (Inc. chain): " + ("%.2f" % book.spells[current_index].actual_mana_cost())
+	else:
+		mana_cost.text = ""
 	
 func _on_name_edit_text_changed(new_text):
 	if current_index < 0:
@@ -246,7 +249,7 @@ func _on_chain_text_changed(new_text: String):
 		return
 	var spell: Spell = book.spells[current_index]
 	
-	var n: String = book.autocomplete(old_chain_text, chain_edit)
+	var n: String = book.autocomplete(old_chain_text, chain_edit, false)
 	
 	if n == "":
 		spell.chain = null
