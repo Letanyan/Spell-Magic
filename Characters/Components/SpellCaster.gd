@@ -17,9 +17,6 @@ func _init(e: Entity):
 	entity = e
 	ignore_mana_cost = false
 	
-func deferred_update(body, delta):
-	call_deferred("update", body, delta)
-	
 func update(body, delta):
 	var t := Time.get_unix_time_from_system()
 	var should_remove := []

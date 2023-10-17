@@ -116,9 +116,6 @@ func get_spell_collision_mask() -> int:
 		_: return ~0
 
 func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
-	if body == null:
-		return
-	
 	var is_world  : int = body.collision_layer & 0b0001 != 0
 	var is_player : int = body.collision_layer & 0b0010 != 0
 	var is_enemy  : int = body.collision_layer & 0b0100 != 0
@@ -206,8 +203,6 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				body.play_animation("on_hit")
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
-	if area == null:
-		return
 	var body := area.get_parent_node_3d()
 	var is_world  : int = area.collision_layer & 0b0001 != 0
 	var is_player : int = area.collision_layer & 0b0010 != 0

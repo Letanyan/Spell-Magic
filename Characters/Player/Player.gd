@@ -130,8 +130,7 @@ func _physics_process(delta):
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
 	max_watched_enemies_distance = lerp(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate)
-	print(max_watched_enemies_distance)
-	cam_arm.spring_length = 1.0 + minf(max_watched_enemies_distance, 10.0)
+	cam_arm.spring_length = 1.0 + minf(max_watched_enemies_distance / 5.0, 10.0)
 	
 	if shake_intensity > 0.0:
 		var intensity := clampf(shake_intensity, 0, 1) ** 2
@@ -147,7 +146,7 @@ func _physics_process(delta):
 		cam.rotation.y = (dy * intensity) * (2 * PI / 8)
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
 				
-	spell_caster.deferred_update(self, delta)
+	spell_caster.update(self, delta)
 
 func cast_spell(insert: Callable, next_spell: Spell):
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
