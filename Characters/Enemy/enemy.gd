@@ -161,6 +161,7 @@ func die():
 	
 	var world := get_parent_node_3d()
 	await world.get_tree().create_timer(animator.get_animation("Death").length + 0.1).timeout
+	player.ignore_enemy(get_node("."))
 	explosion.position = position
 	explosion.global_transform = global_transform
 	world.add_child(explosion)

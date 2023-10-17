@@ -103,7 +103,8 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 		if entity == Entity.PLAYER:
 			var port := body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
-			result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_ray_origin(pos)
+			var dist: SpringArm3D = body.get_node("./CamPivot/Arm")
+			result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 		else:
 			result["abs_pos" if fixed else "rel_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
 	

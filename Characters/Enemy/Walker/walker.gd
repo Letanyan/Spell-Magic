@@ -57,13 +57,10 @@ func __default_pattern() -> AttackPatterns:
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
-		health_bar.visible = false
 		return none_pattern
 	elif vitals.health.value >= 50:
-		health_bar.visible = true
 		return __default_pattern()
 	else:
-		health_bar.visible = true
 		return default_pattern
 
 func entity_info() -> EntityInfo:
@@ -76,8 +73,12 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+		player.watch_enemy(get_node("."))
+		health_bar.visible = true
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+		player.ignore_enemy(get_node("."))
+		health_bar.visible = false
 		current_path = idle_path
 
 func death_box() -> Vector3:

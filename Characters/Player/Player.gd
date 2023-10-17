@@ -15,6 +15,9 @@ var invunerable := 0
 var magic_book: MagicBook
 var artifacts: Artifacts
 
+var enemies_in_range: Dictionary = {} # [Enemy: bool]
+var max_watched_enemies_distance = 0.0
+
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
@@ -126,7 +129,9 @@ func _physics_process(delta):
 		
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
-	cam_arm.spring_length = 1 + camera_target_velocity
+	max_watched_enemies_distance = lerp(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate)
+	print(max_watched_enemies_distance)
+	cam_arm.spring_length = 1.0 + minf(max_watched_enemies_distance, 10.0)
 	
 	if shake_intensity > 0.0:
 		var intensity := clampf(shake_intensity, 0, 1) ** 2
@@ -177,6 +182,18 @@ func give_back_mana_after_hit(spell: Spell, time: float):
 	var v = minf((time - u) / (c + spell.mana_cost), 1.0)
 	var t = (1.0 - (-1.5 * (v ** 3.0 / 3.0 - v))) * spell.mana_cost / float(spell.count)
 	vitals.mana.apply_ignoring_resistance(t)
+	
+func watch_enemy(enemy: Enemy):
+	enemies_in_range[enemy] = true
+	
+func ignore_enemy(enemy: Enemy):
+	enemies_in_range.erase(enemy)
+	
+func compute_max_watched_enemies_distance() -> float:
+	var result := 0.0
+	for e in enemies_in_range:
+		result = maxf(result, position.distance_to(e.position))
+	return result
 	
 func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 	for event in artifacts.effects:
