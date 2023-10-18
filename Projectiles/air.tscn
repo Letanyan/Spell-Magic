@@ -8,14 +8,14 @@ resource_local_to_scene = true
 height = 1.0
 
 [sub_resource type="Gradient" id="Gradient_c4dcj"]
-offsets = PackedFloat32Array(0, 0.457143, 0.640187, 1)
-colors = PackedColorArray(0, 0.501961, 0, 0.501961, 0.501961, 1, 0.501961, 0.501961, 1, 1, 1, 1, 1, 1, 1, 0.501961)
+offsets = PackedFloat32Array(0, 0.458167, 0.640187, 0.792829)
+colors = PackedColorArray(0, 0.501961, 0, 1, 0.501961, 1, 0.501961, 0.501961, 1, 1, 1, 0, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_rlncl"]
 gradient = SubResource("Gradient_c4dcj")
 
 [sub_resource type="Curve" id="Curve_acxw5"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.489796, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.131206, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_tncfq"]
@@ -26,18 +26,18 @@ curve = SubResource("Curve_acxw5")
 resource_local_to_scene = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 1, 0)
-emission_ring_height = 0.0
+emission_ring_height = 1.0
 emission_ring_radius = 0.5
 emission_ring_inner_radius = 0.0
 particle_flag_align_y = true
 direction = Vector3(0, 1, 0)
 spread = 0.0
 gravity = Vector3(0, 0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 1.0
+initial_velocity_min = 0.01
+initial_velocity_max = 0.13
 scale_max = 1.5
 scale_curve = SubResource("CurveTexture_tncfq")
-color = Color(0.501961, 1, 0.501961, 0.501961)
+color = Color(0.501961, 1, 0.501961, 1)
 color_ramp = SubResource("GradientTexture1D_rlncl")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e01aq"]
@@ -64,7 +64,7 @@ height = 1.0
 script = ExtResource("1_a23cr")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -2.18557e-08, -0.5)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CylinderShape3D_i1ldc")
 target_position = Vector3(0, 0, 0)
 collision_mask = 534
@@ -74,6 +74,7 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 
 cast_shadow = 0
 amount = 80
 lifetime = 4.0
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_qcqdi")
 draw_pass_1 = SubResource("BoxMesh_8grns")
 
@@ -84,5 +85,4 @@ monitoring = false
 monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_ydynh")

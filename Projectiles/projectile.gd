@@ -308,6 +308,9 @@ func update_shape(r: float, ignore_time: bool):
 			get_node("shape_cast").shape.height = r * 4
 			get_node("shape_cast").shape.radius = r
 			
+			var source: GPUParticles3D = get_node("source")
+			source.process_material.emission_ring_height = r * 4
+			
 			var source2: GPUParticles3D = get_node("source")
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("width", r / 10.0)
 			source2.draw_pass_1.surface_get_material(0).set_shader_parameter("len", r)
@@ -397,8 +400,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 			var box: CollisionShape3D = get_node("source/area/shape")
 			var h : float = box.shape.height
 			var source: GPUParticles3D = get_node("source")
-			source.process_material.initial_velocity_min = (h * 1.25 / source.lifetime) + abs(velocity.length()) * 1.0
-			source.process_material.initial_velocity_max = (h * 1.25 / source.lifetime) + abs(velocity.length()) * 1.1
+			source.process_material.initial_velocity_min = (h / source.lifetime) + abs(velocity.length()) * 0.99
+			source.process_material.initial_velocity_max = (h / source.lifetime) + abs(velocity.length()) * 1.01
 			
 			var v = velocity.normalized()
 			if v != Vector3.ZERO:
