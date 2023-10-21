@@ -4,6 +4,7 @@ var spells: Array[Spell]
 var spell_weight: Array[float]
 var is_sequence: bool = false
 var start_time: float
+var last_use: Dictionary # [String: Unix.Time]
 var current_sequence_index: int
 var aggression: float
 
@@ -11,6 +12,7 @@ func _init(_spells: Array[Spell], _spell_weight: Array[float], _is_sequence: boo
 	spells = _spells
 	spell_weight = _spell_weight
 	start_time = 0
+	last_use = {}
 	current_sequence_index = 0
 	is_sequence = _is_sequence
 	aggression = _aggression
@@ -34,11 +36,16 @@ func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spe
 	var p := randf()
 	for i in range(spell_weight.size()):
 		range_end += spell_weight[i]
-		if range_start <= p and p <= range_end:
-			return spells[i]
+		var s = spells[i]
+		var pass_prob = range_start <= p and p <= range_end
+		var pass_cool = Time.get_unix_time_from_system() - last_use.get(s.name, 0) >= s.cooldown
+		var pass_mana = vitals.mana.value > s.actual_mana_cost()
+		if pass_prob and pass_cool and pass_mana:
+			last_use[s.name] = Time.get_unix_time_from_system()
+			return s
 		range_start = range_end
 		
-	return spells.pick_random()
+	return null
 
 func choose_spell_from_sequence(vitals: Vitals, behaviour: Behaviour) -> Spell:
 	if current_sequence_index >= spells.size():

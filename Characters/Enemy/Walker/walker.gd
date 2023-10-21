@@ -45,15 +45,11 @@ func _ready():
 	animation_map["attack"] = "Weapon"
 
 func __default_pattern() -> AttackPatterns:
-	return AttackPatterns.new(
-		[
-			GlobalData.magic_book.spell_with_name("Rain"),
-			GlobalData.magic_book.spell_with_name("Ice-Slaps"),
-		],
-		[ 1, 4 ],
-		false,
-		0.1
-	)
+	default_pattern.spells = [
+		GlobalData.magic_book.spell_with_name("Rain"),
+		GlobalData.magic_book.spell_with_name("Ice-Slaps"),
+	]
+	return default_pattern
 
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
