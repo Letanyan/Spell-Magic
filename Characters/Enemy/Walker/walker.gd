@@ -25,9 +25,9 @@ func _ready():
 	default_pattern = AttackPatterns.new(
 		[
 			GlobalData.magic_book.spell_with_name("Rain"),
-			GlobalData.magic_book.spell_with_name("Ice-Slaps"),
+			GlobalData.magic_book.spell_with_name("Sprite"),
 		],
-		[ 1, 4 ],
+		[ 1, 40 ],
 		false,
 		0.1
 	)
@@ -47,7 +47,7 @@ func _ready():
 func __default_pattern() -> AttackPatterns:
 	default_pattern.spells = [
 		GlobalData.magic_book.spell_with_name("Rain"),
-		GlobalData.magic_book.spell_with_name("Ice-Slaps"),
+		GlobalData.magic_book.spell_with_name("Sprite"),
 	]
 	return default_pattern
 
