@@ -123,9 +123,13 @@ func spell_exists(n: String) -> bool:
 			return true
 	return false
 	
-func spell_with_name(n: String) -> Spell:
+func spell_with_name(n: String, constants: Dictionary = {}, duplicate: bool = false) -> Spell:
 	for s in spells:
 		if s.name == n:
+			if not constants.is_empty() or duplicate:
+				var result := s.duplicate()
+				result.overwrite_expressions(constants)
+				return result
 			return s
 	return null
 

@@ -43,5 +43,5 @@ func _ready() -> void:
 	magic_book.settings = WorldSettings.new()
 	magic_book.settings.upgrade_settings = upgrade_settings
 	
-	magic_book.read_absolute_path("user://magic_book.json")
+	magic_book.read_absolute_path("res://magic_book.json")
 	magic_book.rebuild_spell_chains()

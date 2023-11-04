@@ -142,6 +142,10 @@ func impulse_length() -> float:
 func build_expressions():
 	for k in expression_strings:
 		expressions[k] = Expr.new(expression_strings[k])
+		
+func overwrite_expressions(mappings: Dictionary):
+	for k in mappings:
+		expressions[k] = Expr.new(mappings[k])
 	
 func compute_expressions(fvars: Dictionary):
 	for k in expressions:

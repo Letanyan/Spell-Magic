@@ -108,7 +108,7 @@ func _input(event: InputEvent) -> void:
 func save_changes():
 	if magic_book.visible:
 		if world_settings.world_name == "empty":
-			magic_book.book.save_absolute_path("user://magic_book.json")
+			magic_book.book.save_absolute_path("res://magic_book.json")
 		else:
 			magic_book.book.save(world_settings.world_name)
 	if wand_case.visible:
