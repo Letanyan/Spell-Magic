@@ -11,6 +11,7 @@ var velocity_movement: VelocityMovement
 
 var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
 var invunerable := 0
+var spell_movement: AttackPatterns.SpellMovement = null
 
 var player: Player
 var behaviour: Behaviour
@@ -67,8 +68,15 @@ func _physics_process(delta):
 		return
 	
 	increment_ticks()
+	
+	var process_path: PathStyle = current_path
+	if spell_movement and spell_movement.movement.state != AttackMovement.AMState.DONE:
+		var movement_path := spell_movement.movement.current_path()
+		if movement_path:
+			process_path = movement_path
+				
 
-	var movement = velocity_movement.update(delta, vitals, current_path.movement_speed, self)
+	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed, self)
 	vitals_signal.emit(index_in_population, vitals)
 	if vitals.health.value <= vitals.health.min_value:
 		die()
@@ -78,7 +86,7 @@ func _physics_process(delta):
 		velocity = movement["velocity"]
 		move_and_slide()
 	else:
-		match current_path.mover:
+		match process_path.mover:
 			PathStyle.Mover.PHYSICS:
 				velocity = movement["velocity"]
 				move_and_slide()
@@ -97,13 +105,21 @@ func _physics_process(delta):
 					v.y = 0
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
-		if current_path.lookat == PathStyle.LookAt.PLAYER:
+		if process_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
 			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
 
-	if behavior_tick == 30:
+	var moved_into_during_movement = false
+	if behavior_tick == Globals.behaviour_tick():
 		update_behaviour()
-		var next_pos := current_path.next_position(self, player)
+		var is_done := Globals.Ref.new(false)
+		var next_pos := process_path.next_position(self, player, is_done)
+		if is_done.data and spell_movement:
+			moved_into_during_movement = spell_movement.movement.state == AttackMovement.AMState.BEFORE
+			spell_movement.movement.next_state()
+			if spell_movement.movement.state == AttackMovement.AMState.DONE:
+				spell_movement.movement.reset_state()
+				spell_movement = null
 		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos)
 #		if velocity_movement.target_position != next_pos:
 #			prints(velocity_movement.target_position, next_pos)
@@ -112,13 +128,18 @@ func _physics_process(delta):
 		behavior_tick = 0
 
 	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
-		var spell := attack_state().choose_spell(vitals, behaviour)
-		if spell != null:
+		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE: 
+			spell_movement = attack_state().choose_spell(vitals, behaviour)
+			moved_into_during_movement = spell_movement and spell_movement.movement.state == AttackMovement.AMState.DONE
+		spell_tick = 0
+		
+	if moved_into_during_movement:
+		if spell_movement:
 			play_animation("attack")
 			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"]).length / 2.0).timeout
 			await get_tree().physics_frame
-			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
-		spell_tick = 0
+			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell_movement.spell)
+		
 
 	spell_caster.update(self, delta)
 

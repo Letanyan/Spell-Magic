@@ -3,6 +3,9 @@ extends Node
 
 static func sea_level() -> float:
 	return 400.0
+	
+static func behaviour_tick() -> int:
+	return 30
 
 static func invf(v: float) -> float:
 	if is_zero_approx(v):

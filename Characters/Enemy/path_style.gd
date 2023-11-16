@@ -19,6 +19,7 @@ var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE_XZ
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
+var last_t: float = 0.0
 
 func _init(_seed: float, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
 	kind = _kind
@@ -140,8 +141,12 @@ func use_expr(x: String, y: String, z: String):
 	kind = Kind.EXPR
 	return self
 
-func next_position(me: Enemy, player: Player) -> Vector3:
+func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector3:
 	var t := float(Time.get_unix_time_from_system() + seed_offset * 2 * PI)
+	var old_t := last_t
+	last_t = t
+	if is_done:
+		is_done.data = false
 	if use_player_as_origin:
 		origin = player.position
 	match kind:
@@ -152,24 +157,37 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 			elif dist < min_radius:
 				return origin.lerp(me.position, min_radius / dist)
 			else:
+				if is_done:
+					is_done.data = true
 				return me.position
 		
 		Kind.CIRCLE:
 			var lap = t * (movement_speed / min_radius)
-			var x = cos(lap) * min_radius + origin.x
-			var z = sin(lap) * min_radius + origin.z
+			var x = cos(lap) * min_radius
+			var z = sin(lap) * min_radius
+			if is_done and x == cos(0) * min_radius and z == sin(0) * min_radius:
+				is_done.data = true
+			x += origin.x
+			z += origin.z
 			var y = next_y_position(me, x, 0, z)
 			return Vector3(x, y, z)
 
 		Kind.PATH:
 			var dist = fmod(movement_speed * t, path.distance)
+			if is_done and dist <= fmod(movement_speed * old_t, path.distance):
+				is_done.data = true
 			var v = path.position_at_distance(dist) + origin
 			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
 			return Vector3(v.x, y, v.z)
 			
 		Kind.EXPR:
 			var vars := {"s": movement_speed, "t": t, "pi": PI}
-			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)) + origin
+			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars))
+			if is_done:
+				vars["t"] = 0
+				if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
+					is_done.data = true
+			v += origin
 			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
 			return Vector3(v.x, y, v.z) 
 
