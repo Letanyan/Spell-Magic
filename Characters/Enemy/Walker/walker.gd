@@ -14,10 +14,13 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 250
+	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
-	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
+	idle_path = PathStyle.new().random_points_in_circle(10, 10).speed(2).set_origin(position)
+#	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
+	attack_path = PathStyle.new().set_use_player_as_origin().set_player_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
+	attack_path.min_radius = 0
+	attack_path.max_radius = 1
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -29,7 +32,7 @@ func _ready():
 		],
 		[ 1, 40 ],
 		false,
-		0.1,
+		0.0,
 		[
 			AttackMovement.new(),
 			AttackMovement.new(

@@ -21,7 +21,13 @@ var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var last_t: float = 0.0
 
-func _init(_seed: float, _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
+# (theta, radius) pair to describe offset from player. +theta is ccw from 
+# straight of player view. -theta is cw from player view. radius is distance away
+# from player.
+var player_vision_offset: Vector2 = Vector2.ZERO
+var use_player_camera_as_vision: bool = false # if false use player body orientation else camera
+
+func _init(_seed: float = randf(), _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
 	kind = _kind
 	origin = _origin
 	seed_offset = _seed
@@ -53,6 +59,12 @@ func use_absolute_xz() -> PathStyle:
 	
 func set_use_player_as_origin(o: bool = true) -> PathStyle:
 	use_player_as_origin = o
+	if o:
+		origin = Vector3.ZERO
+	return self
+	
+func set_player_vision_as_origin(a: float, r: float) -> PathStyle:
+	player_vision_offset = Vector2(a, r) 
 	return self
 	
 func align_y_to_origin() -> PathStyle:
@@ -74,6 +86,7 @@ func circle(center: Vector3, radius: float) -> PathStyle:
 func circle_player(radius: float) -> PathStyle:
 	kind = Kind.CIRCLE
 	use_player_as_origin = true
+	origin = Vector3.ZERO
 	min_radius = radius
 	max_radius = radius
 	return self
@@ -91,6 +104,7 @@ func towards_player(mn: float, mx: float) -> PathStyle:
 	max_radius = mx
 	kind = Kind.ORIGIN
 	use_player_as_origin = true
+	origin = Vector3.ZERO
 	return self
 	
 func follow_path(pathway: Pathway) -> PathStyle:
@@ -147,15 +161,20 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 	last_t = t
 	if is_done:
 		is_done.data = false
+	var temp_origin := origin
 	if use_player_as_origin:
-		origin = player.position
+		temp_origin += player.position
+	if player_vision_offset:
+		var rot: float = player.get_node("CamPivot" if use_player_as_origin else "Pivot").rotation.y
+		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, rot + player_vision_offset.x)
+		temp_origin += off
 	match kind:
 		Kind.ORIGIN:
-			var dist = origin.distance_to(me.position)
-			if dist > max_radius:
-				return origin.lerp(me.position, max_radius / dist)
-			elif dist < min_radius:
-				return origin.lerp(me.position, min_radius / dist)
+			var dist = temp_origin.distance_to(me.position)
+			if dist > max_radius + 0.1:
+				return temp_origin.lerp(me.position, max_radius / dist)
+			elif dist < min_radius - 0.1:
+				return temp_origin.lerp(me.position, min_radius / dist)
 			else:
 				if is_done:
 					is_done.data = true
@@ -167,8 +186,8 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			var z = sin(lap) * min_radius
 			if is_done and x == cos(0) * min_radius and z == sin(0) * min_radius:
 				is_done.data = true
-			x += origin.x
-			z += origin.z
+			x += temp_origin.x
+			z += temp_origin.z
 			var y = next_y_position(me, x, 0, z)
 			return Vector3(x, y, z)
 
@@ -176,8 +195,8 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			var dist = fmod(movement_speed * t, path.distance)
 			if is_done and dist <= fmod(movement_speed * old_t, path.distance):
 				is_done.data = true
-			var v = path.position_at_distance(dist) + origin
-			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
+			var v = path.position_at_distance(dist) + temp_origin
+			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 			return Vector3(v.x, y, v.z)
 			
 		Kind.EXPR:
@@ -187,8 +206,8 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 				vars["t"] = 0
 				if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
 					is_done.data = true
-			v += origin
-			var y = next_y_position(me, v.x, v.y - origin.y, v.z)
+			v += temp_origin
+			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 			return Vector3(v.x, y, v.z) 
 
 
