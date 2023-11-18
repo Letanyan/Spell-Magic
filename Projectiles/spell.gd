@@ -243,6 +243,7 @@ func get_particles(fvars: Dictionary) -> Array:
 	fixed_vars["N"] = float(count)
 	fixed_vars["M"] = mana_cost
 	fixed_vars["C"] = charge
+	fixed_vars["L"] = charge
 	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	for i in range(count):

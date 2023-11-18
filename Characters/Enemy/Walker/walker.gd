@@ -28,18 +28,18 @@ func _ready():
 	default_pattern = AttackPatterns.new(
 		[
 			GlobalData.magic_book.spell_with_name("Rain"),
-			GlobalData.magic_book.spell_with_name("Sprite"),
+			GlobalData.magic_book.spell_with_name("Order2", {"hh":"4"}),
 		],
 		[ 1, 40 ],
 		false,
-		0.0,
+		0.2,
 		[
-			AttackMovement.new(),
-			AttackMovement.new(
-				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
-				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
-				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
-			)
+#			AttackMovement.new(),
+#			AttackMovement.new(
+#				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
+#				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
+#				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
+#			)
 		]
 	)
 	
@@ -58,7 +58,7 @@ func _ready():
 func __default_pattern() -> AttackPatterns:
 	default_pattern.spells = [
 		GlobalData.magic_book.spell_with_name("Rain"),
-		GlobalData.magic_book.spell_with_name("Sprite"),
+		GlobalData.magic_book.spell_with_name("Order2", {"hh":"4"})
 	]
 	return default_pattern
 

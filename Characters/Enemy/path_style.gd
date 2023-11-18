@@ -165,7 +165,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 	if use_player_as_origin:
 		temp_origin += player.position
 	if player_vision_offset:
-		var rot: float = player.get_node("CamPivot" if use_player_as_origin else "Pivot").rotation.y
+		var rot: float = player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot").rotation.y
 		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, rot + player_vision_offset.x)
 		temp_origin += off
 	match kind:

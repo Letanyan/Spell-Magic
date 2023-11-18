@@ -58,7 +58,7 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			result["fl"] = 1.0
 			
 		Entity.ENEMY:
-			result[prefix + "C"] = body.player.global_position.distance_to(body.global_position)
+			result[prefix + "L"] = body.player.global_position.distance_to(body.global_position)
 			cdir = (body.player.global_position - body.global_position).normalized() # direction to player
 			result["l"] = body.level
 			result["fl"] = body.level / 100.0
@@ -171,6 +171,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	if inherited_vars.has("l"): # copy enemy level vars
 		vars["l"] = inherited_vars["l"]
 		vars["fl"] = inherited_vars["fl"]
+		vars["L"] = inherited_vars["L"]
 	var ps := spell.get_particles(vars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p in ps:
