@@ -55,8 +55,10 @@ func setup(_settings: WorldSettings) -> void:
 #	add_child(undead)
 #	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, 20)
 #	add_child(bat)
-	var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
-	add_child(walker)
+#	var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
+#	add_child(walker)
+	var fish := Population.generate_enemy(World.Enemy.FISH, player, -20, 1000, -20)
+	add_child(fish)
 	
 
 # Called when the node enters the scene tree for the first time.

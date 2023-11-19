@@ -1,0 +1,97 @@
+class_name Fish
+extends Enemy
+
+var none_pattern: AttackPatterns
+var default_pattern: AttackPatterns
+var sequence_pattern: AttackPatterns
+
+var idle_path: PathStyle
+var attack_path: PathStyle
+
+func _ready():
+	super._ready()
+	
+	velocity_movement = VelocityMovement.new()
+	
+	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
+	vitals.perception.value = 10 * 4
+	
+	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
+	attack_path = PathStyle.new(randf()).towards_player(0, 1).speed(2).use_physics()
+	current_path = idle_path
+	
+#	idle_path = PathStyle.new().random_points_in_circle(10, 10).speed(2).set_origin(position)
+#	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
+#	attack_path = PathStyle.new().set_use_player_as_origin().set_player_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
+#	attack_path.min_radius = 0
+#	attack_path.max_radius = 1
+#	current_path = idle_path
+	
+	none_pattern = AttackPatterns.none()
+	
+	var water_spell := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	water_spell.element = Spell.Element.WATER
+	
+	default_pattern = AttackPatterns.new(
+		[
+			GlobalData.magic_book.spell_with_name("Rain"),
+			water_spell,
+		],
+		[ 1, 50 ],
+		false,
+		0.25
+	)
+	
+	sequence_pattern = AttackPatterns.new(
+		[
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.WATER, 1),
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.ROCK, 1),
+		],
+		[ 2, 5, 3 ],
+		true
+	)
+	
+	animation_map["attack"] = "Bite_Front"
+
+func __default_pattern() -> AttackPatterns:
+	var water_spell := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	water_spell.element = Spell.Element.WATER
+	
+	default_pattern.spells = [
+		GlobalData.magic_book.spell_with_name("Rain"),
+		water_spell
+	]
+	return default_pattern
+
+func attack_state() -> AttackPatterns:
+	if current_path == idle_path:
+		return none_pattern
+	elif vitals.health.value >= 50:
+		return __default_pattern()
+	else:
+		return default_pattern
+
+func entity_info() -> EntityInfo:
+	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
+
+func update_entity_info(info: EntityInfo) -> bool:
+	info.position = position
+	return true
+
+
+func update_behaviour():
+	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+		current_path = attack_path
+	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+		current_path = idle_path
+
+func death_box() -> Vector3:
+	return Vector3(0.7, 1.9, 0.3)
+
+func drop_artifact() -> Artifact:
+	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
+	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
+	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
+	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
+	return Artifact.new(Time.get_datetime_string_from_system(), t, r, b, l)

@@ -17,6 +17,7 @@ const bat = preload("res://Characters/Enemy/Bat/bat.tscn")
 const mole = preload("res://Characters/Enemy/Mole/mole.tscn")
 const human = preload("res://Characters/Enemy/Human/human.tscn")
 const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
+const fish = preload("res://Characters/Enemy/Fish/fish.tscn")
 
 signal on_enemy_death(drop_artifact: Artifact)
 
@@ -134,6 +135,9 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 		World.Enemy.WALKER:
 			result = walker.instantiate()
 			result.name = "Walker" + str(randi())
+		World.Enemy.FISH:
+			result = fish.instantiate()
+			result.name = "Fish" + str(randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += randi_range(0, int(result.level * 0.2)) + 1.0
