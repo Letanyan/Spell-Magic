@@ -28,7 +28,7 @@ func _ready():
 	default_pattern = AttackPatterns.new(
 		[
 			GlobalData.magic_book.spell_with_name("Rain"),
-			GlobalData.magic_book.spell_with_name("Order2", {"hh":"4"}),
+			GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"}),
 		],
 		[ 1, 40 ],
 		false,
@@ -58,7 +58,7 @@ func _ready():
 func __default_pattern() -> AttackPatterns:
 	default_pattern.spells = [
 		GlobalData.magic_book.spell_with_name("Rain"),
-		GlobalData.magic_book.spell_with_name("Order2", {"hh":"4"})
+		GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
 	]
 	return default_pattern
 
