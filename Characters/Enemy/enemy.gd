@@ -28,6 +28,8 @@ signal on_death(artifact_drop: Artifact)
 @onready var health_bar: MeshInstance3D = $HealthBar
 @onready var level_text: Label3D = $HealthBar/Level
 
+@export var bounds: Vector3 = Vector3(1, 1, 1)
+
 
 func _ready():
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
@@ -120,7 +122,7 @@ func _physics_process(delta):
 			if spell_movement.movement.state == AttackMovement.AMState.DONE:
 				spell_movement.movement.reset_state()
 				spell_movement = null
-		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos)
+		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos, 2.0, 2.0, bounds.length() * 2)
 #		if velocity_movement.target_position != next_pos:
 #			prints(velocity_movement.target_position, next_pos)
 #		else:
