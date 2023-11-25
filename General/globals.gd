@@ -12,6 +12,9 @@ static func invf(v: float) -> float:
 		return 1.0 / 0.0000000001
 	else:
 		return 1.0 / v
+		
+static func rand_v3_abs(x: float, y: float, z: float) -> Vector3:
+	return Vector3(x * randf(), y * randf(), z * randf())
 
 class Ref extends RefCounted:
 	var data

@@ -228,17 +228,22 @@ func update_wand_mappings():
 				rich_text += kd + " ([b]Rapid[/b]): " + wand.picked + "\n"
 	
 	rich_text += "[/font_size]"
+	wand_mapping.text = ""
+	wand_mapping.size = Vector2($WandMappingPanel.size.x, 0)
+	$WandMappingPanel.size.y = 0
 	wand_mapping.text = rich_text
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:
-		wand_mapping.visible = rich_text != "[font_size=%d][/font_size]" % SIZE
+		wand_mapping.visible = rich_text != ("[font_size=%d][/font_size]" % SIZE)
 	
+#	await wand_mapping.finished
+	wand_mapping.size.x = $WandMappingPanel.size.x
 	$WandMappingPanel.visible = wand_mapping.visible
 	$WandMappingPanel.size = wand_mapping.size
 	$WandMappingPanel.position.y = get_viewport_rect().size.y - 8 - wand_mapping.size.y
 	# NOTE (HACK): Set again to make sure the panel size is correct after resizing the label
-	$WandMappingPanel.size = wand_mapping.size
+	$WandMappingPanel.size.y = wand_mapping.size.y
 		
 func update_settings(settings: WorldSettings):
 	world_settings = settings

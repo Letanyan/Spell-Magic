@@ -68,12 +68,13 @@ func choose_spell_from_sequence(vitals: Vitals, behaviour: Behaviour) -> SpellMo
 		
 	var s: Spell = spells[current_sequence_index]
 	var t: float = spell_weight[current_sequence_index]
+	var m: AttackMovement = movements[current_sequence_index]
 	
 	var ct := Time.get_unix_time_from_system()
 	if ct - start_time >= t:
 		start_time = Time.get_unix_time_from_system()
 		current_sequence_index += 1
-		return SpellMovement.new(s, movements[current_sequence_index])
+		return SpellMovement.new(s, m)
 	else:
 		return null
 

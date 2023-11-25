@@ -14,30 +14,46 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 10 * 4
+	vitals.perception.value = 10
 	
-	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
-	attack_path = PathStyle.new(randf()).towards_player(0, 1).speed(2).use_physics()
+	const idle_r := 10.0
+	var randarc := func() -> PathStyle.Segment:
+		var s : Vector3 = Globals.rand_v3_abs(idle_r, 0, idle_r)
+		var e : Vector3 = Globals.rand_v3_abs(idle_r, 0, idle_r)
+		var a := s.x
+		var b := s.z
+		var c := e.x
+		var d := e.z
+		
+		var p := Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
+		var q := Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
+		var m: Vector3
+		if randf() < 0.5:
+			m = p
+		else:
+			m = q
+			
+		return PathStyle.Segment.quad(s, e, m)
+	var idle_pathway := PathStyle.Pathway.new()
+	idle_pathway.append([randarc.call(), randarc.call(), randarc.call(), randarc.call(), randarc.call()])
+	
+	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
+	attack_path = PathStyle.new(randf()).towards_player(2, 3).speed(2).use_physics()
 	current_path = idle_path
-	
-#	idle_path = PathStyle.new().random_points_in_circle(10, 10).speed(2).set_origin(position)
-#	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
-#	attack_path = PathStyle.new().set_use_player_as_origin().set_player_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
-#	attack_path.min_radius = 0
-#	attack_path.max_radius = 1
-#	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_spell := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
-	water_spell.element = Spell.Element.WATER
+	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	water_para.element = Spell.Element.WATER
+	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
+	water_line.element = Spell.Element.WATER
 	
 	default_pattern = AttackPatterns.new(
 		[
-			GlobalData.magic_book.spell_with_name("Rain"),
-			water_spell,
+			water_line,
+			water_para,
 		],
-		[ 1, 50 ],
+		[ 7, 3 ],
 		false,
 		0.25
 	)
@@ -55,12 +71,14 @@ func _ready():
 	animation_map["attack"] = "Bite_Front"
 
 func __default_pattern() -> AttackPatterns:
-	var water_spell := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
-	water_spell.element = Spell.Element.WATER
+	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	water_para.element = Spell.Element.WATER
+	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
+	water_line.element = Spell.Element.WATER
 	
 	default_pattern.spells = [
-		GlobalData.magic_book.spell_with_name("Rain"),
-		water_spell
+		water_line,
+		water_para,
 	]
 	return default_pattern
 
