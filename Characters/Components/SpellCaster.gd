@@ -72,9 +72,9 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
 	result[prefix + "w"] = cdir.z
-	result[prefix + "ru"] = cdir.signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "ru"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
 	result[prefix + "rv"] = cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-	result[prefix + "rw"] = cdir.signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	result[prefix + "rw"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	result[prefix + "U"] = track.x
 	result[prefix + "V"] = track.y
@@ -91,9 +91,9 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "cx"] = c.x
 	result[prefix + "cy"] = c.y
 	result[prefix + "cz"] = c.z
-	result[prefix + "rcx"] = c.signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rcx"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
 	result[prefix + "rcy"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-	result[prefix + "rcz"] = c.signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	result[prefix + "rcz"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	if s.player_is_origin:
 		result["abs_pos" if fixed else "rel_pos"] = body.position
