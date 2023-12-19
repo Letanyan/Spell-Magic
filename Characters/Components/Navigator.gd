@@ -174,6 +174,17 @@ static func get_shape_intersection(p: Node3D, from: Vector3, target: Vector3, sh
 	var result := space_state.intersect_shape(query, 4)
 	return not result.is_empty()
 	
+
+static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit = Ptr.new(false)) -> float:
+	var space_state := p.get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
+	var result := space_state.intersect_ray(query)
+	if result.is_empty():
+		no_hit.data = true
+		return 0
+	else:
+		no_hit.data = false
+		return result.get("position", Vector3.ZERO).y
 	
 static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit = Ptr.new(false)) -> float:
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
@@ -291,22 +302,22 @@ static func reconstruct_path(came_from: Dictionary, target: Vector3) -> Array[Ve
 	
 static func neighbours(p: Node3D, from: Vector3, directions: int, distance: float, target: Vector3, margin: float = 0.0) -> Array[Vector3]:
 	var result: Array[Vector3] = [from + Vector3(0, distance, 0), from + Vector3(0, -distance, 0)]
-	var direction := (from - target).normalized()
+	var direction := (target - from)
+	direction.y = 0.0
+	direction = direction.normalized()
 	var angle := 2 * PI / float(directions)
 	var shape := SphereShape3D.new()
 	shape.radius = margin
 	var transform := Transform3D.IDENTITY
-	for it in range(1, 3):
-		for y in range(-1, 2):
-			for a in range(directions):
-				var to := from + direction * distance * it + Vector3(0, y, 0) * distance * it
-				if not get_shape_intersection(p, from, to, shape, transform.translated(to)):
-					result.append(to)
-				direction = direction.rotated(Vector3.UP, angle)
-				
-		# if the smallest step had at least one movement then break else try looking furthur out.
-		if not result.is_empty(): 
-			break
+	for a in range(directions):
+		for it in range(1, 3):
+			var to := from + direction * distance * it
+			to.y = get_world_height_from_node(p, to.x, to.z)
+			if not get_shape_intersection(p, from, to, shape, transform.translated(to)):
+				result.append(to)
+				break
+		direction = direction.rotated(Vector3.UP, angle)
+			
 	return result
 	
 static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, max_step_distance: float = 2.0, margin_from_obs: float = 0.0) -> Array[Vector3]:	
@@ -320,15 +331,15 @@ static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, m
 	var distance := max_step_distance
 	var max_look_up = 200.0 / distance
 	
-#	var best_distance := INF
-#	var closest_point := start
+	var best_distance := INF
+	var closest_point := start
 	while open.size() > 0:
 		var current = minimum_score(open, f_score)
 		
 		var current_distance := current.distance_to(target)
-#		if current_distance < best_distance:
-#			best_distance = current_distance
-#			closest_point = current
+		if current_distance < best_distance:
+			best_distance = current_distance
+			closest_point = current
 		if current_distance <= margin_from_target:
 			return reconstruct_path(came_from, current)
 			
@@ -349,7 +360,9 @@ static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, m
 			# Maybe use `closest_point` instead? But that could lead to the agent
 			# getting stuck in a local minima. Using the current path adds some 
 			# non-determinism to help the agent find other paths?
-			return reconstruct_path(came_from, current)
+			# return reconstruct_path(came_from, current)
+			
+			return reconstruct_path(came_from, closest_point)
 				
 	return [target]
 	
@@ -384,6 +397,9 @@ static func find_target(p: Node3D, target: Vector3, margin_from_target: float = 
 		if x.distance_squared_to(y) > 2:
 			break
 		next = path.pop_front()
+		
+	for pos in path:
+		DebugDraw3D.draw_sphere(pos, 0.5, Color(1, 0, 0), 0.5)
 		
 	return next 
 	

@@ -62,7 +62,7 @@ func next_position(me: Enemy, player: Player) -> Vector3:
 					state = AMState.AFTER
 				return result
 		AMState.AFTER:
-			if before:
+			if after:
 				var result := after.next_position(me, player, is_done) 
 				if is_done.data:
 					state = AMState.DONE

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bayn6retdbrwm"]
+[gd_scene load_steps=25 format=3 uid="uid://bayn6retdbrwm"]
 
 [ext_resource type="Script" path="res://Worlds/TestArena/TestArena.gd" id="1_so5kd"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_g4l27"]
@@ -149,7 +149,12 @@ material = SubResource("StandardMaterial3D_e6lrj")
 radius = 50.0
 height = 100.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4wb3"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.105882)
+
 [sub_resource type="BoxMesh" id="BoxMesh_hcdbc"]
+material = SubResource("StandardMaterial3D_d4wb3")
 size = Vector3(10, 2, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_d4i3w"]
@@ -226,7 +231,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1001, -3.438)
 mesh = SubResource("BoxMesh_hcdbc")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
-collision_layer = 512
+collision_layer = 520
 collision_mask = 0
 
 [node name="shape" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]

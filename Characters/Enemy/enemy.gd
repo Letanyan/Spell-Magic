@@ -124,6 +124,8 @@ func _physics_process(delta):
 				spell_movement = null
 		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos, 2.0, 2.0, bounds.length() * 2)
 #		if velocity_movement.target_position != next_pos:
+#			DebugDraw3D.draw_sphere(velocity_movement.target_position, 1, Color(1, 0, 0), 3)
+#			DebugDraw3D.draw_sphere(next_pos, 1, Color(0, 1, 0), 3)
 #			prints(velocity_movement.target_position, next_pos)
 #		else:
 #			print("---")
