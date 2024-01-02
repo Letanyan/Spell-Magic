@@ -56,12 +56,20 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 			track = get_direction_to_tracking(body, p, cdir)
 			result["l"] = 100
 			result["fl"] = 1.0
+			result["Bx"] = body.bounds.x
+			result["By"] = body.bounds.y
+			result["Bz"] = body.bounds.z
+			result["Br"] = sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2)
 			
 		Entity.ENEMY:
 			result[prefix + "L"] = body.player.global_position.distance_to(body.global_position)
 			cdir = (body.player.global_position - body.global_position).normalized() # direction to player
 			result["l"] = body.level
 			result["fl"] = body.level / 100.0
+			result["Bx"] = body.bounds.x
+			result["By"] = body.bounds.y
+			result["Bz"] = body.bounds.z
+			result["Br"] = sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2)
 			
 		Entity.PROJECTILE:
 			cdir = -body.velocity.normalized() 

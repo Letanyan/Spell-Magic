@@ -101,7 +101,7 @@ func _physics_process(delta):
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if position.y < g or position.y > g:
+				if process_path.coord_y == PathStyle.CoordY.GROUND and (position.y < g or position.y > g):
 					position.y = g
 					t.y = 0
 					v.y = 0

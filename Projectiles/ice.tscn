@@ -39,7 +39,7 @@ shader = ExtResource("2_d6dw3")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = Plane(1, 0, 0, 0)
+shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
@@ -65,7 +65,7 @@ script = ExtResource("1_gw4hd")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_hwdgd")
 target_position = Vector3(0, 0, 0.1)
-collision_mask = 534
+collision_mask = 542
 
 [node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
@@ -75,7 +75,7 @@ draw_pass_1 = SubResource("SphereMesh_b25tq")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 128
-collision_mask = 534
+collision_mask = 542
 monitoring = false
 monitorable = false
 

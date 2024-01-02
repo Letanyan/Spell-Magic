@@ -33,6 +33,8 @@ var vitals: Vitals
 var spell_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
 var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
 
+var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
+
 func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
 	emit_vitals_signal()

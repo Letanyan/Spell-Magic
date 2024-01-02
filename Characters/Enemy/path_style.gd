@@ -20,6 +20,8 @@ var mover: Mover = Mover.ABSOLUTE_XZ
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var last_t: float = 0.0
+var stored_loops: int = 0
+var time_offset: float = 0.0
 
 # (theta, radius) pair to describe offset from player. +theta is ccw from 
 # straight of player view. -theta is cw from player view. radius is distance away
@@ -32,6 +34,8 @@ func _init(_seed: float = randf(), _kind: Kind = Kind.ORIGIN, _origin: Vector3 =
 	origin = _origin
 	seed_offset = _seed
 	use_player_as_origin = false
+	if _seed == 0.0:
+		time_offset = Time.get_unix_time_from_system()
 	
 func speed(s: float) -> PathStyle:
 	movement_speed = s
@@ -156,7 +160,7 @@ func use_expr(x: String, y: String, z: String):
 	return self
 
 func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector3:
-	var t := float(Time.get_unix_time_from_system() + seed_offset * 2 * PI)
+	var t := float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
 	var old_t := last_t
 	last_t = t
 	if is_done:
@@ -178,14 +182,17 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			else:
 				if is_done:
 					is_done.data = true
+				stored_loops += 1
 				return me.position
 		
 		Kind.CIRCLE:
 			var lap = t * (movement_speed / min_radius)
 			var x = cos(lap) * min_radius
 			var z = sin(lap) * min_radius
-			if is_done and x == cos(0) * min_radius and z == sin(0) * min_radius:
-				is_done.data = true
+			if x == cos(0) * min_radius and z == sin(0) * min_radius:
+				if is_done:
+					is_done.data = true
+				stored_loops += 1
 			x += temp_origin.x
 			z += temp_origin.z
 			var y = next_y_position(me, x, 0, z)
@@ -193,8 +200,10 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 
 		Kind.PATH:
 			var dist = fmod(movement_speed * t, path.distance)
-			if is_done and dist <= fmod(movement_speed * old_t, path.distance):
-				is_done.data = true
+			if dist <= fmod(movement_speed * old_t, path.distance):
+				if is_done:
+					is_done.data = true
+				stored_loops += 1
 			var v = path.position_at_distance(dist) + temp_origin
 			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 			return Vector3(v.x, y, v.z)
@@ -202,10 +211,11 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 		Kind.EXPR:
 			var vars := {"s": movement_speed, "t": t, "pi": PI}
 			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars))
-			if is_done:
-				vars["t"] = 0
-				if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
+			vars["t"] = 0
+			if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
+				if is_done:
 					is_done.data = true
+				stored_loops += 1
 			v += temp_origin
 			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 			return Vector3(v.x, y, v.z) 

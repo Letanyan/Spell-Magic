@@ -6,7 +6,10 @@ var default_pattern: AttackPatterns
 var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
-var attack_path: PathStyle
+var attack_direct_path: PathStyle
+var attack_jump_path: PathStyle
+
+var jump_timer: int = 0
 
 func _ready():
 	super._ready()
@@ -38,7 +41,7 @@ func _ready():
 	idle_pathway.append([randarc.call(), randarc.call(), randarc.call(), randarc.call(), randarc.call()])
 	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
-	attack_path = PathStyle.new(randf()).towards_player(2, 3).speed(2).use_physics()
+	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -69,6 +72,11 @@ func _ready():
 	)
 	
 	animation_map["attack"] = "Bite_Front"
+	
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if current_path == attack_direct_path:
+		jump_timer += 1
 
 func __default_pattern() -> AttackPatterns:
 	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
@@ -100,9 +108,32 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		current_path = attack_path
-	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-		current_path = idle_path
+		print("idle and <dist")
+		current_path = attack_direct_path		
+	elif current_path == attack_direct_path:
+		prints(jump_timer, attack_direct_path.stored_loops)
+		if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+			current_path = idle_path
+		elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:
+			create_attack_jump_path()
+			attack_direct_path.stored_loops = 0
+			current_path = attack_jump_path
+	elif current_path == attack_jump_path and attack_jump_path.stored_loops > 0:
+		attack_jump_path.stored_loops = 0
+		jump_timer = 0
+		current_path = attack_direct_path
+			
+
+func create_attack_jump_path():
+	var start := position - player.position
+	var mid: Vector3 = lerp(position, player.position, 2.5) + Vector3(0, 25, 0) - player.position
+	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
+	var attack_jump_pathway = PathStyle.Pathway.new()
+	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)])
+	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
+	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
+	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
+	attack_jump_path = PathStyle.new(0.0).follow_path(attack_jump_pathway).speed(8).set_use_player_as_origin().align_y_to_origin().look_at_player()
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

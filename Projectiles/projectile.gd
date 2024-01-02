@@ -121,12 +121,16 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	var is_enemy  : int = body.collision_layer & 0b0100 != 0
 	
 	var is_world_object : int = body.collision_layer & (1 << 9) != 0
-	var is_rock  : int = body.collision_layer & 0b1_0000 != 0
+	var is_fire    : int = body.collision_layer & 0b0_0000_1000 != 0
+	var is_rock    : int = body.collision_layer & 0b0_0001_0000 != 0
+	var is_water   : int = body.collision_layer & 0b0_0010_0000 != 0
+	var is_ice     : int = body.collision_layer & 0b0_1000_0000 != 0
+	var is_electric: int = body.collision_layer & 0b1_0000_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
 	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
 	match spell.element:
 		Spell.Element.FIRE:
-			if is_world or is_rock or is_world_object:
+			if is_world or is_rock or is_world_object or is_water:
 				expire_now(self, body)
 			elif (is_enemy or is_player) and not invunerable:
 				CharacterCollision.handle(body, self)
@@ -144,7 +148,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 					dmg = body.vitals.handle_damage(Spell.Element.ROCK, spell.power)
 					lose_control(self, body)
 		Spell.Element.WATER:
-			if is_world or is_rock or is_world_object:
+			if is_world or is_rock or is_world_object or is_electric or is_ice:
 				expire_now(self, body)
 			elif (is_enemy or is_player) and not invunerable:
 				CharacterCollision.handle(body, self)
@@ -161,14 +165,14 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				body.apply_impulse(impulse())
 				nothing(self, body)
 		Spell.Element.ICE:
-			if is_world or is_rock or is_world_object:
+			if is_world or is_rock or is_world_object or is_fire:
 				expire_now(self, body)
 			elif (is_player or is_enemy) and not invunerable:
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.power)
 				nothing(self, body)
 		Spell.Element.ELECTRIC:
-			if is_world or is_rock or is_world_object:
+			if is_world or is_rock or is_world_object or is_ice or is_fire:
 				expire_now(self, body)
 			elif (is_player or is_enemy):
 				dmg = {} # set to empty so we know we can skip doing invunerable stuff
@@ -209,13 +213,15 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	var is_enemy  : int = area.collision_layer & 0b0100 != 0
 	
 	var is_world_object := area.collision_layer & (1 << 9) != 0
+	var is_fire  : int = body.collision_layer & 0b0_0000_1000 != 0
 	var is_rock  : int = area.collision_layer & 0b1_0000 != 0
 	var is_water : int = area.collision_layer & 0b10_0000 != 0
+	var is_ice   : int = body.collision_layer & 0b0_1000_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
 	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
 	match spell.element:
 		Spell.Element.ELECTRIC:
-			if is_world or is_rock or is_world_object:
+			if is_world or is_rock or is_world_object or is_ice or is_fire:
 				# Look at `_on_body_entered` for implementation
 				pass
 			elif (is_player or is_enemy) and is_water and not invunerable:
