@@ -5,10 +5,22 @@ enum ChainCastKind { START, END, HIT }
 
 var element: Element
 var name: String
-var x: String
-var y: String
-var z: String
-var r: String
+var x: String:
+	set(value):
+		x = value
+		x_expr = Expr.new(value)
+var y: String:
+	set(value):
+		y = value
+		y_expr = Expr.new(value)
+var z: String:
+	set(value):
+		z = value
+		z_expr = Expr.new(value)
+var r: String:
+	set(value):
+		r = value
+		r_expr = Expr.new(value)
 var power: float:
 	set(value):
 		power = clamp(value, 0, UpgradeSettings.LIMIT_P)
@@ -18,7 +30,10 @@ var duration: float:
 var count: int:
 	set(value):
 		count = clamp(value, 1, UpgradeSettings.LIMIT_N)
-var delay: String
+var delay: String:
+	set(value):
+		delay = value
+		d_expr = Expr.new(value)
 var mana_cost: float = 0.0
 var chain_cast_kind: ChainCastKind:
 	set(value):

@@ -4,9 +4,12 @@ extends Enemy
 var none_pattern: AttackPatterns
 var default_pattern: AttackPatterns
 var sequence_pattern: AttackPatterns
+var defence_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
+
+var ice_wall_timer: int = 0
 
 func _ready():
 	super._ready()
@@ -17,22 +20,52 @@ func _ready():
 	vitals.perception.value = 25
 	
 	idle_path = PathStyle.new().random_points_in_circle(10, 10).speed(2).set_origin(position)
-#	attack_path = PathStyle.new(randf()).towards_player(1.0, 2.0).speed(3).use_physics().set_use_player_as_origin().look_at_player()
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
 	attack_path.min_radius = 0
 	attack_path.max_radius = 1
 	current_path = idle_path
 	
+	var water_small := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br", "speed": "8"})
+	water_small.element = Spell.Element.WATER
+	water_small.r = "0.2"
+	var water_medium := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2", "speed": "4"})
+	water_medium.element = Spell.Element.WATER
+	water_medium.r = "0.8"
+	var water_large := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*3", "speed": "2"})
+	water_large.element = Spell.Element.WATER
+	water_large.r = "1.2"
+	
+	var ice_small := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br", "speed": "8"})
+	ice_small.element = Spell.Element.ICE
+	ice_small.r = "0.8"
+	var ice_medium := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2", "speed": "4"})
+	ice_medium.element = Spell.Element.ICE
+	ice_medium.r = "1.6"
+	var ice_large := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*3", "speed": "2"})
+	ice_large.element = Spell.Element.ICE
+	ice_large.r = "3.2"
+	
+	var ice_wall := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br+1", "speed": "0.01", "height": "Br"})
+	ice_wall.element = Spell.Element.ICE
+	ice_wall.r = "Br * 2"
+	ice_wall.follow = true
+	ice_wall.duration = 10.0
+	
+	
 	none_pattern = AttackPatterns.none()
 	
 	default_pattern = AttackPatterns.new(
 		[
-			GlobalData.magic_book.spell_with_name("Rain"),
-			GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"}),
+			water_small,
+			water_medium,
+			water_large,
+			ice_small,
+			ice_medium,
+			ice_large,
 		],
-		[ 1, 40 ],
+		[ 10, 4, 2, 10, 4, 2 ],
 		false,
-		0.2,
+		0.5,
 		[
 #			AttackMovement.new(),
 #			AttackMovement.new(
@@ -45,15 +78,35 @@ func _ready():
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + v*6", "w * t * 5 + w*3", "1", 25, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + v*6", "w * t * 5 + w*3", "1", 50, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5 + u*3", "v * t * 5 + v*6", "w * t * 5 + w*3", "1", 75, 5, Spell.Element.ELECTRIC, 1),
+			water_small,
+			ice_small,
+			water_small,
+			ice_small,
+			water_large,
+			ice_large,
+			water_large,
+			ice_large,
+			water_medium,
+			ice_medium,
+			water_medium,
+			ice_medium,
 		],
-		[ 2, 5, 3 ],
+		[ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4, 4 ],
+		true
+	)
+	
+	defence_pattern = AttackPatterns.new(
+		[ice_wall],
+		[0],
 		true
 	)
 	
 	animation_map["attack"] = "Weapon"
+
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if current_path != idle_path:
+		ice_wall_timer += 1
 
 func __default_pattern() -> AttackPatterns:
 	default_pattern.spells = [
@@ -65,10 +118,15 @@ func __default_pattern() -> AttackPatterns:
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
-	elif vitals.health.value >= 50:
-		return __default_pattern()
 	else:
-		return default_pattern
+		print(ice_wall_timer)
+		if ice_wall_timer == 0 or ice_wall_timer > 60 * 10:
+			ice_wall_timer = 1
+			return defence_pattern
+		elif vitals.health.value >= 50:
+			return default_pattern
+		else:
+			return sequence_pattern
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)

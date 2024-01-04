@@ -16,30 +16,41 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10 * 4
 	
-	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
-	attack_path = PathStyle.new(randf()).towards_player(0, 1).speed(2).use_physics()
+	idle_path = PathStyle.new(randf()).random_points_in_circle(2, 10).speed(2).set_origin(position)
+	attack_path = PathStyle.new(randf()).towards_player(1, 2).speed(2).use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
+	var rock_attack_small := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br", "speed": "5"})
+	rock_attack_small.element = Spell.Element.ROCK
+	var rock_attack_medium := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2", "speed": "3"})
+	rock_attack_medium.r = "1"
+	rock_attack_medium.element = Spell.Element.ROCK
+	var rock_attack_large := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2.5", "speed": "1"})
+	rock_attack_large.element = Spell.Element.ROCK
+	rock_attack_medium.r = "2"	
+	
 	random_pattern = AttackPatterns.new(
 		[
-			GlobalData.magic_book.spell_with_name("Rain"),
-			GlobalData.magic_book.spell_with_name("Blast"),
-			GlobalData.magic_book.spell_with_name("Ice-Slaps"),
+			rock_attack_small,
+			rock_attack_medium,
+			rock_attack_large,
 		],
-		[ 1, 5, 3 ],
+		[ 10, 3, 1 ],
 		false,
 		0.25
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.ROCK, 1),
+			rock_attack_small,
+			rock_attack_medium,
+			rock_attack_small,
+			rock_attack_large,
+			rock_attack_small,
 		],
-		[ 2, 5, 3 ],
+		[ 2, 5, 2, 4, 2 ],
 		true
 	)
 	
@@ -51,10 +62,10 @@ func attack_state() -> AttackPatterns:
 		return none_pattern
 	elif vitals.health.value >= 50:
 		health_bar.visible = true
-		return random_pattern
+		return sequence_pattern
 	else:
 		health_bar.visible = true
-		return sequence_pattern
+		return random_pattern
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
