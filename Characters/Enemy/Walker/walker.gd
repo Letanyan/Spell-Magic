@@ -25,27 +25,27 @@ func _ready():
 	attack_path.max_radius = 1
 	current_path = idle_path
 	
-	var water_small := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br", "speed": "8"})
+	var water_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "8"})
 	water_small.element = Spell.Element.WATER
 	water_small.r = "0.2"
-	var water_medium := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2", "speed": "4"})
+	var water_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"})
 	water_medium.element = Spell.Element.WATER
 	water_medium.r = "0.8"
-	var water_large := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*3", "speed": "2"})
+	var water_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"})
 	water_large.element = Spell.Element.WATER
 	water_large.r = "1.2"
 	
-	var ice_small := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br", "speed": "8"})
+	var ice_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"})
 	ice_small.element = Spell.Element.ICE
 	ice_small.r = "0.8"
-	var ice_medium := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2", "speed": "4"})
+	var ice_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"})
 	ice_medium.element = Spell.Element.ICE
 	ice_medium.r = "1.6"
-	var ice_large := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*3", "speed": "2"})
+	var ice_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"})
 	ice_large.element = Spell.Element.ICE
 	ice_large.r = "3.2"
 	
-	var ice_wall := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br+1", "speed": "0.01", "height": "Br"})
+	var ice_wall := GlobalData.magic_book.spell_with_name("wall", {})
 	ice_wall.element = Spell.Element.ICE
 	ice_wall.r = "Br * 2"
 	ice_wall.follow = true
@@ -119,7 +119,6 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	else:
-		print(ice_wall_timer)
 		if ice_wall_timer == 0 or ice_wall_timer > 60 * 10:
 			ice_wall_timer = 1
 			return defence_pattern

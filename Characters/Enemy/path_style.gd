@@ -4,6 +4,7 @@ enum Kind { ORIGIN, CIRCLE, PATH, EXPR }
 enum CoordY { GROUND, ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER }
+enum OriginKind { ABSOLUTE, PLAYER, ME }
 
 var kind = Kind.CIRCLE
 var min_radius := 5.0
@@ -14,14 +15,18 @@ var path: Pathway = null
 var expr_x: Expr = null
 var expr_y: Expr = null
 var expr_z: Expr = null
-var use_player_as_origin: bool
+var origin_kind: OriginKind
 var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE_XZ
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var last_t: float = 0.0
 var stored_loops: int = 0
+var is_done_uses_path_segements: bool = false
+var last_path_segment_index: int = 0
 var time_offset: float = 0.0
+
+var me_start_position = null # used to store entity position (Vec3) at start of movement
 
 # (theta, radius) pair to describe offset from player. +theta is ccw from 
 # straight of player view. -theta is cw from player view. radius is distance away
@@ -33,7 +38,7 @@ func _init(_seed: float = randf(), _kind: Kind = Kind.ORIGIN, _origin: Vector3 =
 	kind = _kind
 	origin = _origin
 	seed_offset = _seed
-	use_player_as_origin = false
+	origin_kind = OriginKind.ABSOLUTE
 	if _seed == 0.0:
 		time_offset = Time.get_unix_time_from_system()
 	
@@ -62,13 +67,23 @@ func use_absolute_xz() -> PathStyle:
 	return self
 	
 func set_use_player_as_origin(o: bool = true) -> PathStyle:
-	use_player_as_origin = o
+	origin_kind = OriginKind.PLAYER if o else OriginKind.ABSOLUTE
+	if o:
+		origin = Vector3.ZERO
+	return self
+	
+func set_use_me_as_origin(o: bool = true) -> PathStyle:
+	origin_kind = OriginKind.ME if o else OriginKind.ABSOLUTE
 	if o:
 		origin = Vector3.ZERO
 	return self
 	
 func set_player_vision_as_origin(a: float, r: float) -> PathStyle:
 	player_vision_offset = Vector2(a, r) 
+	return self
+	
+func set_is_done_uses_path_segments(d: bool = true) -> PathStyle:
+	is_done_uses_path_segements = d
 	return self
 	
 func align_y_to_origin() -> PathStyle:
@@ -81,7 +96,7 @@ func align_y_to_ground() -> PathStyle:
 	
 func circle(center: Vector3, radius: float) -> PathStyle:
 	kind = Kind.CIRCLE
-	use_player_as_origin = false
+	origin_kind = OriginKind.ABSOLUTE
 	origin = center
 	min_radius = radius
 	max_radius = radius
@@ -89,7 +104,7 @@ func circle(center: Vector3, radius: float) -> PathStyle:
 	
 func circle_player(radius: float) -> PathStyle:
 	kind = Kind.CIRCLE
-	use_player_as_origin = true
+	origin_kind = OriginKind.PLAYER
 	origin = Vector3.ZERO
 	min_radius = radius
 	max_radius = radius
@@ -100,14 +115,14 @@ func towards(center: Vector3, mn: float = 0, mx: float = mn) -> PathStyle:
 	min_radius = mn
 	max_radius = mx
 	origin = center
-	use_player_as_origin = false
+	origin_kind = OriginKind.ABSOLUTE
 	return self
 	
 func towards_player(mn: float, mx: float) -> PathStyle:
 	min_radius = mn
 	max_radius = mx
 	kind = Kind.ORIGIN
-	use_player_as_origin = true
+	origin_kind = OriginKind.PLAYER
 	origin = Vector3.ZERO
 	return self
 	
@@ -165,9 +180,13 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 	last_t = t
 	if is_done:
 		is_done.data = false
+	if me_start_position == null:
+		me_start_position = me.position
 	var temp_origin := origin
-	if use_player_as_origin:
+	if origin_kind == OriginKind.PLAYER:
 		temp_origin += player.position
+	elif origin_kind == OriginKind.ME:
+		temp_origin += me_start_position
 	if player_vision_offset:
 		var rot: float = player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot").rotation.y
 		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, rot + player_vision_offset.x)
@@ -200,11 +219,13 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 
 		Kind.PATH:
 			var dist = fmod(movement_speed * t, path.distance)
-			if dist <= fmod(movement_speed * old_t, path.distance):
+			var index = Globals.Ref.new(0)
+			var v = path.position_at_distance(dist, index) + temp_origin
+			
+			if dist <= fmod(movement_speed * old_t, path.distance) or (is_done_uses_path_segements and index.data != last_path_segment_index):
 				if is_done:
 					is_done.data = true
 				stored_loops += 1
-			var v = path.position_at_distance(dist) + temp_origin
 			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 			return Vector3(v.x, y, v.z)
 			
@@ -233,8 +254,8 @@ class Pathway:
 	var segments: Array[Segment]
 	var distance: float
 	
-	func _init():
-		segments = []
+	func _init(sgmnts: Array[Segment] = []):
+		segments = sgmnts
 		calculate_distance()
 		
 	func add(segment: Segment):
@@ -253,7 +274,7 @@ class Pathway:
 		var dist := t * distance
 		return position_at_distance(dist)
 			
-	func position_at_distance(dist: float) -> Vector3:
+	func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		var segment := 0
 		var running := 0.0
 		for i in range(segments.size()):
@@ -263,6 +284,8 @@ class Pathway:
 				break
 			running += s.distance
 		dist -= running
+		if index:
+			index.data = segment
 		return segments[segment].position_at_distance(dist)
 
 class Segment:

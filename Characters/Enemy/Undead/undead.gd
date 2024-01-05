@@ -22,12 +22,12 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var rock_attack_small := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br", "speed": "5"})
+	var rock_attack_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "5"})
 	rock_attack_small.element = Spell.Element.ROCK
-	var rock_attack_medium := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2", "speed": "3"})
+	var rock_attack_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "3", "h": "Br/2+0.5"})
 	rock_attack_medium.r = "1"
 	rock_attack_medium.element = Spell.Element.ROCK
-	var rock_attack_large := GlobalData.magic_book.spell_with_name("linear", {"offset": "Br*2.5", "speed": "1"})
+	var rock_attack_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "1", "h": "Br/2+1.0"})
 	rock_attack_large.element = Spell.Element.ROCK
 	rock_attack_medium.r = "2"	
 	

@@ -46,9 +46,9 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"h":"4", "s":"4"})
 	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
+	var water_line := GlobalData.magic_book.spell_with_name("linear", {"s":"15", "d":"1"})
 	water_line.element = Spell.Element.WATER
 	
 	default_pattern = AttackPatterns.new(
@@ -108,10 +108,8 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		print("idle and <dist")
 		current_path = attack_direct_path		
 	elif current_path == attack_direct_path:
-		prints(jump_timer, attack_direct_path.stored_loops)
 		if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 			current_path = idle_path
 		elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:

@@ -90,7 +90,7 @@ void fragment() {
 	SPECULAR = specular;
 	
 	ALBEDO = vec3(UV.x / 8.0, 0, UV.y / 8.0);
-	ALPHA = 0.3;
+	ALPHA = 0.9;
 }
 "
 
@@ -151,7 +151,6 @@ height = 100.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4wb3"]
 transparency = 1
-albedo_color = Color(1, 1, 1, 0.105882)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hcdbc"]
 material = SubResource("StandardMaterial3D_d4wb3")

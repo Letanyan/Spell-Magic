@@ -18,36 +18,32 @@ func _ready():
 	
 	idle_path = PathStyle.new(randf()).circle_path(5, 0).set_origin(position).speed(7).use_absolute().align_y_to_origin()
 	
-	var R := 5.0
+	var R := 25.0
 	var U := -5.0
-	var s1 := PathStyle.Segment.arc(R, 0, PI / 2, U)
-	var v1 := Vector3(R, U, 0).rotated(Vector3.UP, PI / 2)
-	var r1 := PathStyle.Segment.linear(v1, Vector3(v1.x, -U, v1.z))
-	var r1d := PathStyle.Segment.linear(Vector3(v1.x, -U, v1.z), v1)
-	
-	var s2 := PathStyle.Segment.arc(R, PI / 2, PI, U)
-	var v2 := Vector3(R, U, 0).rotated(Vector3.UP, PI)
-	var r2 := PathStyle.Segment.linear(v2, Vector3(v2.x, -U, v2.z))
-	var r2d := PathStyle.Segment.linear(Vector3(v2.x, -U, v2.z), v2)
-	
-	var s3 := PathStyle.Segment.arc(R, PI, PI * 3 / 2, U)
-	var v3 := Vector3(R, U, 0).rotated(Vector3.UP, PI * 3 / 2)
-	var r3 := PathStyle.Segment.linear(v3, Vector3(v3.x, -U, v3.z))
-	var r3d := PathStyle.Segment.linear(Vector3(v3.x, -U, v3.z), v3)
-	
-	var s4 := PathStyle.Segment.arc(R, PI * 3 / 2, PI * 2, U)
-	var v4 := Vector3(R, U, 0).rotated(Vector3.UP, PI * 2)
-	var r4 := PathStyle.Segment.linear(v4, Vector3(v4.x, -U, v4.z))
-	var r4d := PathStyle.Segment.linear(Vector3(v4.x, -U, v4.z), v4)
+		
+	var underground := func() -> Vector3:
+		var p: Vector3 = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * R + Vector3(0, U, 0)
+		return p
 	
 	var p := PathStyle.Pathway.new()
-	p.append([s1, r1, r1d, s2, r2, r2d, s3, r3, r3d, s4, r4, r4d])
+	var a: Vector3 = underground.call()
+	var b: Vector3 = underground.call()
+	var c: Vector3 = underground.call()
+	var d: Vector3 = underground.call()
+	var e: Vector3 = underground.call()
+
+	p.append([
+		PathStyle.Segment.linear(a, b), PathStyle.Segment.linear(b, c),
+		PathStyle.Segment.linear(c, d), PathStyle.Segment.linear(d, e),
+		PathStyle.Segment.linear(e, a),
+	])
 	
-	attack_path = PathStyle.new(randf()).follow_path(p).set_use_player_as_origin().speed(5).use_absolute().align_y_to_origin()
+	attack_path = PathStyle.new(0.0).follow_path(p).set_use_player_as_origin().speed(5).align_y_to_origin().look_at_player().set_is_done_uses_path_segments()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
+	var Z := Vector3.ZERO
 	random_pattern = AttackPatterns.new(
 		[
 			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 1, Spell.Element.ELECTRIC, 1),
@@ -56,7 +52,21 @@ func _ready():
 		],
 		[ 5, 3, 2 ],
 		false,
-		0.5
+		0.5,
+		[
+			AttackMovement.new(
+				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, -U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+			),
+			AttackMovement.new(
+				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, -U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+			),
+			AttackMovement.new(
+				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, -U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+			)
+		]
 	)
 	
 	sequence_pattern = AttackPatterns.new(

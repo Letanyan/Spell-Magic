@@ -61,24 +61,47 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
+	var elec1 = GlobalData.magic_book.spell_with_name("linear", {"s": "2", "d": "2"})
+	elec1.element = Spell.Element.ELECTRIC
+	elec1.duration = 10.0
+	var elec2 = GlobalData.magic_book.spell_with_name("linear", {"s": "5", "d": "2"})
+	elec2.element = Spell.Element.ELECTRIC
+	elec2.duration = 8.0
+	var elec3 = GlobalData.magic_book.spell_with_name("linear", {"s": "10", "d": "2"})
+	elec3.element = Spell.Element.ELECTRIC
+	elec3.duration = 6.0
+	
+	var elec_arc1 = GlobalData.magic_book.spell_with_name("arc", {"R": "pi", "s": "2"})
+	elec_arc1.element = Spell.Element.ELECTRIC
+	elec_arc1.duration = 10.0
+	var elec_arc2 = GlobalData.magic_book.spell_with_name("arc", {"R": "pi/2", "s": "5"})
+	elec_arc2.element = Spell.Element.ELECTRIC
+	elec_arc2.duration = 8.0
+	var elec_arc3 = GlobalData.magic_book.spell_with_name("arc", {"R": "pi/4", "s": "10"})
+	elec_arc3.element = Spell.Element.ELECTRIC
+	elec_arc3.duration = 6.0
+	
 	random_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 10 + u * 2", "v * t * 10 + v * 2", "w * t * 10 + w * 2", "1", 0.1, 1000, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2", "w * t * 5 + w * 2", "1", 0.1, 2000, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 15 + u * 2", "v * t * 15 + v * 2", "w * t * 15 + w * 2", "1", 0.1, 3000, Spell.Element.ELECTRIC, 1),
+			elec1,
+			elec2,
+			elec3,
 		],
-		[ 3, 10, 2 ],
+		[ 10, 3, 2 ],
 		false,
 		0.15
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 1", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 1", "w * t * 5", "1", 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 1", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
+			elec1,
+			elec_arc1,
+			elec2,
+			elec_arc2,
+			elec3,
+			elec_arc3,
 		],
-		[ 1, 2, 1 ],
+		[ 1, 1, 3, 1, 5, 1 ],
 		true
 	)
 	
@@ -87,7 +110,7 @@ func _ready():
 func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
-	elif vitals.health.value >= 50:
+	elif vitals.health.value >= 20:
 		return random_pattern
 	else:
 		return sequence_pattern
