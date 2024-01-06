@@ -57,14 +57,12 @@ func _ready():
 	animation_map["attack"] = "Weapon"
 
 func attack_state() -> AttackPatterns:
+	health_bar.visible = not current_path == idle_path
 	if current_path == idle_path:
-		health_bar.visible = false
 		return none_pattern
 	elif vitals.health.value >= 50:
-		health_bar.visible = true
 		return sequence_pattern
 	else:
-		health_bar.visible = true
 		return random_pattern
 
 func entity_info() -> EntityInfo:

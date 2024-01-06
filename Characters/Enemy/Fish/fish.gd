@@ -91,6 +91,7 @@ func __default_pattern() -> AttackPatterns:
 	return default_pattern
 
 func attack_state() -> AttackPatterns:
+	health_bar.visible = not current_path == idle_path
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.value >= 50:
