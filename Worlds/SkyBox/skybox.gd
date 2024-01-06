@@ -1,5 +1,5 @@
 class_name SkyBox
-
+extends Node
 
 ## This is not a simulation of the actual model but only a extremely simplified version.
 ## I don't know if I made some mistakes in my assumptions. I haven't found a similar solution anywhere.

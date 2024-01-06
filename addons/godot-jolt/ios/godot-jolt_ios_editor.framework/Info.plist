@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
-	<string>godot-jolt_macos_editor</string>
+	<string>godot-jolt_ios_editor</string>
 	<key>CFBundleName</key>
 	<string>Godot Jolt</string>
 	<key>CFBundleDisplayName</key>
