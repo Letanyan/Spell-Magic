@@ -65,23 +65,24 @@ func random_foliage(probs: Dictionary) -> World.Foliage:
 func random_building(probs: Dictionary) -> World.Building:
 	return Population.random_entity_from_distribution(rng.randf(), probs) as World.Building
 	
-func always_valid(normal: Dictionary) -> bool:
-	return true
+func always_valid(normal: Dictionary) -> Dictionary:
+	return {"valid": true}
 	
 func on_flat_surface(distance: float) -> Callable:
-	return func(normal: Dictionary) -> bool:
-		return normal.get("normal", Vector3.ZERO).distance_to(Vector3.UP) < distance
+	return func(normal: Dictionary) -> Dictionary:
+		return {"valid": normal.get("normal", Vector3.ZERO).distance_to(Vector3.UP) < distance, "y_offset": distance * -2}
 	
-func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, condition: Callable = always_valid):
+func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable = always_valid):
 	if entity != null:
 		var world_normal = Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		if wh < Globals.sea_level():
 			return null
-		if not condition.call(world_normal):
+		var info: Dictionary = user_info.call(world_normal) 
+		if info.get("valid", true):
 			return null
 		entity.position.x = pos.x
-		entity.position.y = wh
+		entity.position.y = wh + info.get("y_offset", 0.0)
 		entity.position.z = pos.z
 		if is_enemy:
 			entity.player = player
@@ -110,6 +111,9 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.WALKER:
 			result = walker.instantiate()
 			result.name = "Walker" + str(rng.randi())
+		World.Enemy.FISH:
+			result = fish.instantiate()
+			result.name = "Fish" + str(rng.randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
@@ -156,7 +160,7 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 			result.name = World.Foliage.keys()[foliage] + str(rng.randi())
 	
-	return prepare_entity(state, result, pos, false)
+	return prepare_entity(state, result, pos, false, on_flat_surface(0.05))
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result: Node3D = null
