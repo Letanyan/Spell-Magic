@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=13 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
+[ext_resource type="AudioStream" uid="uid://blus3u8usi3fc" path="res://Audio/water.mp3" id="2_7rwhp"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ygggg"]
 resource_local_to_scene = true
@@ -122,3 +123,7 @@ monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_6etye")
+
+[node name="audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_7rwhp")
+autoplay = true

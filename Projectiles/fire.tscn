@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://ded2wbijwa0uu"]
+[gd_scene load_steps=13 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_ku5ha"]
+[ext_resource type="AudioStream" uid="uid://do6eak53t6bri" path="res://Audio/fire.mp3" id="2_uwget"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_i6n1l"]
 resource_local_to_scene = true
@@ -25,9 +26,9 @@ resource_local_to_scene = true
 emission_shape = 1
 emission_sphere_radius = 0.5
 direction = Vector3(0, 1, 0)
-gravity = Vector3(0, 0, 0)
 initial_velocity_max = 1.0
 angular_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
 scale_min = 0.0
 scale_curve = SubResource("CurveTexture_drmjp")
 color_ramp = SubResource("GradientTexture1D_lctcp")
@@ -124,3 +125,7 @@ monitorable = false
 
 [node name="shape" type="CollisionShape3D" parent="source/area"]
 shape = SubResource("SphereShape3D_21upn")
+
+[node name="audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_uwget")
+autoplay = true

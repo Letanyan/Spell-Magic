@@ -229,7 +229,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 		Spell.Element.ROCK:
 			explosion = load("res://Projectiles/explosion/rock_exp.tscn").instantiate()
 			source = explosion.get_node("source")
-			source.amount = amount
+			source.amount = (amount + 1) * 100
 			source.draw_pass_1.size.x = r * 0.1
 			source.draw_pass_1.size.y = r * 0.1
 			source.draw_pass_1.size.z = r * 0.1

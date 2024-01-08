@@ -447,37 +447,43 @@ func update_spell(t: float, vars: Dictionary):
 	update_movement(p, false, vars)
 
 func stop_emitting():
+	const AUDIO_FADE_OUT = 0.2
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(Globals.particle_system_lifetime(particles))
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
 		Spell.Element.ROCK:
-			free_after(0.1)
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(0.1, AUDIO_FADE_OUT))
 			
 		Spell.Element.WATER:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(Globals.particle_system_lifetime(particles))
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
 		Spell.Element.AIR:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(Globals.particle_system_lifetime(particles))
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
 		Spell.Element.ICE:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
 			var area: Area3D = get_node("source/area")
 			area.collision_mask = 0
-			free_after(Globals.particle_system_lifetime(particles))
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
 		Spell.Element.ELECTRIC:
 			var particles: GPUParticles3D = get_node("source")
@@ -486,10 +492,13 @@ func stop_emitting():
 			body.visible = false
 			var area: Area3D = get_node("body/area")
 			area.collision_mask = 0
-			free_after(Globals.particle_system_lifetime(particles))
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
 		Spell.Element.VOID:
-			free_after(0.1)
+			
+			fade_audio(-40, AUDIO_FADE_OUT)
+			free_after(max(0.1, AUDIO_FADE_OUT + 0.1))
 			
 func free_after(duration: float):
 	if get_parent() != null and get_tree() != null:
@@ -504,6 +513,12 @@ func free_after(duration: float):
 			else:
 				max_duration = 0
 		to_remove = true
+		
+func fade_audio(final: float, duration: float):
+	var audio: AudioStreamPlayer3D = get_node("audio")
+	var tween = get_tree().create_tween()
+	tween.tween_property(audio, "volume_db", -40, duration)
+	tween.tween_callback(audio.stop)
 
 func cast_spell(insert: Callable, next_spell: Spell, target: Node3D):
 	await get_tree().physics_frame
