@@ -210,7 +210,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 		spell_variables(p.fixed_vars, body, true, p, p.spell)
 	p.projectile_hit.connect(pass_projectile_hit)
 	insert.call(p)
-
+	
 func set_up_collision(world: Node3D, p: SpellBody):
 	var new_agent_rid: RID = NavigationServer3D.agent_create()
 	var default_3d_map_rid: RID = world.get_world_3d().get_navigation_map()

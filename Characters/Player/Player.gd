@@ -9,6 +9,10 @@ extends CharacterBody3D
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
 @onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
 
+@onready var bg_audio1: AudioStreamPlayer3D = $BGAudio1
+@onready var bg_audio2: AudioStreamPlayer3D = $BGAudio2
+var current_bg_audio: int = 1
+
 var velocity_movement := VelocityMovement.player()
 var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
 var invunerable := 0
@@ -319,3 +323,14 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 					
 	vitals.damage_resistance = damage_resistance
 	
+func transition_bg_audio(stream: AudioStream):
+	if current_bg_audio == 1:
+		bg_audio2.stream = stream
+		bg_audio2.play()
+		cam_animator.play("BGCrossFade2")
+		current_bg_audio = 2
+	else:
+		bg_audio1.stream = stream
+		bg_audio1.play()
+		cam_animator.play("BGCrossFade1")
+		current_bg_audio = 1

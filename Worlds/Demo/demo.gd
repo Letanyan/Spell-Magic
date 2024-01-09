@@ -9,6 +9,8 @@ extends Node3D
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
 
+var last_biome: World.Biome = World.Biome.WATER
+
 @onready var skybox: SkyBox
 
 var terrain_update_interval = 0
@@ -119,6 +121,11 @@ func _process(delta):
 	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := chunker.blender.biome
 	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	
+	if last_biome != b:
+		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
+		last_biome = b
+		
 	pass
 	
 func _physics_process(delta):

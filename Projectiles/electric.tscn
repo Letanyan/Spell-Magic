@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_pf3b3"]
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
 [ext_resource type="Shader" path="res://Projectiles/electric.gdshader" id="3_8dbc8"]
-[ext_resource type="AudioStream" uid="uid://bmehreux588ha" path="res://Audio/electric.mp3" id="4_gu14i"]
+[ext_resource type="AudioStream" uid="uid://bmehreux588ha" path="res://Audio/projectile/electric.mp3" id="4_gu14i"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_htuie"]
 resource_local_to_scene = true

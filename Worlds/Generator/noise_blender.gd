@@ -20,6 +20,10 @@ var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elev
 var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
 var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
 
+const grassland_audio: AudioStream = preload("res://Audio/biome/grassland.mp3")
+const forest_audio: AudioStream = preload("res://Audio/biome/forest.mp3")
+const lake_audio: AudioStream = preload("res://Audio/biome/lake.mp3")
+
 """
 	WATER,
 	GRASSLAND, TAIGA, FOREST, DESERT, JUNGLE, SAVANNAH, TUNDRA,
@@ -211,3 +215,17 @@ func grass_height(b: World.Biome, x: float, y: float) -> float:
 		return snapped(e * 4, 0.1)
 	else:
 		return 0.5 + s
+
+static func audio_for_biome(b: World.Biome) -> AudioStream:
+	match b:
+		World.Biome.WATER: return lake_audio
+		World.Biome.TAIGA: return lake_audio
+		World.Biome.GRASSLAND: print("grass"); return grassland_audio
+		World.Biome.FOREST: print("forest"); return forest_audio
+		World.Biome.DESERT: return lake_audio
+		World.Biome.JUNGLE: return lake_audio
+		World.Biome.SAVANNAH: print("savannah"); return lake_audio
+		World.Biome.TUNDRA: return lake_audio
+		World.Biome.OTHERWORLD: return lake_audio
+		World.Biome.HFIL: return lake_audio
+		_: return lake_audio

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_gw4hd"]
 [ext_resource type="Shader" path="res://Projectiles/ice.gdshader" id="2_d6dw3"]
-[ext_resource type="AudioStream" uid="uid://mnk2xn0q2pnw" path="res://Audio/ice.mp3" id="3_7ubeh"]
+[ext_resource type="AudioStream" uid="uid://mnk2xn0q2pnw" path="res://Audio/projectile/ice.mp3" id="3_7ubeh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwdgd"]
 resource_local_to_scene = true

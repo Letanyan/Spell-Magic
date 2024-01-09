@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_ku5ha"]
-[ext_resource type="AudioStream" uid="uid://do6eak53t6bri" path="res://Audio/fire.mp3" id="2_uwget"]
+[ext_resource type="AudioStream" uid="uid://do6eak53t6bri" path="res://Audio/projectile/fire.mp3" id="2_uwget"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_i6n1l"]
 resource_local_to_scene = true

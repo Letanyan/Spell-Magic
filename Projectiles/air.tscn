@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_a23cr"]
 [ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="2_qxk8k"]
-[ext_resource type="AudioStream" uid="uid://cec68ywgts4ce" path="res://Audio/wind.mp3" id="3_lq2kl"]
+[ext_resource type="AudioStream" uid="uid://cec68ywgts4ce" path="res://Audio/projectile/wind.mp3" id="3_lq2kl"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i1ldc"]
 resource_local_to_scene = true
