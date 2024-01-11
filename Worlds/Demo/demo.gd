@@ -123,6 +123,7 @@ func _process(delta):
 	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
 	if last_biome != b:
+		player.current_biome = b
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
 		last_biome = b
 		

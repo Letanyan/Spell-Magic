@@ -13,6 +13,10 @@ extends CharacterBody3D
 @onready var bg_audio2: AudioStreamPlayer3D = $BGAudio2
 var current_bg_audio: int = 1
 
+@onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
+var current_biome: World.Biome = World.Biome.WATER
+var walking_tween: Tween = null
+
 var velocity_movement := VelocityMovement.player()
 var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
 var invunerable := 0
@@ -110,11 +114,14 @@ func _physics_process(delta):
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor():
 			if velocity.length() < 1:
+				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				play_animation("walk")
 			else:
+				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				play_animation("run")
 	else:
 		if is_on_floor():
+			play_walking_audio(null)
 			play_animation("battle_idle")
 		
 	if not is_on_floor_only():
@@ -334,3 +341,23 @@ func transition_bg_audio(stream: AudioStream):
 		bg_audio1.play()
 		cam_animator.play("BGCrossFade1")
 		current_bg_audio = 1
+
+func play_walking_audio(stream: AudioStream):
+	if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:
+		if stream != null:
+			if walking_tween:
+				walking_tween.kill()
+				walking_tween = null
+			walking_audio.stream = stream
+			walking_audio.volume_db = 0
+			walking_audio.play()
+		elif walking_audio.stream != null and not walking_tween:
+			walking_tween = create_tween()
+			walking_tween.tween_property(walking_audio, "volume_db", -80, 2)
+			walking_tween.tween_callback(func(): 
+				walking_audio.stop()
+				walking_audio.stream = null
+				walking_tween.kill()
+				walking_tween = null
+			)
+		

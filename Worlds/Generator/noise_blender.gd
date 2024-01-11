@@ -24,6 +24,8 @@ const grassland_audio: AudioStream = preload("res://Audio/biome/grassland.mp3")
 const forest_audio: AudioStream = preload("res://Audio/biome/forest.mp3")
 const lake_audio: AudioStream = preload("res://Audio/biome/lake.mp3")
 
+const grassland_walking: AudioStream = preload("res://Audio/walking/grassland.mp3")
+
 """
 	WATER,
 	GRASSLAND, TAIGA, FOREST, DESERT, JUNGLE, SAVANNAH, TUNDRA,
@@ -229,3 +231,17 @@ static func audio_for_biome(b: World.Biome) -> AudioStream:
 		World.Biome.OTHERWORLD: return lake_audio
 		World.Biome.HFIL: return lake_audio
 		_: return lake_audio
+		
+static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
+	match b:
+		World.Biome.WATER: return grassland_walking
+		World.Biome.TAIGA: return grassland_walking
+		World.Biome.GRASSLAND: return grassland_walking
+		World.Biome.FOREST: return grassland_walking
+		World.Biome.DESERT: return grassland_walking
+		World.Biome.JUNGLE: return grassland_walking
+		World.Biome.SAVANNAH: return grassland_walking
+		World.Biome.TUNDRA: return grassland_walking
+		World.Biome.OTHERWORLD: return grassland_walking
+		World.Biome.HFIL: return grassland_walking
+		_: return grassland_walking
