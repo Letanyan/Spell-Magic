@@ -24,7 +24,7 @@ func update(body, delta):
 		var p: SpellBody = particles[i]
 		
 		if p.is_active():
-			spell_variables(p.fixed_vars, body, false, p, p.spell)
+			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
 				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
 			p.update_spell(t, p.fixed_vars)
@@ -43,8 +43,12 @@ func update(body, delta):
 		idx -= 1
 		
 
-func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody, s: Spell) -> Dictionary:
-	var prefix := "" if fixed else "t"
+enum SpellVariableKind { FIXED, TIMED, BOMB }
+func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVariableKind, p: SpellBody, s: Spell) -> Dictionary:
+	var prefix := ""
+	match variable_kind:
+		SpellVariableKind.TIMED: prefix = "t"
+		SpellVariableKind.BOMB: prefix = "T"
 
 	var cdir := Vector3.ZERO
 	var track := Vector3.ZERO # direction to enemy that was hit by raycast 
@@ -104,15 +108,24 @@ func spell_variables(result: Dictionary, body: Node3D, fixed: bool, p: SpellBody
 	result[prefix + "rcz"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	if s.player_is_origin:
-		result["abs_pos" if fixed else "rel_pos"] = body.position
+		if variable_kind == SpellVariableKind.FIXED:
+			result["abs_pos"] = body.position
+		elif variable_kind == SpellVariableKind.TIMED:
+			result["rel_pos"] = body.position
 	else:
 		if entity == Entity.PLAYER:
 			var port := body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
 			var dist: SpringArm3D = body.get_node("./CamPivot/Arm")
-			result["abs_pos" if fixed else "rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
+			if variable_kind == SpellVariableKind.FIXED:
+				result["abs_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
+			elif variable_kind == SpellVariableKind.TIMED:
+				result["rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 		else:
-			result["abs_pos" if fixed else "rel_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
+			if variable_kind == SpellVariableKind.FIXED:
+				result["abs_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
+			elif variable_kind == SpellVariableKind.TIMED:
+				result["rel_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
 	
 	if p != null: # direction from character to spell
 		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )
@@ -147,8 +160,8 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 	
 func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Dictionary:
 	var result := {}
-	spell_variables(result, body, true, p, spell)
-	spell_variables(result, body, false, p, spell)
+	spell_variables(result, body, SpellVariableKind.FIXED, p, spell)
+	spell_variables(result, body, SpellVariableKind.TIMED, p, spell)
 	return result
 
 func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Dictionary = {}):
@@ -188,7 +201,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
 		tracking_offset[p.name] = spell_offset
-		spell_variables(p.fixed_vars, body, false, p, p.spell)
+		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 		var delay := spell.calculate_delay(p.fixed_vars)
 		start_particle(delay, body, p, insert)
 		
@@ -204,12 +217,22 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 	
 
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
+	var q: Node3D = null
+	if delay > 0:
+		q = p.spell.get_turret(p.n, p.fixed_vars)
+		insert.call(q)
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
 	if not p.spell.is_bomb:
-		spell_variables(p.fixed_vars, body, true, p, p.spell)
+		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
+	else:
+		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
+		
 	p.projectile_hit.connect(pass_projectile_hit)
 	insert.call(p)
+	if q and q.get_parent():
+		q.get_parent().remove_child(q)
+		q.queue_free()
 	
 func set_up_collision(world: Node3D, p: SpellBody):
 	var new_agent_rid: RID = NavigationServer3D.agent_create()

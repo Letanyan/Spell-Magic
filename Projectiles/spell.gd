@@ -193,6 +193,8 @@ const air = preload("res://Projectiles/air.tscn")
 const ice = preload("res://Projectiles/ice.tscn")
 const electric = preload("res://Projectiles/electric.tscn")
 const _void = preload("res://Projectiles/void.tscn")
+const turret = preload("res://Projectiles/turret/turret.tscn")
+const turret_mat = preload("res://Projectiles/turret/turret.tres")
 	
 func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	var fixed_vars := {}
@@ -267,6 +269,52 @@ func get_particles(fvars: Dictionary) -> Array:
 		p.spell = self
 		result.append(p)
 	return result
+	
+func get_turret(n: int, fvars: Dictionary) -> Node3D:
+	var fixed_vars := {}
+	fixed_vars["rn0"] = randf()
+	fixed_vars["rn1"] = randf()
+	fixed_vars["rn2"] = randf()
+	fixed_vars["rn3"] = randf()
+	fixed_vars["rn4"] = randf()
+	fixed_vars["rn5"] = randf()
+	fixed_vars["rn6"] = randf()
+	fixed_vars["rn7"] = randf()
+	fixed_vars["rn8"] = randf()
+	fixed_vars["rn9"] = randf()
+	fixed_vars["T"] = duration
+	fixed_vars["P"] = power
+	fixed_vars["n"] = float(n)
+	fixed_vars.merge(fvars, true)
+	compute_expressions(fixed_vars)
+	fixed_vars["D"] = d_expr.compute(fixed_vars)
+	
+	
+	var p = turret.instantiate()
+			
+	p.position = calculate_location(fixed_vars)
+	var er := calculate_size(fixed_vars)
+	
+	var mesh: MeshInstance3D = p.get_node("outer") as MeshInstance3D
+	var ring: TorusMesh = mesh.mesh as TorusMesh
+	ring.inner_radius = er
+	ring.outer_radius = er + er * 0.1
+	var mat: ShaderMaterial = ring.material as ShaderMaterial
+	mat.set_shader_parameter("albedo", Spell.real_color_from_element(element))
+	
+	ring = p.get_node("mid").mesh
+	ring.inner_radius = er * 0.67
+	ring.outer_radius = er * 0.67 + er * 0.1
+	
+	ring = p.get_node("inner").mesh
+	ring.inner_radius = er * 0.25
+	ring.outer_radius = er * 0.25 + er * 0.1
+	
+	var anim := p.get_node("AnimationPlayer") as AnimationPlayer
+	anim.play("rotate")
+	anim.seek(randf() * 2, true)
+	
+	return p
 
 func save_dict():
 	return {
@@ -342,6 +390,17 @@ static func color_from_element(el: Element) -> Color:
 		Element.WATER: return Color.BLUE
 		Element.AIR: return Color.GREEN_YELLOW
 		Element.ICE: return Color.DODGER_BLUE
-		Element.ELECTRIC: return Color.YELLOW
+		Element.ELECTRIC: return Color.WEB_PURPLE
+		Element.VOID: return Color.BLACK
+		_: return Color.WHITE
+		
+static func real_color_from_element(el: Element) -> Color:
+	match el:
+		Element.FIRE: return Color(1, 0.38, 0)
+		Element.ROCK: return Color(0.718, 0.353, 0.141)
+		Element.WATER: return Color(0.02, 0.051, 0.502)
+		Element.AIR: return Color(0.502, 1, 0.502)
+		Element.ICE: return Color(0.133, 0.553, 1)
+		Element.ELECTRIC: return Color(0.486, 0, 0.569)
 		Element.VOID: return Color.BLACK
 		_: return Color.WHITE

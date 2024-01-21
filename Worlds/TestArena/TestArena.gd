@@ -119,14 +119,14 @@ func _physics_process(delta):
 			pop.update_info()
 			
 	if daytime_tick == 60:
-		if skybox.day_time + 0.1 >= SkyBox.HOURS_IN_DAY:
+		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:
 			skybox.day_time = 0
 			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
 				skybox.day_of_year = 1
 			else:
 				skybox.day_of_year += 1
 		else:
-			skybox.day_time += 0.1
+			skybox.day_time += 0.016667
 		daytime_tick = 0
 			
 	if not menu.is_showing:
