@@ -89,6 +89,7 @@ func open(kind: Kind):
 		Kind.SETTINGS:
 			settings.update_controls()
 			_on_settings_pressed()
+	world_settings.save()
 
 func close():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

@@ -5,6 +5,8 @@ var player_position: Vector3
 var sed: int
 var enemies_killed := {} # {World.Enemy: int}
 var is_paused: bool
+var day_of_the_year: int
+var time_of_day: float
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
@@ -14,7 +16,8 @@ var game_mode_settings: GameModeSettings
 func save_dict() -> Dictionary:
 	return {
 		"name": world_name, "player": {"position": player_position}, "seed": sed,
-		"enemies_killed": enemies_killed,
+		"enemies_killed": enemies_killed, "day_of_the_year": day_of_the_year,
+		"time_of_day": time_of_day,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
@@ -37,6 +40,8 @@ func load_dict(data: Dictionary):
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})
 	is_paused = false
+	day_of_the_year = data.get("day_of_the_year", 1)
+	time_of_day = data.get("time_of_day", 12.0)
 	
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.load_dict(data.get("upgrade_settings", {}))

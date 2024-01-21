@@ -17,6 +17,7 @@ var wand: Wand
 var artifacts: Artifacts
 
 var knowledge_tick: int
+var daytime_tick: int
 
 var settings: WorldSettings
 
@@ -89,6 +90,7 @@ func _ready():
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
 	skybox.day_time = 14
+	daytime_tick = 0
 	
 	player.magic_book = book
 	player.artifacts = artifacts
@@ -108,12 +110,24 @@ func _process(delta):
 	
 func _physics_process(delta):
 	knowledge_tick += 1
+	daytime_tick += 1
 
 	if knowledge_tick == 60 and has_init_terrain_population:
 		knowledge_tick = 0
 		for loc in population:
 			var pop = population[loc]
 			pop.update_info()
+			
+	if daytime_tick == 60:
+		if skybox.day_time + 0.1 >= SkyBox.HOURS_IN_DAY:
+			skybox.day_time = 0
+			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
+				skybox.day_of_year = 1
+			else:
+				skybox.day_of_year += 1
+		else:
+			skybox.day_time += 0.1
+		daytime_tick = 0
 			
 	if not menu.is_showing:
 		const SPEED = 12.0
