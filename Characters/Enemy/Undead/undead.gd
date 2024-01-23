@@ -29,7 +29,19 @@ func _ready():
 	rock_attack_medium.element = Spell.Element.ROCK
 	var rock_attack_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "1", "h": "Br/2+1.0"})
 	rock_attack_large.element = Spell.Element.ROCK
-	rock_attack_medium.r = "2"	
+	rock_attack_large.r = "2"	
+	
+	var water_attack := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"})
+	water_attack.element = Spell.Element.WATER
+	water_attack.r = "1"	
+	
+	var fire_attack := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"})
+	fire_attack.element = Spell.Element.FIRE
+	fire_attack.r = "1"	
+	
+	var electric_attack := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"})
+	electric_attack.element = Spell.Element.ELECTRIC
+	electric_attack.r = "1"	
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -53,6 +65,30 @@ func _ready():
 		[ 2, 5, 2, 4, 2 ],
 		true
 	)
+	
+	#sequence_pattern = AttackPatterns.new(
+		#[
+			#AttackPatterns.new(
+				#[
+					#rock_attack_large,
+					#water_attack,
+				#],
+				#[2, 2],
+				#true
+			#),
+			#AttackPatterns.new(
+				#[
+					#fire_attack,
+					#electric_attack,
+				#],
+				#[2, 2],
+				#true
+			#),
+		#],
+		#[3, 3],
+		#false,
+		#0.5
+	#)
 	
 	animation_map["attack"] = "Weapon"
 
