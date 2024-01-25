@@ -6,7 +6,7 @@ extends Container
 @export var offset: Vector2 = Vector2.ZERO
 @export var line_width: float = 1.0
 @export var line_color: Color = Color(1, 1, 1, 0.5)
-@export var background_color: Color = Color(0, 0, 0, 0.5)
+@export var background_color: Color = Color(0.1, 0.1, 0.1, 1.0)
 
 var selected_cell_coord = null
 

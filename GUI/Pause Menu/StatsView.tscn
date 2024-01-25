@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cqoqd11ks5vm4"]
+[gd_scene load_steps=4 format=3 uid="uid://cqoqd11ks5vm4"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/StatsView.gd" id="1_mc58t"]
+[ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="2_e8vhb"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_1eye5"]
 font_size = 12
@@ -18,6 +19,7 @@ script = ExtResource("1_mc58t")
 layout_mode = 0
 offset_right = 272.0
 offset_bottom = 248.0
+theme_override_styles/panel = ExtResource("2_e8vhb")
 
 [node name="Health" type="RichTextLabel" parent="container"]
 layout_mode = 0

@@ -1,0 +1,38 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://cmg0iro73rb4"
+path="res://.godot/imported/ChakraPetch-Regular.ttf-a1970457caa499726243cdb139070776.fontdata"
+
+[deps]
+
+source_file="res://GUI/ThemeUI/ChakraPetch-Regular.ttf"
+dest_files=["res://.godot/imported/ChakraPetch-Regular.ttf-a1970457caa499726243cdb139070776.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=2
+generate_mipmaps=false
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=2
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "New Configuration",
+"size": Vector2i(16, 0)
+}]
+language_support={}
+script_support={}
+opentype_features={}

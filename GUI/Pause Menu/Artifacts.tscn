@@ -39,8 +39,8 @@ focus_mode = 2
 mouse_filter = 0
 script = ExtResource("2_reg1r")
 cell_size = Vector2(128, 128)
-line_color = Color(1, 1, 1, 0.25)
-background_color = Color(0, 0, 0, 0.752941)
+line_color = Color(1, 1, 1, 0.501961)
+background_color = Color(0.101961, 0.101961, 0.101961, 1)
 
 [node name="artifact_preview" type="Control" parent="."]
 layout_mode = 1

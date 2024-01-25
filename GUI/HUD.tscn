@@ -1,8 +1,10 @@
-[gd_scene load_steps=24 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=26 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
+[ext_resource type="Theme" uid="uid://b00c51a4v28fp" path="res://GUI/ThemeUI/ThemeUI.tres" id="1_fdac5"]
 [ext_resource type="StyleBox" uid="uid://dcy1b4vlmwy68" path="res://GUI/HUD_progress_bar_bg.tres" id="2_m4fwh"]
 [ext_resource type="PackedScene" uid="uid://cqoqd11ks5vm4" path="res://GUI/Pause Menu/StatsView.tscn" id="3_3d5vo"]
+[ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="4_g3pbk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bx3k2"]
 bg_color = Color(1, 1, 1, 1)
@@ -126,6 +128,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_fdac5")
 script = ExtResource("1_bddbh")
 
 [node name="HealthBar" type="ProgressBar" parent="."]
@@ -200,6 +203,7 @@ theme_override_colors/guide_color = Color(0, 0, 0, 0)
 theme_override_constants/v_separation = 1
 theme_override_constants/line_separation = 0
 theme_override_constants/outline_size = 0
+theme_override_styles/panel = ExtResource("4_g3pbk")
 auto_height = true
 
 [node name="WandMappingPanel" type="Panel" parent="."]
@@ -215,6 +219,7 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_styles/panel = ExtResource("4_g3pbk")
 
 [node name="WandMapping" type="RichTextLabel" parent="WandMappingPanel"]
 layout_mode = 1

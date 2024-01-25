@@ -1,0 +1,62 @@
+[gd_resource type="Theme" load_steps=17 format=3 uid="uid://b00c51a4v28fp"]
+
+[ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="1_csxah"]
+[ext_resource type="StyleBox" uid="uid://dacirujsofcjw" path="res://GUI/ThemeUI/DisabledStyle.tres" id="1_pinm1"]
+[ext_resource type="StyleBox" uid="uid://cxb3jfhlv4q3i" path="res://GUI/ThemeUI/FocusStyle.tres" id="2_1y5ii"]
+[ext_resource type="StyleBox" uid="uid://c4pxl1n2qn3i1" path="res://GUI/ThemeUI/HoverStyle.tres" id="3_21yhf"]
+[ext_resource type="StyleBox" uid="uid://dx2re05agsm2n" path="res://GUI/ThemeUI/BaseStyle.tres" id="4_qxh2l"]
+[ext_resource type="StyleBox" uid="uid://cevu621w02gps" path="res://GUI/ThemeUI/PressedStyle.tres" id="5_bir0d"]
+[ext_resource type="StyleBox" uid="uid://c6xkccfij5xxh" path="res://GUI/ThemeUI/CheckButtonStyles/DisabledStyle.tres" id="6_ynqae"]
+[ext_resource type="StyleBox" uid="uid://xok8rtvo4i0" path="res://GUI/ThemeUI/CheckButtonStyles/FocusStyle.tres" id="7_26ig7"]
+[ext_resource type="StyleBox" uid="uid://cuqwu2dxjxm78" path="res://GUI/ThemeUI/CheckButtonStyles/HoverStyle.tres" id="8_v1hh1"]
+[ext_resource type="StyleBox" uid="uid://dhgy447ap0nq3" path="res://GUI/ThemeUI/CheckButtonStyles/BaseStyle.tres" id="9_5qklj"]
+[ext_resource type="StyleBox" uid="uid://bat7gx56sfi72" path="res://GUI/ThemeUI/CheckButtonStyles/PressedStyle.tres" id="10_bjrt6"]
+[ext_resource type="StyleBox" uid="uid://b8iubi1s4b67k" path="res://GUI/ThemeUI/TabStyles/DisabledStyle.tres" id="11_h00o4"]
+[ext_resource type="StyleBox" uid="uid://dhj3dvhdrjgv8" path="res://GUI/ThemeUI/TabStyles/FocusStyle.tres" id="12_i4oa7"]
+[ext_resource type="StyleBox" uid="uid://dgnye0mjdssv0" path="res://GUI/ThemeUI/TabStyles/HoverStyle.tres" id="13_xhdjg"]
+[ext_resource type="StyleBox" uid="uid://twy0b6rnl4w5" path="res://GUI/ThemeUI/TabStyles/PressedStyle.tres" id="14_ba8dc"]
+[ext_resource type="StyleBox" uid="uid://bto8y6v6fmxj1" path="res://GUI/ThemeUI/TabStyles/BaseStyle.tres" id="15_0ypeh"]
+
+[resource]
+default_font = ExtResource("1_csxah")
+Button/styles/disabled = ExtResource("1_pinm1")
+Button/styles/focus = ExtResource("2_1y5ii")
+Button/styles/hover = ExtResource("3_21yhf")
+Button/styles/normal = ExtResource("4_qxh2l")
+Button/styles/pressed = ExtResource("5_bir0d")
+CheckBox/styles/disabled = ExtResource("6_ynqae")
+CheckBox/styles/focus = ExtResource("7_26ig7")
+CheckBox/styles/hover = ExtResource("8_v1hh1")
+CheckBox/styles/hover_pressed = ExtResource("8_v1hh1")
+CheckBox/styles/normal = ExtResource("9_5qklj")
+CheckBox/styles/pressed = ExtResource("10_bjrt6")
+CheckButton/styles/disabled = ExtResource("6_ynqae")
+CheckButton/styles/focus = ExtResource("7_26ig7")
+CheckButton/styles/hover = ExtResource("8_v1hh1")
+CheckButton/styles/hover_pressed = ExtResource("8_v1hh1")
+CheckButton/styles/normal = ExtResource("9_5qklj")
+CheckButton/styles/pressed = ExtResource("10_bjrt6")
+ItemList/styles/hovered = ExtResource("3_21yhf")
+ItemList/styles/panel = ExtResource("4_qxh2l")
+ItemList/styles/selected = ExtResource("3_21yhf")
+ItemList/styles/selected_focus = ExtResource("5_bir0d")
+LineEdit/styles/focus = ExtResource("2_1y5ii")
+LineEdit/styles/normal = ExtResource("4_qxh2l")
+LineEdit/styles/read_only = ExtResource("1_pinm1")
+Panel/styles/panel = ExtResource("4_qxh2l")
+PopupMenu/styles/hover = ExtResource("3_21yhf")
+PopupMenu/styles/panel = ExtResource("4_qxh2l")
+TabBar/styles/tab_disabled = ExtResource("11_h00o4")
+TabBar/styles/tab_focus = ExtResource("12_i4oa7")
+TabBar/styles/tab_hovered = ExtResource("13_xhdjg")
+TabBar/styles/tab_selected = ExtResource("14_ba8dc")
+TabBar/styles/tab_unselected = ExtResource("15_0ypeh")
+TabContainer/styles/panel = ExtResource("4_qxh2l")
+TabContainer/styles/tab_disabled = ExtResource("11_h00o4")
+TabContainer/styles/tab_focus = ExtResource("12_i4oa7")
+TabContainer/styles/tab_hovered = ExtResource("13_xhdjg")
+TabContainer/styles/tab_selected = ExtResource("14_ba8dc")
+TabContainer/styles/tab_unselected = ExtResource("15_0ypeh")
+TextEdit/styles/focus = ExtResource("2_1y5ii")
+TextEdit/styles/normal = ExtResource("4_qxh2l")
+TextEdit/styles/read_only = ExtResource("1_pinm1")

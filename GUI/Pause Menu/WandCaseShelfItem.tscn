@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cl6anb75utdrn"]
+[gd_scene load_steps=2 format=3 uid="uid://cl6anb75utdrn"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/WandCaseShelfItem.gd" id="1_kx7hf"]
-[ext_resource type="Theme" uid="uid://dojuv2wrram1y" path="res://GUI/MinimalUI/MinimalUI.tres" id="1_r3nyl"]
 
 [node name="WandCaseShelfItem" type="Control"]
 custom_minimum_size = Vector2(800, 48)
@@ -10,7 +9,6 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 48.0
 grow_horizontal = 2
-theme = ExtResource("1_r3nyl")
 script = ExtResource("1_kx7hf")
 
 [node name="key" type="RichTextLabel" parent="."]
