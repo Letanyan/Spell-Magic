@@ -210,13 +210,13 @@ func compute_max_watched_enemies_distance() -> float:
 func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 	for event in artifacts.effects:
 		var duration = event.x
-		var event_kind = event.y / Artifact.Element.size()
-		var event_el = event.y % Artifact.Element.size()
+		var event_kind: Artifact.Event = (event.y / Artifact.Element.size()) as Artifact.Event
+		var event_el: Artifact.Element = (event.y % Artifact.Element.size()) as Artifact.Element
 		if event_kind == event_to_match and event_el == spell.element or event_el == Artifact.Element.ANY:
 			for effect in artifacts.effects[event]:
 				var amount = artifacts.effects[event][effect]
-				var effect_kind = effect / Artifact.Element.size()
-				var effect_el = effect % Artifact.Element.size()
+				var effect_kind: Artifact.Effect = (effect / Artifact.Element.size()) as Artifact.Effect
+				var effect_el: Artifact.Element = (effect % Artifact.Element.size()) as Artifact.Element
 				if effect_el == Artifact.Element.HEALTH:
 					if effect_kind == Artifact.Effect.BOOST_FLAT:
 						vitals.health.apply(amount.x)

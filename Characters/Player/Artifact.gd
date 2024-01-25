@@ -57,7 +57,14 @@ class Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
 		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
 		var ev := Population.random_entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
-		var el := Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+		var el: Element
+		if el_prob.size() == 15:
+			if flip:
+				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+			else:
+				el_prob = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
+				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1}
+				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 		var am := randi_range(amount_range.x, amount_range.y)
 		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
