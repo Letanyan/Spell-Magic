@@ -1,8 +1,8 @@
 class_name HUD
 extends Control
 
-@onready var health_bar: ProgressBar = $HealthBar
-@onready var mana_bar: ProgressBar = $ManaBar
+@onready var health_bar: TextureProgressBar = $HealthBar
+@onready var mana_bar: TextureProgressBar = $ManaBar
 @onready var burning_bar: TextureProgressBar = $BurningBar
 @onready var freeze_bar: TextureProgressBar = $FreezeBar
 @onready var wet_bar: TextureProgressBar = $WetBar
