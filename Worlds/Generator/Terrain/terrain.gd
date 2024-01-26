@@ -9,7 +9,9 @@ var grass_size: float
 
 const has_medium = true
 const has_water = true
-const has_grass = true
+var has_grass := true
+
+var ignore_physics := false
 
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
@@ -221,7 +223,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mat.set_shader_parameter("texture_depth", texture_size)
 	mat.set_shader_parameter("temperature", temperature_texture)
 	mat.set_shader_parameter("dryness", dryness_texture)
-	if r <= radius:
+	if r <= radius and not ignore_physics:
 		var saved_children := mi.get_children().duplicate()
 		mi.create_trimesh_collision()
 		var body: StaticBody3D = mi.get_child(0)

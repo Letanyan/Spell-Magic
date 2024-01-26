@@ -141,15 +141,16 @@ func _physics_process(delta):
 			var pop = population[loc]
 			pop.update_info()
 			
-	if daytime_tick == 60:
-		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:
+	if daytime_tick == 10:
+		const DAY_TICK = 0.000277778
+		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
 			skybox.day_time = 0
 			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
 				skybox.day_of_year = 1
 			else:
 				skybox.day_of_year += 1
 		else:
-			skybox.day_time += 0.016667
+			skybox.day_time += DAY_TICK
 		daytime_tick = 0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year

@@ -2,6 +2,7 @@ extends Control
 
 var dir: DirAccess
 var filenames: Array
+var main_menu_world: MainMenuWorld = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -28,7 +29,8 @@ func _process(delta: float) -> void:
 
 
 func _on_cancel_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
+	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
+	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
 
 func _on_load_pressed() -> void:

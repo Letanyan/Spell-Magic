@@ -1,5 +1,6 @@
 extends Control
 
+var main_menu_world: MainMenuWorld = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -12,7 +13,8 @@ func _process(delta: float) -> void:
 
 
 func _on_new_game_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Main Menu/NewGame.tscn")
+	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.NEW)
+	#get_tree().change_scene_to_file("res://GUI/Main Menu/NewGame.tscn")
 
 
 func _on_continue_pressed() -> void:
@@ -29,8 +31,10 @@ func _on_continue_pressed() -> void:
 
 
 func _on_load_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
+	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.LOAD)
+	#get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
 
 
 func _on_settings_pressed() -> void:
-	get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")
+	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.SETTINGS)
+	#get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")

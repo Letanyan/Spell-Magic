@@ -1,0 +1,104 @@
+[gd_scene load_steps=13 format=3 uid="uid://belcxyniwagvb"]
+
+[ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
+[ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
+[ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="3_rpxct"]
+[ext_resource type="PackedScene" uid="uid://coiibq4rb4gvs" path="res://GUI/Main Menu/MainMenu.tscn" id="4_tl0ti"]
+[ext_resource type="PackedScene" uid="uid://cevyetu4agssv" path="res://GUI/Main Menu/LoadGame.tscn" id="5_si7au"]
+[ext_resource type="PackedScene" uid="uid://oko6g6intlvw" path="res://GUI/Main Menu/NewGame.tscn" id="6_urucm"]
+[ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wfpcw"]
+seed = 32
+frequency = 0.001
+fractal_octaves = 6
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vmy4q"]
+frequency = 0.001
+fractal_type = 3
+fractal_octaves = 9
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
+shader = ExtResource("2_okflh")
+shader_parameter/day_top_color = Color(0.1, 0.6, 1, 1)
+shader_parameter/day_bottom_color = Color(0.4, 0.8, 1, 1)
+shader_parameter/sunset_top_color = Color(0.7, 0.75, 1, 1)
+shader_parameter/sunset_bottom_color = Color(1, 0.5, 0.7, 1)
+shader_parameter/night_top_color = Color(0.02, 0, 0.04, 1)
+shader_parameter/night_bottom_color = Color(0.1, 0, 0.2, 1)
+shader_parameter/horizon_color = Color(0, 0.7, 0.8, 1)
+shader_parameter/horizon_blur = 0.05
+shader_parameter/sun_color = Color(10, 8, 1, 1)
+shader_parameter/sun_sunset_color = Color(10, 0, 0, 1)
+shader_parameter/sun_size = 0.2
+shader_parameter/sun_blur = 10.0
+shader_parameter/moon_color = Color(1, 0.95, 0.7, 1)
+shader_parameter/moon_size = 0.06
+shader_parameter/moon_blur = 0.1
+shader_parameter/clouds_edge_color = Color(0.941176, 0.960784, 1, 1)
+shader_parameter/clouds_top_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_middle_color = Color(0.92, 0.92, 0.98, 1)
+shader_parameter/clouds_bottom_color = Color(0.83, 0.83, 0.94, 1)
+shader_parameter/clouds_speed = 1.0
+shader_parameter/clouds_direction = 0.5
+shader_parameter/clouds_scale = 2.2
+shader_parameter/clouds_cutoff = 0.6
+shader_parameter/clouds_fuzziness = 0.0
+shader_parameter/clouds_weight = 0.0
+shader_parameter/clouds_blur = 0.27
+shader_parameter/stars_speed = 1.0
+shader_parameter/stars_texture = ExtResource("3_rpxct")
+shader_parameter/overwritten_time = 0.0
+
+[sub_resource type="Sky" id="Sky_gfknk"]
+sky_material = SubResource("ShaderMaterial_xs1mr")
+
+[sub_resource type="Environment" id="Environment_e47ut"]
+background_mode = 2
+sky = SubResource("Sky_gfknk")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_sky_contribution = 0.5
+
+[node name="MainMenuWorld" type="Node3D"]
+script = ExtResource("1_f55xg")
+noise_temperature = SubResource("FastNoiseLite_wfpcw")
+noise_dryness = SubResource("FastNoiseLite_vmy4q")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_e47ut")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -4.69289, 10.2263, 0)
+shadow_enabled = true
+shadow_normal_bias = 0.0
+shadow_opacity = 0.5
+shadow_blur = 4.0
+directional_shadow_blend_splits = true
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -4.69289, 10.2263, 0)
+light_color = Color(0.447059, 0.447059, 0.447059, 1)
+shadow_enabled = true
+shadow_normal_bias = 0.0
+shadow_opacity = 0.1
+shadow_blur = 4.0
+directional_shadow_blend_splits = true
+
+[node name="MainMenu" parent="." instance=ExtResource("4_tl0ti")]
+
+[node name="LoadGame" parent="." instance=ExtResource("5_si7au")]
+visible = false
+
+[node name="NewGame" parent="." instance=ExtResource("6_urucm")]
+visible = false
+
+[node name="SettingsMenu" parent="." instance=ExtResource("7_jbjvw")]
+visible = false
+
+[node name="Player" type="Marker3D" parent="."]
+
+[node name="Arm" type="SpringArm3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="Lens" type="Camera3D" parent="Player/Arm"]
