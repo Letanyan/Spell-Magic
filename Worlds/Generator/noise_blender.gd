@@ -106,7 +106,7 @@ var biome := World.Biome.GRASSLAND
 var color := Color.WHITE
 var total_size := 0.0
 
-func color_for_biome(_biome: World.Biome) -> Color:
+static func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
 		World.Biome.WATER: return Color(0.2, 0.5, 1)
 		World.Biome.TAIGA: return Color(0, 1, 1)

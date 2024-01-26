@@ -1,6 +1,5 @@
-[gd_scene load_steps=9 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=8 format=3 uid="uid://oko6g6intlvw"]
 
-[ext_resource type="Theme" uid="uid://dojuv2wrram1y" path="res://GUI/MinimalUI/MinimalUI.tres" id="1_7uwfa"]
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="3_83m73"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="4_hfnhx"]
@@ -16,7 +15,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_7uwfa")
 script = ExtResource("1_g78rx")
 
 [node name="SaveName" type="TextEdit" parent="."]
@@ -27,7 +25,7 @@ anchor_right = 0.472
 offset_left = -95.744
 offset_top = 48.0
 offset_right = 96.256
-offset_bottom = 88.0
+offset_bottom = 80.0
 placeholder_text = "Save Name"
 
 [node name="Seed" type="TextEdit" parent="."]
@@ -38,7 +36,7 @@ anchor_right = 0.472
 offset_left = -95.744
 offset_top = 112.0
 offset_right = 96.256
-offset_bottom = 152.0
+offset_bottom = 144.0
 placeholder_text = "Seed"
 
 [node name="Create" type="Button" parent="."]
@@ -165,7 +163,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Health"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 1.0
@@ -194,7 +192,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Mana"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 max_value = 1000.0
@@ -222,7 +220,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Velocity"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 2.5
@@ -250,7 +248,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/SpellCount"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 4.0
@@ -279,7 +277,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/T"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 1.0
@@ -307,7 +305,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/r"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 0.1
@@ -335,7 +333,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/P"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 10.0
@@ -364,7 +362,7 @@ vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/N"]
 layout_mode = 0
-offset_left = 96.0
+offset_left = 104.0
 offset_right = 264.0
 offset_bottom = 28.0
 min_value = 1.0
@@ -402,9 +400,9 @@ icon = ExtResource("3_83m73")
 
 [node name="Water" type="Button" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 128.0
+offset_left = 124.0
 offset_top = 363.0
-offset_right = 240.0
+offset_right = 236.0
 offset_bottom = 403.0
 toggle_mode = true
 text = "Water"
@@ -412,9 +410,9 @@ icon = ExtResource("4_hfnhx")
 
 [node name="Rock" type="Button" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 248.0
+offset_left = 240.0
 offset_top = 363.0
-offset_right = 360.0
+offset_right = 352.0
 offset_bottom = 403.0
 toggle_mode = true
 text = "Rock"
@@ -432,9 +430,9 @@ icon = ExtResource("6_2gqe1")
 
 [node name="Ice" type="Button" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 128.0
+offset_left = 124.0
 offset_top = 411.0
-offset_right = 240.0
+offset_right = 236.0
 offset_bottom = 451.0
 toggle_mode = true
 text = "Ice"
@@ -442,9 +440,9 @@ icon = ExtResource("7_8grbq")
 
 [node name="Electric" type="Button" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 248.0
+offset_left = 240.0
 offset_top = 411.0
-offset_right = 360.0
+offset_right = 352.0
 offset_bottom = 451.0
 toggle_mode = true
 text = "Electric"
@@ -469,19 +467,19 @@ text = "At Start"
 
 [node name="ChainAtEnd" type="Button" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 128.0
-offset_top = 483.0
-offset_right = 240.0
-offset_bottom = 523.0
+offset_left = 124.0
+offset_top = 485.0
+offset_right = 236.0
+offset_bottom = 525.0
 toggle_mode = true
 text = "At End"
 
 [node name="ChainOnHit" type="Button" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 248.0
-offset_top = 483.0
-offset_right = 360.0
-offset_bottom = 523.0
+offset_left = 240.0
+offset_top = 485.0
+offset_right = 352.0
+offset_bottom = 525.0
 toggle_mode = true
 text = "On Hit"
 

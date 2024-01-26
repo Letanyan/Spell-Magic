@@ -69,7 +69,14 @@ func _ready():
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
+	var b := chunker.blender.biome
+	
+	if last_biome != b:
+		last_biome = b
+		var theme := load(ProjectSettings.get("gui/theme/custom")) as ThemeUI
+		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
+		theme.change_tint_color(tint)
 	
 func _physics_process(delta):
 	daytime_tick += 1
@@ -143,6 +150,6 @@ func show_menu_screen(kind: MenuScreenKind):
 	$SettingsMenu.hide()
 	match kind:
 		MenuScreenKind.MAIN: $MainMenu.show()
-		MenuScreenKind.LOAD: $LoadGmae.show()
+		MenuScreenKind.LOAD: $LoadGame.show()
 		MenuScreenKind.NEW: $NewGame.show()
 		MenuScreenKind.SETTINGS: $SettingsMenu.show()

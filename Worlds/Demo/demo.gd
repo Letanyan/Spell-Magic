@@ -116,6 +116,9 @@ func _ready():
 	
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
+	
+	var theme := load(ProjectSettings.get("gui/theme/custom")) as ThemeUI
+	theme.change_tint_color(Color(0.0, 0.360784, 0.643137))
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -128,8 +131,6 @@ func _process(delta):
 		player.current_biome = b
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
 		last_biome = b
-		
-	pass
 	
 func _physics_process(delta):
 	knowledge_tick += 1

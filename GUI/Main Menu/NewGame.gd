@@ -89,22 +89,22 @@ func _on_create_pressed() -> void:
 
 
 func _on_permadeath_toggled(button_pressed: bool) -> void:
-	respawn.button_pressed = not button_pressed
-	sandbox.button_pressed = not button_pressed
+	respawn.set_pressed_no_signal(not button_pressed)
+	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.PERMADEATH
 	respawn_options.visible = false
 
 
 func _on_respawn_toggled(button_pressed: bool) -> void:
-	permadeath.button_pressed = not button_pressed
-	sandbox.button_pressed = not button_pressed
+	permadeath.set_pressed_no_signal(not button_pressed)
+	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.RESPAWN
 	respawn_options.visible = true
 
 
 func _on_sandbox_toggled(button_pressed: bool) -> void:
-	respawn.button_pressed = not button_pressed
-	permadeath.button_pressed = not button_pressed
+	respawn.set_pressed_no_signal(not button_pressed)
+	permadeath.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.SANDBOX
 	respawn_options.visible = false
 
