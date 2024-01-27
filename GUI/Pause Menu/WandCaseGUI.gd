@@ -31,10 +31,12 @@ func _ready():
 func _process(delta):
 	pass
 	
-func update_wand_shelf_items():
+func update_wand_shelf_items(ignore_signals: bool):
 	for c in container.get_children():
 		if c is WandCaseShelfItem:
-			c.update_state()
+			c.update_state(ignore_signals)
+	if ignore_signals and current_index > -1:
+		case.wands[current_index].spell_updated.emit()
 	
 func reload_wand_shelf_items(index: int = current_index) -> void:
 	if index < 0:
@@ -61,25 +63,32 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 			prev_item.move_down_request.connect(func(): item.grab_focus())
 		prev_item = item
 		
-		item.spell_changed = func(text: String):
+		item.spell_changed = func(text: String, ignore_signals: bool):
 			var all_spells := text.split(",", false)
-			var errors := []
+			var missing_errors := []
+			var not_active_errors := []
 			for i in range(all_spells.size()):
 				var n := all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
 				var s = book.spell_with_name(n)
 				if s == null:
-					errors.append("missing '" + n + "'")
+					missing_errors.append("'[b]" + n + "[/b]'")
 				elif not s.is_active:
-					errors.append("'" + s.name + "' is not active")
+					not_active_errors.append("'[b]" + s.name + "[/b]'")
 				all_spells[i] = n
 
-			if errors.is_empty():
+			if missing_errors.is_empty() and not_active_errors.is_empty():
 				item.key.text = "[center]" + GlobalData.controller.key_images(item.store_key) + "[/center]"
 			else:
-				item.key.text = "[center][color=#f33]" + ", ".join(errors) + "[/color][/center]"
+				var errors := ""
+				if not missing_errors.is_empty():
+					errors = ", ".join(missing_errors) + " missing"
+				if not not_active_errors.is_empty():
+					errors += ("" if missing_errors.is_empty() else ".") + ", ".join(not_active_errors) + " not active"
+				item.key.text = "[center][color=#f33]" + errors + "[/color][/center]"
 			wand.keys[w].spell = all_spells
 			wand.keys[w].spell_index = all_spells.size() - 1
-			wand.spell_updated.emit()
+			if not ignore_signals:
+				wand.spell_updated.emit()
 
 		item.action_changed = func(from: Wand.Kind, to: Wand.Kind) -> bool:
 			item.store_action = to

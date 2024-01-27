@@ -99,6 +99,6 @@ visible = false
 [node name="Player" type="Marker3D" parent="."]
 
 [node name="Arm" type="SpringArm3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 
 [node name="Lens" type="Camera3D" parent="Player/Arm"]

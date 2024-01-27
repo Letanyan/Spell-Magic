@@ -56,7 +56,7 @@ func _on_spells_pressed():
 	update_index(0)
 
 func _on_wands_pressed():
-	wand_case.update_wand_shelf_items()
+	wand_case.update_wand_shelf_items(true)
 	update_index(1)
 
 func _on_artifacts_pressed() -> void:

@@ -32,10 +32,6 @@ func _ready():
 		cast_combo.set_item_disabled(8, false)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 func _on_cast_combo_selected(id):
 	if id > -1:
 		action_changed.call(store_action as Wand.Kind, id as Wand.Kind)
@@ -44,11 +40,11 @@ func _on_cast_combo_selected(id):
 
 func _on_spell_text_changed(new_text):
 	var updated_text: String = autocomplete.call(old_text, spell, true)
-	spell_changed.call(updated_text)
+	spell_changed.call(updated_text, false)
 	old_text = updated_text
 	
-func update_state():
-	spell_changed.call(spell.text)
+func update_state(ignore_signals: bool):
+	spell_changed.call(spell.text, ignore_signals)
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not has_focus():

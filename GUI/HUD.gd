@@ -231,7 +231,7 @@ func update_wand_mappings():
 	wand_mapping.text = ""
 	wand_mapping.size = Vector2($WandMappingPanel.size.x, 0)
 	$WandMappingPanel.size.y = 0
-	wand_mapping.text = rich_text
+	#wand_mapping.text = rich_text
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:

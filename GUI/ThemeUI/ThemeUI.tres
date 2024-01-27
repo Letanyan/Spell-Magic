@@ -1,4 +1,4 @@
-[gd_resource type="Theme" script_class="ThemeUI" load_steps=20 format=3 uid="uid://dmnfauhx880ds"]
+[gd_resource type="Theme" script_class="ThemeUI" load_steps=23 format=3 uid="uid://dmnfauhx880ds"]
 
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="1_csxah"]
 [ext_resource type="StyleBox" uid="uid://dacirujsofcjw" path="res://GUI/ThemeUI/DisabledStyle.tres" id="1_pinm1"]
@@ -15,9 +15,12 @@
 [ext_resource type="StyleBox" uid="uid://b8iubi1s4b67k" path="res://GUI/ThemeUI/TabStyles/DisabledStyle.tres" id="11_h00o4"]
 [ext_resource type="StyleBox" uid="uid://d3g5o5odm7bn1" path="res://GUI/ThemeUI/SliderStyles/BaseStyle.tres" id="12_5pi04"]
 [ext_resource type="StyleBox" uid="uid://dhj3dvhdrjgv8" path="res://GUI/ThemeUI/TabStyles/FocusStyle.tres" id="12_i4oa7"]
+[ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="13_sqwc1"]
 [ext_resource type="StyleBox" uid="uid://dgnye0mjdssv0" path="res://GUI/ThemeUI/TabStyles/HoverStyle.tres" id="13_xhdjg"]
 [ext_resource type="StyleBox" uid="uid://twy0b6rnl4w5" path="res://GUI/ThemeUI/TabStyles/PressedStyle.tres" id="14_ba8dc"]
+[ext_resource type="FontFile" uid="uid://bbyhrcj741rsi" path="res://GUI/ThemeUI/ChakraPetch-BoldItalic.ttf" id="14_u2jn3"]
 [ext_resource type="StyleBox" uid="uid://bto8y6v6fmxj1" path="res://GUI/ThemeUI/TabStyles/BaseStyle.tres" id="15_0ypeh"]
+[ext_resource type="FontFile" uid="uid://db7oq7odngmli" path="res://GUI/ThemeUI/ChakraPetch-Italic.ttf" id="15_dglxo"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/ThemeUI.gd" id="19_t71ay"]
 
 [resource]
@@ -39,9 +42,13 @@ CheckButton/styles/hover = ExtResource("8_v1hh1")
 CheckButton/styles/hover_pressed = ExtResource("8_v1hh1")
 CheckButton/styles/normal = ExtResource("9_5qklj")
 CheckButton/styles/pressed = ExtResource("10_bjrt6")
+HScrollBar/styles/grabber = ExtResource("4_qxh2l")
+HScrollBar/styles/grabber_highlight = ExtResource("3_21yhf")
+HScrollBar/styles/grabber_pressed = ExtResource("5_bir0d")
 HSlider/styles/grabber_area = ExtResource("11_dx3ql")
 HSlider/styles/grabber_area_highlight = ExtResource("11_dx3ql")
 HSlider/styles/slider = ExtResource("12_5pi04")
+ItemList/styles/focus = ExtResource("2_1y5ii")
 ItemList/styles/hovered = ExtResource("3_21yhf")
 ItemList/styles/panel = ExtResource("4_qxh2l")
 ItemList/styles/selected = ExtResource("3_21yhf")
@@ -51,6 +58,12 @@ LineEdit/styles/normal = ExtResource("4_qxh2l")
 LineEdit/styles/read_only = ExtResource("1_pinm1")
 Panel/styles/panel = ExtResource("4_qxh2l")
 PopupDialog/styles/panel = ExtResource("4_qxh2l")
+PopupMenu/styles/hover = ExtResource("3_21yhf")
+PopupMenu/styles/panel = ExtResource("4_qxh2l")
+RichTextLabel/fonts/bold_font = ExtResource("13_sqwc1")
+RichTextLabel/fonts/bold_italics_font = ExtResource("14_u2jn3")
+RichTextLabel/fonts/italics_font = ExtResource("15_dglxo")
+RichTextLabel/fonts/normal_font = ExtResource("1_csxah")
 TabBar/styles/tab_disabled = ExtResource("11_h00o4")
 TabBar/styles/tab_focus = ExtResource("12_i4oa7")
 TabBar/styles/tab_hovered = ExtResource("13_xhdjg")
@@ -65,4 +78,7 @@ TabContainer/styles/tab_unselected = ExtResource("15_0ypeh")
 TextEdit/styles/focus = ExtResource("2_1y5ii")
 TextEdit/styles/normal = ExtResource("4_qxh2l")
 TextEdit/styles/read_only = ExtResource("1_pinm1")
+VScrollBar/styles/grabber = ExtResource("4_qxh2l")
+VScrollBar/styles/grabber_highlight = ExtResource("3_21yhf")
+VScrollBar/styles/grabber_pressed = ExtResource("5_bir0d")
 script = ExtResource("19_t71ay")
