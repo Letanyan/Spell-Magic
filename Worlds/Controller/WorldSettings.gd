@@ -13,6 +13,12 @@ var camera_settings: CameraSettings
 var upgrade_settings: UpgradeSettings
 var game_mode_settings: GameModeSettings
 
+func _init() -> void:
+	hud_settings = HUDSettings.new()
+	camera_settings = CameraSettings.new()
+	upgrade_settings = UpgradeSettings.new()
+	game_mode_settings = GameModeSettings.new()
+
 func save_dict() -> Dictionary:
 	return {
 		"name": world_name, "player": {"position": player_position}, "seed": sed,
