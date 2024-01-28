@@ -16,8 +16,8 @@ var case: WandCase
 var wand: Wand
 var artifacts: Artifacts
 
-var knowledge_tick: int
-var daytime_tick: int
+var knowledge_tick: float = 0.0
+var daytime_tick: float = 0.0
 
 var settings: WorldSettings
 
@@ -52,8 +52,8 @@ func setup(_settings: WorldSettings) -> void:
 #		artifact.right = Artifact.Option.make_random()
 #		artifacts.collection.append(artifact)
 	
-	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
-	#add_child(undead)
+	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
+	add_child(undead)
 #	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, 20)
 #	add_child(bat)
 	#var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
@@ -90,7 +90,7 @@ func _ready():
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
 	skybox.day_time = 14
-	daytime_tick = 0
+	daytime_tick = 0.0
 	
 	player.magic_book = book
 	player.artifacts = artifacts
@@ -109,16 +109,16 @@ func _process(delta):
 	pass
 	
 func _physics_process(delta):
-	knowledge_tick += 1
-	daytime_tick += 1
+	knowledge_tick += delta
+	daytime_tick += delta
 
-	if knowledge_tick == 60 and has_init_terrain_population:
-		knowledge_tick = 0
+	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
+		knowledge_tick = 0.0
 		for loc in population:
 			var pop = population[loc]
 			pop.update_info()
 			
-	if daytime_tick == 60:
+	if daytime_tick >= 1.0:
 		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:
 			skybox.day_time = 0
 			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
@@ -127,7 +127,7 @@ func _physics_process(delta):
 				skybox.day_of_year += 1
 		else:
 			skybox.day_time += 0.016667
-		daytime_tick = 0
+		daytime_tick = 0.0
 			
 	if not menu.is_showing:
 		const SPEED = 12.0

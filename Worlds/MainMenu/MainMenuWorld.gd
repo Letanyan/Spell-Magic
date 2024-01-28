@@ -18,7 +18,7 @@ var last_biome: World.Biome = World.Biome.WATER
 var terrain_update_interval = 0
 var has_init_terrain_population = false
 
-var daytime_tick: int
+var daytime_tick: float
 
 var settings: WorldSettings
 
@@ -79,19 +79,19 @@ func _process(delta):
 		theme.change_tint_color(tint)
 	
 func _physics_process(delta):
-	daytime_tick += 1
+	daytime_tick += delta
 			
-	if daytime_tick == 10:
+	if daytime_tick == 0.166667:
 		const DAY_TICK = 0.000277783
 		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
-			skybox.day_time = 0
+			skybox.day_time = 0.0
 			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
 				skybox.day_of_year = 1
 			else:
 				skybox.day_of_year += 1
 		else:
 			skybox.day_time += DAY_TICK
-		daytime_tick = 0
+		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
 		var space := get_world_3d().space

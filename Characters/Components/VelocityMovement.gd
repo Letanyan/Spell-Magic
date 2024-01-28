@@ -12,7 +12,7 @@ var target_position: Vector3:
 		has_navigation_target = true
 var has_navigation_target: bool
 
-var vital_tick: int = 0
+var vital_tick: float = 0.0
 
 var velocity := Vector3.ZERO
 var target_velocity := Vector3.ZERO
@@ -31,12 +31,12 @@ static func player() -> VelocityMovement:
 	var s = (60.0 / 21.0) * 0.85
 	return VelocityMovement.new(s * desired_speed, 150, 150)
 
-func increment_ticks():
-	vital_tick += 1
+func increment_ticks(delta: float):
+	vital_tick += delta
 
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody3D) -> Dictionary:
 	var result := {}
-	increment_ticks()
+	increment_ticks(delta)
 	
 	if body.position == target_position:
 		has_navigation_target = false
@@ -53,14 +53,14 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 		navigation_velocity = new_velocity
 
-	if vital_tick == 60:
+	if vital_tick >= 1.0:
 		var h := vitals.update_vitals(body)
 		for dmg in h:
 			Vitals.apply_damage(body.get_parent(), body, dmg["dmg"], dmg["el"], true, false, [])
 		var wet_area := body.get_node("WetArea")
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
-		vital_tick = 0
+		vital_tick = 0.0
 		if body.position.y < Globals.sea_level():
 			var underwater = clamp(Globals.sea_level() - body.position.y, 0.0, 10.0) / 10.0
 			vitals.wetness.apply(underwater)

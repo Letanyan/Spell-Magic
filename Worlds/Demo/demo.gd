@@ -21,8 +21,8 @@ var case: WandCase
 var wand: Wand
 var artifacts: Artifacts
 
-var knowledge_tick: int
-var daytime_tick: int
+var knowledge_tick: float = 0.0
+var daytime_tick: float = 0.0
 
 var settings: WorldSettings
 
@@ -133,16 +133,16 @@ func _process(delta):
 		last_biome = b
 	
 func _physics_process(delta):
-	knowledge_tick += 1
-	daytime_tick += 1
+	knowledge_tick += delta
+	daytime_tick += delta
 
-	if knowledge_tick == 60 and has_init_terrain_population:
-		knowledge_tick = 0
+	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
+		knowledge_tick = 0.0
 		for loc in population:
 			var pop = population[loc]
 			pop.update_info()
 			
-	if daytime_tick == 10:
+	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
 		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
 			skybox.day_time = 0
@@ -152,7 +152,7 @@ func _physics_process(delta):
 				skybox.day_of_year += 1
 		else:
 			skybox.day_time += DAY_TICK
-		daytime_tick = 0
+		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
 			

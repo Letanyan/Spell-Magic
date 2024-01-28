@@ -19,8 +19,8 @@ var vitals: Vitals
 var current_path: PathStyle
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
 
-var behavior_tick: int = 0
-var spell_tick: int = 0
+var behavior_tick: float = 0
+var spell_tick: float = 0
 
 var index_in_population: int = -1
 signal vitals_signal
@@ -45,15 +45,17 @@ func add_impulse(impulse: Vector3):
 func add_shake(amount: float):
 	player.add_shake(amount)
 	
-func increment_ticks():
-	behavior_tick += 1
-	spell_tick += 1
+func increment_ticks(delta: float):
+	behavior_tick += delta
+	spell_tick += delta
 	if invunerable > 0:
 		invunerable -= 1
 	
 func play_animation(animation: String):
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 	var current := playback.get_current_node()
+	if current == "on_hit" and playback.get_current_play_position() < playback.get_current_length():
+		return
 	if current != "death" and current != animation:
 		playback.travel(animation)
 
@@ -65,11 +67,11 @@ func can_move() -> bool:
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [], false)
 
-func _physics_process(delta):
+func _physics_process(delta: float):
 	if player.magic_book.settings.is_paused:
 		return
 	
-	increment_ticks()
+	increment_ticks(delta)
 	
 	var process_path: PathStyle = current_path
 	if spell_movement and spell_movement.movement.state != AttackMovement.AMState.DONE:
@@ -112,7 +114,7 @@ func _physics_process(delta):
 			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
 
 	var moved_into_during_movement = false
-	if behavior_tick == Globals.behaviour_tick():
+	if behavior_tick >= Globals.behaviour_tick():
 		update_behaviour()
 		var is_done := Globals.Ref.new(false)
 		var next_pos := process_path.next_position(self, player, is_done)
@@ -131,7 +133,7 @@ func _physics_process(delta):
 #			print("---")
 		behavior_tick = 0
 
-	if spell_tick >= int(30 * (1.0 + vitals.freeze.value)) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
+	if spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
 		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE: 
 			spell_movement = attack_state().choose_spell(vitals, behaviour)
 			moved_into_during_movement = spell_movement and spell_movement.movement.state == AttackMovement.AMState.DONE
