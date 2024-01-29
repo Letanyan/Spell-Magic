@@ -79,7 +79,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		if wh < Globals.sea_level():
 			return null
 		var info: Dictionary = user_info.call(world_normal) 
-		if info.get("valid", true):
+		if not info.get("valid", true):
 			return null
 		entity.position.x = pos.x
 		entity.position.y = wh + info.get("y_offset", 0.0)

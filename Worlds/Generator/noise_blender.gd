@@ -208,6 +208,23 @@ func compute_biome_distances(x: float, y: float):
 
 	biome = biome_list[pos]
 	color = Color(clr.x, clr.y, clr.z)
+	
+func compute_biome(x: float, y: float) -> World.Biome:
+	var d := dryness.get_noise_2d(x, y) / 2.0 + 0.5
+	var t := temperature.get_noise_2d(x, y) / 2.0 + 0.5
+	
+	var p := Vector2(d, t)
+	var min_distance := INF
+	var pos := 0
+	var dist := 0.0
+	for i in range(biome_locations.size()):
+		dist = p.distance_to(biome_locations[i])
+		if dist < min_distance:
+			min_distance = dist
+			pos = i
+
+	return biome_list[pos]
+	
 
 func grass_height(b: World.Biome, x: float, y: float) -> float:
 	var n := noise_list[b].get_noise_2d(x, y) / 2.0 + 0.5
@@ -222,11 +239,11 @@ static func audio_for_biome(b: World.Biome) -> AudioStream:
 	match b:
 		World.Biome.WATER: return lake_audio
 		World.Biome.TAIGA: return lake_audio
-		World.Biome.GRASSLAND: print("grass"); return grassland_audio
-		World.Biome.FOREST: print("forest"); return forest_audio
+		World.Biome.GRASSLAND: return grassland_audio
+		World.Biome.FOREST: return forest_audio
 		World.Biome.DESERT: return lake_audio
 		World.Biome.JUNGLE: return lake_audio
-		World.Biome.SAVANNAH: print("savannah"); return lake_audio
+		World.Biome.SAVANNAH: return lake_audio
 		World.Biome.TUNDRA: return lake_audio
 		World.Biome.OTHERWORLD: return lake_audio
 		World.Biome.HFIL: return lake_audio

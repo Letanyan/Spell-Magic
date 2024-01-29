@@ -13,6 +13,8 @@ var has_grass := true
 
 var ignore_physics := false
 
+var medium_chunk_width: float 
+
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
 
@@ -56,8 +58,9 @@ func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float,
 	
 func init_chunks(x: float, y: float) -> Array[Node3D]:
 	var result := init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
+	medium_chunk_width = radius * radius * 4
 	if has_medium:
-		var medium := init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, radius * radius * 2, subdivide_percent, false)
+		var medium := init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, medium_chunk_width, subdivide_percent, false)
 		result.append_array(medium)
 	if has_water:
 		var water := init_chunks_of_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
@@ -127,7 +130,7 @@ func update_chunks(x: float, y: float) -> Dictionary:
 	var removed: PackedVector2Array = high.get("removed", [])
 	var updated: PackedVector2Array = high.get("updated", [])
 	if has_medium:
-		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, radius * radius * 2, subdivide_percent / 1.0, false)
+		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, medium_chunk_width, subdivide_percent / 1.0, false)
 	if has_water:
 		update_chunks_with_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
 	set_player_coord_using_position(x, y, chunk_size)

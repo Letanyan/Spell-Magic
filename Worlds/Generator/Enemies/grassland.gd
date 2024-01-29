@@ -10,13 +10,13 @@ enum GRASSLAND_STRUCTURES_KIND {
 }
 
 const GRASSLAND_STRUCTURE = {
-	GRASSLAND_STRUCTURES_KIND.NONE: 100,
-	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 0.025,
-	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.025,
-	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.000005,
-	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.00000005,
+	GRASSLAND_STRUCTURES_KIND.NONE: 0.8,
+	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 0.035,
+	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.015,
+	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.001,
+	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.0005,
 	GRASSLAND_STRUCTURES_KIND.UNDEAD: 0.01,
-	GRASSLAND_STRUCTURES_KIND.MOLE: 0.001,
+	GRASSLAND_STRUCTURES_KIND.MOLE: 0.005,
 }
 
 
@@ -52,11 +52,13 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
+					prints("undead:", pos)
 			GRASSLAND_STRUCTURES_KIND.MOLE:
 				index += 1
 				var pos := area[index]
 				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
 				if p != null:
+					prints("mole:", pos)
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.VILLAGE:
 				if area.size() - index < 100:

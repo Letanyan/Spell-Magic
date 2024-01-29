@@ -54,3 +54,4 @@ func _ready() -> void:
 	
 	magic_book.read_absolute_path("res://magic_book.json")
 	magic_book.rebuild_spell_chains()
+	print(magic_book.spells)
