@@ -40,18 +40,9 @@ func _ready() -> void:
 	
 	magic_book = MagicBook.new()
 	var upgrade_settings = UpgradeSettings.new()
-	upgrade_settings.max_health = UpgradeSettings.LIMIT_HEALTH
-	upgrade_settings.max_mana = UpgradeSettings.LIMIT_MANA
-	upgrade_settings.max_D = UpgradeSettings.LIMIT_D
-	upgrade_settings.max_N = UpgradeSettings.LIMIT_N
-	upgrade_settings.max_P = UpgradeSettings.LIMIT_P
-	upgrade_settings.max_r = UpgradeSettings.LIMIT_r
-	upgrade_settings.max_spells_in_book = UpgradeSettings.LIMIT_SPELLS_IN_BOOK
-	upgrade_settings.max_v = UpgradeSettings.LIMIT_v
-	upgrade_settings.max_T = UpgradeSettings.LIMIT_T
+	upgrade_settings.reset_all_stats_to_max_values()
 	magic_book.settings = WorldSettings.new()
 	magic_book.settings.upgrade_settings = upgrade_settings
 	
 	magic_book.read_absolute_path("res://magic_book.json")
 	magic_book.rebuild_spell_chains()
-	print(magic_book.spells)

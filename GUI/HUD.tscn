@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=10 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="Texture2D" uid="uid://pefgf64kre6y" path="res://GUI/Images/health.svg" id="2_c8qif"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="4_qngfd"]
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="5_i3p67"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_yr21e"]
+[ext_resource type="StyleBox" uid="uid://ci70pm0jx6gvs" path="res://GUI/ThemeUI/RichTextHolder.tres" id="8_qt3l3"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -98,6 +99,7 @@ theme_override_constants/v_separation = 1
 theme_override_constants/line_separation = 0
 theme_override_constants/outline_size = 0
 theme_override_styles/panel = ExtResource("4_g3pbk")
+select_mode = 1
 auto_height = true
 
 [node name="WandMappingPanel" type="Panel" parent="."]
@@ -113,7 +115,7 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_styles/panel = ExtResource("4_g3pbk")
+theme_override_styles/panel = ExtResource("8_qt3l3")
 
 [node name="WandMapping" type="RichTextLabel" parent="WandMappingPanel"]
 layout_mode = 1

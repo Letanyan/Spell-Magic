@@ -93,6 +93,17 @@ func reset_all_stats_to_default_values():
 	max_mana = 100.0
 	max_health = 100.0
 	max_spells_in_book = 4
+	
+func reset_all_stats_to_max_values():
+	max_health = UpgradeSettings.LIMIT_HEALTH
+	max_mana = UpgradeSettings.LIMIT_MANA
+	max_D = UpgradeSettings.LIMIT_D
+	max_N = UpgradeSettings.LIMIT_N
+	max_P = UpgradeSettings.LIMIT_P
+	max_r = UpgradeSettings.LIMIT_r
+	max_spells_in_book = UpgradeSettings.LIMIT_SPELLS_IN_BOOK
+	max_v = UpgradeSettings.LIMIT_v
+	max_T = UpgradeSettings.LIMIT_T
 
 func purchase_spells_in_book() -> PurchaseError:
 	if currency < cost_spells_in_book:

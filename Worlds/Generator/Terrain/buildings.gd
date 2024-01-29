@@ -21,6 +21,7 @@ static func make(kind: World.Building, rng: RandomNumberGenerator) -> Buildings:
 	result.entity_kind = kind
 	var body := StaticBody3D.new()
 	body.collision_layer = 1 << 9
+	body.name = "static"
 	var box := CollisionShape3D.new()
 	box.name = "shape"
 	match kind:

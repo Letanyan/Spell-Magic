@@ -35,7 +35,7 @@ func _ready():
 func _on_cast_combo_selected(id):
 	if id > -1:
 		action_changed.call(store_action as Wand.Kind, id as Wand.Kind)
-		spell_changed.call(spell.text)
+		spell_changed.call(spell.text, true)
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text):

@@ -33,7 +33,10 @@ func setup(_settings: WorldSettings) -> void:
 	
 	book = MagicBook.new()
 	book.settings = settings
-	book.read(settings.world_name)
+	if _settings.world_name == "demo":
+		book.read_absolute_path("res://magic_book.json")
+	else:
+		book.read(settings.world_name)
 	book.rebuild_spell_chains()
 	book.ignore_cooldown = true
 	
@@ -75,7 +78,7 @@ func setup(_settings: WorldSettings) -> void:
 func _ready():
 	if book == null:
 		var _settings := WorldSettings.new()
-		_settings.world_name = "empty"
+		_settings.world_name = "demo"
 		_settings.sed = 0 
 		setup(_settings)
 		
@@ -275,11 +278,6 @@ func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
 		settings.enemies_killed[enemy_kind] += 1
 	else:
 		settings.enemies_killed[enemy_kind] = 1
-	
-
-func quit_to_main_menu():
-	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
-
 
 func _on_player_vital_update(vitals: Vitals) -> void:
 	if settings == null or settings.game_mode_settings == null:

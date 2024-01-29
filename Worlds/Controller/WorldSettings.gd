@@ -17,6 +17,7 @@ func _init() -> void:
 	hud_settings = HUDSettings.new()
 	camera_settings = CameraSettings.new()
 	upgrade_settings = UpgradeSettings.new()
+	upgrade_settings.reset_all_stats_to_max_values()
 	game_mode_settings = GameModeSettings.new()
 
 func save_dict() -> Dictionary:

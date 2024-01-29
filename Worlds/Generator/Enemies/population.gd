@@ -70,7 +70,7 @@ func always_valid(normal: Dictionary) -> Dictionary:
 	
 func on_flat_surface(distance: float) -> Callable:
 	return func(normal: Dictionary) -> Dictionary:
-		return {"valid": normal.get("normal", Vector3.ZERO).distance_to(Vector3.UP) < distance, "y_offset": distance * -2}
+		return {"valid": normal.get("normal", Vector3.ZERO).angle_to(Vector3.UP) < distance, "y_offset": distance * -2}
 	
 func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable = always_valid):
 	if entity != null:
@@ -160,7 +160,7 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 			result.name = World.Foliage.keys()[foliage] + str(rng.randi())
 	
-	return prepare_entity(state, result, pos, false, on_flat_surface(0.05))
+	return prepare_entity(state, result, pos, false, on_flat_surface(PI / 8))
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result: Node3D = null
@@ -172,13 +172,13 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			result.name = World.Building.keys()[building] + str(rng.randi())
-			ground_angle = 0.1
+			ground_angle = PI / 8
 		World.Building.FANTASY_WELL:
 			result = Buildings.make(building, rng)
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			result.name = World.Building.keys()[building] + str(rng.randi())
-			ground_angle = 0.2
+			ground_angle = PI / 16
 	
 	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
 	

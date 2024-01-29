@@ -212,30 +212,38 @@ func update_wand_mappings():
 		var kd = " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
-				rich_text += kd + " [b]Cast[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
+				if not s.spell.is_empty(): 
+					rich_text += kd + " [b]Cast[/b]: " + s.spell[0] + "\n"
 			Wand.Kind.FIRE_HOLD:
-				rich_text += kd + " [b]Charge[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
+				if not s.spell.is_empty(): 
+					rich_text += kd + " [b]Charge[/b]: " + s.spell[0] + "\n"
 			Wand.Kind.RAPID_FIRE:
-				rich_text += kd + " [b]Rapid[/b]: " + ("" if s.spell.is_empty() else s.spell[0]) + "\n"
+				if not s.spell.is_empty(): 
+					rich_text += kd + " [b]Rapid[/b]: " + s.spell[0] + "\n"
 				
 			Wand.Kind.PICK:
-				rich_text += kd + " [b]Choose[/b]: (" + s.display_rotated_spells_list() + ")\n"
+				if not s.spell.is_empty(): 
+					rich_text += kd + " [b]Choose[/b]: " + s.display_rotated_spells_list() + "\n"
 			Wand.Kind.FIRE_PICKED:
-				rich_text += kd + " ([b]Cast[/b]): " + wand.picked + "\n"
+				if not wand.picked.is_empty(): 
+					rich_text += kd + " [b]Cast[/b]: [i]" + wand.picked + "[/i]\n"
 			Wand.Kind.FIRE_PICKED_HOLD:
-				rich_text += kd + " ([b]Charge[/b]): " + wand.picked + "\n"
+				if not wand.picked.is_empty(): 
+					rich_text += kd + " [b]Charge[/b]: [i]" + wand.picked + "[/i]\n"
 			Wand.Kind.RAPID_SELECT:
-				rich_text += kd + " ([b]Rapid[/b]): " + wand.picked + "\n"
+				if not wand.picked.is_empty(): 
+					rich_text += kd + " [b]Rapid[/b]: [i]" + wand.picked + "[/i]\n"
 	
 	rich_text += "[/font_size]"
 	wand_mapping.text = ""
 	wand_mapping.size = Vector2($WandMappingPanel.size.x, 0)
 	$WandMappingPanel.size.y = 0
-	#wand_mapping.text = rich_text
+	wand_mapping.text = rich_text
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:
 		wand_mapping.visible = rich_text != ("[font_size=%d][/font_size]" % SIZE)
+	
 	
 #	await wand_mapping.finished
 	wand_mapping.size.x = $WandMappingPanel.size.x

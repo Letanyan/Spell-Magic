@@ -52,13 +52,11 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
-					prints("undead:", pos)
 			GRASSLAND_STRUCTURES_KIND.MOLE:
 				index += 1
 				var pos := area[index]
 				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
 				if p != null:
-					prints("mole:", pos)
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.VILLAGE:
 				if area.size() - index < 100:
