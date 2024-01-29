@@ -78,8 +78,9 @@ func setup(_settings: WorldSettings) -> void:
 func _ready():
 	if book == null:
 		var _settings := WorldSettings.new()
-		_settings.world_name = "demo"
-		_settings.sed = 0 
+		_settings.read("demo")
+		#_settings.world_name = "demo"
+		#_settings.sed = 0 
 		setup(_settings)
 		
 	settings.upgrade_settings.currency = 10000

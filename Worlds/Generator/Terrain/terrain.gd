@@ -69,9 +69,10 @@ func init_chunks(x: float, y: float) -> Array[Node3D]:
 		var gm := MultiMesh.new()
 		gm.transform_format = MultiMesh.TRANSFORM_3D
 		gm.use_custom_data = true
+		#gm.instance_count = 262_094
 		gm.instance_count = 32_175
 		gm.visible_instance_count = 0
-		gm.mesh = load("res://Models/Grass/grass_02_mesh_lod2.tres")
+		gm.mesh = load("res://Models/Grass/grassface.tres")
 		grass_mesh = MultiMeshInstance3D.new()
 		grass_mesh.multimesh = gm
 		grass_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -345,6 +346,7 @@ func init_grass():
 						break
 						
 	mm.visible_instance_count = i
+	print(i)
 
 func set_player_coord_using_position(x: float, y: float, cs: float):
 	player_coord = convert_position_to_coord(x, y, cs)
