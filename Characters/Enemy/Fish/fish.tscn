@@ -808,7 +808,6 @@ orientation = 2
 collision_layer = 4
 collision_mask = 593
 script = ExtResource("1_vn07l")
-bounds = Vector3(3, 2.8, 2.4)
 
 [node name="CharacterArmature" type="Node3D" parent="."]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)

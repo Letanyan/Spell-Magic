@@ -217,5 +217,7 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.BAT
 	elif n is Fish:
 		return World.Enemy.FISH
+	elif n is Birdman:
+		return World.Enemy.BIRDMAN
 	
 	return World.Enemy.NONE

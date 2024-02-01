@@ -156,7 +156,10 @@ func impulse_length() -> float:
 	
 func build_expressions():
 	for k in expression_strings:
-		expressions[k] = Expr.new(expression_strings[k])
+		if expression_strings[k].contains(";"):
+			expressions[k] = Expr.new(expression_strings[k].split(";", false, 2)[0])
+		else:
+			expressions[k] = Expr.new(expression_strings[k])
 		
 func overwrite_expressions(mappings: Dictionary):
 	for k in mappings:
@@ -350,7 +353,7 @@ func load_dict(dict: Dictionary):
 	expression_strings = dict.get("expression_strings", {})
 	is_active = dict.get("is_active", false)
 	for e in expression_strings:
-		expression_strings[e] = expression_strings[e].lstrip(" \t\n").rstrip(" \t\n")
+		expression_strings[e] = expression_strings[e].strip_edges()
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)

@@ -18,6 +18,7 @@ const mole = preload("res://Characters/Enemy/Mole/mole.tscn")
 const human = preload("res://Characters/Enemy/Human/human.tscn")
 const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
 const fish = preload("res://Characters/Enemy/Fish/fish.tscn")
+const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn")
 
 signal on_enemy_death(drop_artifact: Artifact)
 
@@ -114,6 +115,9 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.FISH:
 			result = fish.instantiate()
 			result.name = "Fish" + str(rng.randi())
+		World.Enemy.BIRDMAN:
+			result = birdman.instantiate()
+			result.name = "Birdman" + str(rng.randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
@@ -142,6 +146,9 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 		World.Enemy.FISH:
 			result = fish.instantiate()
 			result.name = "Fish" + str(randi())
+		World.Enemy.BIRDMAN:
+			result = birdman.instantiate()
+			result.name = "Birdman" + str(randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += randi_range(0, int(result.level * 0.2)) + 1.0
