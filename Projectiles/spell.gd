@@ -165,9 +165,12 @@ func overwrite_expressions(mappings: Dictionary):
 	for k in mappings:
 		expressions[k] = Expr.new(mappings[k])
 	
-func compute_expressions(fvars: Dictionary):
+func compute_expressions(fvars: Dictionary, additional: Dictionary = {}):
+	var temp = {}
+	temp.merge(fvars)
+	temp.merge(additional)
 	for k in expressions:
-		fvars[k] = expressions[k].compute(fvars)
+		fvars[k] = expressions[k].compute(temp)
 			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
@@ -199,7 +202,7 @@ const _void = preload("res://Projectiles/void.tscn")
 const turret = preload("res://Projectiles/turret/turret.tscn")
 const turret_mat = preload("res://Projectiles/turret/turret.tres")
 	
-func get_particle(n: int, fvars: Dictionary) -> SpellBody:
+func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	var fixed_vars := {}
 	fixed_vars["rn0"] = randf()
 	fixed_vars["rn1"] = randf()
@@ -231,6 +234,9 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 		_: p = fire.instantiate()
 			
 	p.fixed_vars = fixed_vars
+	p.expression_vars = {}
+	p.expression_vars.merge(exvars, true)
+	compute_expressions(p.expression_vars, fixed_vars)
 	p.spell = self
 	p.position = calculate_location(fixed_vars)
 	var er := calculate_size(fixed_vars)
@@ -246,7 +252,7 @@ func get_particle(n: int, fvars: Dictionary) -> SpellBody:
 	
 	return p
 		
-func get_particles(fvars: Dictionary) -> Array:
+func get_particles(fvars: Dictionary, exvars: Dictionary) -> Array:
 	var result := []
 	var fixed_vars := {}
 	fixed_vars["r0"] = randf()
@@ -267,7 +273,7 @@ func get_particles(fvars: Dictionary) -> Array:
 	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	for i in range(count):
-		var p := get_particle(i, fixed_vars)
+		var p := get_particle(i, fixed_vars, exvars)
 		p.n = i
 		p.spell = self
 		result.append(p)

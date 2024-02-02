@@ -17,6 +17,7 @@ var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
 var on_hit_casts := {}
 
 var fixed_vars: Dictionary
+var expression_vars: Dictionary
 
 var to_remove := false
 

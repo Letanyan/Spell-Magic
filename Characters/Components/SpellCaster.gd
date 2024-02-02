@@ -76,7 +76,10 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 			result["Br"] = sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2)
 			
 		Entity.PROJECTILE:
-			cdir = -body.velocity.normalized() 
+			#cdir = -body.velocity.normalized()
+			var port := body.get_viewport()
+			var pos := port.get_visible_rect().size / 2.0
+			cdir = port.get_camera_3d().project_ray_normal(pos)
 			if p != null:
 				var hit_on := (body.position - p.position).normalized()
 				track = get_direction_to_tracking(body, p, hit_on)
@@ -121,11 +124,17 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 				result["abs_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 			elif variable_kind == SpellVariableKind.TIMED:
 				result["rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
-		else:
+		elif entity == Entity.ENEMY:
 			if variable_kind == SpellVariableKind.FIXED:
 				result["abs_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
 				result["rel_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
+		else:
+			if variable_kind == SpellVariableKind.FIXED:
+				result["abs_pos"] = body.position + cdir
+			elif variable_kind == SpellVariableKind.TIMED:
+				result["rel_pos"] = body.position + cdir
+			
 	
 	if p != null: # direction from character to spell
 		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )
@@ -189,11 +198,16 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	# it's fine that a projectile doesn't have a target set yet at the start
 	# since by default camera direction equals target direction at start
 	var vars := all_spell_variables(body, null, spell)
+	var exvars := {}
 	if inherited_vars.has("l"): # copy enemy level vars
 		vars["l"] = inherited_vars["l"]
 		vars["fl"] = inherited_vars["fl"]
 		vars["L"] = inherited_vars["L"]
-	var ps := spell.get_particles(vars)
+		if body is SpellBody:
+			exvars.merge(body.expression_vars, true)
+			vars.merge(exvars, true)
+			
+	var ps := spell.get_particles(vars, exvars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p in ps:
 		p.name += str(randi())
