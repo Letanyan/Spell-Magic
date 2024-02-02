@@ -346,7 +346,6 @@ func init_grass():
 						break
 						
 	mm.visible_instance_count = i
-	print(i)
 
 func set_player_coord_using_position(x: float, y: float, cs: float):
 	player_coord = convert_position_to_coord(x, y, cs)

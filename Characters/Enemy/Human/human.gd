@@ -12,8 +12,6 @@ var water_source: Vector3
 func _ready():
 	super._ready()
 	
-	animator = $Male_Casual/AnimationPlayer
-	
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))

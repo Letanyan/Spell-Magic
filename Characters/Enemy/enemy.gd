@@ -35,9 +35,8 @@ func _ready():
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	level_text.text = str(int(level))
 	animation_map = {}
-	if not self is Human:
-		animator = $AnimationPlayer
-		animation_tree = $AnimationTree
+	animator = $AnimationPlayer
+	animation_tree = $AnimationTree
 	
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse

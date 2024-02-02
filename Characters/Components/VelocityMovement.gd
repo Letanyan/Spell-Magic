@@ -1,10 +1,11 @@
 class_name VelocityMovement
 
 @export var speed: float = 24
-@export var fall_acceleration: float = 75
+@export var fall_acceleration: float = 25
 @export var friction: float = 75
 @export var jump_impulse: float = 20
 @export var bounce_impulse: float = 16
+@export var water_bouyancy: float = 75
 
 var target_position: Vector3:
 	set(value):
@@ -81,15 +82,23 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	else:
 		target_velocity.x = 0
 		target_velocity.z = 0
-	
-	if not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y:
-		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
+		
+	if body.position.y < 0 or is_nan(body.position.y):
+		body.position.y = Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		body.position.x = 0
+		body.position.z = 0
+	elif body.position.y < Globals.sea_level():
+		if target_velocity.y < 0:
+			target_velocity.y = target_velocity.y * 0.9
+		target_velocity.y = target_velocity.y + water_bouyancy * delta		
+	elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y:
+		target_velocity.y = target_velocity.y - fall_acceleration * delta
 	else:
 		target_velocity.y = 0
 		
-	target_velocity.x = clampf(target_velocity.x, -100, 100)
-	target_velocity.y = clampf(target_velocity.y, -100, 100)
-	target_velocity.z = clampf(target_velocity.z, -100, 100)
+	target_velocity.x = clampf(target_velocity.x, -50, 50)
+	target_velocity.y = clampf(target_velocity.y, -50, 50)
+	target_velocity.z = clampf(target_velocity.z, -50, 50)
 	
 	if absf(impulse.length()) > 1:
 		impulse -= impulse.normalized() * friction * delta 
