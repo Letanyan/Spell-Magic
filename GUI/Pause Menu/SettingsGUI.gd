@@ -36,6 +36,12 @@ func update_controls():
 	
 	$"Tabs/Camera/FOV Label/Slider".value = int(world_settings.camera_settings.fov)
 	$"Tabs/Camera/FOV Label/Value".text = str(int(world_settings.camera_settings.fov))
+	
+	$"Tabs/Graphics/Scaling Mode/Options".selected = world_settings.graphics_settings.scaling_mode
+	$Tabs/Graphics/Sharpness/Slider.value = world_settings.graphics_settings.sharpness * 100
+	$Tabs/Graphics/Sharpness/Value.text = "%.0f%%" % [world_settings.graphics_settings.sharpness * 100]
+	$Tabs/Graphics/Scaling/Slider.value = world_settings.graphics_settings.scaling * 100
+	$Tabs/Graphics/Scaling/Value.text = "%.0f%%" % [world_settings.graphics_settings.scaling * 100]
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -110,7 +116,37 @@ func _input(event: InputEvent) -> void:
 			hide_cooldown_timings.grab_focus()
 
 
-func _on_slider_value_changed(value: float) -> void:
+func _on_fov_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.fov = int(value)
 	$"Tabs/Camera/FOV Label/Value".text = str(int(value))
 	settings_changed.emit(world_settings)
+
+
+func _on_scaling_mode_options_item_selected(index: int) -> void:
+	ProjectSettings.set_setting("rendering/scaling_3d/mode", index)
+	world_settings.graphics_settings.scaling_mode = index
+	settings_changed.emit(world_settings)
+		
+
+func _on_scaling_slider_drag_ended(value_changed: bool) -> void:
+	if value_changed:
+		var value: float = $Tabs/Graphics/Scaling/Slider.value / 100.0
+		ProjectSettings.set_setting("rendering/scaling_3d/scale", value)
+		world_settings.graphics_settings.scaling = value
+		settings_changed.emit(world_settings)
+
+
+func _on_sharpness_slider_drag_ended(value_changed: bool) -> void:
+	if value_changed:
+		var value: float = $Tabs/Graphics/Sharpness/Slider.value / 100.0
+		ProjectSettings.set_setting("rendering/scaling_3d/sharpness", value)
+		world_settings.graphics_settings.sharpness = value
+		settings_changed.emit(world_settings)
+
+
+func _on_scaling_slider_value_changed(value: float) -> void:
+	$Tabs/Graphics/Scaling/Value.text = "%.0f%%" % [value]
+
+
+func _on_sharpness_slider_value_changed(value: float) -> void:
+	$Tabs/Graphics/Sharpness/Value.text = "%.0f%%" % [value]

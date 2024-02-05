@@ -208,3 +208,7 @@ pan_back={
 [physics]
 
 3d/physics_engine="JoltPhysics3D"
+
+[rendering]
+
+scaling_3d/fsr_sharpness=0.2

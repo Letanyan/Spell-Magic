@@ -24,6 +24,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HUD" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 
 [node name="HideWandMappings" type="CheckButton" parent="Tabs/HUD"]
@@ -89,9 +90,9 @@ layout_mode = 2
 [node name="FOV Label" type="Label" parent="Tabs/Camera"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 9.0
+offset_top = 40.0
 offset_right = 56.0
-offset_bottom = 41.0
+offset_bottom = 72.0
 text = "FOV:"
 vertical_alignment = 1
 
@@ -113,6 +114,83 @@ text = "75"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Graphics" type="Panel" parent="Tabs"]
+layout_mode = 2
+
+[node name="Scaling Mode" type="Label" parent="Tabs/Graphics"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 44.0
+offset_right = 117.0
+offset_bottom = 65.0
+text = "Scaling Mode"
+
+[node name="Options" type="OptionButton" parent="Tabs/Graphics/Scaling Mode"]
+layout_mode = 0
+offset_left = 156.0
+offset_right = 304.0
+offset_bottom = 25.0
+item_count = 3
+selected = 0
+popup/item_0/text = "Bilinear (Fastest)"
+popup/item_0/id = 0
+popup/item_1/text = "FSR 1.0 (Fast)"
+popup/item_1/id = 1
+popup/item_2/text = "FSR 2.0 (Slow)"
+popup/item_2/id = 2
+
+[node name="Scaling" type="Label" parent="Tabs/Graphics"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 88.0
+offset_right = 80.0
+offset_bottom = 113.0
+text = "Scaling"
+
+[node name="Slider" type="HSlider" parent="Tabs/Graphics/Scaling"]
+layout_mode = 0
+offset_left = 156.0
+offset_right = 304.0
+offset_bottom = 16.0
+min_value = 10.0
+max_value = 200.0
+step = 10.0
+value = 100.0
+
+[node name="Value" type="Label" parent="Tabs/Graphics/Scaling"]
+layout_mode = 0
+offset_left = 316.0
+offset_right = 372.0
+offset_bottom = 21.0
+text = "100%"
+
+[node name="Sharpness" type="Label" parent="Tabs/Graphics"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 128.0
+offset_right = 131.0
+offset_bottom = 156.0
+text = "FSR Sharpness"
+
+[node name="Slider" type="HSlider" parent="Tabs/Graphics/Sharpness"]
+layout_mode = 0
+offset_left = 156.0
+offset_top = 4.0
+offset_right = 304.0
+offset_bottom = 20.0
+min_value = 10.0
+max_value = 200.0
+step = 10.0
+value = 20.0
+
+[node name="Value" type="Label" parent="Tabs/Graphics/Sharpness"]
+layout_mode = 0
+offset_left = 316.0
+offset_top = 4.0
+offset_right = 364.0
+offset_bottom = 25.0
+text = "20%"
+
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideNotifications" to="." method="_on_hide_notifications_toggled"]
@@ -120,4 +198,9 @@ vertical_alignment = 1
 [connection signal="toggled" from="Tabs/HUD/HideHealthAndMana" to="." method="_on_hide_health_and_mana_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideCooldownTimings" to="." method="_on_hide_cooldown_timings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideStatsView" to="." method="_on_hide_stats_view_toggled"]
-[connection signal="value_changed" from="Tabs/Camera/FOV Label/Slider" to="." method="_on_slider_value_changed"]
+[connection signal="value_changed" from="Tabs/Camera/FOV Label/Slider" to="." method="_on_fov_slider_value_changed"]
+[connection signal="item_selected" from="Tabs/Graphics/Scaling Mode/Options" to="." method="_on_scaling_mode_options_item_selected"]
+[connection signal="drag_ended" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_drag_ended"]
+[connection signal="value_changed" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_value_changed"]
+[connection signal="drag_ended" from="Tabs/Graphics/Sharpness/Slider" to="." method="_on_sharpness_slider_drag_ended"]
+[connection signal="value_changed" from="Tabs/Graphics/Sharpness/Slider" to="." method="_on_sharpness_slider_value_changed"]

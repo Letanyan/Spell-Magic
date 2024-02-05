@@ -12,6 +12,7 @@ var hud_settings: HUDSettings
 var camera_settings: CameraSettings
 var upgrade_settings: UpgradeSettings
 var game_mode_settings: GameModeSettings
+var graphics_settings: GraphicsSettings
 
 func _init() -> void:
 	hud_settings = HUDSettings.new()
@@ -19,6 +20,7 @@ func _init() -> void:
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.reset_all_stats_to_max_values()
 	game_mode_settings = GameModeSettings.new()
+	graphics_settings = GraphicsSettings.new()
 
 func save_dict() -> Dictionary:
 	return {
@@ -30,6 +32,7 @@ func save_dict() -> Dictionary:
 		"hud_settings": hud_settings.save_dict(),
 		"camera_settings": camera_settings.save_dict(),
 		"game_mode_settings": game_mode_settings.save_dict(),
+		"graphics_settings": graphics_settings.save_dict()
 	}
 
 func save():
@@ -61,6 +64,9 @@ func load_dict(data: Dictionary):
 	
 	game_mode_settings = GameModeSettings.new()
 	game_mode_settings.load_dict(data.get("game_mode_settings", {}))
+	
+	graphics_settings = GraphicsSettings.new()
+	graphics_settings.load_dict(data.get("graphics_settings", {}))
 
 func read(filename: String):
 	var file = FileAccess.open("user://worlds/%s/settings.json" % (filename), FileAccess.READ)
