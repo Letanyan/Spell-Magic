@@ -8,7 +8,7 @@ var warning: Dictionary # int -> Color
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -56,11 +56,14 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 	draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, label_color_top)
 	
 	var dir_pos: Vector2 = center - Vector2(v.x / 2, w.y / 2) + offset - mask * u
-	if option.is_effect():
+	var dir_tex = option.direction_texture()
+	if dir_tex == null:
+		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/4, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+	elif option.is_effect():
 		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
-		draw_texture_rect(option.direction_texture(), Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+		draw_texture_rect(dir_tex, Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 	else:
-		draw_texture_rect(option.direction_texture(), Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+		draw_texture_rect(dir_tex, Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 		
 	
@@ -112,6 +115,10 @@ func get_label_color(index: int) -> Dictionary:
 		result.merge(warning[index], true)
 		
 	return result
+
+func _gui_input(event: InputEvent) -> void:
+	print(event)
+	print(mouse_filter)
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), color)

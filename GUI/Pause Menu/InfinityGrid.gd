@@ -6,7 +6,7 @@ extends Container
 @export var offset: Vector2 = Vector2.ZERO
 @export var line_width: float = 1.0
 @export var line_color: Color = Color(1, 1, 1, 0.5)
-@export var background_color: Color = Color(0.1, 0.1, 0.1, 1.0)
+@export var background_color: Color = Color(0.1, 0.1, 0.1, 0.9)
 
 var selected_cell_coord = null
 
@@ -67,7 +67,7 @@ func _draw() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
-	
+		
 	if event is InputEventMouseButton:
 		if mouse_down == null and event.pressed:
 			var m_pos: Vector2 = event.global_position - global_position

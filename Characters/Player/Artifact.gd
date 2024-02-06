@@ -1,6 +1,8 @@
 class_name Artifact
 
-enum Effect {
+# only applies to Element (ANY, FIRE, WATER, ROCK, AIR, ICE, ELECTRIC)
+# ignore otherwise
+enum Effect { 
 	NONE,
 	# refers to increases players damage
 	BOOST_PERCENTAGE,
@@ -52,13 +54,13 @@ class Option:
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
 		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
 		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1}, 
-		amount_range: Vector2i = Vector2i(0, 100), 
+		amount_range: Vector2i = Vector2i(-100, 100), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
 		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
 		var ev := Population.random_entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
 		var el: Element
-		if el_prob.size() == 15:
+		if el_prob.size() == 17:
 			if flip:
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 			else:
@@ -66,6 +68,8 @@ class Option:
 				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1}
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 		var am := randi_range(amount_range.x, amount_range.y)
+		if not flip:
+			am = abs(am)
 		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
 	
@@ -105,7 +109,7 @@ class Option:
 			return effect_texture()
 		elif event != Event.NONE:
 			return event_texture()
-		return preload("res://GUI/Images/sword.svg")
+		return null
 		
 	func is_effect() -> bool:
 		if effect != Effect.NONE:
@@ -114,12 +118,15 @@ class Option:
 			return false
 		
 	func effect_texture() -> Texture2D:
-		match effect:
-			Effect.BOOST_PERCENTAGE, Effect.BOOST_FLAT:
-				return preload("res://GUI/Images/sword.svg")
-			Effect.RESISTANCE_PERCENTAGE, Effect.RESISTANCE_FLAT:
-				return preload("res://GUI/Images/shield.svg")
-		return preload("res://GUI/Images/sword.svg")
+		if element == Element.ANY or element == Element.FIRE or element == Element.WATER or \
+		element == Element.AIR or element == Element.ROCK or element == Element.ICE or \
+		element == Element.ELECTRIC:
+			match effect:
+				Effect.BOOST_PERCENTAGE, Effect.BOOST_FLAT:
+					return preload("res://GUI/Images/sword.svg")
+				Effect.RESISTANCE_PERCENTAGE, Effect.RESISTANCE_FLAT:
+					return preload("res://GUI/Images/shield.svg")
+		return null
 		
 	func event_texture() -> Texture2D:
 		match event:
@@ -132,7 +139,7 @@ class Option:
 	func amount_description() -> String:
 		if effect == Effect.NONE:
 			return ""
-		var result := ("+" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "-") + ("%d" % amount)
+		var result := ("+" if amount > 0 else "") + ("%d" % amount)
 		if effect == Effect.BOOST_PERCENTAGE or effect == Effect.RESISTANCE_PERCENTAGE:
 			result += "%"
 		return result

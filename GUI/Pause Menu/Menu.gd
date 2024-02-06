@@ -100,11 +100,6 @@ func close():
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
-	
-	if event.is_action_pressed("RB"):
-		update_index(current_index + 1)
-	elif event.is_action_pressed("LB"):
-		update_index(current_index - 1)
 
 func save_changes():
 	if magic_book.visible:

@@ -44,13 +44,13 @@ func setup(_settings: WorldSettings) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 
-#	for i in ["flower", "feather", "goblet", "sands", "crown", "glove", "brace", "gown", "helmet"]:
-#		var artifact := Artifact.new(i)
-#		artifact.top = Artifact.Option.make_random()
-#		artifact.bottom = Artifact.Option.make_random()
-#		artifact.left = Artifact.Option.make_random()
-#		artifact.right = Artifact.Option.make_random()
-#		artifacts.collection.append(artifact)
+	#for i in ["flower", "feather", "goblet", "sands", "crown", "glove", "brace", "gown", "helmet"]:
+		#var artifact := Artifact.new(i)
+		#artifact.top = Artifact.Option.make_random()
+		#artifact.bottom = Artifact.Option.make_random()
+		#artifact.left = Artifact.Option.make_random()
+		#artifact.right = Artifact.Option.make_random()
+		#artifacts.collection.append(artifact)
 	
 	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, -20, 1000, 20)
 	#add_child(undead)
