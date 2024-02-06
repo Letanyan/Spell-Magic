@@ -232,13 +232,13 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	var q: Node3D = null
-	if delay > 0:
+	if delay > 0 and (p.spell.is_bomb or (not p.spell.follow and not body is SpellBody) ):
 		q = p.spell.get_turret(p.n, p.fixed_vars)
 		insert.call(q)
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
 	if not p.spell.is_bomb:
-		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
+		spell_variables(p.fixed_vars, body, SpellVariableKind.FIXED, p, p.spell)
 	else:
 		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
 		
