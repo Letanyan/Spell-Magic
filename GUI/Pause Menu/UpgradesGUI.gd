@@ -38,6 +38,14 @@ var settings: WorldSettings:
 @onready var max_spell_count_upgrade: Button = $container/max_spell_count/upgrade
 @onready var max_spell_count_cost: RichTextLabel = $container/max_spell_count/upgrade/cost
 
+@onready var attack_current: Label = $container/attack/current
+@onready var attack_upgrade: Button = $container/attack/upgrade
+@onready var attack_cost: RichTextLabel = $container/attack/upgrade/cost
+
+@onready var defence_current: Label = $container/defence/current
+@onready var defence_upgrade: Button = $container/defence/upgrade
+@onready var defence_cost: RichTextLabel = $container/defence/upgrade/cost
+
 @onready var element_void_upgrade: Button = $container/elements/Void
 @onready var element_void_cost: RichTextLabel = $container/elements/Void/cost
 @onready var element_fire_upgrade: Button = $container/elements/Fire
@@ -79,6 +87,8 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	max_M_current.text = str(settings.upgrade_settings.max_mana)
 	max_r_current.text = str(settings.upgrade_settings.max_r)
 	max_H_current.text = str(settings.upgrade_settings.max_health)
+	attack_current.text = str(settings.upgrade_settings.max_attack)
+	defence_current.text = str(settings.upgrade_settings.max_defence)
 	
 	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID)
 	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE)
@@ -101,6 +111,8 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	max_M_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana) + coin_suffix
 	max_r_cost.text = "[center]" + str(settings.upgrade_settings.cost_r) + coin_suffix
 	max_H_cost.text = "[center]" + str(settings.upgrade_settings.cost_health) + coin_suffix
+	attack_cost.text = "[center]" + str(settings.upgrade_settings.cost_attack) + coin_suffix
+	defence_cost.text = "[center]" + str(settings.upgrade_settings.cost_defence) + coin_suffix
 	
 	element_void_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
 	element_fire_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
@@ -124,6 +136,8 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	max_H_upgrade.disabled = settings.upgrade_settings.max_health >= UpgradeSettings.LIMIT_HEALTH
 	max_M_upgrade.disabled = settings.upgrade_settings.max_mana >= UpgradeSettings.LIMIT_MANA
 	max_r_upgrade.disabled = settings.upgrade_settings.max_r >= UpgradeSettings.LIMIT_r
+	attack_upgrade.disabled = settings.upgrade_settings.max_attack >= UpgradeSettings.LIMIT_ATTACK
+	defence_upgrade.disabled = settings.upgrade_settings.max_defence >= UpgradeSettings.LIMIT_DEFENCE
 	
 	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book)
 	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P)
@@ -133,6 +147,8 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	max_H_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_health)
 	max_M_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana)
 	max_r_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_r)
+	attack_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_attack)
+	defence_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_defence)
 
 func _on_max_spell_count_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spells_in_book()
@@ -204,6 +220,14 @@ func _on_on_hit_upgrade_pressed() -> void:
 
 func _on_max_H_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_health()
+	update_state(err)
+	
+func _on_attack_upgrade_pressed() -> void:
+	var err := settings.upgrade_settings.purchase_attack()
+	update_state(err)
+
+func _on_defence_upgrade_pressed() -> void:
+	var err := settings.upgrade_settings.purchase_defence()
 	update_state(err)
 	
 func _input(event: InputEvent) -> void:
@@ -340,7 +364,4 @@ func _input(event: InputEvent) -> void:
 			chain_on_hit_upgrade.grab_focus()
 		if direction.y < 0:
 			max_H_upgrade.grab_focus()
-			
-			
-			
 			

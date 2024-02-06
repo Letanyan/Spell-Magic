@@ -285,6 +285,8 @@ func update_stats_view():
 	sv.health.text = "%d" % [ws.max_health]
 	sv.velocity.text = "%d+%d" % [ws.max_v, ws.buff_v]
 	sv.mana.text = "%d+%d" % [ws.max_mana, ws.buff_mana]
+	sv.attack.text = "%d+%d" % [ws.max_attack, ws.buff_attack]
+	sv.defence.text = "%d+%d" % [ws.max_defence, ws.buff_defence]
 	sv.r.text = "%d+%d" % [ws.max_r, ws.buff_r]
 	sv.T.text = "%d+%d" % [ws.max_T, ws.buff_T]
 	sv.N.text = "%d+%d" % [ws.max_N, ws.buff_N]

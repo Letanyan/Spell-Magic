@@ -18,6 +18,8 @@ func _ready():
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 20
+	vitals.health.max_value = 10000
+	vitals.health.value = 10000
 	
 	const idle_r := 10.0
 	var randarc := func() -> PathStyle.Segment:
@@ -47,9 +49,9 @@ func _ready():
 	none_pattern = AttackPatterns.none()
 	
 	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"h":"4", "s":"4"})
-	water_para.element = Spell.Element.WATER
+	water_para.element = Spell.Element.VOID
 	var water_line := GlobalData.magic_book.spell_with_name("linear", {"s":"15", "d":"1"})
-	water_line.element = Spell.Element.WATER
+	water_line.element = Spell.Element.VOID
 	
 	default_pattern = AttackPatterns.new(
 		[
@@ -71,7 +73,7 @@ func _ready():
 		true
 	)
 	
-	animation_map["attack"] = "Bite_Front"
+	animation_map["attack"] = "Weapon"
 	
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
@@ -80,9 +82,9 @@ func _physics_process(delta: float) -> void:
 
 func __default_pattern() -> AttackPatterns:
 	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
-	water_para.element = Spell.Element.WATER
+	water_para.element = Spell.Element.VOID
 	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
-	water_line.element = Spell.Element.WATER
+	water_line.element = Spell.Element.VOID
 	
 	default_pattern.spells = [
 		water_line,

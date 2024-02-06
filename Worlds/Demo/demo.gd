@@ -103,6 +103,12 @@ func _ready():
 	player.spell_radius_was_buffed.connect(func(r):
 		book.update_spell_buff_limits(settings.upgrade_settings.buff_v, r)
 	)
+	player.attack_was_buffed.connect(func(atk):
+		book.update_spell_attack_and_defence(atk, settings.upgrade_settings.buff_defence)
+	)
+	player.defence_was_buffed.connect(func(def):
+		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
+	)
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()

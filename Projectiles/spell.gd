@@ -67,6 +67,8 @@ var limit_r: float = UpgradeSettings.LIMIT_r
 var limit_v: float = UpgradeSettings.LIMIT_v
 var buff_r: float = 0.0
 var buff_v: float = 0.0
+var buff_attack: float = 0.0
+var buff_defence: float = 0.0
 
 func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
 	x = _x
@@ -105,6 +107,8 @@ func duplicate() -> Spell:
 	result.limit_v = limit_v
 	result.buff_r = buff_r
 	result.buff_v = buff_v
+	result.buff_attack = buff_attack
+	result.buff_defence = buff_defence
 	result.expression_strings = expression_strings
 	result.build_expressions()
 	result.charge = charge
@@ -191,6 +195,17 @@ func actual_mana_cost() -> float:
 	if chain != null:
 		result += chain.actual_mana_cost() * count
 	return result
+	
+func damage(vitals: Vitals) -> float:
+	match element:
+		Element.FIRE: return power * (vitals.attack.value + buff_attack)
+		Element.WATER: return power * vitals.health.value
+		Element.AIR: return 0.0
+		Element.ROCK: return power * (vitals.defence.value + buff_defence)
+		Element.ICE: return power * (vitals.health.value * 0.5 + (vitals.attack.value + buff_attack) * 0.5)
+		Element.ELECTRIC: return power
+		Element.VOID: return 0.0
+	return 0.0
 	
 const fire = preload("res://Projectiles/fire.tscn")
 const rock = preload("res://Projectiles/rock.tscn")

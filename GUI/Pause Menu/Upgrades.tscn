@@ -87,6 +87,106 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="attack" type="Control" parent="container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 46.0
+offset_top = 49.0
+offset_right = 86.0
+offset_bottom = 89.0
+grow_horizontal = 2
+
+[node name="label" type="RichTextLabel" parent="container/attack"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 108.0
+offset_bottom = 26.0
+grow_horizontal = 2
+bbcode_enabled = true
+text = "[img=16]res://GUI/Images/sword.svg[/img] Attack"
+scroll_active = false
+
+[node name="current" type="Label" parent="container/attack"]
+layout_mode = 0
+offset_left = 160.0
+offset_right = 288.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/attack"]
+layout_mode = 0
+offset_left = 296.0
+offset_right = 396.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="RichTextLabel" parent="container/attack/upgrade"]
+layout_mode = 0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="defence" type="Control" parent="container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 47.0
+offset_top = 89.0
+offset_right = 87.0
+offset_bottom = 129.0
+grow_horizontal = 2
+
+[node name="label" type="RichTextLabel" parent="container/defence"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 108.0
+offset_bottom = 26.0
+grow_horizontal = 2
+bbcode_enabled = true
+text = "[img=16]res://GUI/Images/shield.svg[/img] Defence"
+scroll_active = false
+
+[node name="current" type="Label" parent="container/defence"]
+layout_mode = 0
+offset_left = 160.0
+offset_right = 288.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/defence"]
+layout_mode = 0
+offset_left = 296.0
+offset_right = 396.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="RichTextLabel" parent="container/defence/upgrade"]
+layout_mode = 0
+offset_left = 112.0
+offset_right = 212.0
+offset_bottom = 26.0
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
 [node name="max_P" type="Control" parent="container"]
 anchors_preset = 0
 offset_left = 56.0
@@ -688,6 +788,8 @@ grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
 [connection signal="pressed" from="container/max_H/upgrade" to="." method="_on_max_H_upgrade_pressed"]
+[connection signal="pressed" from="container/attack/upgrade" to="." method="_on_attack_upgrade_pressed"]
+[connection signal="pressed" from="container/defence/upgrade" to="." method="_on_defence_upgrade_pressed"]
 [connection signal="pressed" from="container/max_P/upgrade" to="." method="_on_max_P_upgrade_pressed"]
 [connection signal="pressed" from="container/max_M/upgrade" to="." method="_on_max_M_upgrade_pressed"]
 [connection signal="pressed" from="container/max_spell_count/upgrade" to="." method="_on_max_spell_count_upgrade_pressed"]

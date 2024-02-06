@@ -34,6 +34,8 @@ class Stat:
 var health: Stat
 var mana: Stat
 var aggression: Stat
+var attack: Stat
+var defence: Stat
 
 var burning: Stat
 var wetness: Stat
@@ -54,16 +56,18 @@ func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _we
 	wetness = _wetness
 	freeze = _freeze
 	stun = _stun
+	attack = Stat.new(10, 0, 100)
+	defence = Stat.new(10, 0, 100)
 	hunger = Stat.new(0, 0, 0)
 	thirst = Stat.new(0, 0, 0)
 	perception = Stat.new(50, 0, 100)
 	aggression = Stat.new(0, 0, 1)
 	damage_resistance = {}
 
-func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
+func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
 	match kind:
 		Spell.Element.FIRE:
-			var amount = burning.amount_of_change(power / 100.0)
+			var amount = burning.amount_of_change(gauge / 100.0)
 			if wetness.value <= 0 and freeze.value <= 0:
 				burning.apply_ignoring_resistance(amount)
 			else:
@@ -71,7 +75,7 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			wetness.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(-amount * 1.5)
 		Spell.Element.WATER:
-			var amount = wetness.amount_of_change(power / 100.0)
+			var amount = wetness.amount_of_change(gauge / 100.0)
 			if burning.value <= 0:
 				wetness.apply_ignoring_resistance(amount)
 			else:
@@ -79,7 +83,7 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			burning.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(amount * freeze.value)
 		Spell.Element.ICE:
-			var amount = freeze.amount_of_change(wetness.value * power / 100.0)
+			var amount = freeze.amount_of_change(wetness.value * gauge / 100.0)
 			if wetness.value > 0:
 				freeze.apply_ignoring_resistance(amount)
 				wetness.apply_ignoring_resistance(-amount)
@@ -87,7 +91,7 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 				power = power * 0.25
 			burning.apply_ignoring_resistance(-amount)
 		Spell.Element.ELECTRIC:
-			var amount = stun.amount_of_change(maxf(wetness.value, burning.value) * power / 100.0)
+			var amount = stun.amount_of_change(maxf(wetness.value, burning.value) * gauge / 100.0)
 			stun.apply_ignoring_resistance(amount)
 		Spell.Element.AIR:
 			power = 0.0
@@ -95,9 +99,12 @@ func handle_damage(kind: Spell.Element, power: float) -> Dictionary:
 			power = 0.0
 			
 	for e in damage_resistance:
+		var def := defence.value / (defence.value + 500)
+		power = power * (1.0 - def)
 		if e == kind or e == Artifact.Element.ANY:
 			power = power * (1.0 - damage_resistance[e].y) - damage_resistance[e].x
 	health.apply_ignoring_resistance(-power)
+	print("power: ", power, ", gauge: ", gauge)
 	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
 	print("element: ", Spell.name_from_element(kind))
 	

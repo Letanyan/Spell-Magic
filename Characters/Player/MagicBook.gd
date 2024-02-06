@@ -116,6 +116,11 @@ func update_spell_buff_limits(v: float, r: float):
 	for s in spells:
 		s.buff_v = v
 		s.buff_r = r
+		
+func update_spell_attack_and_defence(atk: float, def: float):
+	for s in spells:
+		s.buff_attack = atk
+		s.buff_defence = def
 
 func spell_exists(n: String) -> bool:
 	for s in spells:

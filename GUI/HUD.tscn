@@ -130,7 +130,7 @@ shortcut_keys_enabled = false
 [node name="StatsView" parent="." instance=ExtResource("3_3d5vo")]
 layout_mode = 1
 offset_left = 8.0
-offset_top = 394.0
+offset_top = 368.0
 offset_right = -872.0
 offset_bottom = -8.0
 

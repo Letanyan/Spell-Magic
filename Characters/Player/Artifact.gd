@@ -19,7 +19,7 @@ enum Event {
 enum Element {
 	ANY, # is used as an offset so the next 6 elements map to Spell.Element 
 	FIRE, WATER, ROCK, AIR, ICE, ELECTRIC,
-	MANA, HEALTH,
+	MANA, HEALTH, ATTACK, DEFENCE,
 	POWER, COUNT, DURATION, MANA_BUMP,
 	SPELL_VELOCITY, SPELL_RADIUS
 }
@@ -50,8 +50,8 @@ class Option:
 		ev_prob: Dictionary = {Event.RECEIVE: 0.1, Event.DEAL: 0.1}, 
 		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
-		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, 
-		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1}, 
+		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
+		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1}, 
 		amount_range: Vector2i = Vector2i(0, 100), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
@@ -167,6 +167,10 @@ class Option:
 				return "H"
 			Element.MANA:
 				return "M"
+			Element.ATTACK:
+				return "AT"
+			Element.DEFENCE:
+				return "DF"
 			Element.POWER:
 				return "P"
 			Element.DURATION:
@@ -201,6 +205,10 @@ class Option:
 				return preload("res://GUI/Images/health.svg")
 			Element.MANA:
 				return preload("res://GUI/Images/mana.svg")
+			Element.ATTACK:
+				return preload("res://GUI/Images/sword.svg")
+			Element.DEFENCE:
+				return preload("res://GUI/Images/shield.svg")
 			Element.POWER:
 				return preload("res://GUI/Images/power.svg")
 			Element.DURATION:
@@ -235,6 +243,10 @@ class Option:
 				return Color.DARK_GREEN
 			Element.MANA:
 				return Color.DARK_BLUE
+			Element.ATTACK:
+				return Color.DARK_RED
+			Element.DEFENCE:
+				return Color.ROYAL_BLUE
 			Element.POWER:
 				return Color.REBECCA_PURPLE
 			Element.DURATION:
@@ -297,6 +309,10 @@ class Option:
 				result += "H"
 			Element.MANA:
 				result += "M"
+			Element.ATTACK:
+				result += "AT"
+			Element.DEFENCE:
+				result += "DF"
 			Element.POWER:
 				result += "P"
 			Element.DURATION:

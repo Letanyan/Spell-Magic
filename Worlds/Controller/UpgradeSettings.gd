@@ -47,7 +47,7 @@ var upgrade_P := 5
 var max_P := 10
 var cost_P := 10
 var buff_P := 0.0
-const LIMIT_P := 1000
+const LIMIT_P := 100
 var upgrade_v := 2.5
 var max_v := 2.5:
 	set(value):
@@ -66,6 +66,17 @@ var upgrade_health := 10.0
 var max_health := 100.0
 var cost_health := 10
 const LIMIT_HEALTH := 1000.0
+
+var upgrade_attack := 5.0
+var max_attack := 10.0
+var cost_attack := 10
+var buff_attack := 0.0
+const LIMIT_ATTACK := 100
+var upgrade_defence := 5.0
+var max_defence := 10.0
+var cost_defence := 10
+var buff_defence := 0.0
+const LIMIT_DEFENCE := 100
 
 var upgrade_spells_in_book := 2
 var max_spells_in_book := 4
@@ -93,10 +104,14 @@ func reset_all_stats_to_default_values():
 	max_mana = 100.0
 	max_health = 100.0
 	max_spells_in_book = 4
+	max_attack = 10.0
+	max_defence = 10.0
 	
 func reset_all_stats_to_max_values():
 	max_health = UpgradeSettings.LIMIT_HEALTH
 	max_mana = UpgradeSettings.LIMIT_MANA
+	max_attack = UpgradeSettings.LIMIT_ATTACK
+	max_defence = UpgradeSettings.LIMIT_DEFENCE
 	max_D = UpgradeSettings.LIMIT_D
 	max_N = UpgradeSettings.LIMIT_N
 	max_P = UpgradeSettings.LIMIT_P
@@ -136,6 +151,28 @@ func purchase_mana() -> PurchaseError:
 		
 	max_mana += upgrade_mana
 	currency -= cost_mana
+	return PurchaseError.NONE
+	
+func purchase_attack() -> PurchaseError:
+	if currency < cost_attack:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_attack + upgrade_attack > LIMIT_ATTACK:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_attack += upgrade_attack
+	currency -= cost_attack
+	return PurchaseError.NONE
+
+func purchase_defence() -> PurchaseError:
+	if currency < cost_defence:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_defence + upgrade_defence > LIMIT_DEFENCE:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_defence += upgrade_defence
+	currency -= cost_defence
 	return PurchaseError.NONE
 	
 	
@@ -232,13 +269,16 @@ func save_dict():
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
 		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P, "max_v": max_v,
 		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
+		"max_attack": max_attack, "max_defence": max_defence,
 		
 		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
 		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P, "cost_v": cost_v,
 		"cost_mana": cost_mana, "cost_health": cost_health, "cost_spells_in_book": cost_spells_in_book,
+		"cost_attack": cost_attack, "cost_defence": cost_defence,
 		
 		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P, "upgrade_v": upgrade_v,
 		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
+		"upgrade_attack": upgrade_attack, "upgrade_defence": upgrade_defence,
 		
 		"currency": currency,
 	}
@@ -255,6 +295,8 @@ func load_dict(data: Dictionary):
 	max_mana = data.get("max_mana", 100.0)
 	max_health = data.get("max_health", 100.0)
 	max_spells_in_book = data.get("max_spells_in_book", 4)
+	max_attack = data.get("max_attack", 100.0)
+	max_defence = data.get("max_defence", 100.0)
 	
 	cost_spell_element = data.get("cost_spell_element", 100)
 	cost_chain_method = data.get("cost_chain_method", 100)
@@ -267,6 +309,8 @@ func load_dict(data: Dictionary):
 	cost_mana = data.get("cost_mana", 10)
 	cost_health = data.get("cost_health", 10)
 	cost_spells_in_book = data.get("cost_spells_in_book", 25)
+	cost_attack = data.get("cost_attack", 10)
+	cost_defence = data.get("cost_defence", 10)
 	
 	upgrade_r = data.get("upgrade_r", 0.1)
 	upgrade_T = data.get("upgrade_T", 1.0)
@@ -277,5 +321,7 @@ func load_dict(data: Dictionary):
 	upgrade_mana = data.get("upgrade_mana", 10.0)
 	upgrade_health = data.get("upgrade_health", 10.0)
 	upgrade_spells_in_book = data.get("upgrade_spells_in_book", 2)
+	upgrade_attack = data.get("upgrade_attack", 10)
+	upgrade_defence = data.get("upgrade_defence", 10)
 	
 	currency = data.get("currency", 0)

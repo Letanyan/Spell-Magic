@@ -3,6 +3,8 @@ extends Control
 
 @onready var health: Label = $"container/Value Health"
 @onready var mana: Label = $"container/Value M"
+@onready var attack: Label = $"container/Value ATK"
+@onready var defence: Label = $"container/Value DEF"
 @onready var velocity: Label = $"container/Value Velocity"
 @onready var r: Label = $"container/Value r"
 @onready var T: Label = $"container/Value T"

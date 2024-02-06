@@ -36,6 +36,17 @@ project/assembly_name="Spell Magic"
 
 version_control/autoload_on_startup=true
 
+[file_customization]
+
+folder_colors={
+"res://Audio/": "gray",
+"res://Characters/": "red",
+"res://GUI/": "green",
+"res://Models/": "yellow",
+"res://Projectiles/": "pink",
+"res://Worlds/": "blue"
+}
+
 [gui]
 
 theme/custom="res://GUI/ThemeUI/ThemeUI.tres"

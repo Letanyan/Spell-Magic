@@ -35,6 +35,8 @@ signal vital_update(vitals: Vitals)
 signal spell_was_cast
 signal spell_velocity_was_buffed
 signal spell_radius_was_buffed
+signal attack_was_buffed
+signal defence_was_buffed
 
 var vitals: Vitals
 
@@ -314,6 +316,38 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 					get_tree().create_timer(duration).timeout.connect(func(): 
 						magic_book.settings.upgrade_settings.buff_r -= value
 						spell_radius_was_buffed.emit(magic_book.settings.upgrade_settings.buff_r)
+					)
+				elif effect_el == Artifact.Element.ATTACK:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.upgrade_settings.max_attack * amount.x / 100.0
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
+						value = -magic_book.settings.upgrade_settings.max_attack * amount.x / 100.0
+					magic_book.settings.upgrade_settings.buff_attack += value
+					attack_was_buffed.emit(magic_book.settings.upgrade_settings.buff_attack)
+					get_tree().create_timer(duration).timeout.connect(func(): 
+						magic_book.settings.upgrade_settings.buff_attack -= value
+						attack_was_buffed.emit(magic_book.settings.upgrade_settings.buff_attack)
+					)
+				elif effect_el == Artifact.Element.DEFENCE:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.upgrade_settings.max_defence * amount.x / 100.0
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
+						value = -magic_book.settings.upgrade_settings.max_defence * amount.x / 100.0
+					magic_book.settings.upgrade_settings.buff_defence += value
+					defence_was_buffed.emit(magic_book.settings.upgrade_settings.buff_defence)
+					get_tree().create_timer(duration).timeout.connect(func(): 
+						magic_book.settings.upgrade_settings.buff_defence -= value
+						defence_was_buffed.emit(magic_book.settings.upgrade_settings.buff_defence)
 					)
 				else:
 					if not spell_modifier.has(effect_el):
