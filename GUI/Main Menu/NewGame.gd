@@ -18,6 +18,8 @@ var main_menu_world: MainMenuWorld = null
 func _ready() -> void:
 	upgrades = UpgradeSettings.new()
 	$StartingUpgradesPanel/Health/Slider.value = upgrades.max_health
+	$StartingUpgradesPanel/Attack/Slider.value = upgrades.max_attack
+	$StartingUpgradesPanel/Defence/Slider.value = upgrades.max_defence
 	$StartingUpgradesPanel/Mana/Slider.value = upgrades.max_mana
 	$StartingUpgradesPanel/Velocity/Slider.value = upgrades.max_v
 	$StartingUpgradesPanel/SpellCount/Slider.value = upgrades.max_spells_in_book
@@ -27,6 +29,8 @@ func _ready() -> void:
 	$StartingUpgradesPanel/N/Slider.value = upgrades.max_N
 	
 	$StartingUpgradesPanel/Health/Slider.min_value = upgrades.max_health
+	$StartingUpgradesPanel/Attack/Slider.min_value = upgrades.max_attack
+	$StartingUpgradesPanel/Defence/Slider.min_value = upgrades.max_defence
 	$StartingUpgradesPanel/Mana/Slider.min_value = upgrades.max_mana
 	$StartingUpgradesPanel/Velocity/Slider.min_value = upgrades.max_v
 	$StartingUpgradesPanel/SpellCount/Slider.min_value = upgrades.max_spells_in_book
@@ -36,6 +40,8 @@ func _ready() -> void:
 	$StartingUpgradesPanel/N/Slider.min_value = upgrades.max_N
 	
 	$StartingUpgradesPanel/Health/Slider.max_value = upgrades.LIMIT_HEALTH
+	$StartingUpgradesPanel/Attack/Slider.max_value = upgrades.LIMIT_ATTACK
+	$StartingUpgradesPanel/Defence/Slider.max_value = upgrades.LIMIT_DEFENCE
 	$StartingUpgradesPanel/Mana/Slider.max_value = upgrades.LIMIT_MANA
 	$StartingUpgradesPanel/Velocity/Slider.max_value = upgrades.LIMIT_v
 	$StartingUpgradesPanel/SpellCount/Slider.max_value = upgrades.LIMIT_SPELLS_IN_BOOK
@@ -133,6 +139,15 @@ func _on_spells_toggled(button_pressed: bool) -> void:
 func _on_health_value_changed(value: float) -> void:
 	$StartingUpgradesPanel/Health/Value.text = str(int(value))
 	upgrades.max_health = int(value)
+	
+func _on_defence_value_changed(value: float) -> void:
+	$StartingUpgradesPanel/Attack/Value.text = str(int(value))
+	upgrades.max_attack = int(value)
+
+
+func _on_attack_value_changed(value: float) -> void:
+	$StartingUpgradesPanel/Defence/Value.text = str(int(value))
+	upgrades.max_defence = int(value)
 
 
 func _on_mana_value_changed(value: float) -> void:
@@ -235,3 +250,4 @@ func _on_chain_on_hit_toggled(button_pressed: bool) -> void:
 
 func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	$StartingUpgradesPanel.visible = button_pressed
+

@@ -181,12 +181,66 @@ text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="Attack" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 43.0
+offset_right = 94.0
+offset_bottom = 69.0
+text = "Attack"
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Attack"]
+layout_mode = 0
+offset_left = 104.0
+offset_right = 264.0
+offset_bottom = 28.0
+step = 5.0
+value = 10.0
+rounded = true
+
+[node name="Value" type="Label" parent="StartingUpgradesPanel/Attack"]
+layout_mode = 0
+offset_left = 272.0
+offset_right = 344.0
+offset_bottom = 26.0
+text = "10"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Defence" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 75.0
+offset_right = 94.0
+offset_bottom = 101.0
+text = "Defence"
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Defence"]
+layout_mode = 0
+offset_left = 104.0
+offset_right = 264.0
+offset_bottom = 28.0
+step = 5.0
+value = 10.0
+rounded = true
+
+[node name="Value" type="Label" parent="StartingUpgradesPanel/Defence"]
+layout_mode = 0
+offset_left = 272.0
+offset_right = 344.0
+offset_bottom = 26.0
+text = "10"
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="Mana" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 51.0
+offset_top = 107.0
 offset_right = 94.0
-offset_bottom = 77.0
+offset_bottom = 133.0
 text = "Max M"
 vertical_alignment = 1
 
@@ -212,9 +266,9 @@ vertical_alignment = 1
 [node name="Velocity" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 91.0
-offset_right = 94.0
-offset_bottom = 117.0
+offset_top = 139.0
+offset_right = 100.0
+offset_bottom = 165.0
 text = "Max Velocity"
 vertical_alignment = 1
 
@@ -240,9 +294,9 @@ vertical_alignment = 1
 [node name="SpellCount" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 131.0
+offset_top = 171.0
 offset_right = 94.0
-offset_bottom = 157.0
+offset_bottom = 197.0
 text = "Max Spells"
 vertical_alignment = 1
 
@@ -269,9 +323,9 @@ vertical_alignment = 1
 [node name="T" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 171.0
+offset_top = 203.0
 offset_right = 94.0
-offset_bottom = 197.0
+offset_bottom = 229.0
 text = "Max T"
 vertical_alignment = 1
 
@@ -297,9 +351,9 @@ vertical_alignment = 1
 [node name="r" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 211.0
+offset_top = 235.0
 offset_right = 94.0
-offset_bottom = 237.0
+offset_bottom = 261.0
 text = "Max r"
 vertical_alignment = 1
 
@@ -325,9 +379,9 @@ vertical_alignment = 1
 [node name="P" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 250.0
+offset_top = 267.0
 offset_right = 94.0
-offset_bottom = 276.0
+offset_bottom = 293.0
 text = "Max P"
 vertical_alignment = 1
 
@@ -354,9 +408,9 @@ vertical_alignment = 1
 [node name="N" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 291.0
+offset_top = 299.0
 offset_right = 94.0
-offset_bottom = 317.0
+offset_bottom = 325.0
 text = "Max N"
 vertical_alignment = 1
 
@@ -493,6 +547,8 @@ text = "On Hit"
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]
 [connection signal="toggled" from="StartingUpgrades" to="." method="_on_starting_upgrades_toggled"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Health/Slider" to="." method="_on_health_value_changed"]
+[connection signal="value_changed" from="StartingUpgradesPanel/Attack/Slider" to="." method="_on_attack_value_changed"]
+[connection signal="value_changed" from="StartingUpgradesPanel/Defence/Slider" to="." method="_on_defence_value_changed"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Mana/Slider" to="." method="_on_mana_value_changed"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Velocity/Slider" to="." method="_on_velocity_value_changed"]
 [connection signal="value_changed" from="StartingUpgradesPanel/SpellCount/Slider" to="." method="_on_spell_count_value_changed"]
