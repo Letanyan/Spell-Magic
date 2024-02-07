@@ -28,13 +28,20 @@ func _on_continue_pressed() -> void:
 	get_tree().root.add_child(demo)
 	current.call_deferred("free")
 	get_tree().current_scene = demo
+	
 
+func display_loading(is_loading: bool):
+	$Continue.disabled = is_loading
+	$NewGame.disabled = is_loading
+	$Load.disabled = is_loading
+	$Settings.disabled = is_loading
+	
 
 func _on_load_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.LOAD)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
 
-
 func _on_settings_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.SETTINGS)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")
+	

@@ -6,7 +6,7 @@ uniform sampler2D ripples;
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 
 void vertex() {
-	VERTEX.y += texture(noise, UV + TIME / 16.0).r * 2.0 - 1.0;
+	VERTEX.y += texture(noise, UV + TIME / 16.0).r * 1.0 - 0.5;
 }
 
 void fragment() {

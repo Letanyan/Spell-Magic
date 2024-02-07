@@ -16,6 +16,8 @@ var last_biome: World.Biome = World.Biome.WATER
 var terrain_update_interval = 0
 var has_init_terrain_population = false
 
+var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
+
 var book: MagicBook
 var case: WandCase
 var wand: Wand
@@ -72,10 +74,8 @@ func setup(_settings: WorldSettings) -> void:
 	game_settings.last_world = settings.world_name
 	game_settings.save()
 	
-	
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
+func run_on_ready():
+	ready_state = GameSettings.ReadyState.IN
 	if book == null:
 		var _settings := WorldSettings.new()
 		_settings.read("demo")
@@ -129,6 +129,11 @@ func _ready():
 	
 	var theme := load(ProjectSettings.get("gui/theme/custom")) as ThemeUI
 	theme.change_tint_color(Color(0.0, 0.360784, 0.643137))
+	ready_state = GameSettings.ReadyState.IS
+
+func _ready():
+	if ready_state == GameSettings.ReadyState.NOT:
+		run_on_ready()
 
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.

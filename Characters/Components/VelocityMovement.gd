@@ -87,10 +87,12 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		body.position.y = Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
 		body.position.x = 0
 		body.position.z = 0
-	elif body.position.y < Globals.sea_level():
+	elif Globals.sea_level() - 1.5 < body.position.y and body.position.y < Globals.sea_level() - 1.45:
+		target_velocity.y = 0 
+	elif body.position.y < Globals.sea_level() - 1.5:
 		if target_velocity.y < 0:
 			target_velocity.y = target_velocity.y * 0.9
-		target_velocity.y = target_velocity.y + water_bouyancy * delta		
+		target_velocity.y = target_velocity.y + water_bouyancy * delta
 	elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y:
 		target_velocity.y = target_velocity.y - fall_acceleration * delta
 	else:

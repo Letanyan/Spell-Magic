@@ -53,7 +53,7 @@ void vertex() {
 		texture(wind_horizontal_direction, vec2(0.5 + instance_custom.a, TIME * wind_speed * 0.1)).r * 2.0 - 1.0
 	);
 	vec2 normalized_wind_direction = wind_dir; // normalize(wind_dir);
-	float displacement_affect = (1.0 - UV.y);
+	float displacement_affect = pow(1.0 - UV.y, 3.0);
 	
 	VERTEX.x += normalized_wind_direction.x * 0.001 * displacement_affect * wind_speed;
 	VERTEX.z += normalized_wind_direction.y * 0.001 * displacement_affect * wind_speed;

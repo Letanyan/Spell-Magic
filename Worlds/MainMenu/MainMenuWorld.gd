@@ -81,7 +81,7 @@ func _process(delta):
 func _physics_process(delta):
 	daytime_tick += delta
 			
-	if daytime_tick == 0.166667:
+	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277783
 		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
 			skybox.day_time = 0.0
@@ -113,13 +113,12 @@ func _input(event):
 				
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
-	terrain_update_interval += delta
-	
-	if terrain_update_interval >= 0.25:
-		terrain_update_interval = 0
-		update_terrain(state)
-		player_movement_direction.y = Navigator.get_world_height(state, player.position.x, player.position.z) - player.position.y
-		player_movement_direction.y = player_movement_direction.normalized().y
+	terrain_update_interval = 0
+	update_terrain(state)
+	player_movement_direction.y = Navigator.get_world_height(state, player.position.x, player.position.z) - player.position.y
+	player_movement_direction.y = player_movement_direction.normalized().y
+	print(Navigator.get_world_height(state, player.position.x, player.position.z))
+		
 		
 func build_terrain():
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
