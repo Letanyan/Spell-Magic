@@ -106,6 +106,8 @@ func reset_all_stats_to_default_values():
 	max_spells_in_book = 4
 	max_attack = 10.0
 	max_defence = 10.0
+	has_spell_element = 0b11
+	has_chain_method = 0
 	
 func reset_all_stats_to_max_values():
 	max_health = UpgradeSettings.LIMIT_HEALTH
@@ -119,6 +121,8 @@ func reset_all_stats_to_max_values():
 	max_spells_in_book = UpgradeSettings.LIMIT_SPELLS_IN_BOOK
 	max_v = UpgradeSettings.LIMIT_v
 	max_T = UpgradeSettings.LIMIT_T
+	has_spell_element = 0b1111_111
+	has_chain_method = 0b111
 
 func purchase_spells_in_book() -> PurchaseError:
 	if currency < cost_spells_in_book:
@@ -260,7 +264,7 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 	if check_if_has_chain_method(cm):
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	has_spell_element |= (1 << cm)
+	has_chain_method |= (1 << cm)
 	currency -= cost_chain_method
 	return PurchaseError.NONE
 

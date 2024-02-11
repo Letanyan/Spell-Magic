@@ -203,9 +203,10 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		vars["l"] = inherited_vars["l"]
 		vars["fl"] = inherited_vars["fl"]
 		vars["L"] = inherited_vars["L"]
-		if body is SpellBody:
-			exvars.merge(body.expression_vars, true)
-			vars.merge(exvars, true)
+		
+	if body is SpellBody:
+		exvars.merge(body.expression_vars, true)
+		vars.merge(exvars, true)
 			
 	var ps := spell.get_particles(vars, exvars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
@@ -242,6 +243,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 	else:
 		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
 		
+	p.spell.compute_expressions(p.fixed_vars)
 	p.projectile_hit.connect(pass_projectile_hit)
 	insert.call(p)
 	if q and q.get_parent():
