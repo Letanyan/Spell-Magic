@@ -18,13 +18,14 @@ var behaviour: Behaviour
 var vitals: Vitals
 var current_path: PathStyle
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
+var is_dead: bool = false
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
 
 var index_in_population: int = -1
 signal vitals_signal
-signal on_death(artifact_drop: Artifact)
+signal on_death(enemy: Enemy)
 @onready var health_bar: MeshInstance3D = $HealthBar
 @onready var level_text: Label3D = $HealthBar/Level
 
@@ -53,8 +54,8 @@ func increment_ticks(delta: float):
 func play_animation(animation: String):
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 	var current := playback.get_current_node()
-	if current == "on_hit" and playback.get_current_play_position() < playback.get_current_length():
-		return
+	#if current == "on_hit" and playback.get_current_play_position() < playback.get_current_length():
+		#return
 	if current != "death" and current != animation:
 		playback.travel(animation)
 
@@ -81,7 +82,7 @@ func _physics_process(delta: float):
 
 	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed, self)
 	vitals_signal.emit(index_in_population, vitals)
-	if vitals.health.value <= vitals.health.min_value:
+	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
 	update_vitals_display()
 	
@@ -178,11 +179,12 @@ func death_box() -> Vector3:
 	return Vector3(1, 1, 1)
 	
 func die():
+	is_dead = true
 	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
 	var source = explosion.get_node("source")
 	source.process_material.emission_box_extents = death_box()
 	
-	on_death.emit(get_node("."), drop_artifact())
+	on_death.emit(get_node("."))
 		
 	play_animation("death")
 	
@@ -194,14 +196,41 @@ func die():
 	world.add_child(explosion)
 	source.emitting = true
 	spell_caster.free_particles()
+	drop_artifact_item(world)
+	drop_spell_item(world)
+	
 	queue_free()
 	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 	world.remove_child(explosion)
+	
+		
+func drop_artifact_item(world: Node3D):
+	var artifact: Artifact = drop_artifact()
+	if artifact:
+		var item = preload("res://Models/Misc/Cube.tscn").instantiate()
+		item.position = position
+		item.global_transform = global_transform
+		item.artifact = artifact
+		world.add_child(item)
+		
+		
+func drop_spell_item(world: Node3D):
+	var spell: Spell = drop_spell()
+	if spell:
+		var item = preload("res://Models/Misc/Paper.tscn").instantiate()
+		item.position = position
+		item.global_transform = global_transform
+		item.spell = spell
+		world.add_child(item)
+		
 	
 func update_vitals_display():
 	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
 
 func drop_artifact() -> Artifact:
+	return null
+	
+func drop_spell() -> Spell:
 	return null
 
 func world_enemy_enum() -> World.Enemy:

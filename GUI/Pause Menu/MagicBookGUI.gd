@@ -151,6 +151,9 @@ func reload_list():
 func update_book_without_selection():
 	current_index = -1
 	page.visible = false
+	update_book()
+	
+func update_book():
 	update_spells_list()
 	reload_list()
 		

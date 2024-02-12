@@ -25,6 +25,8 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
+	SignalBus.pick_up_world_item_artifact.connect(func(a,m): artifacts.update_list_and_grid())
+	SignalBus.pick_up_world_item_spell.connect(func(s,m): magic_book.update_book())
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

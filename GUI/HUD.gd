@@ -40,6 +40,8 @@ var book: MagicBook:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$SpellCooldownTimer.start()
+	SignalBus.pick_up_world_item_artifact.connect(func(a, m): show_notification(bbcode(m), 5))
+	SignalBus.pick_up_world_item_spell.connect(func(s, m): show_notification(bbcode(m), 5))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -172,8 +174,8 @@ func update_spell_cooldowns():
 	draw_notifications()
 	
 		
-func show_notification(message: String, duration: int):
-	notifications[message] = duration
+func show_notification(message: String, duration: float):
+	notifications[message] = Time.get_unix_time_from_system() + duration
 	draw_notifications()
 	
 func draw_notifications():
@@ -182,7 +184,7 @@ func draw_notifications():
 	var result: String = "[right]\n"
 	for n in notifications:
 		var d = notifications[n]
-		if d <= 0:
+		if Time.get_unix_time_from_system() >= d:
 			to_erase.append(n)
 		else:
 			notifications[n] -= 1

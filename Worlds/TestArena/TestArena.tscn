@@ -90,7 +90,7 @@ void fragment() {
 	SPECULAR = specular;
 	
 	ALBEDO = vec3(UV.x / 8.0, 0, UV.y / 8.0);
-	ALPHA = 0.9;
+	ALPHA = 0.5;
 }
 "
 

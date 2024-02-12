@@ -17,9 +17,6 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 20
-	vitals.health.max_value = 10000
-	vitals.health.value = 10000
 	
 	const idle_r := 10.0
 	var randarc := func() -> PathStyle.Segment:
@@ -145,3 +142,9 @@ func drop_artifact() -> Artifact:
 	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
 	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
 	return Artifact.new(Time.get_datetime_string_from_system(), t, r, b, l)
+
+func drop_spell() -> Spell:
+	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	water_para.element = Spell.Element.AIR
+	water_para.name = "WaterP"
+	return water_para
