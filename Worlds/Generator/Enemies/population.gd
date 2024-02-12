@@ -119,7 +119,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
-	result.vitals_signal.connect(habitant_vitals_update)
+	result.vital_update.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:

@@ -30,13 +30,13 @@ var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 
-signal player_moved
+signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
-signal spell_was_cast
-signal spell_velocity_was_buffed
-signal spell_radius_was_buffed
-signal attack_was_buffed
-signal defence_was_buffed
+signal spell_was_cast(spell: Spell)
+signal spell_velocity_was_buffed(amount: float)
+signal spell_radius_was_buffed(amount: float)
+signal attack_was_buffed(amount: float)
+signal defence_was_buffed(amount: float)
 
 var vitals: Vitals
 
@@ -48,7 +48,7 @@ var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
 func _ready():
 	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.PLAYER)
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
-	emit_vitals_signal()
+	emit_vitals_update()
 	velocity = Vector3.ZERO
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
 	
@@ -56,7 +56,7 @@ func _ready():
 func _input(event):
 	pass
 	
-func emit_vitals_signal():
+func emit_vitals_update():
 	vital_update.emit(vitals)
 	
 func emit_spell_was_cast(s: Spell):
@@ -100,7 +100,7 @@ func add_impulse(impulse: Vector3):
 func add_shake(amount: float):
 	shake_intensity += amount
 
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	if magic_book.settings.is_paused:
 		return
 	
@@ -108,7 +108,7 @@ func _physics_process(delta):
 		invunerable -= 1
 		
 	var movement := velocity_movement.update(delta, vitals, 14, self)
-	emit_vitals_signal()
+	emit_vitals_update()
 	
 	velocity = movement["velocity"]
 	var direction = movement["direction"]
@@ -178,7 +178,7 @@ func cast_spell(insert: Callable, next_spell: Spell):
 	spell_caster.cast_spell(self, vitals, insert, new_spell)
 	emit_spell_was_cast(next_spell)
 	update_artifact_effects(Artifact.Event.DEAL, next_spell)
-	emit_vitals_signal()
+	emit_vitals_update()
 			
 		
 func _on_wet_area_body_entered(body):

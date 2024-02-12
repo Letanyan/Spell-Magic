@@ -197,11 +197,11 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 			body.invunerable = 20
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
-			body.emit_vitals_signal()
+			body.emit_vitals_update()
 		if is_enemy:
 			body.add_shake(clamp(dmg["dmg"] / 10000.0, 0.0, 1.0))
 			if body.vitals.health.value <= body.vitals.health.min_value:
-				body.vitals_signal.emit(body.index_in_population, body.vitals)
+				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()
 			else:
 				body.invunerable = 20
@@ -243,11 +243,11 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 			body.invunerable = 20
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
-			body.emit_vitals_signal()
+			body.emit_vitals_update()
 		if is_enemy:
 			body.add_shake(clamp(dmg["dmg"] / 10000.0, 0.0, 1.0))
 			if body.vitals.health.value <= body.vitals.health.min_value:
-				body.vitals_signal.emit(body.index_in_population, body.vitals)
+				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()
 			else:
 				body.invunerable = 20

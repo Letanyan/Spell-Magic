@@ -11,8 +11,6 @@ var tracking_node: Dictionary = {}
 var tracking_position: Dictionary = {}
 var tracking_offset: Dictionary = {}
 
-signal not_enough_mana_for_spell
-
 func _init(o: Node3D, e: Entity):
 	origin_node = o
 	entity = e
@@ -179,7 +177,6 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
 			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
 		else:
-			not_enough_mana_for_spell.emit(spell)
 			return
 			
 	var node_to_track = null

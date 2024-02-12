@@ -24,7 +24,7 @@ var behavior_tick: float = 0
 var spell_tick: float = 0
 
 var index_in_population: int = -1
-signal vitals_signal
+signal vital_update
 @onready var health_bar: MeshInstance3D = $HealthBar
 @onready var level_text: Label3D = $HealthBar/Level
 
