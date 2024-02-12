@@ -43,6 +43,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
+	
+	SignalBus.enemy_death.connect(func(e): print(e, " died"))
 
 	#for i in ["flower", "feather", "goblet", "sands", "crown", "glove", "brace", "gown", "helmet"]:
 		#var artifact := Artifact.new(i)

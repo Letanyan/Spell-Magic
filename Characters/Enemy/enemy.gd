@@ -25,12 +25,10 @@ var spell_tick: float = 0
 
 var index_in_population: int = -1
 signal vitals_signal
-signal on_death(enemy: Enemy)
 @onready var health_bar: MeshInstance3D = $HealthBar
 @onready var level_text: Label3D = $HealthBar/Level
 
 @export var bounds: Vector3 = Vector3(1, 1, 1)
-
 
 func _ready():
 	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.ENEMY)
@@ -185,7 +183,7 @@ func die():
 	var source = explosion.get_node("source")
 	source.process_material.emission_box_extents = death_box()
 	
-	on_death.emit(get_node("."))
+	SignalBus.enemy_death.emit(get_node("."))
 		
 	play_animation("death")
 	

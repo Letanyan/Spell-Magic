@@ -113,6 +113,8 @@ func run_on_ready():
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
 	
+	SignalBus.enemy_death.connect(enemy_dies)
+	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
 	skybox.day_time = settings.time_of_day
 	skybox.day_of_year = settings.day_of_the_year
@@ -276,7 +278,6 @@ func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) ->
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
 		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player)
-		pop.on_enemy_death.connect(enemy_dies)
 		result.append_array(pop.spawn_all_into_world(state))
 		population[loc] = pop
 		

@@ -20,8 +20,6 @@ const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
 const fish = preload("res://Characters/Enemy/Fish/fish.tscn")
 const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn")
 
-signal on_enemy_death(drop_artifact: Artifact)
-
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
 	rng = RandomNumberGenerator.new()
 	coord = _coord
@@ -121,7 +119,6 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
-	result.on_death.connect(on_enemy_death_update)
 	result.vitals_signal.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
 	
@@ -275,6 +272,3 @@ func habitant_vitals_update(index: int, vitals: Vitals):
 	if vitals.health.value <= vitals.health.min_value:
 		inhabitants[index].index_in_population = -1
 		inhabitants.erase(index)
-
-func on_enemy_death_update(enemy: Enemy):
-	on_enemy_death.emit(enemy)
