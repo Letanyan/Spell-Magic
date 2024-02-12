@@ -5,10 +5,22 @@ extends Control
 var artifact: Artifact
 var highlighted: Dictionary # int -> bool
 var warning: Dictionary # int -> Color
+var normal_style: StyleBox
+var disabled_style: StyleBox
+var resolved_theme: Theme
+var is_temporary: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if theme == null:
+		resolved_theme = load(ProjectSettings.get_setting("gui/theme/custom")) as Theme
+		normal_style = resolved_theme.get_stylebox("normal", "Button")
+		disabled_style = resolved_theme.get_stylebox("hover", "Button")
+	else:
+		resolved_theme = theme
+		normal_style = theme.get_stylebox("normal", "Button")
+		disabled_style = resolved_theme.get_stylebox("hover", "Button")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -17,6 +29,8 @@ func _process(delta: float) -> void:
 	
 func warn(index: int, level: int, clr: Color, interval: float, count: int):
 	for n in count * 2:
+		if not is_inside_tree():
+			return
 		await get_tree().create_timer(interval).timeout
 		if warning.has(index):
 			if warning[index].has(level):
@@ -30,7 +44,7 @@ func warn(index: int, level: int, clr: Color, interval: float, count: int):
 	
 func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 	const FONT_SIZE := 11
-	var f := SystemFont.new()
+	var f := resolved_theme.default_font
 	var center := size / 2
 	var mask = sign(offset) * 0.5
 	var inv_mask = Vector2.ZERO
@@ -49,7 +63,7 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 	elif option.event != Artifact.Event.NONE:
 		amount = option.duration_description()
 		
-	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
+	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE) + Vector2(0, 8)
 
 	var v := Vector2(32, 16)
 	var u := Vector2(max(w.x, v.x) + 4, (w.y + v.y) + 4)
@@ -121,9 +135,13 @@ func _gui_input(event: InputEvent) -> void:
 	print(mouse_filter)
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), color)
 	if artifact == null:
 		return
+	
+	if is_temporary:
+		draw_style_box(disabled_style, Rect2(Vector2.ZERO, size))		
+	else:
+		draw_style_box(normal_style, Rect2(Vector2.ZERO, size))
 	
 	draw_option(Vector2(0, -size.y / 2), artifact.top, get_label_color(0))
 	draw_option(Vector2(0, size.y / 2), artifact.bottom, get_label_color(2))

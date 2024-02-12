@@ -38,8 +38,8 @@ grow_vertical = 2
 focus_mode = 2
 mouse_filter = 0
 script = ExtResource("2_reg1r")
-cell_size = Vector2(128, 128)
-line_color = Color(1, 1, 1, 0.501961)
+cell_size = Vector2(176, 176)
+line_color = Color(1, 1, 1, 0.0941176)
 background_color = Color(0.101961, 0.101961, 0.101961, 1)
 
 [node name="artifact_preview" type="Control" parent="."]
@@ -57,3 +57,4 @@ script = ExtResource("3_omm40")
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
 [connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
+[connection signal="on_cell_moused_over" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_moused_over"]

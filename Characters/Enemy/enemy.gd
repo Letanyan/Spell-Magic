@@ -24,7 +24,7 @@ var behavior_tick: float = 0
 var spell_tick: float = 0
 
 var index_in_population: int = -1
-signal vital_update
+signal vital_update(index_in_population: int, vitals: Vitals)
 @onready var health_bar: MeshInstance3D = $HealthBar
 @onready var level_text: Label3D = $HealthBar/Level
 
@@ -80,7 +80,7 @@ func _physics_process(delta: float):
 				
 
 	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed, self)
-	vitals_signal.emit(index_in_population, vitals)
+	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
 	update_vitals_display()

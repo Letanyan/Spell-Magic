@@ -5,8 +5,10 @@ extends Container
 @export var cell_size: Vector2 = Vector2(32, 32)
 @export var offset: Vector2 = Vector2.ZERO
 @export var line_width: float = 1.0
-@export var line_color: Color = Color(1, 1, 1, 0.5)
+@export var line_color: Color = Color(1, 1, 1, 0.1)
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.9)
+var panel_style: StyleBox
+var hover_style: StyleBox
 
 var selected_cell_coord = null
 
@@ -19,17 +21,36 @@ signal on_cell_selected(coord: Vector2)
 signal on_cell_unselected(coord: Vector2)
 signal on_cell_clicked(coord: Vector2, mouse_button_index: int)
 signal on_cell_double_clicked(coord: Vector2, mouse_button_index: int)
+signal on_cell_moused_over(coord: Vector2)
 
 var double_click_timer: Dictionary = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	if theme == null:
+		var temp_theme: Theme = load(ProjectSettings.get_setting("gui/theme/custom")) as Theme
+		panel_style = temp_theme.get_stylebox("panel", "Panel")
+		hover_style = temp_theme.get_stylebox("focus", "Button")
+	else:
+		panel_style = theme.get_stylebox("panel", "Panel")
+		hover_style = theme.get_stylebox("focus", "Button")
 
-func add_grid_tile(n: Control, coord: Vector2):
-	add_child(n)
-	child_grid[coord] = n
+func add_grid_tile(n: Control, coord: Vector2, overwrite: bool = false):
+	if overwrite or not child_grid.has(coord):
+		add_child(n)
+		child_grid[coord] = n
 	
+func remove_grid_tile(n: Control):
+	for coord in child_grid:
+		if child_grid[coord] == n:
+			child_grid.erase(coord)
+			remove_child(n)
+			break
+			
+func remove_tile_at_coord(coord: Vector2):
+	if child_grid.has(coord):
+		remove_child(child_grid[coord])
+		child_grid.erase(coord)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -43,7 +64,7 @@ func _notification(what: int) -> void:
 			node.size = cell_size - Vector2(line_width * 2, line_width * 2)
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), background_color)
+	draw_style_box(panel_style, Rect2(Vector2.ZERO, size))
 	
 	var off_x := fmod(offset.x + current_offset.x, cell_size.x)
 	var off_y := fmod(offset.y + current_offset.y, cell_size.y)
@@ -62,7 +83,8 @@ func _draw() -> void:
 	draw_line(Vector2(size.x, size.y), Vector2(size.x, 0), line_color, line_width, true)
 	
 	if selected_cell_coord != null:
-		draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
+		draw_style_box(hover_style, Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size))
+		#draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
 func _gui_input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
@@ -104,6 +126,13 @@ func _gui_input(event: InputEvent) -> void:
 			current_offset = event.position - mouse_down
 			queue_redraw()
 			queue_sort()
+		else:
+			var m_pos: Vector2 = event.global_position - global_position
+			if not (m_pos.x < 0 or m_pos.y < 0 or m_pos.x > size.x or m_pos.y > size.y):
+				m_pos -= offset
+				m_pos /= cell_size
+				m_pos = floor(m_pos)
+				on_cell_moused_over.emit(m_pos)
 	elif event is InputEventKey:
 		if Input.is_action_pressed("DOWN"):
 			selected_cell_coord += Vector2(0, 1)
