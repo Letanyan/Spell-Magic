@@ -18,7 +18,7 @@ var current_biome: World.Biome = World.Biome.WATER
 var walking_tween: Tween = null
 
 var velocity_movement := VelocityMovement.player()
-var spell_caster := SpellCaster.new(SpellCaster.Entity.PLAYER)
+var spell_caster: SpellCaster
 var invunerable := 0
 var magic_book: MagicBook
 var artifacts: Artifacts
@@ -46,10 +46,11 @@ var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat: int, perc
 var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
 
 func _ready():
+	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.PLAYER)
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
 	emit_vitals_signal()
 	velocity = Vector3.ZERO
-	spell_caster.projectile_hit.connect(give_back_mana_after_hit)
+	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
 	
 
 func _input(event):
@@ -190,7 +191,9 @@ func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
 	return true
 
-func give_back_mana_after_hit(spell: Spell, time: float):
+func give_back_mana_after_hit(origin: Node3D, spell: Spell, time: float):
+	if not origin is Player:
+		return
 	var c := spell.cooldown
 	var u = magic_book.last_use.get(spell.name, 0.0)
 	var v = minf((time - u) / (c + spell.mana_cost), 1.0)

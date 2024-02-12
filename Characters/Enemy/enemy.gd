@@ -9,7 +9,7 @@ var animation_map: Dictionary
 
 var velocity_movement: VelocityMovement
 
-var spell_caster = SpellCaster.new(SpellCaster.Entity.ENEMY)
+var spell_caster: SpellCaster
 var invunerable := 0
 var spell_movement: AttackPatterns.SpellMovement = null
 
@@ -33,6 +33,7 @@ signal on_death(enemy: Enemy)
 
 
 func _ready():
+	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.ENEMY)
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	level_text.text = str(int(level))
 	animation_map = {}

@@ -2,6 +2,7 @@ class_name SpellCaster
 
 enum Entity { PLAYER, ENEMY, PROJECTILE }
 
+var origin_node: Node3D = null
 var entity: Entity
 var particles: Array = []
 var ignore_mana_cost: bool
@@ -10,10 +11,10 @@ var tracking_node: Dictionary = {}
 var tracking_position: Dictionary = {}
 var tracking_offset: Dictionary = {}
 
-signal projectile_hit
 signal not_enough_mana_for_spell
 
-func _init(e: Entity):
+func _init(o: Node3D, e: Entity):
+	origin_node = o
 	entity = e
 	ignore_mana_cost = false
 	
@@ -212,6 +213,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p in ps:
 		p.name += str(randi())
+		p.origin_node = origin_node
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
@@ -244,7 +246,6 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
 		
 	p.spell.compute_expressions(p.fixed_vars)
-	p.projectile_hit.connect(pass_projectile_hit)
 	insert.call(p)
 	if q and q.get_parent():
 		q.get_parent().remove_child(q)
@@ -256,9 +257,6 @@ func set_up_collision(world: Node3D, p: SpellBody):
 	NavigationServer3D.agent_set_map(new_agent_rid, default_3d_map_rid)
 	NavigationServer3D.agent_set_radius(new_agent_rid, 5)
 	NavigationServer3D.agent_set_position(new_agent_rid, p.global_position)
-
-func pass_projectile_hit(spell: Spell, time: float):
-	projectile_hit.emit(spell, time)
 
 func free_particles():
 	for p in particles:

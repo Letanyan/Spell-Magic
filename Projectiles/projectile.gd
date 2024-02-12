@@ -1,8 +1,6 @@
 class_name SpellBody
 extends Node3D
 
-signal projectile_hit
-
 var spell: Spell
 var n: int
 var time_start: float
@@ -13,17 +11,18 @@ var velocity: Vector3 = Vector3.ZERO
 var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: float = 0
 
-var spell_caster = SpellCaster.new(SpellCaster.Entity.PROJECTILE)
+var spell_caster: SpellCaster
 var on_hit_casts := {}
 
 var fixed_vars: Dictionary
 var expression_vars: Dictionary
 
 var to_remove := false
+var origin_node: Node3D = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	spell_caster.projectile_hit.connect(pass_projectile_up)
+	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.PROJECTILE)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
 		cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell.chain, null)
 
@@ -42,6 +41,7 @@ func has_expired(t: float) -> bool:
 	return expired or (t - time_start) >= spell.duration
 	
 func expire_now(p: Node3D, q: Node3D):
+	SignalBus.projectile_hit.emit(origin_node, spell, Time.get_unix_time_from_system())
 	expired = true
 	
 func is_active() -> bool:
@@ -371,8 +371,6 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 	if target.length() > 1.0 or target.distance_to(shape_cast.target_position) > 1.0:
 		shape_cast.target_position = target
 	var count := shape_cast.get_collision_count()
-	if count > 0:
-		projectile_hit.emit(spell, Time.get_unix_time_from_system())
 	for i in range(count):
 		var obj := shape_cast.get_collider(i)
 		var point := shape_cast.get_collision_point(i)
@@ -532,9 +530,6 @@ func fade_audio(final: float, duration: float, is_in: bool):
 func cast_spell(insert: Callable, next_spell: Spell, target: Node3D):
 	await get_tree().physics_frame
 	spell_caster.cast_spell(self, null, insert, next_spell, target, fixed_vars)
-
-func pass_projectile_up(p_spell: Spell, time: float):
-	projectile_hit.emit(p_spell, time)
 
 func free_particle():
 	spell_caster.free_particles()
