@@ -16,7 +16,7 @@ func _init(_passive: PathStyle, _aggresive: PathStyle, _aggression: float):
 	aggression = _aggression
 
 func movement_speed():
-	return current.movement_speed
+	return current.movement_speed()
 	
 func is_aggresive() -> bool:
 	return current == aggresive

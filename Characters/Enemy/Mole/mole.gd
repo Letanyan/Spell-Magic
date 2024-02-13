@@ -16,7 +16,7 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).circle_path(5, 0).set_origin(position).speed(7).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).speed(7).circle_path(5, 0).set_origin(position).use_absolute().align_y_to_origin()
 	
 	var R := 25.0
 	var U := -5.0
@@ -32,11 +32,14 @@ func _ready():
 	var d: Vector3 = underground.call()
 	var e: Vector3 = underground.call()
 
-	p.append([
+	p.append_with_speed([
 		PathStyle.Segment.linear(a, b), PathStyle.Segment.linear(b, c),
 		PathStyle.Segment.linear(c, d), PathStyle.Segment.linear(d, e),
 		PathStyle.Segment.linear(e, a),
-	])
+	], [5, 5, 5, 5, 5],
+	[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier,
+	PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+	)
 	
 	attack_path = PathStyle.new(0.0).follow_path(p).set_use_player_as_origin().speed(5).align_y_to_origin().look_at_player().set_is_done_uses_path_segments()
 	current_path = idle_path
@@ -44,6 +47,18 @@ func _ready():
 	none_pattern = AttackPatterns.none()
 	
 	var Z := Vector3.ZERO
+	var down_pathway := PathStyle.Pathway.new(
+		[PathStyle.Segment.linear(Z, Vector3(0, -U, 0))],
+		[3],
+		[PathStyle.Pathway.linear_modifier]
+	)
+	var up_pathway := PathStyle.Pathway.new(
+		[PathStyle.Segment.linear(Z, Vector3(0, U, 0))],
+		[1],
+		[PathStyle.Pathway.linear_modifier]
+	)
+	
+	
 	random_pattern = AttackPatterns.new(
 		[
 			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 1, Spell.Element.ELECTRIC, 1),
@@ -55,16 +70,16 @@ func _ready():
 		0.5,
 		[
 			AttackMovement.new(
-				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, -U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
 			),
 			AttackMovement.new(
-				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, -U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
 			),
 			AttackMovement.new(
-				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, -U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				PathStyle.new(0.0).follow_path(PathStyle.Pathway.new([PathStyle.Segment.linear(Z, Vector3(0, U, 0))])).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
 			)
 		]
 	)

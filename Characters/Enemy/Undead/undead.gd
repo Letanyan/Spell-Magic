@@ -16,7 +16,7 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10 * 4
 	
-	idle_path = PathStyle.new(randf()).random_points_in_circle(2, 10).speed(2).set_origin(position)
+	idle_path = PathStyle.new(randf()).speed(2).random_points_in_circle(2, 10).set_origin(position)
 	attack_path = PathStyle.new(randf()).towards_player(1, 2).speed(2).use_physics()
 	current_path = idle_path
 	

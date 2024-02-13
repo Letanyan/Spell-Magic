@@ -16,7 +16,7 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).circle_path(5, 10).set_origin(position).speed(clamp(level * 1.1, 1, 14)).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).speed(clamp(level * 1.1, 1, 14)).circle_path(5, 10).set_origin(position).use_absolute().align_y_to_origin()
 #	attack_path = PathStyle.new(randf()).circle_path(5 * randf() + 5, 5 * randf() + 2).set_use_player_as_origin().speed(clamp(level * 1.25, 1, 14)).use_absolute().align_y_to_origin().look_at_player()
 #	attack_path = PathStyle.new(randf()).use_expr("cos(t/pi*s)*15", "sin(t/pi)*5+10", "sin(t/pi*s)*15").set_use_player_as_origin().speed(clamp(level * 1.25, 1, 14)).use_absolute().align_y_to_origin().look_at_player()
 	
@@ -47,12 +47,12 @@ func _ready():
 	var b: Vector3 = rand_point.call()
 	var c: Vector3 = rand_point.call()
 	var d: Vector3 = rand_point.call()
-	var e: Vector3 = rand_point.call()
-	var f: Vector3 = rand_point.call()
-	var g: Vector3 = rand_point.call()
-	var h: Vector3 = rand_point.call()
 	
-	rotate_path.append([form_arc.call(a, b), form_arc.call(b, c), form_arc.call(c, d), form_arc.call(d, e), form_arc.call(e, f), form_arc.call(f, g), form_arc.call(g, h), form_arc.call(h, a)])
+	rotate_path.append_with_speed(
+		[form_arc.call(a, b), form_arc.call(b, c), form_arc.call(c, d), form_arc.call(d, a)],
+		[2, 2, 2, 2],
+		[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+	)
 	
 	attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()
 	

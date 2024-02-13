@@ -18,7 +18,7 @@ func _ready():
 	vitals.thirst = Vitals.Stat.new(1, 0, 1, -0.0002, 0.1)
 	vitals.perception.value = 10
 	
-	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10).speed(2).set_origin(position)
+	idle_path = PathStyle.new(randf()).speed(2).random_points_in_circle(10, 10).set_origin(position)
 	attack_path = PathStyle.new(randf()).towards_player(3, 5).speed(3).use_physics()
 	current_path = idle_path
 	

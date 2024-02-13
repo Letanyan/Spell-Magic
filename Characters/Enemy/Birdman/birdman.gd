@@ -17,27 +17,17 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
+	vitals.perception.value = 2
 	
-	const idle_r := 10.0
-	var randarc := func() -> PathStyle.Segment:
-		var s : Vector3 = Globals.rand_v3_abs(idle_r, 0, idle_r)
-		var e : Vector3 = Globals.rand_v3_abs(idle_r, 0, idle_r)
-		var a := s.x
-		var b := s.z
-		var c := e.x
-		var d := e.z
-		
-		var p := Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
-		var q := Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
-		var m: Vector3
-		if randf() < 0.5:
-			m = p
-		else:
-			m = q
-			
-		return PathStyle.Segment.quad(s, e, m)
 	var idle_pathway := PathStyle.Pathway.new()
-	idle_pathway.append([randarc.call(), randarc.call(), randarc.call(), randarc.call(), randarc.call()])
+	idle_pathway.append(
+		[
+			PathStyle.Segment.linear(Vector3(0, 0, 0), Vector3(0, 20, 0)),
+			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, 0, 0))
+		],
+		[5, 2],
+		[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+	)
 	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
 	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()
@@ -46,9 +36,11 @@ func _ready():
 	none_pattern = AttackPatterns.none()
 	
 	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"h":"4", "s":"4"})
-	water_para.element = Spell.Element.VOID
+	water_para.element = Spell.Element.WATER
+	water_para.power = 0
 	var water_line := GlobalData.magic_book.spell_with_name("linear", {"s":"15", "d":"1"})
-	water_line.element = Spell.Element.VOID
+	water_line.element = Spell.Element.WATER
+	water_line.power = 0
 	
 	default_pattern = AttackPatterns.new(
 		[
@@ -79,9 +71,11 @@ func _physics_process(delta: float) -> void:
 
 func __default_pattern() -> AttackPatterns:
 	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
-	water_para.element = Spell.Element.VOID
+	water_para.element = Spell.Element.WATER
+	water_para.power = 0
 	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
-	water_line.element = Spell.Element.VOID
+	water_line.element = Spell.Element.WATER
+	water_line.power = 0
 	
 	default_pattern.spells = [
 		water_line,
@@ -127,7 +121,7 @@ func create_attack_jump_path():
 	var mid: Vector3 = lerp(position, player.position, 2.5) + Vector3(0, 25, 0) - player.position
 	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
 	var attack_jump_pathway = PathStyle.Pathway.new()
-	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)])
+	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)], [8], [PathStyle.Pathway.linear_modifier])
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)

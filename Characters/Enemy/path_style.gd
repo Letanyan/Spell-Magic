@@ -9,7 +9,7 @@ enum OriginKind { ABSOLUTE, PLAYER, ME }
 var kind = Kind.CIRCLE
 var min_radius := 5.0
 var max_radius := 10.0
-var movement_speed := 2.0
+var const_movement_speed: float
 var origin := Vector3.ZERO
 var path: Pathway = null
 var expr_x: Expr = null
@@ -43,7 +43,7 @@ func _init(_seed: float = randf(), _kind: Kind = Kind.ORIGIN, _origin: Vector3 =
 		time_offset = Time.get_unix_time_from_system()
 	
 func speed(s: float) -> PathStyle:
-	movement_speed = s
+	const_movement_speed = s
 	return self
 	
 func set_origin(o: Vector3) -> PathStyle:
@@ -135,19 +135,19 @@ func circle_path(radius: float, h: float) -> PathStyle:
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
 	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
-	path.append([a, b])
+	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Pathway.linear_modifier, Pathway.linear_modifier])
 	kind = Kind.PATH
 	return self
 	
 func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	path = Pathway.new()
 	var p := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
-	path.add(Segment.linear(Vector3.ZERO, p))
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Pathway.linear_modifier)
 	for i in range(count - 1):
 		var q := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
-		path.add(Segment.linear(p, q))
+		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Pathway.linear_modifier)
 		p = q
-	path.add(Segment.linear(p, Vector3.ZERO))
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Pathway.linear_modifier)
 	path.calculate_distance()
 	kind = Kind.PATH
 	return self
@@ -155,14 +155,14 @@ func random_points_in_circle(radius: float, count: int) -> PathStyle:
 func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
 	path = Pathway.new()
 	var p := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
-	path.add(Segment.linear(Vector3.ZERO, p))
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Pathway.linear_modifier)
 	for i in range(count - 1):
 		var q := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
 #		var m := (p + q) / 2.0
 #		path.add(Segment.quad(p, q, m))
-		path.add(Segment.linear(p, q))
+		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Pathway.linear_modifier)
 		p = q
-	path.add(Segment.linear(p, Vector3.ZERO))
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Pathway.linear_modifier)
 	path.calculate_distance()
 	kind = Kind.PATH
 	return self
@@ -173,6 +173,25 @@ func use_expr(x: String, y: String, z: String):
 	expr_z = Expr.new(z)
 	kind = Kind.EXPR
 	return self
+	
+func movement_speed() -> float:
+	match kind:
+		Kind.ORIGIN:
+			return const_movement_speed
+		Kind.CIRCLE:
+			return const_movement_speed
+		Kind.PATH:
+			var t := float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
+			var duration = fmod(t, path.total_duration)
+			var index = Globals.Ref.new(0)
+			path.position_at_time(duration, index)
+			return path.movement_speed[index.data]
+			
+		Kind.EXPR:
+			return const_movement_speed
+			
+	return const_movement_speed
+	
 
 func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector3:
 	var t := float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
@@ -205,7 +224,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 				return me.position
 		
 		Kind.CIRCLE:
-			var lap = t * (movement_speed / min_radius)
+			var lap = t * (const_movement_speed / min_radius)
 			var x = cos(lap) * min_radius
 			var z = sin(lap) * min_radius
 			if x == cos(0) * min_radius and z == sin(0) * min_radius:
@@ -218,11 +237,11 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			return Vector3(x, y, z)
 
 		Kind.PATH:
-			var dist = fmod(movement_speed * t, path.distance)
+			var duration = fmod(t, path.total_duration)
 			var index = Globals.Ref.new(0)
-			var v = path.position_at_distance(dist, index) + temp_origin
+			var v = path.position_at_time(duration, index) + temp_origin
 			
-			if dist <= fmod(movement_speed * old_t, path.distance) or (is_done_uses_path_segements and index.data != last_path_segment_index):
+			if duration <= fmod(old_t, path.total_duration) or (is_done_uses_path_segements and index.data != last_path_segment_index):
 				if is_done:
 					is_done.data = true
 				stored_loops += 1
@@ -230,7 +249,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			return Vector3(v.x, y, v.z)
 			
 		Kind.EXPR:
-			var vars := {"s": movement_speed, "t": t, "pi": PI}
+			var vars := {"s": const_movement_speed, "t": t, "pi": PI}
 			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars))
 			vars["t"] = 0
 			if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
@@ -252,27 +271,92 @@ func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 
 class Pathway:
 	var segments: Array[Segment]
-	var distance: float
 	
-	func _init(sgmnts: Array[Segment] = []):
-		segments = sgmnts
+	# represents the total time a segment is traversed for. used in conjunction
+	# with `speed_modifier` to change the speed which a segment is traversed 
+	var durations: Array[float]
+	
+	# each segment represents a  graph from [0,1] and returns a value in range[0,1] in the y component
+	# this modifier changes the rate at which its corrosponding segment is traversed
+	var path_modifiers: Array[Segment] 
+	
+	var distance: float
+	var total_duration: float
+	var movement_speed: Array[float]
+	
+	func _init(_segments: Array[Segment] = [], _durations: Array[float] = [], _path_modifiers: Array[Segment] = []):
+		assert(_segments.size() == _path_modifiers.size(), "segment array must be the same size as speed array")
+		assert(_durations.size() == _path_modifiers.size(), "duration array must be the same size as speed array")
+		segments = _segments
+		durations = _durations
+		path_modifiers = _path_modifiers
+		for i in range(_segments.size()):
+			movement_speed.append(_segments[i].distance / _durations[i])
 		calculate_distance()
+		calculate_total_duration()
 		
-	func add(segment: Segment):
+	func add(segment: Segment, duration: float, modifier: Segment):
 		segments.append(segment)
+		durations.append(duration)
+		path_modifiers.append(modifier)
+		movement_speed.append(segment.distance / duration)
 		
-	func append(sgmnts: Array[Segment]):
-		segments.append_array(sgmnts)
+	func add_with_speed(segment: Segment, speed: float, modifier: Segment):
+		segments.append(segment)
+		durations.append(segment.duration_using_speed(speed))
+		path_modifiers.append(modifier)
+		
+	func append(_segments: Array[Segment], _durations: Array[float], _path_modifiers: Array[Segment]):
+		assert(_segments.size() == _path_modifiers.size(), "segment array must be the same size as speed array")
+		assert(_durations.size() == _path_modifiers.size(), "duration array must be the same size as speed array")
+		segments.append_array(_segments)
+		durations.append_array(_durations)
+		path_modifiers.append_array(_path_modifiers)
+		for i in range(_segments.size()):
+			movement_speed.append(_segments[i].distance / _durations[i])
 		calculate_distance()
+		calculate_total_duration()
+		
+	func append_with_speed(_segments: Array[Segment], _speeds: Array[float], _path_modifiers: Array[Segment]):
+		assert(_segments.size() == _path_modifiers.size(), "segment array must be the same size as speed array")
+		assert(_speeds.size() == _path_modifiers.size(), "speeds array must be the same size as speed array")
+		segments.append_array(_segments)
+		path_modifiers.append_array(_path_modifiers)
+		for i in range(_segments.size()):
+			var segment = _segments[i]
+			var speed = _speeds[i]
+			var duration := segment.duration_using_speed(speed)
+			durations.append(duration)
+			movement_speed.append(speed)
+		calculate_distance()
+		calculate_total_duration()
 	
 	func calculate_distance():
 		distance = 0.0
 		for s in segments:
 			distance += s.distance
 			
-	func position_at_time(t: float) -> Vector3:
-		var dist := t * distance
-		return position_at_distance(dist)
+	func calculate_total_duration():
+		total_duration = 0.0
+		for t in durations:
+			total_duration += t
+			
+	func position_at_time(t: float, index: Globals.Ref = null) -> Vector3:
+		var running := 0.0
+		var segment := 0
+		for i in range(durations.size()):
+			segment = i
+			var ti = durations[i]
+			if running <= t and t <= running + ti:
+				break
+			running += ti
+		t -= running
+		if index:
+			index.data = segment
+			
+		var ratio = t / durations[segment]
+		var modifier = path_modifiers[segment].position_at_time(ratio).y
+		return segments[segment].position_at_time(modifier)
 			
 	func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		var segment := 0
@@ -287,6 +371,8 @@ class Pathway:
 		if index:
 			index.data = segment
 		return segments[segment].position_at_distance(dist)
+		
+	static var linear_modifier := Segment.linear(Vector3(0, 0, 0), Vector3(0, 1, 0)) 
 
 class Segment:
 	enum BezierKind { LINEAR, QUAD, CUBIC }
@@ -369,6 +455,9 @@ class Segment:
 	func position_at_distance(dist: float) -> Vector3:
 		var t := dist / distance
 		return position_at_time(t)
+		
+	func duration_using_speed(s: float) -> float:
+		return distance / s
 		
 		
 		

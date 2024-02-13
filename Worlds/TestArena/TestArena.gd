@@ -62,8 +62,8 @@ func setup(_settings: WorldSettings) -> void:
 	#add_child(walker)
 #	var fish := Population.generate_enemy(World.Enemy.FISH, player, -20, 1000, -20)
 #	add_child(fish)
-	#var mole := Population.generate_enemy(World.Enemy.MOLE, player, 20, 1000, 20)
-	#add_child(mole)
+	var mole := Population.generate_enemy(World.Enemy.MOLE, player, -20, 1000, 20)
+	add_child(mole)
 	var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
 	add_child(birdman)
 	

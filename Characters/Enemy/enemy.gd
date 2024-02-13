@@ -79,7 +79,7 @@ func _physics_process(delta: float):
 			process_path = movement_path
 				
 
-	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed, self)
+	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed(), self)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
