@@ -143,6 +143,41 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 				else:
 					active_options[other_coord][RIGHT] = true
 
+func is_still_continuous_after_removing(coord: Vector2) -> bool:
+	if connected.size() <= 2:
+		return true
+	
+	var to_visit := PackedVector2Array()
+	var visited := {coord: true}
+	for a in connected:
+		var c: Vector2 = connected[a]
+		if c == coord:
+			continue
+		to_visit.append(c)
+		break
+		
+	var island_count := 0
+	while not to_visit.is_empty():
+		var c := to_visit[to_visit.size() - 1]
+		to_visit.remove_at(to_visit.size() - 1)
+		
+		if visited.has(c):
+			continue
+		visited[c] = true
+		
+		if get_artifact_at_coord(c) == null:
+			continue
+		
+		to_visit.append(c + Vector2(0, -1))
+		to_visit.append(c + Vector2(0, 1))
+		to_visit.append(c + Vector2(-1, 0))
+		to_visit.append(c + Vector2(1, 0))
+		
+		island_count += 1
+			
+	return island_count == connected.size() - 1
+	
+	
 func save(world_name: String):
 	var file = FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
 	var data = []

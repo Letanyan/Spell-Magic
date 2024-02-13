@@ -334,6 +334,21 @@ class Option:
 				result += "r"
 				
 		return result
+	
+	func matching_effect_to_event(other: Option) -> bool:
+		return other.event != Artifact.Event.NONE and effect != Artifact.Effect.NONE
+		
+	func matching_event_to_effect(other: Option) -> bool:
+		return other.effect != Artifact.Effect.NONE and event != Artifact.Event.NONE
+		
+	func matching_event_to_or_from_effect(other: Option) -> bool:
+		return matching_effect_to_event(other) or matching_event_to_effect(other)
+		
+	func matching_pattern(other: Option) -> bool:
+		return other.pattern == pattern
+		
+	func matching_connection(other: Option) -> bool:
+		return matching_event_to_or_from_effect(other) and matching_pattern(other)
 						
 					
 var name: String

@@ -53,15 +53,10 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 
 func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == 2:
-		var was_removed = false
-		for a in artifacts.connected:
-			if artifacts.connected[a] == coord:
-				artifacts.unconnect_from_grid(a)
-				was_removed = true
-				break
+		var was_removed := attempt_remove_artifact(coord)
 		if not was_removed:
 			temporary_grid_tile.artifact = null
-			update_list_and_grid()
+			temporary_grid_tile.queue_redraw()
 		elif temporary_grid_tile.artifact != null:
 			artifact_grid.remove_tile_at_coord(coord)
 			artifact_grid.remove_grid_tile(temporary_grid_tile)
@@ -149,8 +144,48 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 	if not temporarily:
 		artifacts.connect_to_grid(artifact, coord)
 		temporary_grid_tile.artifact = null
+		update_list_and_grid()
+	else:
+		temporary_grid_tile.queue_redraw()
+	
+func attempt_remove_artifact(coord: Vector2) -> bool:
+	var artifact: Artifact = artifacts.get_artifact_at_coord(coord)
+	if artifact == null:
+		return false
 		
-	update_list_and_grid()
+	const WARN_COLOR = Color.RED
+	const WARN_INTERVAL = 0.1
+	const WARN_COUNT = 5
+	
+	var is_valid: bool = artifacts.is_still_continuous_after_removing(coord)
+	if not is_valid:
+		if artifacts.get_artifact_at_coord(coord + Vector2(0, -1)):
+			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(GridTile.Direction.BOTTOM, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(GridTile.Direction.BOTTOM, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			
+		if artifacts.get_artifact_at_coord(coord + Vector2(0, 1)):
+			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(GridTile.Direction.TOP, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(GridTile.Direction.TOP, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			
+		if artifacts.get_artifact_at_coord(coord + Vector2(-1, 0)):
+			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(GridTile.Direction.RIGHT, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(GridTile.Direction.RIGHT, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			
+		if artifacts.get_artifact_at_coord(coord + Vector2(1, 0)):
+			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(GridTile.Direction.LEFT, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(GridTile.Direction.LEFT, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+		
+		return false
+		
+		
+	var was_removed = false
+	for a in artifacts.connected:
+		if artifacts.connected[a] == coord:
+			artifacts.unconnect_from_grid(a)
+			was_removed = true
+			break
+			
+	return was_removed
 
 func _on_artifacts_list_item_selected(index: int) -> void:
 	var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))

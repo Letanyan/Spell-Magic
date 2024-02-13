@@ -1,10 +1,13 @@
 class_name GridTile
 extends Control
 
+enum Direction { TOP=0, RIGHT, BOTTOM, LEFT }
+enum Level { TOP=0, BOTTOM, PATTERN }
+
 @export var color: Color = Color(0.15, 0.15, 0.15, 1.0)
 var artifact: Artifact
 var highlighted: Dictionary # int -> bool
-var warning: Dictionary # int -> Color
+var warning: Dictionary # int -> int -> Color
 var normal_style: StyleBox
 var disabled_style: StyleBox
 var resolved_theme: Theme
@@ -27,7 +30,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 	
-func warn(index: int, level: int, clr: Color, interval: float, count: int):
+func warn(index: Direction, level: Level, clr: Color, interval: float, count: int):
 	for n in count * 2:
 		if not is_inside_tree():
 			return
