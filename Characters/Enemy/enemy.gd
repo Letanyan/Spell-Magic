@@ -12,11 +12,14 @@ var velocity_movement: VelocityMovement
 var spell_caster: SpellCaster
 var invunerable := 0
 var spell_movement: AttackPatterns.SpellMovement = null
+var attack_sequence: AttackSequence = null
 
 var player: Player
 var behaviour: Behaviour
 var vitals: Vitals
 var current_path: PathStyle
+var still_path: PathStyle
+var current_attack: AttackPatterns
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
 var is_dead: bool = false
 
@@ -37,6 +40,7 @@ func _ready():
 	animation_map = {}
 	animator = $AnimationPlayer
 	animation_tree = $AnimationTree
+	still_path = PathStyle.new().set_use_me_as_origin()
 	
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -77,7 +81,7 @@ func _physics_process(delta: float):
 		var movement_path := spell_movement.movement.current_path()
 		if movement_path:
 			process_path = movement_path
-				
+			
 
 	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed(), self)
 	vital_update.emit(index_in_population, vitals)
@@ -113,10 +117,22 @@ func _physics_process(delta: float):
 			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
 
 	var moved_into_during_movement = false
+	var reset_spell_tick := false
 	if behavior_tick >= Globals.behaviour_tick():
 		update_behaviour()
 		var is_done := Globals.Ref.new(false)
-		var next_pos := process_path.next_position(self, player, is_done)
+		var next_pos: Vector3
+		if attack_sequence and process_path == current_path:
+			reset_spell_tick = attack_sequence.update(behavior_tick, self, player, is_done)
+			if attack_sequence.last_path:
+				current_path = attack_sequence.last_path
+				next_pos = attack_sequence.next_position
+			else:
+				current_path = still_path
+				next_pos = position
+			current_attack = attack_sequence.last_attack
+		else:
+			next_pos = process_path.next_position(self, player, is_done)
 		if is_done.data and spell_movement:
 			moved_into_during_movement = spell_movement.movement.state == AttackMovement.AMState.BEFORE
 			spell_movement.movement.next_state()
@@ -132,9 +148,13 @@ func _physics_process(delta: float):
 #			print("---")
 		behavior_tick = 0
 
-	if spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0:
-		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE: 
-			spell_movement = attack_state().choose_spell(vitals, behaviour)
+	if reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0):
+		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE:
+			if attack_sequence:
+				if attack_sequence.last_attack:
+					spell_movement = current_attack.choose_spell(vitals, behaviour)
+			else:
+				spell_movement = attack_state().choose_spell(vitals, behaviour)
 			moved_into_during_movement = spell_movement and spell_movement.movement.state == AttackMovement.AMState.DONE
 		spell_tick = 0
 		

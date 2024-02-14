@@ -148,7 +148,6 @@ func random_points_in_circle(radius: float, count: int) -> PathStyle:
 		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Pathway.linear_modifier)
 		p = q
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Pathway.linear_modifier)
-	path.calculate_distance()
 	kind = Kind.PATH
 	return self
 	
@@ -163,7 +162,6 @@ func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
 		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Pathway.linear_modifier)
 		p = q
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Pathway.linear_modifier)
-	path.calculate_distance()
 	kind = Kind.PATH
 	return self
 	
@@ -193,9 +191,12 @@ func movement_speed() -> float:
 	return const_movement_speed
 	
 
-func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector3:
-	var t := float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
-	var old_t := last_t
+func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_override: float = NAN) -> Vector3:
+	var t: float
+	if is_nan(time_override):
+		t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
+	else:
+		t = time_override
 	last_t = t
 	if is_done:
 		is_done.data = false
@@ -218,6 +219,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			elif dist < min_radius - 0.1:
 				return temp_origin.lerp(me.position, min_radius / dist)
 			else:
+				me_start_position = null
 				if is_done:
 					is_done.data = true
 				stored_loops += 1
@@ -228,6 +230,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			var x = cos(lap) * min_radius
 			var z = sin(lap) * min_radius
 			if x == cos(0) * min_radius and z == sin(0) * min_radius:
+				me_start_position = null
 				if is_done:
 					is_done.data = true
 				stored_loops += 1
@@ -237,14 +240,21 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			return Vector3(x, y, z)
 
 		Kind.PATH:
-			var duration = fmod(t, path.total_duration)
+			var duration: float 
+			if is_nan(time_override):
+				duration = fmod(t, path.total_duration)
+			else:
+				duration = clamp(t, 0, path.total_duration)
 			var index = Globals.Ref.new(0)
 			var v = path.position_at_time(duration, index) + temp_origin
 			
-			if duration <= fmod(old_t, path.total_duration) or (is_done_uses_path_segements and index.data != last_path_segment_index):
+			var V = path.position_at_time(path.total_duration) + temp_origin
+			if me.position.distance_to(Vector3(V.x, next_y_position(me, V.x, V.y - temp_origin.y, V.z), V.z)) < 1:
+				me_start_position = null
 				if is_done:
 					is_done.data = true
 				stored_loops += 1
+				
 			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 			return Vector3(v.x, y, v.z)
 			
@@ -253,6 +263,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null) -> Ve
 			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars))
 			vars["t"] = 0
 			if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
+				me_start_position = null
 				if is_done:
 					is_done.data = true
 				stored_loops += 1
@@ -295,16 +306,26 @@ class Pathway:
 		calculate_distance()
 		calculate_total_duration()
 		
+	static func init_with_speed(_segments: Array[Segment], _speeds: Array[float], _path_modifiers: Array[Segment]) -> Pathway:
+		var result := Pathway.new()
+		result.append_with_speed(_segments, _speeds, _path_modifiers)
+		return result
+		
 	func add(segment: Segment, duration: float, modifier: Segment):
 		segments.append(segment)
 		durations.append(duration)
 		path_modifiers.append(modifier)
 		movement_speed.append(segment.distance / duration)
+		calculate_distance()
+		calculate_total_duration()
 		
 	func add_with_speed(segment: Segment, speed: float, modifier: Segment):
 		segments.append(segment)
 		durations.append(segment.duration_using_speed(speed))
 		path_modifiers.append(modifier)
+		movement_speed.append(speed)
+		calculate_distance()
+		calculate_total_duration()
 		
 	func append(_segments: Array[Segment], _durations: Array[float], _path_modifiers: Array[Segment]):
 		assert(_segments.size() == _path_modifiers.size(), "segment array must be the same size as speed array")

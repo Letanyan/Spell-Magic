@@ -8,6 +8,8 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
+var hide_and_attack: AttackSequence
+
 func _ready():
 	super._ready()
 	
@@ -47,12 +49,12 @@ func _ready():
 	none_pattern = AttackPatterns.none()
 	
 	var Z := Vector3.ZERO
-	var down_pathway := PathStyle.Pathway.new(
+	var up_pathway := PathStyle.Pathway.new(
 		[PathStyle.Segment.linear(Z, Vector3(0, -U, 0))],
 		[3],
 		[PathStyle.Pathway.linear_modifier]
 	)
-	var up_pathway := PathStyle.Pathway.new(
+	var down_pathway := PathStyle.Pathway.new(
 		[PathStyle.Segment.linear(Z, Vector3(0, U, 0))],
 		[1],
 		[PathStyle.Pathway.linear_modifier]
@@ -67,21 +69,21 @@ func _ready():
 		],
 		[ 5, 3, 2 ],
 		false,
-		0.5,
-		[
-			AttackMovement.new(
-				PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-			),
-			AttackMovement.new(
-				PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-			),
-			AttackMovement.new(
-				PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-			)
-		]
+		1.0,
+		#[
+			#AttackMovement.new(
+				#PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+			#),
+			#AttackMovement.new(
+				#PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+			#),
+			#AttackMovement.new(
+				#PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+			#)
+		#]
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -93,6 +95,48 @@ func _ready():
 		[ 1, 2, 1 ],
 		true
 	)
+	
+	hide_and_attack = AttackSequence.new(true, [
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(a, b)], [8], [PathStyle.Pathway.linear_modifier])
+		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		random_pattern,
+		AttackSequence.Reset.ATTACK,
+		
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(b, c)], [8], [PathStyle.Pathway.linear_modifier])
+		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		random_pattern,
+		AttackSequence.Reset.ATTACK,
+		
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(c, d)], [8], [PathStyle.Pathway.linear_modifier])
+		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		random_pattern,
+		AttackSequence.Reset.ATTACK,
+		
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(d, e)], [8], [PathStyle.Pathway.linear_modifier])
+		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		random_pattern,
+		AttackSequence.Reset.ATTACK,
+		
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(e, a)], [8], [PathStyle.Pathway.linear_modifier])
+		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		random_pattern,
+		AttackSequence.Reset.ATTACK,
+	])
 	
 	animation_map["attack"] = "Weapon"
 
@@ -115,6 +159,8 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		current_path = attack_path
+		#current_path = attack_path
+		attack_sequence = hide_and_attack
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		current_path = idle_path
+		attack_sequence = null
