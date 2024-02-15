@@ -7,6 +7,9 @@ var animator: AnimationPlayer
 var animation_tree: AnimationTree
 var animation_map: Dictionary
 
+#@onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
+#var walking_tween: Tween = null
+
 var velocity_movement: VelocityMovement
 
 var spell_caster: SpellCaster
@@ -53,6 +56,11 @@ func increment_ticks(delta: float):
 	spell_tick += delta
 	if invunerable > 0:
 		invunerable -= 1
+		
+func current_animation_is(animation: String) -> bool:
+	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+	var current := playback.get_current_node()
+	return current == animation
 	
 func play_animation(animation: String):
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
@@ -82,8 +90,11 @@ func _physics_process(delta: float):
 		if movement_path:
 			process_path = movement_path
 			
-
-	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed(), self)
+	var attack_sequence_movement_speed_time := NAN
+	if attack_sequence and process_path == current_path:
+		attack_sequence_movement_speed_time = attack_sequence.time
+			
+	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed(attack_sequence_movement_speed_time), self)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
@@ -98,18 +109,23 @@ func _physics_process(delta: float):
 				velocity = movement["velocity"]
 				move_and_slide()
 			PathStyle.Mover.ABSOLUTE:
-				velocity = movement["absolute"]
-				position += movement["absolute"]
-			PathStyle.Mover.ABSOLUTE_XZ:
 				var v: Vector3 
 				var t: Vector3
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if process_path.coord_y == PathStyle.CoordY.GROUND and (position.y < g or position.y > g):
-					position.y = g
-					t.y = 0
-					v.y = 0
+				
+				if (position.y < g):
+					if process_path.coord_y == PathStyle.CoordY.GROUND or process_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
+						position.y = g
+						t.y = 0
+						v.y = 0
+				elif (position.y > g):
+					if process_path.coord_y == PathStyle.CoordY.GROUND or process_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
+						position.y = g
+						t.y = 0
+						v.y = 0
+						
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 		if process_path.lookat == PathStyle.LookAt.PLAYER:
@@ -168,14 +184,23 @@ func _physics_process(delta: float):
 		
 
 	spell_caster.update(self, delta)
-
 	if velocity != Vector3.ZERO:
-		if velocity.length() > 5:
-			play_animation("run")
-		else:
-			play_animation("walk")
+		if is_on_floor():
+			if velocity.length() < 1:
+				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
+				play_animation("walk")
+			else:
+				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
+				play_animation("run")
 	else:
-		play_animation("idle")
+		if is_on_floor():
+			play_walking_audio(null)
+			play_animation("idle")
+		
+	if not is_on_floor_only():
+		play_animation("fall")
+	elif current_animation_is("fall"):
+		play_animation("land")
 
 
 func cast_spell(insert: Callable, next_spell: Spell):
@@ -268,3 +293,23 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.BIRDMAN
 	
 	return World.Enemy.NONE
+
+func play_walking_audio(stream: AudioStream):
+	pass
+	#if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:
+		#if stream != null:
+			#if walking_tween:
+				#walking_tween.kill()
+				#walking_tween = null
+			#walking_audio.stream = stream
+			#walking_audio.volume_db = 0
+			#walking_audio.play()
+		#elif walking_audio.stream != null and not walking_tween:
+			#walking_tween = create_tween()
+			#walking_tween.tween_property(walking_audio, "volume_db", -80, 2)
+			#walking_tween.tween_callback(func(): 
+				#walking_audio.stop()
+				#walking_audio.stream = null
+				#walking_tween.kill()
+				#walking_tween = null
+			#)

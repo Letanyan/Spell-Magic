@@ -22,14 +22,14 @@ func _ready():
 	var idle_pathway := PathStyle.Pathway.new()
 	idle_pathway.append(
 		[
-			PathStyle.Segment.linear(Vector3(0, 0, 0), Vector3(0, 20, 0)),
-			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, 0, 0))
+			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(0, 20, 0)),
+			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0))
 		],
 		[5, 2],
-		[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+		[PathStyle.Pathway.ease_out_5_modifier, PathStyle.Pathway.linear_modifier]
 	)
 	
-	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
+	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_ground_and_air().set_origin(position).use_absolute()
 	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()
 	current_path = idle_path
 	

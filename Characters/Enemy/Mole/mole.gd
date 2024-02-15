@@ -97,43 +97,43 @@ func _ready():
 	)
 	
 	hide_and_attack = AttackSequence.new(true, [
-		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(a, b)], [8], [PathStyle.Pathway.linear_modifier])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
-		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
 		
-		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(b, c)], [8], [PathStyle.Pathway.linear_modifier])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
-		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
 		
-		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(c, d)], [8], [PathStyle.Pathway.linear_modifier])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
-		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
 		
-		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(d, e)], [8], [PathStyle.Pathway.linear_modifier])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
-		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
 		
-		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(e, a)], [8], [PathStyle.Pathway.linear_modifier])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
-		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
 	])

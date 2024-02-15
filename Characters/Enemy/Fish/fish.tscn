@@ -1,6 +1,7 @@
-[gd_scene load_steps=60 format=3 uid="uid://n78kb1mtreki"]
+[gd_scene load_steps=68 format=3 uid="uid://n78kb1mtreki"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Fish/fish.gd" id="1_vn07l"]
+[ext_resource type="PackedScene" uid="uid://iy6b4lnjlpmk" path="res://Characters/Enemy/Animations/blob_animation_tree.tscn" id="2_2h6o7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c8yr2"]
 resource_name = "Fish_Main"
@@ -229,6 +230,7 @@ tracks/5/keys = PackedFloat32Array(0, 1, 0, -1.03398e-25, -8.27181e-25, 1)
 [sub_resource type="Animation" id="Animation_0pvo0"]
 resource_name = "Dance"
 length = 0.666667
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -367,6 +369,7 @@ tracks/5/keys = PackedFloat32Array(0, 1, 0, -1.03398e-25, -8.27181e-25, 1)
 [sub_resource type="Animation" id="Animation_wvu10"]
 resource_name = "Idle"
 length = 2.0
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -413,7 +416,6 @@ tracks/5/keys = PackedFloat32Array(0, 1, 0, -1.03398e-25, -8.27181e-25, 1)
 [sub_resource type="Animation" id="Animation_n1fxn"]
 resource_name = "Jump"
 length = 0.433333
-loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -608,23 +610,29 @@ _data = {
 "Yes": SubResource("Animation_p7hn8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_187eo"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i8jn0"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6flae"]
 animation = &"Death"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oll1a"]
+animation = &"Dance"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vfcxd"]
 animation = &"Idle"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f8pm5"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
+animation = &"Yes"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qnw7a"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ula6u"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fx106"]
 resource_local_to_scene = true
-animation = &"Jump"
+animation = &"Walk"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_we7e5"]
 animation = &"Walk"
@@ -709,23 +717,37 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7xbj5"]
 xfade_time = 0.1
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ykehh"]
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yqwc1"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x8o8c"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5wpp8"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d4khk"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4mx0o"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_f6awk"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_187eo")
-states/attack/position = Vector2(82, 290)
+states/attack/node = SubResource("AnimationNodeAnimation_i8jn0")
+states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
+states/fall/node = SubResource("AnimationNodeAnimation_oll1a")
+states/fall/position = Vector2(648, 324)
 states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
-states/on_hit/node = SubResource("AnimationNodeAnimation_f8pm5")
+states/land/node = SubResource("AnimationNodeAnimation_psqsm")
+states/land/position = Vector2(666, 175)
+states/on_hit/node = SubResource("AnimationNodeAnimation_qnw7a")
 states/on_hit/position = Vector2(464, 282)
-states/run/node = SubResource("AnimationNodeAnimation_ula6u")
+states/run/node = SubResource("AnimationNodeAnimation_fx106")
 states/run/position = Vector2(265, 373)
 states/walk/node = SubResource("AnimationNodeAnimation_we7e5")
 states/walk/position = Vector2(441, 116)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_iuxla"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_1wdpc"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_nkwvf"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_j3bv1"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_lwr0s"), "walk", "on_hit", SubResource("AnimationNodeStateMachineTransition_olpdr"), "run", "on_hit", SubResource("AnimationNodeStateMachineTransition_7ab2i"), "walk", "attack", SubResource("AnimationNodeStateMachineTransition_gc81u"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_nig4j"), "on_hit", "walk", SubResource("AnimationNodeStateMachineTransition_i4cx7"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_dopwh"), "on_hit", "idle", SubResource("AnimationNodeStateMachineTransition_50vu2"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_fvvmy"), "on_hit", "run", SubResource("AnimationNodeStateMachineTransition_ci4rq"), "attack", "walk", SubResource("AnimationNodeStateMachineTransition_f2aup"), "idle", "on_hit", SubResource("AnimationNodeStateMachineTransition_w52kw"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_m0l8p"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_5qyv0"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_0piw5"), "attack", "on_hit", SubResource("AnimationNodeStateMachineTransition_jvjse"), "on_hit", "attack", SubResource("AnimationNodeStateMachineTransition_px5ok"), "idle", "death", SubResource("AnimationNodeStateMachineTransition_1ryxj"), "attack", "death", SubResource("AnimationNodeStateMachineTransition_h506w"), "run", "death", SubResource("AnimationNodeStateMachineTransition_cd54x"), "on_hit", "death", SubResource("AnimationNodeStateMachineTransition_utcge"), "walk", "death", SubResource("AnimationNodeStateMachineTransition_7xbj5")]
-graph_offset = Vector2(-162, 57)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_iuxla"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_1wdpc"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_nkwvf"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_j3bv1"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_lwr0s"), "walk", "on_hit", SubResource("AnimationNodeStateMachineTransition_olpdr"), "run", "on_hit", SubResource("AnimationNodeStateMachineTransition_7ab2i"), "walk", "attack", SubResource("AnimationNodeStateMachineTransition_gc81u"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_nig4j"), "on_hit", "walk", SubResource("AnimationNodeStateMachineTransition_i4cx7"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_dopwh"), "on_hit", "idle", SubResource("AnimationNodeStateMachineTransition_50vu2"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_fvvmy"), "on_hit", "run", SubResource("AnimationNodeStateMachineTransition_ci4rq"), "attack", "walk", SubResource("AnimationNodeStateMachineTransition_f2aup"), "idle", "on_hit", SubResource("AnimationNodeStateMachineTransition_w52kw"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_m0l8p"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_5qyv0"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_0piw5"), "attack", "on_hit", SubResource("AnimationNodeStateMachineTransition_jvjse"), "on_hit", "attack", SubResource("AnimationNodeStateMachineTransition_px5ok"), "idle", "death", SubResource("AnimationNodeStateMachineTransition_1ryxj"), "attack", "death", SubResource("AnimationNodeStateMachineTransition_h506w"), "run", "death", SubResource("AnimationNodeStateMachineTransition_cd54x"), "on_hit", "death", SubResource("AnimationNodeStateMachineTransition_utcge"), "walk", "death", SubResource("AnimationNodeStateMachineTransition_7xbj5"), "on_hit", "fall", SubResource("AnimationNodeStateMachineTransition_yqwc1"), "attack", "fall", SubResource("AnimationNodeStateMachineTransition_x8o8c"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_5wpp8"), "land", "idle", SubResource("AnimationNodeStateMachineTransition_d4khk"), "fall", "land", SubResource("AnimationNodeStateMachineTransition_4mx0o")]
+graph_offset = Vector2(-194, 0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_h6gw1"]
 size = Vector3(3, 2.8, 2.4)
@@ -824,7 +846,7 @@ bones/1/name = "Head"
 bones/1/parent = -1
 bones/1/rest = Transform3D(1, 3.8726e-17, -3.40311e-18, -3.8726e-17, 0.984674, -0.174406, -3.40311e-18, 0.174406, 0.984674, 0, 0.610388, 0)
 bones/1/enabled = true
-bones/1/position = Vector3(0, 0.62071, 0)
+bones/1/position = Vector3(0, 0.645445, 0)
 bones/1/rotation = Quaternion(0, 0, 0, 1)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Head2"
@@ -839,7 +861,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, 1.65436e-24, -2.06795e-25, -1.65436e-24, 1, 0, 2.06795e-25, 0, 1, 3.30872e-24, 0.503513, 0)
 bones/3/enabled = true
 bones/3/position = Vector3(3.30872e-24, 0.503513, 0)
-bones/3/rotation = Quaternion(4.52368e-36, 3.54715e-10, -0.00264005, 0.999997)
+bones/3/rotation = Quaternion(-1.49148e-18, 1.41126e-09, -0.0196317, 0.999807)
 bones/3/scale = Vector3(1, 1, 1)
 
 [node name="Fish_Blob" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
@@ -859,13 +881,11 @@ libraries = {
 "": SubResource("AnimationLibrary_lfc7j")
 }
 
-[node name="AnimationTree" type="AnimationTree" parent="."]
-root_motion_track = NodePath("CharacterArmature/Skeleton3D:Root")
+[node name="AnimationTree" parent="." instance=ExtResource("2_2h6o7")]
 libraries = {
 "": SubResource("AnimationLibrary_lfc7j")
 }
-tree_root = SubResource("AnimationNodeStateMachine_ykehh")
-anim_player = NodePath("../AnimationPlayer")
+tree_root = SubResource("AnimationNodeStateMachine_f6awk")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)

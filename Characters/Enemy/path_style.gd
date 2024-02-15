@@ -1,8 +1,8 @@
 class_name PathStyle
 
 enum Kind { ORIGIN, CIRCLE, PATH, EXPR }
-enum CoordY { GROUND, ORIGIN }
-enum Mover { PHYSICS, ABSOLUTE_XZ, ABSOLUTE }
+enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT }
+enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER }
 enum OriginKind { ABSOLUTE, PLAYER, ME }
 
@@ -17,7 +17,7 @@ var expr_y: Expr = null
 var expr_z: Expr = null
 var origin_kind: OriginKind
 var seed_offset: float
-var mover: Mover = Mover.ABSOLUTE_XZ
+var mover: Mover = Mover.ABSOLUTE
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var last_t: float = 0.0
@@ -62,10 +62,6 @@ func use_absolute() -> PathStyle:
 	mover = Mover.ABSOLUTE
 	return self
 	
-func use_absolute_xz() -> PathStyle:
-	mover = Mover.ABSOLUTE_XZ
-	return self
-	
 func set_use_player_as_origin(o: bool = true) -> PathStyle:
 	origin_kind = OriginKind.PLAYER if o else OriginKind.ABSOLUTE
 	if o:
@@ -92,6 +88,14 @@ func align_y_to_origin() -> PathStyle:
 	
 func align_y_to_ground() -> PathStyle:
 	coord_y = CoordY.GROUND
+	return self
+	
+func align_y_to_ground_and_air() -> PathStyle:
+	coord_y = CoordY.GROUND_AND_AIR
+	return self
+	
+func align_y_to_ground_and_dirt() -> PathStyle:
+	coord_y = CoordY.GROUND_AND_DIRT
 	return self
 	
 func circle(center: Vector3, radius: float) -> PathStyle:
@@ -172,14 +176,18 @@ func use_expr(x: String, y: String, z: String):
 	kind = Kind.EXPR
 	return self
 	
-func movement_speed() -> float:
+func movement_speed(time_override: float = NAN) -> float:
 	match kind:
 		Kind.ORIGIN:
 			return const_movement_speed
 		Kind.CIRCLE:
 			return const_movement_speed
 		Kind.PATH:
-			var t := float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
+			var t: float
+			if is_nan(time_override):
+				t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
+			else:
+				t = time_override
 			var duration = fmod(t, path.total_duration)
 			var index = Globals.Ref.new(0)
 			path.position_at_time(duration, index)
@@ -197,6 +205,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 		t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
 	else:
 		t = time_override
+	var old_t = last_t
 	last_t = t
 	if is_done:
 		is_done.data = false
@@ -248,8 +257,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 			var index = Globals.Ref.new(0)
 			var v = path.position_at_time(duration, index) + temp_origin
 			
-			var V = path.position_at_time(path.total_duration) + temp_origin
-			if me.position.distance_to(Vector3(V.x, next_y_position(me, V.x, V.y - temp_origin.y, V.z), V.z)) < 1:
+			if fmod(t, path.total_duration) < fmod(old_t, path.total_duration):
 				me_start_position = null
 				if is_done:
 					is_done.data = true
@@ -277,6 +285,18 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:
 		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+		CoordY.GROUND_AND_DIRT: 
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+			if y > 0:
+				return g
+			else:
+				return g + y
+		CoordY.GROUND_AND_AIR: 
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+			if y < 0:
+				return g
+			else:
+				return g + y
 		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y
 		_: return 0
 
@@ -368,7 +388,7 @@ class Pathway:
 		for i in range(durations.size()):
 			segment = i
 			var ti = durations[i]
-			if running <= t and t <= running + ti:
+			if running <= t and t < running + ti:
 				break
 			running += ti
 		t -= running
@@ -393,7 +413,12 @@ class Pathway:
 			index.data = segment
 		return segments[segment].position_at_distance(dist)
 		
-	static var linear_modifier := Segment.linear(Vector3(0, 0, 0), Vector3(0, 1, 0)) 
+	static var linear_modifier := Segment.linear(Vector3(0, 0, 0), Vector3(0, 1, 0))
+	static var ease_in_modifier := Segment.cubic(Vector3(0, 0, 0), Vector3(1, 1, 0), Vector3(0.5, 0, 0), Vector3(0, 0.5, 0))
+	static var ease_out_modifier := Segment.cubic(Vector3(0, 0, 0), Vector3(1, 1, 0), Vector3(0, 0.5, 0), Vector3(0.5, 1, 0))
+	
+	static var ease_in_5_modifier := Segment.cubic(Vector3(0, 0, 0), Vector3(1, 1, 0), Vector3(1, 0, 0), Vector3(1, 0, 0))
+	static var ease_out_5_modifier := Segment.cubic(Vector3(0, 0, 0), Vector3(1, 1, 0), Vector3(0, 1, 0), Vector3(0, 1, 0))
 
 class Segment:
 	enum BezierKind { LINEAR, QUAD, CUBIC }
