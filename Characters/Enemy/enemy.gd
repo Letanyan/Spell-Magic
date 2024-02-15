@@ -100,6 +100,7 @@ func _physics_process(delta: float):
 		die()
 	update_vitals_display()
 	
+	var is_on_floor_1_not_on_floor_2_else_check_0: int = 0
 	if velocity_movement.impulse != Vector3.ZERO:
 		velocity = movement["velocity"]
 		move_and_slide()
@@ -126,6 +127,7 @@ func _physics_process(delta: float):
 						t.y = 0
 						v.y = 0
 						
+				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(position.y - g) < 1 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 		if process_path.lookat == PathStyle.LookAt.PLAYER:
@@ -184,8 +186,13 @@ func _physics_process(delta: float):
 		
 
 	spell_caster.update(self, delta)
+	var final_is_on_floor: bool
+	if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
+		final_is_on_floor = is_on_floor()
+	else:
+		final_is_on_floor = is_on_floor_1_not_on_floor_2_else_check_0 == 1
 	if velocity != Vector3.ZERO:
-		if is_on_floor():
+		if final_is_on_floor:
 			if velocity.length() < 1:
 				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				play_animation("walk")
@@ -193,11 +200,11 @@ func _physics_process(delta: float):
 				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				play_animation("run")
 	else:
-		if is_on_floor():
+		if final_is_on_floor:
 			play_walking_audio(null)
 			play_animation("idle")
 		
-	if not is_on_floor_only():
+	if not final_is_on_floor:
 		play_animation("fall")
 	elif current_animation_is("fall"):
 		play_animation("land")

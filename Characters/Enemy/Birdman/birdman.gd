@@ -23,10 +23,13 @@ func _ready():
 	idle_pathway.append(
 		[
 			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(0, 20, 0)),
-			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0))
+			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0)),
+			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(10, -4, 0)),
+			PathStyle.Segment.linear(Vector3(10, -4, 0), Vector3(0, -4, 0)),
 		],
-		[5, 2],
-		[PathStyle.Pathway.ease_out_5_modifier, PathStyle.Pathway.linear_modifier]
+		[5, 2, 2, 5],
+		[PathStyle.Pathway.ease_out_5_modifier, PathStyle.Pathway.linear_modifier, 
+		PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
 	)
 	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_ground_and_air().set_origin(position).use_absolute()
