@@ -970,7 +970,7 @@ advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m46nt"]
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gwwiv"]
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_621b6"]
 resource_local_to_scene = true
 states/End/position = Vector2(1115, 96)
 states/Start/position = Vector2(54, 49)
@@ -1091,7 +1091,7 @@ bones/1/name = "Torso"
 bones/1/parent = 0
 bones/1/rest = Transform3D(0.999977, -0.00654694, -0.00197155, 0.00660181, 0.99955, 0.0292449, 0.0017792, -0.0292572, 0.99957, 0.00319718, 1.43152, -0.111039)
 bones/1/enabled = true
-bones/1/position = Vector3(0.00318722, 1.48676, -0.129178)
+bones/1/position = Vector3(0.0031948, 1.44473, -0.115376)
 bones/1/rotation = Quaternion(-0.0146272, -0.000937792, 0.00328756, 0.999887)
 bones/1/scale = Vector3(1, 0.999999, 1)
 bones/2/name = "Neck"
@@ -1106,28 +1106,28 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, -1.36055e-06, -0.000551003, -0.000516418, 0.346397, -0.938088, 0.000192142, 0.938088, 0.346397, 9.86919e-11, 0.449233, -6.05156e-08)
 bones/3/enabled = true
 bones/3/position = Vector3(9.86919e-11, 0.449233, -6.05156e-08)
-bones/3/rotation = Quaternion(0.584184, -0.000223989, -0.000160371, 0.811621)
+bones/3/rotation = Quaternion(0.573752, -0.000226033, -0.000157509, 0.819029)
 bones/3/scale = Vector3(1, 1, 1)
 bones/4/name = "Wing1.L"
 bones/4/parent = 1
 bones/4/rest = Transform3D(0.317499, 0.746347, 0.584946, -0.948249, 0.252672, 0.192304, -0.00427395, -0.61573, 0.787946, 0.384144, 0.55359, -0.175551)
 bones/4/enabled = true
 bones/4/position = Vector3(0.384144, 0.55359, -0.175551)
-bones/4/rotation = Quaternion(-0.206456, 0.0484001, -0.7476, 0.629387)
+bones/4/rotation = Quaternion(-0.238203, 0.123912, -0.6529, 0.708257)
 bones/4/scale = Vector3(1, 1, 1)
 bones/5/name = "Wing2.L"
 bones/5/parent = 4
 bones/5/rest = Transform3D(0.00298202, 0.0311506, -0.99951, -0.308637, 0.950747, 0.0287101, 0.951176, 0.3084, 0.0124494, 1.84301e-08, 0.702502, -6.07171e-08)
 bones/5/enabled = true
 bones/5/position = Vector3(1.84301e-08, 0.702502, -6.07171e-08)
-bones/5/rotation = Quaternion(0.000865409, -0.60776, -0.348605, 0.713514)
+bones/5/rotation = Quaternion(0.077217, -0.679372, -0.175149, 0.708388)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/name = "Wing3.L"
 bones/6/parent = 5
 bones/6/rest = Transform3D(0.997315, -0.0732246, 0.00109962, 0.0725495, 0.985851, -0.151111, 0.00998099, 0.150785, 0.988516, 1.21546e-07, 0.440277, 4.68244e-08)
 bones/6/enabled = true
 bones/6/position = Vector3(1.21546e-07, 0.440277, 4.68244e-08)
-bones/6/rotation = Quaternion(-0.195249, 0.00570061, -0.0364941, 0.980058)
+bones/6/rotation = Quaternion(0.0365879, -0.00108269, 0.0260958, 0.998989)
 bones/6/scale = Vector3(1, 1, 1)
 bones/7/name = "Wing4.L"
 bones/7/parent = 6
@@ -1141,21 +1141,21 @@ bones/8/parent = 1
 bones/8/rest = Transform3D(0.329902, -0.745396, -0.579267, 0.944011, 0.262438, 0.199926, 0.00299794, -0.61279, 0.79024, -0.381322, 0.558601, -0.174042)
 bones/8/enabled = true
 bones/8/position = Vector3(-0.381322, 0.558601, -0.174042)
-bones/8/rotation = Quaternion(-0.205295, -0.0458067, 0.743869, 0.634362)
+bones/8/rotation = Quaternion(-0.237722, -0.120953, 0.648717, 0.712758)
 bones/8/scale = Vector3(1, 1, 1)
 bones/9/name = "Wing2.R"
 bones/9/parent = 8
 bones/9/rest = Transform3D(0.00298208, -0.0311505, 0.99951, 0.308637, 0.950747, 0.0287099, -0.951176, 0.3084, 0.0124494, 1.07967e-07, 0.702502, 2.12604e-08)
 bones/9/enabled = true
 bones/9/position = Vector3(1.07967e-07, 0.702502, 2.12604e-08)
-bones/9/rotation = Quaternion(0.000865422, 0.60776, 0.348605, 0.713514)
+bones/9/rotation = Quaternion(0.077217, 0.679372, 0.175149, 0.708388)
 bones/9/scale = Vector3(1, 1, 1)
 bones/10/name = "Wing3.R"
 bones/10/parent = 9
 bones/10/rest = Transform3D(0.997315, 0.0732247, -0.00109959, -0.0725496, 0.985851, -0.151111, -0.00998103, 0.150785, 0.988516, 1.00233e-07, 0.440277, 2.10504e-08)
 bones/10/enabled = true
 bones/10/position = Vector3(1.00233e-07, 0.440277, 2.10504e-08)
-bones/10/rotation = Quaternion(-0.195249, -0.00570056, 0.036494, 0.980058)
+bones/10/rotation = Quaternion(0.0365879, 0.00108272, -0.0260958, 0.998989)
 bones/10/scale = Vector3(1, 1, 1)
 bones/11/name = "Wing4.R"
 bones/11/parent = 10
@@ -1168,7 +1168,7 @@ bones/12/name = "Body1"
 bones/12/parent = 0
 bones/12/rest = Transform3D(0.999558, -0.0252628, -0.0160087, -0.0244939, -0.998616, 0.0465363, -0.017162, -0.0461226, -0.998805, 0.00319719, 1.43464, -0.11128)
 bones/12/enabled = true
-bones/12/position = Vector3(0.00318541, 1.48234, -0.114959)
+bones/12/position = Vector3(0.00319174, 1.4567, -0.112982)
 bones/12/rotation = Quaternion(0.99962, -0.0124439, -0.00829572, -0.0231734)
 bones/12/scale = Vector3(1.00001, 1, 1.00002)
 
@@ -1185,7 +1185,7 @@ libraries = {
 libraries = {
 "": SubResource("AnimationLibrary_vkrid")
 }
-tree_root = SubResource("AnimationNodeStateMachine_gwwiv")
+tree_root = SubResource("AnimationNodeStateMachine_621b6")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)

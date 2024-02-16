@@ -4410,7 +4410,6 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wb0xo"]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_b0jd3"]
-resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
 states/attack/node = SubResource("AnimationNodeAnimation_cvp8h")
 states/attack/position = Vector2(82, 289)
@@ -4421,7 +4420,7 @@ states/fall/position = Vector2(595, 358)
 states/idle/node = SubResource("AnimationNodeAnimation_2f2sh")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_htd8k")
-states/land/position = Vector2(612, 157)
+states/land/position = Vector2(635, 139)
 states/on_hit/node = SubResource("AnimationNodeAnimation_eyug3")
 states/on_hit/position = Vector2(463, 282)
 states/run/node = SubResource("AnimationNodeAnimation_x7fhb")
