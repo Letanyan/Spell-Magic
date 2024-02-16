@@ -41,7 +41,7 @@ func _ready():
 	idle_pathway.append_with_speed(
 		[randarc.call(), randarc.call(), randarc.call(), randarc.call()],
 		[2, 2, 2, 2],
-		[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+		[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
@@ -132,7 +132,7 @@ func create_attack_jump_path():
 	var mid: Vector3 = lerp(position, player.position, 2.5) + Vector3(0, 25, 0) - player.position
 	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
 	var attack_jump_pathway = PathStyle.Pathway.new()
-	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)], [8], [PathStyle.Pathway.linear_modifier])
+	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)], [8], [PathStyle.Easing.linear])
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)

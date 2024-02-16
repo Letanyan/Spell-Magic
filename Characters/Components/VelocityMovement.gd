@@ -50,7 +50,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if length < 1.0:
 			new_velocity *= length
 		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
-		new_velocity = new_velocity * clamp(movement_speed, length, INF) * (1.0 - vitals.freeze.value) * stun_value
+		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value) * stun_value
 
 		navigation_velocity = new_velocity
 

@@ -51,7 +51,7 @@ func _ready():
 	rotate_path.append_with_speed(
 		[form_arc.call(a, b), form_arc.call(b, c), form_arc.call(c, d), form_arc.call(d, a)],
 		[2, 2, 2, 2],
-		[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+		[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	
 	attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()

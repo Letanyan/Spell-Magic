@@ -39,8 +39,8 @@ func _ready():
 		PathStyle.Segment.linear(c, d), PathStyle.Segment.linear(d, e),
 		PathStyle.Segment.linear(e, a),
 	], [5, 5, 5, 5, 5],
-	[PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier,
-	PathStyle.Pathway.linear_modifier, PathStyle.Pathway.linear_modifier]
+	[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear,
+	PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	
 	attack_path = PathStyle.new(0.0).follow_path(p).set_use_player_as_origin().speed(5).align_y_to_origin().look_at_player().set_is_done_uses_path_segments()
@@ -52,12 +52,12 @@ func _ready():
 	var up_pathway := PathStyle.Pathway.new(
 		[PathStyle.Segment.linear(Z, Vector3(0, -U, 0))],
 		[3],
-		[PathStyle.Pathway.linear_modifier]
+		[PathStyle.Easing.linear]
 	)
 	var down_pathway := PathStyle.Pathway.new(
 		[PathStyle.Segment.linear(Z, Vector3(0, U, 0))],
 		[1],
-		[PathStyle.Pathway.linear_modifier]
+		[PathStyle.Easing.linear]
 	)
 	
 	
@@ -99,7 +99,7 @@ func _ready():
 	hide_and_attack = AttackSequence.new(true, [
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
-			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(a, b)], [8], [PathStyle.Pathway.linear_modifier])
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(a, b)], [8], [PathStyle.Easing.linear])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
@@ -107,7 +107,7 @@ func _ready():
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
-			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(b, c)], [8], [PathStyle.Pathway.linear_modifier])
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(b, c)], [8], [PathStyle.Easing.linear])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
@@ -115,7 +115,7 @@ func _ready():
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
-			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(c, d)], [8], [PathStyle.Pathway.linear_modifier])
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(c, d)], [8], [PathStyle.Easing.linear])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
@@ -123,7 +123,7 @@ func _ready():
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
-			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(d, e)], [8], [PathStyle.Pathway.linear_modifier])
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(d, e)], [8], [PathStyle.Easing.linear])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
@@ -131,7 +131,7 @@ func _ready():
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
-			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(e, a)], [8], [PathStyle.Pathway.linear_modifier])
+			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(e, a)], [8], [PathStyle.Easing.linear])
 		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
