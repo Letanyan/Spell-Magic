@@ -11,7 +11,6 @@ class SpellMovement:
 var spells: Array
 var movements: Array[AttackMovement]
 var spell_weight: Array[float]
-var is_sequence: bool = false
 var start_time: float
 var last_use: Dictionary # [String: Unix.Time]
 var current_sequence_index: int
@@ -20,7 +19,7 @@ var waiting_for_pattern: AttackPatterns
 var is_complete: bool = false
 
 
-func _init(_spells: Array, _spell_weight: Array[float], _is_sequence: bool, _aggression: float = 0.0, _movements: Array[AttackMovement] = []):
+func _init(_spells: Array, _spell_weight: Array[float], _aggression: float = 0.0, _movements: Array[AttackMovement] = []):
 	assert(_spells.size() == _spell_weight.size(), "spells array must be same size as spell weight")
 	assert(_movements == [] or _movements.size() == _spells.size(), "movements array must be same size as spells array or it must be an empty array")
 	
@@ -35,10 +34,9 @@ func _init(_spells: Array, _spell_weight: Array[float], _is_sequence: bool, _agg
 	start_time = 0
 	last_use = {}
 	current_sequence_index = 0
-	is_sequence = _is_sequence
 	waiting_for_pattern = null
 	aggression = _aggression
-	if not _is_sequence:
+	if aggression > 0.0:
 		var total: float = 0.0 
 		for s in spell_weight:
 			total += s
@@ -46,9 +44,9 @@ func _init(_spells: Array, _spell_weight: Array[float], _is_sequence: bool, _agg
 			spell_weight[i] = spell_weight[i] / total
 	
 static func none() -> AttackPatterns:
-	return AttackPatterns.new([], [], false, 0.0, [])
+	return AttackPatterns.new([], [], 0.0, [])
 	
-func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> SpellMovement:
+func choose_spell_from_distribution(vitals: Vitals) -> SpellMovement:
 	if randf() > aggression:
 		return null
 		
@@ -67,7 +65,7 @@ func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spe
 		if s is AttackPatterns:
 			waiting_for_pattern = s as AttackPatterns
 			waiting_for_pattern.is_complete = false
-			return waiting_for_pattern.choose_spell(vitals, behaviour)
+			return waiting_for_pattern.choose_spell(vitals)
 		else:
 			var pass_cool : bool = Time.get_unix_time_from_system() - last_use.get(s.name, 0) >= s.cooldown
 			var pass_mana : bool = vitals.mana.value > s.actual_mana_cost()
@@ -78,7 +76,7 @@ func choose_spell_from_distribution(vitals: Vitals, behaviour: Behaviour) -> Spe
 		
 	return null
 
-func choose_spell_from_sequence(vitals: Vitals, behaviour: Behaviour) -> SpellMovement:
+func choose_spell_from_sequence(vitals: Vitals) -> SpellMovement:
 	if current_sequence_index >= spells.size():
 		is_complete = true
 		current_sequence_index = 0
@@ -94,18 +92,18 @@ func choose_spell_from_sequence(vitals: Vitals, behaviour: Behaviour) -> SpellMo
 		if s is AttackPatterns:
 			waiting_for_pattern = s as AttackPatterns
 			waiting_for_pattern.is_complete = false
-			return waiting_for_pattern.choose_spell(vitals, behaviour)
+			return waiting_for_pattern.choose_spell(vitals)
 		else:
 			return SpellMovement.new(s, m)
 	else:
 		return null
 
-func choose_spell(vitals: Vitals, behaviour: Behaviour) -> SpellMovement:
+func choose_spell(vitals: Vitals) -> SpellMovement:
 	if spells.is_empty():
 		return null
 	if waiting_for_pattern:
 		if waiting_for_pattern.is_complete:
 			waiting_for_pattern = null
 		else:
-			return waiting_for_pattern.choose_spell(vitals, behaviour)
-	return choose_spell_from_sequence(vitals, behaviour) if is_sequence else choose_spell_from_distribution(vitals, behaviour)
+			return waiting_for_pattern.choose_spell(vitals)
+	return choose_spell_from_sequence(vitals) if is_zero_approx(aggression) else choose_spell_from_distribution(vitals)

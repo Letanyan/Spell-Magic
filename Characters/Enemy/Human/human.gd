@@ -15,7 +15,6 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.thirst = Vitals.Stat.new(1, 0, 1, -0.0002, 0.1)
 	vitals.perception.value = 10
 	
 	idle_path = PathStyle.new(randf()).speed(2).random_points_in_circle(10, 10).set_origin(position)
@@ -44,7 +43,6 @@ func _ready():
 			electric_blast,
 		],
 		[ 5, 5, 5, 5, 5 ],
-		false,
 		0.5
 	)
 

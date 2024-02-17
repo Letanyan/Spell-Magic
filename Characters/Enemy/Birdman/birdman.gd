@@ -2,14 +2,13 @@ class_name Birdman
 extends Enemy
 
 var none_pattern: AttackPatterns
-var default_pattern: AttackPatterns
-var sequence_pattern: AttackPatterns
+var attack_pattern1: AttackPatterns
+var attack_pattern2: AttackPatterns
+var attack_pattern3: AttackPatterns
 
 var idle_path: PathStyle
-var attack_direct_path: PathStyle
-var attack_jump_path: PathStyle
+var attack_path: PathStyle
 
-var jump_timer: int = 0
 
 func _ready():
 	super._ready()
@@ -17,83 +16,129 @@ func _ready():
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 2
+	vitals.perception.value = 35
+	vitals.attack.value = randf_range(level * 2, (level + 10) * 2)
+	vitals.defence.value = randf_range(level, level + 5)
 	
 	var idle_pathway := PathStyle.Pathway.new()
 	idle_pathway.append(
 		[
 			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(0, 20, 0)),
 			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0)),
-			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(10, -4, 0)),
-			PathStyle.Segment.linear(Vector3(10, -4, 0), Vector3(0, -4, 0)),
 		],
-		[5, 2, 2, 5],
-		[PathStyle.Pathway.ease_out_5_modifier, PathStyle.Pathway.ease_out_5_modifier, 
-		PathStyle.Pathway.ease_out_5_modifier, PathStyle.Pathway.ease_out_5_modifier]
+		[5, 2],
+		[PathStyle.Easing.out_quart, PathStyle.Easing.out_quart]
 	)
-	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_ground_and_air().set_origin(position).use_absolute()
-	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()
+	
+	var attack_pathway := PathStyle.Pathway.new()
+	attack_pathway.append(
+		[
+			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(0, 20, 0)),
+			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0)),
+		],
+		[5, 2],
+		[PathStyle.Easing.out_quart, PathStyle.Easing.out_quart]
+	)
+	attack_path = PathStyle.new(randf()).follow_path(attack_pathway)\
+	.align_y_to_ground_and_air()\
+	.set_use_player_as_origin()\
+	.set_player_vision_as_origin(0, 25)\
+	.speed(clamp(level / 100.0 * 25, 2, 25))
+	
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"h":"4", "s":"4"})
-	water_para.element = Spell.Element.WATER
-	water_para.power = 0
-	var water_line := GlobalData.magic_book.spell_with_name("linear", {"s":"15", "d":"1"})
-	water_line.element = Spell.Element.WATER
-	water_line.power = 0
+	var water_spell := GlobalData.magic_book.spell_with_name("linear")
+	water_spell.element = Spell.Element.WATER
 	
-	default_pattern = AttackPatterns.new(
+	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 50.0), "d":"Br*2+r"})
+	water_fast.power = clamp(randf_range(level, level * 2), 0, UpgradeSettings.LIMIT_P)
+	var water_small_fast := water_fast.duplicate()
+	water_small_fast.r = "1"
+	var water_med_fast := water_fast.duplicate()
+	water_med_fast.r = "2"
+	var water_large_fast := water_fast.duplicate()
+	water_large_fast.r = "5"
+	
+	var water_med := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 25.0), "d":"Br*2+r"})
+	water_med.power = clamp(randf_range(level, level * 4), 0, UpgradeSettings.LIMIT_P)
+	var water_small_med := water_med.duplicate()
+	water_small_med.r = "1"
+	var water_med_med := water_med.duplicate()
+	water_med_med.r = "2"
+	var water_large_med := water_med.duplicate()
+	water_large_med.r = "5"
+	
+	var water_slow := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 15.0), "d":"Br*2+r"})
+	water_slow.power = clamp(randf_range(level, level * 8), 0, UpgradeSettings.LIMIT_P)
+	var water_small_slow := water_slow.duplicate()
+	water_small_slow.r = "1"
+	var water_med_slow := water_slow.duplicate()
+	water_med_slow.r = "2"
+	var water_large_slow := water_slow.duplicate()
+	water_large_slow.r = "5"
+	
+	
+	
+	attack_pattern1 = AttackPatterns.new(
 		[
-			water_line,
-			water_para,
+			water_small_fast,
+			water_small_med,
+			water_small_slow,
 		],
-		[ 7, 3 ],
-		false,
+		[ 5, 5, 7 ],
 		0.25
 	)
 	
-	sequence_pattern = AttackPatterns.new(
+	attack_pattern2 = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.ROCK, 1),
+			water_small_fast,
+			water_small_med,
+			water_small_slow,
+			water_med_fast,
+			water_med_med,
+			water_med_slow,
 		],
-		[ 2, 5, 3 ],
-		true
+		[ 2, 2, 3, 5, 5, 7 ],
+		0.33
+	)
+	
+	attack_pattern3 = AttackPatterns.new(
+		[
+			AttackPatterns.new(
+				[water_small_slow, water_small_fast],
+				[2, 1]
+			),
+			AttackPatterns.new(
+				[water_med_slow, water_med_fast],
+				[3, 3]
+			),
+			AttackPatterns.new(
+				[water_large_slow, water_large_fast],
+				[5, 5]
+			),
+		],
+		[ 2, 3, 5 ],
+		0.5
 	)
 	
 	animation_map["attack"] = "Weapon"
 	
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
-	if current_path == attack_direct_path:
-		jump_timer += 1
-
-func __default_pattern() -> AttackPatterns:
-	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
-	water_para.element = Spell.Element.WATER
-	water_para.power = 0
-	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
-	water_line.element = Spell.Element.WATER
-	water_line.power = 0
-	
-	default_pattern.spells = [
-		water_line,
-		water_para,
-	]
-	return default_pattern
 
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.value >= 50:
-		return __default_pattern()
+		return attack_pattern1
+	elif vitals.health.value >= 25:
+		return attack_pattern2
 	else:
-		return default_pattern
+		return attack_pattern3
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
@@ -105,30 +150,10 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour():
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		current_path = attack_direct_path		
-	elif current_path == attack_direct_path:
-		if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-			current_path = idle_path
-		elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:
-			create_attack_jump_path()
-			attack_direct_path.stored_loops = 0
-			current_path = attack_jump_path
-	elif current_path == attack_jump_path and attack_jump_path.stored_loops > 0:
-		attack_jump_path.stored_loops = 0
-		jump_timer = 0
-		current_path = attack_direct_path
+		current_path = attack_path		
+	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value:
+		current_path = idle_path
 			
-
-func create_attack_jump_path():
-	var start := position - player.position
-	var mid: Vector3 = lerp(position, player.position, 2.5) + Vector3(0, 25, 0) - player.position
-	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
-	var attack_jump_pathway = PathStyle.Pathway.new()
-	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)], [8], [PathStyle.Easing.linear])
-	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
-	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
-	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
-	attack_jump_path = PathStyle.new(0.0).follow_path(attack_jump_pathway).speed(8).set_use_player_as_origin().align_y_to_origin().look_at_player()
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

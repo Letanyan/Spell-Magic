@@ -610,7 +610,7 @@ _data = {
 "Yes": SubResource("Animation_p7hn8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_khncw"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jkxus"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -626,11 +626,11 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ws1om"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qtrse"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_slxch"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ytw6g"]
 resource_local_to_scene = true
 animation = &"Walk"
 
@@ -730,7 +730,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_e4elx"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_khncw")
+states/attack/node = SubResource("AnimationNodeAnimation_jkxus")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -740,9 +740,9 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(666, 175)
-states/on_hit/node = SubResource("AnimationNodeAnimation_ws1om")
+states/on_hit/node = SubResource("AnimationNodeAnimation_qtrse")
 states/on_hit/position = Vector2(464, 282)
-states/run/node = SubResource("AnimationNodeAnimation_slxch")
+states/run/node = SubResource("AnimationNodeAnimation_ytw6g")
 states/run/position = Vector2(265, 373)
 states/walk/node = SubResource("AnimationNodeAnimation_we7e5")
 states/walk/position = Vector2(441, 116)
@@ -830,6 +830,7 @@ orientation = 2
 collision_layer = 4
 collision_mask = 593
 script = ExtResource("1_vn07l")
+bounds = null
 
 [node name="CharacterArmature" type="Node3D" parent="."]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)

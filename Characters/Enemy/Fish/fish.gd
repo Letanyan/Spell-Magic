@@ -61,7 +61,6 @@ func _ready():
 			water_para,
 		],
 		[ 7, 3 ],
-		false,
 		0.25
 	)
 	
@@ -72,7 +71,6 @@ func _ready():
 			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.ROCK, 1),
 		],
 		[ 2, 5, 3 ],
-		true
 	)
 	
 	animation_map["attack"] = "Bite_Front"

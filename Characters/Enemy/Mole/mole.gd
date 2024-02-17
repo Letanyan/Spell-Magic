@@ -68,7 +68,6 @@ func _ready():
 			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", "1", 0.1, 3, Spell.Element.ELECTRIC, 1),
 		],
 		[ 5, 3, 2 ],
-		false,
 		1.0,
 		#[
 			#AttackMovement.new(
@@ -93,7 +92,6 @@ func _ready():
 			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", "1", 0.1, 5, Spell.Element.ELECTRIC, 1),
 		],
 		[ 1, 2, 1 ],
-		true
 	)
 	
 	hide_and_attack = AttackSequence.new(true, [

@@ -18,7 +18,6 @@ var spell_movement: AttackPatterns.SpellMovement = null
 var attack_sequence: AttackSequence = null
 
 var player: Player
-var behaviour: Behaviour
 var vitals: Vitals
 var current_path: PathStyle
 var still_path: PathStyle
@@ -76,7 +75,7 @@ func can_move() -> bool:
 	return invunerable == 0 # and (current == "idle" or current == "walk" or current == "run")
 
 func attack_state() -> AttackPatterns:
-	return AttackPatterns.new([], [], false)
+	return AttackPatterns.new([], [])
 
 func _physics_process(delta: float):
 	if player.magic_book.settings.is_paused:
@@ -127,7 +126,7 @@ func _physics_process(delta: float):
 						t.y = 0
 						v.y = 0
 						
-				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(position.y - g) < 1 else 2
+				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(position.y - g) < 0.05 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 		if process_path.lookat == PathStyle.LookAt.PLAYER:
@@ -170,9 +169,9 @@ func _physics_process(delta: float):
 		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE:
 			if attack_sequence:
 				if attack_sequence.last_attack:
-					spell_movement = current_attack.choose_spell(vitals, behaviour)
+					spell_movement = current_attack.choose_spell(vitals)
 			else:
-				spell_movement = attack_state().choose_spell(vitals, behaviour)
+				spell_movement = attack_state().choose_spell(vitals)
 			moved_into_during_movement = spell_movement and spell_movement.movement.state == AttackMovement.AMState.DONE
 		spell_tick = 0
 		
@@ -191,6 +190,7 @@ func _physics_process(delta: float):
 		final_is_on_floor = is_on_floor()
 	else:
 		final_is_on_floor = is_on_floor_1_not_on_floor_2_else_check_0 == 1
+		
 	if velocity != Vector3.ZERO:
 		if final_is_on_floor:
 			if velocity.length() < 1:

@@ -42,24 +42,20 @@ var wetness: Stat
 var freeze: Stat
 var stun: Stat
 
-var hunger: Stat
-var thirst: Stat
 var perception: Stat
 
 var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat, percentage)
 
 
-func _init(_health: Stat, _mana: Stat, _burning := Stat.new(0, 0, 1, -0.05), _wetness := Stat.new(0, 0, 1, -0.001), _freeze := Stat.new(0, 0, 1, -0.01), _stun := Stat.new(0, 0, 1.0, -0.25)):
+func _init(_health: Stat, _mana: Stat):
 	health = _health
 	mana = _mana
-	burning = _burning
-	wetness = _wetness
-	freeze = _freeze
-	stun = _stun
+	burning = Stat.new(0, 0, 1, -0.05)
+	wetness = Stat.new(0, 0, 1, -0.001)
+	freeze = Stat.new(0, 0, 1, -0.01)
+	stun = Stat.new(0, 0, 1.0, -0.25)
 	attack = Stat.new(10, 0, 100)
 	defence = Stat.new(10, 0, 100)
-	hunger = Stat.new(0, 0, 0)
-	thirst = Stat.new(0, 0, 0)
 	perception = Stat.new(50, 0, 100)
 	aggression = Stat.new(0, 0, 1)
 	damage_resistance = {}
@@ -122,9 +118,6 @@ func update_vitals(body: Node3D) -> Array:
 		var burn_damage := int(burning.value * health.max_value * 0.05)
 		health.apply_ignoring_resistance(-burn_damage)
 		result.append({"dmg": burn_damage, "el": Spell.Element.FIRE})
-		
-	hunger.update_per_tick()
-	thirst.update_per_tick()
 	
 	var effect: Node3D
 	

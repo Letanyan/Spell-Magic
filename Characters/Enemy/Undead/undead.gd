@@ -50,7 +50,6 @@ func _ready():
 			rock_attack_large,
 		],
 		[ 10, 3, 1 ],
-		false,
 		0.25
 	)
 	
@@ -63,7 +62,6 @@ func _ready():
 			rock_attack_small,
 		],
 		[ 2, 5, 2, 4, 2 ],
-		true
 	)
 	
 	#sequence_pattern = AttackPatterns.new(
@@ -74,7 +72,6 @@ func _ready():
 					#water_attack,
 				#],
 				#[2, 2],
-				#true
 			#),
 			#AttackPatterns.new(
 				#[
@@ -82,11 +79,9 @@ func _ready():
 					#electric_attack,
 				#],
 				#[2, 2],
-				#true
 			#),
 		#],
 		#[3, 3],
-		#false,
 		#0.5
 	#)
 	

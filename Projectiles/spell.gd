@@ -98,7 +98,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	chain_cast_kind = ChainCastKind.START
 	is_active = true
 	
-func duplicate() -> Spell:
+func duplicate(override_expr: Dictionary = {}) -> Spell:
 	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
@@ -109,7 +109,9 @@ func duplicate() -> Spell:
 	result.buff_v = buff_v
 	result.buff_attack = buff_attack
 	result.buff_defence = buff_defence
-	result.expression_strings = expression_strings
+	result.expression_strings = expression_strings.duplicate()
+	if not override_expr.is_empty():
+		result.expression_strings.merge(override_expr, true)
 	result.build_expressions()
 	result.charge = charge
 	result.is_active = is_active
@@ -136,10 +138,13 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	if not only_delta:
 		result += (vars["rel_pos"] if follow else vars["abs_pos"])
 	
+	print(result)
+	print(vars)
 	return result
 	
 func calculate_size(vars: Dictionary) -> float:
 	var result := clampf(r_expr.compute(vars), 0.05, limit_r + buff_r)
+	vars["r"] = result
 	return result
 	
 func calculate_delay(vars: Dictionary) -> float:
@@ -253,9 +258,9 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	p.expression_vars.merge(exvars, true)
 	compute_expressions(p.expression_vars, fixed_vars)
 	p.spell = self
-	p.position = calculate_location(fixed_vars)
 	var er := calculate_size(fixed_vars)
 	p.update_shape(er, true)
+	p.position = calculate_location(fixed_vars)
 	
 	if element == Element.ROCK:
 		var origin: Vector3 = fixed_vars.get("abs_pos", Vector3.ZERO)

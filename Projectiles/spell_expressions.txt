@@ -1,0 +1,37 @@
+linear:
+	s ; speed
+	d ; offset
+	ax, ay, az ; offset
+	bx, by, bz ; speed
+
+arc:
+	R ; arc radius
+	h ; height
+	s ; speed
+	d ; offset
+	
+linear-turret:
+	d ; offset
+	ix, iy, iz ; (ix, iy, iz) * n defines line of turret
+	
+parabola:
+	s; speed
+	d; offset xz
+	H; y arc max height
+	D; distance should always equal T
+	
+scatter shot:
+	harc ; horizontal xz-arc
+	varc ; vertical y-arc
+	u, v, w ; overwrite chain spell 'linear' uvw
+	n ; overwrite linear n value
+	
+sniper:
+	harc ; horizontal xz-arc
+	varc ; vertical y-arc
+	s ; speed
+
+wall:
+	s ; speed really small to look static
+	h ; y offset
+	

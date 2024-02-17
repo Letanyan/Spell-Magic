@@ -88,7 +88,6 @@ func _ready():
 			elec3,
 		],
 		[ 10, 3, 2 ],
-		false,
 		0.15
 	)
 	
@@ -101,8 +100,7 @@ func _ready():
 			elec3,
 			elec_arc3,
 		],
-		[ 1, 1, 3, 1, 5, 1 ],
-		true
+		[ 1, 1, 3, 1, 5, 1 ]
 	)
 	
 	animation_map["attack"] = "Headbutt"

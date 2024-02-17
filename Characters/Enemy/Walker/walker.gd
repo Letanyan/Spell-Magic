@@ -64,7 +64,6 @@ func _ready():
 			ice_large,
 		],
 		[ 10, 4, 2, 10, 4, 2 ],
-		false,
 		0.5,
 		[
 #			AttackMovement.new(),
@@ -92,13 +91,11 @@ func _ready():
 			ice_medium,
 		],
 		[ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4, 4 ],
-		true
 	)
 	
 	defence_pattern = AttackPatterns.new(
 		[ice_wall],
 		[0],
-		true
 	)
 	
 	animation_map["attack"] = "Weapon"

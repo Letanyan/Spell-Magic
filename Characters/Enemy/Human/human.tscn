@@ -11053,7 +11053,7 @@ _data = {
 "Wave": SubResource("Animation_4dpwb")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_086cm"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kqvyc"]
 resource_local_to_scene = true
 animation = &"Gun_Shoot"
 
@@ -11069,11 +11069,11 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q8jj6"]
 animation = &"Roll"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ldv4x"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_48i0s"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_js63l"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xoxa2"]
 resource_local_to_scene = true
 animation = &"Run"
 
@@ -11172,7 +11172,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ggcgp"]
 resource_local_to_scene = true
 states/Start/position = Vector2(-21, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_086cm")
+states/attack/node = SubResource("AnimationNodeAnimation_kqvyc")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_j2maf")
 states/death/position = Vector2(265, 33)
@@ -11182,9 +11182,9 @@ states/idle/node = SubResource("AnimationNodeAnimation_2f2sh")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_q8jj6")
 states/land/position = Vector2(617, 124)
-states/on_hit/node = SubResource("AnimationNodeAnimation_ldv4x")
+states/on_hit/node = SubResource("AnimationNodeAnimation_48i0s")
 states/on_hit/position = Vector2(463, 282)
-states/run/node = SubResource("AnimationNodeAnimation_js63l")
+states/run/node = SubResource("AnimationNodeAnimation_xoxa2")
 states/run/position = Vector2(265, 374)
 states/walk/node = SubResource("AnimationNodeAnimation_vd1gf")
 states/walk/position = Vector2(441, 116)
@@ -11268,6 +11268,7 @@ orientation = 2
 
 [node name="human" type="CharacterBody3D"]
 script = ExtResource("1_ur14w")
+bounds = null
 
 [node name="CharacterArmature" type="Node3D" parent="."]
 

@@ -139,33 +139,33 @@ func circle_path(radius: float, h: float) -> PathStyle:
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
 	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
-	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Pathway.linear_modifier, Pathway.linear_modifier])
+	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Easing.linear, Easing.linear])
 	kind = Kind.PATH
 	return self
 	
 func random_points_in_circle(radius: float, count: int) -> PathStyle:
 	path = Pathway.new()
 	var p := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Pathway.linear_modifier)
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Easing.linear)
 	for i in range(count - 1):
 		var q := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
-		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Pathway.linear_modifier)
+		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Easing.linear)
 		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Pathway.linear_modifier)
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Easing.linear)
 	kind = Kind.PATH
 	return self
 	
 func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
 	path = Pathway.new()
 	var p := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Pathway.linear_modifier)
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Easing.linear)
 	for i in range(count - 1):
 		var q := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
 #		var m := (p + q) / 2.0
 #		path.add(Segment.quad(p, q, m))
-		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Pathway.linear_modifier)
+		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Easing.linear)
 		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Pathway.linear_modifier)
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Easing.linear)
 	kind = Kind.PATH
 	return self
 	

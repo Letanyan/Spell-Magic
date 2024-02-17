@@ -158,6 +158,8 @@ func update_book():
 	reload_list()
 		
 func delete_spell_at_index(index: int):
+	for i in book.spells.size():
+		book.spells[i].id = i
 	update_book_without_selection()
 
 func add_spell(spell: Spell):
