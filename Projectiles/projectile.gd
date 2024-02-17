@@ -441,8 +441,6 @@ func update_spell(t: float, vars: Dictionary):
 	vars["__frame_time"] = max(t - vars.get("__last_frame_time", time_start), 0.000001)
 	vars["__last_frame_time"] = t
 	var p = spell.calculate_location(vars)
-	var er = spell.calculate_size(vars)
-	update_shape(er, false)
 	update_movement(p, false, vars)
 
 func stop_emitting():

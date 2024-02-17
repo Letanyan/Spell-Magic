@@ -65,7 +65,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 	x_edit.text = spell.x
 	y_edit.text = spell.y
 	z_edit.text = spell.z
-	r_edit.text = spell.r
+	r_edit.text = "%.2f" % spell.radius
 	
 	power_edit.text = "%d" % spell.power
 	duration_edit.text = "%.2f" % spell.duration
@@ -172,16 +172,20 @@ func _on_z_text_changed(new_text):
 		errors_list.erase("z")
 	update_spells_that_chain_to_current_spell()
 
-func _on_r_text_changed(new_text):
+func _on_r_text_changed(new_text: String):
 	if current_index < 0:
 		return
-	book.spells[current_index].r = new_text
-	var e := Expr.new(new_text)
-	book.spells[current_index].r_expr = e
-	if e.error.length() > 0:
-		errors_list["r"] = e.error
+	if not new_text.is_valid_float():
+		errors_list["r"] = "'%s' is not a valid number" % new_text
 	else:
 		errors_list.erase("r")
+	var raw: float = new_text.to_float()
+	book.spells[current_index].radius = raw
+	if raw > book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r:
+		errors_list["r"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r]
+	else:
+		errors_list.erase("r")
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_N_text_changed(new_text: String):

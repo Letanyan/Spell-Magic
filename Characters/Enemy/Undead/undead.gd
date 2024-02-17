@@ -25,23 +25,23 @@ func _ready():
 	var rock_attack_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "5"})
 	rock_attack_small.element = Spell.Element.ROCK
 	var rock_attack_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "3", "h": "Br/2+0.5"})
-	rock_attack_medium.r = "1"
+	rock_attack_medium.radius = 1
 	rock_attack_medium.element = Spell.Element.ROCK
 	var rock_attack_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "1", "h": "Br/2+1.0"})
 	rock_attack_large.element = Spell.Element.ROCK
-	rock_attack_large.r = "2"	
+	rock_attack_large.radius = 2
 	
 	var water_attack := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"})
 	water_attack.element = Spell.Element.WATER
-	water_attack.r = "1"	
+	water_attack.radius = 1
 	
 	var fire_attack := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"})
 	fire_attack.element = Spell.Element.FIRE
-	fire_attack.r = "1"	
+	fire_attack.radius = 1
 	
 	var electric_attack := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"})
 	electric_attack.element = Spell.Element.ELECTRIC
-	electric_attack.r = "1"	
+	electric_attack.radius = 1
 	
 	random_pattern = AttackPatterns.new(
 		[

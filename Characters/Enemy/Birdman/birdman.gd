@@ -44,6 +44,7 @@ func _ready():
 	.align_y_to_ground_and_air()\
 	.set_use_player_as_origin()\
 	.set_player_vision_as_origin(0, 25)\
+	.look_at_player()\
 	.speed(clamp(level / 100.0 * 25, 2, 25))
 	
 	current_path = idle_path
@@ -56,29 +57,29 @@ func _ready():
 	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 50.0), "d":"Br*2+r"})
 	water_fast.power = clamp(randf_range(level, level * 2), 0, UpgradeSettings.LIMIT_P)
 	var water_small_fast := water_fast.duplicate()
-	water_small_fast.r = "1"
+	water_small_fast.radius = 1
 	var water_med_fast := water_fast.duplicate()
-	water_med_fast.r = "2"
+	water_med_fast.radius = 2
 	var water_large_fast := water_fast.duplicate()
-	water_large_fast.r = "5"
+	water_large_fast.radius = 5
 	
 	var water_med := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 25.0), "d":"Br*2+r"})
 	water_med.power = clamp(randf_range(level, level * 4), 0, UpgradeSettings.LIMIT_P)
 	var water_small_med := water_med.duplicate()
-	water_small_med.r = "1"
+	water_small_med.radius = 1
 	var water_med_med := water_med.duplicate()
-	water_med_med.r = "2"
+	water_med_med.radius = 2
 	var water_large_med := water_med.duplicate()
-	water_large_med.r = "5"
+	water_large_med.radius = 5
 	
 	var water_slow := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 15.0), "d":"Br*2+r"})
 	water_slow.power = clamp(randf_range(level, level * 8), 0, UpgradeSettings.LIMIT_P)
 	var water_small_slow := water_slow.duplicate()
-	water_small_slow.r = "1"
+	water_small_slow.radius = 1
 	var water_med_slow := water_slow.duplicate()
-	water_med_slow.r = "2"
+	water_med_slow.radius = 2
 	var water_large_slow := water_slow.duplicate()
-	water_large_slow.r = "5"
+	water_large_slow.radius = 5
 	
 	
 	

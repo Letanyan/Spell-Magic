@@ -17,10 +17,9 @@ var z: String:
 	set(value):
 		z = value
 		z_expr = Expr.new(value)
-var r: String:
+var radius: float:
 	set(value):
-		r = value
-		r_expr = Expr.new(value)
+		radius = clamp(value, 0, UpgradeSettings.LIMIT_r)
 var power: float:
 	set(value):
 		power = clamp(value, 0, UpgradeSettings.LIMIT_P)
@@ -47,7 +46,6 @@ var chain: Spell:
 var x_expr: Expr
 var y_expr: Expr
 var z_expr: Expr
-var r_expr: Expr
 var d_expr: Expr
 
 var follow: bool
@@ -70,11 +68,11 @@ var buff_v: float = 0.0
 var buff_attack: float = 0.0
 var buff_defence: float = 0.0
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.2", _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
 	x = _x
 	y = _y
 	z = _z
-	r = _r
+	radius = _radius
 	power = _power
 	duration = _duration
 	element = _el
@@ -92,14 +90,13 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
-	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
 	
 	chain_cast_kind = ChainCastKind.START
 	is_active = true
 	
 func duplicate(override_expr: Dictionary = {}) -> Spell:
-	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
+	var result := Spell.new(follow, x, y, z, radius, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
@@ -138,14 +135,8 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	if not only_delta:
 		result += (vars["rel_pos"] if follow else vars["abs_pos"])
 	
-	print(result)
-	print(vars)
 	return result
-	
-func calculate_size(vars: Dictionary) -> float:
-	var result := clampf(r_expr.compute(vars), 0.05, limit_r + buff_r)
-	vars["r"] = result
-	return result
+
 	
 func calculate_delay(vars: Dictionary) -> float:
 	var result := clampf(d_expr.compute(vars), 0, 25)
@@ -180,6 +171,7 @@ func compute_expressions(fvars: Dictionary, additional: Dictionary = {}):
 	temp.merge(additional)
 	for k in expressions:
 		fvars[k] = expressions[k].compute(temp)
+		temp[k] = fvars[k]
 			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
@@ -187,7 +179,10 @@ func calculate_cooldown() -> float:
 	if element == Element.VOID:
 		basic_cost = 0.0
 	else:
-		basic_cost = (power / UpgradeSettings.LIMIT_P + 1.0) * (duration / UpgradeSettings.LIMIT_T + 1) * (1.0 if count <= 1 else count * 0.98)
+		basic_cost = (power / UpgradeSettings.LIMIT_P + 1.0) * \
+		(duration / UpgradeSettings.LIMIT_T + 1.0) * \
+		(radius / UpgradeSettings.LIMIT_r + 1.0) * \
+		(1.0 if count <= 1 else count * 0.98)
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
 	cooldown = basic_cost * maxf(chain_cost, 1.0) - mana_cost
@@ -237,6 +232,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	fixed_vars["T"] = duration
 	fixed_vars["P"] = power
 	fixed_vars["n"] = float(n)
+	fixed_vars["r"] = radius
 	fixed_vars.merge(fvars, true)
 	compute_expressions(fixed_vars)
 	fixed_vars["D"] = d_expr.compute(fixed_vars)
@@ -258,8 +254,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	p.expression_vars.merge(exvars, true)
 	compute_expressions(p.expression_vars, fixed_vars)
 	p.spell = self
-	var er := calculate_size(fixed_vars)
-	p.update_shape(er, true)
+	p.update_shape(radius, true)
 	p.position = calculate_location(fixed_vars)
 	
 	if element == Element.ROCK:
@@ -322,22 +317,21 @@ func get_turret(n: int, fvars: Dictionary) -> Node3D:
 	var p = turret.instantiate()
 			
 	p.position = calculate_location(fixed_vars)
-	var er := calculate_size(fixed_vars)
 	
 	var mesh: MeshInstance3D = p.get_node("outer") as MeshInstance3D
 	var ring: TorusMesh = mesh.mesh as TorusMesh
-	ring.inner_radius = er
-	ring.outer_radius = er + er * 0.1
+	ring.inner_radius = radius
+	ring.outer_radius = radius + radius * 0.1
 	var mat: ShaderMaterial = ring.material as ShaderMaterial
 	mat.set_shader_parameter("albedo", Spell.real_color_from_element(element))
 	
 	ring = p.get_node("mid").mesh
-	ring.inner_radius = er * 0.67
-	ring.outer_radius = er * 0.67 + er * 0.1
+	ring.inner_radius = radius * 0.67
+	ring.outer_radius = radius * 0.67 + radius * 0.1
 	
 	ring = p.get_node("inner").mesh
-	ring.inner_radius = er * 0.25
-	ring.outer_radius = er * 0.25 + er * 0.1
+	ring.inner_radius = radius * 0.25
+	ring.outer_radius = radius * 0.25 + radius * 0.1
 	
 	var anim := p.get_node("AnimationPlayer") as AnimationPlayer
 	anim.play("rotate")
@@ -347,7 +341,7 @@ func get_turret(n: int, fvars: Dictionary) -> Node3D:
 
 func save_dict():
 	return {
-		"x": x, "y": y, "z": z, "r": r,
+		"x": x, "y": y, "z": z, "r": radius,
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
@@ -360,7 +354,8 @@ func load_dict(dict: Dictionary):
 	x = dict["x"]
 	y = dict["y"]
 	z = dict["z"]
-	r = dict["r"]
+	var temp_r = dict["r"]
+	radius = temp_r if temp_r is float else temp_r.to_float()
 	power = dict["power"]
 	duration = dict["duration"]
 	element = dict["el"]
@@ -384,7 +379,6 @@ func load_dict(dict: Dictionary):
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
-	r_expr = Expr.new(r)
 	d_expr = Expr.new(delay)
 	build_expressions()
 	

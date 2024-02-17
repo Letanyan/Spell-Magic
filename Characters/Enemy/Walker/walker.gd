@@ -27,27 +27,27 @@ func _ready():
 	
 	var water_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "8"})
 	water_small.element = Spell.Element.WATER
-	water_small.r = "0.2"
+	water_small.radius = 0.2
 	var water_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"})
 	water_medium.element = Spell.Element.WATER
-	water_medium.r = "0.8"
+	water_medium.radius = 0.8
 	var water_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"})
 	water_large.element = Spell.Element.WATER
-	water_large.r = "1.2"
+	water_large.radius = 1.2
 	
 	var ice_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"})
 	ice_small.element = Spell.Element.ICE
-	ice_small.r = "0.8"
+	ice_small.radius = 0.8
 	var ice_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"})
 	ice_medium.element = Spell.Element.ICE
-	ice_medium.r = "1.6"
+	ice_medium.radius = 1.6
 	var ice_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"})
 	ice_large.element = Spell.Element.ICE
-	ice_large.r = "3.2"
+	ice_large.radius = 3.2
 	
 	var ice_wall := GlobalData.magic_book.spell_with_name("wall", {})
 	ice_wall.element = Spell.Element.ICE
-	ice_wall.r = "Br * 2"
+	ice_wall.radius = 3 * 2
 	ice_wall.follow = true
 	ice_wall.duration = 10.0
 	

@@ -66,9 +66,9 @@ func _ready():
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", "1", 50, 5, Spell.Element.ROCK, 1),
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.FIRE, 1),
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.WATER, 1),
+			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.ROCK, 1),
 		],
 		[ 2, 5, 3 ],
 	)
