@@ -43,7 +43,7 @@ func _ready():
 	attack_path = PathStyle.new(randf()).follow_path(attack_pathway)\
 	.align_y_to_ground_and_air()\
 	.set_use_player_as_origin()\
-	.set_player_vision_as_origin(0, 25)\
+	.set_player_vision_as_origin(0, 30)\
 	.look_at_player()\
 	.speed(clamp(level / 100.0 * 25, 2, 25))
 	
@@ -54,7 +54,7 @@ func _ready():
 	var water_spell := GlobalData.magic_book.spell_with_name("linear")
 	water_spell.element = Spell.Element.WATER
 	
-	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 50.0), "d":"Br*2+r"})
+	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 110.0 * 50.0), "d":"Br*2+r"})
 	water_fast.power = clamp(randf_range(level, level * 2), 0, UpgradeSettings.LIMIT_P)
 	var water_small_fast := water_fast.duplicate()
 	water_small_fast.radius = 1
@@ -63,7 +63,7 @@ func _ready():
 	var water_large_fast := water_fast.duplicate()
 	water_large_fast.radius = 5
 	
-	var water_med := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 25.0), "d":"Br*2+r"})
+	var water_med := water_spell.duplicate({"s":str((level + 25.0) / 125.0 * 25.0), "d":"Br*2+r"})
 	water_med.power = clamp(randf_range(level, level * 4), 0, UpgradeSettings.LIMIT_P)
 	var water_small_med := water_med.duplicate()
 	water_small_med.radius = 1
@@ -72,7 +72,7 @@ func _ready():
 	var water_large_med := water_med.duplicate()
 	water_large_med.radius = 5
 	
-	var water_slow := water_spell.duplicate({"s":str((level + 10.0) / 100.0 * 15.0), "d":"Br*2+r"})
+	var water_slow := water_spell.duplicate({"s":str((level + 50.0) / 150.0 * 15.0), "d":"Br*2+r"})
 	water_slow.power = clamp(randf_range(level, level * 8), 0, UpgradeSettings.LIMIT_P)
 	var water_small_slow := water_slow.duplicate()
 	water_small_slow.radius = 1

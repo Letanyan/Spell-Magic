@@ -26,7 +26,7 @@ func update(body, delta):
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
 				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
-			p.update_spell(t, p.fixed_vars)
+			p.update_spell(t, delta, p.fixed_vars)
 			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
@@ -259,3 +259,8 @@ func free_particles():
 	for p in particles:
 		p.free_particle()
 	particles.clear()
+
+func update_pause_time(pause_time: float):
+	for p in particles:
+		p.pause_time += pause_time
+		p.spell_caster.update_pause_time(pause_time)

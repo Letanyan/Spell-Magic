@@ -20,6 +20,8 @@ var expression_vars: Dictionary
 var to_remove := false
 var origin_node: Node3D = null
 
+var pause_time: float = 0.0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.PROJECTILE)
@@ -38,7 +40,7 @@ func _process(delta):
 func has_expired(t: float) -> bool:
 	if time_start <= 0:
 		return false
-	return expired or (t - time_start) >= spell.duration
+	return expired or (t - time_start) >= spell.duration + pause_time
 	
 func expire_now(p: Node3D, q: Node3D):
 	SignalBus.projectile_hit.emit(origin_node, spell, Time.get_unix_time_from_system())
@@ -59,7 +61,7 @@ func nothing(p: Node3D, q: Node3D):
 	pass
 	
 func actual_duration() -> float:
-	var result := spell.duration - (Time.get_unix_time_from_system() - time_start)
+	var result := (spell.duration + pause_time) - (Time.get_unix_time_from_system() - time_start)
 	for p in spell_caster.particles:
 		result = max(result, p.actual_duration())
 	return max(0, result)
@@ -434,12 +436,12 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary):
 		Spell.Element.VOID:
 			position = p
 			
-func update_spell(t: float, vars: Dictionary):
+func update_spell(t: float, delta: float, vars: Dictionary):
 	if not is_active():
 		return
+	t = t - pause_time
 	fixed_vars["t"] = clampf(t - time_start, 0.0, 100000.0)
-	vars["__frame_time"] = max(t - vars.get("__last_frame_time", time_start), 0.000001)
-	vars["__last_frame_time"] = t
+	vars["__frame_time"] = delta 
 	var p = spell.calculate_location(vars)
 	update_movement(p, false, vars)
 

@@ -20,6 +20,8 @@ var knowledge_tick: float = 0.0
 var daytime_tick: float = 0.0
 
 var settings: WorldSettings
+var pause_start: float
+var inhabitants: Array[Enemy] = []
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
@@ -55,18 +57,22 @@ func setup(_settings: WorldSettings) -> void:
 		#artifacts.collection.append(artifact)
 	
 	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 20, 1000, 20)
-	#add_child(undead)
+	#add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, -20)
-	#add_child(bat)
+	#add_enemy(bat)
 	#var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
-	#add_child(walker)
+	#add_enemy(walker)
 	#var fish := Population.generate_enemy(World.Enemy.FISH, player, -20, 1000, 20)
-	#add_child(fish)
+	#add_enemy(fish)
 	#var mole := Population.generate_enemy(World.Enemy.MOLE, player, -20, 1000, 20)
-	#add_child(mole)
+	#add_enemy(mole)
 	var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
-	add_child(birdman)
+	add_enemy(birdman)
 	
+
+func add_enemy(enemy: Enemy):
+	inhabitants.append(enemy)
+	add_child(enemy)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -150,10 +156,15 @@ func _input(event):
 	if event.is_action_pressed("menu"):
 		if menu.is_showing:
 			settings.is_paused = false
+			var pause_duration := Time.get_unix_time_from_system() - pause_start
+			player.spell_caster.update_pause_time(pause_duration)
+			for e in inhabitants:
+				e.spell_caster.update_pause_time(pause_duration)
 			menu.close()
 			hud.show()
 		else:
 			settings.is_paused = true
+			pause_start = Time.get_unix_time_from_system()
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
 			hud.hide()

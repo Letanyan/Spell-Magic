@@ -27,6 +27,7 @@ var knowledge_tick: float = 0.0
 var daytime_tick: float = 0.0
 
 var settings: WorldSettings
+var pause_start: float
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
@@ -193,10 +194,16 @@ func _input(event):
 	if event.is_action_pressed("menu"):
 		if menu.is_showing:
 			settings.is_paused = false
+			var pause_duration = Time.get_unix_time_from_system() - pause_start
+			player.spell_caster.update_pause_time(pause_duration)
+			for loc in population:
+				var pop = population[loc]
+				pop.update_pause_time(pause_duration)
 			menu.close()
 			hud.show()
 		else:
-			settings.is_paused = true			
+			settings.is_paused = true
+			pause_start = Time.get_unix_time_from_system()
 			settings.player_position = player.position
 			menu.open(Menu.Kind.ANY)
 			hud.hide()

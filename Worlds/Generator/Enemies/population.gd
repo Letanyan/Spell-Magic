@@ -272,3 +272,9 @@ func habitant_vitals_update(index: int, vitals: Vitals):
 	if vitals.health.value <= vitals.health.min_value:
 		inhabitants[index].index_in_population = -1
 		inhabitants.erase(index)
+
+
+func update_pause_time(pause_time: float):
+	for habitant_index in inhabitants:
+		var habitant = inhabitants[habitant_index]
+		habitant.spell_caster.update_pause_time(pause_time)
