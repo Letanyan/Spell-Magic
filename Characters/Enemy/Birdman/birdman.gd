@@ -51,7 +51,7 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_spell := GlobalData.magic_book.spell_with_name("linear")
+	var water_spell := GlobalData.magic_book.spell_with_name("linear", {}, true)
 	water_spell.element = Spell.Element.WATER
 	
 	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 110.0 * 50.0), "d":"Br*2+r"})
