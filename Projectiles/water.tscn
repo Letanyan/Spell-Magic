@@ -110,6 +110,7 @@ script = ExtResource("1_dkd3k")
 shape = SubResource("SphereShape3D_ygggg")
 target_position = Vector3(0, 0, 0)
 collision_mask = 791
+collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]
 amount = 80
@@ -117,6 +118,7 @@ process_material = SubResource("ParticleProcessMaterial_tnio6")
 draw_pass_1 = SubResource("SphereMesh_37v5l")
 
 [node name="area" type="Area3D" parent="source"]
+collision_layer = 32
 collision_mask = 791
 monitoring = false
 monitorable = false
