@@ -19,7 +19,7 @@ var walking_tween: Tween = null
 
 var velocity_movement := VelocityMovement.player()
 var spell_caster: SpellCaster
-var invunerable := 0
+var invunerable := 0.0
 var magic_book: MagicBook
 var artifacts: Artifacts
 
@@ -92,7 +92,7 @@ func can_move() -> bool:
 #	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 #	var current := playback.get_current_node()
 #	print(current)
-	return invunerable == 0
+	return is_zero_approx(invunerable)
 
 func add_impulse(impulse: Vector3):
 	velocity_movement.impulse += impulse
@@ -104,8 +104,7 @@ func _physics_process(delta: float) -> void:
 	if magic_book.settings.is_paused:
 		return
 	
-	if invunerable > 0:
-		invunerable -= 1
+	invunerable = max(0.0, invunerable - delta)
 		
 	var movement := velocity_movement.update(delta, vitals, 14, self)
 	emit_vitals_update()

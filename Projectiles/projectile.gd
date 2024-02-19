@@ -128,7 +128,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 	var is_ice     : int = body.collision_layer & 0b0_1000_0000 != 0
 	var is_electric: int = body.collision_layer & 0b1_0000_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
-	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
+	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0.0
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object or is_water:
@@ -194,7 +194,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			body.add_shake(clamp(dmg["dmg"] / 10000.0, 0.0, 1.0))
-			body.invunerable = 20
+			body.invunerable = 0.33
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 			body.emit_vitals_update()
@@ -204,7 +204,7 @@ func _on_body_entered(body: Node3D, contact_points: Array[Vector3]):
 				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()
 			else:
-				body.invunerable = 20
+				body.invunerable = 0.33
 				body.play_animation("on_hit")
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
@@ -219,7 +219,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 	var is_water : int = area.collision_layer & 0b10_0000 != 0
 	var is_ice   : int = body.collision_layer & 0b0_1000_0000 != 0
 	var dmg := {"dmg": spell.power, "el": spell.element}
-	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0
+	var invunerable: bool = (is_player or is_enemy) and body.invunerable > 0.0
 	match spell.element:
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object or is_ice or is_fire:
@@ -240,7 +240,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 		Vitals.apply_damage(get_parent(), body, dmg["dmg"], dmg["el"], is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			body.add_shake(clamp(dmg["dmg"] / 10000.0, 0.0, 1.0))
-			body.invunerable = 20
+			body.invunerable = 0.33
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 			body.emit_vitals_update()
@@ -250,7 +250,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]):
 				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()
 			else:
-				body.invunerable = 20
+				body.invunerable = 0.33
 				body.play_animation("on_hit")
 
 func update_shape(r: float, ignore_time: bool):

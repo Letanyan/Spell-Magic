@@ -13,7 +13,7 @@ var animation_map: Dictionary
 var velocity_movement: VelocityMovement
 
 var spell_caster: SpellCaster
-var invunerable := 0
+var invunerable := 0.0
 var spell_movement: AttackPatterns.SpellMovement = null
 var attack_sequence: AttackSequence = null
 
@@ -53,8 +53,7 @@ func add_shake(amount: float):
 func increment_ticks(delta: float):
 	behavior_tick += delta
 	spell_tick += delta
-	if invunerable > 0:
-		invunerable -= 1
+	invunerable = max(0.0, invunerable - delta)
 		
 func current_animation_is(animation: String) -> bool:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
@@ -72,7 +71,7 @@ func play_animation(animation: String):
 func can_move() -> bool:
 #	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 #	var current := playback.get_current_node()
-	return invunerable == 0 # and (current == "idle" or current == "walk" or current == "run")
+	return is_zero_approx(invunerable) # and (current == "idle" or current == "walk" or current == "run")
 
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [])
