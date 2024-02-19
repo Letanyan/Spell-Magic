@@ -179,10 +179,10 @@ func calculate_cooldown() -> float:
 	if element == Element.VOID:
 		basic_cost = 0.0
 	else:
-		basic_cost = (power / UpgradeSettings.LIMIT_P + 1.0) * \
+		basic_cost = ((power / UpgradeSettings.LIMIT_P) ** 1.25 * 30.0) * \
 		(duration / UpgradeSettings.LIMIT_T + 1.0) * \
 		(radius / UpgradeSettings.LIMIT_r + 1.0) * \
-		(1.0 if count <= 1 else count * 0.98)
+		(maxf(1.0, count * 0.98))
 	if chain != null:
 		chain_cost = chain.calculate_cooldown()
 	cooldown = basic_cost * maxf(chain_cost, 1.0) - mana_cost
@@ -198,11 +198,11 @@ func actual_mana_cost() -> float:
 	
 func damage(vitals: Vitals) -> float:
 	match element:
-		Element.FIRE: return power * (vitals.attack.value + buff_attack)
-		Element.WATER: return power * vitals.health.value
+		Element.FIRE: return (power * 0.01) * (vitals.attack.value + buff_attack)
+		Element.WATER: return (power * 0.001) * vitals.health.value
 		Element.AIR: return 0.0
-		Element.ROCK: return power * (vitals.defence.value + buff_defence)
-		Element.ICE: return power * (vitals.health.value * 0.5 + (vitals.attack.value + buff_attack) * 0.5)
+		Element.ROCK: return (power * 0.01) * (vitals.defence.value + buff_defence)
+		Element.ICE: return (power * 0.01) * (vitals.health.value * 0.0005 + (vitals.attack.value + buff_attack) * 0.005)
 		Element.ELECTRIC: return power
 		Element.VOID: return 0.0
 	return 0.0
