@@ -43,7 +43,7 @@ func _ready():
 	attack_path = PathStyle.new(randf()).follow_path(attack_pathway)\
 	.align_y_to_ground_and_air()\
 	.set_use_player_as_origin()\
-	.set_player_body_vision_as_origin(0, 30)\
+	.set_player_body_vision_as_origin(0, 0, 30)\
 	.look_at_player()\
 	.speed(clamp(level / 100.0 * 25, 2, 25))
 	

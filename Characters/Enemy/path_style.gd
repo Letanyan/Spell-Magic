@@ -28,10 +28,10 @@ var time_offset: float = 0.0
 
 var me_start_position = null # used to store entity position (Vec3) at start of movement
 
-# (theta, radius) pair to describe offset from player. +theta is ccw from 
+# (theta, radius, min_margin, max_margin) pair to describe offset from player. +theta is ccw from 
 # straight of player view. -theta is cw from player view. radius is distance away
-# from player.
-var player_vision_offset: Vector2 = Vector2.ZERO
+# from player. (min|max)_margin are the radi of disc with center (theta, radius)
+var player_vision_offset: Vector4 = Vector4.ZERO
 var use_player_camera_as_vision: bool = false # if false use player body orientation else camera
 
 func _init(_seed: float = randf(), _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
@@ -74,14 +74,14 @@ func set_use_me_as_origin(o: bool = true) -> PathStyle:
 		origin = Vector3.ZERO
 	return self
 	
-func set_player_body_vision_as_origin(a: float, r: float) -> PathStyle:
+func set_player_body_vision_as_origin(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	use_player_camera_as_vision = false
-	player_vision_offset = Vector2(a, r) 
+	player_vision_offset = Vector4(a, r, min_m, max_m) 
 	return self
 	
-func set_player_cam_vision_as_origin(a: float, r: float) -> PathStyle:
+func set_player_cam_vision_as_origin(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	use_player_camera_as_vision = true
-	player_vision_offset = Vector2(a, r) 
+	player_vision_offset = Vector4(a, r, min_m, max_m) 
 	return self
 	
 func set_is_done_uses_path_segments(d: bool = true) -> PathStyle:
@@ -226,6 +226,16 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 	if player_vision_offset:
 		var rot: float = player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot").rotation.y
 		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, rot + player_vision_offset.x)
+		var rel_off := off + player.position
+		var dist := me.position.distance_to(rel_off)
+		if dist > player_vision_offset.w + 0.1:
+			print("too far ", off)
+			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player.position
+			print("now: ", off)
+		elif dist < player_vision_offset.z + 0.1:
+			print("too close ", off)
+			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player.position
+			print("now: ", off)
 		temp_origin += off
 	match kind:
 		Kind.ORIGIN:
