@@ -20,7 +20,7 @@ func _ready():
 	vitals.perception.value = 25
 	
 	idle_path = PathStyle.new().speed(2).random_points_in_circle(10, 10).set_origin(position)
-	attack_path = PathStyle.new().set_use_player_as_origin().set_player_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
+	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
 	attack_path.min_radius = 0
 	attack_path.max_radius = 1
 	current_path = idle_path

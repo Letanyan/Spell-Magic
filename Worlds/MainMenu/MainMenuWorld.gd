@@ -117,7 +117,6 @@ func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):
 	update_terrain(state)
 	player_movement_direction.y = Navigator.get_world_height(state, player.position.x, player.position.z) - player.position.y
 	player_movement_direction.y = player_movement_direction.normalized().y
-	print(Navigator.get_world_height(state, player.position.x, player.position.z))
 		
 		
 func build_terrain():

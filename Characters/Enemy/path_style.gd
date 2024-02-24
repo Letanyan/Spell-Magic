@@ -74,7 +74,13 @@ func set_use_me_as_origin(o: bool = true) -> PathStyle:
 		origin = Vector3.ZERO
 	return self
 	
-func set_player_vision_as_origin(a: float, r: float) -> PathStyle:
+func set_player_body_vision_as_origin(a: float, r: float) -> PathStyle:
+	use_player_camera_as_vision = false
+	player_vision_offset = Vector2(a, r) 
+	return self
+	
+func set_player_cam_vision_as_origin(a: float, r: float) -> PathStyle:
+	use_player_camera_as_vision = true
 	player_vision_offset = Vector2(a, r) 
 	return self
 	
