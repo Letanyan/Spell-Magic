@@ -1,20 +1,13 @@
 class_name PathStyle
 
-enum Kind { ORIGIN, CIRCLE, PATH, EXPR }
 enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT }
 enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER }
 enum OriginKind { ABSOLUTE, PLAYER, ME }
 
-var kind = Kind.CIRCLE
-var min_radius := 5.0
-var max_radius := 10.0
 var const_movement_speed: float
 var origin := Vector3.ZERO
 var path: Pathway = null
-var expr_x: Expr = null
-var expr_y: Expr = null
-var expr_z: Expr = null
 var origin_kind: OriginKind
 var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE
@@ -34,8 +27,7 @@ var me_start_position = null # used to store entity position (Vec3) at start of 
 var player_vision_offset: Vector4 = Vector4.ZERO
 var use_player_camera_as_vision: bool = false # if false use player body orientation else camera
 
-func _init(_seed: float = randf(), _kind: Kind = Kind.ORIGIN, _origin: Vector3 = Vector3.ZERO):
-	kind = _kind
+func _init(_seed: float = randf(), _origin: Vector3 = Vector3.ZERO):
 	origin = _origin
 	seed_offset = _seed
 	origin_kind = OriginKind.ABSOLUTE
@@ -104,49 +96,34 @@ func align_y_to_ground_and_dirt() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_DIRT
 	return self
 	
-func circle(center: Vector3, radius: float) -> PathStyle:
-	kind = Kind.CIRCLE
-	origin_kind = OriginKind.ABSOLUTE
-	origin = center
-	min_radius = radius
-	max_radius = radius
-	return self
-	
-func circle_player(radius: float) -> PathStyle:
-	kind = Kind.CIRCLE
-	origin_kind = OriginKind.PLAYER
-	origin = Vector3.ZERO
-	min_radius = radius
-	max_radius = radius
-	return self
-	
-func towards(center: Vector3, mn: float = 0, mx: float = mn) -> PathStyle:
-	kind = Kind.ORIGIN
-	min_radius = mn
-	max_radius = mx
-	origin = center
-	origin_kind = OriginKind.ABSOLUTE
-	return self
-	
-func towards_player(mn: float, mx: float) -> PathStyle:
-	min_radius = mn
-	max_radius = mx
-	kind = Kind.ORIGIN
-	origin_kind = OriginKind.PLAYER
-	origin = Vector3.ZERO
-	return self
-	
-func follow_path(pathway: Pathway) -> PathStyle:
-	path = pathway
-	kind = Kind.PATH
-	return self
-	
-func circle_path(radius: float, h: float) -> PathStyle:
+func circle(center: Vector3, radius: float, h: float = 0.0) -> PathStyle:
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
 	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
 	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Easing.linear, Easing.linear])
-	kind = Kind.PATH
+	origin = center
+	origin_kind = OriginKind.ABSOLUTE
+	return self
+	
+func circle_player(radius: float, h: float = 0.0) -> PathStyle:
+	origin_kind = OriginKind.PLAYER
+	origin = Vector3.ZERO
+	path = Pathway.new()
+	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
+	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
+	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Easing.linear, Easing.linear])
+	return self
+	
+func towards_player(mn: float, mx: float) -> PathStyle:
+	use_player_camera_as_vision = false
+	player_vision_offset = Vector4(0.0, 0.0, mn, mx)
+	origin_kind = OriginKind.PLAYER
+	origin = Vector3.ZERO
+	path = Pathway.empty()
+	return self
+	
+func follow_path(pathway: Pathway) -> PathStyle:
+	path = pathway
 	return self
 	
 func random_points_in_circle(radius: float, count: int) -> PathStyle:
@@ -158,7 +135,6 @@ func random_points_in_circle(radius: float, count: int) -> PathStyle:
 		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Easing.linear)
 		p = q
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Easing.linear)
-	kind = Kind.PATH
 	return self
 	
 func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
@@ -172,38 +148,19 @@ func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
 		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Easing.linear)
 		p = q
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Easing.linear)
-	kind = Kind.PATH
-	return self
-	
-func use_expr(x: String, y: String, z: String):
-	expr_x = Expr.new(x)
-	expr_y = Expr.new(y)
-	expr_z = Expr.new(z)
-	kind = Kind.EXPR
 	return self
 	
 func movement_speed(time_override: float = NAN) -> float:
-	match kind:
-		Kind.ORIGIN:
-			return const_movement_speed
-		Kind.CIRCLE:
-			return const_movement_speed
-		Kind.PATH:
-			var t: float
-			if is_nan(time_override):
-				t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
-			else:
-				t = time_override
-			var duration = fmod(t, path.total_duration)
-			var index = Globals.Ref.new(0)
-			path.position_at_time(duration, index)
-			var result := path.movement_speed[index.data]
-			return result if not is_zero_approx(result) else const_movement_speed
-			
-		Kind.EXPR:
-			return const_movement_speed
-			
-	return const_movement_speed
+	var t: float
+	if is_nan(time_override):
+		t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
+	else:
+		t = time_override
+	var duration = fmod(t, path.total_duration)
+	var index = Globals.Ref.new(0)
+	path.position_at_time(duration, index)
+	var result := path.movement_speed[index.data]
+	return result if not is_zero_approx(result) else const_movement_speed
 	
 
 func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_override: float = NAN) -> Vector3:
@@ -229,75 +186,28 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 		var rel_off := off + player.position
 		var dist := me.position.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
-			print("too far ", off)
 			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player.position
-			print("now: ", off)
 		elif dist < player_vision_offset.z + 0.1:
-			print("too close ", off)
 			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player.position
-			print("now: ", off)
 		temp_origin += off
-	match kind:
-		Kind.ORIGIN:
-			var dist = temp_origin.distance_to(me.position)
-			if dist > max_radius + 0.1:
-				return temp_origin.lerp(me.position, max_radius / dist)
-			elif dist < min_radius - 0.1:
-				return temp_origin.lerp(me.position, min_radius / dist)
-			else:
-				me_start_position = null
-				if is_done:
-					is_done.data = true
-				stored_loops += 1
-				return me.position
+	
+	
+	var duration: float 
+	if is_nan(time_override):
+		duration = fmod(t, path.total_duration)
+	else:
+		duration = clamp(t, 0, path.total_duration)
+	var index = Globals.Ref.new(0)
+	var v = path.position_at_time(duration, index) + temp_origin
+	
+	if fmod(t, path.total_duration) < fmod(old_t, path.total_duration):
+		me_start_position = null
+		if is_done:
+			is_done.data = true
+		stored_loops += 1
 		
-		Kind.CIRCLE:
-			var lap = t * (const_movement_speed / min_radius)
-			var x = cos(lap) * min_radius
-			var z = sin(lap) * min_radius
-			if x == cos(0) * min_radius and z == sin(0) * min_radius:
-				me_start_position = null
-				if is_done:
-					is_done.data = true
-				stored_loops += 1
-			x += temp_origin.x
-			z += temp_origin.z
-			var y = next_y_position(me, x, 0, z)
-			return Vector3(x, y, z)
-
-		Kind.PATH:
-			var duration: float 
-			if is_nan(time_override):
-				duration = fmod(t, path.total_duration)
-			else:
-				duration = clamp(t, 0, path.total_duration)
-			var index = Globals.Ref.new(0)
-			var v = path.position_at_time(duration, index) + temp_origin
-			
-			if fmod(t, path.total_duration) < fmod(old_t, path.total_duration):
-				me_start_position = null
-				if is_done:
-					is_done.data = true
-				stored_loops += 1
-				
-			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
-			return Vector3(v.x, y, v.z)
-			
-		Kind.EXPR:
-			var vars := {"s": const_movement_speed, "t": t, "pi": PI}
-			var v := Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars))
-			vars["t"] = 0
-			if v == Vector3(expr_x.compute(vars), expr_y.compute(vars), expr_z.compute(vars)):
-				me_start_position = null
-				if is_done:
-					is_done.data = true
-				stored_loops += 1
-			v += temp_origin
-			var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
-			return Vector3(v.x, y, v.z) 
-
-
-	return Vector3.ZERO
+	var y = next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	return Vector3(v.x, y, v.z)
 
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:
@@ -342,6 +252,10 @@ class Pathway:
 			movement_speed.append(_segments[i].distance / _durations[i])
 		calculate_distance()
 		calculate_total_duration()
+		
+	static func empty() -> Pathway:
+		var a := Segment.linear(Vector3.ZERO, Vector3.ZERO)
+		return Pathway.new([a], [1], [Easing.linear])
 		
 	static func init_with_speed(_segments: Array[Segment], _speeds: Array[float], _path_modifiers: Array[Segment]) -> Pathway:
 		var result := Pathway.new()

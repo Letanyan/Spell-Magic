@@ -113,7 +113,6 @@ func _physics_process(delta: float):
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				
 				if (position.y < g):
 					if process_path.coord_y == PathStyle.CoordY.GROUND or process_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 						position.y = g
@@ -124,10 +123,10 @@ func _physics_process(delta: float):
 						position.y = g
 						t.y = 0
 						v.y = 0
-						
 				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(position.y - g) < 0.05 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
+				
 		if process_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
 			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
