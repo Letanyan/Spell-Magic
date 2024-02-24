@@ -228,6 +228,9 @@ func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 		_: return 0
 
 class Pathway:
+	# TODO: add interface for creating pathways similar to drawing API's
+	# such move_to, line_to, arc etc
+	
 	var segments: Array[Segment]
 	
 	# represents the total time a segment is traversed for. used in conjunction

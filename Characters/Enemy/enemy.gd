@@ -184,6 +184,8 @@ func _physics_process(delta: float):
 
 	spell_caster.update(self, delta)
 	var final_is_on_floor: bool
+	# TODO: work on precision of on floor when using physics
+	# TODO: work on animation speeds for walking and running
 	if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
 		final_is_on_floor = is_on_floor()
 	else:
