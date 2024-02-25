@@ -382,6 +382,17 @@ class Pathway:
 		add_with_speed(Segment.quad(cursor, end, c1), s, m)
 		cursor = end
 		return self
+		
+	func arc_to(end: Vector3, clockwise: bool, dur: float, m: Segment) -> Pathway:
+		add(Segment.arc_between_of_points(cursor, end), dur, m)
+		cursor = end
+		return self
+		
+	func arc_with_speed_to(end: Vector3, clockwise: bool, s: float, m: Segment) -> Pathway:
+		add_with_speed(Segment.arc_between_of_points(cursor, end), s, m)
+		cursor = end
+		return self
+		
 
 class Segment:
 	enum BezierKind { LINEAR, QUAD, CUBIC }
@@ -429,6 +440,16 @@ class Segment:
 
 		var c := Vector3(a.x - k2 * a.z, h, a.z + k2 * a.x)
 		var d := Vector3(b.x + k2 * b.z, h, b.z - k2 * b.x)
+		
+		return Segment.new(a, b, c, d, BezierKind.CUBIC)
+		
+	static func arc_between_of_points(a: Vector3, b: Vector3) -> Segment:
+		var q1 := a.x * a.x + a.z * a.z
+		var q2 := q1 + a.x * b.x + a.z * b.z
+		var k2 := (4.0 / 3.0) * (sqrt(2 * q1 * q2) - q2) / (a.x * b.z - a.z * b.x)
+
+		var c := Vector3(a.x - k2 * a.z, 0, a.z + k2 * a.x)
+		var d := Vector3(b.x + k2 * b.z, 0, b.z - k2 * b.x)
 		
 		return Segment.new(a, b, c, d, BezierKind.CUBIC)
 		
