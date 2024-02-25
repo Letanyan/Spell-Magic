@@ -20,15 +20,10 @@ func _ready():
 	vitals.attack.value = randf_range(level * 2, (level + 10) * 2)
 	vitals.defence.value = randf_range(level, level + 5)
 	
-	var idle_pathway := PathStyle.Pathway.new()
-	idle_pathway.append(
-		[
-			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(0, 20, 0)),
-			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0)),
-		],
-		[5, 2],
-		[PathStyle.Easing.out_quart, PathStyle.Easing.out_quart]
-	)
+	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+		.move_to(Vector3(0, -4, 0)) \
+		.line_to(Vector3(0, 20, 0), 5, PathStyle.Easing.out_quart) \
+		.line_to(Vector3(0, -4, 0), 2, PathStyle.Easing.out_quart)
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_ground_and_air().set_origin(position).use_absolute()
 	
 	var attack_pathway := PathStyle.Pathway.new()

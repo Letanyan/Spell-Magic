@@ -228,9 +228,6 @@ func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 		_: return 0
 
 class Pathway:
-	# TODO: add interface for creating pathways similar to drawing API's
-	# such move_to, line_to, arc etc
-	
 	var segments: Array[Segment]
 	
 	# represents the total time a segment is traversed for. used in conjunction
@@ -244,6 +241,8 @@ class Pathway:
 	var distance: float
 	var total_duration: float
 	var movement_speed: Array[float]
+	
+	var cursor: Vector3 = Vector3.ZERO
 	
 	func _init(_segments: Array[Segment] = [], _durations: Array[float] = [], _path_modifiers: Array[Segment] = []):
 		assert(_segments.size() == _path_modifiers.size(), "segment array must be the same size as speed array")
@@ -266,6 +265,7 @@ class Pathway:
 		return result
 		
 	func add(segment: Segment, duration: float, modifier: Segment):
+		assert(duration != 0.0, "duration can not be zero")
 		segments.append(segment)
 		durations.append(duration)
 		path_modifiers.append(modifier)
@@ -288,6 +288,7 @@ class Pathway:
 		durations.append_array(_durations)
 		path_modifiers.append_array(_path_modifiers)
 		for i in range(_segments.size()):
+			assert(_durations[i] != 0.0, "duration can not be zero")
 			movement_speed.append(_segments[i].distance / _durations[i])
 		calculate_distance()
 		calculate_total_duration()
@@ -301,6 +302,7 @@ class Pathway:
 			var segment = _segments[i]
 			var speed = _speeds[i]
 			var duration := segment.duration_using_speed(speed)
+			assert(duration != 0.0, "duration can not be zero")
 			durations.append(duration)
 			movement_speed.append(speed)
 		calculate_distance()
@@ -346,6 +348,40 @@ class Pathway:
 		if index:
 			index.data = segment
 		return segments[segment].position_at_distance(dist)
+		
+	func move_to(start: Vector3) -> Pathway:
+		cursor = start
+		return self
+		
+	func line_to(end: Vector3, d: float, m: Segment) -> Pathway:
+		add(Segment.linear(cursor, end), d, m)
+		cursor = end
+		return self
+		
+	func curve_to(end: Vector3, c1: Vector3, c2: Vector3, d: float, m: Segment) -> Pathway:
+		add(Segment.cubic(cursor, end, c1, c2), d, m)
+		cursor = end
+		return self
+		
+	func quad_curve_to(end: Vector3, c1: Vector3, d: float, m: Segment) -> Pathway:
+		add(Segment.quad(cursor, end, c1), d, m)
+		cursor = end
+		return self
+		
+	func line_with_speed_to(end: Vector3, s: float, m: Segment) -> Pathway:
+		add_with_speed(Segment.linear(cursor, end), s, m)
+		cursor = end
+		return self
+		
+	func curve_with_speed_to(end: Vector3, c1: Vector3, c2: Vector3, s: float, m: Segment) -> Pathway:
+		add_with_speed(Segment.cubic(cursor, end, c1, c2), s, m)
+		cursor = end
+		return self
+		
+	func quad_curve_with_speed_to(end: Vector3, c1: Vector3, s: float, m: Segment) -> Pathway:
+		add_with_speed(Segment.quad(cursor, end, c1), s, m)
+		cursor = end
+		return self
 
 class Segment:
 	enum BezierKind { LINEAR, QUAD, CUBIC }
@@ -469,6 +505,3 @@ class Easing:
 	static var in_back := Segment.easing(0.36, 0, 0.66, -0.56)
 	static var out_back := Segment.easing(0.34, 1.56, 0.64, 1)
 	static var in_out_back := Segment.easing(0.68, -0.6, 0.32, 1.6)
-		
-		
-		

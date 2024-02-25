@@ -20,29 +20,19 @@ func _ready():
 	vitals.perception.value = 20
 	
 	const idle_r := 10.0
-	var randarc := func() -> PathStyle.Segment:
-		var s : Vector3 = Globals.rand_v3_abs(idle_r, 0, idle_r)
-		var e : Vector3 = Globals.rand_v3_abs(idle_r, 0, idle_r)
-		var a := s.x
-		var b := s.z
-		var c := e.x
-		var d := e.z
-		
-		var p := Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
-		var q := Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
-		var m: Vector3
-		if randf() < 0.5:
-			m = p
-		else:
-			m = q
-			
-		return PathStyle.Segment.quad(s, e, m)
-	var idle_pathway := PathStyle.Pathway.new()
-	idle_pathway.append_with_speed(
-		[randarc.call(), randarc.call(), randarc.call(), randarc.call()],
-		[2, 2, 2, 2],
-		[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear]
-	)
+	var a := Globals.rand_v3_abs(idle_r, 0, idle_r)
+	var b := Globals.rand_v3_abs(idle_r, 0, idle_r)
+	var c := Globals.rand_v3_abs(idle_r, 0, idle_r)
+	var d := Globals.rand_v3_abs(idle_r, 0, idle_r)
+	var e := Globals.rand_v3_abs(idle_r, 0, idle_r)
+	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+		.move_to(Vector3.ZERO) \
+		.line_to(a, 2, PathStyle.Easing.linear) \
+		.quad_arc_to(b, Globals.midpoint_tangent1(a, b) if randf() < 0.5 else Globals.midpoint_tangent2(a, b), 2, PathStyle.Easing.linear) \
+		.quad_arc_to(c, Globals.midpoint_tangent1(b, c) if randf() < 0.5 else Globals.midpoint_tangent2(b, c), 2, PathStyle.Easing.linear) \
+		.quad_arc_to(d, Globals.midpoint_tangent1(c, d) if randf() < 0.5 else Globals.midpoint_tangent2(c, d), 2, PathStyle.Easing.linear) \
+		.quad_arc_to(e, Globals.midpoint_tangent1(d, e) if randf() < 0.5 else Globals.midpoint_tangent2(d, e), 2, PathStyle.Easing.linear) \
+		.quad_arc_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), 2, PathStyle.Easing.linear)
 	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
 	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()

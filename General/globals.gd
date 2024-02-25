@@ -18,6 +18,21 @@ static func invf(v: float) -> float:
 		
 static func rand_v3_abs(x: float, y: float, z: float) -> Vector3:
 	return Vector3(x * randf(), y * randf(), z * randf())
+	
+static func midpoint_tangent1(s: Vector3, e: Vector3) -> Vector3:
+	var a := s.x
+	var b := s.z
+	var c := e.x
+	var d := e.z
+	
+	return Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
+
+static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
+	var a := s.x
+	var b := s.z
+	var c := e.x
+	var d := e.z
+	return Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
 
 class Ref extends RefCounted:
 	var data
