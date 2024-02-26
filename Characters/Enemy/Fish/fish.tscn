@@ -1,7 +1,8 @@
-[gd_scene load_steps=68 format=3 uid="uid://n78kb1mtreki"]
+[gd_scene load_steps=69 format=3 uid="uid://n78kb1mtreki"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Fish/fish.gd" id="1_vn07l"]
 [ext_resource type="PackedScene" uid="uid://iy6b4lnjlpmk" path="res://Characters/Enemy/Animations/blob_animation_tree.tscn" id="2_2h6o7"]
+[ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/health_bar.tscn" id="3_ddflb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c8yr2"]
 resource_name = "Fish_Main"
@@ -610,7 +611,7 @@ _data = {
 "Yes": SubResource("Animation_p7hn8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jkxus"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0fm6d"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -626,11 +627,11 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qtrse"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fqus8"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ytw6g"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4rvkb"]
 resource_local_to_scene = true
 animation = &"Walk"
 
@@ -730,7 +731,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_e4elx"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_jkxus")
+states/attack/node = SubResource("AnimationNodeAnimation_0fm6d")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -740,9 +741,9 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(666, 175)
-states/on_hit/node = SubResource("AnimationNodeAnimation_qtrse")
+states/on_hit/node = SubResource("AnimationNodeAnimation_fqus8")
 states/on_hit/position = Vector2(464, 282)
-states/run/node = SubResource("AnimationNodeAnimation_ytw6g")
+states/run/node = SubResource("AnimationNodeAnimation_4rvkb")
 states/run/position = Vector2(265, 373)
 states/walk/node = SubResource("AnimationNodeAnimation_we7e5")
 states/walk/position = Vector2(441, 116)
@@ -752,10 +753,7 @@ graph_offset = Vector2(-194, 0)
 [sub_resource type="BoxShape3D" id="BoxShape3D_h6gw1"]
 size = Vector3(3, 2.8, 2.4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_m5ue2"]
-size = Vector3(3, 2.8, 2.4)
-
-[sub_resource type="Shader" id="Shader_q2vth"]
+[sub_resource type="Shader" id="Shader_gf6xx"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
 
 shader_type spatial;
@@ -802,10 +800,10 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_exk01"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_urtjd"]
 resource_local_to_scene = true
 render_priority = 0
-shader = SubResource("Shader_q2vth")
+shader = SubResource("Shader_gf6xx")
 shader_parameter/foreground = Color(0, 1, 0, 0.827451)
 shader_parameter/background = Color(0, 0, 0, 0.623529)
 shader_parameter/percentage = 0.5
@@ -820,11 +818,14 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_e3jas"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_tsxxv"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_exk01")
+material = SubResource("ShaderMaterial_urtjd")
 size = Vector2(2, 0.2)
 orientation = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m5ue2"]
+size = Vector3(3, 2.8, 2.4)
 
 [node name="fish" type="CharacterBody3D"]
 collision_layer = 4
@@ -847,7 +848,7 @@ bones/1/name = "Head"
 bones/1/parent = -1
 bones/1/rest = Transform3D(1, 3.8726e-17, -3.40311e-18, -3.8726e-17, 0.984674, -0.174406, -3.40311e-18, 0.174406, 0.984674, 0, 0.610388, 0)
 bones/1/enabled = true
-bones/1/position = Vector3(0, 0.625705, 0)
+bones/1/position = Vector3(0, 0.664954, 0)
 bones/1/rotation = Quaternion(0, 0, 0, 1)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Head2"
@@ -862,7 +863,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, 1.65436e-24, -2.06795e-25, -1.65436e-24, 1, 0, 2.06795e-25, 0, 1, 3.30872e-24, 0.503513, 0)
 bones/3/enabled = true
 bones/3/position = Vector3(3.30872e-24, 0.503513, 0)
-bones/3/rotation = Quaternion(-1.38526e-19, -1.52666e-09, 0.00700808, 0.999975)
+bones/3/rotation = Quaternion(1.57746e-35, 2.81304e-09, -0.00610493, 0.999981)
 bones/3/scale = Vector3(1, 1, 1)
 
 [node name="Fish_Blob" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
@@ -892,6 +893,10 @@ tree_root = SubResource("AnimationNodeStateMachine_e4elx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
 shape = SubResource("BoxShape3D_h6gw1")
 
+[node name="HealthBar" parent="." instance=ExtResource("3_ddflb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.28735, 0)
+mesh = SubResource("PlaneMesh_tsxxv")
+
 [node name="WetArea" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
 collision_layer = 36
@@ -899,14 +904,3 @@ collision_mask = 256
 
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 shape = SubResource("BoxShape3D_m5ue2")
-
-[node name="HealthBar" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.76563, 0)
-mesh = SubResource("PlaneMesh_e3jas")
-
-[node name="Level" type="Label3D" parent="HealthBar"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
-pixel_size = 0.01
-billboard = 2
-text = "1"
-outline_size = 4

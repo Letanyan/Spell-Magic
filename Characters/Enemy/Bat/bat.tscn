@@ -1,7 +1,8 @@
-[gd_scene load_steps=63 format=3 uid="uid://dw1ywn3btvhil"]
+[gd_scene load_steps=64 format=3 uid="uid://dw1ywn3btvhil"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Bat/bat.gd" id="1_vuppn"]
 [ext_resource type="PackedScene" uid="uid://d2yyyuxm54kyj" path="res://Characters/Enemy/Animations/flying_animation_tree.tscn" id="2_hdyu3"]
+[ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/health_bar.tscn" id="3_kr7pl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_smsl7"]
 resource_name = "Eye_Black"
@@ -996,9 +997,6 @@ graph_offset = Vector2(-105, 42)
 [sub_resource type="BoxShape3D" id="BoxShape3D_dem0g"]
 size = Vector3(4, 3.6, 2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_66vvs"]
-size = Vector3(4, 3.6, 2)
-
 [sub_resource type="Shader" id="Shader_gf6xx"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
 
@@ -1046,7 +1044,7 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_e53xn"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_andy3"]
 resource_local_to_scene = true
 render_priority = 0
 shader = SubResource("Shader_gf6xx")
@@ -1064,11 +1062,14 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_7pddj"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_6pqmh"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_e53xn")
+material = SubResource("ShaderMaterial_andy3")
 size = Vector2(2, 0.2)
 orientation = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_66vvs"]
+size = Vector3(4, 3.6, 2)
 
 [node name="bat" type="CharacterBody3D"]
 collision_layer = 4
@@ -1091,7 +1092,7 @@ bones/1/name = "Torso"
 bones/1/parent = 0
 bones/1/rest = Transform3D(0.999977, -0.00654694, -0.00197155, 0.00660181, 0.99955, 0.0292449, 0.0017792, -0.0292572, 0.99957, 0.00319718, 1.43152, -0.111039)
 bones/1/enabled = true
-bones/1/position = Vector3(0.00319714, 1.43173, -0.11111)
+bones/1/position = Vector3(0.00318779, 1.48362, -0.128146)
 bones/1/rotation = Quaternion(-0.0146272, -0.000937792, 0.00328756, 0.999887)
 bones/1/scale = Vector3(1, 0.999999, 1)
 bones/2/name = "Neck"
@@ -1106,28 +1107,28 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, -1.36055e-06, -0.000551003, -0.000516418, 0.346397, -0.938088, 0.000192142, 0.938088, 0.346397, 9.86919e-11, 0.449233, -6.05156e-08)
 bones/3/enabled = true
 bones/3/position = Vector3(9.86919e-11, 0.449233, -6.05156e-08)
-bones/3/rotation = Quaternion(0.572126, -0.000226346, -0.000157063, 0.820166)
+bones/3/rotation = Quaternion(0.584455, -0.000223935, -0.000160446, 0.811426)
 bones/3/scale = Vector3(1, 1, 1)
 bones/4/name = "Wing1.L"
 bones/4/parent = 1
 bones/4/rest = Transform3D(0.317499, 0.746347, 0.584946, -0.948249, 0.252672, 0.192304, -0.00427395, -0.61573, 0.787946, 0.384144, 0.55359, -0.175551)
 bones/4/enabled = true
 bones/4/position = Vector3(0.384144, 0.55359, -0.175551)
-bones/4/rotation = Quaternion(-0.243137, 0.136626, -0.635171, 0.72026)
+bones/4/rotation = Quaternion(-0.206456, 0.0484001, -0.7476, 0.629387)
 bones/4/scale = Vector3(1, 1, 1)
 bones/5/name = "Wing2.L"
 bones/5/parent = 4
 bones/5/rest = Transform3D(0.00298202, 0.0311506, -0.99951, -0.308637, 0.950747, 0.0287101, 0.951176, 0.3084, 0.0124494, 1.84301e-08, 0.702502, -6.07171e-08)
 bones/5/enabled = true
 bones/5/position = Vector3(1.84301e-08, 0.702502, -6.07171e-08)
-bones/5/rotation = Quaternion(0.0836997, -0.684276, -0.159742, 0.706571)
+bones/5/rotation = Quaternion(0.000865399, -0.60776, -0.348605, 0.713514)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/name = "Wing3.L"
 bones/6/parent = 5
 bones/6/rest = Transform3D(0.997315, -0.0732246, 0.00109962, 0.0725495, 0.985851, -0.151111, 0.00998099, 0.150785, 0.988516, 1.21546e-07, 0.440277, 4.68244e-08)
 bones/6/enabled = true
 bones/6/position = Vector3(1.21546e-07, 0.440277, 4.68244e-08)
-bones/6/rotation = Quaternion(0.0647285, -0.001906, 0.0336287, 0.997334)
+bones/6/rotation = Quaternion(-0.21004, 0.00613342, -0.0405202, 0.976834)
 bones/6/scale = Vector3(1, 1, 1)
 bones/7/name = "Wing4.L"
 bones/7/parent = 6
@@ -1141,21 +1142,21 @@ bones/8/parent = 1
 bones/8/rest = Transform3D(0.329902, -0.745396, -0.579267, 0.944011, 0.262438, 0.199926, 0.00299794, -0.61279, 0.79024, -0.381322, 0.558601, -0.174042)
 bones/8/enabled = true
 bones/8/position = Vector3(-0.381322, 0.558601, -0.174042)
-bones/8/rotation = Quaternion(-0.242775, -0.133612, 0.630921, 0.724671)
+bones/8/rotation = Quaternion(-0.205295, -0.0458067, 0.743869, 0.634362)
 bones/8/scale = Vector3(1, 1, 1)
 bones/9/name = "Wing2.R"
 bones/9/parent = 8
 bones/9/rest = Transform3D(0.00298208, -0.0311505, 0.99951, 0.308637, 0.950747, 0.0287099, -0.951176, 0.3084, 0.0124494, 1.07967e-07, 0.702502, 2.12604e-08)
 bones/9/enabled = true
 bones/9/position = Vector3(1.07967e-07, 0.702502, 2.12604e-08)
-bones/9/rotation = Quaternion(0.0836998, 0.684276, 0.159742, 0.706571)
+bones/9/rotation = Quaternion(0.000865426, 0.60776, 0.348605, 0.713514)
 bones/9/scale = Vector3(1, 1, 1)
 bones/10/name = "Wing3.R"
 bones/10/parent = 9
 bones/10/rest = Transform3D(0.997315, 0.0732247, -0.00109959, -0.0725496, 0.985851, -0.151111, -0.00998103, 0.150785, 0.988516, 1.00233e-07, 0.440277, 2.10504e-08)
 bones/10/enabled = true
 bones/10/position = Vector3(1.00233e-07, 0.440277, 2.10504e-08)
-bones/10/rotation = Quaternion(0.0647284, 0.00190603, -0.0336287, 0.997334)
+bones/10/rotation = Quaternion(-0.21004, -0.00613336, 0.0405201, 0.976834)
 bones/10/scale = Vector3(1, 1, 1)
 bones/11/name = "Wing4.R"
 bones/11/parent = 10
@@ -1168,7 +1169,7 @@ bones/12/name = "Body1"
 bones/12/parent = 0
 bones/12/rest = Transform3D(0.999558, -0.0252628, -0.0160087, -0.0244939, -0.998616, 0.0465363, -0.017162, -0.0461226, -0.998805, 0.00319719, 1.43464, -0.11128)
 bones/12/enabled = true
-bones/12/position = Vector3(0.00319561, 1.44104, -0.111774)
+bones/12/position = Vector3(0.00318251, 1.49409, -0.115866)
 bones/12/rotation = Quaternion(0.99962, -0.0124439, -0.00829572, -0.0231734)
 bones/12/scale = Vector3(1.00001, 1, 1.00002)
 
@@ -1191,6 +1192,11 @@ tree_root = SubResource("AnimationNodeStateMachine_621b6")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 shape = SubResource("BoxShape3D_dem0g")
 
+[node name="HealthBar" parent="." instance=ExtResource("3_kr7pl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
+mesh = SubResource("PlaneMesh_6pqmh")
+skeleton = NodePath("../WetArea")
+
 [node name="WetArea" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 collision_layer = 36
@@ -1198,14 +1204,3 @@ collision_mask = 256
 
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 shape = SubResource("BoxShape3D_66vvs")
-
-[node name="HealthBar" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.02617, 0)
-mesh = SubResource("PlaneMesh_7pddj")
-
-[node name="Level" type="Label3D" parent="HealthBar"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
-pixel_size = 0.01
-billboard = 2
-text = "1"
-outline_size = 4

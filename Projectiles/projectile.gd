@@ -69,14 +69,14 @@ func actual_duration() -> float:
 func impulse() -> Vector3:
 	match spell.element:
 		Spell.Element.ROCK:
-			return velocity.normalized() * spell.power
+			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P)
 		Spell.Element.AIR:
-			return velocity.normalized() * (spell.power * 2.0)
+			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P * 100)
 			
 		Spell.Element.FIRE:
-			return velocity.normalized() * spell.power * 0.25
+			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P * 4)
 		Spell.Element.WATER:
-			return velocity.normalized() * spell.power * 0.1
+			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P * 2)
 		Spell.Element.ELECTRIC:
 			return Vector3.ZERO
 		Spell.Element.ICE:

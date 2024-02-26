@@ -358,12 +358,12 @@ class Pathway:
 		cursor = end
 		return self
 		
-	func curve_to(end: Vector3, c1: Vector3, c2: Vector3, d: float, m: Segment) -> Pathway:
+	func cubic_to(end: Vector3, c1: Vector3, c2: Vector3, d: float, m: Segment) -> Pathway:
 		add(Segment.cubic(cursor, end, c1, c2), d, m)
 		cursor = end
 		return self
 		
-	func quad_curve_to(end: Vector3, c1: Vector3, d: float, m: Segment) -> Pathway:
+	func quad_to(end: Vector3, c1: Vector3, d: float, m: Segment) -> Pathway:
 		add(Segment.quad(cursor, end, c1), d, m)
 		cursor = end
 		return self
@@ -373,12 +373,12 @@ class Pathway:
 		cursor = end
 		return self
 		
-	func curve_with_speed_to(end: Vector3, c1: Vector3, c2: Vector3, s: float, m: Segment) -> Pathway:
+	func cubic_with_speed_to(end: Vector3, c1: Vector3, c2: Vector3, s: float, m: Segment) -> Pathway:
 		add_with_speed(Segment.cubic(cursor, end, c1, c2), s, m)
 		cursor = end
 		return self
 		
-	func quad_curve_with_speed_to(end: Vector3, c1: Vector3, s: float, m: Segment) -> Pathway:
+	func quad_with_speed_to(end: Vector3, c1: Vector3, s: float, m: Segment) -> Pathway:
 		add_with_speed(Segment.quad(cursor, end, c1), s, m)
 		cursor = end
 		return self

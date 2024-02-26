@@ -28,11 +28,11 @@ func _ready():
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3.ZERO) \
 		.line_to(a, 2, PathStyle.Easing.linear) \
-		.quad_arc_to(b, Globals.midpoint_tangent1(a, b) if randf() < 0.5 else Globals.midpoint_tangent2(a, b), 2, PathStyle.Easing.linear) \
-		.quad_arc_to(c, Globals.midpoint_tangent1(b, c) if randf() < 0.5 else Globals.midpoint_tangent2(b, c), 2, PathStyle.Easing.linear) \
-		.quad_arc_to(d, Globals.midpoint_tangent1(c, d) if randf() < 0.5 else Globals.midpoint_tangent2(c, d), 2, PathStyle.Easing.linear) \
-		.quad_arc_to(e, Globals.midpoint_tangent1(d, e) if randf() < 0.5 else Globals.midpoint_tangent2(d, e), 2, PathStyle.Easing.linear) \
-		.quad_arc_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), 2, PathStyle.Easing.linear)
+		.quad_to(b, Globals.midpoint_tangent1(a, b) if randf() < 0.5 else Globals.midpoint_tangent2(a, b), 2, PathStyle.Easing.linear) \
+		.quad_to(c, Globals.midpoint_tangent1(b, c) if randf() < 0.5 else Globals.midpoint_tangent2(b, c), 2, PathStyle.Easing.linear) \
+		.quad_to(d, Globals.midpoint_tangent1(c, d) if randf() < 0.5 else Globals.midpoint_tangent2(c, d), 2, PathStyle.Easing.linear) \
+		.quad_to(e, Globals.midpoint_tangent1(d, e) if randf() < 0.5 else Globals.midpoint_tangent2(d, e), 2, PathStyle.Easing.linear) \
+		.quad_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), 2, PathStyle.Easing.linear)
 	
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
 	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()
@@ -119,8 +119,8 @@ func create_attack_jump_path():
 	var start := position - player.position
 	var mid: Vector3 = lerp(position, player.position, 2.5) + Vector3(0, 25, 0) - player.position
 	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
-	var attack_jump_pathway = PathStyle.Pathway.new()
-	attack_jump_pathway.append([PathStyle.Segment.quad(start, end, mid)], [8], [PathStyle.Easing.linear])
+	var attack_jump_pathway = PathStyle.Pathway.new() \
+		.cubic_to(start, end, mid, 8, PathStyle.Easing.linear)
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)

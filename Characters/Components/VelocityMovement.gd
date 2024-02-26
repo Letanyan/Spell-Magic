@@ -51,7 +51,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			new_velocity *= length
 		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
 		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value) * stun_value
-
+		
 		navigation_velocity = new_velocity
 
 	if vital_tick >= 1.0:
@@ -75,18 +75,19 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
-		if true or body.is_on_floor(): # FIXME: should this always be done
-			var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
-			target_velocity.x = direction.x * speed * (1 - vitals.freeze.value) * input_len * stun_value
-			target_velocity.z = direction.z * speed * (1 - vitals.freeze.value) * input_len * stun_value
+		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
+		target_velocity.x = direction.x * speed * (1.0 - vitals.freeze.value) * input_len * stun_value
+		target_velocity.z = direction.z * speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 	else:
-		target_velocity.x = 0
-		target_velocity.z = 0
+		target_velocity.x = 0.0
+		target_velocity.z = 0.0
+		if target_velocity.y > 0.0:
+			target_velocity.y = 0.0
 		
-	if body.position.y < 0 or is_nan(body.position.y):
+	if body.position.y < 0.0 or is_nan(body.position.y):
 		body.position.y = Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
-		body.position.x = 0
-		body.position.z = 0
+		body.position.x = 0.0
+		body.position.z = 0.0
 	elif body.has_node("CamPivot"):
 		if Globals.sea_level() - 1.5 < body.position.y and body.position.y < Globals.sea_level() - 1.45:
 			target_velocity.y = 0 
@@ -99,12 +100,12 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		else:
 			target_velocity.y = 0
 		
-	target_velocity.x = clampf(target_velocity.x, -50, 50)
-	target_velocity.y = clampf(target_velocity.y, -50, 50)
-	target_velocity.z = clampf(target_velocity.z, -50, 50)
+	target_velocity.x = clampf(target_velocity.x, -50.0, 50.0)
+	target_velocity.y = clampf(target_velocity.y, -50.0, 50.0)
+	target_velocity.z = clampf(target_velocity.z, -50.0, 50.0)
 	
-	if absf(impulse.length()) > 1:
-		impulse -= impulse.normalized() * friction * delta 
+	if absf(impulse.length()) > 1.0:
+		impulse -= impulse.normalized() * friction * delta
 	else:
 		impulse = Vector3.ZERO
 	
