@@ -196,9 +196,9 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 	if is_nan(time_override):
 		duration = fmod(t, path.total_duration)
 	else:
-		duration = clamp(t, 0, path.total_duration)
+		duration = clampf(t, 0, path.total_duration)
 	var index = Globals.Ref.new(0)
-	var v = path.position_at_time(duration, index) + temp_origin
+	var v := path.position_at_time(duration, index) + temp_origin
 	
 	if fmod(t, path.total_duration) < fmod(old_t, path.total_duration):
 		me_start_position = null
@@ -349,6 +349,12 @@ class Pathway:
 			index.data = segment
 		return segments[segment].position_at_distance(dist)
 		
+	func apply_transform(transform: Transform3D):
+		for segment in segments:
+			segment.apply_transform(transform)
+		calculate_distance()
+		calculate_total_duration()
+		
 	func move_to(start: Vector3) -> Pathway:
 		cursor = start
 		return self
@@ -491,6 +497,23 @@ class Segment:
 		
 	func duration_using_speed(s: float) -> float:
 		return distance / s
+		
+	func apply_transform(transform: Transform3D):
+		var mat := transform.affine_inverse()
+		match kind:
+			BezierKind.LINEAR:
+				start = mat * start
+				end = mat * end
+			BezierKind.QUAD:
+				start = mat * start
+				end = mat * end
+				c1 = mat * c1
+			BezierKind.CUBIC:
+				start = mat * start
+				end = mat * end
+				c1 = mat * c1
+				c2 = mat * c2
+		calculate_distance()
 		
 class Easing:
 	static var linear := Segment.linear(Vector3(0, 0, 0), Vector3(0, 1, 0))
