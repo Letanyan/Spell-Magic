@@ -36,13 +36,17 @@ func load_current_item(selected: int) -> void:
 	var world_name = filenames[selected]
 	var settings := WorldSettings.new()
 	settings.read(world_name)
-	var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
-	demo.setup(settings)
 	
-	var current = get_tree().current_scene
-	get_tree().root.add_child(demo)
-	current.call_deferred("free")
-	get_tree().current_scene = demo
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black")
+	SceneHandler.content_finished_loading.connect(func(content): content.setup(settings))
+	
+	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
+	#demo.setup(settings)
+	#
+	#var current = get_tree().current_scene
+	#get_tree().root.add_child(demo)
+	#current.call_deferred("free")
+	#get_tree().current_scene = demo
 
 func _on_load_pressed() -> void:
 	var list: ItemList = $WorldsList

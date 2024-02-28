@@ -85,13 +85,16 @@ func _on_create_pressed() -> void:
 	settings.upgrade_settings.load_dict(upgrades.save_dict())
 	settings.save()
 
-	var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
-	demo.setup(settings)
-	
-	var current = get_tree().current_scene
-	get_tree().root.add_child(demo)
-	current.call_deferred("free")
-	get_tree().current_scene = demo
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black")
+	SceneHandler.content_finished_loading.connect(func(content): content.setup(settings))
+
+	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
+	#demo.setup(settings)
+	#
+	#var current = get_tree().current_scene
+	#get_tree().root.add_child(demo)
+	#current.call_deferred("free")
+	#get_tree().current_scene = demo
 
 
 func _on_permadeath_toggled(button_pressed: bool) -> void:

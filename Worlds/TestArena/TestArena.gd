@@ -251,4 +251,4 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			if vitals.health.value > 0:
 				return
 			
-			get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
+			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")

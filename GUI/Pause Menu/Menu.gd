@@ -121,5 +121,5 @@ func save_changes():
 
 
 func _on_quit_pressed() -> void:
-	get_tree().change_scene_to_file("res://Worlds/MainMenu/MainMenuWorld.tscn")
+	SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
 
