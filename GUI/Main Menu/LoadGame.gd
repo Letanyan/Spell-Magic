@@ -32,14 +32,8 @@ func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
-
-func _on_load_pressed() -> void:
-	var list: ItemList = $WorldsList
-	var selected := list.get_selected_items()
-	if selected.is_empty():
-		return
-	
-	var world_name = filenames[selected[0]]
+func load_current_item(selected: int) -> void:
+	var world_name = filenames[selected]
 	var settings := WorldSettings.new()
 	settings.read(world_name)
 	var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
@@ -49,5 +43,13 @@ func _on_load_pressed() -> void:
 	get_tree().root.add_child(demo)
 	current.call_deferred("free")
 	get_tree().current_scene = demo
+
+func _on_load_pressed() -> void:
+	var list: ItemList = $WorldsList
+	var selected := list.get_selected_items()
+	if selected.is_empty():
+		return
+	load_current_item(selected[0])
 	
-	
+func _on_worlds_list_item_activated(index: int) -> void:
+	load_current_item(index)

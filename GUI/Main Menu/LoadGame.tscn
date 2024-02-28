@@ -34,5 +34,6 @@ offset_right = 704.0
 offset_bottom = 631.0
 text = "Cancel"
 
+[connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
 [connection signal="pressed" from="Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]

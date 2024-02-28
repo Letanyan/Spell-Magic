@@ -18,7 +18,7 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).speed(7).circle_path(5, 0).set_origin(position).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).speed(7).circle(position, 5, 0).use_absolute().align_y_to_origin()
 	
 	var R := 25.0
 	var U := -5.0
