@@ -19,15 +19,14 @@ func _ready() -> void:
 	content_failed_to_load.connect(on_content_failed_to_load)
 	content_finished_loading.connect(on_content_finished_loading)
 
-func load_new_scene(content_path:String, transition_type:String="fade_to_black") -> void:
+func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content): pass) -> void:
 	_transition = transition_type
 	# add loading screen
 	loading_screen = _loading_screen_scene.instantiate() as LoadingScreen
 	get_tree().root.add_child(loading_screen)
-	loading_screen.start_transition(transition_type)
-	_load_content(content_path)
+	loading_screen.start_transition(transition_type, _load_content.bind(content_path, on_complete))
 	
-func _load_content(content_path:String) -> void:
+func _load_content(content_path:String, on_complete: Callable) -> void:
 	_content_path = content_path
 	var loader = ResourceLoader.load_threaded_request(content_path)
 	if not ResourceLoader.exists(content_path) or loader == null:
@@ -36,13 +35,13 @@ func _load_content(content_path:String) -> void:
 		
 	_load_progress_timer = Timer.new()
 	_load_progress_timer.wait_time = 0.1
-	_load_progress_timer.timeout.connect(monitor_load_status)
+	_load_progress_timer.timeout.connect(monitor_load_status.bind(on_complete))
 	get_tree().root.add_child(_load_progress_timer)
 	_load_progress_timer.start()
 
 # checks in on loading status - this can also be done with a while loop, but I found that ran too fast
 # and ended up skipping over the loading display. 
-func monitor_load_status() -> void:
+func monitor_load_status(on_complete: Callable) -> void:
 	var load_progress = []
 	var load_status = ResourceLoader.load_threaded_get_status(_content_path, load_progress)
 	
@@ -61,7 +60,9 @@ func monitor_load_status() -> void:
 		ResourceLoader.THREAD_LOAD_LOADED:
 			_load_progress_timer.stop()
 			_load_progress_timer.queue_free()
-			content_finished_loading.emit(ResourceLoader.load_threaded_get(_content_path).instantiate())
+			var content = ResourceLoader.load_threaded_get(_content_path).instantiate()
+			content_finished_loading.emit(content)
+			on_complete.call(content)
 			return # this last return isn't necessary but I like how the 3 dead ends stand out as similar
 
 func on_content_failed_to_load(path:String) -> void:

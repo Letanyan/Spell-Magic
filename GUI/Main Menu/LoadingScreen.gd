@@ -8,17 +8,19 @@ extends Node
 
 var starting_animation_name:String
 
+
 func _ready() -> void:
 	progress_bar.visible = false
 	label.visible = false
 	pass
 	
-func start_transition(animation_name: String) -> void:
+func start_transition(animation_name: String, on_complete: Callable) -> void:
 	if !anim_player.has_animation(animation_name):
 		push_warning("'%s' animation does not exist" % animation_name)
 		animation_name = "fade_to_black"
 	starting_animation_name = animation_name
 	anim_player.play(animation_name)
+	anim_player.animation_finished.connect(func(anim_name): if anim_name == animation_name: on_complete.call())
 	
 	# if timer reaches the end before we finish loading, this will show the progress bar
 	timer.start()

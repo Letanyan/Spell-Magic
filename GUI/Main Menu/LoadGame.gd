@@ -37,8 +37,7 @@ func load_current_item(selected: int) -> void:
 	var settings := WorldSettings.new()
 	settings.read(world_name)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black")
-	SceneHandler.content_finished_loading.connect(func(content): content.setup(settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(settings))
 	
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(settings)
