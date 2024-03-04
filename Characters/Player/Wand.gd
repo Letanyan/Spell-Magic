@@ -190,6 +190,14 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 				key_down.emit()
 				return null
 				
+			if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
+				var start_time: float = keys[best_candidate].start_hold
+				var now = Time.get_unix_time_from_system()
+				if start_time == 0.0 or now - start_time >= s.cooldown:
+					keys[best_candidate].start_hold = now
+				else:
+					return null
+				
 			var can_use: MagicBook.DisallowSpellReason = book.can_use_spell(s)
 			match can_use:
 				MagicBook.DisallowSpellReason.NONE:
