@@ -33,7 +33,7 @@ func setup(_settings: WorldSettings) -> void:
 	noise_temperature.seed = settings.sed
 	
 	var game_settings := GameSettings.new()
-	game_settings.read()
+	game_settings.read(get_viewport())
 	game_settings.last_world = settings.world_name
 	game_settings.save()
 	

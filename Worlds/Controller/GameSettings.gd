@@ -9,7 +9,7 @@ func save():
 	var file = FileAccess.open("user://settings.json", FileAccess.WRITE)
 	file.store_var({"last_world": last_world, "default_world_settings": default_world_settings.save_dict()})
 
-func read():
+func read(viewport: Viewport):
 	var file = FileAccess.open("user://settings.json", FileAccess.READ)
 	var data: Variant
 	if file != null:
@@ -18,6 +18,6 @@ func read():
 		data = {}
 	last_world = data.get("last_world", "")
 	
-	default_world_settings = WorldSettings.new()
+	default_world_settings = WorldSettings.new(viewport)
 	default_world_settings.load_dict(data.get("default_world_settings", {})) 
 	

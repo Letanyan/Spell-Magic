@@ -34,7 +34,7 @@ func _on_cancel_pressed() -> void:
 
 func load_current_item(selected: int) -> void:
 	var world_name = filenames[selected]
-	var settings := WorldSettings.new()
+	var settings := WorldSettings.new(get_viewport())
 	settings.read(world_name)
 	
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(settings))

@@ -73,7 +73,7 @@ func _on_cancel_pressed() -> void:
 
 
 func _on_create_pressed() -> void:
-	var settings := WorldSettings.new()
+	var settings := WorldSettings.new(get_viewport())
 	settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 	settings.world_name = $SaveName.text
 	settings.sed = hash($Seed.text)

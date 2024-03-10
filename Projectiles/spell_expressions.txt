@@ -34,4 +34,6 @@ sniper:
 wall:
 	s ; speed really small to look static
 	h ; y offset
+
+	
 	

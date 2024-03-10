@@ -49,14 +49,14 @@ var magic_book: MagicBook = null
 
 func _ready() -> void:
 	game_settings = GameSettings.new()
-	game_settings.read()
+	game_settings.read(get_viewport())
 	
 	controller = Controller.new()
 	
 	magic_book = MagicBook.new()
 	var upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.reset_all_stats_to_max_values()
-	magic_book.settings = WorldSettings.new()
+	magic_book.settings = WorldSettings.new(get_viewport())
 	magic_book.settings.upgrade_settings = upgrade_settings
 	
 	magic_book.read_absolute_path("res://magic_book.json")

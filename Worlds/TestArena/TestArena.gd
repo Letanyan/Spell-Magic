@@ -77,7 +77,7 @@ func add_enemy(enemy: Enemy):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if book == null:
-		var _settings := WorldSettings.new()
+		var _settings := WorldSettings.new(get_viewport())
 		_settings.read("empty")
 		setup(_settings)
 		

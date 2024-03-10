@@ -14,13 +14,16 @@ var upgrade_settings: UpgradeSettings
 var game_mode_settings: GameModeSettings
 var graphics_settings: GraphicsSettings
 
-func _init() -> void:
+var viewport: Viewport
+
+func _init(vp: Viewport) -> void:
+	viewport = vp
 	hud_settings = HUDSettings.new()
 	camera_settings = CameraSettings.new()
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.reset_all_stats_to_max_values()
 	game_mode_settings = GameModeSettings.new()
-	graphics_settings = GraphicsSettings.new()
+	graphics_settings = GraphicsSettings.new(viewport)
 
 func save_dict() -> Dictionary:
 	return {
@@ -65,7 +68,7 @@ func load_dict(data: Dictionary):
 	game_mode_settings = GameModeSettings.new()
 	game_mode_settings.load_dict(data.get("game_mode_settings", {}))
 	
-	graphics_settings = GraphicsSettings.new()
+	graphics_settings = GraphicsSettings.new(viewport)
 	graphics_settings.load_dict(data.get("graphics_settings", {}))
 
 func read(filename: String):
