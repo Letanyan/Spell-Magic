@@ -113,7 +113,9 @@ static func get_intersections_from_shape(p: Node3D, shape: Shape3D, transform: T
 	query.shape = shape
 	query.transform = transform
 	query.exclude = [p] + exclude
+	return space_state.intersect_shape(query, 32)
 	
+static func rotation_vector(from: Vector3, to: Vector3) -> Quaternion:
 	"""
 	find Quaternion `q` such `v1` rotated by `q` will give `v2`.
 	assuming `v1` and `v2` are not parallel.
@@ -127,10 +129,6 @@ static func get_intersections_from_shape(p: Node3D, shape: Shape3D, transform: T
 	if `v1` is parallel to `v2` `dot(v1,v2) = 1` return Identity quaternion. 
 	If `v1` is opposite to `v2` dot(v1,v2) = -1` return `q = <1, 0, 0, PI>` 
 	"""
-	
-	return space_state.intersect_shape(query, 32)
-	
-static func rotation_vector(from: Vector3, to: Vector3) -> Quaternion:
 	var q := Quaternion.IDENTITY
 	var a := from.cross(to)
 	q.x = a.x
@@ -402,25 +400,4 @@ static func find_target(p: Node3D, target: Vector3, margin_from_target: float = 
 		DebugDraw3D.draw_sphere(pos, 0.5, Color(1, 0, 0), 0.5)
 		
 	return next 
-	
-static func next_target(p: Node3D, target: Vector3) -> Vector3:
-	var current_position := p.global_position
-	var obj := get_ray_intersection(p, current_position, target)
-	if obj == null:
-		return target
-	
-	var shape: Shape3D = obj.shape
-	var candidates := edges(obj, shape)
-	
-	
-	for candidate in candidates:
-		if get_ray_intersection(p, current_position, candidate) != null:
-			continue
-		
-		var obj_n := get_ray_intersection(p, candidate, target)
-		if obj_n == null:
-			return candidate
-	
-	return target
-	
 	

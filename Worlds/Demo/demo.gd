@@ -78,7 +78,7 @@ func setup(_settings: WorldSettings) -> void:
 func run_on_ready():
 	ready_state = GameSettings.ReadyState.IN
 	if book == null:
-		var _settings := WorldSettings.new()
+		var _settings := WorldSettings.new(get_viewport())
 		_settings.read("demo")
 		#_settings.world_name = "demo"
 		#_settings.sed = 0 

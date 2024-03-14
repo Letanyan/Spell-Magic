@@ -41,7 +41,7 @@ func setup(_settings: WorldSettings) -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var _settings := WorldSettings.new()
+	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
 	_settings.sed = randi()
 	setup(_settings)
