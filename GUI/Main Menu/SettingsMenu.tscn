@@ -17,8 +17,9 @@ layout_mode = 1
 offset_top = 49.0
 
 [node name="Tabbar" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 1152.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
 offset_bottom = 48.0
 
 [node name="Back" type="Button" parent="Tabbar"]

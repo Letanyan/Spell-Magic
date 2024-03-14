@@ -150,6 +150,15 @@ func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) ->
 	mi.mesh = mesh
 	mi.name = "mesh"
 	
+	if r <=  radius:
+		var static_body := StaticBody3D.new()
+		static_body.name = "static"
+		var collision_shape := CollisionShape3D.new()
+		collision_shape.shape = ConcavePolygonShape3D.new()
+		collision_shape.name = "collision"
+		static_body.add_child(collision_shape)
+		mi.add_child(static_body)
+	
 	return mi
 	
 func create_water_mesh(x: float, y: float, size: float) -> MeshInstance3D:
@@ -218,7 +227,21 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		A.y = blender.height(A.x + x, A.z + y)
 		mdt.set_vertex(i, A)
 	
-
+	if r <= radius and mi.has_node("static"):
+		var static_body := mi.get_node("static")			
+		var poly: PackedVector3Array = static_body.get_node("collision").shape.get_faces()
+		if poly.size() < mdt.get_face_count() * 3:
+			poly.resize(mdt.get_face_count() * 3)
+		var i := 0
+		for j in range(mdt.get_face_count()):
+			i = mdt.get_face_vertex(j, 0)
+			poly.set(j * 3 + 0, mdt.get_vertex(i))
+			i = mdt.get_face_vertex(j, 1)
+			poly.set(j * 3 + 1, mdt.get_vertex(i))
+			i = mdt.get_face_vertex(j, 2)
+			poly.set(j * 3 + 2, mdt.get_vertex(i))
+		static_body.get_node("collision").shape.set_faces(poly)
+		
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
 	var mat := mesh.surface_get_material(0)
@@ -227,13 +250,13 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mat.set_shader_parameter("texture_depth", texture_size)
 	mat.set_shader_parameter("temperature", temperature_texture)
 	mat.set_shader_parameter("dryness", dryness_texture)
-	if r <= radius and not ignore_physics:
-		var saved_children := mi.get_children().duplicate()
-		mi.create_trimesh_collision()
-		var body: StaticBody3D = mi.get_child(0)
-		body.collision_layer = 1 << 0
-		for n in saved_children:
-			mi.remove_child(n)
+	#if r <= radius and not ignore_physics:
+		#var saved_children := mi.get_children().duplicate()
+		#mi.create_trimesh_collision()
+		#var body: StaticBody3D = mi.get_child(0)
+		#body.collision_layer = 1 << 0
+		#for n in saved_children:
+			#mi.remove_child(n)
 		
 func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
 	var mesh := mi.mesh

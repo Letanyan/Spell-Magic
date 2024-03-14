@@ -12,26 +12,40 @@ grow_vertical = 2
 script = ExtResource("1_t0cvo")
 
 [node name="WorldsList" type="ItemList" parent="."]
-layout_mode = 0
-offset_left = 288.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_right = 0.472
+anchor_bottom = 0.815
+offset_left = -255.744
 offset_top = 56.0
-offset_right = 800.0
-offset_bottom = 528.0
+offset_right = 256.256
+offset_bottom = -0.120056
 
 [node name="Load" type="Button" parent="."]
-layout_mode = 0
-offset_left = 384.0
-offset_top = 544.0
-offset_right = 704.0
-offset_bottom = 575.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -159.744
+offset_top = -104.0
+offset_right = 160.256
+offset_bottom = -73.0
 text = "Load"
 
 [node name="Cancel" type="Button" parent="."]
-layout_mode = 0
-offset_left = 384.0
-offset_top = 600.0
-offset_right = 704.0
-offset_bottom = 631.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -159.744
+offset_top = -48.0
+offset_right = 160.256
+offset_bottom = -17.0
 text = "Cancel"
 
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]

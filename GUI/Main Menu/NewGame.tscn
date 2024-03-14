@@ -40,19 +40,29 @@ offset_bottom = 144.0
 placeholder_text = "Seed"
 
 [node name="Create" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 512.0
-offset_right = 640.0
-offset_bottom = 543.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -136.0
+offset_right = 96.256
+offset_bottom = -105.0
 text = "Create"
 
 [node name="Cancel" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 576.0
-offset_right = 640.0
-offset_bottom = 607.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -72.0
+offset_right = 96.256
+offset_bottom = -41.0
 text = "Cancel"
 
 [node name="Permadeath" type="Button" parent="."]

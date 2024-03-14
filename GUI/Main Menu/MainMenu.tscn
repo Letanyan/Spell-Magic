@@ -12,36 +12,56 @@ grow_vertical = 2
 script = ExtResource("1_76i3t")
 
 [node name="Continue" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 456.0
-offset_right = 640.0
-offset_bottom = 487.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -192.0
+offset_right = 96.256
+offset_bottom = -161.0
 text = "Continue"
 
 [node name="NewGame" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 496.0
-offset_right = 640.0
-offset_bottom = 527.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -152.0
+offset_right = 96.256
+offset_bottom = -121.0
 text = "New Game"
 
 [node name="Load" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 536.0
-offset_right = 640.0
-offset_bottom = 567.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -112.0
+offset_right = 96.256
+offset_bottom = -81.0
 text = "Load
 "
 
 [node name="Settings" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 576.0
-offset_right = 640.0
-offset_bottom = 608.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -72.0
+offset_right = 96.256
+offset_bottom = -40.0
 text = "Settings"
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]

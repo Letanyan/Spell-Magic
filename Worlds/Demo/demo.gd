@@ -36,10 +36,7 @@ func setup(_settings: WorldSettings) -> void:
 	
 	book = MagicBook.new()
 	book.settings = settings
-	if _settings.world_name == "demo":
-		book.read_absolute_path("res://magic_book.json")
-	else:
-		book.read(settings.world_name)
+	book.read(settings.world_name)
 	book.rebuild_spell_chains()
 	book.ignore_cooldown = true
 	
@@ -71,7 +68,8 @@ func setup(_settings: WorldSettings) -> void:
 	noise_temperature.seed = settings.sed
 	
 	var game_settings := GameSettings.new()
-	game_settings.read(get_viewport())
+	var viewport := get_viewport()
+	game_settings.read(viewport)
 	game_settings.last_world = settings.world_name
 	game_settings.save()
 	

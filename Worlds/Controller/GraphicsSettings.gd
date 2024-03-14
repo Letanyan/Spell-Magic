@@ -25,9 +25,10 @@ func _init(vp: Viewport, should_update: bool = false) -> void:
 		update_scaling_mode(scaling_mode)
 		update_display_style(display_style)
 		update_display_size(display_size)
-		update_msaa(msaa)
-		update_taa(taa)
-		update_ssaa(ssaa)
+		if vp != null:
+			update_msaa(msaa)
+			update_taa(taa)
+			update_ssaa(ssaa)
 		update_max_fps(max_fps)
 		update_vsync(vsync)
 		
@@ -45,9 +46,10 @@ func load_dict(dict: Dictionary):
 	update_scaling_mode(dict.get("scaling_mode", 0))
 	update_display_style(dict.get("display_style", DisplayStyle.WINDOWED))
 	update_display_size(dict.get("display_size", "1920x1080 (16:9)"))
-	update_msaa(dict.get("msaa", Viewport.MSAA_DISABLED))
-	update_taa(dict.get("taa", false))
-	update_ssaa(dict.get("ssaa", Viewport.SCREEN_SPACE_AA_DISABLED))
+	if viewport != null:
+		update_msaa(dict.get("msaa", Viewport.MSAA_DISABLED))
+		update_taa(dict.get("taa", false))
+		update_ssaa(dict.get("ssaa", Viewport.SCREEN_SPACE_AA_DISABLED))
 	update_max_fps(dict.get("max_fps", 60))
 	update_vsync(dict.get("vsync", true))
 
