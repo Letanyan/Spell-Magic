@@ -78,7 +78,8 @@ func add_enemy(enemy: Enemy):
 func _ready():
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
-		_settings.read("empty")
+		_settings.read("+++")
+		_settings.is_test_arena = true
 		setup(_settings)
 		
 	settings.upgrade_settings.currency = 10000

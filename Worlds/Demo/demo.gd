@@ -78,6 +78,7 @@ func run_on_ready():
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
 		_settings.read("demo")
+		_settings.is_test_arena = true
 		#_settings.world_name = "demo"
 		#_settings.sed = 0 
 		setup(_settings)

@@ -141,8 +141,9 @@ func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) ->
 	var mesh := ArrayMesh.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(size, size)
-	plane.subdivide_depth = int(size * subdivide)
-	plane.subdivide_width = int(size * subdivide)
+	var subs := int(size * subdivide)
+	plane.subdivide_depth = subs
+	plane.subdivide_width = subs
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
 	mesh.surface_set_material(0, ShaderMaterial.new())
 
@@ -150,12 +151,17 @@ func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) ->
 	mi.mesh = mesh
 	mi.name = "mesh"
 	
-	if r <=  radius:
+	if r <= radius:
 		var static_body := StaticBody3D.new()
 		static_body.name = "static"
 		var collision_shape := CollisionShape3D.new()
-		collision_shape.shape = ConcavePolygonShape3D.new()
+		var hmap := HeightMapShape3D.new()
+		hmap.map_width = subs + 2
+		hmap.map_depth = subs + 2
+		collision_shape.shape = hmap  # ConcavePolygonShape3D.new()
 		collision_shape.name = "collision"
+		collision_shape.scale = Vector3(size / (subs + 1.0), size / (subs + 1.0), size / (subs + 1.0))
+		collision_shape.rotate_y(PI)
 		static_body.add_child(collision_shape)
 		mi.add_child(static_body)
 	
@@ -212,35 +218,24 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		for i in range(mdt.get_vertex_count()):
 			base_coords.append(mdt.get_vertex(i))
 
-	var block := size / float(int(size * subdivide) + 1)
-	var bounds := size / 2.0
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(str(x) + ":" + str(y))
 	var A := Vector3.ZERO
-	var v := Vector2.ZERO
 	for i in range(mdt.get_vertex_count()):
 		A = mdt.get_vertex(i)
-		if not (is_equal_approx(A.x, -bounds) or is_equal_approx(A.x, bounds) or is_equal_approx(A.z, -bounds) or is_equal_approx(A.z, bounds)):
-			v = Vector2(rng.randf() * 2 - 1, rng.randf() * 2 - 1).normalized() * 0.25 * block
-			A.x = base_coords[i].x + v.x
-			A.z = base_coords[i].z + v.y
 		A.y = blender.height(A.x + x, A.z + y)
 		mdt.set_vertex(i, A)
 	
 	if r <= radius and mi.has_node("static"):
-		var static_body := mi.get_node("static")			
-		var poly: PackedVector3Array = static_body.get_node("collision").shape.get_faces()
-		if poly.size() < mdt.get_face_count() * 3:
-			poly.resize(mdt.get_face_count() * 3)
-		var i := 0
-		for j in range(mdt.get_face_count()):
-			i = mdt.get_face_vertex(j, 0)
-			poly.set(j * 3 + 0, mdt.get_vertex(i))
-			i = mdt.get_face_vertex(j, 1)
-			poly.set(j * 3 + 1, mdt.get_vertex(i))
-			i = mdt.get_face_vertex(j, 2)
-			poly.set(j * 3 + 2, mdt.get_vertex(i))
-		static_body.get_node("collision").shape.set_faces(poly)
+		var static_body := mi.get_node("static")
+		var collision_shape := static_body.get_node("collision")
+		var hmap: HeightMapShape3D = collision_shape.shape as HeightMapShape3D
+		var array := PackedFloat32Array()
+		array.resize(hmap.map_data.size())
+		for i in range(mdt.get_vertex_count()):
+			var value := mdt.get_vertex(i)
+			array.set(i, value.y / collision_shape.scale.y)
+		hmap.map_data = array
 		
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
@@ -250,13 +245,6 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	mat.set_shader_parameter("texture_depth", texture_size)
 	mat.set_shader_parameter("temperature", temperature_texture)
 	mat.set_shader_parameter("dryness", dryness_texture)
-	#if r <= radius and not ignore_physics:
-		#var saved_children := mi.get_children().duplicate()
-		#mi.create_trimesh_collision()
-		#var body: StaticBody3D = mi.get_child(0)
-		#body.collision_layer = 1 << 0
-		#for n in saved_children:
-			#mi.remove_child(n)
 		
 func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
 	var mesh := mi.mesh
