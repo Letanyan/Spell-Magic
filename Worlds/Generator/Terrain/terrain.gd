@@ -60,7 +60,7 @@ func init_chunks(x: float, y: float) -> Array[Node3D]:
 	var result := init_chunks_of_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
 	medium_chunk_width = radius * radius * 4
 	if has_medium:
-		var medium := init_chunks_of_size(medium_chunks, medium_chunks_location,  x, y, chunk_size, medium_chunk_width, subdivide_percent, false)
+		var medium := init_chunks_of_size(medium_chunks, medium_chunks_location, x, y, chunk_size, medium_chunk_width, subdivide_percent, false)
 		result.append_array(medium)
 	if has_water:
 		var water := init_chunks_of_size(water_chunks, water_chunks_location, x, y, chunk_size, radius * radius * 2, 16.0 / chunk_size, true)
@@ -113,7 +113,7 @@ func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: fl
 			origin_delta = current_coord - convert_position_to_coord(loc.x, loc.y, cs)
 			if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
 				should_exclude_update = true
-				chunks[i].position.y = -100	
+				chunks[i].position.y = -100
 			else:
 				chunks[i].position.y = 0.0 if not is_water else Globals.sea_level()
 
@@ -193,9 +193,9 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 	node.position.z = y
 	
 	if r > radius:
-		var coord := convert_position_to_coord(x, y, cs)
-		if not is_water and abs(coord.x) <= int(radius / 2) and abs(coord.y) <= int(radius / 2):
-			node.position.y = -100
+		var origin_delta = convert_position_to_coord(x, y, cs)
+		if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
+			node.position.y = 0.0
 		else:
 			node.position.y = 0.0 if not is_water else Globals.sea_level()
 

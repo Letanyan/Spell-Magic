@@ -139,17 +139,6 @@ func _ready():
 
 func _exit_tree() -> void:
 	pass
-		
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
-	var b := chunker.blender.biome
-	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
-	
-	if last_biome != b:
-		player.current_biome = b
-		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
-		last_biome = b
 	
 func _physics_process(delta):
 	knowledge_tick += delta
@@ -174,6 +163,14 @@ func _physics_process(delta):
 		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
+		
+	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
+	var b := chunker.blender.biome
+	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	if last_biome != b:
+		player.current_biome = b
+		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
+		last_biome = b
 			
 	if not menu.is_showing:
 		const SPEED = 12.0
