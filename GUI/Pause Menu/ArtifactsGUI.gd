@@ -24,6 +24,11 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+	
+func update_list():
+	artifacts_list.clear()
+	for a in artifacts.unconnected():
+		artifacts_list.add_item(a.name)
 
 func update_list_and_grid():
 	artifacts_list.clear()
@@ -62,6 +67,7 @@ func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) 
 			artifact_grid.remove_grid_tile(temporary_grid_tile)
 			artifact_grid.add_grid_tile(temporary_grid_tile, coord)
 			attempt_place_artifact(temporary_grid_tile.artifact, coord, true)
+			update_list()
 		else:
 			update_list_and_grid()
 			

@@ -143,12 +143,12 @@ func _on_health_value_changed(value: float) -> void:
 	upgrades.max_health = int(value)
 	
 func _on_defence_value_changed(value: float) -> void:
-	$StartingUpgradesPanel/Attack/Value.text = str(int(value))
+	$StartingUpgradesPanel/Defence/Value.text = str(int(value))
 	upgrades.max_attack = int(value)
 
 
 func _on_attack_value_changed(value: float) -> void:
-	$StartingUpgradesPanel/Defence/Value.text = str(int(value))
+	$StartingUpgradesPanel/Attack/Value.text = str(int(value))
 	upgrades.max_defence = int(value)
 
 

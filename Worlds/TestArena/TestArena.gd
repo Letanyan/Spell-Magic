@@ -78,7 +78,7 @@ func add_enemy(enemy: Enemy):
 func _ready():
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
-		_settings.read("+++")
+		_settings.read("test+arena")
 		_settings.is_test_arena = true
 		setup(_settings)
 		

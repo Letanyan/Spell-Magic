@@ -151,7 +151,6 @@ toggle_mode = true
 text = "Starting Upgrades"
 
 [node name="StartingUpgradesPanel" type="Panel" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -382,7 +381,7 @@ layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
 offset_bottom = 26.0
-text = "100"
+text = "0.1"
 horizontal_alignment = 2
 vertical_alignment = 1
 
