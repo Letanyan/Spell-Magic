@@ -36,9 +36,7 @@ func update_list():
 				artifacts_list.add_item(a.name)
 
 func update_list_and_grid():
-	artifacts_list.clear()
-	for a in artifacts.unconnected():
-		artifacts_list.add_item(a.name)
+	update_list()
 	for c in artifact_grid.get_children():
 		artifact_grid.remove_child(c)
 	artifact_grid.child_grid.clear()
@@ -235,7 +233,7 @@ func _input(event: InputEvent) -> void:
 						attempt_place_artifact(artifact, artifact_grid.selected_cell_coord, false)
 			elif artifact_grid.has_focus():
 				artifacts_list.grab_focus()
-				if artifacts_list.item_count() > 0:
+				if artifacts_list.item_count > 0:
 					artifacts_list.select(0)
 
 

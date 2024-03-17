@@ -137,18 +137,22 @@ func _gui_input(event: InputEvent) -> void:
 		if Input.is_action_pressed("DOWN"):
 			selected_cell_coord += Vector2(0, 1)
 			on_cell_selected.emit(selected_cell_coord)
+			offset -= Vector2(0, 1) * cell_size
 			accept_event()
 		if Input.is_action_pressed("UP"):
 			selected_cell_coord += Vector2(0, -1)
 			on_cell_selected.emit(selected_cell_coord)
+			offset -= Vector2(0, -1) * cell_size
 			accept_event()
 		if Input.is_action_pressed("LEFT"):
 			selected_cell_coord += Vector2(-1, 0)
 			on_cell_selected.emit(selected_cell_coord)
+			offset -= Vector2(-1, 0) * cell_size
 			accept_event()
 		if Input.is_action_pressed("RIGHT"):
 			selected_cell_coord += Vector2(1, 0)
 			on_cell_selected.emit(selected_cell_coord)
+			offset -= Vector2(1, 0) * cell_size
 			accept_event()
 		queue_redraw()
 		queue_sort()
