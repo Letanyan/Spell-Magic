@@ -222,17 +222,21 @@ func _on_artifacts_list_item_selected(index: int) -> void:
 	temporary_grid_tile.queue_redraw()
 
 func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not has_focus():
+	if not is_visible_in_tree():
 		return
-		
-	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
-	
-	if artifacts_list.has_focus():
-		if direction.x > 0:
-			artifact_grid.grab_focus()
-	elif artifact_grid.has_focus():
-		if direction.x < 0:
-			artifacts_list.grab_focus()
+			
+	if event is InputEventKey:
+		if Input.is_action_pressed("S", true):
+			if artifacts_list.has_focus():
+				if artifact_grid.selected_cell_coord != null:
+					var selected: Array = artifacts_list.get_selected_items()
+					if selected.size() == 1:
+						var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0]))
+						attempt_place_artifact(artifact, artifact_grid.selected_cell_coord, false)
+			elif artifact_grid.has_focus():
+				artifacts_list.grab_focus()
+				if artifacts_list.item_count() > 0:
+					artifacts_list.select(0)
 
 
 func _on_artifact_grid_on_cell_moused_over(coord: Vector2) -> void:

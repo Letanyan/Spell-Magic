@@ -87,7 +87,7 @@ func _draw() -> void:
 		#draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
 func _gui_input(event: InputEvent) -> void:
-	if not is_visible_in_tree():
+	if not is_visible_in_tree() or not has_focus():
 		return
 		
 	if event is InputEventMouseButton:
