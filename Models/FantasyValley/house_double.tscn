@@ -1,7 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://cx5fvqyu4wd8g"]
+[gd_scene load_steps=12 format=3 uid="uid://cx5fvqyu4wd8g"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/buildings.gd" id="1_nug6f"]
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_bkerj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cio04"]
+size = Vector3(7, 9, 5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y11t8"]
 shading_mode = 2
@@ -111,6 +114,14 @@ shadow_mesh = SubResource("ArrayMesh_iiv3r")
 
 [node name="House_Double" type="Node3D"]
 script = ExtResource("1_nug6f")
+
+[node name="static" type="StaticBody3D" parent="."]
+collision_layer = 512
+
+[node name="collision" type="CollisionShape3D" parent="static"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+shape = SubResource("BoxShape3D_cio04")
+disabled = true
 
 [node name="RootNode" type="Node3D" parent="."]
 

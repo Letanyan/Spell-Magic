@@ -19,30 +19,12 @@ static func make(kind: World.Building, rng: RandomNumberGenerator) -> Buildings:
 	result.get_node("RootNode").rotate(Vector3.UP, r)
 	
 	result.entity_kind = kind
-	var body := StaticBody3D.new()
-	body.collision_layer = 1 << 9
-	body.name = "static"
-	var box := CollisionShape3D.new()
-	box.name = "shape"
+	var box := result.get_node("./static/shape")
 	match kind:
 		World.Building.FANTASY_VALLEY_SINGLE:
-			box.shape = BoxShape3D.new()
-			box.shape.size = Vector3(7, 6, 5)
-			box.position.y = box.shape.size.y / 2.0
 			box.rotate(Vector3.UP, r)
 		World.Building.FANTASY_VALLEY_DOUBLE:
-			box.shape = BoxShape3D.new()
-			box.shape.size = Vector3(7, 10, 5)
-			box.position.y = box.shape.size.y / 2.0
 			box.rotate(Vector3.UP, r)
-		World.Building.FANTASY_WELL:
-			box.shape = CylinderShape3D.new()
-			box.shape.height = 4
-			box.shape.radius = 1.25
-			box.position.y = box.shape.height / 2.0
-	
-	body.add_child(box)
-	result.add_child(body)
 	
 	match result.entity_kind:
 		World.Building.FANTASY_WELL:

@@ -1,7 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://b2j6k20r0f7b8"]
+[gd_scene load_steps=8 format=3 uid="uid://b2j6k20r0f7b8"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/Trees/trees.gd" id="1_fx3fu"]
 [ext_resource type="Material" uid="uid://5ln27gbqwuws" path="res://Models/Nature/Nature_Mat_01.tres" id="2_1y5ob"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_8fpuf"]
+height = 4.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_3fg8y"]
 _surfaces = [{
@@ -69,6 +72,14 @@ shadow_mesh = SubResource("ArrayMesh_cfsrp")
 
 [node name="Tree_Branched" type="Node3D"]
 script = ExtResource("1_fx3fu")
+
+[node name="static" type="StaticBody3D" parent="."]
+collision_layer = 512
+
+[node name="shape" type="CollisionShape3D" parent="static"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shape = SubResource("CylinderShape3D_8fpuf")
+disabled = true
 
 [node name="RootNode" type="Node3D" parent="."]
 

@@ -1,7 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://ct8dcb1ngmwol"]
+[gd_scene load_steps=12 format=3 uid="uid://ct8dcb1ngmwol"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/buildings.gd" id="1_ela40"]
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_p2h4u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ajok1"]
+size = Vector3(7, 6, 5)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_xcmud"]
 _surfaces = [{
@@ -111,6 +114,14 @@ size = Vector3(6, 1, 4)
 
 [node name="House_Single" type="Node3D"]
 script = ExtResource("1_ela40")
+
+[node name="static" type="StaticBody3D" parent="."]
+collision_layer = 512
+
+[node name="collision" type="CollisionShape3D" parent="static"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+shape = SubResource("BoxShape3D_ajok1")
+disabled = true
 
 [node name="RootNode" type="Node3D" parent="."]
 

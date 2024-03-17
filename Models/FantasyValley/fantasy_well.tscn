@@ -1,7 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://bklnca2v77376"]
+[gd_scene load_steps=10 format=3 uid="uid://bklnca2v77376"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/buildings.gd" id="1_pxta5"]
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_k6qpc"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jc745"]
+height = 3.0
+radius = 1.5
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_rmo5h"]
 _surfaces = [{
@@ -105,6 +109,14 @@ shadow_mesh = SubResource("ArrayMesh_rulh5")
 
 [node name="FantasyWell" type="Node3D"]
 script = ExtResource("1_pxta5")
+
+[node name="static" type="StaticBody3D" parent="."]
+collision_layer = 512
+
+[node name="collision" type="CollisionShape3D" parent="static"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("CylinderShape3D_jc745")
+disabled = true
 
 [node name="RootNode" type="Node3D" parent="."]
 
