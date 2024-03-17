@@ -58,3 +58,5 @@ script = ExtResource("3_omm40")
 [connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
 [connection signal="on_cell_moused_over" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_moused_over"]
+[connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]
+[connection signal="on_cell_unselected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_unselected"]

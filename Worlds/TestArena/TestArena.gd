@@ -48,8 +48,9 @@ func setup(_settings: WorldSettings) -> void:
 	
 	SignalBus.enemy_death.connect(func(e): print(e, " died"))
 
+	#var seq := " 1"
 	#for i in ["flower", "feather", "goblet", "sands", "crown", "glove", "brace", "gown", "helmet"]:
-		#var artifact := Artifact.new(i)
+		#var artifact := Artifact.new(i + seq)
 		#artifact.top = Artifact.Option.make_random()
 		#artifact.bottom = Artifact.Option.make_random()
 		#artifact.left = Artifact.Option.make_random()

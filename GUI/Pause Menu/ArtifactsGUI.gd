@@ -27,8 +27,13 @@ func _process(delta: float) -> void:
 	
 func update_list():
 	artifacts_list.clear()
-	for a in artifacts.unconnected():
-		artifacts_list.add_item(a.name)
+	if artifact_grid.selected_cell_coord == null:
+		for a in artifacts.unconnected():
+			artifacts_list.add_item(a.name)
+	else:
+		for a in artifacts.unconnected():
+			if can_place_artifact(a, artifact_grid.selected_cell_coord).is_empty():
+				artifacts_list.add_item(a.name)
 
 func update_list_and_grid():
 	artifacts_list.clear()
@@ -76,17 +81,14 @@ func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) 
 			return
 		attempt_place_artifact(temporary_grid_tile.artifact, coord, false)
 
-func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool):
+func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array:
 	if artifact == null:
-		return
+		return [Vector4(coord.x, coord.y, 0, 0)]
 	if artifacts.get_artifact_at_coord(coord) != null:
-		return
+		return [Vector4(coord.x, coord.y, 0, 0)]
 		
-	const WARN_COLOR = Color.RED
-	const WARN_INTERVAL = 0.1
-	const WARN_COUNT = 5
 	var check_count := 0
-	var should_fail := false
+	var result: Array[Vector4] = []
 		
 	# Check artifact fits with top artifact
 	var other = artifacts.get_artifact_at_coord(coord + Vector2(0, -1))
@@ -96,11 +98,11 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 		var ok2 : bool = other.bottom.effect != Artifact.Effect.NONE and artifact.top.event != Artifact.Event.NONE
 		var ok3 : bool = other.bottom.pattern == artifact.top.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(0, -1)
+			result.append(Vector4(nc.x, nc.y, 2, 2))
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(2, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(0, -1)
+			result.append(Vector4(nc.x, nc.y, 2, 0))
 			
 	# Check artifact fits with bottom artifact	
 	other = artifacts.get_artifact_at_coord(coord + Vector2(0, 1))
@@ -110,11 +112,11 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 		var ok2 : bool = other.top.effect != Artifact.Effect.NONE and artifact.bottom.event != Artifact.Event.NONE
 		var ok3 : bool = other.top.pattern == artifact.bottom.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(0, 1)
+			result.append(Vector4(nc.x, nc.y, 1, 2))
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(0, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(0, 1)
+			result.append(Vector4(nc.x, nc.y, 1, 0))
 			
 	# Check artifact fits with left artifact
 	other = artifacts.get_artifact_at_coord(coord + Vector2(-1, 0))
@@ -124,11 +126,11 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 		var ok2 : bool = other.right.effect != Artifact.Effect.NONE and artifact.left.event != Artifact.Event.NONE
 		var ok3 : bool = other.right.pattern == artifact.left.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(-1, 0)
+			result.append(Vector4(nc.x, nc.y, 1, 2))
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(1, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(-1, 0)
+			result.append(Vector4(nc.x, nc.y, 1, 0))
 			
 	# Check artifact fits with right artifact
 	other = artifacts.get_artifact_at_coord(coord + Vector2(1, 0))
@@ -138,13 +140,30 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 		var ok2 : bool = other.left.effect != Artifact.Effect.NONE and artifact.right.event != Artifact.Event.NONE
 		var ok3 : bool = other.left.pattern == artifact.right.pattern
 		if not ok3:
-			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(1, 0)
+			result.append(Vector4(nc.x, nc.y, 3, 2))
 		if not (ok1 or ok2):
-			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(3, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			should_fail = true
+			var nc := coord + Vector2(1, 0)
+			result.append(Vector4(nc.x, nc.y, 3, 0))
 			
-	if should_fail or (check_count <= 0 and not artifacts.is_empty()):
+	if (check_count <= 0 and not artifacts.is_empty()):
+		return [Vector4(coord.x, coord.y, 0, 0)]
+			
+	return result
+
+func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool):	
+	const WARN_COLOR = Color.RED
+	const WARN_INTERVAL = 0.1
+	const WARN_COUNT = 5
+	
+	var errors := can_place_artifact(artifact, coord)
+	for error in errors:
+		if error.x == coord.x and error.y == coord.y:
+			continue
+		else:
+			artifact_grid.child_grid[Vector2(error.x, error.y)].warn(error.z, error.w, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+		
+	if not errors.is_empty():
 		return
 		
 	if not temporarily:
@@ -224,3 +243,12 @@ func _on_artifact_grid_on_cell_moused_over(coord: Vector2) -> void:
 		artifact_grid.remove_grid_tile(temporary_grid_tile)
 		attempt_place_artifact(temporary_grid_tile.artifact, coord, true)
 		artifact_grid.add_grid_tile(temporary_grid_tile, coord)
+
+
+
+func _on_artifact_grid_on_cell_selected(coord: Vector2) -> void:
+	update_list()
+
+
+func _on_artifact_grid_on_cell_unselected(coord: Vector2) -> void:
+	update_list()
