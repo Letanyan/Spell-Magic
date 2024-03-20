@@ -33,6 +33,7 @@ const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.t
 signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
 signal spell_was_cast(spell: Spell)
+signal spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason)
 signal spell_velocity_was_buffed(amount: float)
 signal spell_radius_was_buffed(amount: float)
 signal attack_was_buffed(amount: float)
@@ -174,8 +175,11 @@ func cast_spell(insert: Callable, next_spell: Spell):
 	play_animation("attack")
 #	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	await get_tree().physics_frame
-	spell_caster.cast_spell(self, vitals, insert, new_spell)
-	emit_spell_was_cast(next_spell)
+	var err := spell_caster.cast_spell(self, vitals, insert, new_spell) as MagicBook.DisallowSpellReason
+	if err == MagicBook.DisallowSpellReason.NONE:
+		emit_spell_was_cast(next_spell)
+	else:
+		spell_was_disallowed.emit(new_spell, err)
 	update_artifact_effects(Artifact.Event.DEAL, next_spell)
 	emit_vitals_update()
 			

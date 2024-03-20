@@ -87,7 +87,6 @@ func _ready():
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	menu.setup(book, case, artifacts, settings)
 	
-#	book.ignore_cooldown = true
 	wand = case.wands[0]
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]

@@ -172,12 +172,12 @@ func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Dictionary
 	spell_variables(result, body, SpellVariableKind.TIMED, p, spell)
 	return result
 
-func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Dictionary = {}):
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Dictionary = {}) -> MagicBook.DisallowSpellReason:
 	if vitals != null:
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
 			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
 		else:
-			return
+			return MagicBook.DisallowSpellReason.MANA
 			
 	var node_to_track = null
 	var cdir = Vector3.ZERO
@@ -218,6 +218,8 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 		var delay := spell.calculate_delay(p.fixed_vars)
 		start_particle(delay, body, p, insert)
+		
+	return MagicBook.DisallowSpellReason.NONE
 		
 func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 	var temp := vars.duplicate()

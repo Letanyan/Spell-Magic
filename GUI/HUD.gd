@@ -29,6 +29,7 @@ var player: Player:
 		player.vital_update.connect(update_hud_with_vitals)
 		update_hud_with_vitals(player.vitals)
 		player.spell_was_cast.connect(spell_was_cast)
+		player.spell_was_disallowed.connect(spell_was_disallowed)
 
 var wand: Wand: set = set_wand
 		
