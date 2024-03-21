@@ -413,6 +413,79 @@ popup/item_0/id = 0
 popup/item_1/text = "Disabled"
 popup/item_1/id = 1
 
+[node name="Sound" type="Panel" parent="Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Master" type="Label" parent="Tabs/Sound"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 45.0
+offset_right = 423.0
+offset_bottom = 66.0
+text = "Master"
+
+[node name="Slider" type="HSlider" parent="Tabs/Sound/Master"]
+layout_mode = 0
+offset_left = 96.0
+offset_right = 376.0
+offset_bottom = 16.0
+max_value = 1.0
+step = 0.05
+
+[node name="Value" type="Label" parent="Tabs/Sound/Master"]
+layout_mode = 0
+offset_left = 392.0
+offset_right = 432.0
+offset_bottom = 21.0
+text = "100%"
+
+[node name="Music" type="Label" parent="Tabs/Sound"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 85.0
+offset_right = 415.0
+offset_bottom = 106.0
+text = "Music"
+
+[node name="Slider" type="HSlider" parent="Tabs/Sound/Music"]
+layout_mode = 0
+offset_left = 96.0
+offset_right = 376.0
+offset_bottom = 16.0
+max_value = 1.0
+step = 0.05
+
+[node name="Value" type="Label" parent="Tabs/Sound/Music"]
+layout_mode = 0
+offset_left = 392.0
+offset_right = 432.0
+offset_bottom = 21.0
+text = "100%"
+
+[node name="SFX" type="Label" parent="Tabs/Sound"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 125.0
+offset_right = 412.0
+offset_bottom = 146.0
+text = "SFX"
+
+[node name="Slider" type="HSlider" parent="Tabs/Sound/SFX"]
+layout_mode = 0
+offset_left = 96.0
+offset_right = 376.0
+offset_bottom = 16.0
+max_value = 1.0
+step = 0.05
+
+[node name="Value" type="Label" parent="Tabs/Sound/SFX"]
+layout_mode = 0
+offset_left = 392.0
+offset_right = 432.0
+offset_bottom = 21.0
+text = "100%"
+
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideNotifications" to="." method="_on_hide_notifications_toggled"]
@@ -433,3 +506,6 @@ popup/item_1/id = 1
 [connection signal="toggled" from="Tabs/Graphics/TAA/Check" to="." method="_on_taa_check_toggled"]
 [connection signal="item_selected" from="Tabs/Graphics/FPS/Options" to="." method="_on_max_fps_options_item_selected"]
 [connection signal="item_selected" from="Tabs/Graphics/VSYNC/Options" to="." method="_on_vsync_options_item_selected"]
+[connection signal="value_changed" from="Tabs/Sound/Master/Slider" to="." method="_on_master_slider_value_changed"]
+[connection signal="value_changed" from="Tabs/Sound/Music/Slider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="Tabs/Sound/SFX/Slider" to="." method="_on_sfx_slider_value_changed"]

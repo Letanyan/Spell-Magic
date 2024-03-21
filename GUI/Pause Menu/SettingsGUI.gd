@@ -61,6 +61,10 @@ func update_controls():
 			fps_options.selected = i
 			break
 	$Tabs/Graphics/VSYNC/Options.selected = 0 if world_settings.graphics_settings.vsync else 1
+	
+	$Tabs/Sound/Master/Slider.value = world_settings.audio_settings.master
+	$Tabs/Sound/Music/Slider.value = world_settings.audio_settings.bg
+	$Tabs/Sound/SFX/Slider.value = world_settings.audio_settings.sfx
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -170,22 +174,27 @@ func _on_sharpness_slider_value_changed(value: float) -> void:
 
 func _on_display_style_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_display_style(index)
+	settings_changed.emit(world_settings)
 
 
 func _on_display_size_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_display_size($"Tabs/Graphics/Display Size/Options".get_item_text(index))
+	settings_changed.emit(world_settings)
 
 
 func _on_msaa_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_msaa(index)
+	settings_changed.emit(world_settings)
 
 
 func _on_ssaa_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_ssaa(index)
+	settings_changed.emit(world_settings)
 
 
 func _on_taa_check_toggled(toggled_on: bool) -> void:
 	world_settings.graphics_settings.update_taa(toggled_on)
+	settings_changed.emit(world_settings)
 
 
 func _on_max_fps_options_item_selected(index: int) -> void:
@@ -196,7 +205,28 @@ func _on_max_fps_options_item_selected(index: int) -> void:
 	else:
 		num = int(num)
 	world_settings.graphics_settings.update_max_fps(num)
+	settings_changed.emit(world_settings)
 	
 
 func _on_vsync_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_vsync(index == 0)
+	settings_changed.emit(world_settings)
+
+
+func _on_master_slider_value_changed(value: float) -> void:
+	world_settings.audio_settings.update_master(value)
+	$Tabs/Sound/Master/Value.text = str(int(value * 100)) + "%"
+	settings_changed.emit(world_settings)
+
+
+func _on_music_slider_value_changed(value: float) -> void:
+	world_settings.audio_settings.update_bg(value)
+	$Tabs/Sound/Music/Value.text = str(int(value * 100)) + "%"
+	settings_changed.emit(world_settings)
+
+
+func _on_sfx_slider_value_changed(value: float) -> void:
+	world_settings.audio_settings.update_sfx(value)
+	$Tabs/Sound/SFX/Value.text = str(int(value * 100)) + "%"
+	settings_changed.emit(world_settings)
+	
