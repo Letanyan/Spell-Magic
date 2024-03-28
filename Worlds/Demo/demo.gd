@@ -29,6 +29,9 @@ var daytime_tick: float = 0.0
 var settings: WorldSettings
 var pause_start: float
 
+var population_items_to_add: Dictionary = {}
+var population_update_tick: float = 0.0
+
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
 	
@@ -38,7 +41,7 @@ func setup(_settings: WorldSettings) -> void:
 	book.settings = settings
 	book.read(settings.world_name)
 	book.rebuild_spell_chains()
-	book.ignore_cooldown = false
+	book.ignore_cooldown = OS.is_debug_build()
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
 	settings.upgrade_settings.max_velocity_updated.connect(func(v):
@@ -95,7 +98,7 @@ func run_on_ready():
 	#player.position.y = 700
 	#player.position.z = 2300
 	player.position = settings.player_position
-	player.spell_caster.ignore_mana_cost = false
+	player.spell_caster.ignore_mana_cost = OS.is_debug_build()
 	player.spell_velocity_was_buffed.connect(func(v):
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)
@@ -142,12 +145,24 @@ func _exit_tree() -> void:
 func _physics_process(delta):
 	knowledge_tick += delta
 	daytime_tick += delta
+	population_update_tick += delta
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
 		for loc in population:
 			var pop = population[loc]
 			pop.update_info()
+			
+	if population_update_tick >= 0.2:
+		population_update_tick = 0.0
+		if not population_items_to_add.is_empty():
+			var key = population_items_to_add.keys()[population_items_to_add.size() - 1]
+			var space := get_world_3d().space
+			var state := PhysicsServer3D.space_get_direct_state(space)
+			var items = key.spawn_all_into_world(state)
+			for item in items:
+				add_child(item)
+			population_items_to_add.erase(key)
 			
 	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
@@ -263,7 +278,10 @@ func update_terrain(state: PhysicsDirectSpaceState3D):
 		var pop : Population = population.get(loc, null)
 		if pop == null:
 			continue
-		pop.despawn_all_from_world(get_node("."))
+		if population_items_to_add.has(pop):
+			population_items_to_add.erase(pop)
+		else:
+			pop.despawn_all_from_world(get_node("."))
 		population.erase(loc)
 	
 	var updated_chunks = chunks.get("updated", [])
@@ -282,7 +300,9 @@ func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) ->
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
 		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player)
-		result.append_array(pop.spawn_all_into_world(state))
+		#population_items_to_add[pop] = pop.spawn_all_into_world(state)
+		population_items_to_add[pop] = true
+		#result.append_array(pop.spawn_all_into_world(state))
 		population[loc] = pop
 		
 	return result

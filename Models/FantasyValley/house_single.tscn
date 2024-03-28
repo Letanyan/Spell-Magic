@@ -118,7 +118,7 @@ script = ExtResource("1_ela40")
 [node name="static" type="StaticBody3D" parent="."]
 collision_layer = 512
 
-[node name="collision" type="CollisionShape3D" parent="static"]
+[node name="shape" type="CollisionShape3D" parent="static"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 shape = SubResource("BoxShape3D_ajok1")
 disabled = true

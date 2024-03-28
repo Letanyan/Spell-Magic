@@ -118,7 +118,7 @@ script = ExtResource("1_nug6f")
 [node name="static" type="StaticBody3D" parent="."]
 collision_layer = 512
 
-[node name="collision" type="CollisionShape3D" parent="static"]
+[node name="shape" type="CollisionShape3D" parent="static"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
 shape = SubResource("BoxShape3D_cio04")
 disabled = true
