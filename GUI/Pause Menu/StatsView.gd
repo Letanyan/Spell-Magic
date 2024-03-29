@@ -10,6 +10,7 @@ extends Control
 @onready var T: Label = $"container/Value T"
 @onready var N: Label = $"container/Value N"
 @onready var P: Label = $"container/Value P"
+@onready var S: Label = $"container/Value S"
 @onready var fireDMG: Label = $"container/Value Fire DMG"
 @onready var fireRES: Label = $"container/Value Fire RES"
 @onready var waterDMG: Label = $"container/Value Water DMG"

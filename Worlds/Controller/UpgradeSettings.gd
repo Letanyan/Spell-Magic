@@ -83,6 +83,12 @@ var max_spells_in_book := 4
 var cost_spells_in_book := 25
 const LIMIT_SPELLS_IN_BOOK := 200
 
+var upgrade_running_speed := 0.25
+var max_running_speed := 2.0
+var cost_running_speed := 50
+var buff_running_speed := 0.0
+const LIMIT_RUNNING_SPEED := 15.0
+
 var currency := 1000
 
 signal max_velocity_updated(value: float)
@@ -104,6 +110,7 @@ func reset_all_stats_to_default_values():
 	max_mana = 100.0
 	max_health = 100.0
 	max_spells_in_book = 4
+	max_running_speed = 2.0
 	max_attack = 10.0
 	max_defence = 10.0
 	has_spell_element = 0b11
@@ -119,6 +126,7 @@ func reset_all_stats_to_max_values():
 	max_P = UpgradeSettings.LIMIT_P
 	max_r = UpgradeSettings.LIMIT_r
 	max_spells_in_book = UpgradeSettings.LIMIT_SPELLS_IN_BOOK
+	max_running_speed = UpgradeSettings.LIMIT_RUNNING_SPEED
 	max_v = UpgradeSettings.LIMIT_v
 	max_T = UpgradeSettings.LIMIT_T
 	has_spell_element = 0b1111_111
@@ -133,6 +141,17 @@ func purchase_spells_in_book() -> PurchaseError:
 		
 	max_spells_in_book += upgrade_spells_in_book
 	currency -= cost_spells_in_book
+	return PurchaseError.NONE
+	
+func purchase_running_speed() -> PurchaseError:
+	if currency < cost_running_speed:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_running_speed + upgrade_running_speed > LIMIT_RUNNING_SPEED:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_running_speed += upgrade_running_speed
+	currency -= cost_running_speed
 	return PurchaseError.NONE
 	
 func purchase_health() -> PurchaseError:
@@ -273,16 +292,16 @@ func save_dict():
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
 		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P, "max_v": max_v,
 		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
-		"max_attack": max_attack, "max_defence": max_defence,
-		
+		"max_attack": max_attack, "max_defence": max_defence, "max_running_speed": max_running_speed,
+				
 		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
 		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P, "cost_v": cost_v,
 		"cost_mana": cost_mana, "cost_health": cost_health, "cost_spells_in_book": cost_spells_in_book,
-		"cost_attack": cost_attack, "cost_defence": cost_defence,
+		"cost_attack": cost_attack, "cost_defence": cost_defence, "cost_running_speed": cost_running_speed,
 		
 		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P, "upgrade_v": upgrade_v,
 		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
-		"upgrade_attack": upgrade_attack, "upgrade_defence": upgrade_defence,
+		"upgrade_attack": upgrade_attack, "upgrade_defence": upgrade_defence, "upgrade_running_speed": upgrade_running_speed,
 		
 		"currency": currency,
 	}
@@ -299,6 +318,7 @@ func load_dict(data: Dictionary):
 	max_mana = data.get("max_mana", 100.0)
 	max_health = data.get("max_health", 100.0)
 	max_spells_in_book = data.get("max_spells_in_book", 4)
+	max_running_speed = data.get("max_running_speed", 2.0)
 	max_attack = data.get("max_attack", 100.0)
 	max_defence = data.get("max_defence", 100.0)
 	
@@ -313,6 +333,7 @@ func load_dict(data: Dictionary):
 	cost_mana = data.get("cost_mana", 10)
 	cost_health = data.get("cost_health", 10)
 	cost_spells_in_book = data.get("cost_spells_in_book", 25)
+	cost_running_speed = data.get("cost_running_speed", 50)
 	cost_attack = data.get("cost_attack", 10)
 	cost_defence = data.get("cost_defence", 10)
 	
@@ -325,6 +346,7 @@ func load_dict(data: Dictionary):
 	upgrade_mana = data.get("upgrade_mana", 10.0)
 	upgrade_health = data.get("upgrade_health", 10.0)
 	upgrade_spells_in_book = data.get("upgrade_spells_in_book", 2)
+	upgrade_running_speed = data.get("upgrade_running_speed", 0.25)
 	upgrade_attack = data.get("upgrade_attack", 10)
 	upgrade_defence = data.get("upgrade_defence", 10)
 	

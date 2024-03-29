@@ -180,6 +180,7 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale
 	return result
 
 func height(x: float, y: float) -> float:
+	#return Globals.sea_level() + 100.0
 	return back.height(x, y)
 	#var result := 0.0
 #

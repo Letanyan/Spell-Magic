@@ -23,7 +23,7 @@ enum Element {
 	FIRE, WATER, ROCK, AIR, ICE, ELECTRIC,
 	MANA, HEALTH, ATTACK, DEFENCE,
 	POWER, COUNT, DURATION, MANA_BUMP,
-	SPELL_VELOCITY, SPELL_RADIUS
+	SPELL_VELOCITY, SPELL_RADIUS, RUNNING_SPEED
 }
 
 enum Pattern {
@@ -53,7 +53,7 @@ class Option:
 		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
 		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
-		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1}, 
+		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1}, 
 		amount_range: Vector2i = Vector2i(-100, 100), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
@@ -190,6 +190,8 @@ class Option:
 				return "v"
 			Element.SPELL_RADIUS:
 				return "r"
+			Element.RUNNING_SPEED:
+				return "S"
 		return ""
 		
 	func element_texture() -> Texture2D:
@@ -228,6 +230,8 @@ class Option:
 				return preload("res://GUI/Images/velocity.svg")
 			Element.SPELL_RADIUS:
 				return preload("res://GUI/Images/radius.svg")
+			Element.RUNNING_SPEED:
+				return preload("res://GUI/Images/velocity.svg")
 		return preload("res://GUI/Images/infinity.svg")
 		
 	func element_color() -> Color:
@@ -266,6 +270,8 @@ class Option:
 				return Color.GREEN_YELLOW
 			Element.SPELL_RADIUS:
 				return Color.DARK_RED
+			Element.RUNNING_SPEED:
+				return Color.SANDY_BROWN
 		return Color.DEEP_PINK
 		
 	func color() -> Color:
@@ -332,6 +338,8 @@ class Option:
 				result += "v"
 			Element.SPELL_RADIUS:
 				result += "r"
+			Element.RUNNING_SPEED:
+				result += "S"
 				
 		return result
 	

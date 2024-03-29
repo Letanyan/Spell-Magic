@@ -38,6 +38,10 @@ var settings: WorldSettings:
 @onready var max_spell_count_upgrade: Button = $container/max_spell_count/upgrade
 @onready var max_spell_count_cost: RichTextLabel = $container/max_spell_count/upgrade/cost
 
+@onready var max_running_speed_current: Label = $container/running_speed/current
+@onready var max_running_speed_upgrade: Button = $container/running_speed/upgrade
+@onready var max_running_speed_cost: RichTextLabel = $container/running_speed/upgrade/cost
+
 @onready var attack_current: Label = $container/attack/current
 @onready var attack_upgrade: Button = $container/attack/upgrade
 @onready var attack_cost: RichTextLabel = $container/attack/upgrade/cost
@@ -80,6 +84,7 @@ func _process(delta: float) -> void:
 
 func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book)
+	max_running_speed_current.text = str(settings.upgrade_settings.max_running_speed)
 	max_P_current.text = str(settings.upgrade_settings.max_P)
 	max_v_current.text = str(settings.upgrade_settings.max_v)
 	max_N_current.text = str(settings.upgrade_settings.max_N)
@@ -104,6 +109,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	
 	var coin_suffix := " [img]res://GUI/Images/coins.svg[/img][/center]"
 	max_spell_count_cost.text = "[center]" + str(settings.upgrade_settings.cost_spells_in_book) + coin_suffix
+	max_running_speed_cost.text = "[center]" + str(settings.upgrade_settings.cost_running_speed) + coin_suffix
 	max_P_cost.text = "[center]" + str(settings.upgrade_settings.cost_P) + coin_suffix
 	max_v_cost.text = "[center]" + str(settings.upgrade_settings.cost_v) + coin_suffix
 	max_N_cost.text = "[center]" + str(settings.upgrade_settings.cost_N) + coin_suffix
@@ -129,6 +135,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img]res://GUI/Images/coins.svg[/img][/right]"
 	
 	max_spell_count_upgrade.disabled = settings.upgrade_settings.max_spells_in_book >= UpgradeSettings.LIMIT_SPELLS_IN_BOOK
+	max_running_speed_upgrade.disabled = settings.upgrade_settings.max_running_speed >= UpgradeSettings.LIMIT_RUNNING_SPEED
 	max_P_upgrade.disabled = settings.upgrade_settings.max_P >= UpgradeSettings.LIMIT_P
 	max_v_upgrade.disabled = settings.upgrade_settings.max_v >= UpgradeSettings.LIMIT_v
 	max_T_upgrade.disabled = settings.upgrade_settings.max_T >= UpgradeSettings.LIMIT_T
@@ -140,6 +147,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	defence_upgrade.disabled = settings.upgrade_settings.max_defence >= UpgradeSettings.LIMIT_DEFENCE
 	
 	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book)
+	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed)
 	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P)
 	max_v_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_v)
 	max_T_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_T)
@@ -152,6 +160,10 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 
 func _on_max_spell_count_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spells_in_book()
+	update_state(err)
+	
+func _on_max_running_speed_upgrade_pressed() -> void:
+	var err := settings.upgrade_settings.purchase_running_speed()
 	update_state(err)
 	
 func _on_void_upgrade_pressed() -> void:

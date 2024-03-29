@@ -92,10 +92,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 46.0
-offset_top = 49.0
-offset_right = 86.0
-offset_bottom = 89.0
+offset_left = 48.0
+offset_top = 56.0
+offset_right = 88.0
+offset_bottom = 96.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/attack"]
@@ -142,10 +142,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 47.0
-offset_top = 89.0
-offset_right = 87.0
-offset_bottom = 129.0
+offset_left = 48.0
+offset_top = 96.0
+offset_right = 88.0
+offset_bottom = 136.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/defence"]
@@ -283,9 +283,9 @@ scroll_active = false
 [node name="max_spell_count" type="Control" parent="container"]
 anchors_preset = 0
 offset_left = 56.0
-offset_top = 80.0
+offset_top = 56.0
 offset_right = 96.0
-offset_bottom = 120.0
+offset_bottom = 96.0
 
 [node name="label" type="Label" parent="container/max_spell_count"]
 layout_mode = 0
@@ -311,6 +311,48 @@ text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_spell_count/upgrade"]
+layout_mode = 0
+offset_left = 104.0
+offset_right = 204.0
+offset_bottom = 26.0
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="running_speed" type="Control" parent="container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 56.0
+offset_top = 96.0
+offset_right = 96.0
+offset_bottom = 136.0
+
+[node name="label" type="RichTextLabel" parent="container/running_speed"]
+layout_mode = 0
+offset_right = 144.0
+offset_bottom = 26.0
+bbcode_enabled = true
+text = "Max [img=16]res://GUI/Images/running.svg[/img] Speed
+"
+
+[node name="current" type="Label" parent="container/running_speed"]
+layout_mode = 0
+offset_left = 160.0
+offset_right = 288.0
+offset_bottom = 26.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/running_speed"]
+layout_mode = 0
+offset_left = 296.0
+offset_right = 396.0
+offset_bottom = 31.0
+text = "+ 5
+"
+
+[node name="cost" type="RichTextLabel" parent="container/running_speed/upgrade"]
 layout_mode = 0
 offset_left = 104.0
 offset_right = 204.0
@@ -725,8 +767,8 @@ scroll_active = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 28.0
-offset_bottom = 60.0
+offset_top = 32.0
+offset_bottom = 64.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -736,6 +778,15 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_top = 472.0
 offset_bottom = 504.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator7" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 76.0
+offset_bottom = 108.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -775,6 +826,19 @@ offset_bottom = 328.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
+[node name="VSeparator2" type="VSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = 48.0
+offset_right = 32.0
+offset_bottom = -449.0
+grow_vertical = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
+
 [node name="VSeparator" type="VSeparator" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -793,6 +857,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 [connection signal="pressed" from="container/max_P/upgrade" to="." method="_on_max_P_upgrade_pressed"]
 [connection signal="pressed" from="container/max_M/upgrade" to="." method="_on_max_M_upgrade_pressed"]
 [connection signal="pressed" from="container/max_spell_count/upgrade" to="." method="_on_max_spell_count_upgrade_pressed"]
+[connection signal="pressed" from="container/running_speed/upgrade" to="." method="_on_max_running_speed_upgrade_pressed"]
 [connection signal="pressed" from="container/elements/Rock" to="." method="_on_rock_upgrade_pressed"]
 [connection signal="pressed" from="container/elements/Ice" to="." method="_on_ice_upgrade_pressed"]
 [connection signal="pressed" from="container/elements/Electric" to="." method="_on_electric_upgrade_pressed"]

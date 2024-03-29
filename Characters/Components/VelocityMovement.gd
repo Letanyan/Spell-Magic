@@ -31,6 +31,10 @@ static func player() -> VelocityMovement:
 	var desired_speed = 12.0
 	var s = (60.0 / 21.0) * 0.85
 	return VelocityMovement.new(s * desired_speed, 150, 150)
+	
+func update_player_movement_speed(target: float):
+	var s = (60.0 / 21.0) * 0.85
+	speed = s * target
 
 func increment_ticks(delta: float):
 	vital_tick += delta
@@ -76,8 +80,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
 		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
-		target_velocity.x = direction.x * speed * (1.0 - vitals.freeze.value) * input_len * stun_value
-		target_velocity.z = direction.z * speed * (1.0 - vitals.freeze.value) * input_len * stun_value
+		target_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
+		target_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 	else:
 		target_velocity.x = 0.0
 		target_velocity.z = 0.0

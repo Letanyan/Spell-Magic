@@ -38,6 +38,7 @@ signal spell_velocity_was_buffed(amount: float)
 signal spell_radius_was_buffed(amount: float)
 signal attack_was_buffed(amount: float)
 signal defence_was_buffed(amount: float)
+signal speed_was_buffed(amount: float)
 
 var vitals: Vitals
 
@@ -107,7 +108,8 @@ func _physics_process(delta: float) -> void:
 	
 	invunerable = max(0.0, invunerable - delta)
 		
-	var movement := velocity_movement.update(delta, vitals, 14, self)
+	velocity_movement.update_player_movement_speed(magic_book.settings.upgrade_settings.max_running_speed + magic_book.settings.upgrade_settings.buff_running_speed)
+	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self)
 	emit_vitals_update()
 	
 	velocity = movement["velocity"]
@@ -322,6 +324,22 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 					get_tree().create_timer(duration).timeout.connect(func(): 
 						magic_book.settings.upgrade_settings.buff_defence -= value
 						defence_was_buffed.emit(magic_book.settings.upgrade_settings.buff_defence)
+					)
+				elif effect_el == Artifact.Element.RUNNING_SPEED:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+						value = magic_book.settings.upgrade_settings.max_running_speed * amount.x / 100.0
+					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
+						value = -amount.x
+					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
+						value = -magic_book.settings.upgrade_settings.max_running_speed * amount.x / 100.0
+					magic_book.settings.upgrade_settings.buff_running_speed += value
+					speed_was_buffed.emit(magic_book.settings.upgrade_settings.buff_running_speed)
+					get_tree().create_timer(duration).timeout.connect(func(): 
+						magic_book.settings.upgrade_settings.buff_running_speed -= value
+						speed_was_buffed.emit(magic_book.settings.upgrade_settings.buff_running_speed)
 					)
 				else:
 					if effect_el == Artifact.Element.ANY:

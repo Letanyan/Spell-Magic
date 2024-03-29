@@ -294,6 +294,7 @@ func update_stats_view():
 	sv.T.text = "%d+%d" % [ws.max_T, ws.buff_T]
 	sv.N.text = "%d+%d" % [ws.max_N, ws.buff_N]
 	sv.P.text = "%d+%d" % [ws.max_P, ws.buff_P]
+	sv.S.text = "%d+%d" % [ws.max_running_speed, ws.buff_running_speed]
 	
 	var v: Vector2 = Vector2.ZERO
 	sv.fireDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]
