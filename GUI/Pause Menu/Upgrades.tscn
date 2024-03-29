@@ -93,9 +93,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = 48.0
-offset_top = 56.0
+offset_top = 48.0
 offset_right = 88.0
-offset_bottom = 96.0
+offset_bottom = 88.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/attack"]
@@ -283,9 +283,9 @@ scroll_active = false
 [node name="max_spell_count" type="Control" parent="container"]
 anchors_preset = 0
 offset_left = 56.0
-offset_top = 56.0
+offset_top = 48.0
 offset_right = 96.0
-offset_bottom = 96.0
+offset_bottom = 88.0
 
 [node name="label" type="Label" parent="container/max_spell_count"]
 layout_mode = 0
@@ -768,7 +768,7 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 32.0
-offset_bottom = 64.0
+offset_bottom = 48.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -785,8 +785,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 76.0
-offset_bottom = 108.0
+offset_top = 80.0
+offset_bottom = 96.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -812,8 +812,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 120.0
-offset_bottom = 152.0
+offset_top = 128.0
+offset_bottom = 144.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -833,7 +833,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -24.0
-offset_top = 48.0
+offset_top = 40.0
 offset_right = 32.0
 offset_bottom = -449.0
 grow_vertical = 2

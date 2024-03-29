@@ -50,16 +50,16 @@ func _ready() -> void:
 	$StartingUpgradesPanel/P/Slider.max_value = upgrades.LIMIT_P
 	$StartingUpgradesPanel/N/Slider.max_value = upgrades.LIMIT_N
 	
-	$StartingUpgradesPanel/Fire.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.FIRE)
-	$StartingUpgradesPanel/Water.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.WATER)
-	$StartingUpgradesPanel/Rock.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.ROCK)
-	$StartingUpgradesPanel/Air.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.AIR)
-	$StartingUpgradesPanel/Ice.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.AIR)
-	$StartingUpgradesPanel/Electric.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.ELECTRIC)
+	$StartingUpgradesPanel/SpellElements/Fire.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.FIRE)
+	$StartingUpgradesPanel/SpellElements/Water.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.WATER)
+	$StartingUpgradesPanel/SpellElements/Rock.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.ROCK)
+	$StartingUpgradesPanel/SpellElements/Air.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.AIR)
+	$StartingUpgradesPanel/SpellElements/Ice.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.AIR)
+	$StartingUpgradesPanel/SpellElements/Electric.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.ELECTRIC)
 	
-	$StartingUpgradesPanel/ChainAtStart.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.START)
-	$StartingUpgradesPanel/ChainAtEnd.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.END)
-	$StartingUpgradesPanel/ChainOnHit.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.HIT)
+	$StartingUpgradesPanel/ChainMethods/ChainAtStart.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.START)
+	$StartingUpgradesPanel/ChainMethods/ChainAtEnd.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.END)
+	$StartingUpgradesPanel/ChainMethods/ChainOnHit.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -253,3 +253,7 @@ func _on_chain_on_hit_toggled(button_pressed: bool) -> void:
 func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	$StartingUpgradesPanel.visible = button_pressed
 
+
+func _on_S_value_changed(value: float) -> void:
+	$StartingUpgradesPanel/S/Value.text = "%.2f" % value
+	upgrades.max_running_speed = value

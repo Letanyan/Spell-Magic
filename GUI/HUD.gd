@@ -286,15 +286,15 @@ func update_stats_view():
 	var ws := world_settings.upgrade_settings
 	var sv := stats_view
 	sv.health.text = "%d" % [ws.max_health]
-	sv.velocity.text = "%d+%d" % [ws.max_v, ws.buff_v]
+	sv.velocity.text = "%.1f+%.1f" % [ws.max_v, ws.buff_v]
 	sv.mana.text = "%d+%d" % [ws.max_mana, ws.buff_mana]
 	sv.attack.text = "%d+%d" % [ws.max_attack, ws.buff_attack]
 	sv.defence.text = "%d+%d" % [ws.max_defence, ws.buff_defence]
-	sv.r.text = "%d+%d" % [ws.max_r, ws.buff_r]
+	sv.r.text = "%.1f+%.1f" % [ws.max_r, ws.buff_r]
 	sv.T.text = "%d+%d" % [ws.max_T, ws.buff_T]
 	sv.N.text = "%d+%d" % [ws.max_N, ws.buff_N]
 	sv.P.text = "%d+%d" % [ws.max_P, ws.buff_P]
-	sv.S.text = "%d+%d" % [ws.max_running_speed, ws.buff_running_speed]
+	sv.S.text = "%.1f+%.1f" % [ws.max_running_speed, ws.buff_running_speed]
 	
 	var v: Vector2 = Vector2.ZERO
 	sv.fireDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]
