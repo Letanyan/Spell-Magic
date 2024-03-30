@@ -25,27 +25,27 @@ func _ready():
 	attack_path.max_radius = 1
 	current_path = idle_path
 	
-	var water_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "8"})
+	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"})
 	water_small.element = Spell.Element.WATER
 	water_small.radius = 0.2
-	var water_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"})
+	var water_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"})
 	water_medium.element = Spell.Element.WATER
 	water_medium.radius = 0.8
-	var water_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"})
+	var water_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"})
 	water_large.element = Spell.Element.WATER
 	water_large.radius = 1.2
 	
-	var ice_small := GlobalData.magic_book.spell_with_name("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"})
+	var ice_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"})
 	ice_small.element = Spell.Element.ICE
 	ice_small.radius = 0.8
-	var ice_medium := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"})
+	var ice_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"})
 	ice_medium.element = Spell.Element.ICE
 	ice_medium.radius = 1.6
-	var ice_large := GlobalData.magic_book.spell_with_name("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"})
+	var ice_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"})
 	ice_large.element = Spell.Element.ICE
 	ice_large.radius = 3.2
 	
-	var ice_wall := GlobalData.magic_book.spell_with_name("wall", {})
+	var ice_wall := GlobalData.magic_book.copy_spell("wall", {})
 	ice_wall.element = Spell.Element.ICE
 	ice_wall.radius = 3 * 2
 	ice_wall.follow = true
@@ -107,8 +107,8 @@ func _physics_process(delta: float) -> void:
 
 func __default_pattern() -> AttackPatterns:
 	default_pattern.spells = [
-		GlobalData.magic_book.spell_with_name("Rain"),
-		GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+		GlobalData.magic_book.copy_spell("Rain"),
+		GlobalData.magic_book.copy_spell("parabola", {"height":"4", "speed":"4"})
 	]
 	return default_pattern
 

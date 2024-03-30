@@ -69,7 +69,7 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 			var not_active_errors := []
 			for i in range(all_spells.size()):
 				var n := all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
-				var s = book.spell_with_name(n)
+				var s = book.copy_spell(n)
 				if s == null:
 					missing_errors.append("'[b]" + n + "[/b]'")
 				elif not s.is_active:

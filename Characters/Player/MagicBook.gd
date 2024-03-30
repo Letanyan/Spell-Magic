@@ -98,6 +98,12 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 		return DisallowSpellReason.MANA
 		
 	return DisallowSpellReason.NONE
+	
+func can_use_spell_with_name(n: String) -> DisallowSpellReason:
+	var s := find_spell(n)
+	if s != null:
+		return can_use_spell(s)
+	return DisallowSpellReason.ACTIVE
 
 func rebuild_spell_chains():
 	for s in spells:
@@ -128,14 +134,18 @@ func spell_exists(n: String) -> bool:
 			return true
 	return false
 	
-func spell_with_name(n: String, constants: Dictionary = {}, duplicate: bool = false) -> Spell:
+func find_spell(n: String) -> Spell:
 	for s in spells:
 		if s.name == n:
-			if not constants.is_empty() or duplicate:
-				var result := s.duplicate()
-				result.overwrite_expressions(constants)
-				return result
 			return s
+	return null
+	
+func copy_spell(n: String, constants: Dictionary = {}, duplicate: bool = false) -> Spell:
+	for s in spells:
+		if s.name == n:
+			var result := s.duplicate()
+			result.overwrite_expressions(constants)
+			return result
 	return null
 
 func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool) -> String:

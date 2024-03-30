@@ -79,6 +79,8 @@ func update_hud_with_vitals(vitals: Vitals):
 	wet_bar.value = vitals.wetness.value
 	wet_bar.max_value = vitals.wetness.max_value
 	update_stats_view()
+	if wand != null and book != null and player != null:
+		update_wand_mappings()
 
 func spell_on_cooldown(spell: Spell):
 	var i := 0
@@ -209,33 +211,51 @@ func update_wand_mappings():
 		for m in wand.mods:
 			modifier_keys += GlobalData.controller.key_images([m]) + " "
 		rich_text += " Modifiers: " + modifier_keys + "\n"
-	
+		
+	var build_desc := func(kd: String, title: String, spell: String) -> String:
+		var reason := book.can_use_spell_with_name(spell)
+		if reason == MagicBook.DisallowSpellReason.NONE:
+			var s := book.find_spell(spell)
+			if player.vitals.mana.value < s.actual_mana_cost():
+				reason = MagicBook.DisallowSpellReason.MANA
+		match reason:
+			MagicBook.DisallowSpellReason.NONE:
+				return kd + " [b]" + title +  "[/b]: " + spell + "\n"
+			MagicBook.DisallowSpellReason.COOLDOWN:
+				return kd + " [b]" + title + "[/b]: [color=#F05]" + spell + "[/color]\n"
+			MagicBook.DisallowSpellReason.MANA:
+				return kd + " [b]" + title + "[/b]: [color=#50F]" + spell + "[/color]\n"
+			MagicBook.DisallowSpellReason.ACTIVE:
+				return kd + " [b]" + title + "[/b]: [color=#222]" + spell + "[/color]\n"
+			_:
+				return kd + " [b]" + title + "[/b]: [color=#F50]" + spell + "[/color]\n"
+		
 	for k in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
 		var kd = " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
-				if not s.spell.is_empty(): 
-					rich_text += kd + " [b]Cast[/b]: " + s.spell[0] + "\n"
+				if not s.spell.is_empty():
+					rich_text += build_desc.call(kd, "Cast", s.spell[0])
 			Wand.Kind.FIRE_HOLD:
 				if not s.spell.is_empty(): 
-					rich_text += kd + " [b]Charge[/b]: " + s.spell[0] + "\n"
+					rich_text += build_desc.call(kd, "Charge", s.spell[0])					
 			Wand.Kind.RAPID_FIRE:
-				if not s.spell.is_empty(): 
-					rich_text += kd + " [b]Rapid[/b]: " + s.spell[0] + "\n"
+				if not s.spell.is_empty():
+					rich_text += build_desc.call(kd, "Rapid", s.spell[0])
 				
 			Wand.Kind.PICK:
 				if not s.spell.is_empty(): 
-					rich_text += kd + " [b]Choose[/b]: " + s.display_rotated_spells_list() + "\n"
+					rich_text += kd + " [b]Choose[/b]: " + s.display_rotated_spells_list(book) + "\n"
 			Wand.Kind.FIRE_PICKED:
-				if not wand.picked.is_empty(): 
-					rich_text += kd + " [b]Cast[/b]: [i]" + wand.picked + "[/i]\n"
+				if not wand.picked.is_empty():
+					rich_text += build_desc.call(kd, "Cast", "[i]" + wand.picked + "[/i]")
 			Wand.Kind.FIRE_PICKED_HOLD:
-				if not wand.picked.is_empty(): 
-					rich_text += kd + " [b]Charge[/b]: [i]" + wand.picked + "[/i]\n"
+				if not wand.picked.is_empty():
+					rich_text += build_desc.call(kd, "Charge", "[i]" + wand.picked + "[/i]")
 			Wand.Kind.RAPID_SELECT:
-				if not wand.picked.is_empty(): 
-					rich_text += kd + " [b]Rapid[/b]: [i]" + wand.picked + "[/i]\n"
+				if not wand.picked.is_empty():
+					rich_text += build_desc.call(kd, "Rapid", "[i]" + wand.picked + "[/i]")
 	
 	rich_text += "[/font_size]"
 	wand_mapping.text = ""

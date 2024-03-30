@@ -40,9 +40,9 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"h":"4", "s":"4"})
+	var water_para := GlobalData.magic_book.copy_spell("parabola", {"h":"4", "s":"4"})
 	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.spell_with_name("linear", {"s":"15", "d":"1"})
+	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":"15", "d":"1"})
 	water_line.element = Spell.Element.WATER
 	
 	default_pattern = AttackPatterns.new(
@@ -71,9 +71,9 @@ func _physics_process(delta: float) -> void:
 		jump_timer += 1
 
 func __default_pattern() -> AttackPatterns:
-	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	var water_para := GlobalData.magic_book.copy_spell("parabola", {"height":"4", "speed":"4"})
 	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.spell_with_name("linear", {"speed":"15", "offset":"1"})
+	var water_line := GlobalData.magic_book.copy_spell("linear", {"speed":"15", "offset":"1"})
 	water_line.element = Spell.Element.WATER
 	
 	default_pattern.spells = [

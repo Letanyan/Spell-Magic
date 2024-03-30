@@ -46,7 +46,7 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_spell := GlobalData.magic_book.spell_with_name("linear", {}, true)
+	var water_spell := GlobalData.magic_book.copy_spell("linear", {}, true)
 	water_spell.element = Spell.Element.WATER
 	
 	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 110.0 * 50.0), "d":"Br*2+r"})
@@ -162,7 +162,7 @@ func drop_artifact() -> Artifact:
 	return Artifact.new(Time.get_datetime_string_from_system(), t, r, b, l)
 
 func drop_spell() -> Spell:
-	var water_para := GlobalData.magic_book.spell_with_name("parabola", {"height":"4", "speed":"4"})
+	var water_para := GlobalData.magic_book.copy_spell("parabola", {"height":"4", "speed":"4"})
 	water_para.element = Spell.Element.AIR
 	water_para.name = "WaterP"
 	return water_para

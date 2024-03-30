@@ -35,7 +35,7 @@ class Option:
 			spell_index = 0
 		return spell[spell_index]
 		
-	func display_rotated_spells_list() -> String:
+	func display_rotated_spells_list(book: MagicBook = null) -> String:
 		if spell.size() == 0:
 			return ""
 		var result := ""
@@ -43,7 +43,11 @@ class Option:
 		if i >= spell.size():
 			i = 0
 		while true:
-			result += spell[i] + ", "
+			if book == null and not book.can_use_spell_with_name(spell[i]):
+				result += spell[i] + ", "
+			else:
+				result += "[color=#F05]" + spell[i] + "[/color], "
+				
 			if i == spell_index:
 				break
 			i += 1

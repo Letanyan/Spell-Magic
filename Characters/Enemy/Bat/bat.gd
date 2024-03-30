@@ -59,23 +59,23 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 = GlobalData.magic_book.spell_with_name("linear", {"s": "2", "d": "2"})
+	var elec1 = GlobalData.magic_book.copy_spell("linear", {"s": "2", "d": "2"})
 	elec1.element = Spell.Element.ELECTRIC
 	elec1.duration = 10.0
-	var elec2 = GlobalData.magic_book.spell_with_name("linear", {"s": "5", "d": "2"})
+	var elec2 = GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
 	elec2.element = Spell.Element.ELECTRIC
 	elec2.duration = 8.0
-	var elec3 = GlobalData.magic_book.spell_with_name("linear", {"s": "10", "d": "2"})
+	var elec3 = GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"})
 	elec3.element = Spell.Element.ELECTRIC
 	elec3.duration = 6.0
 	
-	var elec_arc1 = GlobalData.magic_book.spell_with_name("arc", {"R": "pi", "s": "2"})
+	var elec_arc1 = GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "2"})
 	elec_arc1.element = Spell.Element.ELECTRIC
 	elec_arc1.duration = 10.0
-	var elec_arc2 = GlobalData.magic_book.spell_with_name("arc", {"R": "pi/2", "s": "5"})
+	var elec_arc2 = GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"})
 	elec_arc2.element = Spell.Element.ELECTRIC
 	elec_arc2.duration = 8.0
-	var elec_arc3 = GlobalData.magic_book.spell_with_name("arc", {"R": "pi/4", "s": "10"})
+	var elec_arc3 = GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"})
 	elec_arc3.element = Spell.Element.ELECTRIC
 	elec_arc3.duration = 6.0
 	

@@ -30,7 +30,7 @@ func setup(_settings: WorldSettings) -> void:
 	
 	book = GlobalData.magic_book
 	book.settings = settings
-	book.ignore_cooldown = true
+	book.ignore_cooldown = false
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
 	settings.upgrade_settings.max_velocity_updated.connect(func(v):
@@ -97,7 +97,7 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 		
-	player.spell_caster.ignore_mana_cost = true
+	player.spell_caster.ignore_mana_cost = false
 	player.spell_velocity_was_buffed.connect(func(v):
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)

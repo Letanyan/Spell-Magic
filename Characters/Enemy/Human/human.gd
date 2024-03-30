@@ -23,15 +23,15 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var fire_blast := GlobalData.magic_book.spell_with_name("linear", {"d":"1", "s":"4"})
+	var fire_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"})
 	fire_blast.element = Spell.Element.FIRE
-	var water_blast := GlobalData.magic_book.spell_with_name("linear", {"s":"5", "d":"1"})
+	var water_blast := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"1"})
 	water_blast.element = Spell.Element.WATER
-	var rock_blast := GlobalData.magic_book.spell_with_name("linear", {"d":"1", "s":"4"})
+	var rock_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"})
 	rock_blast.element = Spell.Element.ROCK
-	var ice_blast := GlobalData.magic_book.spell_with_name("linear", {"s":"5", "d":"1"})
+	var ice_blast := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"1"})
 	ice_blast.element = Spell.Element.ICE
-	var electric_blast := GlobalData.magic_book.spell_with_name("linear", {"d":"1", "s":"4"})
+	var electric_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"})
 	electric_blast.element = Spell.Element.ELECTRIC
 	
 	default_pattern = AttackPatterns.new(
