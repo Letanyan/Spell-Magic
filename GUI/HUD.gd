@@ -285,7 +285,7 @@ func update_stats_view():
 	
 	var ws := world_settings.upgrade_settings
 	var sv := stats_view
-	sv.health.text = "%d" % [ws.max_health]
+	sv.health.text = "%d+%d" % [ws.max_health, ws.buff_health]
 	sv.velocity.text = "%.1f+%.1f" % [ws.max_v, ws.buff_v]
 	sv.mana.text = "%d+%d" % [ws.max_mana, ws.buff_mana]
 	sv.attack.text = "%d+%d" % [ws.max_attack, ws.buff_attack]

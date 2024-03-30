@@ -22,7 +22,7 @@ enum Element {
 	ANY, # is used as an offset so the next 6 elements map to Spell.Element 
 	FIRE, WATER, ROCK, AIR, ICE, ELECTRIC,
 	MANA, HEALTH, ATTACK, DEFENCE,
-	POWER, COUNT, DURATION, MANA_BUMP,
+	POWER, COUNT, DURATION, MANA_BUMP, HEALTH_BUMP,
 	SPELL_VELOCITY, SPELL_RADIUS, RUNNING_SPEED
 }
 
@@ -53,7 +53,7 @@ class Option:
 		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
 		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
-		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1}, 
+		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1, Element.HEALTH_BUMP: 0.1}, 
 		amount_range: Vector2i = Vector2i(-100, 100), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
@@ -186,6 +186,8 @@ class Option:
 				return "N"
 			Element.MANA_BUMP:
 				return "M+"
+			Element.HEALTH_BUMP:
+				return "H+"
 			Element.SPELL_VELOCITY:
 				return "v"
 			Element.SPELL_RADIUS:
@@ -226,6 +228,8 @@ class Option:
 				return preload("res://GUI/Images/count.svg")
 			Element.MANA_BUMP:
 				return preload("res://GUI/Images/mana.svg")
+			Element.MANA_BUMP:
+				return preload("res://GUI/Images/health.svg")
 			Element.SPELL_VELOCITY:
 				return preload("res://GUI/Images/velocity.svg")
 			Element.SPELL_RADIUS:
@@ -266,6 +270,8 @@ class Option:
 				return Color.DARK_ORANGE
 			Element.MANA_BUMP:
 				return Color.MIDNIGHT_BLUE
+			Element.HEALTH_BUMP:
+				return Color.SEA_GREEN
 			Element.SPELL_VELOCITY:
 				return Color.GREEN_YELLOW
 			Element.SPELL_RADIUS:
@@ -333,6 +339,8 @@ class Option:
 			Element.COUNT:
 				result += "N"
 			Element.MANA_BUMP:
+				result += "M+"
+			Element.HEALTH_BUMP:
 				result += "M+"
 			Element.SPELL_VELOCITY:
 				result += "v"

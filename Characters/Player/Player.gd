@@ -49,7 +49,7 @@ var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
 
 func _ready():
 	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.PLAYER)
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
+	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.55))
 	emit_vitals_update()
 	velocity = Vector3.ZERO
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
@@ -269,6 +269,14 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell):
 						value = magic_book.settings.upgrade_settings.max_mana * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_mana += value
 					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.upgrade_settings.buff_mana -= value)
+				elif effect_el == Artifact.Element.HEALTH_BUMP:
+					var value := 0.0
+					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
+						value = amount.x
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
+						value = magic_book.settings.upgrade_settings.max_health * amount.y / 100.0
+					magic_book.settings.upgrade_settings.buff_health += value
+					get_tree().create_timer(duration).timeout.connect(func(): magic_book.settings.upgrade_settings.buff_health -= value)
 				elif effect_el == Artifact.Element.SPELL_VELOCITY:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:

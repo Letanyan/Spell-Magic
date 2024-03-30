@@ -65,6 +65,7 @@ const LIMIT_MANA := 1000
 var upgrade_health := 10.0
 var max_health := 100.0
 var cost_health := 10
+var buff_health := 0.0
 const LIMIT_HEALTH := 1000.0
 
 var upgrade_attack := 5.0
@@ -93,6 +94,7 @@ var currency := 1000
 
 signal max_velocity_updated(value: float)
 signal max_radius_updated(value: float)
+signal upgrade_was_purchased(settings: UpgradeSettings)
 
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) != 0
@@ -132,6 +134,9 @@ func reset_all_stats_to_max_values():
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
 
+func emit_upgrade_purchase():
+	upgrade_was_purchased.emit(self)
+
 func purchase_spells_in_book() -> PurchaseError:
 	if currency < cost_spells_in_book:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
@@ -141,6 +146,7 @@ func purchase_spells_in_book() -> PurchaseError:
 		
 	max_spells_in_book += upgrade_spells_in_book
 	currency -= cost_spells_in_book
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_running_speed() -> PurchaseError:
@@ -152,6 +158,7 @@ func purchase_running_speed() -> PurchaseError:
 		
 	max_running_speed += upgrade_running_speed
 	currency -= cost_running_speed
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_health() -> PurchaseError:
@@ -163,6 +170,7 @@ func purchase_health() -> PurchaseError:
 		
 	max_health += upgrade_health
 	currency -= cost_health
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 func purchase_mana() -> PurchaseError:
@@ -174,6 +182,7 @@ func purchase_mana() -> PurchaseError:
 		
 	max_mana += upgrade_mana
 	currency -= cost_mana
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_attack() -> PurchaseError:
@@ -185,6 +194,7 @@ func purchase_attack() -> PurchaseError:
 		
 	max_attack += upgrade_attack
 	currency -= cost_attack
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 func purchase_defence() -> PurchaseError:
@@ -196,6 +206,7 @@ func purchase_defence() -> PurchaseError:
 		
 	max_defence += upgrade_defence
 	currency -= cost_defence
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 	
@@ -208,6 +219,7 @@ func purchase_v() -> PurchaseError:
 		
 	max_v += upgrade_v
 	currency -= cost_v
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 func purchase_P() -> PurchaseError:
@@ -219,6 +231,7 @@ func purchase_P() -> PurchaseError:
 		
 	max_P += upgrade_P
 	currency -= cost_P
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 func purchase_D() -> PurchaseError:
@@ -230,6 +243,7 @@ func purchase_D() -> PurchaseError:
 		
 	max_D += upgrade_D
 	currency -= cost_D
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_N() -> PurchaseError:
@@ -241,6 +255,7 @@ func purchase_N() -> PurchaseError:
 		
 	max_N += upgrade_N
 	currency -= cost_N
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_T() -> PurchaseError:
@@ -252,6 +267,7 @@ func purchase_T() -> PurchaseError:
 		
 	max_T += upgrade_T
 	currency -= cost_T
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 func purchase_r() -> PurchaseError:
@@ -263,6 +279,7 @@ func purchase_r() -> PurchaseError:
 		
 	max_r += upgrade_r
 	currency -= cost_r
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_spell_element(el: Spell.Element) -> PurchaseError:
@@ -274,6 +291,7 @@ func purchase_spell_element(el: Spell.Element) -> PurchaseError:
 		
 	has_spell_element |= (1 << el)
 	currency -= cost_spell_element
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 	
 func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
@@ -285,6 +303,7 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 		
 	has_chain_method |= (1 << cm)
 	currency -= cost_chain_method
+	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 func save_dict():

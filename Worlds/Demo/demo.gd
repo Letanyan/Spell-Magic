@@ -50,6 +50,12 @@ func setup(_settings: WorldSettings) -> void:
 	settings.upgrade_settings.max_radius_updated.connect(func(r):
 		book.update_spell_limits(settings.upgrade_settings.max_v, r)
 	)
+	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings):
+		player.vitals.health.max_value = us.max_health
+		player.vitals.mana.max_value = us.max_mana
+	)
+	player.vitals.health.max_value = settings.upgrade_settings.max_health
+	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	
 	case = WandCase.new()
 	case.read(settings.world_name)

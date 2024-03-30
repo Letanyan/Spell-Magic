@@ -92,6 +92,7 @@ text = "[font_size=12][img=l,16x16]res://GUI/Images/power.svg[/img] P[/font_size
 scroll_active = false
 
 [node name="S" type="RichTextLabel" parent="container"]
+layout_mode = 0
 offset_left = 152.0
 offset_top = 104.0
 offset_right = 216.0
@@ -319,6 +320,7 @@ horizontal_alignment = 2
 clip_text = true
 
 [node name="Value S" type="Label" parent="container"]
+layout_mode = 0
 offset_left = 200.0
 offset_top = 104.0
 offset_right = 264.0
