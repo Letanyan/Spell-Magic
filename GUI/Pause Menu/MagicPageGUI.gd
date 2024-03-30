@@ -108,6 +108,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 		$container/view_chain_button.disabled = true
 		$container/Duplicate.disabled = true
 		
+	check_all_errors()
+		
 func update_cooldown():
 	if current_index < 0:
 		return
@@ -292,12 +294,16 @@ func _on_player_is_origin_toggled(button_pressed):
 func _on_M_text_changed(new_text):
 	if current_index < 0:
 		return
+	if not new_text.is_valid_float():
+		errors_list["M"] = "'%s' is not a valid number" % new_text
+	else:
+		errors_list.erase("M")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].mana_cost = raw
 	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
 		errors_list["M"] = "Value of %ds exceeds maximum of %ds" % [raw, book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana]
 	else:
-		errors_list.erase("T")
+		errors_list.erase("M")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	
@@ -329,20 +335,96 @@ func _on_constants_text_changed() -> void:
 	for def in definitions:
 		var atoms = def.split("=", false)
 		if atoms.size() == 2:
-			result[atoms[0].lstrip(" \t").rstrip(" \t")] = atoms[1]
+			result[atoms[0].strip_edges()] = atoms[1].strip_edges()
 	
 	book.spells[current_index].expression_strings = result
+	book.spells[current_index].build_expressions()
 	
 	for k in book.spells[current_index].expressions:
 		var e: Expr = book.spells[current_index].expressions[k]
 		if e.error.length() > 0:
-			errors_list[k] = e.error
+			errors_list["constant " + k] = e.error
 		else:
-			errors_list.erase(k)
+			errors_list.erase("constant " + k)
 	
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
+func check_all_errors():
+	errors_list.clear()
+	
+	var e := Expr.new(x_edit.text)
+	if e.error.length() > 0:
+		errors_list["x"] = e.error
+	e = Expr.new(y_edit.text)
+	if e.error.length() > 0:
+		errors_list["y"] = e.error
+	e = Expr.new(z_edit.text)
+	if e.error.length() > 0:
+		errors_list["z"] = e.error
+	e = Expr.new(delay_edit.text)
+	if e.error.length() > 0:
+		errors_list["D"] = e.error
+		
+	var text := r_edit.text
+	if not text.is_valid_float():
+		errors_list["r"] = "'%s' is not a valid number" % text
+	var raw: float = text.to_float()
+	if raw > book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r:
+		errors_list["r"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r]
+		
+	text = power_edit.text
+	if not text.is_valid_float():
+		errors_list["P"] = "'%s' is not a valid number" % text
+	raw = text.to_float()
+	if raw > book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P:
+		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P]
+		
+	text = duration_edit.text
+	if not text.is_valid_float():
+		errors_list["T"] = "'%s' is not a valid number" % text
+	raw = text.to_float()
+	if raw > book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T:
+		errors_list["T"] = "Value of %.2f exceeds maximum of %.2f" % [raw, book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T]
+		
+	text = count_edit.text
+	if not text.is_valid_float():
+		errors_list["N"] = "'%s' is not a valid number" % text
+	raw = text.to_float()
+	if raw > book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N:
+		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N]
+		
+	text = mana_edit.text
+	if not text.is_valid_float():
+		errors_list["M"] = "'%s' is not a valid number" % text
+	raw = text.to_float()
+	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
+		errors_list["M"] = "Value of %.2f exceeds maximum of %.2f" % [raw, book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana]
+		
+	text = chain_edit.text
+	if not text.is_empty():
+		var found := false
+		for s in book.spells:
+			if s.name == text:
+				found = true
+				break
+		if not found:
+			errors_list["chain"] = "'%s' does not exists" % text
+			
+	for k in book.spells[current_index].expressions:
+		var expr: Expr = book.spells[current_index].expressions[k]
+		if expr.error.length() > 0:
+			errors_list["constant " + k] = expr.error
+		else:
+			errors_list.erase("constant " + k)
+			
+	if not errors_list.is_empty():
+		var last_error : String = errors_list.values()[errors_list.size() - 1]
+		var last_key : String = errors_list.keys()[errors_list.size() - 1]
+		error_label.text = "%s: %s" % [last_key, last_error]
+	else:
+		error_label.text = ""
+	
 
 func _on_delete_pressed() -> void:
 	if current_index < 0:

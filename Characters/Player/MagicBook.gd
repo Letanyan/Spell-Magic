@@ -3,7 +3,7 @@ class_name MagicBook
 var spells: Array[Spell]
 var last_use: Dictionary # [String: Unix.Time]
 var ignore_cooldown: bool
-enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, ACTIVE }
+enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE }
 
 var settings: WorldSettings # set by the world
 
@@ -93,6 +93,11 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 		return DisallowSpellReason.POWER
 	elif spell.power > settings.upgrade_settings.LIMIT_P:
 		return DisallowSpellReason.POWER
+		
+	if spell.radius > settings.upgrade_settings.max_r + settings.upgrade_settings.buff_r:
+		return DisallowSpellReason.RADIUS
+	elif spell.radius > settings.upgrade_settings.LIMIT_r:
+		return DisallowSpellReason.RADIUS
 		
 	if spell.actual_mana_cost() > settings.upgrade_settings.max_mana + settings.upgrade_settings.buff_mana:
 		return DisallowSpellReason.MANA

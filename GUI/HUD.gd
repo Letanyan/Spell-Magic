@@ -118,6 +118,8 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason):
 			show_notification(bbcode("'%s' requires N %d upgrade" % [spell.name, spell.count]), 5)
 		MagicBook.DisallowSpellReason.DURATION:
 			show_notification(bbcode("'%s' requires T %.1f upgrade" % [spell.name, spell.duration]), 5)
+		MagicBook.DisallowSpellReason.RADIUS:
+			show_notification(bbcode("'%s' requires r %.1f upgrade" % [spell.name, spell.radius]), 5)
 		MagicBook.DisallowSpellReason.ACTIVE:
 			show_notification(bbcode("'%s' is not active in magic book" % [spell.name]), 5)
 	
