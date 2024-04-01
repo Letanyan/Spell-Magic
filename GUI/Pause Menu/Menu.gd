@@ -21,6 +21,10 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	upgrades.settings = _world_settings
 	settings.world_settings = _world_settings
 	world_settings = _world_settings
+	
+	settings.exit_game.connect(func(): get_tree().quit())
+	settings.save_game.connect(func(): save_changes())
+	settings.main_menu.connect(func(): SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -122,5 +126,4 @@ func save_changes():
 
 func _on_quit_pressed() -> void:
 	close()
-	#SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black")
 

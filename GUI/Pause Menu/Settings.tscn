@@ -22,8 +22,10 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
+current_tab = 4
 
 [node name="HUD" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 
 [node name="HideWandMappings" type="CheckButton" parent="Tabs/HUD"]
@@ -504,6 +506,46 @@ offset_right = 432.0
 offset_bottom = 21.0
 text = "100%"
 
+[node name="Game" type="Panel" parent="Tabs"]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -64.0
+offset_top = 37.0
+offset_right = 64.0
+offset_bottom = 62.0
+text = "Save Game"
+
+[node name="Main Menu" type="Button" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.003
+anchor_right = 0.5
+anchor_bottom = 1.003
+offset_left = -64.0
+offset_top = -95.809
+offset_right = 64.0
+offset_bottom = -70.809
+text = "Main Menu"
+
+[node name="Exit Game" type="Button" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.003
+anchor_right = 0.5
+anchor_bottom = 1.003
+offset_left = -64.0
+offset_top = -55.809
+offset_right = 64.0
+offset_bottom = -30.809
+text = "Exit Game"
+
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideNotifications" to="." method="_on_hide_notifications_toggled"]
@@ -527,3 +569,6 @@ text = "100%"
 [connection signal="value_changed" from="Tabs/Sound/Master/Slider" to="." method="_on_master_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/Music/Slider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/SFX/Slider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="pressed" from="Tabs/Game/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Tabs/Game/Main Menu" to="." method="_on_main_menu_pressed"]
+[connection signal="pressed" from="Tabs/Game/Exit Game" to="." method="_on_exit_game_pressed"]

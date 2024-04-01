@@ -16,6 +16,10 @@ var world_settings: WorldSettings:
 
 signal settings_changed(settings: WorldSettings)
 
+signal save_game
+signal main_menu
+signal exit_game
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -230,3 +234,15 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 	$Tabs/Sound/SFX/Value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 	
+
+
+func _on_save_pressed() -> void:
+	save_game.emit()
+
+
+func _on_main_menu_pressed() -> void:
+	main_menu.emit()
+
+
+func _on_exit_game_pressed() -> void:
+	exit_game.emit()
