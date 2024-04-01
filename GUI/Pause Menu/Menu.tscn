@@ -90,8 +90,7 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 104.0
 offset_bottom = 40.0
-text = "Quit
-"
+text = "Close"
 
 [node name="Upgrades" type="Button" parent="Tabbar"]
 layout_mode = 1

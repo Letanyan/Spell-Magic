@@ -47,3 +47,7 @@ func _on_settings_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.SETTINGS)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")
 	
+
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()

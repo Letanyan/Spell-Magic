@@ -13,6 +13,9 @@ var upgrades: UpgradeSettings
 
 var main_menu_world: MainMenuWorld = null
 
+var world_names := []
+var world_name_exists := false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -60,6 +63,12 @@ func _ready() -> void:
 	$StartingUpgradesPanel/ChainMethods/ChainAtStart.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.START)
 	$StartingUpgradesPanel/ChainMethods/ChainAtEnd.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.END)
 	$StartingUpgradesPanel/ChainMethods/ChainOnHit.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.HIT)
+	
+	var dir := DirAccess.open("user://")
+	if not dir.dir_exists("worlds"):
+		dir.make_dir("worlds")
+	dir.change_dir("worlds")
+	world_names = dir.get_directories()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -73,19 +82,29 @@ func _on_cancel_pressed() -> void:
 
 
 func _on_create_pressed() -> void:
-	var settings := WorldSettings.new(get_viewport())
-	settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
-	settings.world_name = $SaveName.text
-	settings.sed = hash($Seed.text)
-	
-	settings.game_mode_settings.mode = game_mode
-	match game_mode:
-		GameModeSettings.GameMode.RESPAWN:
-			settings.game_mode_settings.flags = respawn_flags
-	settings.upgrade_settings.load_dict(upgrades.save_dict())
-	settings.save()
+	if $UseSeed.button_pressed:
+		var settings := WorldSettings.new(get_viewport())
+		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
+		settings.world_name = $SaveName.text
+		settings.sed = hash($Seed.text)
+		
+		settings.game_mode_settings.mode = game_mode
+		match game_mode:
+			GameModeSettings.GameMode.RESPAWN:
+				settings.game_mode_settings.flags = respawn_flags
+		settings.upgrade_settings.load_dict(upgrades.save_dict())
+		settings.save()
 
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(settings))
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(settings))
+	elif $UseSaveFile.button_pressed:
+		if not world_name_exists:
+			return
+		var settings := WorldSettings.new(get_viewport())
+		settings.read($Seed.text)
+		settings.world_name = $SaveName.text
+		settings.save()
+
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(settings))
 
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(settings)
@@ -257,3 +276,37 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 func _on_S_value_changed(value: float) -> void:
 	$StartingUpgradesPanel/S/Value.text = "%.2f" % value
 	upgrades.max_running_speed = value
+
+
+func _on_seed_text_changed() -> void:
+	if $UseSaveFile.button_pressed:
+		$SaveNameMissing.visible = false
+		for world_name in world_names:
+			if world_name == $Seed.text:
+				world_name_exists = true
+				return
+		world_name_exists = false
+		$SaveNameMissing.visible = true
+
+
+func _on_use_seed_toggled(toggled_on: bool) -> void:
+	$Seed.placeholder_text = "Seed"
+	$UseSaveFile.set_pressed_no_signal(not toggled_on)
+	permadeath.visible = toggled_on
+	respawn.visible = toggled_on
+	sandbox.visible = toggled_on
+	$RespawnOptions.visible = toggled_on
+	$StartingUpgrades.visible = toggled_on
+
+
+func _on_use_save_file_toggled(toggled_on: bool) -> void:
+	$Seed.placeholder_text = "Save Name"
+	$UseSeed.set_pressed_no_signal(not toggled_on)
+	permadeath.visible = not toggled_on
+	respawn.visible = not toggled_on
+	sandbox.visible = not toggled_on
+	$RespawnOptions.visible = not toggled_on
+	$StartingUpgrades.visible = not toggled_on
+	if toggled_on:
+		$StartingUpgrades.set_pressed_no_signal(false)
+		$StartingUpgradesPanel.visible = false

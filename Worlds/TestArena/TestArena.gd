@@ -43,8 +43,6 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 	)
-	player.vitals.health.max_value = settings.upgrade_settings.max_health
-	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	
 	case = WandCase.new()
 	case.read(settings.world_name)
@@ -110,6 +108,8 @@ func _ready():
 	player.defence_was_buffed.connect(func(def):
 		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
 	)
+	player.vitals.health.max_value = settings.upgrade_settings.max_health
+	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	
 	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
 	skybox.day_time = 14

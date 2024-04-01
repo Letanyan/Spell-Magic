@@ -54,8 +54,6 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 	)
-	player.vitals.health.max_value = settings.upgrade_settings.max_health
-	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	
 	case = WandCase.new()
 	case.read(settings.world_name)
@@ -117,6 +115,8 @@ func run_on_ready():
 	player.defence_was_buffed.connect(func(def):
 		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
 	)
+	player.vitals.health.max_value = settings.upgrade_settings.max_health
+	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()

@@ -40,7 +40,7 @@ signal attack_was_buffed(amount: float)
 signal defence_was_buffed(amount: float)
 signal speed_was_buffed(amount: float)
 
-var vitals: Vitals
+var vitals: Vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.55))
 
 var spell_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
 var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
@@ -49,7 +49,6 @@ var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
 
 func _ready():
 	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.PLAYER)
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.55))
 	emit_vitals_update()
 	velocity = Vector3.ZERO
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)

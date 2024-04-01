@@ -19,9 +19,9 @@ anchor_top = 1.0
 anchor_right = 0.472
 anchor_bottom = 1.0
 offset_left = -95.744
-offset_top = -192.0
+offset_top = -208.0
 offset_right = 96.256
-offset_bottom = -161.0
+offset_bottom = -176.0
 text = "Continue"
 
 [node name="NewGame" type="Button" parent="."]
@@ -32,9 +32,9 @@ anchor_top = 1.0
 anchor_right = 0.472
 anchor_bottom = 1.0
 offset_left = -95.744
-offset_top = -152.0
+offset_top = -168.0
 offset_right = 96.256
-offset_bottom = -121.0
+offset_bottom = -136.0
 text = "New Game"
 
 [node name="Load" type="Button" parent="."]
@@ -45,10 +45,10 @@ anchor_top = 1.0
 anchor_right = 0.472
 anchor_bottom = 1.0
 offset_left = -95.744
-offset_top = -112.0
+offset_top = -128.0
 offset_right = 96.256
-offset_bottom = -81.0
-text = "Load
+offset_bottom = -96.0
+text = "Load Game
 "
 
 [node name="Settings" type="Button" parent="."]
@@ -59,12 +59,21 @@ anchor_top = 1.0
 anchor_right = 0.472
 anchor_bottom = 1.0
 offset_left = -95.744
-offset_top = -72.0
+offset_top = -88.0
 offset_right = 96.256
-offset_bottom = -40.0
+offset_bottom = -56.0
 text = "Settings"
+
+[node name="Quit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 608.0
+offset_right = 640.0
+offset_bottom = 639.0
+text = "Quit"
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="NewGame" to="." method="_on_new_game_pressed"]
 [connection signal="pressed" from="Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]
