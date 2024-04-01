@@ -92,7 +92,7 @@ signal key_down
 signal key_up
 
 func _init():
-	name = ""
+	name = "Wand"
 	mods = {}
 	keys = {}
 	picked = ""

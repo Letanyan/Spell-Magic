@@ -122,11 +122,22 @@ func _on_delete_pressed():
 	if current_index < 0:
 		return
 	case.wands.remove_at(current_index)
+	if case.wands.size() == 0:
+		current_index = -1
+	elif current_index >= case.wands.size():
+		current_index = case.wands.size() - 1
 	reload_list()
 
 func _on_create_pressed():
 	var wand = Wand.new()
-	wand.name = "New Wand"
+	var wand_count := 1
+	var is_numbered_wand := RegEx.new()
+	is_numbered_wand.compile("[Ww][Aa][Nn][Dd]\\s\\d+")
+	for w in case.wands:
+		var mat = is_numbered_wand.search(w.name) 
+		if mat and mat.get_start(0) == 0:
+			wand_count += 1
+	wand.name = "Wand " + str(wand_count)
 	case.wands.append(wand)
 	reload_list()
 	reload_wand_shelf_items(case.wands.size() - 1)
