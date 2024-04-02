@@ -358,6 +358,10 @@ offset_left = 8.0
 offset_top = 296.0
 offset_right = -8.0
 offset_bottom = -48.0
+placeholder_text = "Constants
+Examples:
+speed=5
+angle=sin(pi)*n"
 wrap_mode = 1
 scroll_smooth = true
 

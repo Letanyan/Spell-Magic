@@ -97,6 +97,8 @@ func run_on_ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 		
+	menu.close_menu.connect(toggle_menu)
+		
 	# Forest location for world seed 0
 	#player.position.x = 800
 	#player.position.y = 700
@@ -215,23 +217,27 @@ func _physics_process(delta):
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
 
+func toggle_menu():
+	if menu.is_showing:
+		settings.is_paused = false
+		var pause_duration = Time.get_unix_time_from_system() - pause_start
+		player.spell_caster.update_pause_time(pause_duration)
+		for loc in population:
+			var pop = population[loc]
+			pop.update_pause_time(pause_duration)
+		menu.close()
+		hud.show()
+	else:
+		settings.is_paused = true
+		pause_start = Time.get_unix_time_from_system()
+		settings.player_position = player.position
+		menu.open(Menu.Kind.ANY)
+		hud.hide()
+	
+
 func _input(event):
 	if event.is_action_pressed("menu"):
-		if menu.is_showing:
-			settings.is_paused = false
-			var pause_duration = Time.get_unix_time_from_system() - pause_start
-			player.spell_caster.update_pause_time(pause_duration)
-			for loc in population:
-				var pop = population[loc]
-				pop.update_pause_time(pause_duration)
-			menu.close()
-			hud.show()
-		else:
-			settings.is_paused = true
-			pause_start = Time.get_unix_time_from_system()
-			settings.player_position = player.position
-			menu.open(Menu.Kind.ANY)
-			hud.hide()
+		toggle_menu()
 			
 	if not menu.is_showing and event.is_action_pressed("magic_book"):
 		menu.open(Menu.Kind.SPELLS)

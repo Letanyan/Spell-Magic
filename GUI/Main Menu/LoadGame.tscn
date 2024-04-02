@@ -17,9 +17,9 @@ anchors_preset = -1
 anchor_left = 0.472
 anchor_right = 0.472
 anchor_bottom = 0.815
-offset_left = -255.744
+offset_left = -223.744
 offset_top = 56.0
-offset_right = 256.256
+offset_right = 288.256
 offset_bottom = -0.120056
 
 [node name="Load" type="Button" parent="."]
@@ -29,9 +29,9 @@ anchor_left = 0.472
 anchor_top = 1.0
 anchor_right = 0.472
 anchor_bottom = 1.0
-offset_left = -159.744
+offset_left = 96.256
 offset_top = -104.0
-offset_right = 160.256
+offset_right = 288.256
 offset_bottom = -73.0
 text = "Load"
 
@@ -42,12 +42,21 @@ anchor_left = 0.472
 anchor_top = 1.0
 anchor_right = 0.472
 anchor_bottom = 1.0
-offset_left = -159.744
+offset_left = -95.744
 offset_top = -48.0
 offset_right = 160.256
 offset_bottom = -17.0
 text = "Cancel"
 
+[node name="Delete" type="Button" parent="."]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 544.0
+offset_right = 512.0
+offset_bottom = 577.0
+text = "Delete"
+
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
 [connection signal="pressed" from="Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Delete" to="." method="_on_delete_pressed"]

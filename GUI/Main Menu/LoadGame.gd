@@ -21,12 +21,7 @@ func _ready() -> void:
 	for t in times:
 		filenames.append(t[0])
 		$WorldsList.add_item("%s (%s)" % [t[0], Time.get_datetime_string_from_unix_time(t[1], true)])
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
+	
 
 func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
@@ -56,3 +51,19 @@ func _on_load_pressed() -> void:
 	
 func _on_worlds_list_item_activated(index: int) -> void:
 	load_current_item(index)
+
+func _on_delete_pressed() -> void:
+	var list: ItemList = $WorldsList
+	var selected := list.get_selected_items()
+	if selected.is_empty():
+		return
+	var filename := filenames[selected[0]] as String
+	var popup := PopupDialog.display("Are you sure you want to delete the save '" + filename + "'")
+	popup.confirmed.connect(func():
+		selected = list.get_selected_items()
+		if selected.is_empty():
+			return
+		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
+		$WorldsList.remove_item(selected[0])
+	)
+	get_tree().root.add_child(popup)

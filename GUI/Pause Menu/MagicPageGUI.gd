@@ -30,6 +30,7 @@ extends Control
 @onready var duplicate_button: Button = $container/Duplicate
 @onready var delete_button: Button = $container/Delete
 
+
 var errors_list := {}
 
 var book: MagicBook
@@ -45,7 +46,6 @@ signal return_focus
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -429,9 +429,17 @@ func check_all_errors():
 func _on_delete_pressed() -> void:
 	if current_index < 0:
 		return
-	book.spells.remove_at(current_index)
-	delete_spell.emit(current_index)
-
+		
+	var s := book.spells[current_index]
+	var popup := PopupDialog.display("Are you sure you want to delete the spell '" + s.name + "'")
+	popup.confirmed.connect(func():
+		if current_index < 0:
+			return
+		book.spells.remove_at(current_index)
+		delete_spell.emit(current_index)
+	)
+	get_tree().root.add_child(popup)
+	
 
 func _on_duplicate_pressed() -> void:
 	if current_index < 0:
@@ -589,4 +597,4 @@ func _input(event: InputEvent) -> void:
 			duplicate_button.emit()
 		if direction.y < 0:
 			expressions.grab_focus()
-	
+

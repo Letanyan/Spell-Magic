@@ -22,10 +22,8 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 4
 
 [node name="HUD" type="Panel" parent="Tabs"]
-visible = false
 layout_mode = 2
 
 [node name="HideWandMappings" type="CheckButton" parent="Tabs/HUD"]
@@ -507,6 +505,7 @@ offset_bottom = 21.0
 text = "100%"
 
 [node name="Game" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 
 [node name="Save" type="Button" parent="Tabs/Game"]

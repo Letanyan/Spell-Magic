@@ -95,6 +95,8 @@ func _ready():
 	menu.wand_case.use_current_wand = func(id: int):
 		wand = case.wands[id]
 		
+	menu.close_menu.connect(toggle_menu)
+		
 	player.spell_caster.ignore_mana_cost = false
 	player.spell_velocity_was_buffed.connect(func(v):
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
@@ -158,23 +160,26 @@ func _physics_process(delta):
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
 
+func toggle_menu():
+	if menu.is_showing:
+		settings.is_paused = false
+		var pause_duration := Time.get_unix_time_from_system() - pause_start
+		player.spell_caster.update_pause_time(pause_duration)
+		for e in inhabitants:
+			e.spell_caster.update_pause_time(pause_duration)
+		menu.close()
+		hud.show()
+	else:
+		settings.is_paused = true
+		pause_start = Time.get_unix_time_from_system()
+		menu.open(Menu.Kind.ANY)
+		settings.player_position = player.position
+		hud.hide()
+
 
 func _input(event):
 	if event.is_action_pressed("menu"):
-		if menu.is_showing:
-			settings.is_paused = false
-			var pause_duration := Time.get_unix_time_from_system() - pause_start
-			player.spell_caster.update_pause_time(pause_duration)
-			for e in inhabitants:
-				e.spell_caster.update_pause_time(pause_duration)
-			menu.close()
-			hud.show()
-		else:
-			settings.is_paused = true
-			pause_start = Time.get_unix_time_from_system()
-			menu.open(Menu.Kind.ANY)
-			settings.player_position = player.position
-			hud.hide()
+		toggle_menu()
 			
 	if not menu.is_showing and event.is_action_pressed("magic_book"):
 		menu.open(Menu.Kind.SPELLS)

@@ -87,7 +87,7 @@ func _draw() -> void:
 		#draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
 func _gui_input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not has_focus():
+	if not is_visible_in_tree():
 		return
 		
 	if event is InputEventMouseButton:
@@ -134,26 +134,27 @@ func _gui_input(event: InputEvent) -> void:
 				m_pos = floor(m_pos)
 				on_cell_moused_over.emit(m_pos)
 	elif event is InputEventKey:
-		if Input.is_action_pressed("DOWN"):
-			selected_cell_coord += Vector2(0, 1)
-			on_cell_selected.emit(selected_cell_coord)
-			offset -= Vector2(0, 1) * cell_size
-			accept_event()
-		if Input.is_action_pressed("UP"):
-			selected_cell_coord += Vector2(0, -1)
-			on_cell_selected.emit(selected_cell_coord)
-			offset -= Vector2(0, -1) * cell_size
-			accept_event()
-		if Input.is_action_pressed("LEFT"):
-			selected_cell_coord += Vector2(-1, 0)
-			on_cell_selected.emit(selected_cell_coord)
-			offset -= Vector2(-1, 0) * cell_size
-			accept_event()
-		if Input.is_action_pressed("RIGHT"):
-			selected_cell_coord += Vector2(1, 0)
-			on_cell_selected.emit(selected_cell_coord)
-			offset -= Vector2(1, 0) * cell_size
-			accept_event()
-		queue_redraw()
-		queue_sort()
+		if selected_cell_coord and has_focus():
+			if Input.is_action_pressed("DOWN"):
+				selected_cell_coord += Vector2(0, 1)
+				on_cell_selected.emit(selected_cell_coord)
+				offset -= Vector2(0, 1) * cell_size
+				accept_event()
+			if Input.is_action_pressed("UP"):
+				selected_cell_coord += Vector2(0, -1)
+				on_cell_selected.emit(selected_cell_coord)
+				offset -= Vector2(0, -1) * cell_size
+				accept_event()
+			if Input.is_action_pressed("LEFT"):
+				selected_cell_coord += Vector2(-1, 0)
+				on_cell_selected.emit(selected_cell_coord)
+				offset -= Vector2(-1, 0) * cell_size
+				accept_event()
+			if Input.is_action_pressed("RIGHT"):
+				selected_cell_coord += Vector2(1, 0)
+				on_cell_selected.emit(selected_cell_coord)
+				offset -= Vector2(1, 0) * cell_size
+				accept_event()
+			queue_redraw()
+			queue_sort()
 

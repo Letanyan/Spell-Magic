@@ -7,6 +7,7 @@ var main_menu_world: MainMenuWorld = null
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	settings_pane.world_settings = GlobalData.game_settings.default_world_settings
+	settings_pane.hide_game_tab(true)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

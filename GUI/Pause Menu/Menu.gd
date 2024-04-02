@@ -13,6 +13,8 @@ var current_index := 0
 var is_showing: bool = false
 var world_settings: WorldSettings
 
+signal close_menu
+
 func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings):
 	magic_book.book = book
 	wand_case.book = book
@@ -125,5 +127,5 @@ func save_changes():
 
 
 func _on_quit_pressed() -> void:
-	close()
+	close_menu.emit()
 

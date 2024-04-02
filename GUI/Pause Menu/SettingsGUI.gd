@@ -235,6 +235,8 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 	settings_changed.emit(world_settings)
 	
 
+func hide_game_tab(should_hide: bool) -> void:
+	$Tabs.set_tab_hidden(4, should_hide)
 
 func _on_save_pressed() -> void:
 	save_game.emit()

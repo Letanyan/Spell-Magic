@@ -121,12 +121,21 @@ func reload_list():
 func _on_delete_pressed():
 	if current_index < 0:
 		return
-	case.wands.remove_at(current_index)
-	if case.wands.size() == 0:
-		current_index = -1
-	elif current_index >= case.wands.size():
-		current_index = case.wands.size() - 1
-	reload_list()
+		
+	var filename := case.wands[current_index].name as String
+	var popup := PopupDialog.display("Are you sure you want to delete the wand '" + filename + "'")
+	popup.confirmed.connect(func():
+		if current_index < 0:
+			return
+		case.wands.remove_at(current_index)
+		if case.wands.size() == 0:
+			current_index = -1
+		elif current_index >= case.wands.size():
+			current_index = case.wands.size() - 1
+		reload_list()
+	)
+	get_tree().root.add_child(popup)
+	
 
 func _on_create_pressed():
 	var wand = Wand.new()

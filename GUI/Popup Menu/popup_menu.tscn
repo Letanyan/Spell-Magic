@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://buatjn5lr6b5i"]
+
+[ext_resource type="Script" path="res://GUI/Popup Menu/popup_menu.gd" id="1_wvl5y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c1iq3"]
+bg_color = Color(0, 0, 0, 0.752941)
+
+[node name="PopupDialog" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wvl5y")
+
+[node name="confirmation" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_c1iq3")
+
+[node name="Panel" type="Panel" parent="confirmation"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.407
+anchor_right = 0.5
+anchor_bottom = 0.407
+offset_left = -192.0
+offset_top = -71.736
+offset_right = 192.0
+offset_bottom = 56.264
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="confirmation/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.062
+anchor_right = 1.0
+anchor_bottom = 0.625
+offset_left = 8.0
+offset_top = 15.936
+offset_right = -8.0
+text = "Are you sure?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Cancel" type="Button" parent="confirmation/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.18
+anchor_top = 1.0
+anchor_right = 0.18
+anchor_bottom = 1.0
+offset_left = -29.12
+offset_top = -32.0
+offset_right = 28.88
+offset_bottom = -7.0
+text = "Cancel"
+
+[node name="Confirm" type="Button" parent="confirmation/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.836
+anchor_top = 1.0
+anchor_right = 0.836
+anchor_bottom = 1.0
+offset_left = -33.024
+offset_top = -32.0
+offset_right = 32.976
+offset_bottom = -7.0
+text = "Confirm"
+
+[connection signal="pressed" from="confirmation/Panel/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="confirmation/Panel/Confirm" to="." method="_on_confirm_pressed"]
