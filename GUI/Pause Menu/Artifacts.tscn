@@ -52,11 +52,15 @@ offset_top = -184.0
 offset_right = 184.0
 offset_bottom = -8.0
 grow_vertical = 0
+focus_mode = 2
 script = ExtResource("3_omm40")
+mouse_filter_override = 0
 
+[connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
 [connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
 [connection signal="on_cell_moused_over" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_moused_over"]
 [connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]
 [connection signal="on_cell_unselected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_unselected"]
+[connection signal="gui_input" from="artifact_preview" to="." method="_on_artifact_preview_gui_input"]

@@ -4,6 +4,8 @@ extends Control
 enum Direction { TOP=0, RIGHT, BOTTOM, LEFT }
 enum Level { TOP=0, BOTTOM, PATTERN }
 
+@export var mouse_filter_override: Control.MouseFilter = Control.MOUSE_FILTER_IGNORE
+
 @export var color: Color = Color(0.15, 0.15, 0.15, 1.0)
 var artifact: Artifact
 var highlighted: Dictionary # int -> bool
@@ -12,10 +14,11 @@ var normal_style: StyleBox
 var disabled_style: StyleBox
 var resolved_theme: Theme
 var is_temporary: bool = false
+var is_hidden: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = mouse_filter_override
 	if theme == null:
 		resolved_theme = load(ProjectSettings.get_setting("gui/theme/custom")) as Theme
 		normal_style = resolved_theme.get_stylebox("normal", "Button")
@@ -133,12 +136,8 @@ func get_label_color(index: int) -> Dictionary:
 		
 	return result
 
-func _gui_input(event: InputEvent) -> void:
-	print(event)
-	print(mouse_filter)
-
 func _draw() -> void:
-	if artifact == null:
+	if artifact == null or is_hidden:
 		return
 	
 	if is_temporary:
