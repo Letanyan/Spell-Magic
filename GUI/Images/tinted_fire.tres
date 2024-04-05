@@ -1,0 +1,11 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://bx70s1lvxc1lb"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_2di4a"]
+[ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="2_3vlgm"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_2di4a")
+texture = ExtResource("2_3vlgm")
+tint = Color(1, 0, 0, 1)

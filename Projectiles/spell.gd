@@ -1,6 +1,6 @@
 class_name Spell
 
-enum Element { VOID, FIRE, WATER, ROCK, AIR, ICE, ELECTRIC }
+enum Element { VOID, FIRE, ROCK, ELECTRIC, WATER, AIR, ICE }
 enum ChainCastKind { START, END, HIT }
 
 var element: Element

@@ -1,12 +1,12 @@
 [gd_scene load_steps=11 format=3 uid="uid://lbdwf4vi4u7w"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/UpgradesGUI.gd" id="1_sw7ix"]
-[ext_resource type="Texture2D" uid="uid://bcljg3lbivvke" path="res://GUI/Images/rock.svg" id="2_112bn"]
-[ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="3_vmeel"]
-[ext_resource type="Texture2D" uid="uid://dh6xbrgomcoq8" path="res://GUI/Images/electric.svg" id="4_61e1v"]
-[ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="5_rixa6"]
-[ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_o84ck"]
-[ext_resource type="Texture2D" uid="uid://bmpgkw1tq23ok" path="res://GUI/Images/wind.svg" id="7_l3ngb"]
+[ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="2_gtdpa"]
+[ext_resource type="Texture2D" uid="uid://d04ymp7lmbois" path="res://GUI/Images/tinted_ice.tres" id="3_hrijs"]
+[ext_resource type="Texture2D" uid="uid://ddt4jjlnnqy2e" path="res://GUI/Images/tinted_electric.tres" id="4_xsfxt"]
+[ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="5_3buty"]
+[ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="6_qee75"]
+[ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="7_wfy6i"]
 [ext_resource type="Texture2D" uid="uid://b44g28n50yfr1" path="res://GUI/Images/void.svg" id="8_6m44h"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_o3kcg"]
@@ -382,12 +382,12 @@ text = "Elements
 
 [node name="Rock" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 576.0
+offset_left = 352.0
 offset_top = -8.0
-offset_right = 676.0
+offset_right = 452.0
 offset_bottom = 24.0
 text = "Rock"
-icon = ExtResource("2_112bn")
+icon = ExtResource("2_gtdpa")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Rock"]
 layout_mode = 0
@@ -400,12 +400,12 @@ scroll_active = false
 
 [node name="Ice" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 688.0
+offset_left = 800.0
 offset_top = -8.0
-offset_right = 788.0
+offset_right = 900.0
 offset_bottom = 24.0
 text = "Ice"
-icon = ExtResource("3_vmeel")
+icon = ExtResource("3_hrijs")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Ice"]
 layout_mode = 0
@@ -418,12 +418,12 @@ scroll_active = false
 
 [node name="Electric" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 800.0
+offset_left = 464.0
 offset_top = -8.0
-offset_right = 900.0
+offset_right = 564.0
 offset_bottom = 24.0
 text = "Electric"
-icon = ExtResource("4_61e1v")
+icon = ExtResource("4_xsfxt")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Electric"]
 layout_mode = 0
@@ -441,7 +441,7 @@ offset_top = -8.0
 offset_right = 340.0
 offset_bottom = 24.0
 text = "Fire"
-icon = ExtResource("5_rixa6")
+icon = ExtResource("5_3buty")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Fire"]
 layout_mode = 0
@@ -454,12 +454,12 @@ scroll_active = false
 
 [node name="Water" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 352.0
+offset_left = 576.0
 offset_top = -8.0
-offset_right = 452.0
+offset_right = 676.0
 offset_bottom = 24.0
 text = "Water"
-icon = ExtResource("6_o84ck")
+icon = ExtResource("6_qee75")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Water"]
 layout_mode = 0
@@ -472,12 +472,12 @@ scroll_active = false
 
 [node name="Air" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 464.0
+offset_left = 688.0
 offset_top = -8.0
-offset_right = 564.0
+offset_right = 788.0
 offset_bottom = 24.0
 text = "Air"
-icon = ExtResource("7_l3ngb")
+icon = ExtResource("7_wfy6i")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Air"]
 layout_mode = 0

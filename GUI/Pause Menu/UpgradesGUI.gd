@@ -107,7 +107,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	chain_at_end_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
 	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
-	var coin_suffix := " [img]res://GUI/Images/coins.svg[/img][/center]"
+	var coin_suffix := " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/center]"
 	max_spell_count_cost.text = "[center]" + str(settings.upgrade_settings.cost_spells_in_book) + coin_suffix
 	max_running_speed_cost.text = "[center]" + str(settings.upgrade_settings.cost_running_speed) + coin_suffix
 	max_P_cost.text = "[center]" + str(settings.upgrade_settings.cost_P) + coin_suffix
@@ -132,7 +132,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError):
 	chain_at_end_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
 	chain_on_hit_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
 	
-	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img]res://GUI/Images/coins.svg[/img][/right]"
+	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/right]"
 	
 	max_spell_count_upgrade.disabled = settings.upgrade_settings.max_spells_in_book >= UpgradeSettings.LIMIT_SPELLS_IN_BOOK
 	max_running_speed_upgrade.disabled = settings.upgrade_settings.max_running_speed >= UpgradeSettings.LIMIT_RUNNING_SPEED
