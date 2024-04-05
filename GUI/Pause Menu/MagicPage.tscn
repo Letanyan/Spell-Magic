@@ -134,7 +134,7 @@ offset_top = 200.0
 offset_right = 56.0
 offset_bottom = 232.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16]res://GUI/Images/radius.svg[/img] r[/font_size][/center]"
+text = "[center][font_size=16][img=l,16x16, color=7700FF]res://GUI/Images/radius.svg[/img] r[/font_size][/center]"
 
 [node name="r_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -156,7 +156,7 @@ offset_top = 58.0
 offset_right = 47.7759
 offset_bottom = 90.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16]res://GUI/Images/time.svg[/img] T[/font_size][/center]"
+text = "[center][font_size=16][img=l,16x16, color=00FF08]res://GUI/Images/time.svg[/img] T[/font_size][/center]"
 scroll_active = false
 
 [node name="duration_edit" type="LineEdit" parent="container"]
@@ -203,7 +203,7 @@ offset_top = 152.0
 offset_right = 47.7759
 offset_bottom = 184.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16]res://GUI/Images/count.svg[/img] N[/font_size][/center]"
+text = "[center][font_size=16][img=l,16x16, color=F700FF]res://GUI/Images/count.svg[/img] N[/font_size][/center]"
 
 [node name="count_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -226,7 +226,7 @@ offset_top = 200.0
 offset_right = 47.7759
 offset_bottom = 232.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16]res://GUI/Images/power.svg[/img] P[/font_size][/center]"
+text = "[center][font_size=16][img=l,16x16, color=0008FF]res://GUI/Images/power.svg[/img] P[/font_size][/center]"
 
 [node name="power_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -323,7 +323,7 @@ offset_top = 392.0
 offset_right = 56.0
 offset_bottom = 424.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16]res://GUI/Images/mana.svg[/img] M[/font_size][/center]"
+text = "[center][font_size=16][img=l,16x16, color=AA00AA]res://GUI/Images/mana.svg[/img] M[/font_size][/center]"
 scroll_active = false
 
 [node name="mana_edit" type="LineEdit" parent="container"]

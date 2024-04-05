@@ -241,43 +241,43 @@ class Option:
 	func element_color() -> Color:
 		match element:
 			Element.ANY:
-				return Color.NAVAJO_WHITE
+				return Color("FFFFFF")
 			Element.FIRE:
-				return Color.RED
+				return Color("FF0000")
 			Element.WATER:
-				return Color.BLUE
+				return Color("0080FF")
 			Element.AIR:
-				return Color.GREEN
+				return Color("00FF80")
 			Element.ROCK:
-				return Color.SADDLE_BROWN
+				return Color("FF8000")
 			Element.ELECTRIC:
-				return Color.YELLOW
+				return Color("FF0080")
 			Element.ICE:
-				return Color.DEEP_SKY_BLUE
+				return Color("00FFFF")
 			Element.HEALTH:
-				return Color.DARK_GREEN
+				return Color("00AA00")
 			Element.MANA:
-				return Color.DARK_BLUE
+				return Color("AA00AA")
 			Element.ATTACK:
-				return Color.DARK_RED
+				return Color("AA0000")
 			Element.DEFENCE:
-				return Color.ROYAL_BLUE
+				return Color("00AAAA")
 			Element.POWER:
-				return Color.REBECCA_PURPLE
+				return Color("0008FF")
 			Element.DURATION:
-				return Color.TEAL
+				return Color("00FF08")
 			Element.COUNT:
-				return Color.DARK_ORANGE
+				return Color("F700FF")
 			Element.MANA_BUMP:
-				return Color.MIDNIGHT_BLUE
+				return Color("AA77AA")
 			Element.HEALTH_BUMP:
-				return Color.SEA_GREEN
+				return Color("77AA77")
 			Element.SPELL_VELOCITY:
-				return Color.GREEN_YELLOW
+				return Color("77FF00")
 			Element.SPELL_RADIUS:
-				return Color.DARK_RED
+				return Color("7700FF")
 			Element.RUNNING_SPEED:
-				return Color.SANDY_BROWN
+				return Color("F6FF00")
 		return Color.DEEP_PINK
 		
 	func color() -> Color:

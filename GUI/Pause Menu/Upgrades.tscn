@@ -39,14 +39,12 @@ grow_vertical = 2
 
 [node name="max_H" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 48.0
-offset_top = 424.0
-offset_right = 88.0
-offset_bottom = 464.0
-grow_horizontal = 2
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -223.456
+offset_top = 56.0
+offset_right = -183.456
+offset_bottom = 96.0
 
 [node name="label" type="RichTextLabel" parent="container/max_H"]
 layout_mode = 1
@@ -58,7 +56,7 @@ offset_right = 108.0
 offset_bottom = 26.0
 grow_horizontal = 2
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/health.svg[/img] Health"
+text = "Max [img=16, color=00AA00]res://GUI/Images/health.svg[/img] Health"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_H"]
@@ -89,14 +87,12 @@ scroll_active = false
 
 [node name="attack" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 48.0
-offset_top = 48.0
-offset_right = 88.0
-offset_bottom = 88.0
-grow_horizontal = 2
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -223.456
+offset_top = 112.0
+offset_right = -183.456
+offset_bottom = 152.0
 
 [node name="label" type="RichTextLabel" parent="container/attack"]
 layout_mode = 1
@@ -108,7 +104,7 @@ offset_right = 108.0
 offset_bottom = 26.0
 grow_horizontal = 2
 bbcode_enabled = true
-text = "[img=16]res://GUI/Images/sword.svg[/img] Attack"
+text = "[img=16, color=AA0000]res://GUI/Images/sword.svg[/img] Attack"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/attack"]
@@ -139,13 +135,12 @@ scroll_active = false
 
 [node name="defence" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 48.0
-offset_top = 96.0
-offset_right = 88.0
-offset_bottom = 136.0
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -240.544
+offset_top = 112.0
+offset_right = -200.544
+offset_bottom = 152.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/defence"]
@@ -158,7 +153,7 @@ offset_right = 108.0
 offset_bottom = 26.0
 grow_horizontal = 2
 bbcode_enabled = true
-text = "[img=16]res://GUI/Images/shield.svg[/img] Defence"
+text = "[img=16, color=00AAAA]res://GUI/Images/shield.svg[/img] Defence"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/defence"]
@@ -188,18 +183,21 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="max_P" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 256.0
-offset_right = 96.0
-offset_bottom = 296.0
+layout_mode = 1
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -240.544
+offset_top = 280.0
+offset_right = -200.544
+offset_bottom = 320.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_P"]
 layout_mode = 0
 offset_right = 86.0
 offset_bottom = 26.0
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/power.svg[/img] P"
+text = "Max [img=16, color=0008FF]res://GUI/Images/power.svg[/img] P"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_P"]
@@ -230,13 +228,12 @@ scroll_active = false
 
 [node name="max_M" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 48.0
-offset_top = 344.0
-offset_right = 88.0
-offset_bottom = 384.0
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -240.544
+offset_top = 56.0
+offset_right = -200.544
+offset_bottom = 96.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_M"]
@@ -249,7 +246,7 @@ offset_right = 61.0
 offset_bottom = 26.0
 grow_horizontal = 2
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/mana.svg[/img] M"
+text = "Max [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] M"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_M"]
@@ -281,11 +278,14 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="max_spell_count" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 48.0
-offset_right = 96.0
-offset_bottom = 88.0
+layout_mode = 1
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -240.544
+offset_top = 336.0
+offset_right = -200.544
+offset_bottom = 376.0
+grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/max_spell_count"]
 layout_mode = 0
@@ -320,19 +320,20 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="running_speed" type="Control" parent="container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 96.0
-offset_right = 96.0
-offset_bottom = 136.0
+layout_mode = 1
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -223.456
+offset_top = 280.0
+offset_right = -183.456
+offset_bottom = 320.0
 
 [node name="label" type="RichTextLabel" parent="container/running_speed"]
 layout_mode = 0
 offset_right = 144.0
 offset_bottom = 26.0
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/running.svg[/img] Speed
+text = "Max [img=16, color=F6FF00]res://GUI/Images/running.svg[/img] Speed
 "
 
 [node name="current" type="Label" parent="container/running_speed"]
@@ -362,11 +363,15 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="elements" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 160.0
-offset_right = 96.0
-offset_bottom = 200.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -448.0
+offset_top = 424.0
+offset_right = -408.0
+offset_bottom = 464.0
+grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/elements"]
 layout_mode = 0
@@ -502,18 +507,21 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="max_N" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 344.0
-offset_right = 96.0
-offset_bottom = 384.0
+layout_mode = 1
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -240.544
+offset_top = 224.0
+offset_right = -200.544
+offset_bottom = 264.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_N"]
 layout_mode = 0
 offset_right = 159.0
 offset_bottom = 26.0
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/count.svg[/img] N"
+text = "Max [img=16, color=F700FF]res://GUI/Images/count.svg[/img] N"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_N"]
@@ -546,14 +554,12 @@ scroll_active = false
 
 [node name="max_T" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 48.0
-offset_top = 256.0
-offset_right = 88.0
-offset_bottom = 296.0
-grow_horizontal = 2
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -223.456
+offset_top = 224.0
+offset_right = -183.456
+offset_bottom = 264.0
 
 [node name="label" type="RichTextLabel" parent="container/max_T"]
 layout_mode = 1
@@ -565,7 +571,7 @@ offset_right = 127.0
 offset_bottom = 26.0
 grow_horizontal = 2
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/time.svg[/img] T"
+text = "Max [img=16, color=00FF08]res://GUI/Images/time.svg[/img] T"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_T"]
@@ -595,11 +601,13 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="chain_methods" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 512.0
-offset_right = 96.0
-offset_bottom = 552.0
+layout_mode = 1
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -223.456
+offset_top = 336.0
+offset_right = -183.456
+offset_bottom = 376.0
 
 [node name="label" type="Label" parent="container/chain_methods"]
 layout_mode = 0
@@ -656,18 +664,21 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="max_r" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 56.0
-offset_top = 424.0
-offset_right = 96.0
-offset_bottom = 464.0
+layout_mode = 1
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -240.544
+offset_top = 168.0
+offset_right = -200.544
+offset_bottom = 208.0
+grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_r"]
 layout_mode = 0
 offset_right = 159.0
 offset_bottom = 26.0
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/radius.svg[/img] r"
+text = "Max [img=16, color=7700FF]res://GUI/Images/radius.svg[/img] r"
 
 [node name="current" type="Label" parent="container/max_r"]
 layout_mode = 0
@@ -699,14 +710,12 @@ scroll_active = false
 
 [node name="max_v" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 48.0
-offset_top = 520.0
-offset_right = 88.0
-offset_bottom = 560.0
-grow_horizontal = 2
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -223.456
+offset_top = 168.0
+offset_right = -183.456
+offset_bottom = 208.0
 
 [node name="label" type="RichTextLabel" parent="container/max_v"]
 layout_mode = 1
@@ -718,7 +727,7 @@ offset_right = 139.0
 offset_bottom = 26.0
 grow_horizontal = 2
 bbcode_enabled = true
-text = "Max [img=16]res://GUI/Images/velocity.svg[/img] Velocity"
+text = "Max [img=16, color=77FF00]res://GUI/Images/velocity.svg[/img] Velocity"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_v"]
@@ -776,8 +785,17 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 472.0
-offset_bottom = 504.0
+offset_top = 312.0
+offset_bottom = 328.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSeparator8" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 392.0
+offset_bottom = 408.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -785,8 +803,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 80.0
-offset_bottom = 96.0
+offset_top = 88.0
+offset_bottom = 104.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -794,8 +812,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 208.0
-offset_bottom = 240.0
+offset_top = 480.0
+offset_bottom = 496.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -803,8 +821,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 384.0
-offset_bottom = 416.0
+offset_top = 200.0
+offset_bottom = 216.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -812,8 +830,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 128.0
-offset_bottom = 144.0
+offset_top = 144.0
+offset_bottom = 160.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -821,8 +839,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 296.0
-offset_bottom = 328.0
+offset_top = 256.0
+offset_bottom = 272.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -831,23 +849,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -24.0
+offset_left = -8.0
 offset_top = 40.0
-offset_right = 32.0
-offset_bottom = -449.0
-grow_vertical = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
-
-[node name="VSeparator" type="VSeparator" parent="container"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -24.0
-offset_top = 224.0
-offset_right = 32.0
+offset_right = 8.0
+offset_bottom = 400.0
 grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
