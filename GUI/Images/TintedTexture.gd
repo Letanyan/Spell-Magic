@@ -86,8 +86,3 @@ func _to_string() -> String:
 	if not texture:
 		return ""
 	return texture.to_string()
-	
-func _validate_property(property: Dictionary) -> void:
-	if not texture:
-		return
-	texture.validate_property(property)

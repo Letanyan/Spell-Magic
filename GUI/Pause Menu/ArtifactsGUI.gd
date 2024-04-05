@@ -83,7 +83,8 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 		artifact_preview.artifact = artifact
 		temporary_grid_tile.artifact = artifact
 		artifact_preview.queue_redraw()
-		update_temporary_grid_tile()
+		if artifact_grid.selected_cell_coord:
+			update_temporary_grid_tile()
 		
 		
 	list_clicked = true
@@ -244,7 +245,8 @@ func _on_artifacts_list_item_selected(index: int) -> void:
 	artifact_preview.artifact = artifact
 	temporary_grid_tile.artifact = artifact
 	artifact_preview.queue_redraw()
-	update_temporary_grid_tile()
+	if artifact_grid.selected_cell_coord:
+		update_temporary_grid_tile()
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
@@ -267,7 +269,8 @@ func _input(event: InputEvent) -> void:
 func _on_artifact_grid_on_cell_moused_over(coord: Vector2) -> void:
 	if coord == last_moused_coord:
 		return
-	#last_moused_coord = coord
+	last_moused_coord = coord
+	update_temporary_grid_tile()
 	#if temporary_grid_tile.artifact != null:
 		#artifact_grid.remove_grid_tile(temporary_grid_tile)
 		#attempt_place_artifact(temporary_grid_tile.artifact, coord, true)

@@ -132,7 +132,22 @@ func get_label_color(index: int) -> Dictionary:
 	var result : Dictionary = HIGH if highlighted.get(index, false) else BASE
 	
 	if warning.has(index):
-		result.merge(warning[index], true)
+		#result.merge(warning[index], true)
+		if warning[index].has(0):
+			if warning[index][0] == result[0]:
+				result[0] = Color(0, 0, 0, 0)
+			else:
+				result[0] = warning[index][0]
+		if warning[index].has(1):
+			if warning[index][1] == result[1]:
+				result[1] = Color(0, 0, 0, 0)
+			else:
+				result[1] = warning[index][1]
+		if warning[index].has(2):
+			if warning[index][2] == result[2]:
+				result[2] = Color(0, 0, 0, 0)
+			else:
+				result[2] = warning[index][2]
 		
 	return result
 

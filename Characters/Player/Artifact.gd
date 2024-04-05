@@ -20,7 +20,7 @@ enum Event {
 
 enum Element {
 	ANY, # is used as an offset so the next 6 elements map to Spell.Element 
-	FIRE, WATER, ROCK, AIR, ICE, ELECTRIC,
+	FIRE, ROCK, ELECTRIC, WATER, AIR, ICE,
 	MANA, HEALTH, ATTACK, DEFENCE,
 	POWER, COUNT, DURATION, MANA_BUMP, HEALTH_BUMP,
 	SPELL_VELOCITY, SPELL_RADIUS, RUNNING_SPEED
@@ -60,12 +60,12 @@ class Option:
 		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
 		var ev := Population.random_entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
 		var el: Element
-		if el_prob.size() == 17:
+		if el_prob.size() == 19:
 			if flip:
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 			else:
 				el_prob = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
-				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1}
+				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.ANY: 0.1}
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 		var am := randi_range(amount_range.x, amount_range.y)
 		if not flip:
