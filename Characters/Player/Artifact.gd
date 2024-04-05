@@ -227,9 +227,9 @@ class Option:
 			Element.COUNT:
 				return preload("res://GUI/Images/count.svg")
 			Element.MANA_BUMP:
-				return preload("res://GUI/Images/mana.svg")
-			Element.MANA_BUMP:
-				return preload("res://GUI/Images/health.svg")
+				return preload("res://GUI/Images/mana-outline.svg")
+			Element.HEALTH_BUMP:
+				return preload("res://GUI/Images/health-outline.svg")
 			Element.SPELL_VELOCITY:
 				return preload("res://GUI/Images/velocity.svg")
 			Element.SPELL_RADIUS:

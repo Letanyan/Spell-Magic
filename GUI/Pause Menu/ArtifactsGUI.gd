@@ -40,13 +40,21 @@ func update_temporary_grid_tile():
 	
 func update_list():
 	artifacts_list.clear()
+	var found_preview := false
 	if artifact_grid.selected_cell_coord == null:
 		for a in artifacts.unconnected():
 			artifacts_list.add_item(a.name)
+			if a == artifact_preview.artifact:
+				found_preview = true
 	else:
 		for a in artifacts.unconnected():
 			if can_place_artifact(a, artifact_grid.selected_cell_coord).is_empty():
 				artifacts_list.add_item(a.name)
+				if a == artifact_preview.artifact:
+					found_preview = true
+	if not found_preview:
+		artifact_preview.artifact = null
+		artifact_preview.queue_redraw()
 
 func update_list_and_grid():
 	update_list()

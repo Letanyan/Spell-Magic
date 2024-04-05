@@ -144,17 +144,21 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 					active_options[other_coord][RIGHT] = true
 
 func is_still_continuous_after_removing(coord: Vector2) -> bool:
+	# flood fill from coord. If the total number of 'painted' tiles with artifacts
+	# is one less than the total then we have a fully connected path.
+	
 	if connected.size() <= 2:
 		return true
 	
 	var to_visit := PackedVector2Array()
 	var visited := {coord: true}
+	# loop to find exactly one tile that has an artifact which is not the removed 'coord'
 	for a in connected:
 		var c: Vector2 = connected[a]
 		if c == coord:
 			continue
 		to_visit.append(c)
-		break
+		break # we must only find exactly one tile
 		
 	var island_count := 0
 	while not to_visit.is_empty():
