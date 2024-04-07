@@ -139,6 +139,7 @@ offset_right = 200.0
 offset_bottom = 148.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#FF0000]res://GUI/Images/fire.svg[/img] RES[/font_size]"
+scroll_active = false
 
 [node name="Water DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -148,6 +149,7 @@ offset_right = 72.0
 offset_bottom = 220.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#0080FF]res://GUI/Images/water.svg[/img] DMG[/font_size]"
+scroll_active = false
 
 [node name="Water RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -157,6 +159,7 @@ offset_right = 200.0
 offset_bottom = 220.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#0080FF]res://GUI/Images/water.svg[/img] RES[/font_size]"
+scroll_active = false
 
 [node name="Rock DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -176,6 +179,7 @@ offset_right = 200.0
 offset_bottom = 172.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#FF8000]res://GUI/Images/rock.svg[/img] RES[/font_size]"
+scroll_active = false
 
 [node name="Air DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -185,6 +189,7 @@ offset_right = 72.0
 offset_bottom = 244.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#00FF80]res://GUI/Images/wind.svg[/img] DMG[/font_size]"
+scroll_active = false
 
 [node name="Air RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -194,6 +199,7 @@ offset_right = 200.0
 offset_bottom = 244.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#00FF80]res://GUI/Images/wind.svg[/img] RES[/font_size]"
+scroll_active = false
 
 [node name="Ice DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -203,6 +209,7 @@ offset_right = 72.0
 offset_bottom = 268.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#00FFFF]res://GUI/Images/ice.svg[/img] DMG[/font_size]"
+scroll_active = false
 
 [node name="Ice RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -212,6 +219,7 @@ offset_right = 200.0
 offset_bottom = 268.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#00FFFF]res://GUI/Images/ice.svg[/img] RES[/font_size]"
+scroll_active = false
 
 [node name="Electric DMG" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -221,6 +229,7 @@ offset_right = 72.0
 offset_bottom = 196.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#FF0080]res://GUI/Images/electric.svg[/img] DMG[/font_size]"
+scroll_active = false
 
 [node name="Electric RES" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -230,6 +239,7 @@ offset_right = 200.0
 offset_bottom = 196.0
 bbcode_enabled = true
 text = "[font_size=12][img=l,16x16, color=#FF0080]res://GUI/Images/electric.svg[/img] RES[/font_size]"
+scroll_active = false
 
 [node name="Value Health" type="Label" parent="container"]
 layout_mode = 0
