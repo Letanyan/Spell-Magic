@@ -19,6 +19,26 @@ static func invf(v: float) -> float:
 static func rand_v3_abs(x: float, y: float, z: float) -> Vector3:
 	return Vector3(x * randf(), y * randf(), z * randf())
 	
+static func rand_point_in_circle(r: float, h: float) -> Vector3:
+	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
+	return p 
+
+static func form_arc_in_circle(s: Vector3, e: Vector3, h: float) -> PathStyle.Segment:
+	var a := s.x
+	var b := s.z
+	var c := e.x
+	var d := e.z
+	
+	var p := Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), h, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
+	var q := Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), h, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
+	var m: Vector3
+	if randf() < 0.5:
+		m = p
+	else:
+		m = q
+		
+	return PathStyle.Segment.quad(s, e, m)
+
 static func midpoint_tangent1(s: Vector3, e: Vector3) -> Vector3:
 	var a := s.x
 	var b := s.z

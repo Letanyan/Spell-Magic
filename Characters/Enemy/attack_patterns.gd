@@ -51,14 +51,13 @@ func choose_spell_from_distribution(vitals: Vitals) -> SpellMovement:
 		return null
 		
 	is_complete = true
-	var range_start := 0.0
 	var range_end := 0.0
 	
 	var p := randf()
 	for i in range(spell_weight.size()):
 		range_end += spell_weight[i]
 		var s = spells[i]
-		var pass_prob = range_start <= p and p <= range_end
+		var pass_prob = p <= range_end
 		if not pass_prob:
 			continue
 			
@@ -72,7 +71,8 @@ func choose_spell_from_distribution(vitals: Vitals) -> SpellMovement:
 			if pass_cool and pass_mana:
 				last_use[s.name] = Time.get_unix_time_from_system()
 				return SpellMovement.new(s, movements[i])
-		range_start = range_end
+			else:
+				return null
 		
 	return null
 

@@ -68,12 +68,14 @@ func set_use_me_as_origin(o: bool = true) -> PathStyle:
 	
 func set_player_body_vision_as_origin(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	use_player_camera_as_vision = false
-	player_vision_offset = Vector4(a, r, min_m, max_m) 
+	player_vision_offset = Vector4(a, r, min_m, max_m)
+	origin_kind = OriginKind.PLAYER
 	return self
 	
 func set_player_cam_vision_as_origin(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	use_player_camera_as_vision = true
-	player_vision_offset = Vector4(a, r, min_m, max_m) 
+	player_vision_offset = Vector4(a, r, min_m, max_m)
+	origin_kind = OriginKind.PLAYER 
 	return self
 	
 func set_is_done_uses_path_segments(d: bool = true) -> PathStyle:

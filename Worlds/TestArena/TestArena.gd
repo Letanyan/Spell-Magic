@@ -63,8 +63,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 20, 1000, 20)
 	#add_enemy(undead)
-	#var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, -20)
-	#add_enemy(bat)
+	var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, -20)
+	add_enemy(bat)
 	#var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
 	#add_enemy(walker)
 	#var fish := Population.generate_enemy(World.Enemy.FISH, player, -20, 1000, 20)
@@ -165,8 +165,17 @@ func toggle_menu():
 		settings.is_paused = false
 		var pause_duration := Time.get_unix_time_from_system() - pause_start
 		player.spell_caster.update_pause_time(pause_duration)
+		var indices := []
+		var idx := 0
 		for e in inhabitants:
+			if e == null:
+				indices.append(idx)
+				continue
 			e.spell_caster.update_pause_time(pause_duration)
+			idx += 1
+		indices.reverse()
+		for i in indices:
+			inhabitants.remove_at(i)
 		menu.close()
 		hud.show()
 	else:

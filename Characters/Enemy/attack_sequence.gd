@@ -2,7 +2,7 @@ class_name AttackSequence
 	
 enum Reset { PATH, ATTACK }
 
-var actions: Array # array of items of either (Control, PathStyle, AttackPatterns)
+var actions: Array # array of items of either (Reset, PathStyle, AttackPatterns)
 var time: float
 var index: int
 var should_loop: bool

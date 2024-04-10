@@ -13,47 +13,32 @@ func _ready():
 	
 	velocity_movement = VelocityMovement.new()
 	
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
+	vitals = Vitals.new(Vitals.Stat.new(100 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
 	vitals.perception.value = 25
 	
 	idle_path = PathStyle.new(randf()).speed(clamp(level * 1.1, 1, 14)).circle(position, 5, 10).use_absolute().align_y_to_origin()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
-	var rand_point := func() -> Vector3:
-		var p : Vector3 = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * idle_r + Vector3(0, idle_h, 0)
-		return p 
-	
-	var form_arc := func(s: Vector3, e: Vector3) -> PathStyle.Segment:
-		var a := s.x
-		var b := s.z
-		var c := e.x
-		var d := e.z
-		
-		var p := Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), idle_h, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
-		var q := Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), idle_h, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
-		var m: Vector3
-		if randf() < 0.5:
-			m = p
-		else:
-			m = q
-			
-		return PathStyle.Segment.quad(s, e, m)
 		
 	var rotate_path := PathStyle.Pathway.new()
-	var a: Vector3 = rand_point.call()
-	var b: Vector3 = rand_point.call()
-	var c: Vector3 = rand_point.call()
-	var d: Vector3 = rand_point.call()
+	var a: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
+	var b: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
+	var c: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
+	var d: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	
 	rotate_path.append_with_speed(
-		[form_arc.call(a, b), form_arc.call(b, c), form_arc.call(c, d), form_arc.call(d, a)],
+		[Globals.form_arc_in_circle(a, b, idle_h), Globals.form_arc_in_circle(b, c, idle_h), Globals.form_arc_in_circle(c, d, idle_h), Globals.form_arc_in_circle(d, a, idle_h)],
 		[2, 2, 2, 2],
 		[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	
-	attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()
+	#attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()
 	
+	attack_path = PathStyle.new(0.0).follow_path(PathStyle.Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 0), 5, PathStyle.Easing.linear).line_to(Vector3(0, 0, 0), 5, PathStyle.Easing.linear)) \
+	.align_y_to_origin().set_player_body_vision_as_origin(0, 10).use_absolute().look_at_player()
+	
+	#attack_path = PathStyle.new(0.0).towards_player(15.0, 20.0).align_y_to_ground().set_use_player_as_origin().use_absolute().look_at_player().speed(5.0)
 	
 	current_path = idle_path
 	
@@ -62,12 +47,15 @@ func _ready():
 	var elec1 = GlobalData.magic_book.copy_spell("linear", {"s": "2", "d": "2"})
 	elec1.element = Spell.Element.ELECTRIC
 	elec1.duration = 10.0
+	elec1.power = 1
 	var elec2 = GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
 	elec2.element = Spell.Element.ELECTRIC
 	elec2.duration = 8.0
+	elec2.power = 1
 	var elec3 = GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"})
 	elec3.element = Spell.Element.ELECTRIC
 	elec3.duration = 6.0
+	elec3.power = 1
 	
 	var elec_arc1 = GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "2"})
 	elec_arc1.element = Spell.Element.ELECTRIC
@@ -86,7 +74,7 @@ func _ready():
 			elec3,
 		],
 		[ 10, 3, 2 ],
-		0.15
+		0.55
 	)
 	
 	sequence_pattern = AttackPatterns.new(
