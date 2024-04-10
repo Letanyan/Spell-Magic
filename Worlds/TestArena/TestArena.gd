@@ -255,18 +255,18 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				return
 				
 			vitals.health.value = vitals.health.max_value
-			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
-				artifacts.reset_by_deleting_all_artifacts()
-				menu.artifacts.update_list_and_grid()
-			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_UPGRADES == 0:
-				settings.upgrade_settings.reset_all_stats_to_default_values()
-				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
-			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
-				book.reset_by_deleting_all_spells()
-				case.reset_by_deleting_all_wands()
-				wand = case.wands[0]
-				menu.magic_book.update_book_without_selection()
-				menu.wand_case.reload_wand_shelf_items(0)
+			#if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
+				#artifacts.reset_by_deleting_all_artifacts()
+				#menu.artifacts.update_list_and_grid()
+			#if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_UPGRADES == 0:
+				#settings.upgrade_settings.reset_all_stats_to_default_values()
+				#menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+			#if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
+				#book.reset_by_deleting_all_spells()
+				#case.reset_by_deleting_all_wands()
+				#wand = case.wands[0]
+				#menu.magic_book.update_book_without_selection()
+				#menu.wand_case.reload_wand_shelf_items(0)
 			
 		GameModeSettings.GameMode.PERMADEATH:
 			if vitals.health.value > 0:

@@ -21,10 +21,6 @@ func _ready() -> void:
 	temporary_grid_tile = GridTile.new()
 	temporary_grid_tile.is_temporary = true
 	artifact_grid.add_grid_tile(temporary_grid_tile, Vector2.ZERO)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 	
 func update_temporary_grid_tile():
 	temporary_grid_tile.is_hidden = false
@@ -37,6 +33,12 @@ func update_temporary_grid_tile():
 		
 	temporary_grid_tile.queue_redraw()
 		
+func update_artifact_list_height():
+	if artifact_preview.artifact == null:
+		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, size.y - artifacts_list.position.y - 8))
+	else:
+		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, artifact_preview.position.y - artifacts_list.position.y - 8))
+	$Destroy.visible = artifact_preview.artifact != null
 	
 func update_list():
 	artifacts_list.clear()
@@ -55,6 +57,7 @@ func update_list():
 	if not found_preview:
 		artifact_preview.artifact = null
 		artifact_preview.queue_redraw()
+		update_artifact_list_height()
 
 func update_list_and_grid():
 	update_list()
@@ -83,6 +86,7 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 		artifact_preview.artifact = artifact
 		temporary_grid_tile.artifact = artifact
 		artifact_preview.queue_redraw()
+		update_artifact_list_height()
 		if artifact_grid.selected_cell_coord:
 			update_temporary_grid_tile()
 		
@@ -245,6 +249,7 @@ func _on_artifacts_list_item_selected(index: int) -> void:
 	artifact_preview.artifact = artifact
 	temporary_grid_tile.artifact = artifact
 	artifact_preview.queue_redraw()
+	update_artifact_list_height()
 	if artifact_grid.selected_cell_coord:
 		update_temporary_grid_tile()
 
@@ -336,3 +341,14 @@ func _on_artifact_preview_gui_input(event: InputEvent) -> void:
 		temporary_grid_tile.artifact = artifact_preview.artifact
 		
 	handle_artifact_drag(event)
+
+
+func _on_destroy_pressed() -> void:
+	if artifact_preview.artifact == null or artifact_preview.is_hidden:
+		return
+		
+	artifacts.delete_artifact(artifact_preview.artifact)
+	artifact_preview.artifact = null
+	temporary_grid_tile.artifact = null
+	update_list()
+	update_temporary_grid_tile()

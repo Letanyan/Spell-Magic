@@ -20,7 +20,7 @@ anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 56.0
 offset_right = 184.0
-offset_bottom = -192.0
+offset_bottom = -232.0
 grow_vertical = 2
 
 [node name="artifact_grid" type="Container" parent="."]
@@ -48,13 +48,24 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = -184.0
+offset_top = -224.0
 offset_right = 184.0
-offset_bottom = -8.0
+offset_bottom = -48.0
 grow_vertical = 0
 focus_mode = 2
 script = ExtResource("3_omm40")
 mouse_filter_override = 0
+
+[node name="Destroy" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -40.0
+offset_right = 184.0
+offset_bottom = -8.0
+text = "Destroy"
 
 [connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
@@ -64,3 +75,4 @@ mouse_filter_override = 0
 [connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]
 [connection signal="on_cell_unselected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_unselected"]
 [connection signal="gui_input" from="artifact_preview" to="." method="_on_artifact_preview_gui_input"]
+[connection signal="pressed" from="Destroy" to="." method="_on_destroy_pressed"]

@@ -48,6 +48,22 @@ func build_active_options():
 	for c in connected:
 		var v = connected[c]
 		update_active_options(c, v)
+		
+func delete_artifact(artifact: Artifact):
+	if connected.has(artifact):
+		return
+		
+	var i := 0
+	var found := -1
+	for a in collection:
+		if a == artifact:
+			found = i
+			break
+		i += 1
+	
+	if found > -1:
+		collection.remove_at(i)
+	
 	
 func update_active_options(artifact: Artifact, coord: Vector2):
 	const TOP := 0
