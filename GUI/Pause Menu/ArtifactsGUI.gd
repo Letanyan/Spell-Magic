@@ -5,6 +5,17 @@ extends Control
 @onready var artifact_grid: InfinityGrid = $artifact_grid
 @onready var artifact_preview: GridTile = $artifact_preview
 
+@onready var filter_top: MenuButton = $Top
+@onready var filter_left: MenuButton = $Left
+@onready var filter_right: MenuButton = $Right
+@onready var filter_bottom: MenuButton = $Bottom
+
+var filter_top_options := FilterOptions.new()
+var filter_left_options := FilterOptions.new()
+var filter_right_options := FilterOptions.new()
+var filter_bottom_options := FilterOptions.new()
+
+
 var temporary_grid_tile: GridTile
 var last_moused_coord := Vector2.ZERO
 
@@ -21,6 +32,11 @@ func _ready() -> void:
 	temporary_grid_tile = GridTile.new()
 	temporary_grid_tile.is_temporary = true
 	artifact_grid.add_grid_tile(temporary_grid_tile, Vector2.ZERO)
+	
+	filter_top.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_top, id, filter_top_options))
+	filter_left.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_left, id, filter_left_options))
+	filter_right.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_right, id, filter_right_options))
+	filter_bottom.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_bottom, id, filter_bottom_options))
 	
 func update_temporary_grid_tile():
 	temporary_grid_tile.is_hidden = false
@@ -45,12 +61,13 @@ func update_list():
 	var found_preview := false
 	if artifact_grid.selected_cell_coord == null:
 		for a in artifacts.unconnected():
-			artifacts_list.add_item(a.name)
-			if a == artifact_preview.artifact:
-				found_preview = true
+			if filter_artifact_matches(a):
+				artifacts_list.add_item(a.name)
+				if a == artifact_preview.artifact:
+					found_preview = true
 	else:
 		for a in artifacts.unconnected():
-			if can_place_artifact(a, artifact_grid.selected_cell_coord).is_empty():
+			if filter_artifact_matches(a) and can_place_artifact(a, artifact_grid.selected_cell_coord).is_empty():
 				artifacts_list.add_item(a.name)
 				if a == artifact_preview.artifact:
 					found_preview = true
@@ -58,6 +75,11 @@ func update_list():
 		artifact_preview.artifact = null
 		artifact_preview.queue_redraw()
 		update_artifact_list_height()
+	else:
+		for idx in artifacts_list.item_count:
+			if artifacts.get_artifact_by_name(artifacts_list.get_item_text(idx)) == artifact_preview.artifact:
+				artifacts_list.select(idx)
+				break
 
 func update_list_and_grid():
 	update_list()
@@ -352,3 +374,183 @@ func _on_destroy_pressed() -> void:
 	temporary_grid_tile.artifact = null
 	update_list()
 	update_temporary_grid_tile()
+
+
+func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions):
+	var menu := button.get_popup() as PopupMenu
+	
+	if id >= 0 and id <= 2:
+		if id != data.main_option:
+			filter_update_popup_menu_items(menu, id)
+			data.set_main_option(id)
+	elif data.main_option == 1: # Event
+		if id < 6:
+			var key := id - 3 
+			if data.events.has(key):
+				data.events.erase(key)
+			else:
+				data.events[key] = true
+		elif id < 9:
+			var key := id - 6
+			if data.patterns.has(key):
+				data.patterns.erase(key)
+			else:
+				data.patterns[key] = true
+		else:
+			var key := id - 9
+			if data.elements.has(key):
+				data.elements.erase(key)
+			else:
+				data.elements[key] = true
+	elif data.main_option == 2:
+		if id < 8:
+			var key := id - 3
+			if data.effects.has(key):
+				data.effects.erase(key)
+			else:
+				data.effects[key] = true
+		elif id < 11:
+			var key := id - 8
+			if data.patterns.has(key):
+				data.patterns.erase(key)
+			else:
+				data.patterns[key] = true
+		else:
+			var key := id - 11
+			if data.elements.has(key):
+				data.elements.erase(key)
+			else:
+				data.elements[key] = true
+				
+	filter_update_popup_menu_checked(menu, data)
+	update_list()
+		
+		
+func filter_update_popup_menu_items(menu: PopupMenu, option: int):
+	while menu.item_count > 3:
+		menu.remove_item(3)
+		
+	menu.set_item_checked(0, option == 0)
+	menu.set_item_checked(1, option == 1)
+	menu.set_item_checked(2, option == 2)
+	
+	if option == 1: # Event
+		menu.add_separator()
+		menu.add_check_item("Receive", Artifact.Event.RECEIVE + 3)
+		menu.add_check_item("Deal", Artifact.Event.DEAL + 3)
+		menu.add_separator()
+		menu.add_check_item("Triangle", Artifact.Pattern.TRIANGLE + 6)
+		menu.add_check_item("Square", Artifact.Pattern.SQUARE + 6)
+		menu.add_check_item("Circle", Artifact.Pattern.CIRCLE + 6)
+		menu.add_separator()
+		menu.add_check_item("Any", Artifact.Element.ANY + 9)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_fire.tres"), "Fire", Artifact.Element.FIRE + 9)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_rock.tres"), "Rock", Artifact.Element.ROCK + 9)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_electric.tres"), "Electric", Artifact.Element.ELECTRIC + 9)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_water.tres"), "Water", Artifact.Element.WATER + 9)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_wind.tres"), "Wind", Artifact.Element.AIR + 9)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_ice.tres"), "Ice", Artifact.Element.ICE + 9)
+	elif option == 2: # Effect
+		menu.add_separator()
+		menu.add_check_item("DMG %", Artifact.Effect.BOOST_PERCENTAGE + 3)
+		menu.add_check_item("DMG", Artifact.Effect.BOOST_FLAT + 3)
+		menu.add_check_item("RES %", Artifact.Effect.RESISTANCE_PERCENTAGE + 3)
+		menu.add_check_item("RES", Artifact.Effect.RESISTANCE_FLAT + 3)
+		menu.add_separator()
+		menu.add_check_item("Triangle", Artifact.Pattern.TRIANGLE + 8)
+		menu.add_check_item("Square", Artifact.Pattern.SQUARE + 8)
+		menu.add_check_item("Circle", Artifact.Pattern.CIRCLE + 8)
+		menu.add_separator()
+		menu.add_check_item("Any", Artifact.Element.ANY + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_fire.tres"), "Fire", Artifact.Element.FIRE + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_rock.tres"), "Rock", Artifact.Element.ROCK + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_electric.tres"), "Electric", Artifact.Element.ELECTRIC + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_water.tres"), "Water", Artifact.Element.WATER + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_wind.tres"), "Wind", Artifact.Element.AIR + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_ice.tres"), "Ice", Artifact.Element.ICE + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_health.tres"), "Health", Artifact.Element.HEALTH + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_mana.tres"), "Mana", Artifact.Element.MANA + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_sword.tres"), "Attack", Artifact.Element.ATTACK + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_shield.tres"), "Defence", Artifact.Element.DEFENCE + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_velocity.tres"), "v", Artifact.Element.SPELL_VELOCITY + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_time.tres"), "T", Artifact.Element.DURATION + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_running.tres"), "Movement Speed", Artifact.Element.RUNNING_SPEED + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_radius.tres"), "r", Artifact.Element.SPELL_RADIUS + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_count.tres"), "N", Artifact.Element.COUNT + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_power.tres"), "P", Artifact.Element.POWER + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_health_outline.tres"), "Max Health", Artifact.Element.HEALTH_BUMP + 11)
+		menu.add_icon_check_item(load("res://GUI/Images/tinted_mana_outline.tres"), "Max Mana", Artifact.Element.MANA_BUMP + 11)
+		
+func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions):
+	var index := 3
+	while index < menu.item_count:
+		if menu.is_item_checkable(index):
+			menu.set_item_checked(index, false)
+		index += 1
+	
+	if data.main_option == 1:
+		for e in data.events:
+			menu.set_item_checked(menu.get_item_index(e + 3), true)
+		for e in data.patterns:
+			menu.set_item_checked(menu.get_item_index(e + 6), true)
+		for e in data.elements:
+			menu.set_item_checked(menu.get_item_index(e + 9), true)
+	elif data.main_option == 2:
+		for e in data.effects:
+			menu.set_item_checked(menu.get_item_index(e + 3), true)
+		for e in data.patterns:
+			menu.set_item_checked(menu.get_item_index(e + 8), true)
+		for e in data.elements:
+			menu.set_item_checked(menu.get_item_index(e + 11), true)
+	
+func filter_artifact_option_matches(option: Artifact.Option, filter: FilterOptions) -> bool:
+	if filter.main_option == 0:
+		return true
+		
+	if filter.main_option == 1 and option.event == Artifact.Event.NONE:
+		return false
+		
+	if filter.main_option == 2 and option.effect == Artifact.Effect.NONE:
+		return false
+		
+	if not filter.patterns.is_empty() and not filter.patterns.has(option.pattern):
+		return false
+		
+	if filter.main_option == 1:
+		if not filter.events.is_empty() and not filter.events.has(option.event):
+			print(filter.events, option.event)
+			return false
+	elif filter.main_option == 2:
+		if not filter.effects.is_empty() and not filter.effects.has(option.effect):
+			return false
+			
+	if not filter.elements.is_empty() and not filter.elements.has(option.element):
+		return false
+		
+	return true
+	
+func filter_artifact_matches(artifact: Artifact) -> bool:
+	if not filter_artifact_option_matches(artifact.top, filter_top_options):
+		return false
+	if not filter_artifact_option_matches(artifact.left, filter_left_options):
+		return false
+	if not filter_artifact_option_matches(artifact.right, filter_right_options):
+		return false
+	if not filter_artifact_option_matches(artifact.bottom, filter_bottom_options):
+		return false
+	return true
+	
+class FilterOptions:
+	var main_option: int = 0 # 0=none, 1=event, 2=effect
+	var patterns: Dictionary = {} # Artifact.Pattern -> bool
+	var events: Dictionary = {} # Artifact.Event -> bool
+	var effects: Dictionary = {} # Artifact.Effect -> bool
+	var elements: Dictionary = {} # Artifact.Element -> bool
+	
+	func set_main_option(option: int):
+		main_option = option
+		patterns.clear()
+		events.clear()
+		effects.clear()
+		elements.clear()
+		

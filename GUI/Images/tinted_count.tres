@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://k2wpu7vewbs8"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_has3o"]
+[ext_resource type="Texture2D" uid="uid://ctp1dqsu2oo3q" path="res://GUI/Images/count.svg" id="2_36uce"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_has3o")
+texture = ExtResource("2_36uce")
+tint = Color(0.968627, 0, 1, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/count.svg-4e29440ea353fdcd98ff250039e7400a.ctex"
+script = ExtResource("1_has3o")

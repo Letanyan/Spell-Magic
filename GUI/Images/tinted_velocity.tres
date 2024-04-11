@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://cmfh46j1wvu5d"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_vdonu"]
+[ext_resource type="Texture2D" uid="uid://ck7o05l1y0lw" path="res://GUI/Images/velocity.svg" id="2_cki8f"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_vdonu")
+texture = ExtResource("2_cki8f")
+tint = Color(0.466667, 1, 0, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/velocity.svg-65d925728fda3e50a21f316fe8057c1e.ctex"
+script = ExtResource("1_vdonu")

@@ -100,19 +100,19 @@ func update_spells_list():
 			q0 = q0 or spell.element == Spell.Element.FIRE
 		if filter_options.get(2, false):
 			has_element = true
-			q0 = q0 or spell.element == Spell.Element.WATER
+			q0 = q0 or spell.element == Spell.Element.ROCK
 		if filter_options.get(3, false):
 			has_element = true
-			q0 = q0 or spell.element == Spell.Element.AIR
+			q0 = q0 or spell.element == Spell.Element.ELECTRIC
 		if filter_options.get(4, false):
 			has_element = true
-			q0 = q0 or spell.element == Spell.Element.ROCK
+			q0 = q0 or spell.element == Spell.Element.WATER
 		if filter_options.get(5, false):
 			has_element = true
-			q0 = q0 or spell.element == Spell.Element.ICE
+			q0 = q0 or spell.element == Spell.Element.AIR
 		if filter_options.get(6, false):
 			has_element = true
-			q0 = q0 or spell.element == Spell.Element.ELECTRIC
+			q0 = q0 or spell.element == Spell.Element.ICE
 		var q1 := q0 or not has_element
 		if filter_options.get(7, false):
 			q1 = q1 and spell.player_is_origin

@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0eqpohrkp1r7"]
+[gd_scene load_steps=8 format=3 uid="uid://c0eqpohrkp1r7"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/ArtifactsGUI.gd" id="1_lsxrb"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/InfinityGrid.gd" id="2_reg1r"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/GridTile.gd" id="3_omm40"]
+[ext_resource type="Texture2D" uid="uid://dpl85nqrpm402" path="res://GUI/Images/top.svg" id="4_hp0s5"]
+[ext_resource type="Texture2D" uid="uid://cf1vu6rsi0v6" path="res://GUI/Images/left.svg" id="5_hb31u"]
+[ext_resource type="Texture2D" uid="uid://c4ahek33r0tva" path="res://GUI/Images/right.svg" id="6_j6i0q"]
+[ext_resource type="Texture2D" uid="uid://bql6w7l7jeygc" path="res://GUI/Images/bottom.svg" id="7_s27d8"]
 
 [node name="Artifacts" type="Control"]
 layout_mode = 3
@@ -18,7 +22,7 @@ layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 56.0
+offset_top = 96.0
 offset_right = 184.0
 offset_bottom = -232.0
 grow_vertical = 2
@@ -66,6 +70,82 @@ offset_top = -40.0
 offset_right = 184.0
 offset_bottom = -8.0
 text = "Destroy"
+
+[node name="Top" type="MenuButton" parent="."]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 56.0
+offset_right = 88.0
+offset_bottom = 88.0
+icon = ExtResource("4_hp0s5")
+flat = false
+item_count = 3
+popup/item_0/text = "Any"
+popup/item_0/checkable = 2
+popup/item_0/id = 0
+popup/item_1/text = "Event"
+popup/item_1/checkable = 2
+popup/item_1/id = 1
+popup/item_2/text = "Effect"
+popup/item_2/checkable = 2
+popup/item_2/id = 2
+
+[node name="Left" type="MenuButton" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 57.0
+offset_right = 40.0
+offset_bottom = 89.0
+icon = ExtResource("5_hb31u")
+flat = false
+item_count = 3
+popup/item_0/text = "Any"
+popup/item_0/checkable = 2
+popup/item_0/id = 0
+popup/item_1/text = "Event"
+popup/item_1/checkable = 2
+popup/item_1/id = 1
+popup/item_2/text = "Effect"
+popup/item_2/checkable = 2
+popup/item_2/id = 2
+
+[node name="Right" type="MenuButton" parent="."]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 57.0
+offset_right = 184.0
+offset_bottom = 89.0
+icon = ExtResource("6_j6i0q")
+flat = false
+item_count = 3
+popup/item_0/text = "Any"
+popup/item_0/checkable = 2
+popup/item_0/id = 0
+popup/item_1/text = "Event"
+popup/item_1/checkable = 2
+popup/item_1/id = 1
+popup/item_2/text = "Effect"
+popup/item_2/checkable = 2
+popup/item_2/id = 2
+
+[node name="Bottom" type="MenuButton" parent="."]
+layout_mode = 0
+offset_left = 104.0
+offset_top = 57.0
+offset_right = 136.0
+offset_bottom = 89.0
+icon = ExtResource("7_s27d8")
+flat = false
+item_count = 3
+popup/item_0/text = "Any"
+popup/item_0/checkable = 2
+popup/item_0/id = 0
+popup/item_1/text = "Event"
+popup/item_1/checkable = 2
+popup/item_1/id = 1
+popup/item_2/text = "Effect"
+popup/item_2/checkable = 2
+popup/item_2/id = 2
 
 [connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]

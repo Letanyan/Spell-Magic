@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://bophdf5saylvc"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_6o4d7"]
+[ext_resource type="Texture2D" uid="uid://c7aaamtv3oyo7" path="res://GUI/Images/radius.svg" id="2_uvs2u"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_6o4d7")
+texture = ExtResource("2_uvs2u")
+tint = Color(0.466667, 0, 1, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/radius.svg-3c12d4d8d0dce2b7b5159e7ba378301e.ctex"
+script = ExtResource("1_6o4d7")
