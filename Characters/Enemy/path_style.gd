@@ -182,9 +182,11 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 		temp_origin += player.position
 	elif origin_kind == OriginKind.ME:
 		temp_origin += me_start_position
+	
+	var player_vision_rotation := 0.0
 	if player_vision_offset:
-		var rot: float = player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot").rotation.y
-		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, rot + player_vision_offset.x)
+		player_vision_rotation = player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot").rotation.y
+		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_vision_rotation + player_vision_offset.x)
 		var rel_off := off + player.position
 		var dist := me.position.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
@@ -200,7 +202,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 	else:
 		duration = clampf(t, 0, path.total_duration)
 	var index = Globals.Ref.new(0)
-	var v := path.position_at_time(duration, index) + temp_origin
+	var v := path.position_at_time_with_rotation(duration, -player_vision_rotation, index) + temp_origin
 	
 	if fmod(t, path.total_duration) < fmod(old_t, path.total_duration):
 		me_start_position = null
@@ -336,6 +338,23 @@ class Pathway:
 		var ratio = t / durations[segment]
 		var modifier = path_modifiers[segment].position_at_time(ratio).y
 		return segments[segment].position_at_time(modifier)
+		
+	func position_at_time_with_rotation(t: float, angle: float, index: Globals.Ref = null) -> Vector3:
+		var running := 0.0
+		var segment := 0
+		for i in range(durations.size()):
+			segment = i
+			var ti = durations[i]
+			if running <= t and t < running + ti:
+				break
+			running += ti
+		t -= running
+		if index:
+			index.data = segment
+			
+		var ratio = t / durations[segment]
+		var modifier = path_modifiers[segment].position_at_time(ratio).y
+		return segments[segment].position_at_time_with_rotation(modifier, angle)
 			
 	func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		var segment := 0
@@ -488,6 +507,33 @@ class Segment:
 				var e1: Vector3 = lerp(a1, b1, t)
 				var a2: Vector3 = lerp(c1, c2, t)
 				var b2: Vector3 = lerp(c2, end, t)
+				var e2: Vector3 = lerp(a2, b2, t)
+				return lerp(e1, e2, t)
+				
+		return Vector3.ZERO
+		
+	func position_at_time_with_rotation(t: float, angle: float) -> Vector3:
+		var mat := Transform3D.IDENTITY.rotated(Vector3.UP, angle).affine_inverse()
+		match kind:
+			BezierKind.LINEAR:
+				return lerp(mat * start, mat * end, t)
+			BezierKind.QUAD:
+				var s := mat * start
+				var i1 := mat * c1
+				var e := mat * end
+				var a: Vector3 = lerp(s, i1, t)
+				var b: Vector3 = lerp(i1, e, t)
+				return lerp(a, b, t)
+			BezierKind.CUBIC:
+				var s := mat * start
+				var i1 := mat * c1
+				var i2 := mat * c2
+				var e := mat * end
+				var a1: Vector3 = lerp(s, i1, t)
+				var b1: Vector3 = lerp(i1, e, t)
+				var e1: Vector3 = lerp(a1, b1, t)
+				var a2: Vector3 = lerp(i1, i2, t)
+				var b2: Vector3 = lerp(i2, e, t)
 				var e2: Vector3 = lerp(a2, b2, t)
 				return lerp(e1, e2, t)
 				

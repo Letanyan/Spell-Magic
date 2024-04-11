@@ -35,8 +35,13 @@ func _ready():
 	
 	#attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()
 	
-	attack_path = PathStyle.new(0.0).follow_path(PathStyle.Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 0), 5, PathStyle.Easing.linear).line_to(Vector3(0, 0, 0), 5, PathStyle.Easing.linear)) \
-	.align_y_to_origin().set_player_body_vision_as_origin(0, 10).use_absolute().look_at_player()
+	attack_path = PathStyle.new(0.0).follow_path(PathStyle.Pathway.new() \
+	.move_to(Vector3(0, 5, 0)) \
+	.line_to(Vector3(-10, 5, 0), 5, PathStyle.Easing.linear) \
+	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
+	.line_to(Vector3(10, 5, 0), 5, PathStyle.Easing.linear) \
+	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
+	).align_y_to_origin().set_player_cam_vision_as_origin(0, 10).use_absolute().look_at_player()
 	
 	#attack_path = PathStyle.new(0.0).towards_player(15.0, 20.0).align_y_to_ground().set_use_player_as_origin().use_absolute().look_at_player().speed(5.0)
 	
@@ -96,7 +101,8 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.value >= 20:
-		return random_pattern
+		return none_pattern
+		#return random_pattern
 	else:
 		return sequence_pattern
 
