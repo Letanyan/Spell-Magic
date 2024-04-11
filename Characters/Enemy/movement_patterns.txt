@@ -1,0 +1,9 @@
+
+- hide behind player: player fires spell at -uvw away from camera
+
+- rotate around player: player fires spell that goes around player in opposite direction
+
+- enemy surrounded by rock: player fires spell from above enemy
+
+- color coded enemy (defeated enemies change color): player beats enemies until all enemies (same/different) color
+	- defeated enemies could change color to color based on attack element. (may become invulnerable to element) 

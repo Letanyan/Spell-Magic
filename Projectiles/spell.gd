@@ -136,6 +136,31 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 		result += (vars["rel_pos"] if follow else vars["abs_pos"])
 	
 	return result
+	
+func approximate_distance_traveled_at_time(vars: Dictionary, time: float, samples: int = 29) -> float:
+	var ft := Vector3.ZERO
+	var ftp := Vector3.ZERO
+	var temp_vars = vars.duplicate()
+	temp_vars["t"] = 0.0
+	ftp.x = x_expr.compute(temp_vars)
+	ftp.y = y_expr.compute(temp_vars)
+	ftp.z = z_expr.compute(temp_vars)
+	
+	var result := 0.0
+	var step := time / float(samples)
+	var t := step
+	
+	# calculate distance
+	while t <= time + step:
+		temp_vars["t"] = t
+		ft.x = x_expr.compute(temp_vars)
+		ft.y = y_expr.compute(temp_vars)
+		ft.z = z_expr.compute(temp_vars)
+		result += ftp.distance_to(ft)
+		t += step
+		ftp = ft
+	
+	return result
 
 	
 func calculate_delay(vars: Dictionary) -> float:
@@ -146,13 +171,6 @@ func _mass() -> float:
 	match element:
 		Element.ROCK: return power * 100.0
 		_: return 0
-			
-func impulse_length() -> float:
-	match element:
-		Element.AIR:
-			return power * 10
-		_:
-			return 0
 	
 func build_expressions():
 	for k in expression_strings:
@@ -198,11 +216,11 @@ func actual_mana_cost() -> float:
 	
 func damage(vitals: Vitals) -> float:
 	match element:
-		Element.FIRE: return (power * 0.01) * (vitals.attack.value + buff_attack)
-		Element.WATER: return (power * 0.001) * vitals.health.value
-		Element.AIR: return 0.0
-		Element.ROCK: return (power * 0.01) * (vitals.defence.value + buff_defence)
-		Element.ICE: return (power * 0.01) * (vitals.health.value * 0.0005 + (vitals.attack.value + buff_attack) * 0.005)
+		Element.FIRE: return (power / UpgradeSettings.LIMIT_P) * (vitals.attack.value + buff_attack)
+		Element.WATER: return (power / UpgradeSettings.LIMIT_P * 0.1) * vitals.health.value
+		Element.AIR: return power
+		Element.ROCK: return (power / UpgradeSettings.LIMIT_P) * (vitals.defence.value + buff_defence)
+		Element.ICE: return (power / UpgradeSettings.LIMIT_P) * (vitals.health.value * 0.0005 + (vitals.attack.value + buff_attack) * 0.005)
 		Element.ELECTRIC: return power
 		Element.VOID: return 0.0
 	return 0.0
@@ -256,6 +274,9 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	p.spell = self
 	p.update_shape(radius, true)
 	p.position = calculate_location(fixed_vars)
+	
+	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
+	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
 	if element == Element.ROCK:
 		var origin: Vector3 = fixed_vars.get("abs_pos", Vector3.ZERO)

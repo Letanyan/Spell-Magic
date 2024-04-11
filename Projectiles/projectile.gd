@@ -8,6 +8,7 @@ var expired: bool = false
 var started: bool = false
 var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
+var lifetime_velocity: float = 0.0 
 var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: float = 0
 
@@ -69,14 +70,18 @@ func actual_duration() -> float:
 func impulse() -> Vector3:
 	match spell.element:
 		Spell.Element.ROCK:
-			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P)
+			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
+			return velocity * (amp)
 		Spell.Element.AIR:
-			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P * 100)
+			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
+			return velocity * (amp * 100)
 			
 		Spell.Element.FIRE:
-			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P * 4)
+			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
+			return velocity * (amp * 4)
 		Spell.Element.WATER:
-			return velocity.normalized() * (spell.power / UpgradeSettings.LIMIT_P * 2)
+			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
+			return velocity * (amp * 2)
 		Spell.Element.ELECTRIC:
 			return Vector3.ZERO
 		Spell.Element.ICE:

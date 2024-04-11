@@ -90,7 +90,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			var amount = stun.amount_of_change(maxf(wetness.value, burning.value) * gauge / 100.0)
 			stun.apply_ignoring_resistance(amount)
 		Spell.Element.AIR:
-			power = 0.0
+			pass
 		Spell.Element.VOID:
 			power = 0.0
 			
