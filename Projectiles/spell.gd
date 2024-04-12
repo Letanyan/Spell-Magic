@@ -197,13 +197,13 @@ func calculate_cooldown() -> float:
 	if element == Element.VOID:
 		basic_cost = 0.0
 	else:
-		basic_cost = ((power / UpgradeSettings.LIMIT_P) ** 1.25 * 30.0) * \
+		basic_cost = maxf((power / UpgradeSettings.LIMIT_P) ** 1.25 * 30.0, 1.0) * \
 		(duration / UpgradeSettings.LIMIT_T + 1.0) * \
-		(radius / UpgradeSettings.LIMIT_r + 1.0) * \
+		(((radius + 1) ** 2) / UpgradeSettings.LIMIT_r + 1.0) * \
 		(maxf(1.0, count * 0.98))
 	if chain != null:
-		chain_cost = chain.calculate_cooldown()
-	cooldown = basic_cost * maxf(chain_cost, 1.0) - mana_cost
+		chain_cost = chain.calculate_cooldown() * count
+	cooldown = basic_cost + chain_cost - mana_cost
 	if cooldown < 0.0:
 		cooldown = 0.0
 	return cooldown

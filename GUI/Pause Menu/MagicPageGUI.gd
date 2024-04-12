@@ -130,6 +130,7 @@ func _on_element_combo_selected(index):
 	if current_index < 0:
 		return
 	book.spells[current_index].element = index as Spell.Element
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_chain_combo_selected(index):
