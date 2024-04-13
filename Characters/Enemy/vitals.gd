@@ -7,7 +7,7 @@ class Stat:
 	@export var change_per_tick: float
 	@export var resistance: float
 	
-	func _init(v: float, min_v: float, max_v: float, change: float = 0, res: float = 0):
+	func _init(v: float, min_v: float = v, max_v: float = v, change: float = 0, res: float = 0):
 		value = v
 		min_value = min_v
 		max_value = max_v
@@ -63,7 +63,7 @@ func _init(_health: Stat, _mana: Stat):
 func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
 	match kind:
 		Spell.Element.FIRE:
-			var amount = burning.amount_of_change(gauge / 100.0)
+			var amount = burning.amount_of_change(gauge)
 			if wetness.value <= 0 and freeze.value <= 0:
 				burning.apply_ignoring_resistance(amount)
 			else:
@@ -71,7 +71,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			wetness.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(-amount * 1.5)
 		Spell.Element.WATER:
-			var amount = wetness.amount_of_change(gauge / 100.0)
+			var amount = wetness.amount_of_change(gauge)
 			if burning.value <= 0:
 				wetness.apply_ignoring_resistance(amount)
 			else:
@@ -79,7 +79,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			burning.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(amount * freeze.value)
 		Spell.Element.ICE:
-			var amount = freeze.amount_of_change(wetness.value * gauge / 100.0)
+			var amount = freeze.amount_of_change(wetness.value * gauge)
 			if wetness.value > 0:
 				freeze.apply_ignoring_resistance(amount)
 				wetness.apply_ignoring_resistance(-amount)
@@ -87,7 +87,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 				power = power * 0.25
 			burning.apply_ignoring_resistance(-amount)
 		Spell.Element.ELECTRIC:
-			var amount = stun.amount_of_change(maxf(wetness.value, burning.value) * gauge / 100.0)
+			var amount = stun.amount_of_change(maxf(wetness.value, burning.value) * gauge)
 			stun.apply_ignoring_resistance(amount)
 		Spell.Element.AIR:
 			pass
@@ -118,6 +118,7 @@ func update_vitals(body: Node3D) -> Array:
 		var burn_damage := int(burning.value * health.max_value * 0.05)
 		health.apply_ignoring_resistance(-burn_damage)
 		result.append({"dmg": burn_damage, "el": Spell.Element.FIRE})
+		defence.value = defence.max_value * burning.value
 	
 	var effect: Node3D
 	

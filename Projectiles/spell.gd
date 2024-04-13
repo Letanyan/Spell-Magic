@@ -54,6 +54,7 @@ var player_is_origin: bool
 var is_active: bool
 var cooldown: float
 var charge: float
+var elemental_application: float
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
@@ -110,6 +111,7 @@ func duplicate(override_expr: Dictionary = {}) -> Spell:
 	if not override_expr.is_empty():
 		result.expression_strings.merge(override_expr, true)
 	result.build_expressions()
+	result.calculate_cooldown()
 	result.charge = charge
 	result.is_active = is_active
 	return result
@@ -203,6 +205,11 @@ func calculate_cooldown() -> float:
 		(maxf(1.0, count * 0.98))
 	if chain != null:
 		chain_cost = chain.calculate_cooldown() * count
+		
+	elemental_application = (power / UpgradeSettings.LIMIT_P)
+	elemental_application += clampf((mana_cost - (basic_cost + chain_cost)) / 100, 0.0, 1.0)
+	elemental_application = clampf(elemental_application, 0.0, 1.0)
+		
 	cooldown = basic_cost + chain_cost - mana_cost
 	if cooldown < 0.0:
 		cooldown = 0.0
@@ -367,7 +374,8 @@ func save_dict():
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
-		"expression_strings": expression_strings, "is_active": is_active
+		"expression_strings": expression_strings, "is_active": is_active, 
+		"elemental_application": elemental_application
 	}
 
 func load_dict(dict: Dictionary):
@@ -394,6 +402,7 @@ func load_dict(dict: Dictionary):
 	player_is_origin = dict.get("player_is_origin", true)
 	expression_strings = dict.get("expression_strings", {})
 	is_active = dict.get("is_active", false)
+	elemental_application = dict.get("elemental_application", 0.0)
 	for e in expression_strings:
 		expression_strings[e] = expression_strings[e].strip_edges()
 	
@@ -404,6 +413,14 @@ func load_dict(dict: Dictionary):
 	build_expressions()
 	
 	calculate_cooldown()
+	
+func elemental_application_description() -> String:
+	match element:
+		Element.FIRE: return "Burn Applied: %d%%" % int(elemental_application * 100)
+		Element.WATER: return "Wet Applied: %d%%" % int(elemental_application * 100)
+		Element.ICE: return "Freeze Applied: %d%%" % int(elemental_application * 100)
+		Element.ELECTRIC: return "Stun Applied: %d%%" % int(elemental_application * 100)
+	return ""
 	
 static func name_from_element(el: Element) -> String:
 	match el:

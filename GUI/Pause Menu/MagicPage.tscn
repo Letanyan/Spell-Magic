@@ -365,15 +365,27 @@ angle=sin(pi)*n"
 wrap_mode = 1
 scroll_smooth = true
 
+[node name="element_application" type="Label" parent="container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 0.486
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -120.0
+offset_right = 0.127991
+offset_bottom = -91.0
+text = "Burning: 0"
+
 [node name="cooldown" type="Label" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
-anchor_right = 0.491
+anchor_right = 0.487
 anchor_bottom = 1.0
 offset_left = 16.0
 offset_top = -80.0
-offset_right = -4.22406
+offset_right = 0.383911
 offset_bottom = -48.0
 text = "Cooldown: 0s"
 vertical_alignment = 1

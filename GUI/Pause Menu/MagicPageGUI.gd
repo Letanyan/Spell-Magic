@@ -24,6 +24,8 @@ extends Control
 @onready var mana_edit: LineEdit = $container/mana_edit
 @onready var cooldown_label: Label = $container/cooldown
 @onready var mana_cost: Label = $container/mana_cost
+@onready var element_application: Label = $container/element_application
+
 
 @onready var error_label: Label = $container/error_label
 
@@ -115,6 +117,7 @@ func update_cooldown():
 		return
 	book.spells[current_index].calculate_cooldown()
 	cooldown_label.text = "Cooldown: " + ("%.2f" % book.spells[current_index].cooldown) + "s"
+	element_application.text = book.spells[current_index].elemental_application_description()
 	if book.spells[current_index].chain != null:
 		mana_cost.text = "Total (Inc. chain): " + ("%.2f" % book.spells[current_index].actual_mana_cost())
 	else:
