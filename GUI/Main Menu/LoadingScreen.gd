@@ -20,7 +20,7 @@ func start_transition(animation_name: String, on_complete: Callable) -> void:
 		animation_name = "fade_to_black"
 	starting_animation_name = animation_name
 	anim_player.play(animation_name)
-	anim_player.animation_finished.connect(func(anim_name): if anim_name == animation_name: on_complete.call())
+	anim_player.animation_finished.connect(func(anim_name: String) -> void: if anim_name == animation_name: on_complete.call())
 	
 	# if timer reaches the end before we finish loading, this will show the progress bar
 	timer.start()

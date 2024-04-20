@@ -8,7 +8,7 @@ var hide_health_mana: bool = false
 var hide_cooldown_timings: bool = false
 var hide_stats_view: bool = true
 
-func save_dict():
+func save_dict() -> Dictionary:
 	return {
 		"hide_wand_mappings": hide_wand_mappings, "hide_wand_modifier_hints": hide_wand_modifier_hints,
 		"hide_notifications": hide_notifications, "hide_status_effects": hide_status_effects,
@@ -16,7 +16,7 @@ func save_dict():
 		"hide_stats_view": hide_stats_view
 	}
 
-func load_dict(dict: Dictionary):
+func load_dict(dict: Dictionary) -> void:
 	hide_wand_mappings = dict.get("hide_wand_mappings", false)
 	hide_wand_modifier_hints = dict.get("hide_wand_modifier_hints", false)
 	hide_notifications = dict.get("hide_notifications", false)

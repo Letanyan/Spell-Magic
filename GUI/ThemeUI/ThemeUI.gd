@@ -2,7 +2,7 @@ class_name ThemeUI
 extends Theme
 
 
-func change_tint_color(tint: Color):
+func change_tint_color(tint: Color) -> void:
 	var root_base_style: StyleBoxFlat = get_stylebox("normal", "Button") as StyleBoxFlat
 	var root_disabled_style: StyleBoxFlat = get_stylebox("disabled", "Button") as StyleBoxFlat
 	var root_focus_style: StyleBoxFlat = get_stylebox("focus", "Button") as StyleBoxFlat

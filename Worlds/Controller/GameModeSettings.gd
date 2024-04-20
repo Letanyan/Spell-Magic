@@ -19,11 +19,11 @@ static func respawn_with_upgrades_only() -> GameModeSettings:
 static func permadeath() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.PERMADEATH, 0)
 	
-func save_dict():
+func save_dict() -> Dictionary:
 	return {
 		"mode": mode, "flags": flags
 	}
 
-func load_dict(dict: Dictionary):
+func load_dict(dict: Dictionary) -> void:
 	mode = dict.get("mode", GameMode.RESPAWN)
 	flags = dict.get("flags", RESPAWN_WITH_UPGRADES)

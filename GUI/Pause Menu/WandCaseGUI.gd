@@ -15,28 +15,19 @@ var case: WandCase:
 @onready var delete_button: Button = $delete
 @onready var use_button: Button = $use
 
-var current_index = -1
+var current_index := -1
 var use_current_wand: Callable
 var book: MagicBook
 var spell_errors := {}
 
 signal new_wand_selected
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
 	
-func update_wand_shelf_items(ignore_signals: bool):
+func update_wand_shelf_items(ignore_signals: bool) -> void:
 	for c in container.get_children():
 		if c is WandCaseShelfItem:
-			c.update_state(ignore_signals)
+			(c as WandCaseShelfItem).update_state(ignore_signals)
 	if ignore_signals and current_index > -1:
-		case.wands[current_index].spell_updated.emit()
+		(case.wands[current_index] as Wand).spell_updated.emit()
 	
 func reload_wand_shelf_items(index: int = current_index) -> void:
 	if index < 0:
@@ -50,26 +41,26 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		container.remove_child(c)
 		
 	var prev_item: WandCaseShelfItem = null
-	for w in wand.keys:
-		var item = load("res://GUI/Pause Menu/WandCaseShelfItem.tscn").instantiate()
+	for w: Array in wand.keys:
+		var item := (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
 		item.store_key = w
 		item.store_action = wand.keys[w].kind
 		item.store_spell = wand.keys[w].spell
 		
-		item.return_focus.connect(func(): wand_index.grab_focus())
+		item.return_focus.connect(func() -> void: wand_index.grab_focus())
 		if prev_item != null:
-			item.move_up_request.connect(func(): prev_item.grab_focus())
+			item.move_up_request.connect(func() -> void: prev_item.grab_focus())
 		if prev_item != null:
-			prev_item.move_down_request.connect(func(): item.grab_focus())
+			prev_item.move_down_request.connect(func() -> void: item.grab_focus())
 		prev_item = item
 		
-		item.spell_changed = func(text: String, ignore_signals: bool):
+		item.spell_changed = func(text: String, ignore_signals: bool) -> void:
 			var all_spells := text.split(",", false)
 			var missing_errors := []
 			var not_active_errors := []
 			for i in range(all_spells.size()):
 				var n := all_spells[i].lstrip(" \t\n\r").rstrip(" \t\n\r")
-				var s = book.copy_spell(n)
+				var s := book.copy_spell(n)
 				if s == null:
 					missing_errors.append("'[b]" + n + "[/b]'")
 				elif not s.is_active:
@@ -95,11 +86,11 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 			wand.keys[w].kind = to
 			wand.action_updated.emit()
 			if to == Wand.Kind.MOD:
-				wand.add_mod(w[0])
+				wand.add_mod(w[0] as String)
 				_on_wand_index_item_selected(current_index)
 				return true
 			elif from == Wand.Kind.MOD:
-				wand.remove_mod(w[0])
+				wand.remove_mod(w[0] as String)
 				_on_wand_index_item_selected(current_index)
 				return true
 			return false
@@ -108,23 +99,23 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 			
 		container.add_child(item)
 	
-func _on_wand_index_item_selected(index):
+func _on_wand_index_item_selected(index: int) -> void:
 	reload_wand_shelf_items(index)
 
-func reload_list():
+func reload_list() -> void:
 	wand_index.clear()
-	for w in case.wands:
+	for w: Wand in case.wands:
 		wand_index.add_item(w.name)
 	if current_index > -1:
 		reload_wand_shelf_items(current_index)
 	
-func _on_delete_pressed():
+func _on_delete_pressed() -> void:
 	if current_index < 0:
 		return
 		
 	var filename := case.wands[current_index].name as String
 	var popup := PopupDialog.display("Are you sure you want to delete the wand '" + filename + "'")
-	popup.confirmed.connect(func():
+	popup.confirmed.connect(func() -> void:
 		if current_index < 0:
 			return
 		case.wands.remove_at(current_index)
@@ -137,13 +128,13 @@ func _on_delete_pressed():
 	get_tree().root.add_child(popup)
 	
 
-func _on_create_pressed():
-	var wand = Wand.new()
+func _on_create_pressed() -> void:
+	var wand := Wand.new()
 	var wand_count := 1
 	var is_numbered_wand := RegEx.new()
 	is_numbered_wand.compile("[Ww][Aa][Nn][Dd]\\s\\d+")
-	for w in case.wands:
-		var mat = is_numbered_wand.search(w.name) 
+	for w: Wand in case.wands:
+		var mat := is_numbered_wand.search(w.name) 
 		if mat and mat.get_start(0) == 0:
 			wand_count += 1
 	wand.name = "Wand " + str(wand_count)
@@ -152,14 +143,14 @@ func _on_create_pressed():
 	reload_wand_shelf_items(case.wands.size() - 1)
 
 
-func _on_name_text_changed(new_text):
+func _on_name_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	case.wands[current_index].name = new_text
 	wand_index.set_item_text(current_index, new_text)
 
 
-func _on_use_pressed():
+func _on_use_pressed() -> void:
 	if current_index < 0:
 		return
 	case.selected_wand = current_index

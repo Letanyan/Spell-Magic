@@ -7,33 +7,33 @@ enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS,
 
 var settings: WorldSettings # set by the world
 
-func save(world_name: String):
+func save(world_name: String) -> void:
 	save_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
 	
-func save_absolute_path(file_path: String):
-	var file = FileAccess.open(file_path, FileAccess.WRITE)
-	var data = []
+func save_absolute_path(file_path: String) -> void:
+	var file := FileAccess.open(file_path, FileAccess.WRITE)
+	var data := []
 	for s in spells:
 		data.append(s.save_dict())
 	file.store_var(data)
 	
-func read(world_name: String):
+func read(world_name: String) -> void:
 	read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
 		
-func read_absolute_path(file_path: String):
-	var file = FileAccess.open(file_path, FileAccess.READ)
+func read_absolute_path(file_path: String) -> void:
+	var file := FileAccess.open(file_path, FileAccess.READ)
 	last_use = {}
 	ignore_cooldown = false
 	if not file:
 		spells = []
 		return 
-	var data = file.get_var()
+	var data := file.get_var() as Array
 	if data == null:
 		spells = []
 		return
 	var active_count := 0
-	for d in data:
-		var s = Spell.new()
+	for d: Dictionary in data:
+		var s := Spell.new()
 		s.load_dict(d)
 		s.limit_r = settings.upgrade_settings.max_r
 		s.limit_v = settings.upgrade_settings.max_v
@@ -42,17 +42,17 @@ func read_absolute_path(file_path: String):
 		s.is_active = s.is_active and active_count < settings.upgrade_settings.max_spells_in_book
 		spells.append(s)
 	
-func _init():
+func _init() -> void:
 	spells = []
 	last_use = {}
 	ignore_cooldown = false
 	settings = null
 	
-func reset_by_deleting_all_spells():
+func reset_by_deleting_all_spells() -> void:
 	spells = []
 	last_use = {}
 	
-func add(spell: Spell):
+func add(spell: Spell) -> void:
 	var active_count := 0
 	for s in spells:
 		if s.is_active:
@@ -60,13 +60,13 @@ func add(spell: Spell):
 	spell.is_active = active_count <= settings.upgrade_settings.max_spells_in_book
 	spells.append(spell)
 	
-func remove(i: int):
+func remove(i: int) -> void:
 	spells.remove_at(i)
 
-func use_spell(spell: Spell):
-	var t = Time.get_unix_time_from_system()
+func use_spell(spell: Spell) -> void:
+	var t := Time.get_unix_time_from_system()
 	last_use[spell.name] = t
-	var s = spell.chain
+	var s := spell.chain
 	while s != null:
 		last_use[s.name] = t
 		s = s.chain
@@ -75,7 +75,7 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 	if not spell.is_active:
 		return DisallowSpellReason.ACTIVE
 	
-	var elapsed = Time.get_unix_time_from_system() - last_use.get(spell.name, 0)
+	var elapsed := Time.get_unix_time_from_system() - last_use.get(spell.name, 0.0) as float
 	if elapsed < spell.cooldown and not ignore_cooldown:
 		return DisallowSpellReason.COOLDOWN
 		
@@ -110,7 +110,7 @@ func can_use_spell_with_name(n: String) -> DisallowSpellReason:
 		return can_use_spell(s)
 	return DisallowSpellReason.ACTIVE
 
-func rebuild_spell_chains():
+func rebuild_spell_chains() -> void:
 	for s in spells:
 		if s.chain != null:
 			for t in spells:
@@ -118,17 +118,17 @@ func rebuild_spell_chains():
 					s.chain = t
 					break
 			
-func update_spell_limits(v: float, r: float):
+func update_spell_limits(v: float, r: float) -> void:
 	for s in spells:
 		s.limit_v = v
 		s.limit_r = r
 		
-func update_spell_buff_limits(v: float, r: float):
+func update_spell_buff_limits(v: float, r: float) -> void:
 	for s in spells:
 		s.buff_v = v
 		s.buff_r = r
 		
-func update_spell_attack_and_defence(atk: float, def: float):
+func update_spell_attack_and_defence(atk: float, def: float) -> void:
 	for s in spells:
 		s.buff_attack = atk
 		s.buff_defence = def

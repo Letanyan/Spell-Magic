@@ -55,9 +55,9 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 	return Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), 0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
 
 class Ref extends RefCounted:
-	var data
+	var data: Variant
 	
-	func _init(value) -> void:
+	func _init(value: Variant) -> void:
 		data = value
 
 static func particle_system_lifetime(p: GPUParticles3D) -> float:
@@ -74,7 +74,7 @@ func _ready() -> void:
 	controller = Controller.new()
 	
 	magic_book = MagicBook.new()
-	var upgrade_settings = UpgradeSettings.new()
+	var upgrade_settings := UpgradeSettings.new()
 	upgrade_settings.reset_all_stats_to_max_values()
 	magic_book.settings = WorldSettings.new(get_viewport())
 	magic_book.settings.upgrade_settings = upgrade_settings

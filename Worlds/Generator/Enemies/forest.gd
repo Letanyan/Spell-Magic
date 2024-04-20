@@ -32,39 +32,39 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 		area[j] = t
 	
 	while index < area.size() - 1:
-		var struct = Population.random_entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
+		var struct := Population.random_entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
 				index += 1
 			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
 				index += 1
-				var pos = area[index]
-				var p = pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos.x, pos.y, spacing)
+				var pos := area[index] as Vector2
+				var p := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
 				index += 1
-				var pos = area[index]
-				var p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos.x, pos.y, spacing)
+				var pos := area[index] as Vector2
+				var p := pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.BAT:
 				index += 1
-				var pos = area[index]
-				var p = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
+				var pos := area[index] as Vector2
+				var p := pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.MOLE:
 				index += 1
-				var pos = area[index]
-				var p = pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
+				var pos := area[index] as Vector2
+				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)		
 			FOREST_STRUCTURES_KIND.HORDE:
 				if area.size() - index < 100:
 					index += 1
 					continue
-				var count = pop.rng.randi_range(4, 16)
+				var count := pop.rng.randi_range(4, 16)
 				index += 1
 				var origin := area[index]
 				var x := origin.x
@@ -76,20 +76,20 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)
 					if p != null:
 						result.append(p)
-					v = v.rotated(float(i) / count * 2.0 * PI)
+					v = v.rotated(float(i) / float(count) * 2.0 * PI)
 					
 			FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD:
 				if area.size() - index < 100:
 					index += 1
 					continue
-				var count_tree = pop.rng.randi_range(20, 30)
+				var count_tree := pop.rng.randi_range(20, 30)
 				var origin := area[index]
 				var x := origin.x
 				var y := origin.y
 				var v := Vector2(1, 0)
 				for i in range(count_tree):
 					index += 1
-					var count = pop.rng.randi_range(5, 10)
+					var count := pop.rng.randi_range(5, 10)
 					for j in range(count):
 						x += v.x * spacing
 						y += v.y * spacing
@@ -100,7 +100,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 							p = pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)
 						if p != null:
 							result.append(p)
-						v = v.rotated(float(i) / count * 2.0 * PI)
+						v = v.rotated(float(i) / float(count) * 2.0 * PI)
 				
 			
 	return result

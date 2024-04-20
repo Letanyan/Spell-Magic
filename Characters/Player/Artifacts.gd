@@ -4,9 +4,9 @@ var collection: Array[Artifact] = []
 var connected: Dictionary = {} # Artifact -> Vector2
 var active_options: Dictionary = {} # Vector2 -> (int -> bool])
 
-var effects: Dictionary = {} # Artifact.Event -> Artifact.Effect -> (flat: int, ratio: float)
+var effects: Dictionary = {} # Vector2i (duration, Artifact.Event | Artifact.Element) -> (Artifact.Effect | Artifact.Element) -> (flat: int, ratio: float)
 
-func reset_by_deleting_all_artifacts():
+func reset_by_deleting_all_artifacts() -> void:
 	collection = []
 	connected = {}
 	active_options = {}
@@ -19,11 +19,11 @@ func unconnected() -> Array[Artifact]:
 			result.append(c)
 	return result
 	
-func connect_to_grid(artifact: Artifact, coord: Vector2):
+func connect_to_grid(artifact: Artifact, coord: Vector2) -> void:
 	connected[artifact] = coord
 	build_active_options()
 	
-func unconnect_from_grid(artifact: Artifact):
+func unconnect_from_grid(artifact: Artifact) -> void:
 	connected.erase(artifact)
 	build_active_options()
 	
@@ -31,25 +31,25 @@ func is_empty() -> bool:
 	return connected.is_empty()
 
 func get_artifact_by_name(name: String) -> Artifact:
-	for c in collection:
+	for c: Artifact in collection:
 		if c.name == name:
 			return c
 	return null	
 
 func get_artifact_at_coord(coord: Vector2) -> Artifact:
-	for c in connected:
+	for c: Artifact in connected:
 		if connected[c] == coord:
 			return c
 	return null
 	
-func build_active_options():
+func build_active_options() -> void:
 	active_options.clear()
 	effects.clear()
-	for c in connected:
-		var v = connected[c]
+	for c: Artifact in connected:
+		var v := connected[c] as Vector2
 		update_active_options(c, v)
 		
-func delete_artifact(artifact: Artifact):
+func delete_artifact(artifact: Artifact) -> void:
 	if connected.has(artifact):
 		return
 		
@@ -65,7 +65,7 @@ func delete_artifact(artifact: Artifact):
 		collection.remove_at(i)
 	
 	
-func update_active_options(artifact: Artifact, coord: Vector2):
+func update_active_options(artifact: Artifact, coord: Vector2) -> void:
 	const TOP := 0
 	const RIGHT := 1
 	const BOTTOM := 2
@@ -73,13 +73,13 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 	
 	if true:
 		var other_coord := coord + Vector2(0, -1) 
-		var other = get_artifact_at_coord(other_coord)
+		var other := get_artifact_at_coord(other_coord)
 		if other != null:
 			if (artifact.top.event != Artifact.Event.NONE and other.bottom.effect != Artifact.Effect.NONE) or (artifact.top.effect != Artifact.Effect.NONE and other.bottom.event != Artifact.Event.NONE):
 				if artifact.top.event != Artifact.Event.NONE:
 					if not effects.has(artifact.top.element_event()):
 						effects[artifact.top.element_event()] = {other.bottom.element_effect(): other.bottom.amount_as_tuple()}
-					elif not effects[artifact.top.element_event()].has(other.bottom.element_effect()):
+					elif not (effects[artifact.top.element_event()] as Dictionary).has(other.bottom.element_effect()):
 						effects[artifact.top.element_event()][other.bottom.element_effect()] = other.bottom.amount_as_tuple()
 					else:
 						effects[artifact.top.element_event()][other.bottom.element_effect()] += other.bottom.amount_as_tuple()
@@ -95,13 +95,13 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 					
 	if true:
 		var other_coord := coord + Vector2(1, 0) 
-		var other = get_artifact_at_coord(other_coord)
+		var other := get_artifact_at_coord(other_coord)
 		if other != null:
 			if (artifact.right.event != Artifact.Event.NONE and other.left.effect != Artifact.Effect.NONE) or (artifact.right.effect != Artifact.Effect.NONE and other.left.event != Artifact.Event.NONE):
 				if artifact.right.event != Artifact.Event.NONE:
 					if not effects.has(artifact.right.element_event()):
 						effects[artifact.right.element_event()] = {other.left.element_effect(): other.left.amount_as_tuple()}
-					elif not effects[artifact.right.element_event()].has(other.left.element_effect()):
+					elif not (effects[artifact.right.element_event()] as Dictionary).has(other.left.element_effect()):
 						effects[artifact.right.element_event()][other.left.element_effect()] = other.left.amount_as_tuple()
 					else:
 						effects[artifact.right.element_event()][other.left.element_effect()] += other.left.amount_as_tuple()
@@ -117,13 +117,13 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 					
 	if true:
 		var other_coord := coord + Vector2(0, 1) 
-		var other = get_artifact_at_coord(other_coord)
+		var other := get_artifact_at_coord(other_coord)
 		if other != null:
 			if (artifact.bottom.event != Artifact.Event.NONE and other.top.effect != Artifact.Effect.NONE) or (artifact.bottom.effect != Artifact.Effect.NONE and other.top.event != Artifact.Event.NONE):
 				if artifact.bottom.event != Artifact.Event.NONE:
 					if not effects.has(artifact.bottom.element_event()):
 						effects[artifact.bottom.element_event()] = {other.top.element_effect(): other.top.amount_as_tuple()}
-					elif not effects[artifact.bottom.element_event()].has(other.top.element_effect()):
+					elif not (effects[artifact.bottom.element_event()] as Dictionary).has(other.top.element_effect()):
 						effects[artifact.bottom.element_event()][other.top.element_effect()] = other.top.amount_as_tuple()
 					else:
 						effects[artifact.bottom.element_event()][other.top.element_effect()] += other.top.amount_as_tuple()
@@ -139,13 +139,13 @@ func update_active_options(artifact: Artifact, coord: Vector2):
 					
 	if true:
 		var other_coord := coord + Vector2(-1, 0) 
-		var other = get_artifact_at_coord(other_coord)
+		var other := get_artifact_at_coord(other_coord)
 		if other != null:
 			if (artifact.left.event != Artifact.Event.NONE and other.right.effect != Artifact.Effect.NONE) or (artifact.left.effect != Artifact.Effect.NONE and other.right.event != Artifact.Event.NONE):
 				if artifact.left.event != Artifact.Event.NONE:
 					if not effects.has(artifact.left.element_event()):
 						effects[artifact.left.element_event()] = {other.right.element_effect(): other.right.amount_as_tuple()}
-					elif not effects[artifact.left.element_event()].has(other.right.element_effect()):
+					elif not (effects[artifact.left.element_event()] as Dictionary).has(other.right.element_effect()):
 						effects[artifact.left.element_event()][other.right.element_effect()] = other.right.amount_as_tuple()
 					else:
 						effects[artifact.left.element_event()][other.right.element_effect()] += other.right.amount_as_tuple()
@@ -169,7 +169,7 @@ func is_still_continuous_after_removing(coord: Vector2) -> bool:
 	var to_visit := PackedVector2Array()
 	var visited := {coord: true}
 	# loop to find exactly one tile that has an artifact which is not the removed 'coord'
-	for a in connected:
+	for a: Vector2 in connected:
 		var c: Vector2 = connected[a]
 		if c == coord:
 			continue
@@ -198,38 +198,40 @@ func is_still_continuous_after_removing(coord: Vector2) -> bool:
 	return island_count == connected.size() - 1
 	
 	
-func save(world_name: String):
-	var file = FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
-	var data = []
-	for a in collection:
+func save(world_name: String) -> void:
+	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
+	var data := []
+	for a: Artifact in collection:
 		data.append(a.save_dict())
-	var connections = {}
-	for c in connected:
+	var connections := {}
+	for c: Artifact in connected:
 		connections[c.save_dict()] = connected[c]
 	file.store_var({"artifacts": data, "connected": connections, "active_options": active_options, "effects": effects})
 	
-func read(world_name: String):
-	var file = FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.READ)
+func read(world_name: String) -> void:
+	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.READ)
 	if not file:
 		collection = []
 		connected = {}
 		active_options = {}
+		effects = {}
 		return 
-	var data = file.get_var()
+	var data := file.get_var() as Dictionary
 	if data == null:
 		collection = []
 		connected = {}
 		active_options = {}
+		effects = {}
 		return
-	active_options = data.get("active_options", {})
-	effects = data.get("effects", {})
-	for d in data["artifacts"]:
-		var w = Artifact.new("")
+	active_options = data.get("active_options", {}) as Dictionary
+	effects = data.get("effects", {}) as Dictionary
+	for d: Dictionary in data["artifacts"]:
+		var w := Artifact.new("")
 		w.load_dict(d)
 		collection.append(w)
-	for c in data["connected"]:
-		var w = Artifact.new("")
+	for c: Dictionary in data["connected"]:
+		var w := Artifact.new("")
 		w.load_dict(c)
-		for a in collection:
+		for a: Artifact in collection:
 			if a.name == w.name:
 				connected[a] = data["connected"][c]

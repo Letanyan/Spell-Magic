@@ -8,7 +8,7 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
-func _ready():
+func _ready() -> void:
 	super._ready()
 	
 	velocity_movement = VelocityMovement.new()
@@ -16,7 +16,7 @@ func _ready():
 	vitals = Vitals.new(Vitals.Stat.new(100 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).speed(clamp(level * 1.1, 1, 14)).circle(position, 5, 10).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).speed(clampf(level * 1.1, 1, 14)).circle(position, 5, 10).use_absolute().align_y_to_origin()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
@@ -49,26 +49,26 @@ func _ready():
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 = GlobalData.magic_book.copy_spell("linear", {"s": "2", "d": "2"})
+	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "2", "d": "2"})
 	elec1.element = Spell.Element.ELECTRIC
 	elec1.duration = 10.0
 	elec1.power = 1
-	var elec2 = GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
+	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
 	elec2.element = Spell.Element.ELECTRIC
 	elec2.duration = 8.0
 	elec2.power = 1
-	var elec3 = GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"})
+	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"})
 	elec3.element = Spell.Element.ELECTRIC
 	elec3.duration = 6.0
 	elec3.power = 1
 	
-	var elec_arc1 = GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "2"})
+	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "2"})
 	elec_arc1.element = Spell.Element.ELECTRIC
 	elec_arc1.duration = 10.0
-	var elec_arc2 = GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"})
+	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"})
 	elec_arc2.element = Spell.Element.ELECTRIC
 	elec_arc2.duration = 8.0
-	var elec_arc3 = GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"})
+	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"})
 	elec_arc3.element = Spell.Element.ELECTRIC
 	elec_arc3.duration = 6.0
 	
@@ -114,7 +114,7 @@ func update_entity_info(info: EntityInfo) -> bool:
 	return true
 
 
-func update_behaviour():
+func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:

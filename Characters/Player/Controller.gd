@@ -55,7 +55,7 @@ var last_image_set: Dictionary = pc_images
 func _ready() -> void:
 	Input.joy_connection_changed.connect(on_joy_connection_changed)
 
-func on_joy_connection_changed(device, connected):
+func on_joy_connection_changed(device: int, connected: bool) -> void:
 	if device == 0:
 		if connected:
 			# An await is required, otherwise a deadlock happens
@@ -72,7 +72,7 @@ func get_joypad_type(fallback: Devices = Devices.JOYCON) -> Devices:
 	if Engine.is_editor_hint():
 		return fallback
 
-	var controller_name = Input.get_joy_name(0)
+	var controller_name := Input.get_joy_name(0)
 	if "Luna Controller" in controller_name:
 		return Devices.LUNA
 	elif "PS3 Controller" in controller_name:
@@ -117,7 +117,7 @@ func get_image_set() -> Dictionary:
 	return pc_images
 		
 func key_images(key: Array, size: int = 32) -> String:
-	var text = (last_image_set.get(key[0], "img:%d") % size)
-	for i in range(1, key.size()):
+	var text := (last_image_set.get(key[0], "img:%d") as String) % size
+	for i: int in range(1, key.size()):
 		text += " + " + (last_image_set.get(key[i], "img:%d") % size)
 	return text

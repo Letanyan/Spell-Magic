@@ -11,7 +11,7 @@ var attack_path: PathStyle
 
 var ice_wall_timer: int = 0
 
-func _ready():
+func _ready() -> void:
 	super._ready()
 	
 	velocity_movement = VelocityMovement.new()
@@ -21,8 +21,6 @@ func _ready():
 	
 	idle_path = PathStyle.new().speed(2).random_points_in_circle(10, 10).set_origin(position)
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
-	attack_path.min_radius = 0
-	attack_path.max_radius = 1
 	current_path = idle_path
 	
 	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"})
@@ -133,13 +131,13 @@ func update_entity_info(info: EntityInfo) -> bool:
 	return true
 
 
-func update_behaviour():
+func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		player.watch_enemy(get_node("."))
+		player.watch_enemy(get_node(".") as Enemy)
 		health_bar.visible = true
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-		player.ignore_enemy(get_node("."))
+		player.ignore_enemy(get_node(".") as Enemy)
 		health_bar.visible = false
 		current_path = idle_path
 

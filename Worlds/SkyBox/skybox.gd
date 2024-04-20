@@ -55,7 +55,7 @@ const DAYS_IN_YEAR : int = 365
 @export var sun: DirectionalLight3D
 @export var moon: DirectionalLight3D
 
-func _init(env: WorldEnvironment, s: DirectionalLight3D, m: DirectionalLight3D):
+func _init(env: WorldEnvironment, s: DirectionalLight3D, m: DirectionalLight3D) -> void:
 	environment = env
 	sun = s
 	moon = m
@@ -89,13 +89,13 @@ func _update_sun() -> void :
 		sun.rotation.x = ( day_progress * 2.0 - 0.5 ) * -PI
 		# 193 is the number of days from the summer solstice to the end of the year.
 		# Here we want 0 for the summer solstice and 1 for the winter solstice.
-		var earth_orbit_progress = ( float( day_of_year ) + 193.0 + day_progress ) / float( DAYS_IN_YEAR )
+		var earth_orbit_progress := ( float( day_of_year ) + 193.0 + day_progress ) / float( DAYS_IN_YEAR )
 		# Rotation to the deviation of the axis of rotation from the orbit.
 		# This gives us shorter days in winter and longer days in summer.
 		sun.rotation.y = deg_to_rad( cos( earth_orbit_progress * PI * 2.0 ) * planet_axial_tilt )
 		sun.rotation.z = deg_to_rad( latitude )
 		# Disabling light under the horizon
-		var sun_direction = sun.to_global( Vector3( 0.0, 0.0, 1.0 )).normalized()
+		var sun_direction := sun.to_global( Vector3( 0.0, 0.0, 1.0 )).normalized()
 		sun.light_energy = smoothstep( -0.05, 0.1, sun_direction.y ) * 0.8 + 0.2
 
 func _update_moon() -> void :
@@ -104,23 +104,23 @@ func _update_moon() -> void :
 		# Progress of the moon's orbital rotation in days
 		var moon_orbit_progress : float = ( fmod( float( day_of_year ), moon_orbital_period ) + day_progress ) / moon_orbital_period
 		moon.rotation.x = (( day_progress - moon_orbit_progress ) * 2.0 - 1.0 ) * PI
-		var axial_tilt = moon_orbital_inclination
+		var axial_tilt := moon_orbital_inclination
 		# Adding a planet axial tilt depending on the time of day
 		axial_tilt += planet_axial_tilt * sin(( day_progress * 2.0 - 1.0 ) * PI )
 		moon.rotation.y = deg_to_rad( axial_tilt )
 		moon.rotation.z = deg_to_rad( latitude )
 		# Disabling light under the horizon
-		var moon_direction = moon.to_global( Vector3( 0.0, 0.0, 1.0 )).normalized()
+		var moon_direction := moon.to_global( Vector3( 0.0, 0.0, 1.0 )).normalized()
 		moon.light_energy = smoothstep( -0.05, 0.1, moon_direction.y ) * 0.8 + 0.2
 
 func _update_clouds() -> void :
 	if is_instance_valid( environment ) :
-		environment.environment.sky.sky_material.set_shader_parameter( "clouds_cutoff", clouds_cutoff )
-		environment.environment.sky.sky_material.set_shader_parameter( "clouds_weight", clouds_weight )
+		(environment.environment.sky.sky_material as ShaderMaterial).set_shader_parameter( "clouds_cutoff", clouds_cutoff )
+		(environment.environment.sky.sky_material as ShaderMaterial).set_shader_parameter( "clouds_weight", clouds_weight )
 
 func _update_shader() -> void :
 	if is_instance_valid( environment ) :
-		environment.environment.sky.sky_material.set_shader_parameter(
+		(environment.environment.sky.sky_material as ShaderMaterial).set_shader_parameter(
 			"overwritten_time",
 			( day_of_year * HOURS_IN_DAY + day_time ) * 100.0 if use_day_time_for_shader else 0.0
 		)

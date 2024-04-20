@@ -1,5 +1,5 @@
 class_name Enemy
-extends CharacterBody3D
+extends CharacterBody
 
 var movement_target_position: Vector3 = Vector3.ZERO
 
@@ -10,15 +10,11 @@ var animation_map: Dictionary
 #@onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
 #var walking_tween: Tween = null
 
-var velocity_movement: VelocityMovement
-
 var spell_caster: SpellCaster
-var invunerable := 0.0
 var spell_movement: AttackPatterns.SpellMovement = null
 var attack_sequence: AttackSequence = null
 
 var player: Player
-var vitals: Vitals
 var current_path: PathStyle
 var still_path: PathStyle
 var current_attack: AttackPatterns
@@ -35,8 +31,8 @@ signal vital_update(index_in_population: int, vitals: Vitals)
 
 @export var bounds: Vector3 = Vector3(1, 1, 1)
 
-func _ready():
-	spell_caster = SpellCaster.new(get_node("."), SpellCaster.Entity.ENEMY)
+func _ready() -> void:
+	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
 	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
 	level_text.text = str(int(level))
 	animation_map = {}
@@ -44,13 +40,10 @@ func _ready():
 	animation_tree = $AnimationTree
 	still_path = PathStyle.new().set_use_me_as_origin()
 	
-func add_impulse(impulse: Vector3):
-	velocity_movement.impulse += impulse
-	
-func add_shake(amount: float):
+func add_shake(amount: float) -> void:
 	player.add_shake(amount)
 	
-func increment_ticks(delta: float):
+func increment_ticks(delta: float) -> void:
 	behavior_tick += delta
 	spell_tick += delta
 	invunerable = max(0.0, invunerable - delta)
@@ -60,7 +53,7 @@ func current_animation_is(animation: String) -> bool:
 	var current := playback.get_current_node()
 	return current == animation
 	
-func play_animation(animation: String):
+func play_animation(animation: String) -> void:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 	var current := playback.get_current_node()
 	#if current == "on_hit" and playback.get_current_play_position() < playback.get_current_length():
@@ -76,7 +69,7 @@ func can_move() -> bool:
 func attack_state() -> AttackPatterns:
 	return AttackPatterns.new([], [])
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if player.magic_book.settings.is_paused:
 		return
 	
@@ -92,7 +85,7 @@ func _physics_process(delta: float):
 	if attack_sequence and process_path == current_path:
 		attack_sequence_movement_speed_time = attack_sequence.time
 			
-	var movement = velocity_movement.update(delta, vitals, process_path.movement_speed(attack_sequence_movement_speed_time), self)
+	var movement := velocity_movement.update(delta, vitals, process_path.movement_speed(attack_sequence_movement_speed_time), self)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
@@ -129,9 +122,9 @@ func _physics_process(delta: float):
 				
 		if process_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
-			look_at(lerp(player.position, goal_position, clamp(velocity.length() / 100.0, 0, 1)))
+			look_at(player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
 
-	var moved_into_during_movement = false
+	var moved_into_during_movement := false
 	var reset_spell_tick := false
 	if behavior_tick >= Globals.behaviour_tick():
 		update_behaviour()
@@ -154,7 +147,7 @@ func _physics_process(delta: float):
 			if spell_movement.movement.state == AttackMovement.AMState.DONE:
 				spell_movement.movement.reset_state()
 				spell_movement = null
-		velocity_movement.target_position = Navigator.find_target(get_node("."), next_pos, 2.0, 2.0, bounds.length() * 2)
+		velocity_movement.target_position = Navigator.find_target(get_node(".") as Node3D, next_pos, 2.0, 2.0, bounds.length() * 2)
 #		if velocity_movement.target_position != next_pos:
 #			DebugDraw3D.draw_sphere(velocity_movement.target_position, 1, Color(1, 0, 0), 3)
 #			DebugDraw3D.draw_sphere(next_pos, 1, Color(0, 1, 0), 3)
@@ -176,10 +169,10 @@ func _physics_process(delta: float):
 	if moved_into_during_movement:
 		if spell_movement:
 			play_animation("attack")
-			var spell = spell_movement.spell
-			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"]).length / 2.0).timeout
+			var spell := spell_movement.spell
+			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"] as StringName).length / 2.0).timeout
 			await get_tree().physics_frame
-			cast_spell(func(p): if p != null: call_deferred("add_sibling", p), spell)
+			cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_sibling", p), spell)
 		
 
 	spell_caster.update(self, delta)
@@ -210,7 +203,7 @@ func _physics_process(delta: float):
 		play_animation("land")
 
 
-func cast_spell(insert: Callable, next_spell: Spell):
+func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	spell_caster.cast_spell(self, vitals, insert, next_spell)
 
 func entity_info() -> EntityInfo:
@@ -220,20 +213,20 @@ func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
 	return true
 
-func update_behaviour():
+func update_behaviour() -> void:
 	pass
 
-func handle_damage():
+func handle_damage() -> void:
 	pass
 	
 func death_box() -> Vector3:
 	return Vector3(1, 1, 1)
 	
-func die():
+func die() -> void:
 	is_dead = true
 	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
-	var source = explosion.get_node("source")
-	source.process_material.emission_box_extents = death_box()
+	var source := explosion.get_node("source") as GPUParticles3D
+	(source.process_material as ParticleProcessMaterial).emission_box_extents = death_box()
 	
 	SignalBus.enemy_death.emit(get_node("."))
 		
@@ -241,7 +234,7 @@ func die():
 	
 	var world := get_parent_node_3d()
 	await world.get_tree().create_timer(animator.get_animation("Death").length + 0.1).timeout
-	player.ignore_enemy(get_node("."))
+	player.ignore_enemy(get_node(".") as Enemy)
 	explosion.position = position
 	explosion.global_transform = global_transform
 	world.add_child(explosion)
@@ -255,28 +248,28 @@ func die():
 	world.remove_child(explosion)
 	
 		
-func drop_artifact_item(world: Node3D):
+func drop_artifact_item(world: Node3D) -> void:
 	var artifact: Artifact = drop_artifact()
 	if artifact:
-		var item = preload("res://Models/Misc/Cube.tscn").instantiate()
+		var item := (preload("res://Models/Misc/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
 		item.position = position
 		item.global_transform = global_transform
 		item.artifact = artifact
 		world.add_child(item)
 		
 		
-func drop_spell_item(world: Node3D):
+func drop_spell_item(world: Node3D) -> void:
 	var spell: Spell = drop_spell()
 	if spell:
-		var item = preload("res://Models/Misc/Paper.tscn").instantiate()
+		var item := (preload("res://Models/Misc/Paper.tscn") as PackedScene).instantiate() as SpellPaper
 		item.position = position
 		item.global_transform = global_transform
 		item.spell = spell
 		world.add_child(item)
 		
 	
-func update_vitals_display():
-	health_bar.mesh.surface_get_material(0).set_shader_parameter("percentage", vitals.health.percentage())
+func update_vitals_display() -> void:
+	(health_bar.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("percentage", vitals.health.percentage())
 
 func drop_artifact() -> Artifact:
 	return null
@@ -285,7 +278,7 @@ func drop_spell() -> Spell:
 	return null
 
 func world_enemy_enum() -> World.Enemy:
-	var n = get_node(".")
+	var n := get_node(".")
 	if n is Undead:
 		return World.Enemy.UNDEAD
 	elif n is Mole:
@@ -301,7 +294,7 @@ func world_enemy_enum() -> World.Enemy:
 	
 	return World.Enemy.NONE
 
-func play_walking_audio(stream: AudioStream):
+func play_walking_audio(stream: AudioStream) -> void:
 	pass
 	#if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:
 		#if stream != null:

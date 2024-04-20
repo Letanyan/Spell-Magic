@@ -11,12 +11,12 @@ var tracking_node: Dictionary = {}
 var tracking_position: Dictionary = {}
 var tracking_offset: Dictionary = {}
 
-func _init(o: Node3D, e: Entity):
+func _init(o: Node3D, e: Entity) -> void:
 	origin_node = o
 	entity = e
 	ignore_mana_cost = false
 	
-func update(body, delta):
+func update(body: Node3D, delta: float) -> void:
 	var t := Time.get_unix_time_from_system()
 	var should_remove := []
 	for i in range(particles.size()):
@@ -30,20 +30,20 @@ func update(body, delta):
 			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
-				p.cast_spell(func(np): if np != null: p.call_deferred("add_sibling", np), p.spell.chain, null)
+				p.cast_spell(func(np: SpellBody) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain, null)
 			tracking_node.erase(p.name)
 			should_remove.append(i)
 
-	var idx = should_remove.size() - 1
+	var idx := should_remove.size() - 1
 	while idx >= 0:
-		var i = should_remove[idx]
-		particles[i].stop_emitting()
+		var i := should_remove[idx] as int
+		(particles[i] as SpellBody).stop_emitting()
 		particles.remove_at(i)
 		idx -= 1
 		
 
 enum SpellVariableKind { FIXED, TIMED, BOMB }
-func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVariableKind, p: SpellBody, s: Spell) -> Dictionary:
+func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVariableKind, p: SpellBody, s: Spell) -> Dictionary:
 	var prefix := ""
 	match variable_kind:
 		SpellVariableKind.TIMED: prefix = "t"
@@ -53,6 +53,7 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 	var track := Vector3.ZERO # direction to enemy that was hit by raycast 
 	match entity:
 		Entity.PLAYER:
+			var body := _body as Player
 			var port := body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
 			cdir = port.get_camera_3d().project_ray_normal(pos)
@@ -65,8 +66,9 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 			result["Br"] = sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2)
 			
 		Entity.ENEMY:
-			result[prefix + "L"] = body.player.global_position.distance_to(body.global_position)
-			cdir = (body.player.global_position - body.global_position).normalized() # direction to player
+			var body := _body as Enemy
+			result[prefix + "L"] = (body as Enemy).player.global_position.distance_to(body.global_position)
+			cdir = ((body as Enemy).player.global_position - body.global_position).normalized() # direction to player
 			result["l"] = body.level
 			result["fl"] = body.level / 100.0
 			result["Bx"] = body.bounds.x
@@ -75,6 +77,7 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 			result["Br"] = sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2)
 			
 		Entity.PROJECTILE:
+			var body := _body as SpellBody
 			#cdir = -body.velocity.normalized()
 			var port := body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
@@ -97,11 +100,12 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 	var c := Vector3.ZERO # character facing direction
 	match entity:
 		Entity.PLAYER:
-			c = Vector3(0, 0, -1).rotated(Vector3.UP, body.get_node("Pivot").rotation.y)
+			c = Vector3(0, 0, -1).rotated(Vector3.UP, (_body.get_node("Pivot") as Node3D).rotation.y)
 		Entity.ENEMY:
-			c = Vector3(0, 0, -1).rotated(Vector3.UP, body.rotation.y)
+			c = Vector3(0, 0, -1).rotated(Vector3.UP, _body.rotation.y)
 		Entity.PROJECTILE:
-			c = body.velocity.normalized()
+			var body := _body as SpellBody
+			c = (body.velocity as Vector3).normalized()
 	result[prefix + "cx"] = c.x
 	result[prefix + "cy"] = c.y
 	result[prefix + "cz"] = c.z
@@ -111,33 +115,33 @@ func spell_variables(result: Dictionary, body: Node3D, variable_kind: SpellVaria
 	
 	if s.player_is_origin:
 		if variable_kind == SpellVariableKind.FIXED:
-			result["abs_pos"] = body.position
+			result["abs_pos"] = _body.position
 		elif variable_kind == SpellVariableKind.TIMED:
-			result["rel_pos"] = body.position
+			result["rel_pos"] = _body.position
 	else:
 		if entity == Entity.PLAYER:
-			var port := body.get_viewport()
+			var port := _body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
-			var dist: SpringArm3D = body.get_node("./CamPivot/Arm")
+			var dist: SpringArm3D = _body.get_node("./CamPivot/Arm")
 			if variable_kind == SpellVariableKind.FIXED:
 				result["abs_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 			elif variable_kind == SpellVariableKind.TIMED:
 				result["rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 		elif entity == Entity.ENEMY:
 			if variable_kind == SpellVariableKind.FIXED:
-				result["abs_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
+				result["abs_pos"] = _body.position + Vector3(0, 1.5, 0) + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["rel_pos"] = body.position + Vector3(0, 1.5, 0) + cdir
+				result["rel_pos"] = _body.position + Vector3(0, 1.5, 0) + cdir
 		else:
 			if variable_kind == SpellVariableKind.FIXED:
-				result["abs_pos"] = body.position + cdir
+				result["abs_pos"] = _body.position + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["rel_pos"] = body.position + cdir
+				result["rel_pos"] = _body.position + cdir
 			
 	
 	if p != null: # direction from character to spell
-		var old_origin = Vector3(result.get(prefix + "X", 0), result.get(prefix + "Y", 0), result.get(prefix + "Z", 0) )
-		var origin = lerp(old_origin, (body.position - p.position).normalized(), 0.0166667).normalized()
+		var old_origin := Vector3(result.get(prefix + "X", 0) as float, result.get(prefix + "Y", 0) as float, result.get(prefix + "Z", 0) as float)
+		var origin := old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
 		result[prefix + "X"] = origin.x
 		result[prefix + "Y"] = origin.y
 		result[prefix + "Z"] = origin.z
@@ -150,14 +154,14 @@ func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> 
 	if tracking_node == null:
 		return default
 	else:
-		var t = tracking_node.get(p.name, null)
-		var position = tracking_position.get(p.name, Vector3.ZERO)
-		var offset = tracking_offset.get(p.name, Vector3.ZERO)
+		var t: Variant = tracking_node.get(p.name, null)
+		var position := tracking_position.get(p.name, Vector3.ZERO) as Vector3
+		var offset := tracking_offset.get(p.name, Vector3.ZERO) as Vector3
 		if t == null or !p.is_inside_tree():
 			return default
-		if t is Node3D and t.is_inside_tree():
-			var vec: Vector3 = ((t.global_position + offset) - p.global_position).normalized()
-			var dir: Vector3 = lerp(position, vec, 0.0166667).normalized()
+		if t is Node3D and (t as Node3D).is_inside_tree():
+			var vec: Vector3 = (((t as Node3D).global_position + offset) - p.global_position).normalized()
+			var dir: Vector3 = position.lerp(vec, 0.0166667).normalized()
 			tracking_position[p.name] = dir
 			return dir
 		elif t is Vector3:
@@ -179,8 +183,8 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		else:
 			return MagicBook.DisallowSpellReason.MANA
 			
-	var node_to_track = null
-	var cdir = Vector3.ZERO
+	var node_to_track: Variant = null
+	var cdir := Vector3.ZERO
 	if entity == Entity.PLAYER:
 		var port := body.get_viewport()
 		var pos := port.get_visible_rect().size / 2.0
@@ -203,12 +207,12 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		vars["L"] = inherited_vars["L"]
 		
 	if body is SpellBody:
-		exvars.merge(body.expression_vars, true)
+		exvars.merge((body as SpellBody).expression_vars, true)
 		vars.merge(exvars, true)
 			
 	var ps := spell.get_particles(vars, exvars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
-	for p in ps:
+	for p: SpellBody in ps:
 		p.name += str(randi())
 		p.origin_node = origin_node
 		particles.append(p)
@@ -232,7 +236,7 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 	return spell.calculate_location(temp, true)
 	
 
-func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
+func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) -> void:
 	var q: Node3D = null
 	if delay > 0 and (p.spell.is_bomb or (not p.spell.follow and not body is SpellBody) ):
 		q = p.spell.get_turret(p.n, p.fixed_vars)
@@ -250,19 +254,19 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable):
 		q.get_parent().remove_child(q)
 		q.queue_free()
 	
-func set_up_collision(world: Node3D, p: SpellBody):
+func set_up_collision(world: Node3D, p: SpellBody) -> void:
 	var new_agent_rid: RID = NavigationServer3D.agent_create()
 	var default_3d_map_rid: RID = world.get_world_3d().get_navigation_map()
 	NavigationServer3D.agent_set_map(new_agent_rid, default_3d_map_rid)
 	NavigationServer3D.agent_set_radius(new_agent_rid, 5)
 	NavigationServer3D.agent_set_position(new_agent_rid, p.global_position)
 
-func free_particles():
-	for p in particles:
+func free_particles() -> void:
+	for p: SpellBody in particles:
 		p.free_particle()
 	particles.clear()
 
-func update_pause_time(pause_time: float):
-	for p in particles:
+func update_pause_time(pause_time: float) -> void:
+	for p: SpellBody in particles:
 		p.pause_time += pause_time
 		p.spell_caster.update_pause_time(pause_time)

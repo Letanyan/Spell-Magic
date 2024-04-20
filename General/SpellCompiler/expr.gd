@@ -7,7 +7,7 @@ var error: String:
 	get:
 		return back.error
 
-func _init(expr: String):
+func _init(expr: String) -> void:
 	back = GDExpr.new()
 	back.build(expr)
 	

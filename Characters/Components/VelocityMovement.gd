@@ -19,7 +19,7 @@ var velocity := Vector3.ZERO
 var target_velocity := Vector3.ZERO
 var impulse := Vector3.ZERO
 
-func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float = 75, _jump_impulse: float = 20, _bounce_impulse: float = 16):
+func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float = 75, _jump_impulse: float = 20, _bounce_impulse: float = 16) -> void:
 	speed = _speed
 	fall_acceleration = _fall_acceleration
 	friction = _friction
@@ -28,18 +28,18 @@ func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float 
 	has_navigation_target = false
 	
 static func player() -> VelocityMovement:
-	var desired_speed = 12.0
-	var s = (60.0 / 21.0) * 0.85
+	var desired_speed := 12.0
+	var s := (60.0 / 21.0) * 0.85
 	return VelocityMovement.new(s * desired_speed, 150, 150)
 	
-func update_player_movement_speed(target: float):
-	var s = (60.0 / 21.0) * 0.85
+func update_player_movement_speed(target: float) -> void:
+	var s := (60.0 / 21.0) * 0.85
 	speed = s * target
 
-func increment_ticks(delta: float):
+func increment_ticks(delta: float) -> void:
 	vital_tick += delta
 
-func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody3D) -> Dictionary:
+func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
 	
@@ -60,20 +60,20 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 	if vital_tick >= 1.0:
 		var h := vitals.update_vitals(body)
-		for dmg in h:
-			Vitals.apply_damage(body.get_parent(), body, dmg["dmg"], dmg["el"], true, false, [])
-		var wet_area := body.get_node("WetArea")
+		for dmg: Dictionary in h:
+			Vitals.apply_damage(body.get_parent() as Node3D, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [])
+		var wet_area := body.get_node("WetArea") as Area3D
 		if wet_area != null:
-			wet_area.scale = Vector3(vitals.wetness_scale(), vitals.wetness_scale(), vitals.wetness_scale())
+			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
 		vital_tick = 0.0
 		if body.position.y < Globals.sea_level():
-			var underwater = clamp(Globals.sea_level() - body.position.y, 0.0, 10.0) / 10.0
+			var underwater := clampf(Globals.sea_level() - body.position.y, 0.0, 10.0) / 10.0
 			vitals.wetness.apply(underwater)
 
 	
 	var direction := Vector3.ZERO
 	if body.has_node("CamPivot"):
-		var cam_pivot := body.get_node("CamPivot")
+		var cam_pivot := body.get_node("CamPivot") as Node3D
 		var input_dir := VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
 		var input_len := input_dir.length()
 		direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -136,7 +136,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		
 	return result
 
-func rotate_character(body: Player, direction: Vector3):
+func rotate_character(body: Player, direction: Vector3) -> void:
 	if direction != Vector3.ZERO:
 		var pivot: Node3D = body.get_node("Pivot")
 		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)

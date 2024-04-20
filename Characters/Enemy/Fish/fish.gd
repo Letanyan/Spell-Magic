@@ -11,7 +11,7 @@ var attack_jump_path: PathStyle
 
 var jump_timer: int = 0
 
-func _ready():
+func _ready() -> void:
 	super._ready()
 	
 	velocity_movement = VelocityMovement.new()
@@ -99,7 +99,7 @@ func update_entity_info(info: EntityInfo) -> bool:
 	return true
 
 
-func update_behaviour():
+func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		current_path = attack_direct_path		
 	elif current_path == attack_direct_path:
@@ -115,11 +115,11 @@ func update_behaviour():
 		current_path = attack_direct_path
 			
 
-func create_attack_jump_path():
+func create_attack_jump_path() -> void:
 	var start := position - player.position
 	var mid: Vector3 = lerp(position, player.position, 2.5) + Vector3(0, 25, 0) - player.position
 	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
-	var attack_jump_pathway = PathStyle.Pathway.new() \
+	var attack_jump_pathway := PathStyle.Pathway.new() \
 		.cubic_to(start, end, mid, 8, PathStyle.Easing.linear)
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)

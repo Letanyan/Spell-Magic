@@ -102,7 +102,7 @@ func check_if_has_spell_element(el: Spell.Element) -> bool:
 func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
 	return has_chain_method & (1 << el) != 0
 
-func reset_all_stats_to_default_values():
+func reset_all_stats_to_default_values() -> void:
 	max_r = 0.1
 	max_T = 1.0
 	max_N = 1
@@ -118,7 +118,7 @@ func reset_all_stats_to_default_values():
 	has_spell_element = 0b11
 	has_chain_method = 0
 	
-func reset_all_stats_to_max_values():
+func reset_all_stats_to_max_values() -> void:
 	max_health = UpgradeSettings.LIMIT_HEALTH
 	max_mana = UpgradeSettings.LIMIT_MANA
 	max_attack = UpgradeSettings.LIMIT_ATTACK
@@ -134,7 +134,7 @@ func reset_all_stats_to_max_values():
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
 
-func emit_upgrade_purchase():
+func emit_upgrade_purchase() -> void:
 	upgrade_was_purchased.emit(self)
 
 func purchase_spells_in_book() -> PurchaseError:
@@ -306,7 +306,7 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
-func save_dict():
+func save_dict() -> Dictionary:
 	return {
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
 		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P, "max_v": max_v,
@@ -325,7 +325,7 @@ func save_dict():
 		"currency": currency,
 	}
 
-func load_dict(data: Dictionary):
+func load_dict(data: Dictionary) -> void:
 	has_spell_element = data.get("has_spell_element", 0b1)
 	has_chain_method = data.get("has_chain_method", 0)
 	max_r = data.get("max_r", 1)

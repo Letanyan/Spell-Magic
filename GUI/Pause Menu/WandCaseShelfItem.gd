@@ -20,7 +20,7 @@ signal move_up_request
 signal return_focus
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	key.text = "[center]" + GlobalData.controller.key_images(store_key) + "[/center]"
 	spell.text = ", ".join(store_spell)
 	_on_spell_text_changed(", ".join(store_spell))
@@ -32,18 +32,18 @@ func _ready():
 		cast_combo.set_item_disabled(8, false)
 
 
-func _on_cast_combo_selected(id):
+func _on_cast_combo_selected(id: int) -> void:
 	if id > -1:
 		action_changed.call(store_action as Wand.Kind, id as Wand.Kind)
 		spell_changed.call(spell.text, true)
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT and id != Wand.Kind.FIRE_PICKED_HOLD
 
-func _on_spell_text_changed(new_text):
+func _on_spell_text_changed(new_text: String) -> void:
 	var updated_text: String = autocomplete.call(old_text, spell, true)
 	spell_changed.call(updated_text, false)
 	old_text = updated_text
 	
-func update_state(ignore_signals: bool):
+func update_state(ignore_signals: bool) -> void:
 	spell_changed.call(spell.text, ignore_signals)
 
 func _input(event: InputEvent) -> void:

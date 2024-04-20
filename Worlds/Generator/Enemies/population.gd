@@ -20,7 +20,7 @@ const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
 const fish = preload("res://Characters/Enemy/Fish/fish.tscn")
 const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn")
 
-func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player):
+func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player) -> void:
 	rng = RandomNumberGenerator.new()
 	coord = _coord
 	blender = _blender
@@ -28,12 +28,12 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 	chunk_size = _chunk_size
 	seed_location()
 	
-func seed_location():
+func seed_location() -> void:
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
 # probs: (prob: Variant -> float)
 # probs is a dictionary where each key has its 'value' as a value of being choosen relative to other siblings
-static func random_entity_from_distribution(r: float, probs: Dictionary, default = 0) -> Variant:
+static func random_entity_from_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
 	var keys := probs.keys()
 	if keys.size() == 0:
 		return default
@@ -42,12 +42,12 @@ static func random_entity_from_distribution(r: float, probs: Dictionary, default
 		return keys[0]
 		
 	var sum := 0.0
-	for n in probs.values():
+	for n: float in probs.values():
 		sum += n
 		
 	var base := 0.0
 	for n in range(0, keys.size()):
-		var i = keys[n]
+		var i: Variant = keys[n]
 		var next_base : float = base + probs[i] / sum
 		if base <= r and r < next_base:
 			return i
@@ -69,11 +69,11 @@ func always_valid(normal: Dictionary) -> Dictionary:
 	
 func on_flat_surface(distance: float) -> Callable:
 	return func(normal: Dictionary) -> Dictionary:
-		return {"valid": normal.get("normal", Vector3.ZERO).angle_to(Vector3.UP) < distance, "y_offset": distance * -2}
+		return {"valid": (normal.get("normal", Vector3.ZERO) as Vector3).angle_to(Vector3.UP) < distance, "y_offset": distance * -2}
 	
-func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable = always_valid):
+func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable = always_valid) -> Node3D:
 	if entity != null:
-		var world_normal = Navigator.get_world_normal_height(state, pos.x, pos.z)
+		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		if wh < Globals.sea_level():
 			return null
@@ -84,8 +84,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		entity.position.y = wh + info.get("y_offset", 0.0)
 		entity.position.z = pos.z
 		if is_enemy:
-			entity.player = player
-			entity.index_in_population = inhabitants.size()
+			(entity as Enemy).player = player
+			(entity as Enemy).index_in_population = inhabitants.size()
 			inhabitants[inhabitants.size()] = entity
 		else:
 			garden.append(entity)
@@ -241,9 +241,9 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
 	
 	return result
 	
-func despawn_all_from_world(world: Node3D):
-	for habitant_index in inhabitants:
-		var habitant = inhabitants[habitant_index]
+func despawn_all_from_world(world: Node3D) -> void:
+	for habitant_index: int in inhabitants:
+		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.free_particles()
 		habitant.queue_free()
 	for f in garden:
@@ -251,9 +251,9 @@ func despawn_all_from_world(world: Node3D):
 	inhabitants.clear()
 	garden.clear()
 
-func update_info():
-	for habitant_index in inhabitants:
-		var habitant = inhabitants[habitant_index]
+func update_info() -> void:
+	for habitant_index: int in inhabitants:
+		var habitant: Enemy = inhabitants[habitant_index]
 		var dist: float = habitant.position.distance_to(player.position) 
 		var col: CollisionShape3D = habitant.get_node("./Collision")
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
@@ -266,7 +266,7 @@ func update_info():
 			s.disabled = g.position.distance_to(player.position) > 50
 				
 
-func habitant_vitals_update(index: int, vitals: Vitals):
+func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 	if index <= -1:
 		return
 	if vitals.health.value <= vitals.health.min_value:
@@ -274,7 +274,7 @@ func habitant_vitals_update(index: int, vitals: Vitals):
 		inhabitants.erase(index)
 
 
-func update_pause_time(pause_time: float):
-	for habitant_index in inhabitants:
-		var habitant = inhabitants[habitant_index]
+func update_pause_time(pause_time: float) -> void:
+	for habitant_index: int in inhabitants:
+		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.update_pause_time(pause_time)

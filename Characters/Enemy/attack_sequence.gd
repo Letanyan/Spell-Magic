@@ -13,16 +13,16 @@ var last_attack: AttackPatterns
 var next_position: Vector3
 var next_spell: Spell
 
-func _init(_should_loop: bool, _actions: Array = []):
+func _init(_should_loop: bool, _actions: Array = []) -> void:
 	actions = _actions
 	should_loop = _should_loop
 	time = 0.0
 	index = 0
 
-func add(action):
+func add(action: Variant) -> void:
 	actions.append(action)
 	
-func reset():
+func reset() -> void:
 	time = 0.0
 	index = 0
 	last_path = null
@@ -41,7 +41,7 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 	time += delta
 	var did_update_index := false
 		
-	var current_action = actions[index]
+	var current_action: Variant = actions[index]
 	
 	if current_action is Reset:
 		if current_action == Reset.ATTACK:
@@ -54,7 +54,7 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		is_done.data = true
 	elif current_action is PathStyle:
 		last_path = current_action
-		next_position = current_action.next_position(me, player, is_done, time)
+		next_position = (current_action as PathStyle).next_position(me, player, is_done, time)
 		if time > last_path.path.total_duration:
 			did_update_index = true
 			index += 1

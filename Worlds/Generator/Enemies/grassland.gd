@@ -36,25 +36,25 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				index += 1
 			GRASSLAND_STRUCTURES_KIND.TREE_ROUND:
 				index += 1
-				var pos := area[index]
+				var pos := area[index] as Vector2
 				var p := pop.spawn_foliage(World.Foliage.TREE_ROUND, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED:
 				index += 1
-				var pos = area[index]
+				var pos := area[index] as Vector2
 				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.UNDEAD:
 				index += 1
-				var pos := area[index]
+				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.MOLE:
 				index += 1
-				var pos := area[index]
+				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
 				if p != null:
 					result.append(p)
@@ -63,12 +63,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					index += 1
 					continue
 				index += 1
-				var candidates = Population.points_around(area[index], 100.0, index, area, exclusion)
+				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion)
 				
 				var w: Buildings
 				for i in range(0, candidates.size()):
-					var j = candidates[i]
-					var pos = area[j]
+					var j := candidates[i]
+					var pos := area[j] as Vector2
 					w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
 					if w != null:
 						exclusion[j] = true
@@ -76,10 +76,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						candidates.remove_at(i)
 						break
 				
-				var max_limit = rng.randi_range(1, 10)
+				var max_limit := rng.randi_range(1, 10)
 				for i in range(0, candidates.size()):
-					var j = candidates[i]
-					var pos = area[j]
+					var j := candidates[i]
+					var pos := area[j] as Vector2
 					var p: Node3D
 					var house_size := 0
 					if rng.randf() < 0.7:
@@ -103,12 +103,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					index += 1
 					continue
 				index += 1
-				var candidates = Population.points_around(area[index], 100.0, index, area, exclusion)
+				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion)
 				
 				var w: Buildings
 				for i in range(0, candidates.size()):
-					var j = candidates[i]
-					var pos = area[j]
+					var j := candidates[i]
+					var pos := area[j] as Vector2
 					w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
 					if w != null:
 						exclusion[j] = true
@@ -116,10 +116,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						candidates.remove_at(i)
 						break
 				
-				var max_limit = rng.randi_range(1, 10)
+				var max_limit := rng.randi_range(1, 10)
 				for i in range(0, candidates.size()):
-					var j = candidates[i]
-					var pos = area[j]
+					var j := candidates[i]
+					var pos := area[j] as Vector2
 					var p: Node3D
 					var house_size := 0
 					if rng.randf() < 0.7:

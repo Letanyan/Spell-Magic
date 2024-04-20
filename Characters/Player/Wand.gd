@@ -8,18 +8,18 @@ class Option:
 	var spell_index: int
 	var start_hold: float
 	
-	func _init(_kind: Kind = Kind.NONE, _spell: Array = []):
+	func _init(_kind: Kind = Kind.NONE, _spell: Array = []) -> void:
 		kind = _kind
 		spell = _spell
 		spell_index = spell.size() - 1
 		start_hold = 0.0
 		
-	func save_dict():
+	func save_dict() -> Dictionary:
 		return {"kind": kind, "spell": spell}
 		
-	func load_dict(dict: Dictionary):
+	func load_dict(dict: Dictionary) -> void:
 		kind = dict["kind"]
-		var s = dict["spell"] 
+		var s: Variant = dict["spell"] 
 		if s is String:
 			spell = [s]
 		else:
@@ -43,7 +43,7 @@ class Option:
 		if i >= spell.size():
 			i = 0
 		while true:
-			if book == null and not book.can_use_spell_with_name(spell[i]):
+			if book == null and not book.can_use_spell_with_name(spell[i] as String):
 				result += spell[i] + ", "
 			else:
 				result += "[color=#F05]" + spell[i] + "[/color], "
@@ -78,11 +78,11 @@ const basic_keys = [
 ]
 
 var name: String
-var mods: Dictionary
-var keys: Dictionary
+var mods: Dictionary # [String]bool
+var keys: Dictionary # [[]String]Option
 var picked: String
 
-var current_actions: Dictionary
+var current_actions: Dictionary # [String]bool
 
 signal spell_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason)
 signal spell_updated
@@ -91,7 +91,7 @@ signal picked_spell_changed
 signal key_down
 signal key_up
 
-func _init():
+func _init() -> void:
 	name = "Wand"
 	mods = {}
 	keys = {}
@@ -99,24 +99,24 @@ func _init():
 	current_actions = {}
 	build_keys()
 
-func build_keys():
-	for b in basic_keys:
+func build_keys() -> void:
+	for b: String in basic_keys:
 		if not keys.has([b]):
 			keys[[b]] = Option.new()
-	for m in mods:
-		for key in keys:
+	for m: String in mods:
+		for key: Array in keys:
 			if key.find(m) == -1:
-				var nKey = key.duplicate()
+				var nKey := key.duplicate()
 				nKey.insert(0, m)
 				if not keys.has(nKey):
 					keys[nKey] = Option.new()
 
 func get_bound_keys() -> Dictionary:
 	var result := {}
-	for key in keys:
+	for key: Array in keys:
 		var is_valid := true
 		var mod_count := 0
-		for ca in current_actions:
+		for ca: String in current_actions:
 			if not mods.has(ca):
 				continue
 			mod_count += 1
@@ -134,17 +134,17 @@ static func basic() -> Wand:
 	return result
 	
 
-func remove_mod(mod: String):
+func remove_mod(mod: String) -> void:
 	if mods.has(mod):
 		mods.erase(mod)
 		var to_remove := []
-		for key in keys:
+		for key: Array in keys:
 			if key.size() > 1 and key.find(mod) != -1:
 				to_remove.append(key)
-		for k in to_remove:
+		for k: Array in to_remove:
 			keys.erase(k)
 	
-func add_mod(mod: String):
+func add_mod(mod: String) -> void:
 	mods[mod] = true
 	build_keys()
 	
@@ -172,11 +172,11 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 	if action != "":
 		current_actions[action] = 0
 	var best_candidate := []
-	for key in keys:
+	for key: Array in keys:
 		if key.size() > current_actions.size():
 			continue
-		var found = true
-		for k in key:
+		var found := true
+		for k: String in key:
 			if not current_actions.has(k):
 				found = false
 				break
@@ -189,14 +189,14 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
 			keys[best_candidate].start_hold = Time.get_unix_time_from_system()
 		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
-			var s = find_spell(best_candidate, book)
+			var s := find_spell(best_candidate, book)
 			if s == null:
 				key_down.emit()
 				return null
 				
 			if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
 				var start_time: float = keys[best_candidate].start_hold
-				var now = Time.get_unix_time_from_system()
+				var now := Time.get_unix_time_from_system()
 				if start_time == 0.0 or now - start_time >= s.cooldown:
 					keys[best_candidate].start_hold = now
 				else:
@@ -215,17 +215,17 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 	key_down.emit()
 	return null
 	
-func action_up(action: String, book: MagicBook):
+func action_up(action: String, book: MagicBook) -> Spell:
 	var best_candidate := []
-	for key in keys:
+	for key: Array in keys:
 		if key.size() > current_actions.size():
 			continue
-		var found = true
+		var found := true
 #		for k in current_actions:
 #			if key.find(k) == -1:
 #				found = false
 #				break
-		for k in key:
+		for k: String in key:
 			if not current_actions.has(k):
 				found = false
 				break
@@ -235,7 +235,7 @@ func action_up(action: String, book: MagicBook):
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
 		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
-			var s = find_spell(best_candidate, book)
+			var s := find_spell(best_candidate, book)
 			if s == null:
 				key_up.emit()
 				return null
@@ -258,21 +258,21 @@ func action_up(action: String, book: MagicBook):
 	key_up.emit()
 	return null
 
-func save_dict():
-	var result = {
+func save_dict() -> Dictionary:
+	var result := {
 		"name": name,
 		"keys": {},
 		"mods": mods,
 	}
-	for key in keys:
-		result["keys"][key] = keys[key].save_dict()
+	for key: Array in keys:
+		result["keys"][key] = (keys[key] as Option) .save_dict()
 	return result
 		
-func load_dict(dict: Dictionary):
+func load_dict(dict: Dictionary) -> void:
 	name = dict["name"]
 	mods = dict["mods"]
 	picked = ""
-	for k in dict["keys"]:
-		var opt = Option.new()
-		opt.load_dict(dict["keys"][k])
+	for k: Array in dict["keys"]:
+		var opt := Option.new()
+		opt.load_dict(dict["keys"][k] as Dictionary)
 		keys[k] = opt

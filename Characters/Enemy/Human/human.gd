@@ -9,7 +9,7 @@ var attack_path: PathStyle
 var water_path: PathStyle
 var water_source: Vector3
 
-func _ready():
+func _ready() -> void:
 	super._ready()
 	
 	velocity_movement = VelocityMovement.new()
@@ -53,7 +53,7 @@ func attack_state() -> AttackPatterns:
 	else:
 		return default_pattern
 		
-func update_behaviour():
+func update_behaviour() -> void:
 	if vitals.health.value < vitals.health.max_value:
 		if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 			current_path = attack_path

@@ -40,16 +40,11 @@ var book: MagicBook:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$SpellCooldownTimer.start()
-	SignalBus.pick_up_world_item_artifact.connect(func(a, m): show_notification(bbcode(m), 5))
-	SignalBus.pick_up_world_item_spell.connect(func(s, m): show_notification(bbcode(m), 5))
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+	($SpellCooldownTimer as Timer).start()
+	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode(m), 5))
+	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode(m), 5))
 	
-func set_wand(value: Wand):
+func set_wand(value: Wand) -> void:
 	if wand != null:
 		wand.spell_disallowed.disconnect(spell_was_disallowed)
 		wand.action_updated.disconnect(update_wand_mappings)
@@ -67,7 +62,7 @@ func set_wand(value: Wand):
 	update_wand_mappings()
 	update_spell_cooldowns()
 
-func update_hud_with_vitals(vitals: Vitals):
+func update_hud_with_vitals(vitals: Vitals) -> void:
 	health_bar.value = vitals.health.value
 	health_bar.max_value = vitals.health.max_value
 	mana_bar.value = vitals.mana.value
@@ -82,9 +77,9 @@ func update_hud_with_vitals(vitals: Vitals):
 	if wand != null and book != null and player != null:
 		update_wand_mappings()
 
-func spell_on_cooldown(spell: Spell):
+func spell_on_cooldown(spell: Spell) -> void:
 	var i := 0
-	for s in cooldown_map:
+	for s: String in cooldown_map:
 		if i >= cooldown_list.item_count:
 			break
 		if s == spell.name:
@@ -93,7 +88,7 @@ func spell_on_cooldown(spell: Spell):
 		i += 1
 	update_spell_cooldowns()
 	
-func not_enough_mana_for_spell(spell: Spell):
+func not_enough_mana_for_spell(spell: Spell) -> void:
 	not_enough_mana_alert = Time.get_unix_time_from_system()
 	var style: StyleBoxFlat = load("res://GUI/HUD_progress_bar_bg.tres")
 	style.bg_color = Color(1, 0, 0.3, 1)
@@ -104,7 +99,7 @@ func bbcode(message: String, font_size: int = 18, color: String = "#F05", outlin
 	return "[outline_color=%s][outline_size=%d][color=%s][font_size=%d]%s[/font_size][/color][/outline_size][/outline_color]" % [outline_color, outline_size, color, font_size, message]
 	
 	
-func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason):
+func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -> void:
 	match reason:
 		MagicBook.DisallowSpellReason.COOLDOWN:
 			spell_on_cooldown(spell)
@@ -123,7 +118,7 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason):
 		MagicBook.DisallowSpellReason.ACTIVE:
 			show_notification(bbcode("'%s' is not active in magic book" % [spell.name]), 5)
 	
-func spell_was_cast(s: Spell):
+func spell_was_cast(s: Spell) -> void:
 	var t := Time.get_unix_time_from_system()
 	cooldown_map[s.name] = t
 	var ns := s.chain
@@ -138,21 +133,21 @@ func get_spell(spell_name: String) -> Spell:
 			return s
 	return null
 	
-func update_spell_cooldowns():
+func update_spell_cooldowns() -> void:
 	if book == null:
 		return
 	
 	var i := 0
 	var to_remove := []
-	for s in cooldown_map:
+	for s: String in cooldown_map:
 		var spell := get_spell(s)
-		var used = book.last_use.get(s, 0.0)
+		var used := book.last_use.get(s, 0.0) as float
 		if spell == null:
 			continue
-		var wait = spell.cooldown - (Time.get_unix_time_from_system() - used)
+		var wait := spell.cooldown - (Time.get_unix_time_from_system() - used)
 		if wait < 0.0:
 			to_remove.append(i)
-		var description = " " + s + " - " +("%d" % wait) + "s"
+		var description := " " + s + " - " +("%d" % wait) + "s"
 		if i < cooldown_list.item_count:
 			cooldown_list.set_item_text(i, description)
 		else:
@@ -163,7 +158,7 @@ func update_spell_cooldowns():
 		
 	i = to_remove.size() - 1
 	while i >= 0:
-		var idx = to_remove[i]
+		var idx := to_remove[i] as int
 		cooldown_list.remove_item(idx)
 		i -= 1
 		
@@ -179,16 +174,16 @@ func update_spell_cooldowns():
 	draw_notifications()
 	
 		
-func show_notification(message: String, duration: float):
+func show_notification(message: String, duration: float) -> void:
 	notifications[message] = Time.get_unix_time_from_system() + duration
 	draw_notifications()
 	
-func draw_notifications():
+func draw_notifications() -> void:
 	var to_erase := []
 	var count := 0
 	var result: String = "[right]\n"
-	for n in notifications:
-		var d = notifications[n]
+	for n: String in notifications:
+		var d := notifications[n] as float
 		if Time.get_unix_time_from_system() >= d:
 			to_erase.append(n)
 		else:
@@ -200,17 +195,17 @@ func draw_notifications():
 			
 	result += "[/right]"
 	notification_label.text = result
-	for n in to_erase:
+	for n: String in to_erase:
 		notifications.erase(n)
 		
-func update_wand_mappings():
+func update_wand_mappings() -> void:
 	const SIZE := 16
 	var rich_text := ""
 	rich_text = "[font_size=%d]" % SIZE
 	
 	if (hud_settings != null and not hud_settings.hide_wand_modifier_hints) and wand.mods.size() > 0:
 		var modifier_keys := ""
-		for m in wand.mods:
+		for m: String in wand.mods:
 			modifier_keys += GlobalData.controller.key_images([m]) + " "
 		rich_text += " Modifiers: " + modifier_keys + "\n"
 		
@@ -232,9 +227,9 @@ func update_wand_mappings():
 			_:
 				return kd + " [b]" + title + "[/b]: [color=#F50]" + spell + "[/color]\n"
 		
-	for k in wand.get_bound_keys():
+	for k: Array in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
-		var kd = " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
+		var kd := " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
 				if not s.spell.is_empty():
@@ -261,8 +256,8 @@ func update_wand_mappings():
 	
 	rich_text += "[/font_size]"
 	wand_mapping.text = ""
-	wand_mapping.size = Vector2($WandMappingPanel.size.x, 0)
-	$WandMappingPanel.size.y = 0
+	wand_mapping.size = Vector2(($WandMappingPanel as Control).size.x, 0)
+	($WandMappingPanel as Control).size.y = 0
 	wand_mapping.text = rich_text
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
@@ -271,14 +266,14 @@ func update_wand_mappings():
 	
 	
 #	await wand_mapping.finished
-	wand_mapping.size.x = $WandMappingPanel.size.x
-	$WandMappingPanel.visible = wand_mapping.visible
-	$WandMappingPanel.size = wand_mapping.size
-	$WandMappingPanel.position.y = get_viewport_rect().size.y - 8 - wand_mapping.size.y
+	wand_mapping.size.x = ($WandMappingPanel as Control).size.x
+	($WandMappingPanel as Control).visible = wand_mapping.visible
+	($WandMappingPanel as Control).size = wand_mapping.size
+	($WandMappingPanel as Control).position.y = get_viewport_rect().size.y - 8 - wand_mapping.size.y
 	# NOTE (HACK): Set again to make sure the panel size is correct after resizing the label
-	$WandMappingPanel.size.y = wand_mapping.size.y
+	($WandMappingPanel as Control).size.y = wand_mapping.size.y
 		
-func update_settings(settings: WorldSettings):
+func update_settings(settings: WorldSettings) -> void:
 	world_settings = settings
 	hud_settings = settings.hud_settings
 	
@@ -301,7 +296,7 @@ func update_settings(settings: WorldSettings):
 	update_stats_view()
 	update_wand_mappings()
 
-func update_stats_view():
+func update_stats_view() -> void:
 	if not stats_view.visible or world_settings == null:
 		return
 	

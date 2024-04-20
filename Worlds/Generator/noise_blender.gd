@@ -124,7 +124,7 @@ var dryness: FastNoiseLite
 var temperature: FastNoiseLite
 var back: GDNoiseBlender
 
-func _init(d: FastNoiseLite, t: FastNoiseLite, s: int):
+func _init(d: FastNoiseLite, t: FastNoiseLite, s: int) -> void:
 	dryness = d
 	temperature = t
 	
@@ -171,9 +171,9 @@ func temperature_texture(x: float, y: float, w: float, h: float, scale: float) -
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	var result := NoiseTexture2D.new()
 	result.noise = noise.duplicate(true)
-	result.noise.frequency *= scale
-	result.noise.offset.x = x - w / 2.0
-	result.noise.offset.y = y - h / 2.0
+	(result.noise as FastNoiseLite).frequency *= scale
+	(result.noise as FastNoiseLite).offset.x = x - w / 2.0
+	(result.noise as FastNoiseLite).offset.y = y - h / 2.0
 	result.width = int(w + 2)
 	result.height = int(h + 2)
 	result.normalize = false
@@ -201,7 +201,7 @@ func height(x: float, y: float) -> float:
 #
 	#return result
 
-func compute_biome_distances(x: float, y: float):
+func compute_biome_distances(x: float, y: float) -> void:
 	back.compute_biome_stats(x, y)
 	biome = (back.get_biome() + 1) as World.Biome
 	color = back.get_color()

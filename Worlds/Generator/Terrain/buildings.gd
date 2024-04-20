@@ -16,10 +16,10 @@ static func make(kind: World.Building, rng: RandomNumberGenerator) -> Buildings:
 		World.Building.FANTASY_WELL: result = fantasy_well.instantiate()
 		
 	var r := rng.randf_range(0, 2 * PI)
-	result.get_node("RootNode").rotate(Vector3.UP, r)
+	(result.get_node("RootNode") as Node3D).rotate(Vector3.UP, r)
 	
 	result.entity_kind = kind
-	var box := result.get_node("./static/shape")
+	var box := result.get_node("./static/shape") as CollisionShape3D 
 	match kind:
 		World.Building.FANTASY_VALLEY_SINGLE:
 			box.rotate(Vector3.UP, r)
@@ -40,7 +40,7 @@ func _ready() -> void:
 	_entity_info.position = position
 	
 				
-func entity_info():
+func entity_info() -> EntityInfo:
 	return _entity_info
 	
 func update_entity_info(info: EntityInfo) -> bool:

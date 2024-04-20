@@ -1,13 +1,37 @@
 class_name SettingsGUI
 extends Control
 
-@onready var hide_wand_mappings := $Tabs/HUD/HideWandMappings
-@onready var hide_wand_modifier_hints := $Tabs/HUD/HideWandModifierHints
-@onready var hide_notifications := $Tabs/HUD/HideNotifications
-@onready var hide_status_effects := $Tabs/HUD/HideStatusEffects
-@onready var hide_health_and_mana := $Tabs/HUD/HideHealthAndMana
-@onready var hide_cooldown_timings := $Tabs/HUD/HideCooldownTimings
-@onready var hide_stats_view := $Tabs/HUD/HideStatsView
+@onready var hide_wand_mappings := $Tabs/HUD/HideWandMappings as CheckButton
+@onready var hide_wand_modifier_hints := $Tabs/HUD/HideWandModifierHints as CheckButton
+@onready var hide_notifications := $Tabs/HUD/HideNotifications as CheckButton
+@onready var hide_status_effects := $Tabs/HUD/HideStatusEffects as CheckButton
+@onready var hide_health_and_mana := $Tabs/HUD/HideHealthAndMana as CheckButton
+@onready var hide_cooldown_timings := $Tabs/HUD/HideCooldownTimings as CheckButton
+@onready var hide_stats_view := $Tabs/HUD/HideStatsView as CheckButton
+
+@onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
+@onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
+
+@onready var scaling_options: OptionButton = $"Tabs/Graphics/Scaling Mode/Options"
+@onready var scaling_slider: HSlider = $Tabs/Graphics/Scaling/Slider
+@onready var scaling_value: Label = $Tabs/Graphics/Scaling/Value
+@onready var sharpness_slider: HSlider = $Tabs/Graphics/Sharpness/Slider
+@onready var sharpness_value: Label = $Tabs/Graphics/Sharpness/Value
+@onready var display_style_options: OptionButton = $"Tabs/Graphics/Display Style/Options"
+@onready var display_size_options: OptionButton = $"Tabs/Graphics/Display Size/Options"
+@onready var msaa_options: OptionButton = $Tabs/Graphics/MSAA/Options
+@onready var ssaa_options: OptionButton = $Tabs/Graphics/SSAA/Options
+@onready var taa_check: CheckButton = $Tabs/Graphics/TAA/Check
+@onready var fps_options: OptionButton = $Tabs/Graphics/FPS/Options
+@onready var vsync_options: OptionButton = $Tabs/Graphics/VSYNC/Options
+
+@onready var master_slider: HSlider = $Tabs/Sound/Master/Slider
+@onready var master_value: Label = $Tabs/Sound/Master/Value
+@onready var music_slider: HSlider = $Tabs/Sound/Music/Slider
+@onready var music_value: Label = $Tabs/Sound/Music/Value
+@onready var sfx_slider: HSlider = $Tabs/Sound/SFX/Slider
+@onready var sfx_value: Label = $Tabs/Sound/SFX/Value
+
 
 var world_settings: WorldSettings:
 	set(value):
@@ -29,34 +53,32 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func update_controls():
-	$Tabs/HUD/HideWandMappings.button_pressed = world_settings.hud_settings.hide_wand_mappings
-	$Tabs/HUD/HideWandModifierHints.button_pressed = world_settings.hud_settings.hide_wand_modifier_hints
-	$Tabs/HUD/HideNotifications.button_pressed = world_settings.hud_settings.hide_notifications
-	$Tabs/HUD/HideStatusEffects.button_pressed = world_settings.hud_settings.hide_status_effects
-	$Tabs/HUD/HideHealthAndMana.button_pressed = world_settings.hud_settings.hide_health_mana
-	$Tabs/HUD/HideCooldownTimings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
-	$Tabs/HUD/HideStatsView.button_pressed = world_settings.hud_settings.hide_stats_view
+func update_controls() -> void:
+	hide_wand_mappings.button_pressed = world_settings.hud_settings.hide_wand_mappings
+	hide_wand_modifier_hints.button_pressed = world_settings.hud_settings.hide_wand_modifier_hints
+	hide_notifications.button_pressed = world_settings.hud_settings.hide_notifications
+	hide_status_effects.button_pressed = world_settings.hud_settings.hide_status_effects
+	hide_health_and_mana.button_pressed = world_settings.hud_settings.hide_health_mana
+	hide_cooldown_timings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
+	hide_stats_view.button_pressed = world_settings.hud_settings.hide_stats_view
 	
-	$"Tabs/Camera/FOV Label/Slider".value = int(world_settings.camera_settings.fov)
-	$"Tabs/Camera/FOV Label/Value".text = str(int(world_settings.camera_settings.fov))
+	fov_slider.value = int(world_settings.camera_settings.fov)
+	fov_value.text = str(int(world_settings.camera_settings.fov))
 	
-	$"Tabs/Graphics/Scaling Mode/Options".selected = world_settings.graphics_settings.scaling_mode
-	$Tabs/Graphics/Sharpness/Slider.value = world_settings.graphics_settings.sharpness * 100
-	$Tabs/Graphics/Sharpness/Value.text = "%.0f%%" % [world_settings.graphics_settings.sharpness * 100]
-	$Tabs/Graphics/Scaling/Slider.value = world_settings.graphics_settings.scaling * 100
-	$Tabs/Graphics/Scaling/Value.text = "%.0f%%" % [world_settings.graphics_settings.scaling * 100]
-	$"Tabs/Graphics/Display Style/Options".selected = world_settings.graphics_settings.display_style
-	var display_size_options: OptionButton = $"Tabs/Graphics/Display Size/Options" as OptionButton
+	scaling_options.selected = world_settings.graphics_settings.scaling_mode
+	sharpness_slider.value = world_settings.graphics_settings.sharpness * 100
+	sharpness_value.text = "%.0f%%" % [world_settings.graphics_settings.sharpness * 100]
+	scaling_slider.value = world_settings.graphics_settings.scaling * 100
+	scaling_value.text = "%.0f%%" % [world_settings.graphics_settings.scaling * 100]
+	display_style_options.selected = world_settings.graphics_settings.display_style
 	for i in range(display_size_options.item_count):
 		if display_size_options.get_item_text(i).begins_with(world_settings.graphics_settings.display_size):
 			display_size_options.selected = i
 			break
-	$Tabs/Graphics/MSAA/Options.selected = world_settings.graphics_settings.msaa
-	$Tabs/Graphics/SSAA/Options.selected = world_settings.graphics_settings.ssaa
-	$Tabs/Graphics/TAA/Check.button_pressed = world_settings.graphics_settings.taa
+	msaa_options.selected = world_settings.graphics_settings.msaa
+	ssaa_options.selected = world_settings.graphics_settings.ssaa
+	taa_check.button_pressed = world_settings.graphics_settings.taa
 	
-	var fps_options: OptionButton = $Tabs/Graphics/FPS/Options as OptionButton
 	for i in range(fps_options.item_count):
 		if fps_options.get_item_text(i) == "Max" and world_settings.graphics_settings.max_fps == 0:
 			fps_options.selected = i
@@ -64,11 +86,11 @@ func update_controls():
 		elif int(fps_options.get_item_text(i)) == world_settings.graphics_settings.max_fps:
 			fps_options.selected = i
 			break
-	$Tabs/Graphics/VSYNC/Options.selected = 0 if world_settings.graphics_settings.vsync else 1
+	vsync_options.selected = 0 if world_settings.graphics_settings.vsync else 1
 	
-	$Tabs/Sound/Master/Slider.value = world_settings.audio_settings.master
-	$Tabs/Sound/Music/Slider.value = world_settings.audio_settings.bg
-	$Tabs/Sound/SFX/Slider.value = world_settings.audio_settings.sfx
+	master_slider.value = world_settings.audio_settings.master
+	music_slider.value = world_settings.audio_settings.bg
+	sfx_slider.value = world_settings.audio_settings.sfx
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -145,7 +167,7 @@ func _input(event: InputEvent) -> void:
 
 func _on_fov_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.fov = int(value)
-	$"Tabs/Camera/FOV Label/Value".text = str(int(value))
+	fov_value.text = str(int(value))
 	settings_changed.emit(world_settings)
 
 
@@ -156,24 +178,24 @@ func _on_scaling_mode_options_item_selected(index: int) -> void:
 
 func _on_scaling_slider_drag_ended(value_changed: bool) -> void:
 	if value_changed:
-		var value: float = $Tabs/Graphics/Scaling/Slider.value / 100.0
+		var value: float = scaling_slider.value / 100.0
 		world_settings.graphics_settings.update_scaling(value)
 		settings_changed.emit(world_settings)
 
 
 func _on_sharpness_slider_drag_ended(value_changed: bool) -> void:
 	if value_changed:
-		var value: float = $Tabs/Graphics/Sharpness/Slider.value / 100.0
+		var value: float = sharpness_slider.value / 100.0
 		world_settings.graphics_settings.update_sharpness(value)
 		settings_changed.emit(world_settings)
 
 
 func _on_scaling_slider_value_changed(value: float) -> void:
-	$Tabs/Graphics/Scaling/Value.text = "%.0f%%" % [value]
+	scaling_value.text = "%.0f%%" % [value]
 
 
 func _on_sharpness_slider_value_changed(value: float) -> void:
-	$Tabs/Graphics/Sharpness/Value.text = "%.0f%%" % [value]
+	sharpness_value.text = "%.0f%%" % [value]
 
 
 func _on_display_style_options_item_selected(index: int) -> void:
@@ -182,7 +204,7 @@ func _on_display_style_options_item_selected(index: int) -> void:
 
 
 func _on_display_size_options_item_selected(index: int) -> void:
-	world_settings.graphics_settings.update_display_size($"Tabs/Graphics/Display Size/Options".get_item_text(index))
+	world_settings.graphics_settings.update_display_size(display_size_options.get_item_text(index))
 	settings_changed.emit(world_settings)
 
 
@@ -202,12 +224,12 @@ func _on_taa_check_toggled(toggled_on: bool) -> void:
 
 
 func _on_max_fps_options_item_selected(index: int) -> void:
-	var options: OptionButton = $Tabs/Graphics/FPS/Options as OptionButton
-	var num = options.get_item_text(index)
-	if num == "Max":
+	var num_text: String = fps_options.get_item_text(index)
+	var num: int = 0
+	if num_text == "Max":
 		num = 0
 	else:
-		num = int(num)
+		num = num_text.to_int()
 	world_settings.graphics_settings.update_max_fps(num)
 	settings_changed.emit(world_settings)
 	
@@ -219,24 +241,24 @@ func _on_vsync_options_item_selected(index: int) -> void:
 
 func _on_master_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_master(value)
-	$Tabs/Sound/Master/Value.text = str(int(value * 100)) + "%"
+	master_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 
 
 func _on_music_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_bg(value)
-	$Tabs/Sound/Music/Value.text = str(int(value * 100)) + "%"
+	music_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 
 
 func _on_sfx_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_sfx(value)
-	$Tabs/Sound/SFX/Value.text = str(int(value * 100)) + "%"
+	sfx_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 	
 
 func hide_game_tab(should_hide: bool) -> void:
-	$Tabs.set_tab_hidden(4, should_hide)
+	($Tabs as TabContainer).set_tab_hidden(4, should_hide)
 
 func _on_save_pressed() -> void:
 	save_game.emit()

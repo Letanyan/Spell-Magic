@@ -42,18 +42,18 @@ func save_dict() -> Dictionary:
 		"audio_settings": audio_settings.save_dict()
 	}
 
-func save():
+func save() -> void:
 	var dir := DirAccess.open("user://")
 	if not dir.dir_exists("worlds"):
 		dir.make_dir("worlds")
 	if not dir.dir_exists("worlds/%s" % (world_name)):
 		dir.make_dir("worlds/%s" % (world_name))
-	var file = FileAccess.open("user://worlds/%s/settings.json" % (world_name), FileAccess.WRITE)
+	var file := FileAccess.open("user://worlds/%s/settings.json" % (world_name), FileAccess.WRITE)
 	file.store_var(save_dict())
 
-func load_dict(data: Dictionary):
+func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
-	player_position = data.get("player", {}).get("position", Vector3.ZERO)
+	player_position = (data.get("player", {}) as Dictionary).get("position", Vector3.ZERO)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})
 	is_paused = false
@@ -62,24 +62,24 @@ func load_dict(data: Dictionary):
 	is_test_arena = data.get("is_test_arena", false)
 	
 	upgrade_settings = UpgradeSettings.new()
-	upgrade_settings.load_dict(data.get("upgrade_settings", {}))
+	upgrade_settings.load_dict(data.get("upgrade_settings", {}) as Dictionary)
 	
 	hud_settings = HUDSettings.new()
-	hud_settings.load_dict(data.get("hud_settings", {}))
+	hud_settings.load_dict(data.get("hud_settings", {}) as Dictionary)
 	
 	camera_settings = CameraSettings.new()
-	camera_settings.load_dict(data.get("camera_settings", {}))
+	camera_settings.load_dict(data.get("camera_settings", {}) as Dictionary)
 	
 	game_mode_settings = GameModeSettings.new()
-	game_mode_settings.load_dict(data.get("game_mode_settings", {}))
+	game_mode_settings.load_dict(data.get("game_mode_settings", {}) as Dictionary)
 	
 	graphics_settings = GraphicsSettings.new(viewport)
-	graphics_settings.load_dict(data.get("graphics_settings", {}))
+	graphics_settings.load_dict(data.get("graphics_settings", {}) as Dictionary)
 	
 	audio_settings = AudioSettings.new()
-	audio_settings.load_dict(data.get("audio_settings", {}))
+	audio_settings.load_dict(data.get("audio_settings", {}) as Dictionary)
 
-func read(filename: String):
-	var file = FileAccess.open("user://worlds/%s/settings.json" % (filename), FileAccess.READ)
-	var data = file.get_var()
+func read(filename: String) -> void:
+	var file := FileAccess.open("user://worlds/%s/settings.json" % (filename), FileAccess.READ)
+	var data := file.get_var() as Dictionary
 	load_dict(data)

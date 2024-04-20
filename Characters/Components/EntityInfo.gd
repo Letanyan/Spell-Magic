@@ -22,7 +22,7 @@ var food: Food
 var food_amount: float
 var bounds: CollisionShape3D
 
-func _init(type: Kind, pos: Vector3, _liquid := Liquid.NONE, l_amount: float = 0, _food := Food.NONE, f_amount: float = 0):
+func _init(type: Kind, pos: Vector3, _liquid := Liquid.NONE, l_amount: float = 0, _food := Food.NONE, f_amount: float = 0) -> void:
 	kind = type
 	position = pos
 	liquid = _liquid

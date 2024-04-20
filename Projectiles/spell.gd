@@ -69,7 +69,7 @@ var buff_v: float = 0.0
 var buff_attack: float = 0.0
 var buff_defence: float = 0.0
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false):
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false) -> void:
 	x = _x
 	y = _y
 	z = _z
@@ -123,9 +123,9 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	result.z = z_expr.compute(vars)
 	
 	if vars.has("old_pos") and not only_delta:
-		var old_pos = vars["old_pos"]
-		var frame_time = vars.get("__frame_time", 0.0166667)
-		var velocity = (result - old_pos) * frame_time
+		var old_pos := vars["old_pos"] as Vector3
+		var frame_time := vars.get("__frame_time", 0.0166667) as float
+		var velocity := (result - old_pos) * frame_time
 		if not velocity.is_zero_approx():
 			result = old_pos + velocity.normalized() * clampf(velocity.length(), 0, (limit_v + buff_v) * frame_time)
 		else:
@@ -142,7 +142,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 func approximate_distance_traveled_at_time(vars: Dictionary, time: float, samples: int = 29) -> float:
 	var ft := Vector3.ZERO
 	var ftp := Vector3.ZERO
-	var temp_vars = vars.duplicate()
+	var temp_vars := vars.duplicate()
 	temp_vars["t"] = 0.0
 	ftp.x = x_expr.compute(temp_vars)
 	ftp.y = y_expr.compute(temp_vars)
@@ -174,23 +174,23 @@ func _mass() -> float:
 		Element.ROCK: return power * 100.0
 		_: return 0
 	
-func build_expressions():
-	for k in expression_strings:
-		if expression_strings[k].contains(";"):
-			expressions[k] = Expr.new(expression_strings[k].split(";", false, 2)[0])
+func build_expressions() -> void:
+	for k: String in expression_strings:
+		if (expression_strings[k] as String).contains(";"):
+			expressions[k] = Expr.new((expression_strings[k] as String).split(";", false, 2)[0])
 		else:
-			expressions[k] = Expr.new(expression_strings[k])
+			expressions[k] = Expr.new(expression_strings[k] as String)
 		
-func overwrite_expressions(mappings: Dictionary):
-	for k in mappings:
-		expressions[k] = Expr.new(mappings[k])
+func overwrite_expressions(mappings: Dictionary) -> void:
+	for k: String in mappings:
+		expressions[k] = Expr.new(mappings[k] as String)
 	
-func compute_expressions(fvars: Dictionary, additional: Dictionary = {}):
-	var temp = {}
+func compute_expressions(fvars: Dictionary, additional: Dictionary = {}) -> void:
+	var temp := {}
 	temp.merge(fvars)
 	temp.merge(additional)
-	for k in expressions:
-		fvars[k] = expressions[k].compute(temp)
+	for k: String in expressions:
+		fvars[k] = (expressions[k] as Expr).compute(temp)
 		temp[k] = fvars[k]
 			
 func calculate_cooldown() -> float:
@@ -288,8 +288,8 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	if element == Element.ROCK:
 		var origin: Vector3 = fixed_vars.get("abs_pos", Vector3.ZERO)
 		var dir: Vector3 = origin.direction_to(p.position)
-		var rot_axis = dir.cross(Vector3.BACK).normalized()
-		var rot_angle = dir.angle_to(Vector3.BACK)
+		var rot_axis := dir.cross(Vector3.BACK).normalized()
+		var rot_angle := dir.angle_to(Vector3.BACK)
 		if not rot_axis.is_zero_approx():
 			p.rotate_object_local(rot_axis, rot_angle)
 	
@@ -342,7 +342,7 @@ func get_turret(n: int, fvars: Dictionary) -> Node3D:
 	fixed_vars["D"] = d_expr.compute(fixed_vars)
 	
 	
-	var p = turret.instantiate()
+	var p := turret.instantiate() as Node3D
 			
 	p.position = calculate_location(fixed_vars)
 	
@@ -353,11 +353,11 @@ func get_turret(n: int, fvars: Dictionary) -> Node3D:
 	var mat: ShaderMaterial = ring.material as ShaderMaterial
 	mat.set_shader_parameter("albedo", Spell.real_color_from_element(element))
 	
-	ring = p.get_node("mid").mesh
+	ring = (p.get_node("mid") as MeshInstance3D).mesh
 	ring.inner_radius = radius * 0.67
 	ring.outer_radius = radius * 0.67 + radius * 0.1
 	
-	ring = p.get_node("inner").mesh
+	ring = (p.get_node("inner") as MeshInstance3D).mesh
 	ring.inner_radius = radius * 0.25
 	ring.outer_radius = radius * 0.25 + radius * 0.1
 	
@@ -367,7 +367,7 @@ func get_turret(n: int, fvars: Dictionary) -> Node3D:
 	
 	return p
 
-func save_dict():
+func save_dict() -> Dictionary:
 	return {
 		"x": x, "y": y, "z": z, "r": radius,
 		"power": power, "duration": duration, "count": count, "delay": delay,
@@ -378,13 +378,13 @@ func save_dict():
 		"elemental_application": elemental_application
 	}
 
-func load_dict(dict: Dictionary):
+func load_dict(dict: Dictionary) -> void:
 	name = dict.get("name", "")
 	x = dict["x"]
 	y = dict["y"]
 	z = dict["z"]
-	var temp_r = dict["r"]
-	radius = temp_r if temp_r is float else temp_r.to_float()
+	var temp_r: Variant = dict["r"]
+	radius = temp_r if temp_r is float else (temp_r as String).to_float()
 	power = dict["power"]
 	duration = dict["duration"]
 	element = dict["el"]
@@ -395,7 +395,7 @@ func load_dict(dict: Dictionary):
 	charge = 0.0
 	if dict["chain"] != {}:
 		chain = Spell.new()
-		chain.load_dict(dict["chain"])
+		chain.load_dict(dict["chain"] as Dictionary)
 	id = dict.get("id", -1)
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
@@ -403,8 +403,8 @@ func load_dict(dict: Dictionary):
 	expression_strings = dict.get("expression_strings", {})
 	is_active = dict.get("is_active", false)
 	elemental_application = dict.get("elemental_application", 0.0)
-	for e in expression_strings:
-		expression_strings[e] = expression_strings[e].strip_edges()
+	for e: String in expression_strings:
+		expression_strings[e] = (expression_strings[e] as String).strip_edges()
 	
 	x_expr = Expr.new(x)
 	y_expr = Expr.new(y)

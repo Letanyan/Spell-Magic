@@ -13,7 +13,7 @@ signal cancelled
 signal confirmed
 
 static func display(message: String, cancel_str: String = "Cancel", confirm_str: String = "Confirm") -> PopupDialog:
-	var dialog := load("res://GUI/Popup Menu/popup_menu.tscn").instantiate() as PopupDialog
+	var dialog := (load("res://GUI/Popup Menu/popup_menu.tscn") as PackedScene).instantiate() as PopupDialog
 	
 	dialog.label_message = message
 	dialog.cancel_title = cancel_str

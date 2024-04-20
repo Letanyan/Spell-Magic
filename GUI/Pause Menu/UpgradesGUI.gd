@@ -82,7 +82,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func update_state(purchase_error: UpgradeSettings.PurchaseError):
+func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book)
 	max_running_speed_current.text = str(settings.upgrade_settings.max_running_speed)
 	max_P_current.text = str(settings.upgrade_settings.max_P)

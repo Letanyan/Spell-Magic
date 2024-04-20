@@ -10,12 +10,12 @@ extends Container
 var panel_style: StyleBox
 var hover_style: StyleBox
 
-var selected_cell_coord = null
+var selected_cell_coord: Variant = null
 
-var mouse_down = null
+var mouse_down: Variant = null
 var current_offset := Vector2.ZERO
 
-var child_grid := {}
+var child_grid := {} # [Vector2]Control
 
 signal on_cell_selected(coord: Vector2)
 signal on_cell_unselected(coord: Vector2)
@@ -28,28 +28,28 @@ var double_click_timer: Dictionary = {}
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if theme == null:
-		var temp_theme: Theme = load(ProjectSettings.get_setting("gui/theme/custom")) as Theme
+		var temp_theme: Theme = load(ProjectSettings.get_setting("gui/theme/custom") as String) as Theme
 		panel_style = temp_theme.get_stylebox("panel", "Panel")
 		hover_style = temp_theme.get_stylebox("focus", "Button")
 	else:
 		panel_style = theme.get_stylebox("panel", "Panel")
 		hover_style = theme.get_stylebox("focus", "Button")
 
-func add_grid_tile(n: Control, coord: Vector2, overwrite: bool = false):
+func add_grid_tile(n: Control, coord: Vector2, overwrite: bool = false) -> void:
 	if overwrite or not child_grid.has(coord):
 		add_child(n)
 		child_grid[coord] = n
 	
-func remove_grid_tile(n: Control):
-	for coord in child_grid:
+func remove_grid_tile(n: Control) -> void:
+	for coord: Vector2 in child_grid:
 		if child_grid[coord] == n:
 			child_grid.erase(coord)
 			remove_child(n)
 			break
 			
-func remove_tile_at_coord(coord: Vector2):
+func remove_tile_at_coord(coord: Vector2) -> void:
 	if child_grid.has(coord):
-		remove_child(child_grid[coord])
+		remove_child(child_grid[coord] as Control)
 		child_grid.erase(coord)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -58,8 +58,8 @@ func _process(delta: float) -> void:
 	
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_SORT_CHILDREN:
-		for coord in child_grid:
-			var node = child_grid[coord]
+		for coord: Vector2 in child_grid:
+			var node := child_grid[coord] as Control
 			node.position = coord * cell_size + offset + current_offset + Vector2(line_width, line_width)
 			node.size = cell_size - Vector2(line_width * 2, line_width * 2)
 
@@ -83,14 +83,15 @@ func _draw() -> void:
 	draw_line(Vector2(size.x, size.y), Vector2(size.x, 0), line_color, line_width, true)
 	
 	if selected_cell_coord != null:
-		draw_style_box(hover_style, Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size))
+		draw_style_box(hover_style, Rect2(selected_cell_coord as Vector2 * cell_size + offset + current_offset, cell_size))
 		#draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
 
-func _gui_input(event: InputEvent) -> void:
+func _gui_input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 		
-	if event is InputEventMouseButton:
+	if _event is InputEventMouseButton:
+		var event := _event as InputEventMouseButton
 		if mouse_down == null and event.pressed:
 			var m_pos: Vector2 = event.global_position - global_position
 			if not (m_pos.x < 0 or m_pos.y < 0 or m_pos.x > size.x or m_pos.y > size.y):
@@ -108,7 +109,7 @@ func _gui_input(event: InputEvent) -> void:
 					if double_click_timer.get(event.button_index, false):
 						on_cell_double_clicked.emit(m_pos, event.button_index)
 					else:
-						get_tree().create_timer(0.3).timeout.connect(func(): double_click_timer[event.button_index] = false)
+						get_tree().create_timer(0.3).timeout.connect(func() -> void: double_click_timer[event.button_index] = false)
 						double_click_timer[event.button_index] = true
 					if event.button_index == 1:
 						if m_pos == selected_cell_coord:
@@ -121,7 +122,8 @@ func _gui_input(event: InputEvent) -> void:
 					queue_sort()
 			current_offset = Vector2.ZERO
 			mouse_down = null
-	elif event is InputEventMouseMotion:
+	elif _event is InputEventMouseMotion:
+		var event := _event as InputEventMouseMotion
 		if mouse_down != null:
 			current_offset = event.position - mouse_down
 			queue_redraw()
@@ -133,7 +135,7 @@ func _gui_input(event: InputEvent) -> void:
 				m_pos /= cell_size
 				m_pos = floor(m_pos)
 				on_cell_moused_over.emit(m_pos)
-	elif event is InputEventKey:
+	elif _event is InputEventKey:
 		if selected_cell_coord and has_focus():
 			if Input.is_action_pressed("DOWN"):
 				selected_cell_coord += Vector2(0, 1)

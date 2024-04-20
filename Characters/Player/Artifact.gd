@@ -74,7 +74,7 @@ class Option:
 		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
 	
-	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern):
+	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:
 		effect = ef
 		event = ev
 		element = el
@@ -84,7 +84,7 @@ class Option:
 	func save_dict() -> Dictionary:
 		return {"effect": effect, "event": event, "element": element, "amount": amount, "pattern": pattern}
 		
-	func load_dict(dict: Dictionary):
+	func load_dict(dict: Dictionary) -> void:
 		effect = dict["effect"] as Effect
 		event = dict["event"] as Event
 		element = dict["element"] as Element
@@ -374,7 +374,7 @@ var right: Option
 var bottom: Option
 var left: Option
 
-func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b: Option = Option.empty(), l: Option = Option.empty()):
+func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b: Option = Option.empty(), l: Option = Option.empty()) -> void:
 	name = n
 	top = t
 	right = r
@@ -385,13 +385,13 @@ func save_dict() -> Dictionary:
 	return {"name": name, "top": top.save_dict(), "left": left.save_dict(), 
 	"right": right.save_dict(), "bottom": bottom.save_dict()}
 	
-func load_dict(dict: Dictionary):
+func load_dict(dict: Dictionary) -> void:
 	name = dict["name"]
 	top = Option.empty()
-	top.load_dict(dict["top"])
+	top.load_dict(dict["top"] as Dictionary)
 	left = Option.empty()
-	left.load_dict(dict["left"])
+	left.load_dict(dict["left"] as Dictionary)
 	right = Option.empty()
-	right.load_dict(dict["right"])
+	right.load_dict(dict["right"] as Dictionary)
 	bottom = Option.empty()
-	bottom.load_dict(dict["bottom"])
+	bottom.load_dict(dict["bottom"] as Dictionary)

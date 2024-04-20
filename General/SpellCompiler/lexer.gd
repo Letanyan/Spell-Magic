@@ -5,7 +5,7 @@ enum Kind { NUMBER, WORD, VAR, FUNC, OP, OPEN, CLOSE, COMMA, PREFIX_OP, NONE, ER
 var kind: Kind
 var raw: String
 
-func _init(k: Kind, r: String):
+func _init(k: Kind, r: String) -> void:
 	kind = k
 	raw = r
 
@@ -13,15 +13,15 @@ static func tokenize(expr: String) -> Array[Token]:
 	var state := Kind.NONE
 	var result: Array[Token] = []
 	
-	var current = ""
-	var lastWasOp = true
+	var current := ""
+	var lastWasOp := true
 	for c in expr:
 		match state:
 			Kind.NUMBER:
 				if "1234567890.".contains(c):
 					current = current + c
 				else:
-					result.append(Token.new(Kind.NUMBER, String(current)))
+					result.append(Token.new(Kind.NUMBER, current))
 					lastWasOp = false
 					current = ""
 					state = Kind.NONE
@@ -32,7 +32,7 @@ static func tokenize(expr: String) -> Array[Token]:
 					var k := Kind.VAR
 					if is_func(current):
 						k = Kind.FUNC
-					result.append(Token.new(k, String(current)))
+					result.append(Token.new(k, current))
 					lastWasOp = false
 					current = ""
 					state = Kind.NONE
@@ -68,12 +68,12 @@ static func tokenize(expr: String) -> Array[Token]:
 	if current.length() > 0:
 		match state:
 			Kind.NUMBER:
-				result.append(Token.new(Kind.NUMBER, String(current)))
+				result.append(Token.new(Kind.NUMBER, current))
 			Kind.WORD:
-				var k = Kind.VAR
+				var k := Kind.VAR
 				if is_func(current):
 					k = Kind.FUNC
-				result.append(Token.new(k, String(current)))
+				result.append(Token.new(k, current))
 	
 	return result
 					

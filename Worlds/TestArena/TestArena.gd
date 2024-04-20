@@ -8,8 +8,8 @@ extends Node3D
 
 @onready var skybox: SkyBox
 
-var terrain_update_interval = 0
-var has_init_terrain_population = false
+var terrain_update_interval := 0
+var has_init_terrain_population := false
 
 var book: MagicBook
 var case: WandCase
@@ -33,13 +33,13 @@ func setup(_settings: WorldSettings) -> void:
 	book.ignore_cooldown = true
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
-	settings.upgrade_settings.max_velocity_updated.connect(func(v):
+	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:
 		book.update_spell_limits(v, settings.upgrade_settings.max_r)
 	)
-	settings.upgrade_settings.max_radius_updated.connect(func(r):
+	settings.upgrade_settings.max_radius_updated.connect(func(r: float) -> void:
 		book.update_spell_limits(settings.upgrade_settings.max_v, r)
 	)
-	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings):
+	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 	)
@@ -50,7 +50,7 @@ func setup(_settings: WorldSettings) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
-	SignalBus.enemy_death.connect(func(e): print(e, " died"))
+	SignalBus.enemy_death.connect(func(e: Enemy) -> void: print(e, " died"))
 
 	#var seq := " 1"
 	#for i in ["flower", "feather", "goblet", "sands", "crown", "glove", "brace", "gown", "helmet"]:
@@ -75,12 +75,12 @@ func setup(_settings: WorldSettings) -> void:
 	#add_enemy(birdman)
 	
 
-func add_enemy(enemy: Enemy):
+func add_enemy(enemy: Enemy) -> void:
 	inhabitants.append(enemy)
 	add_child(enemy)
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
 		_settings.read("test+arena")
@@ -92,28 +92,28 @@ func _ready():
 	menu.setup(book, case, artifacts, settings)
 	
 	wand = case.wands[0]
-	menu.wand_case.use_current_wand = func(id: int):
+	menu.wand_case.use_current_wand = func(id: int) -> void:
 		wand = case.wands[id]
 		
 	menu.close_menu.connect(toggle_menu)
 		
 	player.spell_caster.ignore_mana_cost = true
-	player.spell_velocity_was_buffed.connect(func(v):
+	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)
-	player.spell_radius_was_buffed.connect(func(r):
+	player.spell_radius_was_buffed.connect(func(r: float) -> void:
 		book.update_spell_buff_limits(settings.upgrade_settings.buff_v, r)
 	)
-	player.attack_was_buffed.connect(func(atk):
+	player.attack_was_buffed.connect(func(atk: float) -> void:
 		book.update_spell_attack_and_defence(atk, settings.upgrade_settings.buff_defence)
 	)
-	player.defence_was_buffed.connect(func(def):
+	player.defence_was_buffed.connect(func(def: float) -> void:
 		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
 	)
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	
-	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
+	skybox = SkyBox.new($WorldEnvironment as WorldEnvironment, $Sun as DirectionalLight3D, $Moon as DirectionalLight3D)
 	skybox.day_time = 14
 	daytime_tick = 0.0
 	
@@ -127,20 +127,17 @@ func _ready():
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
 
-		
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	$FPS.text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
-	pass
+func _process(delta: float) -> void:
+	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	knowledge_tick += delta
 	daytime_tick += delta
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
-		for loc in population:
-			var pop = population[loc]
+		for loc: Vector2 in population:
+			var pop := population[loc] as Population
 			pop.update_info()
 			
 	if daytime_tick >= 1.0:
@@ -160,12 +157,12 @@ func _physics_process(delta):
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
 
-func toggle_menu():
+func toggle_menu() -> void:
 	if menu.is_showing:
 		settings.is_paused = false
 		var pause_duration := Time.get_unix_time_from_system() - pause_start
 		player.spell_caster.update_pause_time(pause_duration)
-		var indices := []
+		var indices: Array[int] = []
 		var idx := 0
 		for e in inhabitants:
 			if e == null:
@@ -186,7 +183,7 @@ func toggle_menu():
 		hud.hide()
 
 
-func _input(event):
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 			
@@ -203,10 +200,10 @@ func _input(event):
 	if not menu.is_showing:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
-				player.pan_camera(event.relative)
+				player.pan_camera((event as InputEventMouseMotion).relative)
 		
 	if not menu.is_showing:
-		for k in wand.basic_keys:
+		for k: String in wand.basic_keys:
 			var s: Spell = null
 			var is_down := false
 			var is_rapid_fire := Globals.Ref.new(false)
@@ -216,32 +213,32 @@ func _input(event):
 			if event.is_action_released(k):
 				s = wand.action_up(k, book)
 			if s != null:
-				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data)
+				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
 				
 
-func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
-	player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
+func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:
+	player.cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_child", p), s)
 	if is_down:
-		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func(): 
+		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func() -> void: 
 			var is_rapid_fire := Globals.Ref.new(false)
 			s = wand.action_down("", book, is_rapid_fire)
 			if s != null and is_rapid_fire.data:
 				cast_spell_with_recusive_check_for_rapid_fire(s, true)
 		)
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
+func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
 	pass
 
-func enemy_drops_artifact(enemy: Enemy, artifact: Artifact):
+func enemy_drops_artifact(enemy: Enemy, artifact: Artifact) -> void:
 	if artifact != null:
 		artifacts.collection.append(artifact)
-	var enemy_kind = enemy.world_enemy_enum()
+	var enemy_kind := enemy.world_enemy_enum()
 	if settings.enemies_killed.has(enemy_kind):
 		settings.enemies_killed[enemy_kind] += 1
 	else:
 		settings.enemies_killed[enemy_kind] = 1
 
-func quit_to_main_menu():
+func quit_to_main_menu() -> void:
 	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")
 
 

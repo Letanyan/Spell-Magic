@@ -20,7 +20,7 @@ var is_hidden: bool = false
 func _ready() -> void:
 	mouse_filter = mouse_filter_override
 	if theme == null:
-		resolved_theme = load(ProjectSettings.get_setting("gui/theme/custom")) as Theme
+		resolved_theme = load(ProjectSettings.get_setting("gui/theme/custom") as String) as Theme
 		normal_style = resolved_theme.get_stylebox("normal", "Button")
 		disabled_style = resolved_theme.get_stylebox("hover", "Button")
 	else:
@@ -33,14 +33,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 	
-func warn(index: Direction, level: Level, clr: Color, interval: float, count: int):
+func warn(index: Direction, level: Level, clr: Color, interval: float, count: int) -> void:
 	for n in count * 2:
 		if not is_inside_tree():
 			return
 		await get_tree().create_timer(interval).timeout
 		if warning.has(index):
-			if warning[index].has(level):
-				warning[index].erase(level)
+			if (warning[index] as Dictionary).has(level):
+				(warning[index] as Dictionary).erase(level)
 			else:
 				warning[index][level] = clr
 		else:
@@ -48,20 +48,20 @@ func warn(index: Direction, level: Level, clr: Color, interval: float, count: in
 		queue_redraw()
 		
 	
-func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
+func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -> void:
 	const FONT_SIZE := 11
 	var f := resolved_theme.default_font
 	var center := size / 2
-	var mask = sign(offset) * 0.5
-	var inv_mask = Vector2.ZERO
+	var mask := offset.sign() * 0.5
+	var inv_mask := Vector2.ZERO
 	if mask.x != 0:
 		inv_mask.y = 1
 	else:
 		inv_mask.x = 1
 		
-	var label_color_top = colors[0]
-	var label_color_bottom = colors[0]
-	var pattern_color = colors[2]
+	var label_color_top := colors[0] as Color
+	var label_color_bottom := colors[0] as Color
+	var pattern_color := colors[2] as Color
 	
 	var amount: String
 	if option.effect != Artifact.Effect.NONE:
@@ -72,11 +72,11 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE) + Vector2(0, 8)
 
 	var v := Vector2(32, 16)
-	var u := Vector2(max(w.x, v.x) + 4, (w.y + v.y) + 4)
+	var u := Vector2(maxf(w.x, v.x) + 4, (w.y + v.y) + 4)
 	draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, label_color_top)
 	
 	var dir_pos: Vector2 = center - Vector2(v.x / 2, w.y / 2) + offset - mask * u
-	var dir_tex = option.direction_texture()
+	var dir_tex := option.direction_texture()
 	if dir_tex == null:
 		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/4, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 	elif option.is_effect():
@@ -120,30 +120,30 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary):
 		draw_arc(a, size.x * 0.33, s, e, 32, pattern_color, 1, true)
 
 func get_label_color(index: int) -> Dictionary:
-	var BASE = {0: Color.WHITE, 1: Color.WHITE, 2: Color.WHITE}
+	var BASE := {0: Color.WHITE, 1: Color.WHITE, 2: Color.WHITE}
 	var high_color := Color.WHITE
 	match index:
 		0: high_color = artifact.top.color()
 		1: high_color = artifact.right.color()
 		2: high_color = artifact.bottom.color()
 		3: high_color = artifact.left.color()
-	var HIGH = {0: high_color, 1: high_color, 2: high_color}
+	var HIGH := {0: high_color, 1: high_color, 2: high_color}
 	
 	var result : Dictionary = HIGH if highlighted.get(index, false) else BASE
 	
 	if warning.has(index):
 		#result.merge(warning[index], true)
-		if warning[index].has(0):
+		if (warning[index] as Dictionary).has(0):
 			if warning[index][0] == result[0]:
 				result[0] = Color(0, 0, 0, 0)
 			else:
 				result[0] = warning[index][0]
-		if warning[index].has(1):
+		if (warning[index] as Dictionary).has(1):
 			if warning[index][1] == result[1]:
 				result[1] = Color(0, 0, 0, 0)
 			else:
 				result[1] = warning[index][1]
-		if warning[index].has(2):
+		if (warning[index] as Dictionary).has(2):
 			if warning[index][2] == result[2]:
 				result[2] = Color(0, 0, 0, 0)
 			else:

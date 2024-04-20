@@ -24,6 +24,10 @@ SceneHandler="*res://GUI/Main Menu/SceneHandler.gd"
 [debug]
 
 gdscript/warnings/unused_parameter=0
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
+gdscript/warnings/unsafe_call_argument=1
 gdscript/warnings/confusable_local_declaration=0
 
 [display]

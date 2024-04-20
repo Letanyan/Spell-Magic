@@ -31,32 +31,27 @@ var current_index := -1
 @onready var page: MagicPage = $MagicPage
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	sort_popup = sort_button.get_popup()
 	sort_popup.connect("id_pressed", sort_popup_selected)
 	filter_popup = filter_button.get_popup()
 	filter_popup.connect("id_pressed", filter_popup_selected)
 	
 	page.visible = false
-	page.spell_name_changed.connect(func(n: String): reload_list())
+	page.spell_name_changed.connect(func(n: String) -> void: reload_list())
 	page.request_to_view_spell.connect(view_new_spell)
 	page.delete_spell.connect(delete_spell_at_index)
 	page.duplicate_spell.connect(duplicate_spell_at_index)
-	page.return_focus.connect(func(): spell_index.grab_focus())
+	page.return_focus.connect(func() -> void: spell_index.grab_focus())
 	
 	
-func duplicate_book():
+func duplicate_book() -> void:
 	for i in book.spells.size():
-		var s = book.spells[i].duplicate()
+		var s := book.spells[i].duplicate()
 		book.spells[i] = s
 		s.id = i
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func _on_spell_index_item_selected(index):
+func _on_spell_index_item_selected(index: int) -> void:
 	current_index = spells_index_map[index]
 	var spell: Spell = book.spells[current_index]
 	
@@ -68,25 +63,25 @@ func _on_spell_index_item_selected(index):
 	filter_popup.set_item_text(TOTAL_FILTER_ITEMS - 1, "Chains '" + spell.name + "'")
 	
 	
-func update_spells_list():
+func update_spells_list() -> void:
 	var spells_list := book.spells.duplicate(false)
 	
 	var is_ascending := sort_order == 0
 	if sort_selected == 0:
-		spells_list.sort_custom(func(a, b): return a.name < b.name if is_ascending else a.name > b.name)
+		spells_list.sort_custom(func(a: Spell, b: Spell) -> bool: return a.name < b.name if is_ascending else a.name > b.name)
 	elif sort_selected == 1:
-		spells_list.sort_custom(func(a, b): return a.duration < b.duration if is_ascending else a.duration > b.duration)
+		spells_list.sort_custom(func(a: Spell, b: Spell) -> bool: return a.duration < b.duration if is_ascending else a.duration > b.duration)
 	elif sort_selected == 2:
-		spells_list.sort_custom(func(a, b): return a.count < b.count if is_ascending else a.count > b.count)
+		spells_list.sort_custom(func(a: Spell, b: Spell) -> bool: return a.count < b.count if is_ascending else a.count > b.count)
 	elif sort_selected == 3:
-		spells_list.sort_custom(func(a, b): return a.power < b.power if is_ascending else a.power > b.power)
+		spells_list.sort_custom(func(a: Spell, b: Spell) -> bool: return a.power < b.power if is_ascending else a.power > b.power)
 	elif sort_selected == 4:
-		spells_list.sort_custom(func(a, b): return a.mana_cost < b.mana_cost if is_ascending else a.mana_cost > b.mana_cost)
+		spells_list.sort_custom(func(a: Spell, b: Spell) -> bool: return a.mana_cost < b.mana_cost if is_ascending else a.mana_cost > b.mana_cost)
 	elif sort_selected == 5:
-		spells_list.sort_custom(func(a, b): return a.cooldown < b.cooldown if is_ascending else a.cooldown > b.cooldown)
+		spells_list.sort_custom(func(a: Spell, b: Spell) -> bool: return a.cooldown < b.cooldown if is_ascending else a.cooldown > b.cooldown)
 		
 	spells_index_map = {}
-	var k = 0
+	var k := 0
 	for i in range(spells_list.size()):
 		var spell: Spell = spells_list[i]
 		var search_text: String = search_line_edit.text
@@ -125,11 +120,11 @@ func update_spells_list():
 		if filter_options.get(11, false):
 			q1 = q1 and (spell.chain != null and spell.chain.name == filter_chain)
 		if not search_text.is_empty():
-			var s0 = spell.name.contains(search_text)
+			var s0 := spell.name.contains(search_text)
 			if not s0 and spell.chain != null:
 				s0 = spell.chain.name.contains(search_text)
 			if not s0:
-				for e in spell.expression_strings:
+				for e: String in spell.expression_strings:
 					if e.contains(search_text):
 						s0 = true
 						break
@@ -140,35 +135,35 @@ func update_spells_list():
 		
 	create_button.disabled = k < book.spells.size()
 	
-func reload_list():
+func reload_list() -> void:
 	spell_index.clear()
 #	for s in book.spells:
 #		spell_index.add_item(s.name)
-	for k in spells_index_map:
-		var s = book.spells[spells_index_map[k]]
-		spell_index.add_item(s.name, load("res://GUI/Images/check-full.svg") if s.is_active else load("res://GUI/Images/check-empty.svg"))
+	for k: int in spells_index_map:
+		var s := book.spells[spells_index_map[k]]
+		spell_index.add_item(s.name, load("res://GUI/Images/check-full.svg") as Texture2D if s.is_active else load("res://GUI/Images/check-empty.svg") as Texture2D)
 	
-func update_book_without_selection():
+func update_book_without_selection() -> void:
 	current_index = -1
 	page.visible = false
 	update_book()
 	
-func update_book():
+func update_book() -> void:
 	update_spells_list()
 	reload_list()
 		
-func delete_spell_at_index(index: int):
+func delete_spell_at_index(index: int) -> void:
 	for i in book.spells.size():
 		book.spells[i].id = i
 	update_book_without_selection()
 
-func add_spell(spell: Spell):
+func add_spell(spell: Spell) -> void:
 	spell.id = book.spells.size()
 	book.spells.append(spell)
 	update_spells_list()
 	reload_list()
 	var k_index := -1
-	for k in spells_index_map:
+	for k: int in spells_index_map:
 		if spells_index_map[k] == spell.id:
 			k_index = k
 			break
@@ -178,7 +173,7 @@ func add_spell(spell: Spell):
 		page.name_edit.grab_focus()
 		page.name_edit.select_all()
 		
-func _on_create_pressed():
+func _on_create_pressed() -> void:
 	var spell := Spell.new()
 	var active_count := 0
 	for s in book.spells:
@@ -188,22 +183,22 @@ func _on_create_pressed():
 	spell.name = "New Spell"
 	add_spell(spell)
 
-func duplicate_spell_at_index(index: int):
+func duplicate_spell_at_index(index: int) -> void:
 	var spell: Spell = book.spells[index].duplicate()
 	spell.name += " (Copy)"
 	add_spell(spell)
 
-func view_new_spell(spell_name: String):
+func view_new_spell(spell_name: String) -> void:
 	var i := 0
-	for s in book.spells:
+	for s: Spell in book.spells:
 		if s.name == spell_name:
 			_on_spell_index_item_selected(i)
 			spell_index.select(i, true)
 		i += 1
 		
 
-func sort_popup_selected(id: int):
-	var is_order = id > TOTAL_SORT_ITEMS - 1
+func sort_popup_selected(id: int) -> void:
+	var is_order := id > TOTAL_SORT_ITEMS - 1
 	if is_order:
 		sort_order = id - TOTAL_SORT_ITEMS
 		var other := (1 if sort_order == 0 else 0) + TOTAL_SORT_ITEMS
@@ -218,7 +213,7 @@ func sort_popup_selected(id: int):
 	update_spells_list()
 	reload_list()
 	
-func filter_popup_selected(id: int):
+func filter_popup_selected(id: int) -> void:
 	var is_selected := filter_options.has(id)
 	if is_selected:
 		filter_options.erase(id)

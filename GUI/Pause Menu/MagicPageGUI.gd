@@ -26,6 +26,7 @@ extends Control
 @onready var mana_cost: Label = $container/mana_cost
 @onready var element_application: Label = $container/element_application
 
+@onready var view_chain_button: Button = $container/view_chain_button 
 
 @onready var error_label: Label = $container/error_label
 
@@ -53,14 +54,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func display_spell(magic_book: MagicBook, spell: Spell, index: int):
+func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	book = magic_book
 	current_index = index
 	
 	for i in range(Spell.Element.size()):
-		element_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_spell_element(Spell.Element.values()[i]))
+		element_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_spell_element(Spell.Element.values()[i] as Spell.Element))
 	for i in range(Spell.ChainCastKind.size()):
-		chain_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i]))
+		chain_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i] as Spell.ChainCastKind))
 	
 	name_edit.text = spell.name
 	
@@ -85,7 +86,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 	player_is_origin.button_pressed = spell.player_is_origin
 	
 	expressions.text = ""
-	for n in spell.expression_strings:
+	for n: String in spell.expression_strings:
 		expressions.text += "%s = %s\n" % [n, spell.expression_strings[n]]
 		
 	if index < 0:
@@ -106,13 +107,13 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int):
 		is_bomb.disabled = true
 		player_is_origin.disabled = true
 		expressions.editable = false
-		$container/Delete.disabled = true
-		$container/view_chain_button.disabled = true
-		$container/Duplicate.disabled = true
+		delete_button.disabled = true
+		view_chain_button.disabled = true
+		duplicate_button.disabled = true
 		
 	check_all_errors()
 		
-func update_cooldown():
+func update_cooldown() -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].calculate_cooldown()
@@ -123,26 +124,26 @@ func update_cooldown():
 	else:
 		mana_cost.text = ""
 	
-func _on_name_edit_text_changed(new_text):
+func _on_name_edit_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].name = new_text
 	spell_name_changed.emit(new_text)
 	
-func _on_element_combo_selected(index):
+func _on_element_combo_selected(index: int) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].element = index as Spell.Element
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_chain_combo_selected(index):
+func _on_chain_combo_selected(index: int) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].chain_cast_kind = index as Spell.ChainCastKind
 	update_spells_that_chain_to_current_spell()
 
-func _on_x_text_changed(new_text):
+func _on_x_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].x = new_text
@@ -154,7 +155,7 @@ func _on_x_text_changed(new_text):
 		errors_list.erase("x")
 	update_spells_that_chain_to_current_spell()
 
-func _on_y_text_changed(new_text):
+func _on_y_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].y = new_text
@@ -166,7 +167,7 @@ func _on_y_text_changed(new_text):
 		errors_list.erase("y")
 	update_spells_that_chain_to_current_spell()
 
-func _on_z_text_changed(new_text):
+func _on_z_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].z = new_text
@@ -178,7 +179,7 @@ func _on_z_text_changed(new_text):
 		errors_list.erase("z")
 	update_spells_that_chain_to_current_spell()
 
-func _on_r_text_changed(new_text: String):
+func _on_r_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	if not new_text.is_valid_float():
@@ -194,7 +195,7 @@ func _on_r_text_changed(new_text: String):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_N_text_changed(new_text: String):
+func _on_N_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	if not new_text.is_valid_int():
@@ -210,7 +211,7 @@ func _on_N_text_changed(new_text: String):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_P_text_changed(new_text: String):
+func _on_P_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	if not new_text.is_valid_float():
@@ -226,7 +227,7 @@ func _on_P_text_changed(new_text: String):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_T_text_changed(new_text: String):
+func _on_T_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	if not new_text.is_valid_float():
@@ -242,7 +243,7 @@ func _on_T_text_changed(new_text: String):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_D_text_changed(new_text: String):
+func _on_D_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].delay = new_text
@@ -254,7 +255,7 @@ func _on_D_text_changed(new_text: String):
 		errors_list.erase("D")
 	update_spells_that_chain_to_current_spell()
 
-func _on_chain_text_changed(new_text: String):
+func _on_chain_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	var spell: Spell = book.spells[current_index]
@@ -277,25 +278,25 @@ func _on_chain_text_changed(new_text: String):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func _on_is_rel_toggled(button_pressed):
+func _on_is_rel_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].follow = button_pressed
 	update_spells_that_chain_to_current_spell()
 
-func _on_is_bomb_toggled(button_pressed):
+func _on_is_bomb_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].is_bomb = button_pressed
 	update_spells_that_chain_to_current_spell()
 	
-func _on_player_is_origin_toggled(button_pressed):
+func _on_player_is_origin_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].player_is_origin = button_pressed
 	update_spells_that_chain_to_current_spell()
 	
-func _on_M_text_changed(new_text):
+func _on_M_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
 	if not new_text.is_valid_float():
@@ -311,7 +312,7 @@ func _on_M_text_changed(new_text):
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	
-func update_spells_that_chain_to_current_spell():
+func update_spells_that_chain_to_current_spell() -> void:
 	if current_index < 0:
 		return
 	if not errors_list.is_empty():
@@ -322,7 +323,7 @@ func update_spells_that_chain_to_current_spell():
 		error_label.text = ""
 	book.rebuild_spell_chains()
 	
-func _on_view_chain_button_pressed():
+func _on_view_chain_button_pressed() -> void:
 	var n := chain_edit.text
 	if n == "":
 		return
@@ -335,16 +336,16 @@ func _on_constants_text_changed() -> void:
 	
 	var result := {}
 	var text: String = expressions.text
-	var definitions = text.split("\n", false)
-	for def in definitions:
-		var atoms = def.split("=", false)
+	var definitions := text.split("\n", false)
+	for def: String in definitions:
+		var atoms := def.split("=", false)
 		if atoms.size() == 2:
 			result[atoms[0].strip_edges()] = atoms[1].strip_edges()
 	
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
 	
-	for k in book.spells[current_index].expressions:
+	for k: String in book.spells[current_index].expressions:
 		var e: Expr = book.spells[current_index].expressions[k]
 		if e.error.length() > 0:
 			errors_list["constant " + k] = e.error
@@ -354,7 +355,7 @@ func _on_constants_text_changed() -> void:
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
-func check_all_errors():
+func check_all_errors() -> void:
 	errors_list.clear()
 	
 	var e := Expr.new(x_edit.text)
@@ -415,7 +416,7 @@ func check_all_errors():
 		if not found:
 			errors_list["chain"] = "'%s' does not exists" % text
 			
-	for k in book.spells[current_index].expressions:
+	for k: String in book.spells[current_index].expressions:
 		var expr: Expr = book.spells[current_index].expressions[k]
 		if expr.error.length() > 0:
 			errors_list["constant " + k] = expr.error
@@ -436,7 +437,7 @@ func _on_delete_pressed() -> void:
 		
 	var s := book.spells[current_index]
 	var popup := PopupDialog.display("Are you sure you want to delete the spell '" + s.name + "'")
-	popup.confirmed.connect(func():
+	popup.confirmed.connect(func() -> void:
 		if current_index < 0:
 			return
 		book.spells.remove_at(current_index)
@@ -504,28 +505,28 @@ func _input(event: InputEvent) -> void:
 			chain_edit.grab_focus()
 	elif duration_edit.has_focus():
 		if direction.x < 0:
-			x_edit.emit()
+			x_edit.grab_focus()
 		if direction.y < 0:
 			name_edit.grab_focus()
 		if direction.y > 0:
 			delay_edit.grab_focus()
 	elif delay_edit.has_focus():
 		if direction.x < 0:
-			y_edit.emit()
+			y_edit.grab_focus()
 		if direction.y < 0:
 			duration_edit.grab_focus()
 		if direction.y > 0:
 			count_edit.grab_focus()
 	elif count_edit.has_focus():
 		if direction.x < 0:
-			z_edit.emit()
+			z_edit.grab_focus()
 		if direction.y < 0:
 			delay_edit.grab_focus()
 		if direction.y > 0:
 			power_edit.grab_focus()
 	elif power_edit.has_focus():
 		if direction.x < 0:
-			r_edit.emit()
+			r_edit.grab_focus()
 		if direction.y < 0:
 			count_edit.grab_focus()
 		if direction.y > 0:
@@ -541,7 +542,7 @@ func _input(event: InputEvent) -> void:
 			player_is_origin.grab_focus()
 	elif chain_combo.has_focus():
 		if direction.x < 0:
-			chain_edit.emit()
+			chain_edit.grab_focus()
 		if direction.y < 0:
 			power_edit.grab_focus()
 		if direction.y > 0:
@@ -584,7 +585,7 @@ func _input(event: InputEvent) -> void:
 			duplicate_button.grab_focus()
 	elif expressions.has_focus():
 		if direction.x < 0:
-			player_is_origin.emit()
+			player_is_origin.grab_focus()
 		if direction.y < 0:
 			power_edit.grab_focus()
 		if direction.y > 0:
@@ -598,7 +599,7 @@ func _input(event: InputEvent) -> void:
 			mana_edit.grab_focus()
 	elif delete_button.has_focus():
 		if direction.x < 0:
-			duplicate_button.emit()
+			duplicate_button.grab_focus()
 		if direction.y < 0:
 			expressions.grab_focus()
 

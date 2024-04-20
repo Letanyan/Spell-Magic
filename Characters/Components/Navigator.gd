@@ -4,14 +4,14 @@ class VectorEdge:
 	var p: Vector3
 	var q: Vector3
 	
-	func _init(a: Vector3, b: Vector3):
+	func _init(a: Vector3, b: Vector3) -> void:
 		p = a
 		q = b
 		
 static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 	if shape is CylinderShape3D:
 		var bottom := parent.global_position
-		var radius: float = shape.radius * 2
+		var radius: float = (shape as CylinderShape3D).radius * 2
 		var result: PackedVector3Array = []
 		var pivot := Vector3(radius, 0, 0)
 		var p := bottom + pivot
@@ -21,8 +21,9 @@ static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 			result.append(p)
 		return result
 	elif shape is BoxShape3D:
+		var box := shape as BoxShape3D
 		var bottom := parent.global_position
-		var radius: float = max(shape.size.x, max(shape.size.y, shape.size.z))
+		var radius: float = max(box.size.x, max(box.size.y, box.size.z))
 		var result: PackedVector3Array = []
 		var pivot := Vector3(radius, 0, 0)
 		var p := bottom + pivot
@@ -37,7 +38,7 @@ static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 static func edges(parent: Node3D, shape: Shape3D) -> Dictionary:
 	if shape is CylinderShape3D:
 		var bottom := parent.global_position
-		var radius: float = shape.radius * 2
+		var radius: float = (shape as CylinderShape3D).radius * 2
 		var result := {}
 		var pivot := Vector3(radius, 0, 0)
 		var p := bottom + pivot
@@ -48,8 +49,9 @@ static func edges(parent: Node3D, shape: Shape3D) -> Dictionary:
 			p = q
 		return result
 	elif shape is BoxShape3D:
+		var box := shape as BoxShape3D
 		var bottom := parent.global_position
-		var radius: float = max(shape.size.x, max(shape.size.y, shape.size.z))
+		var radius: float = max(box.size.x, max(box.size.y, box.size.z))
 		var result := {}
 		var pivot := Vector3(radius, 0, 0)
 		var p := bottom + pivot
@@ -62,9 +64,9 @@ static func edges(parent: Node3D, shape: Shape3D) -> Dictionary:
 		
 	return {}
 	
-static func fully_connect(body: Node3D, node: Vector3, graph: Dictionary):
+static func fully_connect(body: Node3D, node: Vector3, graph: Dictionary) -> void:
 	var visited := {}
-	for k in graph:
+	for k: VectorEdge in graph:
 		var p: Vector3 = k.p
 		if not visited.get(p, false) and get_ray_intersection(body, node, p) == null:
 			visited[p] = true
@@ -173,7 +175,7 @@ static func get_shape_intersection(p: Node3D, from: Vector3, target: Vector3, sh
 	return not result.is_empty()
 	
 
-static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit = Ptr.new(false)) -> float:
+static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit := Ptr.new(false)) -> float:
 	var space_state := p.get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
@@ -184,7 +186,7 @@ static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit = P
 		no_hit.data = false
 		return result.get("position", Vector3.ZERO).y
 	
-static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit = Ptr.new(false)) -> float:
+static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Ptr.new(false)) -> float:
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
@@ -194,7 +196,7 @@ static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z
 		no_hit.data = false
 		return result.get("position", Vector3.ZERO).y
 		
-static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit = Ptr.new(false)) -> Dictionary:
+static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Ptr.new(false)) -> Dictionary:
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
@@ -251,7 +253,7 @@ static func dfs(graph: Dictionary, start: Vector3, target: Vector3) -> Array[Vec
 		if not visited.get(v, false):
 			visited[v] = true
 			var temp_stack := []
-			for e in graph:
+			for e: VectorEdge in graph:
 				if e.p == v:
 					temp_stack.append(e.q)
 					if e.q == target:
@@ -260,7 +262,7 @@ static func dfs(graph: Dictionary, start: Vector3, target: Vector3) -> Array[Vec
 					temp_stack.append(e.p)
 					if e.p == target:
 						return stack
-			temp_stack.sort_custom(func(a, b): return a.distance_squared_to(target) < b.distance_squared_to(target))
+			temp_stack.sort_custom(func(a: Vector3, b: Vector3) -> float: return a.distance_squared_to(target) < b.distance_squared_to(target))
 			stack.append_array(temp_stack)
 					
 	return []
@@ -284,7 +286,7 @@ static func find_path(p: Node3D, target: Vector3) -> Vector3:
 static func minimum_score(nodes: Dictionary, scores: Dictionary) -> Vector3:
 	var result := Vector3.ZERO
 	var best := INF
-	for v in nodes:
+	for v: Vector3 in nodes:
 		if scores.get(v, INF) < best:
 			best = scores[v]
 			result = v
@@ -327,12 +329,12 @@ static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, m
 	var f_score := {}
 	f_score[start] = start.distance_to(target)
 	var distance := max_step_distance
-	var max_look_up = 200.0 / distance
+	var max_look_up := 200.0 / distance
 	
 	var best_distance := INF
 	var closest_point := start
 	while open.size() > 0:
-		var current = minimum_score(open, f_score)
+		var current := minimum_score(open, f_score)
 		
 		var current_distance := current.distance_to(target)
 		if current_distance < best_distance:

@@ -1,7 +1,7 @@
 class_name ArtifactsGUI
 extends Control
 
-@onready var artifacts_list = $artifacts_list
+@onready var artifacts_list: ItemList = $artifacts_list
 @onready var artifact_grid: InfinityGrid = $artifact_grid
 @onready var artifact_preview: GridTile = $artifact_preview
 
@@ -33,30 +33,30 @@ func _ready() -> void:
 	temporary_grid_tile.is_temporary = true
 	artifact_grid.add_grid_tile(temporary_grid_tile, Vector2.ZERO)
 	
-	filter_top.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_top, id, filter_top_options))
-	filter_left.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_left, id, filter_left_options))
-	filter_right.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_right, id, filter_right_options))
-	filter_bottom.get_popup().id_pressed.connect(func(id: int): filter_id_pressed(filter_bottom, id, filter_bottom_options))
+	filter_top.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_top, id, filter_top_options))
+	filter_left.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_left, id, filter_left_options))
+	filter_right.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_right, id, filter_right_options))
+	filter_bottom.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_bottom, id, filter_bottom_options))
 	
-func update_temporary_grid_tile():
+func update_temporary_grid_tile() -> void:
 	temporary_grid_tile.is_hidden = false
 	if artifact_grid.selected_cell_coord:
 		artifact_grid.remove_grid_tile(temporary_grid_tile)
-		attempt_place_artifact(temporary_grid_tile.artifact, artifact_grid.selected_cell_coord, true)
-		artifact_grid.add_grid_tile(temporary_grid_tile, artifact_grid.selected_cell_coord)
+		attempt_place_artifact(temporary_grid_tile.artifact, artifact_grid.selected_cell_coord as Vector2, true)
+		artifact_grid.add_grid_tile(temporary_grid_tile, artifact_grid.selected_cell_coord as Vector2)
 	elif temporary_grid_tile.artifact != null and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		temporary_grid_tile.is_hidden = true
 		
 	temporary_grid_tile.queue_redraw()
 		
-func update_artifact_list_height():
+func update_artifact_list_height() -> void:
 	if artifact_preview.artifact == null:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, size.y - artifacts_list.position.y - 8))
 	else:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, artifact_preview.position.y - artifacts_list.position.y - 8))
-	$Destroy.visible = artifact_preview.artifact != null
+	($Destroy as Button).visible = artifact_preview.artifact != null
 	
-func update_list():
+func update_list() -> void:
 	artifacts_list.clear()
 	var found_preview := false
 	if artifact_grid.selected_cell_coord == null:
@@ -67,7 +67,7 @@ func update_list():
 					found_preview = true
 	else:
 		for a in artifacts.unconnected():
-			if filter_artifact_matches(a) and can_place_artifact(a, artifact_grid.selected_cell_coord).is_empty():
+			if filter_artifact_matches(a) and can_place_artifact(a, artifact_grid.selected_cell_coord as Vector2).is_empty():
 				artifacts_list.add_item(a.name)
 				if a == artifact_preview.artifact:
 					found_preview = true
@@ -76,18 +76,18 @@ func update_list():
 		artifact_preview.queue_redraw()
 		update_artifact_list_height()
 	else:
-		for idx in artifacts_list.item_count:
+		for idx: int in artifacts_list.item_count:
 			if artifacts.get_artifact_by_name(artifacts_list.get_item_text(idx)) == artifact_preview.artifact:
 				artifacts_list.select(idx)
 				break
 
-func update_list_and_grid():
+func update_list_and_grid() -> void:
 	update_list()
 	for c in artifact_grid.get_children():
 		artifact_grid.remove_child(c)
 	artifact_grid.child_grid.clear()
-	for a in artifacts.connected:
-		var v = artifacts.connected[a]
+	for a: Artifact in artifacts.connected:
+		var v := artifacts.connected[a] as Vector2
 		var g := GridTile.new()
 		g.artifact = a
 		g.highlighted = artifacts.active_options.get(v, {})
@@ -95,12 +95,12 @@ func update_list_and_grid():
 
 
 func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
-	get_tree().create_timer(0.3).timeout.connect(func(): list_clicked = false)
+	get_tree().create_timer(0.3).timeout.connect(func() -> void: list_clicked = false)
 	
 	if list_clicked: # double click
 		if artifact_grid.selected_cell_coord != null:
 			var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))
-			attempt_place_artifact(artifact, artifact_grid.selected_cell_coord, false)
+			attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
 	else:
 		var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))
 		if artifact == null:
@@ -141,7 +141,7 @@ func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array:
 	var result: Array[Vector4] = []
 		
 	# Check artifact fits with top artifact
-	var other = artifacts.get_artifact_at_coord(coord + Vector2(0, -1))
+	var other := artifacts.get_artifact_at_coord(coord + Vector2(0, -1))
 	if other != null:
 		check_count += 1
 		var ok1 : bool = other.bottom.event != Artifact.Event.NONE and artifact.top.effect != Artifact.Effect.NONE
@@ -201,17 +201,17 @@ func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array:
 			
 	return result
 
-func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool):	
+func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool) -> void:	
 	const WARN_COLOR = Color.RED
 	const WARN_INTERVAL = 0.1
 	const WARN_COUNT = 5
 	
 	var errors := can_place_artifact(artifact, coord)
-	for error in errors:
+	for error: Vector4 in errors:
 		if error.x == coord.x and error.y == coord.y:
 			continue
 		else:
-			artifact_grid.child_grid[Vector2(error.x, error.y)].warn(error.z, error.w, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[Vector2(error.x, error.y)] as GridTile).warn(int(error.z) as GridTile.Direction, int(error.w) as GridTile.Level, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 		
 	if not temporarily:
 		temporary_grid_tile.artifact = null
@@ -237,26 +237,26 @@ func attempt_remove_artifact(coord: Vector2) -> bool:
 	var is_valid: bool = artifacts.is_still_continuous_after_removing(coord)
 	if not is_valid:
 		if artifacts.get_artifact_at_coord(coord + Vector2(0, -1)):
-			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(GridTile.Direction.BOTTOM, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			artifact_grid.child_grid[coord + Vector2(0, -1)].warn(GridTile.Direction.BOTTOM, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(0, -1)] as GridTile).warn(GridTile.Direction.BOTTOM, GridTile.Level.TOP, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(0, -1)] as GridTile).warn(GridTile.Direction.BOTTOM, GridTile.Level.PATTERN, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			
 		if artifacts.get_artifact_at_coord(coord + Vector2(0, 1)):
-			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(GridTile.Direction.TOP, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			artifact_grid.child_grid[coord + Vector2(0, 1)].warn(GridTile.Direction.TOP, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(0, 1)] as GridTile).warn(GridTile.Direction.TOP, GridTile.Level.TOP, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(0, 1)] as GridTile).warn(GridTile.Direction.TOP, GridTile.Level.PATTERN, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			
 		if artifacts.get_artifact_at_coord(coord + Vector2(-1, 0)):
-			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(GridTile.Direction.RIGHT, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			artifact_grid.child_grid[coord + Vector2(-1, 0)].warn(GridTile.Direction.RIGHT, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(-1, 0)] as GridTile).warn(GridTile.Direction.RIGHT, GridTile.Level.TOP, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(-1, 0)] as GridTile).warn(GridTile.Direction.RIGHT, GridTile.Level.PATTERN, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 			
 		if artifacts.get_artifact_at_coord(coord + Vector2(1, 0)):
-			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(GridTile.Direction.LEFT, 0, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
-			artifact_grid.child_grid[coord + Vector2(1, 0)].warn(GridTile.Direction.LEFT, 2, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(1, 0)] as GridTile).warn(GridTile.Direction.LEFT, GridTile.Level.TOP, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
+			(artifact_grid.child_grid[coord + Vector2(1, 0)] as GridTile).warn(GridTile.Direction.LEFT, GridTile.Level.PATTERN, WARN_COLOR, WARN_INTERVAL, WARN_COUNT)
 		
 		return false
 		
 		
-	var was_removed = false
-	for a in artifacts.connected:
+	var was_removed := false
+	for a: Artifact in artifacts.connected:
 		if artifacts.connected[a] == coord:
 			artifacts.unconnect_from_grid(a)
 			was_removed = true
@@ -285,8 +285,8 @@ func _input(event: InputEvent) -> void:
 				if artifact_grid.selected_cell_coord != null:
 					var selected: Array = artifacts_list.get_selected_items()
 					if selected.size() == 1:
-						var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0]))
-						attempt_place_artifact(artifact, artifact_grid.selected_cell_coord, false)
+						var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0] as int))
+						attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
 			elif artifact_grid.has_focus():
 				artifacts_list.grab_focus()
 				if artifacts_list.item_count > 0:
@@ -318,14 +318,15 @@ func _on_artifact_grid_on_cell_unselected(coord: Vector2) -> void:
 	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		temporary_grid_tile.artifact = null
 
-func handle_artifact_drag(event: InputEvent) -> void:
+func handle_artifact_drag(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	
 	var coord := Vector2.ZERO	
 	var in_grid := false
 	
-	if event is InputEventMouseButton or event is InputEventMouseMotion:
+	if _event is InputEventMouseButton or _event is InputEventMouseMotion:
+		var event := _event as InputEventMouseButton
 		coord = event.global_position - artifact_grid.global_position
 		if not (coord.x < 0 or coord.y < 0 or coord.x > artifact_grid.size.x or coord.y > artifact_grid.size.y):
 			coord -= artifact_grid.offset
@@ -333,7 +334,8 @@ func handle_artifact_drag(event: InputEvent) -> void:
 			coord = floor(coord)
 			in_grid = true
 		
-	if event is InputEventMouseButton:
+	if _event is InputEventMouseButton:
+		var event := _event as InputEventMouseButton
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			list_mouse_down = event.pressed
 			if not list_mouse_down:
@@ -342,7 +344,7 @@ func handle_artifact_drag(event: InputEvent) -> void:
 						attempt_place_artifact(temporary_grid_tile.artifact, coord, false)
 					temporary_grid_tile.artifact = null
 					update_temporary_grid_tile()
-	elif event is InputEventMouseMotion:
+	elif _event is InputEventMouseMotion:
 		if not list_mouse_down:
 			return
 		if not in_grid:
@@ -359,7 +361,7 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 	handle_artifact_drag(event)
 
 func _on_artifact_preview_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		temporary_grid_tile.artifact = artifact_preview.artifact
 		
 	handle_artifact_drag(event)
@@ -376,7 +378,7 @@ func _on_destroy_pressed() -> void:
 	update_temporary_grid_tile()
 
 
-func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions):
+func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void:
 	var menu := button.get_popup() as PopupMenu
 	
 	if id >= 0 and id <= 2:
@@ -426,7 +428,7 @@ func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions):
 	update_list()
 		
 		
-func filter_update_popup_menu_items(menu: PopupMenu, option: int):
+func filter_update_popup_menu_items(menu: PopupMenu, option: int) -> void:
 	while menu.item_count > 3:
 		menu.remove_item(3)
 		
@@ -444,12 +446,12 @@ func filter_update_popup_menu_items(menu: PopupMenu, option: int):
 		menu.add_check_item("Circle", Artifact.Pattern.CIRCLE + 6)
 		menu.add_separator()
 		menu.add_check_item("Any", Artifact.Element.ANY + 9)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_fire.tres"), "Fire", Artifact.Element.FIRE + 9)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_rock.tres"), "Rock", Artifact.Element.ROCK + 9)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_electric.tres"), "Electric", Artifact.Element.ELECTRIC + 9)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_water.tres"), "Water", Artifact.Element.WATER + 9)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_wind.tres"), "Wind", Artifact.Element.AIR + 9)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_ice.tres"), "Ice", Artifact.Element.ICE + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_water.tres") as Texture2D, "Water", Artifact.Element.WATER + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_wind.tres") as Texture2D, "Wind", Artifact.Element.AIR + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_ice.tres") as Texture2D, "Ice", Artifact.Element.ICE + 9)
 	elif option == 2: # Effect
 		menu.add_separator()
 		menu.add_check_item("DMG %", Artifact.Effect.BOOST_PERCENTAGE + 3)
@@ -462,26 +464,26 @@ func filter_update_popup_menu_items(menu: PopupMenu, option: int):
 		menu.add_check_item("Circle", Artifact.Pattern.CIRCLE + 8)
 		menu.add_separator()
 		menu.add_check_item("Any", Artifact.Element.ANY + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_fire.tres"), "Fire", Artifact.Element.FIRE + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_rock.tres"), "Rock", Artifact.Element.ROCK + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_electric.tres"), "Electric", Artifact.Element.ELECTRIC + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_water.tres"), "Water", Artifact.Element.WATER + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_wind.tres"), "Wind", Artifact.Element.AIR + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_ice.tres"), "Ice", Artifact.Element.ICE + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_health.tres"), "Health", Artifact.Element.HEALTH + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_mana.tres"), "Mana", Artifact.Element.MANA + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_sword.tres"), "Attack", Artifact.Element.ATTACK + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_shield.tres"), "Defence", Artifact.Element.DEFENCE + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_velocity.tres"), "v", Artifact.Element.SPELL_VELOCITY + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_time.tres"), "T", Artifact.Element.DURATION + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_running.tres"), "Movement Speed", Artifact.Element.RUNNING_SPEED + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_radius.tres"), "r", Artifact.Element.SPELL_RADIUS + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_count.tres"), "N", Artifact.Element.COUNT + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_power.tres"), "P", Artifact.Element.POWER + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_health_outline.tres"), "Max Health", Artifact.Element.HEALTH_BUMP + 11)
-		menu.add_icon_check_item(load("res://GUI/Images/tinted_mana_outline.tres"), "Max Mana", Artifact.Element.MANA_BUMP + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_water.tres") as Texture2D, "Water", Artifact.Element.WATER + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_wind.tres") as Texture2D, "Wind", Artifact.Element.AIR + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_ice.tres") as Texture2D, "Ice", Artifact.Element.ICE + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health.tres") as Texture2D, "Health", Artifact.Element.HEALTH + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana.tres") as Texture2D, "Mana", Artifact.Element.MANA + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_sword.tres") as Texture2D, "Attack", Artifact.Element.ATTACK + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_shield.tres") as Texture2D, "Defence", Artifact.Element.DEFENCE + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_velocity.tres") as Texture2D, "v", Artifact.Element.SPELL_VELOCITY + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_time.tres") as Texture2D, "T", Artifact.Element.DURATION + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_running.tres") as Texture2D, "Movement Speed", Artifact.Element.RUNNING_SPEED + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_radius.tres") as Texture2D, "r", Artifact.Element.SPELL_RADIUS + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_count.tres") as Texture2D, "N", Artifact.Element.COUNT + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_power.tres") as Texture2D, "P", Artifact.Element.POWER + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health_outline.tres") as Texture2D, "Max Health", Artifact.Element.HEALTH_BUMP + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana_outline.tres") as Texture2D, "Max Mana", Artifact.Element.MANA_BUMP + 11)
 		
-func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions):
+func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions) -> void:
 	var index := 3
 	while index < menu.item_count:
 		if menu.is_item_checkable(index):
@@ -489,18 +491,18 @@ func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions):
 		index += 1
 	
 	if data.main_option == 1:
-		for e in data.events:
+		for e: Artifact.Event in data.events:
 			menu.set_item_checked(menu.get_item_index(e + 3), true)
-		for e in data.patterns:
+		for e: Artifact.Pattern in data.patterns:
 			menu.set_item_checked(menu.get_item_index(e + 6), true)
-		for e in data.elements:
+		for e: Artifact.Element in data.elements:
 			menu.set_item_checked(menu.get_item_index(e + 9), true)
 	elif data.main_option == 2:
-		for e in data.effects:
+		for e: Artifact.Effect in data.effects:
 			menu.set_item_checked(menu.get_item_index(e + 3), true)
-		for e in data.patterns:
+		for e: Artifact.Pattern in data.patterns:
 			menu.set_item_checked(menu.get_item_index(e + 8), true)
-		for e in data.elements:
+		for e: Artifact.Element in data.elements:
 			menu.set_item_checked(menu.get_item_index(e + 11), true)
 	
 func filter_artifact_option_matches(option: Artifact.Option, filter: FilterOptions) -> bool:
@@ -518,7 +520,6 @@ func filter_artifact_option_matches(option: Artifact.Option, filter: FilterOptio
 		
 	if filter.main_option == 1:
 		if not filter.events.is_empty() and not filter.events.has(option.event):
-			print(filter.events, option.event)
 			return false
 	elif filter.main_option == 2:
 		if not filter.effects.is_empty() and not filter.effects.has(option.effect):
@@ -547,7 +548,7 @@ class FilterOptions:
 	var effects: Dictionary = {} # Artifact.Effect -> bool
 	var elements: Dictionary = {} # Artifact.Element -> bool
 	
-	func set_main_option(option: int):
+	func set_main_option(option: int) -> void:
 		main_option = option
 		patterns.clear()
 		events.clear()

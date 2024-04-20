@@ -19,7 +19,7 @@ var waiting_for_pattern: AttackPatterns
 var is_complete: bool = false
 
 
-func _init(_spells: Array, _spell_weight: Array[float], _aggression: float = 0.0, _movements: Array[AttackMovement] = []):
+func _init(_spells: Array, _spell_weight: Array[float], _aggression: float = 0.0, _movements: Array[AttackMovement] = []) -> void:
 	assert(_spells.size() == _spell_weight.size(), "spells array must be same size as spell weight")
 	assert(_movements == [] or _movements.size() == _spells.size(), "movements array must be same size as spells array or it must be an empty array")
 	
@@ -56,8 +56,8 @@ func choose_spell_from_distribution(vitals: Vitals) -> SpellMovement:
 	var p := randf()
 	for i in range(spell_weight.size()):
 		range_end += spell_weight[i]
-		var s = spells[i]
-		var pass_prob = p <= range_end
+		var s: Variant = spells[i]
+		var pass_prob := p <= range_end
 		if not pass_prob:
 			continue
 			
@@ -67,10 +67,10 @@ func choose_spell_from_distribution(vitals: Vitals) -> SpellMovement:
 			return waiting_for_pattern.choose_spell(vitals)
 		else:
 			var pass_cool : bool = Time.get_unix_time_from_system() - last_use.get(s.name, 0) >= s.cooldown
-			var pass_mana : bool = vitals.mana.value > s.actual_mana_cost()
+			var pass_mana : bool = vitals.mana.value > (s as Spell).actual_mana_cost()
 			if pass_cool and pass_mana:
-				last_use[s.name] = Time.get_unix_time_from_system()
-				return SpellMovement.new(s, movements[i])
+				last_use[(s as Spell).name] = Time.get_unix_time_from_system()
+				return SpellMovement.new(s as Spell, movements[i])
 			else:
 				return null
 		
@@ -81,7 +81,7 @@ func choose_spell_from_sequence(vitals: Vitals) -> SpellMovement:
 		is_complete = true
 		current_sequence_index = 0
 		
-	var s = spells[current_sequence_index]
+	var s: Variant = spells[current_sequence_index]
 	var t: float = spell_weight[current_sequence_index]
 	var m: AttackMovement = movements[current_sequence_index]
 	
@@ -94,7 +94,7 @@ func choose_spell_from_sequence(vitals: Vitals) -> SpellMovement:
 			waiting_for_pattern.is_complete = false
 			return waiting_for_pattern.choose_spell(vitals)
 		else:
-			return SpellMovement.new(s, m)
+			return SpellMovement.new(s as Spell, m)
 	else:
 		return null
 

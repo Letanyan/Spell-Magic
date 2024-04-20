@@ -3,7 +3,7 @@ extends Node
 # Bacon and Games on YouTube: https://www.youtube.com/watch?v=2uYaoQj_6o0
 
 
-signal content_finished_loading(content)
+signal content_finished_loading(content: Variant)
 signal content_invalid(content_path:String)
 signal content_failed_to_load(content_path:String)
 
@@ -19,7 +19,7 @@ func _ready() -> void:
 	content_failed_to_load.connect(on_content_failed_to_load)
 	content_finished_loading.connect(on_content_finished_loading)
 
-func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content): pass) -> void:
+func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content: Variant) -> void: pass) -> void:
 	_transition = transition_type
 	# add loading screen
 	loading_screen = _loading_screen_scene.instantiate() as LoadingScreen
@@ -28,7 +28,7 @@ func load_new_scene(content_path:String, transition_type:String="fade_to_black",
 	
 func _load_content(content_path:String, on_complete: Callable) -> void:
 	_content_path = content_path
-	var loader = ResourceLoader.load_threaded_request(content_path)
+	var loader := ResourceLoader.load_threaded_request(content_path)
 	if not ResourceLoader.exists(content_path) or loader == null:
 		content_invalid.emit(content_path)
 		return 		
@@ -42,8 +42,8 @@ func _load_content(content_path:String, on_complete: Callable) -> void:
 # checks in on loading status - this can also be done with a while loop, but I found that ran too fast
 # and ended up skipping over the loading display. 
 func monitor_load_status(on_complete: Callable) -> void:
-	var load_progress = []
-	var load_status = ResourceLoader.load_threaded_get_status(_content_path, load_progress)
+	var load_progress := []
+	var load_status := ResourceLoader.load_threaded_get_status(_content_path, load_progress)
 	
 	match load_status:
 		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
@@ -52,7 +52,7 @@ func monitor_load_status(on_complete: Callable) -> void:
 			return
 		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			if loading_screen != null:
-				loading_screen.update_bar(load_progress[0] * 100) # 0.1
+				loading_screen.update_bar(load_progress[0] as float * 100) # 0.1
 		ResourceLoader.THREAD_LOAD_FAILED:
 			content_failed_to_load.emit(_content_path)
 			_load_progress_timer.stop()
@@ -60,7 +60,7 @@ func monitor_load_status(on_complete: Callable) -> void:
 		ResourceLoader.THREAD_LOAD_LOADED:
 			_load_progress_timer.stop()
 			_load_progress_timer.queue_free()
-			var content = ResourceLoader.load_threaded_get(_content_path).instantiate()
+			var content: Variant = (ResourceLoader.load_threaded_get(_content_path) as PackedScene).instantiate()
 			content_finished_loading.emit(content)
 			on_complete.call(content)
 			return # this last return isn't necessary but I like how the 3 dead ends stand out as similar
@@ -71,8 +71,8 @@ func on_content_failed_to_load(path:String) -> void:
 func on_content_invalid(path:String) -> void:
 	printerr("error: Cannot load resource: '%s'" % [path])
 	
-func on_content_finished_loading(content) -> void:
-	var outgoing_scene = get_tree().current_scene
+func on_content_finished_loading(content: Variant) -> void:
+	var outgoing_scene := get_tree().current_scene
 
 	# Remove the old scene
 	outgoing_scene.queue_free()

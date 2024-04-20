@@ -15,7 +15,7 @@ var world_settings: WorldSettings
 
 signal close_menu
 
-func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings):
+func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings) -> void:
 	magic_book.book = book
 	wand_case.book = book
 	wand_case.case = case
@@ -24,22 +24,15 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	settings.world_settings = _world_settings
 	world_settings = _world_settings
 	
-	settings.exit_game.connect(func(): get_tree().quit())
-	settings.save_game.connect(func(): save_changes())
-	settings.main_menu.connect(func(): SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
+	settings.exit_game.connect(func() -> void: get_tree().quit())
+	settings.save_game.connect(func() -> void: save_changes())
+	settings.main_menu.connect(func() -> void: SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-	SignalBus.pick_up_world_item_artifact.connect(func(a,m): artifacts.update_list_and_grid())
-	SignalBus.pick_up_world_item_spell.connect(func(s,m): magic_book.update_book())
+func _ready() -> void:
+	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
+	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: magic_book.update_book())
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-func update_index(index):
+func update_index(index: int) -> void:
 	save_changes()
 	const MAX_INDEX = 4 # used for wrap around
 	if index < 0:
@@ -60,10 +53,10 @@ func update_index(index):
 		3: upgrades.visible = true
 		4: settings.visible = true
 
-func _on_spells_pressed():
+func _on_spells_pressed() -> void:
 	update_index(0)
 
-func _on_wands_pressed():
+func _on_wands_pressed() -> void:
 	wand_case.update_wand_shelf_items(true)
 	update_index(1)
 
@@ -76,7 +69,7 @@ func _on_upgrades_pressed() -> void:
 func _on_settings_pressed() -> void:
 	update_index(4)
 
-func open(kind: Kind):
+func open(kind: Kind) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	visible = true
 	is_showing = true
@@ -99,7 +92,7 @@ func open(kind: Kind):
 			_on_settings_pressed()
 	world_settings.save()
 
-func close():
+func close() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	is_showing = false
 	visible = false
@@ -109,7 +102,7 @@ func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 
-func save_changes():
+func save_changes() -> void:
 	if magic_book.visible:
 		if world_settings.is_test_arena:
 			magic_book.book.save_absolute_path("res://magic_book.json")

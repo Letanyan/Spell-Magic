@@ -10,7 +10,7 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 
 
-func _ready():
+func _ready() -> void:
 	super._ready()
 	
 	velocity_movement = VelocityMovement.new()
@@ -40,7 +40,7 @@ func _ready():
 	.set_use_player_as_origin()\
 	.set_player_body_vision_as_origin(0, 0, 10.0 + randf_range(10.0, 20.0) + (level / 10.0) )\
 	.look_at_player()\
-	.speed(clamp(level / 100.0 * 25, 2, 25))
+	.speed(clampf(level / 100.0 * 25, 2, 25))
 	
 	current_path = idle_path
 	
@@ -144,7 +144,7 @@ func update_entity_info(info: EntityInfo) -> bool:
 	return true
 
 
-func update_behaviour():
+func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		current_path = attack_path		
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value:

@@ -9,11 +9,11 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	trunk.mesh = CylinderMesh.new()
 	var h := rng.randf_range(4, 10)
 	var r := rng.randf_range(h / 8, h / 2)
-	trunk.mesh.height = h
-	trunk.mesh.top_radius = r
-	trunk.mesh.bottom_radius = r
-	trunk.mesh.radial_segments = 16
-	trunk.mesh.rings = 1
+	(trunk.mesh as CylinderMesh).height = h
+	(trunk.mesh as CylinderMesh).top_radius = r
+	(trunk.mesh as CylinderMesh).bottom_radius = r
+	(trunk.mesh as CylinderMesh).radial_segments = 16
+	(trunk.mesh as CylinderMesh).rings = 1
 	trunk.mesh.surface_set_material(0, trunk_mat)
 	trunk.position.y = h / 2
 	
@@ -21,10 +21,10 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	var sh := rng.randf_range(s, s * 2)
 	var leaves := MeshInstance3D.new()
 	leaves.mesh = SphereMesh.new()
-	leaves.mesh.radius = s
-	leaves.mesh.height = sh
-	leaves.mesh.radial_segments = rng.randf_range(8, 16)
-	leaves.mesh.rings = rng.randf_range(4, 8)
+	(leaves.mesh as SphereMesh).radius = s
+	(leaves.mesh as SphereMesh).height = sh
+	(leaves.mesh as SphereMesh).radial_segments = rng.randi_range(8, 16)
+	(leaves.mesh as SphereMesh).rings = rng.randi_range(4, 8)
 	leaves.mesh.surface_set_material(0, leaves_mat)
 	leaves.position.y = h
 	
@@ -34,8 +34,8 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	var box := CollisionShape3D.new()
 	box.name = "collision"
 	box.shape = CylinderShape3D.new()
-	box.shape.height = h
-	box.shape.radius = r
+	(box.shape as CylinderShape3D).height = h
+	(box.shape as CylinderShape3D).radius = r
 	body.add_child(box)
 	trunk.add_child(body)
 	
@@ -62,13 +62,13 @@ static func make(kind: World.Foliage, rng: RandomNumberGenerator) -> Trees:
 		_: result = round_tree.instantiate()
 		
 	var s := rng.randf_range(2, 5)
-	result.get_node("RootNode").scale = Vector3(s, s, s)
+	(result.get_node("RootNode") as Node3D).scale = Vector3(s, s, s)
 	var r := rng.randf_range(0, 2 * PI)
-	result.get_node("RootNode").rotate(Vector3.UP, r)
+	(result.get_node("RootNode") as Node3D).rotate(Vector3.UP, r)
 	
-	var box := result.get_node("./static/shape")
-	box.shape.height = 4 * s
-	box.shape.radius = 0.25 * s
+	var box := result.get_node("./static/shape") as CollisionShape3D
+	(box.shape as CylinderShape3D).height = 4 * s
+	(box.shape as CylinderShape3D).radius = 0.25 * s
 	box.position.y = 2 * s
 		
 	return result

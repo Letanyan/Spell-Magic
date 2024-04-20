@@ -27,13 +27,13 @@ func current_path() -> PathStyle:
 		AMState.DONE: return null
 	return null
 	
-func reset_state():
+func reset_state() -> void:
 	if before == null and during == null and after == null:
 		state = AMState.DONE
 	else:
 		state = AMState.BEFORE
 	
-func next_state():
+func next_state() -> void:
 	if state == AMState.IDLE:
 		state = AMState.BEFORE
 	elif state == AMState.BEFORE:
