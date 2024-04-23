@@ -5,7 +5,7 @@ extends Node3D
 @onready var animator: AnimationPlayer = $AnimationPlayer
 @onready var label: Label3D = $label
 
-var text: String:
+@onready var text: String:
 	set(value):
 		label.text = value
 	get:

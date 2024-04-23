@@ -18,7 +18,7 @@ var last_biome: World.Biome = World.Biome.WATER
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
 
-var terrain_update_interval := 0
+var terrain_update_interval := 0.0
 var has_init_terrain_population := false
 
 var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
@@ -42,11 +42,15 @@ func setup(_settings: WorldSettings) -> void:
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
-	book = MagicBook.new()
-	book.settings = settings
-	book.read(settings.world_name)
-	book.rebuild_spell_chains()
-	book.ignore_cooldown = OS.is_debug_build()
+	if _settings.is_test_arena:
+		book = GlobalData.magic_book
+		book.settings = settings
+	else:
+		book = MagicBook.new()
+		book.settings = settings
+		book.read(settings.world_name)
+		book.rebuild_spell_chains()
+		book.ignore_cooldown = OS.is_debug_build()
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
 	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:
@@ -89,7 +93,7 @@ func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IN
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
-		_settings.read("demo")
+		_settings.read("test+arena")
 		_settings.is_test_arena = true
 		#_settings.world_name = "demo"
 		#_settings.sed = 0 
@@ -283,7 +287,7 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 				cast_spell_with_recusive_check_for_rapid_fire(s, true)
 		)
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
+func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:
 	terrain_update_interval += delta
 	
 	if terrain_update_interval >= 0.25:
@@ -308,7 +312,7 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 			pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
 	
-	var updated_chunks := chunks.get("updated", []) as Array[Vector2]
+	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
 
 	await get_tree().physics_frame
 	var items := update_population_at(updated_chunks, state)

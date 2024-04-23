@@ -128,8 +128,8 @@ func update_chunks_with_size(chunks: Array[Node3D], locations: PackedVector2Arra
 	
 func update_chunks(x: float, y: float) -> Dictionary:
 	var high := update_chunks_with_size(loaded_chunks, loaded_chunks_location, x, y, chunk_size, radius, subdivide_percent, false)
-	var removed: PackedVector2Array = high.get("removed", [])
-	var updated: PackedVector2Array = high.get("updated", [])
+	var removed: PackedVector2Array = high.get("removed", PackedVector2Array([]))
+	var updated: PackedVector2Array = high.get("updated", PackedVector2Array([]))
 	if has_medium:
 		update_chunks_with_size(medium_chunks, medium_chunks_location, x, y, chunk_size, medium_chunk_width, subdivide_percent / 1.0, false)
 	if has_water:

@@ -167,14 +167,18 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 		return
 	
 	if show_label:	
-		var lbl := (load("res://Projectiles/explosion/BodyMessage.tscn") as PackedScene).instantiate() as BodyMessage
+		var lbl := (preload("res://Projectiles/explosion/BodyMessage.tscn") as PackedScene).instantiate() as BodyMessage
 		var collision: CollisionShape3D = body.get_node("Collision")
 		if collision.shape is BoxShape3D:
 			lbl.position.y = (collision.shape as BoxShape3D).size.y
 		elif collision.shape is SphereShape3D:
 			lbl.position.y = (collision.shape as SphereShape3D).radius
-		lbl.text = str(int(amount))
+		elif collision.shape is CylinderShape3D:
+			lbl.position.y = (collision.shape as CylinderShape3D).height
+		elif collision.shape is CapsuleShape3D:
+			lbl.position.y = (collision.shape as CapsuleShape3D).height
 		body.add_child(lbl)
+		lbl.text = str(int(amount))
 		var clr := Spell.color_from_element(element)
 		lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
 		lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
