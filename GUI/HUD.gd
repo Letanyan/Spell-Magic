@@ -12,7 +12,7 @@ extends Control
 @onready var wand_mapping: RichTextLabel = $WandMappingPanel/WandMapping
 
 @onready var notification_label: RichTextLabel = $NotificationLabel
-var notifications: Dictionary = {} # Message -> Expire after n seconds
+var notifications: Dictionary = {} # [String(Message)]int(seconds until expiration)
 
 @onready var stats_view: StatsView = $StatsView
 
@@ -227,7 +227,7 @@ func update_wand_mappings() -> void:
 			_:
 				return kd + " [b]" + title + "[/b]: [color=#F50]" + spell + "[/color]\n"
 		
-	for k: Array in wand.get_bound_keys():
+	for k: PackedStringArray in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
 		var kd := " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:

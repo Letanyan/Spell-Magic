@@ -1,3 +1,4 @@
+class_name SettingsMenuScreen
 extends Control
 
 @onready var settings_pane: SettingsGUI = $Settings

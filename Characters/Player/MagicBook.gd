@@ -1,7 +1,7 @@
 class_name MagicBook
 
 var spells: Array[Spell]
-var last_use: Dictionary # [String: Unix.Time]
+var last_use: Dictionary # [String]Unix.Time
 var ignore_cooldown: bool
 enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE }
 

@@ -35,7 +35,7 @@ static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 		
 	return []
 
-static func edges(parent: Node3D, shape: Shape3D) -> Dictionary:
+static func edges(parent: Node3D, shape: Shape3D) -> Dictionary: # [VectorEdge]bool
 	if shape is CylinderShape3D:
 		var bottom := parent.global_position
 		var radius: float = (shape as CylinderShape3D).radius * 2
@@ -64,7 +64,7 @@ static func edges(parent: Node3D, shape: Shape3D) -> Dictionary:
 		
 	return {}
 	
-static func fully_connect(body: Node3D, node: Vector3, graph: Dictionary) -> void:
+static func fully_connect(body: Node3D, node: Vector3, graph: Dictionary) -> void: # graph: [VectorEdge]bool
 	var visited := {}
 	for k: VectorEdge in graph:
 		var p: Vector3 = k.p
@@ -99,7 +99,7 @@ static func get_point_intersection(p: Node3D, target: Vector3) -> CollisionShape
 			break
 	return c
 
-static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int, exclude: Array = []) -> PackedVector3Array:
+static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int, exclude: Array[RID] = []) -> PackedVector3Array:
 	var space_state := p.get_world_3d().direct_space_state
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.collision_mask = mask
@@ -108,7 +108,7 @@ static func get_collisions_from_shape(p: Node3D, shape: Shape3D, transform: Tran
 	query.exclude = [p] + exclude
 	return space_state.collide_shape(query)
 	
-static func get_intersections_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int = ~1, exclude: Array = []) -> Array[Dictionary]:
+static func get_intersections_from_shape(p: Node3D, shape: Shape3D, transform: Transform3D, mask: int = ~1, exclude: Array[RID] = []) -> Array[Dictionary]:
 	var space_state := p.get_world_3d().direct_space_state
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.collision_mask = mask
@@ -206,7 +206,7 @@ static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: f
 		no_hit.data = false
 		return result
 	
-static func build_graph(p: Node3D, current_position: Vector3, target: Vector3) -> Dictionary:
+static func build_graph(p: Node3D, current_position: Vector3, target: Vector3) -> Dictionary: # [VectorEdge]bool
 	var obj := get_ray_intersection(p, current_position, target)
 	if obj == null:
 		return {}

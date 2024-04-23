@@ -41,11 +41,11 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		container.remove_child(c)
 		
 	var prev_item: WandCaseShelfItem = null
-	for w: Array in wand.keys:
+	for w: PackedStringArray in wand.keys:
 		var item := (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
-		item.store_key = w
+		item.store_key.assign(w)
 		item.store_action = wand.keys[w].kind
-		item.store_spell = wand.keys[w].spell
+		item.store_spell.assign(wand.keys[w].spell as Array[String])
 		
 		item.return_focus.connect(func() -> void: wand_index.grab_focus())
 		if prev_item != null:
@@ -76,7 +76,7 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 				if not not_active_errors.is_empty():
 					errors += ("" if missing_errors.is_empty() else ".") + ", ".join(not_active_errors) + " not active"
 				item.key.text = "[center][color=#f33]" + errors + "[/color][/center]"
-			wand.keys[w].spell = all_spells
+			(wand.keys[w].spell as Array[String]).assign(all_spells)
 			wand.keys[w].spell_index = all_spells.size() - 1
 			if not ignore_signals:
 				wand.spell_updated.emit()
@@ -86,11 +86,11 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 			wand.keys[w].kind = to
 			wand.action_updated.emit()
 			if to == Wand.Kind.MOD:
-				wand.add_mod(w[0] as String)
+				wand.add_mod(w[0])
 				_on_wand_index_item_selected(current_index)
 				return true
 			elif from == Wand.Kind.MOD:
-				wand.remove_mod(w[0] as String)
+				wand.remove_mod(w[0])
 				_on_wand_index_item_selected(current_index)
 				return true
 			return false

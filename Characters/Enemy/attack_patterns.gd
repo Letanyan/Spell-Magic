@@ -8,11 +8,11 @@ class SpellMovement:
 		spell = s
 		movement = m
 
-var spells: Array
+var spells: Array # [](Spell, AttackPatterns)
 var movements: Array[AttackMovement]
 var spell_weight: Array[float]
 var start_time: float
-var last_use: Dictionary # [String: Unix.Time]
+var last_use: Dictionary # [String]Unix.Time
 var current_sequence_index: int
 var aggression: float
 var waiting_for_pattern: AttackPatterns

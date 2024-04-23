@@ -206,8 +206,8 @@ func calculate_cooldown() -> float:
 	if chain != null:
 		chain_cost = chain.calculate_cooldown() * count
 		
-	elemental_application = (power / UpgradeSettings.LIMIT_P)
-	elemental_application += clampf((mana_cost - (basic_cost + chain_cost)) / 100, 0.0, 1.0)
+	elemental_application = clampf(power / UpgradeSettings.LIMIT_P * 0.25, 0.0, 0.25)
+	elemental_application += clampf((mana_cost - (basic_cost + chain_cost)) / 100, 0.0, 0.75)
 	elemental_application = clampf(elemental_application, 0.0, 1.0)
 		
 	cooldown = basic_cost + chain_cost - mana_cost
@@ -295,8 +295,8 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	
 	return p
 		
-func get_particles(fvars: Dictionary, exvars: Dictionary) -> Array:
-	var result := []
+func get_particles(fvars: Dictionary, exvars: Dictionary) -> Array[SpellBody]:
+	var result: Array[SpellBody] = []
 	var fixed_vars := {}
 	fixed_vars["r0"] = randf()
 	fixed_vars["r1"] = randf()

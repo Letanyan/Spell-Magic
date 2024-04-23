@@ -3,18 +3,23 @@ extends Node3D
 @onready var player: Player = $Player
 @onready var menu: Menu = $Menu
 @onready var hud: HUD = $HUD
+@onready var fps: Label = $FPS
 
-@export var noise_temperature: Noise
-@export var noise_dryness: Noise
+
+@export var noise_temperature: FastNoiseLite
+@export var noise_dryness: FastNoiseLite
 @onready var chunker: Terrain
-@onready var population: Dictionary = {}
+@onready var population: Dictionary = {} # [Vector2]Population
 
 var last_biome: World.Biome = World.Biome.WATER
 
 @onready var skybox: SkyBox
+@onready var world_environment: WorldEnvironment = $WorldEnvironment
+@onready var sun: DirectionalLight3D = $Sun
+@onready var moon: DirectionalLight3D = $Moon
 
-var terrain_update_interval = 0
-var has_init_terrain_population = false
+var terrain_update_interval := 0
+var has_init_terrain_population := false
 
 var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
 
@@ -29,7 +34,7 @@ var daytime_tick: float = 0.0
 var settings: WorldSettings
 var pause_start: float
 
-var population_items_to_add: Dictionary = {}
+var population_items_to_add: Dictionary = {} # [Population]bool
 var population_update_tick: float = 0.0
 
 func setup(_settings: WorldSettings) -> void:
@@ -44,13 +49,13 @@ func setup(_settings: WorldSettings) -> void:
 	book.ignore_cooldown = OS.is_debug_build()
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
-	settings.upgrade_settings.max_velocity_updated.connect(func(v):
+	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:
 		book.update_spell_limits(v, settings.upgrade_settings.max_r)
 	)
-	settings.upgrade_settings.max_radius_updated.connect(func(r):
+	settings.upgrade_settings.max_radius_updated.connect(func(r: float) -> void:
 		book.update_spell_limits(settings.upgrade_settings.max_v, r)
 	)
-	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings):
+	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 	)
@@ -80,7 +85,7 @@ func setup(_settings: WorldSettings) -> void:
 	game_settings.last_world = settings.world_name
 	game_settings.save()
 	
-func run_on_ready():
+func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IN
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
@@ -94,7 +99,7 @@ func run_on_ready():
 	menu.setup(book, case, artifacts, settings)
 	
 	wand = case.wands[0]
-	menu.wand_case.use_current_wand = func(id: int):
+	menu.wand_case.use_current_wand = func(id: int) -> void:
 		wand = case.wands[id]
 		
 	menu.close_menu.connect(toggle_menu)
@@ -105,16 +110,16 @@ func run_on_ready():
 	#player.position.z = 2300
 	player.position = settings.player_position
 	player.spell_caster.ignore_mana_cost = OS.is_debug_build()
-	player.spell_velocity_was_buffed.connect(func(v):
+	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)
-	player.spell_radius_was_buffed.connect(func(r):
+	player.spell_radius_was_buffed.connect(func(r: float) -> void:
 		book.update_spell_buff_limits(settings.upgrade_settings.buff_v, r)
 	)
-	player.attack_was_buffed.connect(func(atk):
+	player.attack_was_buffed.connect(func(atk: float) -> void:
 		book.update_spell_attack_and_defence(atk, settings.upgrade_settings.buff_defence)
 	)
-	player.defence_was_buffed.connect(func(def):
+	player.defence_was_buffed.connect(func(def: float) -> void:
 		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
 	)
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
@@ -125,7 +130,7 @@ func run_on_ready():
 	
 	SignalBus.enemy_death.connect(enemy_dies)
 	
-	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
+	skybox = SkyBox.new(world_environment, sun, moon)
 	skybox.day_time = settings.time_of_day
 	skybox.day_of_year = settings.day_of_the_year
 	
@@ -139,36 +144,36 @@ func run_on_ready():
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
 	
-	var theme := load(ProjectSettings.get("gui/theme/custom")) as ThemeUI
+	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 	theme.change_tint_color(Color(0.0, 0.360784, 0.643137))
 	ready_state = GameSettings.ReadyState.IS
 
-func _ready():
+func _ready() -> void:
 	if ready_state == GameSettings.ReadyState.NOT:
 		run_on_ready()
 
 func _exit_tree() -> void:
 	pass
 	
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	knowledge_tick += delta
 	daytime_tick += delta
 	population_update_tick -= delta
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
-		for loc in population:
-			var pop = population[loc]
+		for loc: Vector2 in population:
+			var pop := population[loc] as Population
 			pop.update_info()
 			
 	if population_update_tick <= 0.0:
 		var duration := 0.0
 		if not population_items_to_add.is_empty():
 			var start_time := Time.get_unix_time_from_system()
-			var key = population_items_to_add.keys()[population_items_to_add.size() - 1]
+			var key := population_items_to_add.keys()[population_items_to_add.size() - 1] as Population
 			var space := get_world_3d().space
 			var state := PhysicsServer3D.space_get_direct_state(space)
-			var items = key.spawn_all_into_world(state)
+			var items := key.spawn_all_into_world(state)
 			for item in items:
 				call_deferred("add_child", item)
 			population_items_to_add.erase(key)
@@ -195,7 +200,7 @@ func _physics_process(delta):
 		
 	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := chunker.blender.biome
-	$FPS.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	if last_biome != b:
 		player.current_biome = b
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
@@ -217,13 +222,13 @@ func _physics_process(delta):
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
 
-func toggle_menu():
+func toggle_menu() -> void:
 	if menu.is_showing:
 		settings.is_paused = false
-		var pause_duration = Time.get_unix_time_from_system() - pause_start
+		var pause_duration := Time.get_unix_time_from_system() - pause_start
 		player.spell_caster.update_pause_time(pause_duration)
-		for loc in population:
-			var pop = population[loc]
+		for loc: Vector2 in population:
+			var pop := population[loc] as Population
 			pop.update_pause_time(pause_duration)
 		menu.close()
 		hud.show()
@@ -235,7 +240,7 @@ func toggle_menu():
 		hud.hide()
 	
 
-func _input(event):
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 			
@@ -252,7 +257,7 @@ func _input(event):
 	if not menu.is_showing:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
-				player.pan_camera(event.relative)
+				player.pan_camera((event as InputEventMouseMotion).relative)
 		
 	if not menu.is_showing:
 		for k in wand.basic_keys:
@@ -265,45 +270,45 @@ func _input(event):
 			if event.is_action_released(k):
 				s = wand.action_up(k, book)
 			if s != null:
-				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data)
+				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
 				
 
-func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool):
-	player.cast_spell(func(p): if p != null: call_deferred("add_child", p), s)
+func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:
+	player.cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_child", p), s)
 	if is_down:
-		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func(): 
+		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func() -> void: 
 			var is_rapid_fire := Globals.Ref.new(false)
 			s = wand.action_down("", book, is_rapid_fire)
 			if s != null and is_rapid_fire.data:
 				cast_spell_with_recusive_check_for_rapid_fire(s, true)
 		)
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
+func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
 	terrain_update_interval += delta
 	
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
 		update_terrain(state)
 		
-func build_terrain():
+func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
 
 
-func update_terrain(state: PhysicsDirectSpaceState3D):
+func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
-	for loc in chunks.get("removed", []):
+	for loc: Vector2 in chunks.get("removed", []):
 		var pop : Population = population.get(loc, null)
 		if pop == null:
 			continue
 		if population_items_to_add.has(pop):
 			population_items_to_add.erase(pop)
 		else:
-			pop.despawn_all_from_world(get_node("."))
+			pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
 	
-	var updated_chunks = chunks.get("updated", [])
+	var updated_chunks := chunks.get("updated", []) as Array[Vector2]
 
 	await get_tree().physics_frame
 	var items := update_population_at(updated_chunks, state)
@@ -313,8 +318,8 @@ func update_terrain(state: PhysicsDirectSpaceState3D):
 	chunker.update_environment(player.position.x, player.position.z)
 	
 
-func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) -> Array:
-	var result := []
+func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
+	var result: Array[Node3D] = []
 	for loc in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
@@ -329,8 +334,8 @@ func update_population_at(locations: Array, state: PhysicsDirectSpaceState3D) ->
 		
 	return result
 
-func enemy_dies(enemy: Enemy):
-	var enemy_kind = enemy.world_enemy_enum()
+func enemy_dies(enemy: Enemy) -> void:
+	var enemy_kind := enemy.world_enemy_enum()
 	if settings.enemies_killed.has(enemy_kind):
 		settings.enemies_killed[enemy_kind] += 1
 	else:

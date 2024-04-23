@@ -1,3 +1,4 @@
+class_name NewGameScreen
 extends Control
 
 @onready var permadeath: Button = $Permadeath

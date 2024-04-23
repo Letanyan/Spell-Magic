@@ -116,7 +116,7 @@ func get_image_set() -> Dictionary:
 				
 	return pc_images
 		
-func key_images(key: Array, size: int = 32) -> String:
+func key_images(key: PackedStringArray, size: int = 32) -> String:
 	var text := (last_image_set.get(key[0], "img:%d") as String) % size
 	for i: int in range(1, key.size()):
 		text += " + " + (last_image_set.get(key[i], "img:%d") % size)

@@ -106,13 +106,13 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 	
 	return {"dmg": power, "el": kind}
 
-func update_vitals(body: Node3D) -> Array:
+func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](float, Spell.Element)
 	freeze.update_per_tick()
 	wetness.update_per_tick()
 	burning.update_per_tick()
 	stun.update_per_tick()
 	var h := health.update_per_tick()
-	var result := [{"dmg": h, "el": Spell.Element.FIRE}]
+	var result: Array[Dictionary] = [{"dmg": h, "el": Spell.Element.FIRE}]
 	mana.update_per_tick()
 	if burning.value > 0:
 		var burn_damage := int(burning.value * health.max_value * 0.05)

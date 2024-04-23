@@ -1,10 +1,10 @@
 class_name Artifacts
 
 var collection: Array[Artifact] = []
-var connected: Dictionary = {} # Artifact -> Vector2
-var active_options: Dictionary = {} # Vector2 -> (int -> bool])
+var connected: Dictionary = {} # [Artifact]Vector2
+var active_options: Dictionary = {} # [Vector2][int]bool
 
-var effects: Dictionary = {} # Vector2i (duration, Artifact.Event | Artifact.Element) -> (Artifact.Effect | Artifact.Element) -> (flat: int, ratio: float)
+var effects: Dictionary = {} # [Vector2i(duration, Artifact.Event | Artifact.Element)][int(Artifact.Effect | Artifact.Element)]Vector2(flat: int, ratio: float)
 
 func reset_by_deleting_all_artifacts() -> void:
 	collection = []

@@ -5,9 +5,9 @@ extends Control
 @onready var cast_combo: OptionButton = $cast_combo
 @onready var spell: LineEdit = $spell
 
-var store_key: Array = []
+var store_key: Array[String] = []
 var store_action: Wand.Kind = Wand.Kind.NONE
-var store_spell: Array = []
+var store_spell: Array[String] = []
 
 var spell_changed: Callable
 var action_changed: Callable

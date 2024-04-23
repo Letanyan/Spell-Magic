@@ -4,11 +4,11 @@ enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HO
 
 class Option:
 	var kind: Kind
-	var spell: Array
+	var spell: Array[String]
 	var spell_index: int
 	var start_hold: float
 	
-	func _init(_kind: Kind = Kind.NONE, _spell: Array = []) -> void:
+	func _init(_kind: Kind = Kind.NONE, _spell: Array[String] = []) -> void:
 		kind = _kind
 		spell = _spell
 		spell_index = spell.size() - 1
@@ -23,7 +23,7 @@ class Option:
 		if s is String:
 			spell = [s]
 		else:
-			spell = s as Array[String]
+			spell.assign(s as Array[String])
 		spell_index = spell.size() - 1
 		start_hold = 0.0
 		
@@ -56,7 +56,7 @@ class Option:
 		result = result.substr(0, result.length() - 2)
 		return result
 
-const basic_keys = [
+const basic_keys: Array[String] = [
 	"LT",
 	"LB",
 	"RT",
@@ -79,7 +79,7 @@ const basic_keys = [
 
 var name: String
 var mods: Dictionary # [String]bool
-var keys: Dictionary # [[]String]Option
+var keys: Dictionary # [PackedStringArray]Option
 var picked: String
 
 var current_actions: Dictionary # [String]bool
@@ -101,10 +101,11 @@ func _init() -> void:
 
 func build_keys() -> void:
 	for b: String in basic_keys:
-		if not keys.has([b]):
-			keys[[b]] = Option.new()
+		var packed := PackedStringArray([b])
+		if not keys.has(packed):
+			keys[packed] = Option.new()
 	for m: String in mods:
-		for key: Array in keys:
+		for key: PackedStringArray in keys:
 			if key.find(m) == -1:
 				var nKey := key.duplicate()
 				nKey.insert(0, m)
@@ -113,7 +114,7 @@ func build_keys() -> void:
 
 func get_bound_keys() -> Dictionary:
 	var result := {}
-	for key: Array in keys:
+	for key: PackedStringArray in keys:
 		var is_valid := true
 		var mod_count := 0
 		for ca: String in current_actions:
@@ -137,18 +138,18 @@ static func basic() -> Wand:
 func remove_mod(mod: String) -> void:
 	if mods.has(mod):
 		mods.erase(mod)
-		var to_remove := []
-		for key: Array in keys:
+		var to_remove: Array[PackedStringArray] = []
+		for key: PackedStringArray in keys:
 			if key.size() > 1 and key.find(mod) != -1:
 				to_remove.append(key)
-		for k: Array in to_remove:
+		for k: PackedStringArray in to_remove:
 			keys.erase(k)
 	
 func add_mod(mod: String) -> void:
 	mods[mod] = true
 	build_keys()
 	
-func find_spell(key: Array, book: MagicBook) -> Spell:
+func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 	var opt: Option = keys[key]
 	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.RAPID_SELECT or opt.kind == Kind.FIRE_PICKED_HOLD:
 		for s in book.spells:
@@ -171,12 +172,12 @@ func find_spell(key: Array, book: MagicBook) -> Spell:
 func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) -> Spell:
 	if action != "":
 		current_actions[action] = 0
-	var best_candidate := []
-	for key: Array in keys:
+	var best_candidate := PackedStringArray([])
+	for key: PackedStringArray in keys:
 		if key.size() > current_actions.size():
 			continue
 		var found := true
-		for k: String in key:
+		for k in key:
 			if not current_actions.has(k):
 				found = false
 				break
@@ -216,8 +217,8 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 	return null
 	
 func action_up(action: String, book: MagicBook) -> Spell:
-	var best_candidate := []
-	for key: Array in keys:
+	var best_candidate := PackedStringArray([])
+	for key: PackedStringArray in keys:
 		if key.size() > current_actions.size():
 			continue
 		var found := true
@@ -225,7 +226,7 @@ func action_up(action: String, book: MagicBook) -> Spell:
 #			if key.find(k) == -1:
 #				found = false
 #				break
-		for k: String in key:
+		for k in key:
 			if not current_actions.has(k):
 				found = false
 				break
@@ -264,15 +265,18 @@ func save_dict() -> Dictionary:
 		"keys": {},
 		"mods": mods,
 	}
-	for key: Array in keys:
-		result["keys"][key] = (keys[key] as Option) .save_dict()
+	for key: PackedStringArray in keys:
+		result["keys"][key] = (keys[key] as Option).save_dict()
 	return result
 		
 func load_dict(dict: Dictionary) -> void:
 	name = dict["name"]
 	mods = dict["mods"]
 	picked = ""
-	for k: Array in dict["keys"]:
+	for k: Variant in dict["keys"]:
 		var opt := Option.new()
 		opt.load_dict(dict["keys"][k] as Dictionary)
-		keys[k] = opt
+		if k is Array:
+			keys[PackedStringArray(k as Array)] = opt
+		else:
+			keys[k] = opt

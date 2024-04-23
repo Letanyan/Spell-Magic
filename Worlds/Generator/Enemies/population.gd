@@ -31,7 +31,7 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location() -> void:
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-# probs: (prob: Variant -> float)
+# probs: [Variant]float
 # probs is a dictionary where each key has its 'value' as a value of being choosen relative to other siblings
 static func random_entity_from_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
 	var keys := probs.keys()
@@ -227,13 +227,13 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 			indices.append(i)
 	return indices
 	
-func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array:
+func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	const spacing = 16.0
 	var areas := group_spawn_points(spacing)
 	var points: Array[PackedVector2Array] = areas["points"]
 	var biomes: Array[World.Biome] = areas["biomes"]
 
-	var result := []
+	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
 		match biomes[i]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))

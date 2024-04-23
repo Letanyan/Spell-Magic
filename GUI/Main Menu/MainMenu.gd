@@ -1,3 +1,4 @@
+class_name MainMenuScreen
 extends Control
 
 var main_menu_world: MainMenuWorld = null

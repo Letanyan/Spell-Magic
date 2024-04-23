@@ -35,7 +35,7 @@ var grass_coords: PackedVector3Array = []
 
 var base_coords: PackedVector3Array = []
 
-func _init(d: FastNoiseLite, t: FastNoiseLite, s: int, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0):
+func _init(d: FastNoiseLite, t: FastNoiseLite, s: int, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0) -> void:
 	subdivide_percent = subdivide
 	blender = NoiseBlender.new(d, t, s)
 	chunk_size = cs
@@ -79,7 +79,7 @@ func init_chunks(x: float, y: float) -> Array[Node3D]:
 		result.append(grass_mesh)
 	return result
 	
-func update_chunks_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Dictionary:
+func update_chunks_with_size(chunks: Array[Node3D], locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Dictionary:
 	var old_coord := player_coord
 	var current_coord := convert_position_to_coord(x, y, cs)
 	var delta := current_coord - old_coord
@@ -193,7 +193,7 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 	node.position.z = y
 	
 	if r > radius:
-		var origin_delta = convert_position_to_coord(x, y, cs)
+		var origin_delta := convert_position_to_coord(x, y, cs)
 		if not is_water and abs(origin_delta.x) <= int(radius / 2) and abs(origin_delta.y) <= int(radius / 2):
 			node.position.y = 0.0
 		else:
@@ -204,8 +204,8 @@ func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: flo
 
 	return node
 
-func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
-	var mesh := mi.mesh
+func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float) -> void:
+	var mesh := mi.mesh as ArrayMesh
 	var mdt := MeshDataTool.new()
 	mdt.create_from_surface(mesh, 0)
 	
@@ -228,7 +228,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 	
 	if r <= radius and mi.has_node("static"):
 		var static_body := mi.get_node("static")
-		var collision_shape := static_body.get_node("collision")
+		var collision_shape := static_body.get_node("collision") as CollisionShape3D
 		var hmap: HeightMapShape3D = collision_shape.shape as HeightMapShape3D
 		var array := PackedFloat32Array()
 		array.resize(hmap.map_data.size())
@@ -239,22 +239,22 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		
 	mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh)
-	var mat := mesh.surface_get_material(0)
+	var mat := mesh.surface_get_material(0) as ShaderMaterial
 	mat.shader = biome_shader
 	mat.set_shader_parameter("texture_width", texture_size)
 	mat.set_shader_parameter("texture_depth", texture_size)
 	mat.set_shader_parameter("temperature", temperature_texture)
 	mat.set_shader_parameter("dryness", dryness_texture)
 		
-func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float):
+func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float) -> void:
 	var mesh := mi.mesh
-	var mat := mesh.surface_get_material(0)
+	var mat := mesh.surface_get_material(0) as ShaderMaterial
 	mat.shader = water_shader
 	mat.set_shader_parameter("noise", water_noise)
 	mat.set_shader_parameter("ripples", water_ripples_noise)
 
-func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool):
-	var mi := node.get_node("mesh")
+func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> void:
+	var mi := node.get_node("mesh") as MeshInstance3D
 	if is_water:
 		update_water_mesh(mi, x, y, cs, r, subdivide)
 	else:
@@ -263,16 +263,16 @@ func update_chunk_with_size(node: Node3D, x: float, y: float, cs: float, r: floa
 	node.position.z = y
 
 
-func update_environment(x: float, y: float):
+func update_environment(x: float, y: float) -> void:
 	var old_position := player_position
 	player_position = Vector2(x, y)
 	var delta := player_position - old_position
-	place_grass(Vector2(grass_size * sign(delta.x) * 2, grass_size * sign(delta.y) * 2))
+	place_grass(Vector2(grass_size * signf(delta.x) * 2, grass_size * signf(delta.y) * 2))
 
-func update_chunk_environment(node: Node3D):
+func update_chunk_environment(node: Node3D) -> void:
 	pass
 
-func place_grass(delta: Vector2):
+func place_grass(delta: Vector2) -> void:
 	if not has_grass:
 		return
 	var ignore_delta := false
@@ -302,7 +302,7 @@ func place_grass(delta: Vector2):
 			p.z = pos.z + delta.y * (1 if vert else 0)
 			blender.compute_biome_distances(p.x, p.z)
 			no_hit.data = false
-			var normal_height = Navigator.get_world_normal_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
+			var normal_height := Navigator.get_world_normal_height(grass_mesh.get_world_3d().direct_space_state, p.x, p.z, no_hit)
 			wh = normal_height.get("position", Vector3.ZERO).y
 			whn = normal_height.get("normal", Vector3.ZERO)
 			if no_hit.data or wh < Globals.sea_level() or whn.distance_to(Vector3.UP) > 1 / sqrt(2.0):
@@ -315,19 +315,19 @@ func place_grass(delta: Vector2):
 			grass_coords[i] = p
 			nt = t
 			if no_hit.data == false and whn:
-				var new_y = whn.normalized()
+				var new_y := whn.normalized()
 				nt.basis.y = new_y
 				nt.basis.x = -nt.basis.z.cross(new_y)
 				nt.basis = nt.basis.orthonormalized()
 				nt = nt.rotated_local(Vector3.UP, randf() * 2 * PI)
-				var h = blender.grass_height(blender.biome, -p.x, -p.y)
+				var h := blender.grass_height(blender.biome, -p.x, -p.y)
 				if h == 0:
 					p.y = -10000
 				nt = nt.scaled_local(Vector3(1, h, 1) * 200)
 			mm.set_instance_transform(i, nt.translated(p))
 		
 	
-func init_grass():
+func init_grass() -> void:
 	if not has_grass:
 		return
 	var mm: MultiMesh = grass_mesh.multimesh
@@ -337,7 +337,7 @@ func init_grass():
 	for _X in range(-grass_size, grass_size + 1, R * 2):
 		for y in range(-grass_size, grass_size + 1, R):
 			@warning_ignore("integer_division")
-			var x = _X + (1 if (y / R) % 2 == 0 else 0) * R + player_position.x
+			var x := _X + (1 if (y / R) % 2 == 0 else 0) * R + player_position.x
 			@warning_ignore("narrowing_conversion")
 			y += player_position.y
 			for r in range(0, R + 1, 2):
@@ -358,7 +358,7 @@ func init_grass():
 						
 	mm.visible_instance_count = i
 
-func set_player_coord_using_position(x: float, y: float, cs: float):
+func set_player_coord_using_position(x: float, y: float, cs: float) -> void:
 	player_coord = convert_position_to_coord(x, y, cs)
 	
 func convert_position_to_coord(x: float, y: float, cs: float) -> Vector2:

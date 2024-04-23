@@ -39,6 +39,12 @@ func update_player_movement_speed(target: float) -> void:
 func increment_ticks(delta: float) -> void:
 	vital_tick += delta
 
+# returns 
+# result["velocity"] = velocity
+# result["absolute"] = navigation_velocity * delta
+# result["target"] = target_velocity * delta
+# result["impulse"] = impulse
+# result["direction"] = direction
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
@@ -60,7 +66,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 	if vital_tick >= 1.0:
 		var h := vitals.update_vitals(body)
-		for dmg: Dictionary in h:
+		for dmg: Dictionary in h: # [][String(dmg, el)](float, Spell.Element)
 			Vitals.apply_damage(body.get_parent() as Node3D, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [])
 		var wet_area := body.get_node("WetArea") as Area3D
 		if wet_area != null:

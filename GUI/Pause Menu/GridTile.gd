@@ -8,8 +8,8 @@ enum Level { TOP=0, BOTTOM, PATTERN }
 
 @export var color: Color = Color(0.15, 0.15, 0.15, 1.0)
 var artifact: Artifact
-var highlighted: Dictionary # int -> bool
-var warning: Dictionary # int -> int -> Color
+var highlighted: Dictionary # [int]bool
+var warning: Dictionary # [int][int]Color
 var normal_style: StyleBox
 var disabled_style: StyleBox
 var resolved_theme: Theme

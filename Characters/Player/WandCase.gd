@@ -1,6 +1,6 @@
 class_name WandCase
 
-var wands: Array
+var wands: Array[Wand]
 var selected_wand: int
 
 func save(world_name: String) -> void:

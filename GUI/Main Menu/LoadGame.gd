@@ -1,7 +1,10 @@
+class_name LoadGameScreen
 extends Control
 
+@onready var worlds_list: ItemList = $WorldsList
+
 var dir: DirAccess
-var filenames: Array
+var filenames: Array[String]
 var main_menu_world: MainMenuWorld = null
 
 # Called when the node enters the scene tree for the first time.
@@ -11,16 +14,16 @@ func _ready() -> void:
 		dir.make_dir("worlds")
 	dir.change_dir("worlds")
 	var worlds := dir.get_directories()
-	var times := []
+	var times: Array[Array] = []
 	for world in worlds:
 		var f := FileAccess.get_modified_time("user://worlds/%s/settings.json" % world)
 		times.append([world, f])
 		
-	times.sort_custom(func(a, b): return a[1] > b[1])	
+	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])	
 		
 	for t in times:
 		filenames.append(t[0])
-		$WorldsList.add_item("%s (%s)" % [t[0], Time.get_datetime_string_from_unix_time(t[1], true)])
+		worlds_list.add_item("%s (%s)" % [t[0], Time.get_datetime_string_from_unix_time(t[1] as int, true)])
 	
 
 func _on_cancel_pressed() -> void:
@@ -28,11 +31,11 @@ func _on_cancel_pressed() -> void:
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
 func load_current_item(selected: int) -> void:
-	var world_name = filenames[selected]
+	var world_name := filenames[selected]
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(world_name)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: Variant) -> void: content.setup(settings))
 	
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(settings)

@@ -131,7 +131,7 @@ func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) 
 		else:
 			update_list_and_grid()
 
-func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array:
+func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array[Vector4]:
 	if artifact == null:
 		return [Vector4(coord.x, coord.y, 0, 0)]
 	if artifacts.get_artifact_at_coord(coord) != null:
@@ -283,9 +283,9 @@ func _input(event: InputEvent) -> void:
 		if Input.is_action_pressed("S", true):
 			if artifacts_list.has_focus():
 				if artifact_grid.selected_cell_coord != null:
-					var selected: Array = artifacts_list.get_selected_items()
+					var selected: Array[int] = artifacts_list.get_selected_items()
 					if selected.size() == 1:
-						var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0] as int))
+						var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0]))
 						attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
 			elif artifact_grid.has_focus():
 				artifacts_list.grab_focus()
@@ -325,8 +325,8 @@ func handle_artifact_drag(_event: InputEvent) -> void:
 	var coord := Vector2.ZERO	
 	var in_grid := false
 	
-	if _event is InputEventMouseButton or _event is InputEventMouseMotion:
-		var event := _event as InputEventMouseButton
+	if _event is InputEventMouse:
+		var event := _event as InputEventMouse
 		coord = event.global_position - artifact_grid.global_position
 		if not (coord.x < 0 or coord.y < 0 or coord.x > artifact_grid.size.x or coord.y > artifact_grid.size.y):
 			coord -= artifact_grid.offset
@@ -543,10 +543,10 @@ func filter_artifact_matches(artifact: Artifact) -> bool:
 	
 class FilterOptions:
 	var main_option: int = 0 # 0=none, 1=event, 2=effect
-	var patterns: Dictionary = {} # Artifact.Pattern -> bool
-	var events: Dictionary = {} # Artifact.Event -> bool
-	var effects: Dictionary = {} # Artifact.Effect -> bool
-	var elements: Dictionary = {} # Artifact.Element -> bool
+	var patterns: Dictionary = {} # [Artifact.Pattern]bool
+	var events: Dictionary = {} # [Artifact.Event]bool
+	var effects: Dictionary = {} # [Artifact.Effect]bool
+	var elements: Dictionary = {} # [Artifact.Element]bool
 	
 	func set_main_option(option: int) -> void:
 		main_option = option

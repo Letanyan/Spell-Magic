@@ -21,7 +21,7 @@ var spell_caster: SpellCaster
 var magic_book: MagicBook
 var artifacts: Artifacts
 
-var enemies_in_range: Dictionary = {} # [Enemy: bool]
+var enemies_in_range: Dictionary = {} # [Enemy]bool
 var max_watched_enemies_distance := 0.0
 
 var camera_target_velocity: float = 0
@@ -38,8 +38,8 @@ signal attack_was_buffed(amount: float)
 signal defence_was_buffed(amount: float)
 signal speed_was_buffed(amount: float)
 
-var spell_modifier: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
-var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat: int, percentage: float)
+var spell_modifier: Dictionary # [Artifact.Element]Vector2(flat: int, percentage: float)
+var damage_resistance: Dictionary # [Artifact.Element]Vector2(flat: int, percentage: float)
 
 var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
 

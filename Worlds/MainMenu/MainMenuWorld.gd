@@ -1,22 +1,31 @@
 class_name MainMenuWorld
 extends Node3D
 
+@onready var main_menu: MainMenuScreen = $MainMenu
+@onready var load_game: LoadGameScreen = $LoadGame
+@onready var new_game: NewGameScreen = $NewGame
+@onready var settings_menu: SettingsMenuScreen = $SettingsMenu
+
 @onready var player: Marker3D = $Player
 var player_movement_direction := Vector3.ZERO
 var player_rotation_direction := 0.0
 var requested_player_height := 0.0
 
-@export var noise_temperature: Noise
-@export var noise_dryness: Noise
+@export var noise_temperature: FastNoiseLite
+@export var noise_dryness: FastNoiseLite
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
 
 var last_biome: World.Biome = World.Biome.WATER
 
 @onready var skybox: SkyBox
+@onready var world_environment: WorldEnvironment = $WorldEnvironment
+@onready var sun: DirectionalLight3D = $Sun
+@onready var moon: DirectionalLight3D = $Moon
 
-var terrain_update_interval = 0
-var has_init_terrain_population = false
+
+var terrain_update_interval := 0
+var has_init_terrain_population := false
 
 var daytime_tick: float
 
@@ -40,7 +49,7 @@ func setup(_settings: WorldSettings) -> void:
 	
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
 	_settings.sed = randi()
@@ -57,28 +66,27 @@ func _ready():
 	#chunker.ignore_physics = true
 	build_terrain()
 	
-	skybox = SkyBox.new($WorldEnvironment, $Sun, $Moon)
+	skybox = SkyBox.new(world_environment, sun, moon)
 	skybox.day_time = randf_range(0.0, 24.0)
 	skybox.day_of_year = randi_range(1, 365)
 	
-	$MainMenu.main_menu_world = get_node(".")
-	$LoadGame.main_menu_world = get_node(".")
-	$NewGame.main_menu_world = get_node(".")
-	$SettingsMenu.main_menu_world = get_node(".")
+	main_menu.main_menu_world = get_node(".")
+	load_game.main_menu_world = get_node(".")
+	new_game.main_menu_world = get_node(".")
+	settings_menu.main_menu_world = get_node(".")
 
 		
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(delta: float) -> void:
 	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := chunker.blender.biome
 	
 	if last_biome != b:
 		last_biome = b
-		var theme := load(ProjectSettings.get("gui/theme/custom")) as ThemeUI
+		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
 		theme.change_tint_color(tint)
 	
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	daytime_tick += delta
 			
 	if daytime_tick >= 0.166667:
@@ -107,47 +115,46 @@ func _physics_process(delta):
 		has_init_terrain_population = true
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
-
-func _input(event):
-	pass
 				
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D):	
+func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
 	terrain_update_interval = 0
 	update_terrain(state)
 	player_movement_direction.y = Navigator.get_world_height(state, player.position.x, player.position.z) - player.position.y
 	player_movement_direction.y = player_movement_direction.normalized().y
 		
 		
-func build_terrain():
+func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
 
-func update_terrain(state: PhysicsDirectSpaceState3D):
+func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
-	for loc in chunks.get("removed", []):
+	for loc: Vector2 in chunks.get("removed", []):
 		var pop : Population = population.get(loc, null)
 		if pop == null:
 			continue
-		pop.despawn_all_from_world(get_node("."))
+		pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
 
 	await get_tree().physics_frame
 	chunker.update_environment(player.position.x, player.position.z)
 
 	
-func quit_to_main_menu():
+func quit_to_main_menu() -> void:
 	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
 enum MenuScreenKind { MAIN, LOAD, NEW, SETTINGS }
-func show_menu_screen(kind: MenuScreenKind):
-	$MainMenu.hide()
-	$LoadGame.hide()
-	$NewGame.hide()
-	$SettingsMenu.hide()
+func show_menu_screen(kind: MenuScreenKind) -> void:
+	main_menu.hide()
+	load_game.hide()
+	new_game.hide()
+	settings_menu.hide()
 	match kind:
-		MenuScreenKind.MAIN: $MainMenu.show()
-		MenuScreenKind.LOAD: $LoadGame.show()
-		MenuScreenKind.NEW: $NewGame.show()
-		MenuScreenKind.SETTINGS: $SettingsMenu.show()
+		MenuScreenKind.MAIN: main_menu.show()
+		MenuScreenKind.LOAD: load_game.show()
+		MenuScreenKind.NEW: new_game.show()
+		MenuScreenKind.SETTINGS: settings_menu.show()
+
+

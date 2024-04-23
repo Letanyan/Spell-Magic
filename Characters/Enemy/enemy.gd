@@ -5,7 +5,7 @@ var movement_target_position: Vector3 = Vector3.ZERO
 
 var animator: AnimationPlayer
 var animation_tree: AnimationTree
-var animation_map: Dictionary
+var animation_map: Dictionary # [String]String
 
 #@onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
 #var walking_tween: Tween = null

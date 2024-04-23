@@ -1,19 +1,19 @@
 extends MeshInstance3D
 
-@onready var raycast = $RayCast3D
+@onready var raycast: RayCast3D = $RayCast3D
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	var shader = ShaderMaterial.new()
+func _ready() -> void:
+	var shader := ShaderMaterial.new()
 	shader.set_script("res://Worlds/Plane/plane.gdshader")
-	var noiseTex = NoiseTexture2D.new()
+	var noiseTex := NoiseTexture2D.new()
 	noiseTex.noise = FastNoiseLite.new()
 	shader.set_shader_parameter("noise", noiseTex)
 	mesh.surface_set_material(0, shader)
 
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	print(raycast.get_collision_point())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(delta: float) -> void:
 	pass

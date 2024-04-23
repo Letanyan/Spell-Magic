@@ -20,7 +20,7 @@ const GRASSLAND_STRUCTURE = {
 }
 
 
-static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array:
+static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := 0
 	var rng := RandomNumberGenerator.new()

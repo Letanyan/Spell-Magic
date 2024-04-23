@@ -4,12 +4,12 @@ enum Entity { PLAYER, ENEMY, PROJECTILE }
 
 var origin_node: Node3D = null
 var entity: Entity
-var particles: Array = []
+var particles: Array[SpellBody] = []
 var ignore_mana_cost: bool
 
-var tracking_node: Dictionary = {}
-var tracking_position: Dictionary = {}
-var tracking_offset: Dictionary = {}
+var tracking_node: Dictionary = {} # [String]Node3D
+var tracking_position: Dictionary = {} # [String]Vector3
+var tracking_offset: Dictionary = {} # [String]Vector3
 
 func _init(o: Node3D, e: Entity) -> void:
 	origin_node = o

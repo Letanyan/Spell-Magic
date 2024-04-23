@@ -57,8 +57,8 @@ static func parse(expr: String) -> ParseNode:
 	node = node.fix_op_priority()
 	return node
 
-static func parse_tokens(tokens: Array, o: int) -> ParseNode:
-	var a: Token = tokens[o]
+static func parse_tokens(tokens: Array[Token], o: int) -> ParseNode:
+	var a := tokens[o]
 	if o == tokens.size() - 1:
 		return ParseNode.new(a, null, null)
 		
