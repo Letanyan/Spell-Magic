@@ -43,6 +43,10 @@ var damage_resistance: Dictionary # [Artifact.Element]Vector2(flat: int, percent
 
 var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
 
+var menu_callbacks_are_set: bool = false
+var on_menu_open: Callable = func() -> void: pass
+var on_menu_close: Callable = func() -> void: pass
+
 func _ready() -> void:
 	velocity_movement = VelocityMovement.player()
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.55))
@@ -381,6 +385,23 @@ func transition_bg_audio(stream: AudioStream) -> void:
 		bg_audio1.play()
 		cam_animator.play("BGCrossFade1")
 		current_bg_audio = 1
+		
+func setup_menu_transition(open: Callable, close: Callable) -> void:
+	on_menu_open = open
+	on_menu_close = close
+	menu_callbacks_are_set = true
+	cam_animator.animation_finished.connect(func(animation_name: String) -> void:
+		if animation_name == "OpenMenu":
+			on_menu_open.call()
+		elif animation_name == "CloseMenu":
+			on_menu_close.call()
+	)
+		
+func transition_menu(is_open: bool) -> void:
+	if is_open:
+		cam_animator.play("OpenMenu")
+	else:
+		cam_animator.play("CloseMenu")
 
 func play_walking_audio(stream: AudioStream) -> void:
 	if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:

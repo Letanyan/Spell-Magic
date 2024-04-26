@@ -158,29 +158,36 @@ func _physics_process(delta: float) -> void:
 			player.pan_camera(movement)
 
 func toggle_menu() -> void:
-	if menu.is_showing:
-		settings.is_paused = false
-		var pause_duration := Time.get_unix_time_from_system() - pause_start
-		player.spell_caster.update_pause_time(pause_duration)
-		var indices: Array[int] = []
-		var idx := 0
-		for e in inhabitants:
-			if e == null:
-				indices.append(idx)
-				continue
-			e.spell_caster.update_pause_time(pause_duration)
-			idx += 1
-		indices.reverse()
-		for i in indices:
-			inhabitants.remove_at(i)
-		menu.close()
-		hud.show()
-	else:
-		settings.is_paused = true
-		pause_start = Time.get_unix_time_from_system()
-		menu.open(Menu.Kind.ANY)
-		settings.player_position = player.position
-		hud.hide()
+	if not player.menu_callbacks_are_set:
+		var close := func() -> void:
+			settings.is_paused = false
+			var pause_duration := Time.get_unix_time_from_system() - pause_start
+			player.spell_caster.update_pause_time(pause_duration)
+			var indices: Array[int] = []
+			var idx := 0
+			for e in inhabitants:
+				if e == null:
+					indices.append(idx)
+					continue
+				e.spell_caster.update_pause_time(pause_duration)
+				idx += 1
+			indices.reverse()
+			for i in indices:
+				inhabitants.remove_at(i)
+			menu.close()
+			hud.show()
+		var open := func() -> void:
+			settings.is_paused = true
+			pause_start = Time.get_unix_time_from_system()
+			menu.open(Menu.Kind.ANY)
+			settings.player_position = player.position
+			hud.hide()
+		
+		player.setup_menu_transition(open, close)
+	
+	settings.is_paused = true
+	player.transition_menu(not menu.is_showing)
+		
 
 
 func _input(event: InputEvent) -> void:

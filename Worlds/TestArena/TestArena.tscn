@@ -149,15 +149,15 @@ material = SubResource("StandardMaterial3D_e6lrj")
 radius = 50.0
 height = 100.0
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_d4i3w"]
+size = Vector3(10, 2, 4)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4wb3"]
 transparency = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_hcdbc"]
 material = SubResource("StandardMaterial3D_d4wb3")
 size = Vector3(10, 2, 4)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_d4i3w"]
-size = Vector3(10, 1, 4)
 
 [node name="TestArena" type="Node3D"]
 script = ExtResource("1_so5kd")
@@ -225,16 +225,19 @@ mesh = SubResource("SphereMesh_4c0co")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1105.99, -668.555)
 mesh = SubResource("SphereMesh_xr5cq")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+[node name="rigid_block" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1001, -3.438)
-mesh = SubResource("BoxMesh_hcdbc")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
-collision_layer = 520
+collision_layer = 528
 collision_mask = 0
+mass = 0.01
+gravity_scale = 0.0
 
-[node name="shape" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
+[node name="shape" type="CollisionShape3D" parent="rigid_block"]
 shape = SubResource("BoxShape3D_d4i3w")
+
+[node name="mesh" type="MeshInstance3D" parent="rigid_block"]
+mesh = SubResource("BoxMesh_hcdbc")
+skeleton = NodePath("../..")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
 [connection signal="vital_update" from="Player" to="." method="_on_player_vital_update"]
