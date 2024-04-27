@@ -4,12 +4,12 @@ var data: Token
 var left: ParseNode
 var right: ParseNode
 
-func _init(d: Token, l: ParseNode, r: ParseNode):
+func _init(d: Token, l: ParseNode, r: ParseNode) -> void:
 	data = d
 	left = l
 	right = r
 	
-func display(t: String):
+func display(t: String) -> void:
 	print(t, " ", data.raw)
 	if left == null:
 		print(t + "-")

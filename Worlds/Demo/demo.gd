@@ -1,3 +1,4 @@
+class_name DemoWorld
 extends Node3D
 
 @onready var player: Player = $Player

@@ -2,10 +2,16 @@ class_name MainMenuScreen
 extends Control
 
 var main_menu_world: MainMenuWorld = null
+@onready var continue_button: Button = $Continue
+@onready var new_game_button: Button = $Continue
+@onready var load_button: Button = $Continue
+@onready var settings_button: Button = $Continue
+@onready var quit_button: Button = $Continue
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$Continue.disabled = GlobalData.game_settings.last_world == ""
+	continue_button.disabled = GlobalData.game_settings.last_world == ""
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -22,7 +28,7 @@ func _on_continue_pressed() -> void:
 	var world_settings := WorldSettings.new(get_viewport())
 	world_settings.read(GlobalData.game_settings.last_world)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content): content.setup(world_settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(world_settings))
 	
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(world_settings)
@@ -33,11 +39,11 @@ func _on_continue_pressed() -> void:
 	#get_tree().current_scene = demo
 	
 
-func display_loading(is_loading: bool):
-	$Continue.disabled = is_loading
-	$NewGame.disabled = is_loading
-	$Load.disabled = is_loading
-	$Settings.disabled = is_loading
+func display_loading(is_loading: bool) -> void:
+	continue_button.disabled = is_loading
+	new_game_button.disabled = is_loading
+	load_button.disabled = is_loading
+	settings_button.disabled = is_loading
 	
 
 func _on_load_pressed() -> void:

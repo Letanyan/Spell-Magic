@@ -35,7 +35,7 @@ func load_current_item(selected: int) -> void:
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(world_name)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: Variant) -> void: content.setup(settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
 	
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(settings)
@@ -62,11 +62,11 @@ func _on_delete_pressed() -> void:
 		return
 	var filename := filenames[selected[0]] as String
 	var popup := PopupDialog.display("Are you sure you want to delete the save '" + filename + "'")
-	popup.confirmed.connect(func():
+	popup.confirmed.connect(func() -> void:
 		selected = list.get_selected_items()
 		if selected.is_empty():
 			return
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
-		$WorldsList.remove_item(selected[0])
+		list.remove_item(selected[0])
 	)
 	get_tree().root.add_child(popup)
