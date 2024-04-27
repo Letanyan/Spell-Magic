@@ -17,6 +17,8 @@ var current_bg_audio: int = 1
 var current_biome: World.Biome = World.Biome.WATER
 var walking_tween: Tween = null
 
+@onready var interface: MeshInstance3D = $CamPivot/Interface
+
 var spell_caster: SpellCaster
 var magic_book: MagicBook
 var artifacts: Artifacts
@@ -159,6 +161,8 @@ func _physics_process(delta: float) -> void:
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
 				
 	spell_caster.update(self, delta)
+	
+	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
@@ -400,7 +404,7 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 func transition_menu(is_open: bool) -> void:
 	if is_open:
 		cam_animator.play("OpenMenu")
-	else:
+	else:		
 		cam_animator.play("CloseMenu")
 
 func play_walking_audio(stream: AudioStream) -> void:

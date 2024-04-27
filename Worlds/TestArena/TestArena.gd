@@ -1,8 +1,10 @@
 extends Node3D
 
 @onready var player: Player = $Player
-@onready var menu: Menu = $Menu
+@onready var menu: Menu = $SubViewportContainer/SubViewport/Menu
 @onready var hud: HUD = $HUD
+@onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
+@onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 
 @onready var population: Dictionary = {}
 
@@ -126,6 +128,11 @@ func _ready() -> void:
 	
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
+	
+	await RenderingServer.frame_post_draw
+	(player.interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
+	sub_viewport_container.visible = false
+	
 
 func _process(delta: float) -> void:
 	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
@@ -178,6 +185,7 @@ func toggle_menu() -> void:
 			hud.show()
 		var open := func() -> void:
 			settings.is_paused = true
+			sub_viewport_container.visible = true
 			pause_start = Time.get_unix_time_from_system()
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
@@ -186,9 +194,10 @@ func toggle_menu() -> void:
 		player.setup_menu_transition(open, close)
 	
 	settings.is_paused = true
+	sub_viewport_container.visible = false
+	#menu.visible = true
 	player.transition_menu(not menu.is_showing)
 		
-
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
