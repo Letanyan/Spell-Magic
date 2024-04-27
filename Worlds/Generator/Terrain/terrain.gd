@@ -281,7 +281,7 @@ func place_grass(delta: Vector2) -> void:
 		ignore_delta = true
 	
 	var mm: MultiMesh = grass_mesh.multimesh
-	var no_hit := Ptr.new(false)
+	var no_hit := Globals.Ref.new(false)
 	var t := Transform3D(Basis(), Vector3.ZERO)
 	t = t.scaled_local(Vector3(1, 1, 1) * 200)
 	var nt := t

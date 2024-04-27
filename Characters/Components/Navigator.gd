@@ -175,7 +175,7 @@ static func get_shape_intersection(p: Node3D, from: Vector3, target: Vector3, sh
 	return not result.is_empty()
 	
 
-static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit := Ptr.new(false)) -> float:
+static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit := Globals.Ref.new(false)) -> float:
 	var space_state := p.get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
@@ -186,7 +186,7 @@ static func get_world_height_from_node(p: Node3D, x: float, z: float, no_hit := 
 		no_hit.data = false
 		return result.get("position", Vector3.ZERO).y
 	
-static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Ptr.new(false)) -> float:
+static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Globals.Ref.new(false)) -> float:
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
@@ -196,7 +196,7 @@ static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z
 		no_hit.data = false
 		return result.get("position", Vector3.ZERO).y
 		
-static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Ptr.new(false)) -> Dictionary:
+static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Globals.Ref.new(false)) -> Dictionary:
 	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), 1)
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
