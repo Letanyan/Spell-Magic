@@ -3,10 +3,10 @@ extends Control
 
 var main_menu_world: MainMenuWorld = null
 @onready var continue_button: Button = $Continue
-@onready var new_game_button: Button = $Continue
-@onready var load_button: Button = $Continue
-@onready var settings_button: Button = $Continue
-@onready var quit_button: Button = $Continue
+@onready var new_game_button: Button = $NewGame
+@onready var load_button: Button = $Load
+@onready var settings_button: Button = $Settings
+@onready var quit_button: Button = $Quit
 
 
 # Called when the node enters the scene tree for the first time.
