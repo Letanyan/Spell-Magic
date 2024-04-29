@@ -5,7 +5,6 @@ enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER }
 enum OriginKind { ABSOLUTE, PLAYER, ME }
 
-var const_movement_speed: float
 var origin := Vector3.ZERO
 var path: Pathway = null
 var origin_kind: OriginKind
@@ -33,10 +32,6 @@ func _init(_seed: float = randf(), _origin: Vector3 = Vector3.ZERO) -> void:
 	origin_kind = OriginKind.ABSOLUTE
 	if _seed == 0.0:
 		time_offset = Time.get_unix_time_from_system()
-	
-func speed(s: float) -> PathStyle:
-	const_movement_speed = s
-	return self
 	
 func set_origin(o: Vector3) -> PathStyle:
 	origin = o
@@ -98,58 +93,58 @@ func align_y_to_ground_and_dirt() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_DIRT
 	return self
 	
-func circle(center: Vector3, radius: float, h: float = 0.0) -> PathStyle:
+func circle(center: Vector3, speed: float, radius: float, h: float = 0.0) -> PathStyle:
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
 	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
-	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Easing.linear, Easing.linear])
+	path.append_with_speed([a, b], [speed, speed], [Easing.linear, Easing.linear])
 	origin = center
 	origin_kind = OriginKind.ABSOLUTE
 	return self
 	
-func circle_player(radius: float, h: float = 0.0) -> PathStyle:
+func circle_player(speed: float, radius: float, h: float = 0.0) -> PathStyle:
 	origin_kind = OriginKind.PLAYER
 	origin = Vector3.ZERO
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
 	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
-	path.append_with_speed([a, b], [const_movement_speed, const_movement_speed], [Easing.linear, Easing.linear])
+	path.append_with_speed([a, b], [speed, speed], [Easing.linear, Easing.linear])
 	return self
 	
-func towards_player(mn: float, mx: float) -> PathStyle:
+func towards_player(speed: float, mn: float, mx: float) -> PathStyle:
 	use_player_camera_as_vision = false
 	player_vision_offset = Vector4(0.0, 0.0, mn, mx)
 	origin_kind = OriginKind.PLAYER
 	origin = Vector3.ZERO
-	path = Pathway.empty()
+	path = Pathway.empty(speed)
 	return self
 	
 func follow_path(pathway: Pathway) -> PathStyle:
 	path = pathway
 	return self
 	
-func random_points_in_circle(radius: float, count: int) -> PathStyle:
+func random_points_in_circle(speed: float, radius: float, count: int) -> PathStyle:
 	path = Pathway.new()
 	var p := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Easing.linear)
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
 	for i in range(count - 1):
 		var q := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius
-		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Easing.linear)
+		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
 		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Easing.linear)
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
 	return self
 	
-func random_points_in_disc(min_r: float, max_r: float, count: int) -> PathStyle:
+func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int) -> PathStyle:
 	path = Pathway.new()
 	var p := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), const_movement_speed, Easing.linear)
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
 	for i in range(count - 1):
 		var q := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
 #		var m := (p + q) / 2.0
 #		path.add(Segment.quad(p, q, m))
-		path.add_with_speed(Segment.linear(p, q), const_movement_speed, Easing.linear)
+		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
 		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), const_movement_speed, Easing.linear)
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
 	return self
 	
 func movement_speed(time_override: float = NAN) -> float:
@@ -162,7 +157,7 @@ func movement_speed(time_override: float = NAN) -> float:
 	var index := Globals.Ref.new(0)
 	path.position_at_time(duration, index)
 	var result := path.movement_speed[index.data]
-	return result if not is_zero_approx(result) else const_movement_speed
+	return result if not is_zero_approx(result) else 1.0
 	
 
 func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_override: float = NAN) -> Vector3:
@@ -259,9 +254,9 @@ class Pathway:
 		calculate_distance()
 		calculate_total_duration()
 		
-	static func empty() -> Pathway:
+	static func empty(default_speed: float = 1.0) -> Pathway:
 		var a := Segment.linear(Vector3.ZERO, Vector3.ZERO)
-		return Pathway.new([a], [1], [Easing.linear])
+		return Pathway.new([a], [default_speed], [Easing.linear])
 		
 	static func init_with_speed(_segments: Array[Segment], _speeds: Array[float], _path_modifiers: Array[Segment]) -> Pathway:
 		var result := Pathway.new()

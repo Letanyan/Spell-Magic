@@ -17,8 +17,8 @@ func _ready() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10
 	
-	idle_path = PathStyle.new(randf()).speed(2).random_points_in_circle(10, 10).set_origin(position)
-	attack_path = PathStyle.new(randf()).towards_player(3, 5).speed(3).use_physics()
+	idle_path = PathStyle.new(randf()).random_points_in_circle(2, 10, 10).set_origin(position)
+	attack_path = PathStyle.new(randf()).towards_player(3, 3, 5).use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()

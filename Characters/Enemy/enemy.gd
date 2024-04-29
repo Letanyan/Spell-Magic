@@ -33,7 +33,7 @@ signal vital_update(index_in_population: int, vitals: Vitals)
 
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
-	current_path = PathStyle.new(randf()).circle(position, 15).speed(2)
+	current_path = PathStyle.new(randf()).circle(position, 2, 15)
 	level_text.text = str(int(level))
 	animation_map = {}
 	animator = $AnimationPlayer

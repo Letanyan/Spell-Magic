@@ -18,7 +18,7 @@ func _ready() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).speed(7).circle(position, 5, 0).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).circle(position, 7, 5, 0).use_absolute().align_y_to_origin()
 	
 	var R := 25.0
 	var U := -5.0
@@ -43,7 +43,7 @@ func _ready() -> void:
 	PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	
-	attack_path = PathStyle.new(0.0).follow_path(p).set_use_player_as_origin().speed(5).align_y_to_origin().look_at_player().set_is_done_uses_path_segments()
+	attack_path = PathStyle.new(0.0).follow_path(p).set_use_player_as_origin().align_y_to_origin().look_at_player().set_is_done_uses_path_segments()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -71,16 +71,16 @@ func _ready() -> void:
 		1.0,
 		#[
 			#AttackMovement.new(
-				#PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				#PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
 			#),
 			#AttackMovement.new(
-				#PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				#PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
 			#),
 			#AttackMovement.new(
-				#PathStyle.new(0.0).follow_path(up_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
-				#PathStyle.new(0.0).follow_path(down_pathway).speed(10).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
+				#PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_origin(),
 			#)
 		#]
 	)
@@ -98,7 +98,7 @@ func _ready() -> void:
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(a, b)], [8], [PathStyle.Easing.linear])
-		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
@@ -106,7 +106,7 @@ func _ready() -> void:
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(b, c)], [8], [PathStyle.Easing.linear])
-		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
@@ -114,7 +114,7 @@ func _ready() -> void:
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(c, d)], [8], [PathStyle.Easing.linear])
-		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
@@ -122,7 +122,7 @@ func _ready() -> void:
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(d, e)], [8], [PathStyle.Easing.linear])
-		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,
@@ -130,7 +130,7 @@ func _ready() -> void:
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
 			PathStyle.Pathway.init_with_speed([PathStyle.Segment.linear(e, a)], [8], [PathStyle.Easing.linear])
-		).speed(10).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		AttackSequence.Reset.ATTACK,

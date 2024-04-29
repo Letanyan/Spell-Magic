@@ -19,8 +19,8 @@ func _ready() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new().speed(2).random_points_in_circle(10, 10).set_origin(position)
-	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(0, 10).speed(2).use_physics().look_at_player()
+	idle_path = PathStyle.new().random_points_in_circle(2, 10, 10).set_origin(position)
+	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(2, 0, 10).use_physics().look_at_player()
 	current_path = idle_path
 	
 	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"})
@@ -66,9 +66,9 @@ func _ready() -> void:
 		[
 #			AttackMovement.new(),
 #			AttackMovement.new(
-#				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
-#				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
-#				PathStyle.new(randf()).random_points_in_circle(10, 1).speed(10).set_use_player_as_origin(),
+#				PathStyle.new(randf()).random_points_in_circle(10, 10, 1).set_use_player_as_origin(),
+#				PathStyle.new(randf()).random_points_in_circle(10, 10, 1).set_use_player_as_origin(),
+#				PathStyle.new(randf()).random_points_in_circle(10, 10, 1).set_use_player_as_origin(),
 #			)
 		]
 	)

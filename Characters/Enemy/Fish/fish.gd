@@ -34,8 +34,8 @@ func _ready() -> void:
 		.quad_to(e, Globals.midpoint_tangent1(d, e) if randf() < 0.5 else Globals.midpoint_tangent2(d, e), 2, PathStyle.Easing.linear) \
 		.quad_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), 2, PathStyle.Easing.linear)
 	
-	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_origin().set_origin(position).use_absolute()
-	attack_direct_path = PathStyle.new(randf()).towards_player(4, 6).speed(2).use_physics()
+	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).align_y_to_origin().set_origin(position).use_absolute()
+	attack_direct_path = PathStyle.new(randf()).towards_player(2, 4, 6).use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -124,7 +124,7 @@ func create_attack_jump_path() -> void:
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
-	attack_jump_path = PathStyle.new(0.0).follow_path(attack_jump_pathway).speed(8).set_use_player_as_origin().align_y_to_origin().look_at_player()
+	attack_jump_path = PathStyle.new(0.0).follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_origin().look_at_player()
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

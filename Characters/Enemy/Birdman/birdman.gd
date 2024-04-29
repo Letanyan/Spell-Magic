@@ -24,7 +24,7 @@ func _ready() -> void:
 		.move_to(Vector3(0, -4, 0)) \
 		.line_to(Vector3(0, 20, 0), 5, PathStyle.Easing.out_quart) \
 		.line_to(Vector3(0, -4, 0), 2, PathStyle.Easing.out_quart)
-	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).speed(2).align_y_to_ground_and_air().set_origin(position).use_absolute()
+	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).align_y_to_ground_and_air().set_origin(position).use_absolute()
 	
 	var attack_pathway := PathStyle.Pathway.new()
 	attack_pathway.append(
@@ -39,8 +39,7 @@ func _ready() -> void:
 	.align_y_to_ground_and_air()\
 	.set_use_player_as_origin()\
 	.set_player_body_vision_as_origin(0, 0, 10.0 + randf_range(10.0, 20.0) + (level / 10.0) )\
-	.look_at_player()\
-	.speed(clampf(level / 100.0 * 25, 2, 25))
+	.look_at_player()
 	
 	current_path = idle_path
 	
