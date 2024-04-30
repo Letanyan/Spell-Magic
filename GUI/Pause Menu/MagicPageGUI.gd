@@ -260,19 +260,30 @@ func _on_chain_text_changed(new_text: String) -> void:
 		return
 	var spell: Spell = book.spells[current_index]
 	
-	var n: String = book.autocomplete(old_chain_text, chain_edit, false)
+	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell)
 	
 	if n == "":
 		spell.chain = null
-	elif n != spell.name:
-		spell.chain = null
-		for s in book.spells:
-			if s.name == n:
-				spell.chain = s
-		if spell.chain == null:
-			errors_list["chain"] = "'%s' does not exists" % n
+		errors_list.erase("chain")
+	elif n == spell.name:
+		errors_list["chain"] = "'%s' can not chain to itself" % n
+	else:
+		var problem_chain := book.find_recursive_spell_chain(spell, n)
+		if not problem_chain.is_empty():
+			var message := "'%s' can not exist in a recursive spell chain " % n
+			for s in problem_chain:
+				message += s + "->"
+			errors_list["chain"] = message.trim_suffix("->")
 		else:
-			errors_list.erase("chain")
+			spell.chain = null
+			for s in book.spells:
+				if s.name == n:
+					spell.chain = s
+					break
+			if spell.chain == null:
+				errors_list["chain"] = "'%s' does not exists" % n
+			else:
+				errors_list.erase("chain")
 				
 	old_chain_text = n
 	update_cooldown()

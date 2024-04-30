@@ -30,7 +30,7 @@ func update(body: Node3D, delta: float) -> void:
 			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
-				p.cast_spell(func(np: SpellBody) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain, null)
+				p.cast_spell(func(np: SpellBody) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			tracking_node.erase(p.name)
 			should_remove.append(i)
 
@@ -46,8 +46,9 @@ enum SpellVariableKind { FIXED, TIMED, BOMB }
 func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVariableKind, p: SpellBody, s: Spell) -> Dictionary:
 	var prefix := ""
 	match variable_kind:
-		SpellVariableKind.TIMED: prefix = "t"
-		SpellVariableKind.BOMB: prefix = "T"
+		SpellVariableKind.TIMED: prefix = "t" # values at the current time
+		SpellVariableKind.BOMB: prefix = "T" # values after projectile delay
+		SpellVariableKind.FIXED: prefix = "" # values when the spell is cast
 
 	var cdir := Vector3.ZERO
 	var track := Vector3.ZERO # direction to enemy that was hit by raycast 
@@ -106,12 +107,12 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 		Entity.PROJECTILE:
 			var body := _body as SpellBody
 			c = (body.velocity as Vector3).normalized()
-	result[prefix + "cx"] = c.x
-	result[prefix + "cy"] = c.y
-	result[prefix + "cz"] = c.z
-	result[prefix + "rcx"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-	result[prefix + "rcy"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-	result[prefix + "rcz"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	result[prefix + "i"] = c.x
+	result[prefix + "j"] = c.y
+	result[prefix + "k"] = c.z
+	result[prefix + "ri"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rj"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+	result[prefix + "rk"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	if s.player_is_origin:
 		if variable_kind == SpellVariableKind.FIXED:
@@ -176,7 +177,7 @@ func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Dictionary
 	spell_variables(result, body, SpellVariableKind.TIMED, p, spell)
 	return result
 
-func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Dictionary = {}) -> MagicBook.DisallowSpellReason:
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Variant = null, inherited_vars: Dictionary = {}) -> MagicBook.DisallowSpellReason:
 	if vitals != null:
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
 			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
@@ -215,6 +216,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	for p: SpellBody in ps:
 		p.name += str(randi())
 		p.origin_node = origin_node
+		p.tracking_target = node_to_track
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir

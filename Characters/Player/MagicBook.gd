@@ -117,7 +117,22 @@ func rebuild_spell_chains() -> void:
 				if s.chain.name == t.name:
 					s.chain = t
 					break
-			
+		
+func find_parent_chains(spell: Spell) -> PackedStringArray:
+	var result := PackedStringArray([])
+	for s in spells:
+		if s.chain != null and s.chain.name == spell.name:
+			result.append(s.name)
+	return result
+					
+func find_recursive_spell_chain(parent: Spell, child: String) -> PackedStringArray:
+	for s in spells:
+		var chain := s.find_chain_list(true)
+		if not chain.is_empty() and chain[chain.size() - 1] == parent.name and chain.has(child):
+			return chain
+		
+	return PackedStringArray([])
+ 			
 func update_spell_limits(v: float, r: float) -> void:
 	for s in spells:
 		s.limit_v = v
@@ -153,7 +168,7 @@ func copy_spell(n: String, constants: Dictionary = {}, duplicate: bool = false) 
 			return result
 	return null
 
-func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool) -> String:
+func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, ignore_recursive_chains: Spell = null) -> String:
 	var text := edit.text
 	if old_text.length() > text.length():
 		return text
@@ -175,8 +190,9 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool) -
 	var complete := ""
 	for s in spells:
 		if (s.is_active or not suggest_only_active) and s.name.begins_with(prefix):
-			complete = s.name
-			break
+			if ignore_recursive_chains == null or find_recursive_spell_chain(ignore_recursive_chains, s.name).is_empty():
+				complete = s.name
+				break
 			
 	if complete.is_empty():
 		return text

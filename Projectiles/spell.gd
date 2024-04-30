@@ -193,6 +193,16 @@ func compute_expressions(fvars: Dictionary, additional: Dictionary = {}) -> void
 		fvars[k] = (expressions[k] as Expr).compute(temp)
 		temp[k] = fvars[k]
 			
+func find_chain_list(include_self: bool) -> PackedStringArray:
+	var result := PackedStringArray([])
+	var s := chain
+	if include_self:
+		result.append(name)
+	while s != null:
+		result.append(s.name)
+		s = s.chain
+	return result
+			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
 	var basic_cost: float 

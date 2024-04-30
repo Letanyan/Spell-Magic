@@ -2,9 +2,11 @@ class_name DemoWorld
 extends Node3D
 
 @onready var player: Player = $Player
-@onready var menu: Menu = $Menu
+@onready var menu: Menu = $SubViewportContainer/SubViewport/Menu
 @onready var hud: HUD = $HUD
 @onready var fps: Label = $FPS
+@onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
+@onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 
 
 @export var noise_temperature: FastNoiseLite
@@ -152,6 +154,10 @@ func run_on_ready() -> void:
 	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 	theme.change_tint_color(Color(0.0, 0.360784, 0.643137))
 	ready_state = GameSettings.ReadyState.IS
+	
+	await RenderingServer.frame_post_draw
+	(player.interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
+	sub_viewport_container.visible = false
 
 func _ready() -> void:
 	if ready_state == GameSettings.ReadyState.NOT:
@@ -228,21 +234,30 @@ func _physics_process(delta: float) -> void:
 		chunker.update_environment(player.position.x, player.position.z)
 
 func toggle_menu() -> void:
-	if menu.is_showing:
-		settings.is_paused = false
-		var pause_duration := Time.get_unix_time_from_system() - pause_start
-		player.spell_caster.update_pause_time(pause_duration)
-		for loc: Vector2 in population:
-			var pop := population[loc] as Population
-			pop.update_pause_time(pause_duration)
-		menu.close()
-		hud.show()
-	else:
-		settings.is_paused = true
-		pause_start = Time.get_unix_time_from_system()
-		settings.player_position = player.position
-		menu.open(Menu.Kind.ANY)
-		hud.hide()
+	if not player.menu_callbacks_are_set:
+		var close := func() -> void:
+			settings.is_paused = false
+			var pause_duration := Time.get_unix_time_from_system() - pause_start
+			player.spell_caster.update_pause_time(pause_duration)
+			for loc: Vector2 in population:
+				var pop := population[loc] as Population
+				pop.update_pause_time(pause_duration)
+			menu.close()
+			hud.show()
+		var open := func() -> void:	
+			settings.is_paused = true
+			sub_viewport_container.visible = true
+			pause_start = Time.get_unix_time_from_system()
+			settings.player_position = player.position
+			menu.open(Menu.Kind.ANY)
+			hud.hide()
+		
+		player.setup_menu_transition(open, close)
+	
+	settings.is_paused = true
+	sub_viewport_container.visible = false
+	#menu.visible = true
+	player.transition_menu(not menu.is_showing)
 	
 
 func _input(event: InputEvent) -> void:
