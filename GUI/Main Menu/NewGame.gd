@@ -1,7 +1,7 @@
 class_name NewGameScreen
 extends Control
 
-@onready var save_name: Button = $SaveName
+@onready var save_name: TextEdit = $SaveName
 @onready var use_seed: Button = $UseSeed
 @onready var use_save_file: Button = $UseSaveFile
 @onready var seed_edit: TextEdit = $Seed
