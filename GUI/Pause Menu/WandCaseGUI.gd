@@ -104,8 +104,13 @@ func _on_wand_index_item_selected(index: int) -> void:
 
 func reload_list() -> void:
 	wand_index.clear()
+	var i := 0
 	for w: Wand in case.wands:
-		wand_index.add_item(w.name)
+		if i == case.selected_wand:
+			wand_index.add_item(w.name, preload("res://GUI/Images/radio-full.svg"))
+		else:
+			wand_index.add_item(w.name, preload("res://GUI/Images/radio-empty.svg"))
+		i += 1
 	if current_index > -1:
 		reload_wand_shelf_items(current_index)
 	
@@ -149,14 +154,6 @@ func _on_name_text_changed(new_text: String) -> void:
 	case.wands[current_index].name = new_text
 	wand_index.set_item_text(current_index, new_text)
 
-
-func _on_use_pressed() -> void:
-	if current_index < 0:
-		return
-	case.selected_wand = current_index
-	use_current_wand.call(current_index)
-	new_wand_selected.emit(case.wands[current_index])
-
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not has_focus():
 		return
@@ -197,3 +194,14 @@ func _input(event: InputEvent) -> void:
 			delete_button.grab_focus()
 		if direction.y < 0:
 			container.grab_focus()
+
+
+func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index == 1 and at_position.x < 32:
+		current_index = index
+		if current_index < 0:
+			return
+		case.selected_wand = current_index
+		use_current_wand.call(current_index)
+		new_wand_selected.emit(case.wands[current_index])
+		reload_list()

@@ -33,10 +33,19 @@ anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 
+[node name="name" type="RichTextLabel" parent="container"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 88.0
+offset_bottom = 40.0
+bbcode_enabled = true
+text = "[left][font_size=16][img=l,24x24]res://GUI/Images/quill.svg[/img] Name[/font_size][/left]"
+
 [node name="name_edit" type="LineEdit" parent="container"]
 layout_mode = 2
 anchor_right = 1.0
-offset_left = 16.0
+offset_left = 96.0
 offset_top = 8.0
 offset_right = -248.0
 offset_bottom = 40.0
@@ -247,9 +256,9 @@ grow_horizontal = 0
 
 [node name="chain" type="RichTextLabel" parent="container"]
 layout_mode = 0
-offset_left = 16.0
+offset_left = 8.0
 offset_top = 248.0
-offset_right = 96.0
+offset_right = 88.0
 offset_bottom = 280.0
 bbcode_enabled = true
 text = "[left][font_size=16][img=l,24x24]res://GUI/Images/chain.svg[/img] Chain[/font_size][/left]"
@@ -302,7 +311,7 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 288.0
 offset_bottom = 320.0
-text = "body is origin"
+text = "player is origin"
 icon = ExtResource("9_dae3a")
 
 [node name="is_bomb" type="CheckButton" parent="container"]
@@ -322,7 +331,7 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 352.0
 offset_bottom = 383.0
-text = "follow body"
+text = "follow player"
 icon = ExtResource("11_8d7vq")
 
 [node name="mana" type="RichTextLabel" parent="container"]
@@ -366,7 +375,7 @@ anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 296.0
 offset_right = -8.0
-offset_bottom = -72.0
+offset_bottom = -64.0
 placeholder_text = "Constants
 Examples:
 speed=5
@@ -393,9 +402,9 @@ anchor_top = 1.0
 anchor_right = 0.487
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -104.0
+offset_top = -96.0
 offset_right = 0.383911
-offset_bottom = -72.0
+offset_bottom = -64.0
 bbcode_enabled = true
 text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: 0s[/font_size][/left]"
 
@@ -406,7 +415,7 @@ anchor_top = 1.028
 anchor_right = 1.009
 anchor_bottom = 1.028
 offset_left = 16.0
-offset_top = -82.144
+offset_top = -74.144
 offset_right = -226.368
 offset_bottom = -25.144
 label_settings = SubResource("LabelSettings_sv8m3")
@@ -425,9 +434,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -208.0
-offset_top = -56.0
+offset_top = -48.0
 offset_right = -100.0
-offset_bottom = -24.0
+offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Duplicate"
@@ -441,9 +450,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -96.0
-offset_top = -56.0
+offset_top = -48.0
 offset_right = -11.0
-offset_bottom = -24.0
+offset_bottom = -16.0
 text = "Delete
 "
 icon = ExtResource("2_ap1iy")
