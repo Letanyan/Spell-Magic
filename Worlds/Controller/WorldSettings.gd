@@ -3,7 +3,7 @@ class_name WorldSettings
 var world_name: String
 var player_position: Vector3
 var sed: int
-var enemies_killed := {} # {World.Enemy: int}
+var enemies_killed := {} # [World.Enemy]int
 var is_paused: bool
 var day_of_the_year: int
 var time_of_day: float
@@ -83,3 +83,12 @@ func read(filename: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/settings.json" % (filename), FileAccess.READ)
 	var data := file.get_var() as Dictionary
 	load_dict(data)
+
+func enemies_killed_table() -> String:
+	var result := "[table=2]\n"
+	result += "[cell border=white][b]Enemy[/b][/cell][cell border=white][b]Total Killed[/b][/cell]"
+	for kind: String in World.Enemy.keys():
+		var number := enemies_killed.get(kind, 0) as int
+		result += "[cell border=white][b]%s[/b][/cell][cell border=white]%d[/cell]\n" % [kind, number]
+	result += "[/table]"
+	return result

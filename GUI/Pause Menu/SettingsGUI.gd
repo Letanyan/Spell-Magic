@@ -32,6 +32,7 @@ extends Control
 @onready var sfx_slider: HSlider = $Tabs/Sound/SFX/Slider
 @onready var sfx_value: Label = $Tabs/Sound/SFX/Value
 
+@onready var info_label: RichTextLabel = $Tabs/Game/Info
 
 var world_settings: WorldSettings:
 	set(value):
@@ -257,6 +258,38 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 	settings_changed.emit(world_settings)
 	
 
+func update_info() -> void:
+	if world_settings == null or world_settings.game_mode_settings == null:
+		return
+		
+	var game_flags: String = ", ".join(world_settings.game_mode_settings.flags_description())
+	if game_flags.is_empty():
+		game_flags = "None"
+		
+	var hour := floori(world_settings.time_of_day)
+	var time := "%d:%d" % [hour, clampi(int(world_settings.time_of_day - hour) * 60, 0, 59)]
+	
+	info_label.text = """
+[center]
+[b]World Name:[/b] %s
+[b]Seed:[/b] %d
+[b]Game Mode:[/b] %s
+[b]Flags:[/b] %s
+
+[b]Enemies Killed:[/b]
+%s
+
+[b]Day of the Year:[/b] %d
+[b]Time of Day:[/b] %s
+[/center]
+""" % [
+	world_settings.world_name, world_settings.sed,
+	world_settings.game_mode_settings.game_mode_description(), game_flags,
+	world_settings.enemies_killed_table(),
+	world_settings.day_of_the_year, time
+]
+
+
 func hide_game_tab(should_hide: bool) -> void:
 	($Tabs as TabContainer).set_tab_hidden(4, should_hide)
 
@@ -270,3 +303,8 @@ func _on_main_menu_pressed() -> void:
 
 func _on_exit_game_pressed() -> void:
 	exit_game.emit()
+
+
+func _on_tabs_tab_selected(tab: int) -> void:
+	if tab == 4:
+		update_info()

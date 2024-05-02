@@ -19,6 +19,23 @@ static func respawn_with_upgrades_only() -> GameModeSettings:
 static func permadeath() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.PERMADEATH, 0)
 	
+func game_mode_description() -> String:
+	match mode:
+		GameMode.PERMADEATH: return "Permadeath"
+		GameMode.RESPAWN: return "Respawn"
+		GameMode.SANDBOX: return "Sandbox"
+	return ""
+	
+func flags_description() -> PackedStringArray:
+	var result := PackedStringArray([])
+	if flags & RESPAWN_WITH_ARTIFACTS != 0:
+		result.append("Respawn with Artifacts")
+	if flags & RESPAWN_WITH_SPELLS_AND_WANDS != 0:
+		result.append("Respawn with Spells and Wands")
+	if flags & RESPAWN_WITH_UPGRADES != 0:
+		result.append("Respawn with Upgrades")
+	return result
+	
 func save_dict() -> Dictionary:
 	return {
 		"mode": mode, "flags": flags

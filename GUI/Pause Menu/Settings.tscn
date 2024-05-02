@@ -510,14 +510,17 @@ layout_mode = 2
 
 [node name="Save" type="Button" parent="Tabs/Game"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 7
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
+anchor_bottom = 1.0
 offset_left = -64.0
-offset_top = 37.0
+offset_top = -126.0
 offset_right = 64.0
-offset_bottom = 62.0
+offset_bottom = -101.0
 grow_horizontal = 2
+grow_vertical = 0
 text = "Save Game"
 
 [node name="Main Menu" type="Button" parent="Tabs/Game"]
@@ -546,6 +549,20 @@ offset_right = 64.0
 offset_bottom = -30.809
 text = "Exit Game"
 
+[node name="Info" type="RichTextLabel" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.011
+anchor_top = -0.058
+anchor_right = 1.011
+anchor_bottom = 1.0
+offset_left = 256.408
+offset_top = 47.974
+offset_right = -256.408
+offset_bottom = -150.0
+bbcode_enabled = true
+
+[connection signal="tab_selected" from="Tabs" to="." method="_on_tabs_tab_selected"]
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideNotifications" to="." method="_on_hide_notifications_toggled"]

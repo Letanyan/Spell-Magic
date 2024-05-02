@@ -13,7 +13,6 @@ var case: WandCase:
 
 @onready var create_button: Button = $create
 @onready var delete_button: Button = $delete
-@onready var use_button: Button = $use
 
 var current_index := -1
 var use_current_wand: Callable
@@ -154,6 +153,16 @@ func _on_name_text_changed(new_text: String) -> void:
 	case.wands[current_index].name = new_text
 	wand_index.set_item_text(current_index, new_text)
 
+func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index == 1 and at_position.x < 32:
+		current_index = index
+		if current_index < 0:
+			return
+		case.selected_wand = current_index
+		use_current_wand.call(current_index)
+		new_wand_selected.emit(case.wands[current_index])
+		reload_list()
+
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not has_focus():
 		return
@@ -185,23 +194,5 @@ func _input(event: InputEvent) -> void:
 	elif delete_button.has_focus():
 		if direction.x < 0:
 			name_edit.grab_focus()
-		if direction.x > 0:
-			use_button.grab_focus()
 		if direction.y < 0:
 			container.grab_focus()
-	elif use_button.has_focus():
-		if direction.x < 0:
-			delete_button.grab_focus()
-		if direction.y < 0:
-			container.grab_focus()
-
-
-func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
-	if mouse_button_index == 1 and at_position.x < 32:
-		current_index = index
-		if current_index < 0:
-			return
-		case.selected_wand = current_index
-		use_current_wand.call(current_index)
-		new_wand_selected.emit(case.wands[current_index])
-		reload_list()
