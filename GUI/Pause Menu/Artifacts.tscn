@@ -1,10 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://c0eqpohrkp1r7"]
+[gd_scene load_steps=10 format=3 uid="uid://c0eqpohrkp1r7"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/ArtifactsGUI.gd" id="1_lsxrb"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/InfinityGrid.gd" id="2_reg1r"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/GridTile.gd" id="3_omm40"]
 [ext_resource type="Texture2D" uid="uid://dpl85nqrpm402" path="res://GUI/Images/top.svg" id="4_hp0s5"]
 [ext_resource type="Texture2D" uid="uid://cf1vu6rsi0v6" path="res://GUI/Images/left.svg" id="5_hb31u"]
+[ext_resource type="Texture2D" uid="uid://mpgk0e8kv50q" path="res://GUI/Images/event.svg" id="5_trjpe"]
+[ext_resource type="Texture2D" uid="uid://dvvyohoxrittn" path="res://GUI/Images/effect.svg" id="6_b7gc4"]
 [ext_resource type="Texture2D" uid="uid://c4ahek33r0tva" path="res://GUI/Images/right.svg" id="6_j6i0q"]
 [ext_resource type="Texture2D" uid="uid://bql6w7l7jeygc" path="res://GUI/Images/bottom.svg" id="7_s27d8"]
 
@@ -85,9 +87,11 @@ popup/item_0/text = "Any"
 popup/item_0/checkable = 2
 popup/item_0/id = 0
 popup/item_1/text = "Event"
+popup/item_1/icon = ExtResource("5_trjpe")
 popup/item_1/checkable = 2
 popup/item_1/id = 1
 popup/item_2/text = "Effect"
+popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
 
@@ -104,9 +108,11 @@ popup/item_0/text = "Any"
 popup/item_0/checkable = 2
 popup/item_0/id = 0
 popup/item_1/text = "Event"
+popup/item_1/icon = ExtResource("5_trjpe")
 popup/item_1/checkable = 2
 popup/item_1/id = 1
 popup/item_2/text = "Effect"
+popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
 
@@ -123,9 +129,11 @@ popup/item_0/text = "Any"
 popup/item_0/checkable = 2
 popup/item_0/id = 0
 popup/item_1/text = "Event"
+popup/item_1/icon = ExtResource("5_trjpe")
 popup/item_1/checkable = 2
 popup/item_1/id = 1
 popup/item_2/text = "Effect"
+popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
 
@@ -142,9 +150,11 @@ popup/item_0/text = "Any"
 popup/item_0/checkable = 2
 popup/item_0/id = 0
 popup/item_1/text = "Event"
+popup/item_1/icon = ExtResource("5_trjpe")
 popup/item_1/checkable = 2
 popup/item_1/id = 1
 popup/item_2/text = "Effect"
+popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
 

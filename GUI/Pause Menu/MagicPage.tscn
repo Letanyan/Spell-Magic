@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=15 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -9,7 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="6_2dwtm"]
 [ext_resource type="Texture2D" uid="uid://d04ymp7lmbois" path="res://GUI/Images/tinted_ice.tres" id="7_ont23"]
 [ext_resource type="Texture2D" uid="uid://ddt4jjlnnqy2e" path="res://GUI/Images/tinted_electric.tres" id="8_ex33p"]
+[ext_resource type="Texture2D" uid="uid://dqs2hqdonvqyd" path="res://GUI/Images/target.svg" id="9_dae3a"]
+[ext_resource type="Texture2D" uid="uid://b432kdsd0kipn" path="res://GUI/Images/bomb.svg" id="10_5c3hv"]
 [ext_resource type="Texture2D" uid="uid://ckh44temenbma" path="res://GUI/Images/duplicate.svg" id="10_ne1rx"]
+[ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
 font_color = Color(1, 0, 0, 1)
@@ -137,7 +140,7 @@ offset_top = 200.0
 offset_right = 56.0
 offset_bottom = 232.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16, color=7700FF]res://GUI/Images/radius.svg[/img] r[/font_size][/center]"
+text = "[center][font_size=16][img=l,24x24, color=7700FF]res://GUI/Images/radius.svg[/img] r[/font_size][/center]"
 
 [node name="r_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -159,7 +162,7 @@ offset_top = 58.0
 offset_right = 47.7759
 offset_bottom = 90.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16, color=00FF08]res://GUI/Images/time.svg[/img] T[/font_size][/center]"
+text = "[center][font_size=16][img=l,24x24, color=00FF08]res://GUI/Images/time.svg[/img] T[/font_size][/center]"
 scroll_active = false
 
 [node name="duration_edit" type="LineEdit" parent="container"]
@@ -206,7 +209,7 @@ offset_top = 152.0
 offset_right = 47.7759
 offset_bottom = 184.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16, color=F700FF]res://GUI/Images/count.svg[/img] N[/font_size][/center]"
+text = "[center][font_size=16][img=l,24x24, color=F700FF]res://GUI/Images/count.svg[/img] N[/font_size][/center]"
 
 [node name="count_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -229,7 +232,7 @@ offset_top = 200.0
 offset_right = 47.7759
 offset_bottom = 232.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16, color=0008FF]res://GUI/Images/power.svg[/img] P[/font_size][/center]"
+text = "[center][font_size=16][img=l,24x24, color=0008FF]res://GUI/Images/power.svg[/img] P[/font_size][/center]"
 
 [node name="power_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -242,20 +245,20 @@ offset_right = -8.0
 offset_bottom = 232.0
 grow_horizontal = 0
 
-[node name="chain" type="Label" parent="container"]
+[node name="chain" type="RichTextLabel" parent="container"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 248.0
-offset_right = 64.0
+offset_right = 96.0
 offset_bottom = 280.0
-text = "chain"
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[left][font_size=16][img=l,24x24]res://GUI/Images/chain.svg[/img] Chain[/font_size][/left]"
 
 [node name="chain_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 72.0
+offset_left = 96.0
 offset_top = 248.0
 offset_right = -200.0
 offset_bottom = 280.0
@@ -300,6 +303,7 @@ offset_left = 16.0
 offset_top = 288.0
 offset_bottom = 320.0
 text = "body is origin"
+icon = ExtResource("9_dae3a")
 
 [node name="is_bomb" type="CheckButton" parent="container"]
 layout_mode = 1
@@ -309,6 +313,7 @@ offset_left = 16.0
 offset_top = 319.0
 offset_bottom = 350.0
 text = "is bomb"
+icon = ExtResource("10_5c3hv")
 
 [node name="is_rel" type="CheckButton" parent="container"]
 layout_mode = 1
@@ -318,6 +323,7 @@ offset_left = 16.0
 offset_top = 352.0
 offset_bottom = 383.0
 text = "follow body"
+icon = ExtResource("11_8d7vq")
 
 [node name="mana" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -326,7 +332,7 @@ offset_top = 392.0
 offset_right = 56.0
 offset_bottom = 424.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,16x16, color=AA00AA]res://GUI/Images/mana.svg[/img] M[/font_size][/center]"
+text = "[center][font_size=16][img=l,24x24, color=AA00AA]res://GUI/Images/mana.svg[/img] M[/font_size][/center]"
 scroll_active = false
 
 [node name="mana_edit" type="LineEdit" parent="container"]
@@ -380,7 +386,7 @@ offset_right = 0.127991
 offset_bottom = -107.0
 text = "Burning: 0"
 
-[node name="cooldown" type="Label" parent="container"]
+[node name="cooldown" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -390,8 +396,8 @@ offset_left = 16.0
 offset_top = -104.0
 offset_right = 0.383911
 offset_bottom = -72.0
-text = "Cooldown: 0s"
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: 0s[/font_size][/left]"
 
 [node name="error_label" type="Label" parent="container"]
 layout_mode = 1

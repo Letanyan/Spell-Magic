@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dwlh6xe128lt6"]
+[gd_scene load_steps=25 format=3 uid="uid://dwlh6xe128lt6"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicBookGUI.gd" id="1_1c5yt"]
 [ext_resource type="PackedScene" uid="uid://etbb6djyr1vu" path="res://GUI/Pause Menu/MagicPage.tscn" id="2_4a14e"]
@@ -11,10 +11,19 @@
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="7_0s0nk"]
 [ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="8_8tkon"]
 [ext_resource type="Texture2D" uid="uid://d04ymp7lmbois" path="res://GUI/Images/tinted_ice.tres" id="9_8x2o0"]
+[ext_resource type="Texture2D" uid="uid://dqs2hqdonvqyd" path="res://GUI/Images/target.svg" id="10_eojt1"]
+[ext_resource type="Texture2D" uid="uid://b432kdsd0kipn" path="res://GUI/Images/bomb.svg" id="11_075gb"]
 [ext_resource type="Texture2D" uid="uid://kww5vggpcjim" path="res://GUI/Images/tinted_time.tres" id="11_pv3ga"]
 [ext_resource type="Texture2D" uid="uid://k2wpu7vewbs8" path="res://GUI/Images/tinted_count.tres" id="12_orfx1"]
+[ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="12_wuyxn"]
 [ext_resource type="Texture2D" uid="uid://cq728kfgknjvw" path="res://GUI/Images/tinted_power.tres" id="13_0lr0b"]
+[ext_resource type="Texture2D" uid="uid://blghd2xvrcth8" path="res://GUI/Images/check-full.svg" id="13_qqrq5"]
 [ext_resource type="Texture2D" uid="uid://bk1o4abaywoye" path="res://GUI/Images/tinted_mana.tres" id="14_r3sjk"]
+[ext_resource type="Texture2D" uid="uid://m5cjiv66vwql" path="res://GUI/Images/chain.svg" id="14_v18it"]
+[ext_resource type="Texture2D" uid="uid://df0tjri0j5t4e" path="res://GUI/Images/quill.svg" id="16_rkfs2"]
+[ext_resource type="Texture2D" uid="uid://bqhevf70141kr" path="res://GUI/Images/watch.svg" id="18_8rp3t"]
+[ext_resource type="Texture2D" uid="uid://bnkshw1f57cl2" path="res://GUI/Images/ascending.svg" id="22_cbea3"]
+[ext_resource type="Texture2D" uid="uid://bxqge6flq7nuj" path="res://GUI/Images/descending.svg" id="23_kea5u"]
 
 [node name="MagicBook" type="Control"]
 layout_mode = 3
@@ -63,18 +72,23 @@ popup/item_6/icon = ExtResource("9_8x2o0")
 popup/item_6/checkable = 1
 popup/item_6/id = 6
 popup/item_7/text = "Body is Origin"
+popup/item_7/icon = ExtResource("10_eojt1")
 popup/item_7/checkable = 1
 popup/item_7/id = 7
 popup/item_8/text = "Is Bomb"
+popup/item_8/icon = ExtResource("11_075gb")
 popup/item_8/checkable = 1
 popup/item_8/id = 8
 popup/item_9/text = "Follow Body"
+popup/item_9/icon = ExtResource("12_wuyxn")
 popup/item_9/checkable = 1
 popup/item_9/id = 9
 popup/item_10/text = "Is Active"
+popup/item_10/icon = ExtResource("13_qqrq5")
 popup/item_10/checkable = 1
 popup/item_10/id = 10
 popup/item_11/text = "Chains"
+popup/item_11/icon = ExtResource("14_v18it")
 popup/item_11/checkable = 1
 popup/item_11/id = 11
 popup/item_11/disabled = true
@@ -89,6 +103,7 @@ icon = ExtResource("3_owmtw")
 flat = false
 item_count = 9
 popup/item_0/text = "Name"
+popup/item_0/icon = ExtResource("16_rkfs2")
 popup/item_0/checkable = 2
 popup/item_0/checked = true
 popup/item_0/id = 0
@@ -109,16 +124,19 @@ popup/item_4/icon = ExtResource("14_r3sjk")
 popup/item_4/checkable = 2
 popup/item_4/id = 4
 popup/item_5/text = "Cooldown"
+popup/item_5/icon = ExtResource("18_8rp3t")
 popup/item_5/checkable = 2
 popup/item_5/id = 5
 popup/item_6/text = ""
 popup/item_6/id = 6
 popup/item_6/separator = true
 popup/item_7/text = "Ascending"
+popup/item_7/icon = ExtResource("22_cbea3")
 popup/item_7/checkable = 2
 popup/item_7/checked = true
 popup/item_7/id = 7
 popup/item_8/text = "Descending"
+popup/item_8/icon = ExtResource("23_kea5u")
 popup/item_8/checkable = 2
 popup/item_8/id = 8
 
