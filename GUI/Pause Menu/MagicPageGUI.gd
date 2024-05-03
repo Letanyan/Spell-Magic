@@ -68,13 +68,13 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	x_edit.text = spell.x
 	y_edit.text = spell.y
 	z_edit.text = spell.z
-	r_edit.text = "%.2f" % spell.radius
+	r_edit.text = Globals.format_number_nearest_place(spell.radius)
 	
 	power_edit.text = "%d" % spell.power
-	duration_edit.text = "%.2f" % spell.duration
+	duration_edit.text = Globals.format_number_nearest_place(spell.duration)
 	delay_edit.text = spell.delay
 	count_edit.text = "%d" % spell.count
-	mana_edit.text = "%.2f" % spell.mana_cost
+	mana_edit.text = Globals.format_number_nearest_place(spell.mana_cost)
 	update_cooldown()
 	
 	element_combo.selected = spell.element
@@ -118,10 +118,10 @@ func update_cooldown() -> void:
 		return
 	book.spells[current_index].calculate_cooldown()
 	
-	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " +  ("%.2f" % book.spells[current_index].cooldown) + "s[/font_size][/left]"
+	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " + Globals.format_number_nearest_place(book.spells[current_index].cooldown) + "s[/font_size][/left]"
 	element_application.text = book.spells[current_index].elemental_application_description()
 	if book.spells[current_index].chain != null:
-		mana_cost.text = "Total (Inc. chain): " + ("%.2f" % book.spells[current_index].actual_mana_cost())
+		mana_cost.text = "Total (Inc. chain): " + Globals.format_number_nearest_place(book.spells[current_index].actual_mana_cost())
 	else:
 		mana_cost.text = ""
 	
@@ -238,7 +238,7 @@ func _on_T_text_changed(new_text: String) -> void:
 	var raw: float = new_text.to_float()
 	book.spells[current_index].duration = raw
 	if raw > book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T:
-		errors_list["T"] = "Value of %.2fs exceeds maximum of %.2fs" % [raw, book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T]
+		errors_list["T"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T) + "s"
 	else:
 		errors_list.erase("T")
 	update_cooldown()
@@ -318,7 +318,7 @@ func _on_M_text_changed(new_text: String) -> void:
 	var raw: float = new_text.to_float()
 	book.spells[current_index].mana_cost = raw
 	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
-		errors_list["M"] = "Value of %ds exceeds maximum of %ds" % [raw, book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana]
+		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana) + "s"
 	else:
 		errors_list.erase("M")
 	update_cooldown()
@@ -402,7 +402,7 @@ func check_all_errors() -> void:
 		errors_list["T"] = "'%s' is not a valid number" % text
 	raw = text.to_float()
 	if raw > book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T:
-		errors_list["T"] = "Value of %.2f exceeds maximum of %.2f" % [raw, book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T]
+		errors_list["T"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T) + "s"
 		
 	text = count_edit.text
 	if not text.is_valid_float():
@@ -416,7 +416,7 @@ func check_all_errors() -> void:
 		errors_list["M"] = "'%s' is not a valid number" % text
 	raw = text.to_float()
 	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
-		errors_list["M"] = "Value of %.2f exceeds maximum of %.2f" % [raw, book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana]
+		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana) + "s"
 		
 	text = chain_edit.text
 	if not text.is_empty():

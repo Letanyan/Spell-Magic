@@ -9,6 +9,15 @@ static func behaviour_tick() -> float:
 	
 static func knowledge_tick() -> float:
 	return 1.0
+	
+static func format_number_nearest_place(x: float, max_places: int = 2) -> String:
+	if float(floori(x)) == x:
+		return "%.0f" % x
+	else:
+		var i := 0
+		while snappedf(x, 0.1 ** i) != x and i < max_places:
+			i += 1
+		return ("%%.%df" % i) % x
 
 static func invf(v: float) -> float:
 	if is_zero_approx(v):

@@ -54,26 +54,26 @@ autowrap_mode = 2
 [node name="Cancel" type="Button" parent="confirmation/Panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.18
+anchor_left = 0.771
 anchor_top = 1.0
-anchor_right = 0.18
+anchor_right = 0.771
 anchor_bottom = 1.0
-offset_left = -29.12
-offset_top = -32.0
-offset_right = 28.88
-offset_bottom = -7.0
+offset_left = -64.064
+offset_top = -40.0
+offset_right = 63.936
+offset_bottom = -8.0
 text = "Cancel"
 
 [node name="Confirm" type="Button" parent="confirmation/Panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.836
+anchor_left = 0.229
 anchor_top = 1.0
-anchor_right = 0.836
+anchor_right = 0.229
 anchor_bottom = 1.0
-offset_left = -33.024
-offset_top = -32.0
-offset_right = 32.976
+offset_left = -63.936
+offset_top = -40.0
+offset_right = 64.064
 offset_bottom = -7.0
 text = "Confirm"
 

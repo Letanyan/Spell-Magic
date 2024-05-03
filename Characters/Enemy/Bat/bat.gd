@@ -62,13 +62,13 @@ func _ready() -> void:
 	elec3.duration = 6.0
 	elec3.power = 1
 	
-	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "2"})
+	var elec_arc1 := GlobalData.magic_book.copy_spell("line", {"harc": "pi", "s": "2"})
 	elec_arc1.element = Spell.Element.ELECTRIC
 	elec_arc1.duration = 10.0
-	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"})
+	var elec_arc2 := GlobalData.magic_book.copy_spell("line", {"harc": "pi/2", "s": "5"})
 	elec_arc2.element = Spell.Element.ELECTRIC
 	elec_arc2.duration = 8.0
-	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"})
+	var elec_arc3 := GlobalData.magic_book.copy_spell("line", {"harc": "pi/4", "s": "10"})
 	elec_arc3.element = Spell.Element.ELECTRIC
 	elec_arc3.duration = 6.0
 	
