@@ -432,6 +432,86 @@ func elemental_application_description() -> String:
 		Element.ELECTRIC: return "Stun Applied: %d%%" % int(elemental_application * 100)
 	return ""
 	
+func make_gdscript_init(variable_name: String, wrap_in_function: bool = false) -> String:
+	var indent := func(lines: String, indent: String) -> String:
+		return lines.replace("\n", "\n%s" % indent)
+	
+	var repr_element := func(v: Element) -> String:
+		match v as Element:
+			Element.VOID: return "Spell.Element.VOID"
+			Element.FIRE: return "Spell.Element.FIRE"
+			Element.ROCK: return "Spell.Element.ROCK"
+			Element.ELECTRIC: return "Spell.Element.ELECTRIC"
+			Element.WATER: return "Spell.Element.WATER"
+			Element.AIR: return "Spell.Element.AIR"
+			Element.ICE: return "Spell.Element.ICE"
+		return "0"
+		
+	var repr_chain_cast_kind := func(v: ChainCastKind) -> String:
+		match v as ChainCastKind:
+			ChainCastKind.START: return "Spell.ChainCastKind.START"
+			ChainCastKind.END: return "Spell.ChainCastKind.END"
+			ChainCastKind.HIT: return "Spell.ChainCastKind.HIT"
+		return "0"
+		
+	var repr := func(v: Variant) -> String:
+		return var_to_str(v)
+		
+	var iden := func(s: String) -> String:
+		return s.replace("-", "_").replace(" ", "_").replace("+", "_")
+	
+	variable_name = iden.call(variable_name)
+	var chain_name := "null"
+	var chain_creation := ""
+	if chain != null:
+		chain_name = "%s_%s" % [variable_name, iden.call(chain.name)]
+		chain_creation = chain.make_gdscript_init(chain_name)
+	
+	var result := """%s
+var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+%s.chain = %s
+%s.chain_cast_kind = %s
+%s.name = %s
+%s.limit_r = %s
+%s.limit_v = %s
+%s.buff_r = %s
+%s.buff_v = %s
+%s.buff_attack = %s
+%s.buff_defence = %s
+%s.expression_strings = %s
+%s.build_expressions()
+%s.calculate_cooldown()
+%s.charge = %s
+%s.is_active = %s
+""" % [
+	chain_creation,
+	variable_name, repr.call(follow), repr.call(x), repr.call(y), repr.call(z),
+	repr.call(radius), repr.call(power), repr.call(duration), repr_element.call(element), 
+	repr.call(count), repr.call(delay), repr.call(is_bomb), repr.call(mana_cost), 
+	repr.call(player_is_origin),
+	variable_name, chain_name,	
+	variable_name, repr_chain_cast_kind.call(chain_cast_kind),
+	variable_name, repr.call(name),
+	variable_name, repr.call(limit_r),
+	variable_name, repr.call(limit_v),
+	variable_name, repr.call(buff_r),
+	variable_name, repr.call(buff_v),
+	variable_name, repr.call(buff_attack),
+	variable_name, repr.call(buff_defence),
+	variable_name, repr.call(expression_strings),
+	variable_name,
+	variable_name,
+	variable_name, repr.call(charge),
+	variable_name, repr.call(is_active),
+]
+
+	if wrap_in_function:
+		return """func make_spell_%s() -> Spell:%s
+\treturn %s
+""" % [variable_name, indent.call(result, "\t"), variable_name]
+	else:
+		return result
+	
 static func name_from_element(el: Element) -> String:
 	match el:
 		Element.FIRE: return "Fire"

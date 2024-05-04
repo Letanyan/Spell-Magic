@@ -17,6 +17,13 @@ func save_absolute_path(file_path: String) -> void:
 		data.append(s.save_dict())
 	file.store_var(data)
 	
+func export_absolute_path(file_path: String) -> void:
+	var file := FileAccess.open(file_path, FileAccess.WRITE)
+	var data := ""
+	for s in spells:
+		data += s.make_gdscript_init(s.name, true)
+	file.store_string(data)
+	
 func read(world_name: String) -> void:
 	read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
 		
@@ -160,7 +167,7 @@ func find_spell(n: String) -> Spell:
 			return s
 	return null
 	
-func copy_spell(n: String, constants: Dictionary = {}, duplicate: bool = false) -> Spell:
+func copy_spell(n: String, constants: Dictionary = {}) -> Spell:
 	for s in spells:
 		if s.name == n:
 			var result := s.duplicate()
