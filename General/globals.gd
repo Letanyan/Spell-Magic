@@ -5,7 +5,7 @@ static func sea_level() -> float:
 	return 400.0
 	
 static func behaviour_tick() -> float:
-	return 0.5
+	return 0.166667
 	
 static func knowledge_tick() -> float:
 	return 1.0

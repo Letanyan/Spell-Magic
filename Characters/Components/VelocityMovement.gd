@@ -54,15 +54,15 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	var navigation_velocity := Vector3.ZERO
 	if has_navigation_target:
-		var new_velocity := target_position - body.global_position
-		var length := new_velocity.length()
-		new_velocity = new_velocity.normalized()
-		if length < 1.0:
-			new_velocity *= length
+		var total_movement := target_position - body.global_position
+		var length := total_movement.length()
+		var direction := total_movement.normalized()
 		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
-		new_velocity = new_velocity * movement_speed * (1.0 - vitals.freeze.value) * stun_value
-		
-		navigation_velocity = new_velocity
+		if length < 1.0 or length < (movement_speed * (1.0 - vitals.freeze.value) * stun_value * delta) / Globals.behaviour_tick():
+			direction *= length / Globals.behaviour_tick()
+		else:
+			direction *= movement_speed * (1.0 - vitals.freeze.value) * stun_value
+		navigation_velocity = direction
 
 	if vital_tick >= 1.0:
 		var h := vitals.update_vitals(body)
@@ -126,6 +126,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	result["absolute"] = navigation_velocity * delta
 	result["target"] = target_velocity * delta
 	result["impulse"] = impulse
+	result["here"] = target_position
 	
 	if body.has_node("CamPivot"):
 		pass

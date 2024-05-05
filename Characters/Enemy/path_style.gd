@@ -48,6 +48,11 @@ func use_physics() -> PathStyle:
 func use_absolute() -> PathStyle:
 	mover = Mover.ABSOLUTE
 	return self
+
+func set_use_absolute_origin(o: Vector3) -> PathStyle:
+	origin_kind = OriginKind.ABSOLUTE
+	origin = o
+	return self
 	
 func set_use_player_as_origin(o: bool = true) -> PathStyle:
 	origin_kind = OriginKind.PLAYER if o else OriginKind.ABSOLUTE
@@ -77,18 +82,22 @@ func set_is_done_uses_path_segments(d: bool = true) -> PathStyle:
 	is_done_uses_path_segements = d
 	return self
 	
+## movement is allowed above and below ground
 func align_y_to_origin() -> PathStyle:
 	coord_y = CoordY.ORIGIN
 	return self
 	
+## movement is fixed to ground
 func align_y_to_ground() -> PathStyle:
 	coord_y = CoordY.GROUND
 	return self
 	
+## movement is allowed on ground or above ground
 func align_y_to_ground_and_air() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_AIR
 	return self
 	
+## movement is allowed on ground or below ground
 func align_y_to_ground_and_dirt() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_DIRT
 	return self
@@ -154,18 +163,15 @@ func movement_speed(time_override: float = NAN) -> float:
 	else:
 		t = time_override
 	var duration := fmod(t, path.total_duration)
-	var index := Globals.Ref.new(0)
-	path.position_at_time(duration, index)
-	var result := path.movement_speed[index.data]
-	return result if not is_zero_approx(result) else 1.0
+	return path.speed_at_time(duration)
 	
 
 func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_override: float = NAN) -> Vector3:
-	var t: float
+	var t: float = 0.0
 	if is_nan(time_override):
-		t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
+		t += float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
 	else:
-		t = time_override
+		t += time_override
 	var old_t := last_t
 	last_t = t
 	if is_done:
@@ -206,6 +212,7 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 		stored_loops += 1
 		
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	#print(t, " = ", y)
 	return Vector3(v.x, y, v.z)
 
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
@@ -340,7 +347,7 @@ class Pathway:
 		for i in range(durations.size()):
 			segment = i
 			var ti := durations[i]
-			if running <= t and t < running + ti:
+			if t < running + ti or is_equal_approx(t, running + ti):
 				break
 			running += ti
 		t -= running
@@ -350,6 +357,26 @@ class Pathway:
 		var ratio := t / durations[segment]
 		var modifier := (path_modifiers[segment] as Segment).position_at_time(ratio).y
 		return (segments[segment] as Segment).position_at_time_with_rotation(modifier, angle)
+		
+	func speed_at_time(t: float, index: Globals.Ref = null) -> float:
+		var running := 0.0
+		var segment := 0
+		for i in range(durations.size()):
+			segment = i
+			var ti := durations[i]
+			if t < running + ti or is_equal_approx(t, running + ti):
+				break
+			running += ti
+		t -= running
+		if index:
+			index.data = segment
+			
+		var change_in_t := Globals.behaviour_tick() / durations[segment]
+		var ratio := t / durations[segment]
+		var modifier := path_modifiers[segment]
+		# we use absolute here because the direction is maintained in the position calculation
+		var rate_of_change := absf(modifier.position_at_time(ratio + change_in_t).y - modifier.position_at_time(ratio).y) / change_in_t
+		return movement_speed[segment] * rate_of_change
 			
 	func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		var segment := 0

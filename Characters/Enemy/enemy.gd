@@ -1,8 +1,6 @@
 class_name Enemy
 extends CharacterBody
 
-var movement_target_position: Vector3 = Vector3.ZERO
-
 var animator: AnimationPlayer
 var animation_tree: AnimationTree
 var animation_map: Dictionary # [String]String
@@ -23,6 +21,8 @@ var is_dead: bool = false
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
+var accumulative_delta: float = 0.0
+var speed_for_current_behaviour_tick := 0.0
 
 var index_in_population: int = -1
 signal vital_update(index_in_population: int, vitals: Vitals)
@@ -85,7 +85,7 @@ func _physics_process(delta: float) -> void:
 	if attack_sequence and process_path == current_path:
 		attack_sequence_movement_speed_time = attack_sequence.time
 			
-	var movement := velocity_movement.update(delta, vitals, process_path.movement_speed(attack_sequence_movement_speed_time), self)
+	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
@@ -126,7 +126,7 @@ func _physics_process(delta: float) -> void:
 
 	var moved_into_during_movement := false
 	var reset_spell_tick := false
-	if behavior_tick >= Globals.behaviour_tick():
+	if (behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick()):
 		update_behaviour()
 		var is_done := Globals.Ref.new(false)
 		var next_pos: Vector3
@@ -135,12 +135,17 @@ func _physics_process(delta: float) -> void:
 			if attack_sequence.last_path:
 				current_path = attack_sequence.last_path
 				next_pos = attack_sequence.next_position
+				speed_for_current_behaviour_tick = attack_sequence.next_movement_speed
 			else:
 				current_path = still_path
 				next_pos = position
+				speed_for_current_behaviour_tick = 0.0
 			current_attack = attack_sequence.last_attack
 		else:
-			next_pos = process_path.next_position(self, player, is_done)
+			next_pos = process_path.next_position(self, player, is_done, accumulative_delta)
+			speed_for_current_behaviour_tick = process_path.movement_speed(attack_sequence_movement_speed_time)
+			if is_done.data:
+				accumulative_delta = -delta
 		if is_done.data and spell_movement:
 			moved_into_during_movement = spell_movement.movement.state == AttackMovement.AMState.BEFORE
 			spell_movement.movement.next_state()
@@ -155,6 +160,7 @@ func _physics_process(delta: float) -> void:
 #		else:
 #			print("---")
 		behavior_tick = 0
+	accumulative_delta += delta
 
 	if reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0):
 		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE:

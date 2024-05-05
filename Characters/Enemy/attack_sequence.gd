@@ -11,6 +11,7 @@ var last_path: PathStyle
 var last_attack: AttackPatterns
 
 var next_position: Vector3
+var next_movement_speed: float
 var next_spell: Spell
 
 func _init(_should_loop: bool, _actions: Array = []) -> void:
@@ -55,6 +56,7 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 	elif current_action is PathStyle:
 		last_path = current_action
 		next_position = (current_action as PathStyle).next_position(me, player, is_done, time)
+		next_movement_speed = (current_action as PathStyle).movement_speed(time)
 		if time > last_path.path.total_duration:
 			did_update_index = true
 			index += 1

@@ -14,9 +14,15 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
-	vitals.perception.value = 25
+	vitals.perception.value = 0
 	
-	idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 5, 10).use_absolute().align_y_to_origin()
+	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+		.move_to(Vector3(0, 0, 0)) \
+		.line_to(Vector3(0, 100, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.in_quint) \
+		.line_to(Vector3(0, 0, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
+	idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_origin()
+	
+	#idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 5, 10).use_absolute().align_y_to_origin()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
@@ -41,7 +47,7 @@ func _ready() -> void:
 	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
 	.line_to(Vector3(10, 5, 0), 5, PathStyle.Easing.linear) \
 	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
-	).align_y_to_origin().set_player_cam_vision_as_origin(0, 10).use_absolute().look_at_player()
+	).align_y_to_origin().set_player_cam_vision_as_origin(PI, 10).use_absolute().look_at_player()
 	
 	#attack_path = PathStyle.new(0.0).towards_player(5.0, 15.0, 20.0).align_y_to_ground().set_use_player_as_origin().use_absolute().look_at_player()
 	
