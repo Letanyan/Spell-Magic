@@ -16,13 +16,13 @@ func _ready() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
 	vitals.perception.value = 0
 	
-	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
-		.move_to(Vector3(0, 0, 0)) \
-		.line_to(Vector3(0, 100, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.in_quint) \
-		.line_to(Vector3(0, 0, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
-	idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_origin()
+	#var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+		#.move_to(Vector3(0, 0, 0)) \
+		#.line_to(Vector3(0, 100, 0), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.in_quint) \
+		#.line_to(Vector3(0, 0, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
+	#idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_origin()
 	
-	#idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 5, 10).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 5, 10).use_absolute().align_y_to_origin()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0

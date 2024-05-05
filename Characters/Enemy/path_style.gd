@@ -17,6 +17,7 @@ var stored_loops: int = 0
 var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
 var time_offset: float = 0.0
+var time: float = 0.0
 
 var me_start_position: Variant = null # used to store entity position (Vec3) at start of movement
 
@@ -156,24 +157,11 @@ func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int)
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
 	return self
 	
-func movement_speed(time_override: float = NAN) -> float:
-	var t: float
-	if is_nan(time_override):
-		t = float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
-	else:
-		t = time_override
-	var duration := fmod(t, path.total_duration)
-	return path.speed_at_time(duration)
-	
-
-func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_override: float = NAN) -> Vector3:
-	var t: float = 0.0
-	if is_nan(time_override):
-		t += float(Time.get_unix_time_from_system() - time_offset + seed_offset * 2 * PI)
-	else:
-		t += time_override
+# xyz = position, w = speed
+func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector4:
+	time += delta
 	var old_t := last_t
-	last_t = t
+	last_t = time
 	if is_done:
 		is_done.data = false
 	if me_start_position == null:
@@ -197,23 +185,19 @@ func next_position(me: Enemy, player: Player, is_done: Globals.Ref = null, time_
 		temp_origin += off
 	
 	
-	var duration: float 
-	if is_nan(time_override):
-		duration = fmod(t, path.total_duration)
-	else:
-		duration = clampf(t, 0, path.total_duration)
+	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
 	var v := path.position_at_time_with_rotation(duration, -player_vision_rotation, index) + temp_origin
 	
-	if fmod(t, path.total_duration) < fmod(old_t, path.total_duration):
+	if fmod(time, path.total_duration) < fmod(old_t, path.total_duration):
 		me_start_position = null
+		time = 0.0
 		if is_done:
 			is_done.data = true
 		stored_loops += 1
 		
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
-	#print(t, " = ", y)
-	return Vector3(v.x, y, v.z)
+	return Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta))
 
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:
@@ -358,7 +342,7 @@ class Pathway:
 		var modifier := (path_modifiers[segment] as Segment).position_at_time(ratio).y
 		return (segments[segment] as Segment).position_at_time_with_rotation(modifier, angle)
 		
-	func speed_at_time(t: float, index: Globals.Ref = null) -> float:
+	func speed_at_time(t: float, delta: float, index: Globals.Ref = null) -> float:
 		var running := 0.0
 		var segment := 0
 		for i in range(durations.size()):
@@ -371,7 +355,7 @@ class Pathway:
 		if index:
 			index.data = segment
 			
-		var change_in_t := Globals.behaviour_tick() / durations[segment]
+		var change_in_t := delta / durations[segment]
 		var ratio := t / durations[segment]
 		var modifier := path_modifiers[segment]
 		# we use absolute here because the direction is maintained in the position calculation

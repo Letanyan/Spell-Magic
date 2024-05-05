@@ -44,29 +44,3 @@ func next_state() -> void:
 		state = AMState.DONE
 	elif state == AMState.DONE:
 		state = AMState.DONE
-
-func next_position(me: Enemy, player: Player) -> Vector3:
-	var is_done := Globals.Ref.new(false)
-	match state:
-		AMState.IDLE: return Vector3.ZERO
-		AMState.BEFORE:
-			if before:
-				var result := before.next_position(me, player, is_done) 
-				if is_done.data:
-					state = AMState.DURING
-				return result
-		AMState.DURING:
-			if during:
-				var result := during.next_position(me, player, is_done) 
-				if is_done.data:
-					state = AMState.AFTER
-				return result
-		AMState.AFTER:
-			if after:
-				var result := after.next_position(me, player, is_done) 
-				if is_done.data:
-					state = AMState.DONE
-				return result
-		AMState.DONE: 
-			return Vector3.ZERO
-	return Vector3.ZERO

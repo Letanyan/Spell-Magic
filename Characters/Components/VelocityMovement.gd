@@ -49,7 +49,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	var result := {}
 	increment_ticks(delta)
 	
-	if body.position == target_position:
+	if body.position.is_equal_approx(target_position):
 		has_navigation_target = false
 	
 	var navigation_velocity := Vector3.ZERO
@@ -58,8 +58,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		var length := total_movement.length()
 		var direction := total_movement.normalized()
 		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
-		if length < 1.0 or length < (movement_speed * (1.0 - vitals.freeze.value) * stun_value * delta) / Globals.behaviour_tick():
-			direction *= length / Globals.behaviour_tick()
+		if (movement_speed * (1.0 - vitals.freeze.value) * stun_value * delta) > length:
+			direction *= (length / delta) * (1.0 - vitals.freeze.value) * stun_value
 		else:
 			direction *= movement_speed * (1.0 - vitals.freeze.value) * stun_value
 		navigation_velocity = direction
