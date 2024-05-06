@@ -55,13 +55,15 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		is_done.data = true
 	elif current_action is PathStyle:
 		last_path = current_action
-		var next_movement := (current_action as PathStyle).next_position(delta, me, player, is_done)
+		var next_movement := last_path.next_position(delta, me, player, is_done)
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)
-		if time > last_path.path.total_duration:
-			did_update_index = true
-			index += 1
+		if time > last_path.path.total_duration: 
 			time = 0.0
+			# we can set stored_loops to -x to have last_path repeat x times
+			if last_path.stored_loops >= 0:
+				did_update_index = true
+				index += 1
 	elif current_action is AttackPatterns:
 		last_attack = current_action
 		did_update_index = true

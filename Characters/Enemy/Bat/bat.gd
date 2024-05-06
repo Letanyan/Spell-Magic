@@ -14,7 +14,7 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 	vitals = Vitals.new(Vitals.Stat.new(100 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
-	vitals.perception.value = 0
+	vitals.perception.value = 25
 	
 	#var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		#.move_to(Vector3(0, 0, 0)) \
@@ -22,7 +22,7 @@ func _ready() -> void:
 		#.line_to(Vector3(0, 0, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
 	#idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_origin()
 	
-	idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 5, 10).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 10, 5).use_absolute().align_y_to_origin()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
@@ -55,20 +55,20 @@ func _ready() -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "2", "d": "2"})
+	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
 	elec1.element = Spell.Element.ELECTRIC
 	elec1.duration = 10.0
 	elec1.power = 1
 	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
-	elec2.element = Spell.Element.ELECTRIC
+	elec2.element = Spell.Element.FIRE
 	elec2.duration = 8.0
 	elec2.power = 1
 	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"})
-	elec3.element = Spell.Element.ELECTRIC
+	elec3.element = Spell.Element.ROCK
 	elec3.duration = 6.0
 	elec3.power = 1
 	
-	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "2"})
+	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"})
 	elec_arc1.element = Spell.Element.ELECTRIC
 	elec_arc1.duration = 10.0
 	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"})
@@ -84,8 +84,7 @@ func _ready() -> void:
 			elec2,
 			elec3,
 		],
-		[ 10, 3, 2 ],
-		0.55
+		AttackPatterns.choose_from_distribution(0.55, [10, 3, 2])
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -97,7 +96,7 @@ func _ready() -> void:
 			elec3,
 			elec_arc3,
 		],
-		[ 1, 1, 3, 1, 5, 1 ]
+		AttackPatterns.choose_in_sequence([ 1, 1, 3, 1, 5, 1 ])
 	)
 	
 	animation_map["attack"] = "Headbutt"
@@ -107,8 +106,9 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.value >= 20:
-		return none_pattern
-		#return random_pattern
+		#return none_pattern
+		return random_pattern
+		#return sequence_pattern
 	else:
 		return sequence_pattern
 
@@ -122,6 +122,8 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+		sequence_pattern.reset()
+		random_pattern.reset()
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		current_path = idle_path

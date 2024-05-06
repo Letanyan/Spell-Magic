@@ -49,8 +49,7 @@ func _ready() -> void:
 			rock_attack_medium,
 			rock_attack_large,
 		],
-		[ 10, 3, 1 ],
-		0.25
+		AttackPatterns.choose_from_distribution(0.25, [ 10, 3, 1 ])
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -61,7 +60,7 @@ func _ready() -> void:
 			rock_attack_large,
 			rock_attack_small,
 		],
-		[ 2, 5, 2, 4, 2 ],
+		AttackPatterns.choose_in_sequence([ 2, 5, 2, 4, 2 ])
 	)
 	
 	#sequence_pattern = AttackPatterns.new(
@@ -106,6 +105,8 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+		sequence_pattern.reset()
+		random_pattern.reset()
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		current_path = idle_path

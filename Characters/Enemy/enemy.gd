@@ -9,7 +9,6 @@ var animation_map: Dictionary # [String]String
 #var walking_tween: Tween = null
 
 var spell_caster: SpellCaster
-var spell_movement: AttackPatterns.SpellMovement = null
 var attack_sequence: AttackSequence = null
 
 var player: Player
@@ -66,19 +65,13 @@ func can_move() -> bool:
 	return is_zero_approx(invunerable) # and (current == "idle" or current == "walk" or current == "run")
 
 func attack_state() -> AttackPatterns:
-	return AttackPatterns.new([], [])
+	return AttackPatterns.none()
 
 func _physics_process(delta: float) -> void:
 	if player.magic_book.settings.is_paused:
 		return
 	
 	increment_ticks(delta)
-	
-	var process_path: PathStyle = current_path
-	if spell_movement and spell_movement.movement.state != AttackMovement.AMState.DONE:
-		var movement_path := spell_movement.movement.current_path()
-		if movement_path:
-			process_path = movement_path
 			
 	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self)
 	vital_update.emit(index_in_population, vitals)
@@ -91,7 +84,7 @@ func _physics_process(delta: float) -> void:
 		velocity = movement["velocity"]
 		move_and_slide()
 	else:
-		match process_path.mover:
+		match current_path.mover:
 			PathStyle.Mover.PHYSICS:
 				velocity = movement["velocity"]
 				move_and_slide()
@@ -102,12 +95,12 @@ func _physics_process(delta: float) -> void:
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 				if (position.y < g):
-					if process_path.coord_y == PathStyle.CoordY.GROUND or process_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
+					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 						position.y = g
 						t.y = 0
 						v.y = 0
 				elif (position.y > g):
-					if process_path.coord_y == PathStyle.CoordY.GROUND or process_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
+					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 						position.y = g
 						t.y = 0
 						v.y = 0
@@ -115,60 +108,44 @@ func _physics_process(delta: float) -> void:
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 				
-		if process_path.lookat == PathStyle.LookAt.PLAYER:
+		if current_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
 			look_at(player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
 
-	var moved_into_during_movement := false
 	var reset_spell_tick := false
-	if ((behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick())) and not velocity_movement.has_navigation_target:
+	if ((behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick())):
 		update_behaviour()
-		var is_done := Globals.Ref.new(false)
-		var next_pos: Vector3
-		if attack_sequence and process_path == current_path:
-			reset_spell_tick = attack_sequence.update(behavior_tick, self, player, is_done)
-			if attack_sequence.last_path:
-				current_path = attack_sequence.last_path
-				next_pos = attack_sequence.next_position
-				speed_for_current_behaviour_tick = attack_sequence.next_movement_speed
+		if not velocity_movement.has_navigation_target:
+			var is_done := Globals.Ref.new(false)
+			var next_pos: Vector3
+			if attack_sequence:
+				reset_spell_tick = attack_sequence.update(behavior_tick, self, player, is_done)
+				if attack_sequence.last_path:
+					current_path = attack_sequence.last_path
+					next_pos = attack_sequence.next_position
+					speed_for_current_behaviour_tick = attack_sequence.next_movement_speed
+				else:
+					current_path = still_path
+					next_pos = position
+					speed_for_current_behaviour_tick = 0.0
+				current_attack = attack_sequence.last_attack
 			else:
-				current_path = still_path
-				next_pos = position
-				speed_for_current_behaviour_tick = 0.0
-			current_attack = attack_sequence.last_attack
-		else:
-			var next_movement := process_path.next_position(Globals.behaviour_tick(), self, player, is_done)
-			next_pos = Vector3(next_movement.x, next_movement.y, next_movement.z)
-			speed_for_current_behaviour_tick = next_movement.w
-		if is_done.data and spell_movement:
-			moved_into_during_movement = spell_movement.movement.state == AttackMovement.AMState.BEFORE
-			spell_movement.movement.next_state()
-			if spell_movement.movement.state == AttackMovement.AMState.DONE:
-				spell_movement.movement.reset_state()
-				spell_movement = null
-		velocity_movement.target_position = Navigator.find_target(get_node(".") as Node3D, next_pos, 2.0, 2.0, bounds.length() * 2)
-#		if velocity_movement.target_position != next_pos:
-#			DebugDraw3D.draw_sphere(velocity_movement.target_position, 1, Color(1, 0, 0), 3)
-#			DebugDraw3D.draw_sphere(next_pos, 1, Color(0, 1, 0), 3)
-#			prints(velocity_movement.target_position, next_pos)
-#		else:
-#			print("---")
+				var next_movement := current_path.next_position(Globals.behaviour_tick(), self, player, is_done)
+				next_pos = Vector3(next_movement.x, next_movement.y, next_movement.z)
+				speed_for_current_behaviour_tick = next_movement.w
+			velocity_movement.target_position = Navigator.find_target(get_node(".") as Node3D, next_pos, 2.0, 2.0, bounds.length() * 2)
 		behavior_tick = 0
 
 	if reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0):
-		if spell_movement == null or spell_movement.movement.state == AttackMovement.AMState.DONE:
-			if attack_sequence:
-				if attack_sequence.last_attack:
-					spell_movement = current_attack.choose_spell(vitals)
-			else:
-				spell_movement = attack_state().choose_spell(vitals)
-			moved_into_during_movement = spell_movement and spell_movement.movement.state == AttackMovement.AMState.DONE
+		var spell: Spell = null
+		if attack_sequence:
+			if attack_sequence.last_attack:
+				spell = current_attack.choose_spell(vitals)
+		else:
+			spell = attack_state().choose_spell(vitals)
 		spell_tick = 0
-		
-	if moved_into_during_movement:
-		if spell_movement:
+		if spell != null:
 			play_animation("attack")
-			var spell := spell_movement.spell
 			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"] as StringName).length / 2.0).timeout
 			await get_tree().physics_frame
 			cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_sibling", p), spell)

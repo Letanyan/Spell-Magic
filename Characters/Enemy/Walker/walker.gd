@@ -61,16 +61,7 @@ func _ready() -> void:
 			ice_medium,
 			ice_large,
 		],
-		[ 10, 4, 2, 10, 4, 2 ],
-		0.5,
-		[
-#			AttackMovement.new(),
-#			AttackMovement.new(
-#				PathStyle.new(randf()).random_points_in_circle(10, 10, 1).set_use_player_as_origin(),
-#				PathStyle.new(randf()).random_points_in_circle(10, 10, 1).set_use_player_as_origin(),
-#				PathStyle.new(randf()).random_points_in_circle(10, 10, 1).set_use_player_as_origin(),
-#			)
-		]
+		AttackPatterns.choose_from_distribution(0.5, [ 10, 4, 2, 10, 4, 2 ])
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -88,12 +79,12 @@ func _ready() -> void:
 			water_medium,
 			ice_medium,
 		],
-		[ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4, 4 ],
+		AttackPatterns.choose_in_sequence([ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4 ])
 	)
 	
 	defence_pattern = AttackPatterns.new(
 		[ice_wall],
-		[0],
+		AttackPatterns.choose_in_sequence([ 0 ])
 	)
 	
 	animation_map["attack"] = "Weapon"
@@ -135,6 +126,9 @@ func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		player.watch_enemy(get_node(".") as Enemy)
 		health_bar.visible = true
+		default_pattern.reset()
+		defence_pattern.reset()
+		sequence_pattern.reset()
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		player.ignore_enemy(get_node(".") as Enemy)

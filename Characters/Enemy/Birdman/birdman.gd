@@ -83,8 +83,7 @@ func _ready() -> void:
 			water_small_med,
 			water_small_slow,
 		],
-		[ 5, 5, 7 ],
-		0.25
+		AttackPatterns.choose_from_distribution(0.25, [ 5, 5, 7 ])
 	)
 	
 	attack_pattern2 = AttackPatterns.new(
@@ -96,27 +95,25 @@ func _ready() -> void:
 			water_med_med,
 			water_med_slow,
 		],
-		[ 2, 2, 3, 5, 5, 7 ],
-		0.33
+		AttackPatterns.choose_from_distribution(0.33, [ 2, 2, 3, 5, 5, 7 ])
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
 		[
 			AttackPatterns.new(
 				[water_small_slow, water_small_fast],
-				[2, 1]
+				AttackPatterns.choose_in_sequence([ 2, 1 ])
 			),
 			AttackPatterns.new(
 				[water_med_slow, water_med_fast],
-				[3, 3]
+				AttackPatterns.choose_in_sequence([ 3, 3])
 			),
 			AttackPatterns.new(
 				[water_large_slow, water_large_fast],
-				[5, 5]
+				AttackPatterns.choose_in_sequence([ 5, 5 ])
 			),
 		],
-		[ 2, 3, 5 ],
-		0.5
+		AttackPatterns.choose_from_distribution(0.5, [ 2, 3, 5 ])
 	)
 	
 	animation_map["attack"] = "Weapon"
@@ -145,6 +142,9 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+		attack_pattern1.reset()
+		attack_pattern2.reset()
+		attack_pattern3.reset()
 		current_path = attack_path		
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value:
 		current_path = idle_path

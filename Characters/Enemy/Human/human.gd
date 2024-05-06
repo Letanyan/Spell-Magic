@@ -42,8 +42,7 @@ func _ready() -> void:
 			ice_blast,
 			electric_blast,
 		],
-		[ 5, 5, 5, 5, 5 ],
-		0.5
+		AttackPatterns.choose_from_distribution(0.5, [ 5, 5, 5, 5, 5 ])
 	)
 
 func attack_state() -> AttackPatterns:
@@ -56,6 +55,7 @@ func attack_state() -> AttackPatterns:
 func update_behaviour() -> void:
 	if vitals.health.value < vitals.health.max_value:
 		if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+			default_pattern.reset()
 			current_path = attack_path
 		elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 			current_path = idle_path

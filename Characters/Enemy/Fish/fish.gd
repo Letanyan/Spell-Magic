@@ -50,8 +50,7 @@ func _ready() -> void:
 			water_line,
 			water_para,
 		],
-		[ 7, 3 ],
-		0.25
+		AttackPatterns.choose_from_distribution(0.25, [ 7, 3 ])
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -60,7 +59,7 @@ func _ready() -> void:
 			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.WATER, 1),
 			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.ROCK, 1),
 		],
-		[ 2, 5, 3 ],
+		AttackPatterns.choose_in_sequence([ 2, 5, 3 ])
 	)
 	
 	animation_map["attack"] = "Bite_Front"
@@ -101,17 +100,23 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		current_path = attack_direct_path		
+		sequence_pattern.reset()
+		default_pattern.reset()
+		current_path = attack_direct_path
 	elif current_path == attack_direct_path:
 		if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 			current_path = idle_path
 		elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:
 			create_attack_jump_path()
 			attack_direct_path.stored_loops = 0
+			sequence_pattern.reset()
+			default_pattern.reset()
 			current_path = attack_jump_path
 	elif current_path == attack_jump_path and attack_jump_path.stored_loops > 0:
 		attack_jump_path.stored_loops = 0
 		jump_timer = 0
+		sequence_pattern.reset()
+		default_pattern.reset()
 		current_path = attack_direct_path
 			
 
