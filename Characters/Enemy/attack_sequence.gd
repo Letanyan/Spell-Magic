@@ -3,7 +3,6 @@ class_name AttackSequence
 enum Reset { PATH, ATTACK }
 
 var actions: Array # [](Reset, PathStyle, AttackPatterns)
-var time: float
 var index: int
 var should_loop: bool
 
@@ -17,14 +16,12 @@ var next_spell: Spell
 func _init(_should_loop: bool, _actions: Array = []) -> void:
 	actions = _actions
 	should_loop = _should_loop
-	time = 0.0
 	index = 0
 
 func add(action: Variant) -> void:
 	actions.append(action)
 	
 func reset() -> void:
-	time = 0.0
 	index = 0
 	last_path = null
 	last_attack = null
@@ -39,7 +36,6 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		else:
 			return false
 	
-	time += delta
 	var did_update_index := false
 		
 	var current_action: Variant = actions[index]
@@ -51,15 +47,13 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 			last_path = null
 		index += 1
 		did_update_index = true
-		time = 0.0
 		is_done.data = true
 	elif current_action is PathStyle:
 		last_path = current_action
 		var next_movement := last_path.next_position(delta, me, player, is_done)
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)
-		if time > last_path.path.total_duration: 
-			time = 0.0
+		if is_done.data: 
 			# we can set stored_loops to -x to have last_path repeat x times
 			if last_path.stored_loops >= 0:
 				did_update_index = true
@@ -68,7 +62,6 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		last_attack = current_action
 		did_update_index = true
 		index += 1
-		time = 0.0
 		is_done.data = true
 		
 	return did_update_index

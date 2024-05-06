@@ -448,6 +448,7 @@ class Segment:
 		else:
 			calculate_distance()
 	
+	# we must provide a distance for speed and duration calculations used later
 	static func point(a: Vector3, d: float) -> Segment:
 		return Segment.new(a, a, a, a, BezierKind.LINEAR, d)
 	

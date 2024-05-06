@@ -119,7 +119,7 @@ func _physics_process(delta: float) -> void:
 			var is_done := Globals.Ref.new(false)
 			var next_pos: Vector3
 			if attack_sequence:
-				reset_spell_tick = attack_sequence.update(behavior_tick, self, player, is_done)
+				reset_spell_tick = attack_sequence.update(Globals.behaviour_tick(), self, player, is_done)
 				if attack_sequence.last_path:
 					current_path = attack_sequence.last_path
 					next_pos = attack_sequence.next_position
@@ -134,7 +134,10 @@ func _physics_process(delta: float) -> void:
 				next_pos = Vector3(next_movement.x, next_movement.y, next_movement.z)
 				speed_for_current_behaviour_tick = next_movement.w
 			velocity_movement.target_position = Navigator.find_target(get_node(".") as Node3D, next_pos, 2.0, 2.0, bounds.length() * 2)
-		behavior_tick = 0
+		if reset_spell_tick:
+			behavior_tick = Globals.behaviour_tick()
+		else:
+			behavior_tick = 0
 
 	if reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0):
 		var spell: Spell = null
