@@ -426,10 +426,11 @@ func load_dict(dict: Dictionary) -> void:
 	
 func elemental_application_description() -> String:
 	match element:
-		Element.FIRE: return "Burn Applied: %d%%" % int(elemental_application * 100)
-		Element.WATER: return "Wet Applied: %d%%" % int(elemental_application * 100)
-		Element.ICE: return "Freeze Applied: %d%%" % int(elemental_application * 100)
-		Element.ELECTRIC: return "Stun Applied: %d%%" % int(elemental_application * 100)
+		Element.FIRE: return "Burn: %d%%" % int(elemental_application * 100)
+		Element.WATER: return "Wet: %d%%" % int(elemental_application * 100)
+		Element.ICE: return "Freeze: %d%%" % int(elemental_application * 100)
+		Element.ELECTRIC: return "Stun: %d%%" % int(elemental_application * 100)
+		Element.AIR: return "Feather: x%d" % int(clampf(elemental_application * 100, 1, 100))
 	return ""
 	
 func make_gdscript_init(variable_name: String, wrap_in_function: bool = false) -> String:
