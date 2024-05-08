@@ -1,6 +1,7 @@
 class_name WordGenerator
 
-enum SourcePath { 
+enum SourcePath {
+	none,
 	russian_names, satellites, scottish_names,
 	spanish_names, swedish_names, swiss_names, capital_cities,
 	chinese_names, constellations, cumbria_names, dutch_names,
@@ -16,7 +17,12 @@ var output: Dictionary = {} # [String]bool
 
 var source := PackedStringArray([])
 
+var source_paths: Array[SourcePath] = []
+var chunk_sizes: Array[int] = []
+
 func _init(source_path: SourcePath) -> void:
+	if source_path == SourcePath.none:
+		return
 	add_source(source_path)
 	
 func add_source(source_path: SourcePath, chunk_size: int = 2, clear_current_source: bool = true) -> void:
@@ -24,6 +30,14 @@ func add_source(source_path: SourcePath, chunk_size: int = 2, clear_current_sour
 		source.clear()
 		originals.clear()
 		transitions.clear()
+		source_paths.clear()
+		chunk_sizes.clear()
+		
+	if source_path == SourcePath.none:
+		return
+		
+	source_paths.append(source_path)
+	chunk_sizes.append(chunk_size)
 		
 	var file := FileAccess.open(("res://Characters/Player/Words/%s.txt" % (SourcePath.keys()[source_path])) as String, FileAccess.READ)
 	while true:
@@ -135,3 +149,24 @@ func select_random(word_count: int = 1, is_unique: bool = true, max_attempts: in
 		return select_random(word_count, true, max_attempts - 1)
 		
 	return result
+
+func save_dict() -> Dictionary:
+	var result := {}
+	result["source_paths"] = source_paths
+	result["chunk_sizes"] = chunk_sizes
+	result["output"] = output
+	
+	return result
+	
+func load_dict(data: Dictionary) -> void:
+	output = data["output"]
+	source_paths.assign(data["source_paths"] as Array)
+	chunk_sizes.assign(data["chunk_sizes"] as Array)
+	
+	for index in source_paths.size():
+		var path := source_paths[index]
+		var chunk := chunk_sizes[index]
+		add_source(path, chunk, false)
+		
+	
+	

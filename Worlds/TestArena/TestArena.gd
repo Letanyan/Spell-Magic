@@ -45,6 +45,9 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 	)
+	player.world_settings = settings
+	player.name_generator = NameGenerator.new()
+	player.name_generator.read(settings.world_name)
 	
 	case = WandCase.new()
 	case.read(settings.world_name)
@@ -245,14 +248,6 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
 	pass
 
-func enemy_drops_artifact(enemy: Enemy, artifact: Artifact) -> void:
-	if artifact != null:
-		artifacts.collection.append(artifact)
-	var enemy_kind := enemy.world_enemy_enum()
-	if settings.enemies_killed.has(enemy_kind):
-		settings.enemies_killed[enemy_kind] += 1
-	else:
-		settings.enemies_killed[enemy_kind] = 1
 
 func quit_to_main_menu() -> void:
 	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")

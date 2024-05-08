@@ -41,8 +41,8 @@ var book: MagicBook:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	($SpellCooldownTimer as Timer).start()
-	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode(m), 5))
-	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode(m), 5))
+	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode(m, 18, "#05F"), 5))
+	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode(m, 18, "#0F5"), 5))
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:

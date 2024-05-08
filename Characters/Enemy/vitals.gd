@@ -94,9 +94,9 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 		Spell.Element.VOID:
 			power = 0.0
 			
+	var def := defence.value / (defence.value + 500)
+	power = power * (1.0 - def)
 	for e: Artifact.Element in damage_resistance:
-		var def := defence.value / (defence.value + 500)
-		power = power * (1.0 - def)
 		if e == kind or e == Artifact.Element.ANY:
 			power = power * (1.0 - damage_resistance[e].y) - damage_resistance[e].x
 	health.apply_ignoring_resistance(-power)

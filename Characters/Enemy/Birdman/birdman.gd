@@ -163,5 +163,5 @@ func drop_artifact() -> Artifact:
 func drop_spell() -> Spell:
 	var water_para := GlobalData.magic_book.copy_spell("parabola", {"height":"4", "speed":"4"})
 	water_para.element = Spell.Element.AIR
-	water_para.name = Spell.name_generator.generate(6, 2)
+	water_para.name = player.name_generator.latin_names.generate(6, 2)
 	return water_para

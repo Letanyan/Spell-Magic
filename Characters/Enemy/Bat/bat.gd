@@ -13,7 +13,7 @@ func _ready() -> void:
 	
 	velocity_movement = VelocityMovement.new()
 	
-	vitals = Vitals.new(Vitals.Stat.new(100 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
+	vitals = Vitals.new(Vitals.Stat.new(10 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
 	vitals.perception.value = 25
 	
 	#var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
@@ -106,8 +106,8 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.value >= 20:
-		#return none_pattern
-		return random_pattern
+		return none_pattern
+		#return random_pattern
 		#return sequence_pattern
 	else:
 		return sequence_pattern
@@ -127,3 +127,15 @@ func update_behaviour() -> void:
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		current_path = idle_path
+
+func drop_artifact() -> Artifact:
+	var t := Artifact.Option.make_random()
+	var l := Artifact.Option.make_random()
+	var b := Artifact.Option.make_random()
+	var r := Artifact.Option.make_random()
+	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
+	
+func drop_spell() -> Spell:
+	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"})
+	spell.name = player.name_generator.latin_names.generate(6, 2)
+	return spell

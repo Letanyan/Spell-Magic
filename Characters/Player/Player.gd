@@ -22,6 +22,8 @@ var walking_tween: Tween = null
 var spell_caster: SpellCaster
 var magic_book: MagicBook
 var artifacts: Artifacts
+var world_settings: WorldSettings
+var name_generator: NameGenerator
 
 var enemies_in_range: Dictionary = {} # [Enemy]bool
 var max_watched_enemies_distance := 0.0
@@ -56,6 +58,8 @@ func _ready() -> void:
 	emit_vitals_update()
 	velocity = Vector3.ZERO
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
+	SignalBus.pick_up_world_item_artifact.connect(on_pick_up_artifact)
+	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
 	
 func emit_vitals_update() -> void:
 	vital_update.emit(vitals)
@@ -426,3 +430,13 @@ func play_walking_audio(stream: AudioStream) -> void:
 				walking_tween = null
 			)
 		
+func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
+	artifacts.save(world_settings.world_name)
+	save_name_generator()
+	
+func on_pick_up_spell(spell: Spell, message: String) -> void:
+	magic_book.save(world_settings.world_name)
+	save_name_generator()
+	
+func save_name_generator() -> void:
+	name_generator.save(world_settings.world_name)

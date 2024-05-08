@@ -21,5 +21,5 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 			(body as Player).magic_book.add(spell)
 			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' picked up" % spell.name)		
 		else:
-			SignalBus.pick_up_world_item_spell.emit(spell, "Spell already in Magic Book")
+			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' already in Magic Book" % spell.name)
 		queue_free()

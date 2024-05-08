@@ -66,6 +66,9 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 	)
+	player.world_settings = settings
+	player.name_generator = NameGenerator.new()
+	player.name_generator.read(settings.world_name)
 	
 	case = WandCase.new()
 	case.read(settings.world_name)
