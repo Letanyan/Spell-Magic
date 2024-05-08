@@ -41,8 +41,8 @@ var book: MagicBook:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	($SpellCooldownTimer as Timer).start()
-	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode(m, 18, "#05F"), 5))
-	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode(m, 18, "#0F5"), 5))
+	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode_new_item(m), 5))
+	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:
@@ -98,25 +98,30 @@ func not_enough_mana_for_spell(spell: Spell) -> void:
 func bbcode(message: String, font_size: int = 18, color: String = "#F05", outline_color: String = "#000", outline_size: int = 4) -> String:
 	return "[outline_color=%s][outline_size=%d][color=%s][font_size=%d]%s[/font_size][/color][/outline_size][/outline_color]" % [outline_color, outline_size, color, font_size, message]
 	
+func bbcode_error(message: String) -> String:
+	return bbcode(message)
+	
+func bbcode_new_item(message: String) -> String:
+	return bbcode(message, 18, "#0F5")
 	
 func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -> void:
 	match reason:
 		MagicBook.DisallowSpellReason.COOLDOWN:
 			spell_on_cooldown(spell)
-			show_notification(bbcode("'%s' is on cooldown" % spell.name), 5)	
+			show_notification(bbcode_error("'%s' is on cooldown" % spell.name), 5)	
 		MagicBook.DisallowSpellReason.MANA:
 			not_enough_mana_for_spell(spell)
-			show_notification(bbcode("'%s' requires M %.1f" % [spell.name, spell.actual_mana_cost()]), 5)		
+			show_notification(bbcode_error("'%s' requires M %.1f" % [spell.name, spell.actual_mana_cost()]), 5)		
 		MagicBook.DisallowSpellReason.POWER:
-			show_notification(bbcode("'%s' requires P %d upgrade" % [spell.name, spell.power]), 5)
+			show_notification(bbcode_error("'%s' requires P %d upgrade" % [spell.name, spell.power]), 5)
 		MagicBook.DisallowSpellReason.COUNT:
-			show_notification(bbcode("'%s' requires N %d upgrade" % [spell.name, spell.count]), 5)
+			show_notification(bbcode_error("'%s' requires N %d upgrade" % [spell.name, spell.count]), 5)
 		MagicBook.DisallowSpellReason.DURATION:
-			show_notification(bbcode("'%s' requires T %.1f upgrade" % [spell.name, spell.duration]), 5)
+			show_notification(bbcode_error("'%s' requires T %.1f upgrade" % [spell.name, spell.duration]), 5)
 		MagicBook.DisallowSpellReason.RADIUS:
-			show_notification(bbcode("'%s' requires r %.1f upgrade" % [spell.name, spell.radius]), 5)
+			show_notification(bbcode_error("'%s' requires r %.1f upgrade" % [spell.name, spell.radius]), 5)
 		MagicBook.DisallowSpellReason.ACTIVE:
-			show_notification(bbcode("'%s' is not active in magic book" % [spell.name]), 5)
+			show_notification(bbcode_error("'%s' is not active in magic book" % [spell.name]), 5)
 	
 func spell_was_cast(s: Spell) -> void:
 	var t := Time.get_unix_time_from_system()
