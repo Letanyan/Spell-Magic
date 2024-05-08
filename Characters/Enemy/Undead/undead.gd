@@ -8,6 +8,8 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
+static var artifact_name_generator := WordGenerator.new(WordGenerator.SourcePath.dutch_names)
+
 func _ready() -> void:
 	super._ready()
 	
@@ -119,4 +121,4 @@ func drop_artifact() -> Artifact:
 	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
 	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
 	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(10, 30))
-	return Artifact.new(Time.get_datetime_string_from_system(), t, r, b, l)
+	return Artifact.new(artifact_name_generator.generate(7, 2), t, r, b, l)

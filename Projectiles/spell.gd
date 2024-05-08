@@ -69,6 +69,8 @@ var buff_v: float = 0.0
 var buff_attack: float = 0.0
 var buff_defence: float = 0.0
 
+static var name_generator := WordGenerator.new(WordGenerator.SourcePath.latin_names)
+
 func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false) -> void:
 	x = _x
 	y = _y

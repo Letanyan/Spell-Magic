@@ -155,48 +155,6 @@ class Option:
 			Pattern.TRIANGLE: return "/\\"
 		return "X"
 		
-	func element_description() -> String:
-		match element:
-			Element.ANY:
-				return "X"
-			Element.FIRE:
-				return "F"
-			Element.WATER:
-				return "W"
-			Element.AIR:
-				return "A"
-			Element.ROCK:
-				return "R"
-			Element.ELECTRIC:
-				return "E"
-			Element.ICE:
-				return "I"
-			Element.HEALTH:
-				return "H"
-			Element.MANA:
-				return "M"
-			Element.ATTACK:
-				return "AT"
-			Element.DEFENCE:
-				return "DF"
-			Element.POWER:
-				return "P"
-			Element.DURATION:
-				return "T"
-			Element.COUNT:
-				return "N"
-			Element.MANA_BUMP:
-				return "M+"
-			Element.HEALTH_BUMP:
-				return "H+"
-			Element.SPELL_VELOCITY:
-				return "v"
-			Element.SPELL_RADIUS:
-				return "r"
-			Element.RUNNING_SPEED:
-				return "S"
-		return ""
-		
 	func element_texture() -> Texture2D:
 		match element:
 			Element.ANY:
@@ -395,3 +353,4 @@ func load_dict(dict: Dictionary) -> void:
 	right.load_dict(dict["right"] as Dictionary)
 	bottom = Option.empty()
 	bottom.load_dict(dict["bottom"] as Dictionary)
+	
