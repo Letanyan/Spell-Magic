@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1jnhv7ky6aap"]
+[gd_scene load_steps=3 format=3 uid="uid://b1jnhv7ky6aap"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/WandCaseGUI.gd" id="1_1fquc"]
+[ext_resource type="PackedScene" uid="uid://ixvky1fd8ktw" path="res://GUI/ListView/ListView.tscn" id="2_ib5uu"]
 
 [node name="WandCase" type="Control"]
 layout_mode = 3
@@ -56,7 +57,11 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="ListView" parent="panel" instance=ExtResource("2_ib5uu")]
+layout_mode = 1
+
 [node name="scroll" type="ScrollContainer" parent="panel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0

@@ -14,6 +14,8 @@ var case: WandCase:
 @onready var create_button: Button = $create
 @onready var delete_button: Button = $delete
 
+@onready var list_view: ListView = $panel/ListView
+
 var current_index := -1
 var use_current_wand: Callable
 var book: MagicBook
@@ -22,9 +24,9 @@ var spell_errors := {}
 signal new_wand_selected
 	
 func update_wand_shelf_items(ignore_signals: bool) -> void:
-	for c in container.get_children():
-		if c is WandCaseShelfItem:
-			(c as WandCaseShelfItem).update_state(ignore_signals)
+	for c: WandCaseShelfItem in list_view.items:
+		if c.spell_changed != null:
+			c.update_state(ignore_signals)
 	if ignore_signals and current_index > -1:
 		(case.wands[current_index] as Wand).spell_updated.emit()
 	
@@ -33,25 +35,18 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		return
 	var wand: Wand = case.wands[index]
 	current_index = index
-	
 	name_edit.text = wand.name
-	
-	for c in container.get_children():
-		container.remove_child(c)
+	var make := func() -> WandCaseShelfItem:
+		return (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
+	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index))
 		
-	var prev_item: WandCaseShelfItem = null
-	for w: PackedStringArray in wand.keys:
-		var item := (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
+func update_wand_shelf_item(widx: int = current_index) -> Callable:
+	return func(item: WandCaseShelfItem, index: int) -> void:
+		var wand: Wand = case.wands[widx]
+		var w := wand.keys.keys()[index] as PackedStringArray
 		item.store_key.assign(w)
 		item.store_action = wand.keys[w].kind
 		item.store_spell.assign(wand.keys[w].spell as Array[String])
-		
-		item.return_focus.connect(func() -> void: wand_index.grab_focus())
-		if prev_item != null:
-			item.move_up_request.connect(func() -> void: prev_item.grab_focus())
-		if prev_item != null:
-			prev_item.move_down_request.connect(func() -> void: item.grab_focus())
-		prev_item = item
 		
 		item.spell_changed = func(text: String, ignore_signals: bool) -> void:
 			var all_spells := text.split(",", false)
@@ -95,8 +90,7 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 			return false
 			
 		item.autocomplete = book.autocomplete
-			
-		container.add_child(item)
+		item.setup()
 	
 func _on_wand_index_item_selected(index: int) -> void:
 	reload_wand_shelf_items(index)

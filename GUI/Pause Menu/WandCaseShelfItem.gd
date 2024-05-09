@@ -21,6 +21,9 @@ signal return_focus
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	pass
+		
+func setup() -> void:
 	key.text = "[center]" + GlobalData.controller.key_images(store_key) + "[/center]"
 	spell.text = ", ".join(store_spell)
 	_on_spell_text_changed(", ".join(store_spell))
@@ -30,7 +33,6 @@ func _ready() -> void:
 		cast_combo.set_item_disabled(8, true)
 	else:
 		cast_combo.set_item_disabled(8, false)
-
 
 func _on_cast_combo_selected(id: int) -> void:
 	if id > -1:
