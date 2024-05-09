@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=3 uid="uid://ixvky1fd8ktw"]
+
+[ext_resource type="Script" path="res://GUI/ListView/ListView.gd" id="1_7stba"]
+
+[node name="ListView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7stba")
+
+[node name="scroll_bar" type="VScrollBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+grow_horizontal = 0
+grow_vertical = 2
+page = 1.0
+custom_step = 30.0
+
+[node name="holder" type="Control" parent="."]
+clip_children = 1
+clip_contents = true
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -16.0
+
+[connection signal="scrolling" from="scroll_bar" to="." method="_on_scroll_bar_scrolling"]
