@@ -15,7 +15,7 @@ script = ExtResource("1_neei0")
 
 [node name="ListView" parent="." instance=ExtResource("2_57xl5")]
 layout_mode = 1
-offset_bottom = -56.0
+offset_bottom = -400.0
 
 [node name="WandCaseShelfItem" parent="." instance=ExtResource("3_rwwxa")]
 layout_mode = 1
@@ -27,3 +27,10 @@ offset_right = -0.0640869
 offset_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 552.0
+offset_right = 104.0
+offset_bottom = 600.0

@@ -25,69 +25,64 @@ func setup(total: int, height: float, template: Callable, update: Callable) -> v
 	height_for_items = height
 	make_template = template
 	update_item = update
-	scroll_bar.page = height_for_items
+	y_offset = 0
+	scroll_bar.value = 0
+	items_offset = 0
 	generate_items()
 
 func generate_items() -> void:
-	items_shown = mini(ceili(size.y / height_for_items) + 1, total_items)
-	if total_items == items_shown:
-		scroll_bar.max_value = 0
+	items_shown = mini(ceili(size.y / height_for_items), total_items) + 1
+	if total_items + 1 == items_shown and size.y >= (items_shown - 1) * height_for_items:
 		scroll_bar.value = 0
 		scroll_bar.visible = false
 		y_offset = 0
 		items_offset = 0
 	else:
-		scroll_bar.max_value = height_for_items * (total_items - items_shown + 3) - height_for_items / 3.0
 		scroll_bar.visible = true
 	
 	if items_shown < items.size():
-		items.sort_custom(func(a: Control, b: Control) -> bool: return a.position.y < b.position.y)
 		for i in items.size() - items_shown:
 			var item := items.pop_back() as Control
 			if item != null:
 				holder.remove_child(item)
 	if items_shown > items.size():
-		items.sort_custom(func(a: Control, b: Control) -> bool: return a.position.y < b.position.y)
-		var j := items.size()
-		var origin := items[0].position.y if j > 0 else 0.0
 		for i in items_shown - items.size():
 			var item := make_template.call() as Control
 			items.append(item)
-			item.position.y = (j + i) * height_for_items + origin
 			holder.add_child(item)
-	update_items()
+			
+	update_y_offset()
 	
 func update_items() -> void:
-	var i := items_offset
-	for item in items:
-		if i >= 0 and i < total_items:
-			update_item.call(item, i)
-		i += 1
-
+	var min_index := 0
+	var min_value := 999_999_999.0
+	for i in items.size():
+		if items[i].position.y < min_value:
+			min_value = items[i].position.y
+			min_index = i
+	
+	for i in items.size():
+		var j := items_offset + posmod(i - min_index, items.size())
+		if j >= 0 and j < total_items:
+			update_item.call(items[i], j)
+	
 func update_y_offset() -> void:
-	if not scroll_bar.visible:
-		return
+	var view_count := (total_items - items_shown + 1)
+	var x := (1.0 - scroll_bar.value)
+	var parent_height_correction := size.y - (items_shown - 1) * height_for_items
+	var old_offset := items_offset
+	items_offset = roundi(scroll_bar.value * view_count - 0.5)
+	if scroll_bar.value == 1.0:
+		items_offset -= 1
 		
-	var new_y_offset := scroll_bar.value
-	var change_in_y := y_offset - new_y_offset
-	if y_offset - change_in_y < 0:
-		change_in_y = -absf(y_offset)
-	if y_offset - change_in_y > scroll_bar.max_value:
-		change_in_y = absf(scroll_bar.max_value - y_offset)
-		
+	var i := 0
 	for item in items:
-		item.position.y += change_in_y
-	for item in items:
-		if item.position.y > size.y:
-			items_offset -= 1
-			item.position.y -= items_shown * height_for_items
-		if item.position.y < -height_for_items:
-			items_offset += 1			
-			item.position.y += items_shown * height_for_items
-			
-	items.sort_custom(func(a: Control, b: Control) -> bool: return a.position.y < b.position.y)
-	y_offset -= change_in_y
-	update_items()
+		var virtual_y := i * height_for_items + x * view_count * height_for_items
+		item.position.y = fmod(virtual_y, items_shown * height_for_items) - height_for_items + (1 - x) * parent_height_correction
+		i += 1
+	
+	if items_offset != old_offset:
+		update_items()
 
 func _on_scroll_bar_scrolling() -> void:
 	update_y_offset()
@@ -96,9 +91,8 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if scroll_bar.visible and event.is_pressed():
 			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_WHEEL_UP:
-				scroll_bar.value -= 64
+				scroll_bar.value -= 32.0 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
 				update_y_offset()
 			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				scroll_bar.value += 64
+				scroll_bar.value += 32.0 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
 				update_y_offset()
-		

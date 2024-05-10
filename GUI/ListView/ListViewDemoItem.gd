@@ -3,6 +3,7 @@ extends Control
 
 @onready var label: Label = $Label
 @onready var button: Button = $Button
+@onready var color_rect: ColorRect = $ColorRect
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

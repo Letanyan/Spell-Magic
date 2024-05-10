@@ -36,17 +36,17 @@ func setup() -> void:
 
 func _on_cast_combo_selected(id: int) -> void:
 	if id > -1:
-		action_changed.call(store_action as Wand.Kind, id as Wand.Kind)
-		spell_changed.call(spell.text, true)
+		action_changed.call(get_node(".") as WandCaseShelfItem, store_action as Wand.Kind, id as Wand.Kind)
+		spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, true)
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text: String) -> void:
 	var updated_text: String = autocomplete.call(old_text, spell, true)
-	spell_changed.call(updated_text, false)
+	spell_changed.call(get_node(".") as WandCaseShelfItem, updated_text, false)
 	old_text = updated_text
 	
 func update_state(ignore_signals: bool) -> void:
-	spell_changed.call(spell.text, ignore_signals)
+	spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, ignore_signals)
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not has_focus():

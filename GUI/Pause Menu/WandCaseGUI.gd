@@ -8,7 +8,6 @@ var case: WandCase:
 		current_index = value.selected_wand
 		reload_list()
 
-@onready var container: VBoxContainer = $panel/scroll/container
 @onready var name_edit: LineEdit = $name
 
 @onready var create_button: Button = $create
@@ -20,12 +19,14 @@ var current_index := -1
 var use_current_wand: Callable
 var book: MagicBook
 var spell_errors := {}
+var spell_change_callables: Array[Callable] = []
+var action_change_callables: Array[Callable] = []
 
 signal new_wand_selected
 	
 func update_wand_shelf_items(ignore_signals: bool) -> void:
 	for c: WandCaseShelfItem in list_view.items:
-		if c.spell_changed != null:
+		if not c.spell_changed.is_null():
 			c.update_state(ignore_signals)
 	if ignore_signals and current_index > -1:
 		(case.wands[current_index] as Wand).spell_updated.emit()
@@ -38,17 +39,11 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 	name_edit.text = wand.name
 	var make := func() -> WandCaseShelfItem:
 		return (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
-	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index))
 		
-func update_wand_shelf_item(widx: int = current_index) -> Callable:
-	return func(item: WandCaseShelfItem, index: int) -> void:
-		var wand: Wand = case.wands[widx]
-		var w := wand.keys.keys()[index] as PackedStringArray
-		item.store_key.assign(w)
-		item.store_action = wand.keys[w].kind
-		item.store_spell.assign(wand.keys[w].spell as Array[String])
-		
-		item.spell_changed = func(text: String, ignore_signals: bool) -> void:
+	spell_change_callables.clear()
+	action_change_callables.clear()
+	for w: PackedStringArray in wand.keys:
+		var spell_changed := func(item: WandCaseShelfItem, text: String, ignore_signals: bool) -> void:
 			var all_spells := text.split(",", false)
 			var missing_errors := []
 			var not_active_errors := []
@@ -75,7 +70,7 @@ func update_wand_shelf_item(widx: int = current_index) -> Callable:
 			if not ignore_signals:
 				wand.spell_updated.emit()
 
-		item.action_changed = func(from: Wand.Kind, to: Wand.Kind) -> bool:
+		var action_changed := func(item: WandCaseShelfItem, from: Wand.Kind, to: Wand.Kind) -> bool:
 			item.store_action = to
 			wand.keys[w].kind = to
 			wand.action_updated.emit()
@@ -89,6 +84,21 @@ func update_wand_shelf_item(widx: int = current_index) -> Callable:
 				return true
 			return false
 			
+		spell_change_callables.append(spell_changed)
+		action_change_callables.append(action_changed)
+		
+		
+	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index))
+		
+func update_wand_shelf_item(widx: int = current_index) -> Callable:
+	return func(item: WandCaseShelfItem, index: int) -> void:
+		var wand: Wand = case.wands[widx]
+		var w := wand.keys.keys()[index] as PackedStringArray
+		item.store_key.assign(w)
+		item.store_action = wand.keys[w].kind
+		item.store_spell.assign(wand.keys[w].spell as Array[String])
+		item.spell_changed = spell_change_callables[index]
+		item.action_changed = action_change_callables[index]
 		item.autocomplete = book.autocomplete
 		item.setup()
 	
@@ -165,7 +175,7 @@ func _input(event: InputEvent) -> void:
 	
 	if wand_index.has_focus():
 		if direction.x > 0:
-			container.grab_focus()
+			list_view.grab_focus()
 		if direction.y > 0:
 			create_button.grab_focus()
 	elif create_button.has_focus():
@@ -173,7 +183,7 @@ func _input(event: InputEvent) -> void:
 			name_edit.grab_focus()
 		if direction.y < 0:
 			wand_index.grab_focus()
-	elif container.has_focus():
+	elif list_view.has_focus():
 		if direction.x < 0:
 			wand_index.grab_focus()
 		if direction.y > 0:
@@ -184,9 +194,9 @@ func _input(event: InputEvent) -> void:
 		if direction.x > 0:
 			delete_button.grab_focus()
 		if direction.y < 0:
-			container.grab_focus()
+			list_view.grab_focus()
 	elif delete_button.has_focus():
 		if direction.x < 0:
 			name_edit.grab_focus()
 		if direction.y < 0:
-			container.grab_focus()
+			list_view.grab_focus()

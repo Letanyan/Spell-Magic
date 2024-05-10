@@ -5,8 +5,8 @@
 [node name="ListViewDemoItem" type="Control"]
 layout_mode = 3
 anchor_right = 1.0
-anchor_bottom = 0.099
-offset_bottom = -0.152008
+anchor_bottom = 0.074
+offset_bottom = 0.0480003
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5my4f")
@@ -15,19 +15,16 @@ script = ExtResource("1_5my4f")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 8.0
-offset_bottom = 56.0
+offset_bottom = 48.0
 grow_horizontal = 2
-color = Color(0.34902, 0.0588235, 0, 1)
+color = Color(0, 0, 0, 1)
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.903
-offset_left = 16.0
-offset_top = 8.0
-offset_right = -0.256104
-offset_bottom = 40.0
+offset_right = -16.2561
+offset_bottom = 48.0
 text = "This is some Text"
 
 [node name="Button" type="Button" parent="."]
@@ -35,9 +32,9 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -96.0
-offset_top = 16.0
-offset_right = -28.0
-offset_bottom = 41.0
+offset_left = -88.0
+offset_top = 8.0
+offset_right = -20.0
+offset_bottom = 33.0
 grow_horizontal = 0
 text = "Click Me"
