@@ -100,17 +100,35 @@ func _init() -> void:
 	build_keys()
 
 func build_keys() -> void:
+	var dict_contains_dict := func(hay: Dictionary, needle: Dictionary) -> bool:
+		for key: Dictionary in hay:
+			if key == needle:
+				return true
+		return false
+	
+	var new_keys := {}
 	for b: String in basic_keys:
 		var packed := PackedStringArray([b])
-		if not keys.has(packed):
-			keys[packed] = Option.new()
+		if not new_keys.has(packed):
+			new_keys[packed] = Option.new()
+	var found: Dictionary = {}
 	for m: String in mods:
-		for key: PackedStringArray in keys:
+		for key: PackedStringArray in new_keys:
 			if key.find(m) == -1:
 				var nKey := key.duplicate()
 				nKey.insert(0, m)
-				if not keys.has(nKey):
-					keys[nKey] = Option.new()
+				var dict := {m: true}
+				for k: String in key:
+					dict[k] = true
+				if not dict_contains_dict.call(found, dict):
+					found[dict] = true
+					new_keys[nKey] = Option.new()
+					
+	for key: PackedStringArray in new_keys:
+		if keys.has(key):
+			new_keys[key] = keys[key]
+		
+	keys = new_keys
 
 func get_bound_keys() -> Dictionary:
 	var result := {}
@@ -138,12 +156,7 @@ static func basic() -> Wand:
 func remove_mod(mod: String) -> void:
 	if mods.has(mod):
 		mods.erase(mod)
-		var to_remove: Array[PackedStringArray] = []
-		for key: PackedStringArray in keys:
-			if key.size() > 1 and key.find(mod) != -1:
-				to_remove.append(key)
-		for k: PackedStringArray in to_remove:
-			keys.erase(k)
+		build_keys()
 	
 func add_mod(mod: String) -> void:
 	mods[mod] = true
