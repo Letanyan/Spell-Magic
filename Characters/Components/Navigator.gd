@@ -1,12 +1,4 @@
 class_name Navigator
-
-class VectorEdge:
-	var p: Vector3
-	var q: Vector3
-	
-	func _init(a: Vector3, b: Vector3) -> void:
-		p = a
-		q = b
 		
 static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 	if shape is CylinderShape3D:
@@ -34,49 +26,6 @@ static func vertices(parent: Node3D, shape: Shape3D) -> PackedVector3Array:
 		return result
 		
 	return []
-
-static func edges(parent: Node3D, shape: Shape3D) -> Dictionary: # [VectorEdge]bool
-	if shape is CylinderShape3D:
-		var bottom := parent.global_position
-		var radius: float = (shape as CylinderShape3D).radius * 2
-		var result := {}
-		var pivot := Vector3(radius, 0, 0)
-		var p := bottom + pivot
-		for t in range(8):
-			var q := bottom + pivot.rotated(Vector3.UP, t / 8.0 * 2.0 * PI)
-			result[VectorEdge.new(p, q)] = true
-			result[VectorEdge.new(q, p)] = true
-			p = q
-		return result
-	elif shape is BoxShape3D:
-		var box := shape as BoxShape3D
-		var bottom := parent.global_position
-		var radius: float = max(box.size.x, max(box.size.y, box.size.z))
-		var result := {}
-		var pivot := Vector3(radius, 0, 0)
-		var p := bottom + pivot
-		for t in range(8):
-			var q := bottom + pivot.rotated(Vector3.UP, t / 8.0 * 2.0 * PI)
-			result[VectorEdge.new(p, q)] = true
-			result[VectorEdge.new(q, p)] = true
-			p = q
-		return result
-		
-	return {}
-	
-static func fully_connect(body: Node3D, node: Vector3, graph: Dictionary) -> void: # graph: [VectorEdge]bool
-	var visited := {}
-	for k: VectorEdge in graph:
-		var p: Vector3 = k.p
-		if not visited.get(p, false) and get_ray_intersection(body, node, p) == null:
-			visited[p] = true
-			graph[VectorEdge.new(node, p)] = true
-			graph[VectorEdge.new(p, node)] = true
-		p = k.q
-		if not visited.get(p, false) and get_ray_intersection(body, node, p) == null:
-			visited[p] = true
-			graph[VectorEdge.new(node, p)] = true
-			graph[VectorEdge.new(p, node)] = true
 
 static func get_point_intersection(p: Node3D, target: Vector3) -> CollisionShape3D:
 	var space_state := p.get_world_3d().direct_space_state
@@ -205,83 +154,6 @@ static func get_world_normal_height(space_state: PhysicsDirectSpaceState3D, x: f
 	else:
 		no_hit.data = false
 		return result
-	
-static func build_graph(p: Node3D, current_position: Vector3, target: Vector3) -> Dictionary: # [VectorEdge]bool
-	var obj := get_ray_intersection(p, current_position, target)
-	if obj == null:
-		return {}
-		
-	var obstacles := {obj: true}
-	var shape: Shape3D = obj.shape
-	var candidates := edges(obj, shape)
-	fully_connect(p, current_position, candidates)
-	var stack := candidates.keys()
-	var visited := {}
-	
-	while not stack.is_empty():
-		var candidate_edge: VectorEdge = stack.pop_back()
-		
-		var candidate := candidate_edge.p
-		if not visited.get(candidate, false):
-			obj = get_ray_intersection(p, candidate, target)
-			if obj == null:
-				candidates[VectorEdge.new(candidate, target)] = true
-			elif not obstacles.get(obj, false):
-				var new_candidates := edges(obj, obj.shape)
-				stack.append_array(new_candidates.keys())
-				fully_connect(p, candidate, new_candidates)
-				candidates.merge(new_candidates)
-		
-		candidate = candidate_edge.q
-		if not visited.get(candidate, false):
-			obj = get_ray_intersection(p, candidate, target)
-			if obj == null:
-				candidates[VectorEdge.new(candidate, target)] = true
-			elif not obstacles.get(obj, false):
-				var new_candidates := edges(obj, obj.shape)
-				stack.append_array(new_candidates.keys())
-				fully_connect(p, candidate, new_candidates)
-				candidates.merge(new_candidates)
-		
-	return candidates
-		
-static func dfs(graph: Dictionary, start: Vector3, target: Vector3) -> Array[Vector3]:
-	var visited := {}
-	var stack: Array[Vector3] = [start]
-	while not stack.is_empty():
-		var v: Vector3 = stack.pop_back()
-		if not visited.get(v, false):
-			visited[v] = true
-			var temp_stack := []
-			for e: VectorEdge in graph:
-				if e.p == v:
-					temp_stack.append(e.q)
-					if e.q == target:
-						return stack
-				if e.q == v:
-					temp_stack.append(e.p)
-					if e.p == target:
-						return stack
-			temp_stack.sort_custom(func(a: Vector3, b: Vector3) -> float: return a.distance_squared_to(target) < b.distance_squared_to(target))
-			stack.append_array(temp_stack)
-					
-	return []
-	
-static func find_path(p: Node3D, target: Vector3) -> Vector3:
-	var start_position := p.global_position
-	var graph := build_graph(p, start_position, target)
-	var path := dfs(graph, start_position, target)
-	if path.is_empty():
-		return target
-	var next := path[0]
-	while not path.is_empty():
-		var x := Vector2(p.global_position.x, p.global_position.z)
-		var y := Vector2(next.x, next.z)
-		if x.distance_squared_to(y) > 2:
-			break
-		next = path.pop_front()
-		
-	return next
 	
 static func minimum_score(nodes: Dictionary, scores: Dictionary) -> Vector3:
 	var result := Vector3.ZERO
