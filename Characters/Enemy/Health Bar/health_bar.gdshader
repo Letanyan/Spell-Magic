@@ -1,7 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://br37q8cfmx7in"]
-
-[sub_resource type="Shader" id="Shader_gf6xx"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
+// NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
 
 shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,unshaded;
@@ -22,6 +19,10 @@ uniform vec3 uv1_offset;
 uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture;
+uniform vec2 outline_size = vec2(0.01, 0.1);
+uniform vec4 outline_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+
 void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(normalize(cross(INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0), MODEL_MATRIX[3]);
@@ -31,7 +32,13 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	if (UV.x < percentage) {
+	
+	float x = UV.x;
+	float y = UV.y;
+	if (x < outline_size.x || x > 1.0 - outline_size.x || y < outline_size.y || y > 1.0 - outline_size.y) {
+		ALBEDO = outline_color.rgb;
+		ALPHA = outline_color.a;
+	} else if (UV.x < percentage) {
 		ALBEDO = foreground.rgb * albedo_tex.rgb;
 		ALPHA = foreground.a;
 	} else {
@@ -45,22 +52,3 @@ void fragment() {
 	ROUGHNESS = roughness_tex * roughness;
 	SPECULAR = specular;
 }
-"
-
-[resource]
-resource_local_to_scene = true
-render_priority = 0
-shader = SubResource("Shader_gf6xx")
-shader_parameter/foreground = Color(0, 1, 0, 0.827451)
-shader_parameter/background = Color(0, 0, 0, 0.623529)
-shader_parameter/percentage = 0.5
-shader_parameter/corner_radius = 8.0
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)

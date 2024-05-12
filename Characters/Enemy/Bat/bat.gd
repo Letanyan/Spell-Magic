@@ -13,7 +13,7 @@ func _ready() -> void:
 	
 	velocity_movement = VelocityMovement.new()
 	
-	vitals = Vitals.new(Vitals.Stat.new(10 * level, 0, 100 * level), Vitals.Stat.new(500, 0, 500, 10))
+	vitals = Vitals.new(Vitals.Stat.new(10 * level, 0, 10 * level), Vitals.Stat.new(500, 0, 500, 10))
 	vitals.perception.value = 25
 	
 	#var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \

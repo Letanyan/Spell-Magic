@@ -112,12 +112,15 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 	burning.update_per_tick()
 	stun.update_per_tick()
 	var h := health.update_per_tick()
-	var result: Array[Dictionary] = [{"dmg": h, "el": Spell.Element.FIRE}]
+	var result: Array[Dictionary] = []
+	if h > 0.0:
+		result.append([{"dmg": h, "el": Spell.Element.VOID}])
 	mana.update_per_tick()
 	if burning.value > 0:
 		var burn_damage := int(burning.value * health.max_value * 0.05)
 		health.apply_ignoring_resistance(-burn_damage)
-		result.append({"dmg": burn_damage, "el": Spell.Element.FIRE})
+		if burn_damage > 0.0:
+			result.append({"dmg": burn_damage, "el": Spell.Element.FIRE})
 		defence.value = defence.max_value * burning.value
 	
 	var effect: Node3D
@@ -163,8 +166,6 @@ func wetness_scale() -> float:
 
 static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Spell.Element, show_label: bool, show_exp: bool, locations: Array[Vector3], r: float = 0, v: Vector3 = Vector3.ZERO) -> void:
 	amount = clampi(int(amount), 0, 100)
-	if amount <= 0:
-		return
 	
 	if show_label:	
 		var lbl := (preload("res://Projectiles/explosion/BodyMessage.tscn") as PackedScene).instantiate() as BodyMessage
@@ -189,6 +190,8 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 
 static func build_explosion(world: Node3D, body: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3) -> void:
 	if element == Spell.Element.VOID:
+		return
+	if amount <= 0:
 		return
 	
 	var explosion: Node3D

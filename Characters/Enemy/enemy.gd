@@ -24,7 +24,7 @@ var speed_for_current_behaviour_tick := 0.0
 
 var index_in_population: int = -1
 signal vital_update(index_in_population: int, vitals: Vitals)
-@onready var health_bar: MeshInstance3D = $HealthBar
+@onready var health_bar: MeshInstance3D = $HealthBar/Bar
 @onready var level_text: Label3D = $HealthBar/Level
 
 @export var bounds: Vector3 = Vector3(1, 1, 1)
