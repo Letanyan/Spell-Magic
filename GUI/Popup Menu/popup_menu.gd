@@ -25,6 +25,8 @@ func _ready() -> void:
 	label.text = label_message
 	cancel.text = cancel_title
 	confirm.text = confirm_title
+	cancel.visible = not cancel_title.is_empty()
+	confirm.visible = not confirm_title.is_empty()
 	
 func _on_cancel_pressed() -> void:
 	cancelled.emit()

@@ -273,15 +273,31 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 		
 		var spell: Spell = book.spells[current_index]
 		if spell.is_active:
-			spell.is_active = false
-			update_spells_list()
-			reload_list()
+			var can_use := book.can_use_spell(spell)
+			if can_use == MagicBook.DisallowSpellReason.COOLDOWN:
+				var popup := PopupDialog.display("Spell currently on cooldown. Wait until the spell is of cooldown to deactive.", "Okay", "")
+				get_tree().root.add_child(popup)
+			else:
+				spell.is_active = false
+				update_spells_list()
+				reload_list()
 		else:
 			var active_count := 0
 			for s in book.spells:
 				if s.is_active:
 					active_count += 1
-			if active_count < book.settings.upgrade_settings.max_spells_in_book:
+					
+			if active_count >= book.settings.upgrade_settings.max_spells_in_book:
+				var can_upgrade := book.settings.upgrade_settings.max_spells_in_book < UpgradeSettings.LIMIT_SPELLS_IN_BOOK
+				var options := ""
+				if can_upgrade:
+					options = "Upgrade max spells in book or deactive a spell"
+				else:
+					options = "Deactive a spell"
+				var popup := PopupDialog.display("Total active spells limit reached." + options, "Okay", "")
+				get_tree().root.add_child(popup)
+			else:
 				spell.is_active = true
 				update_spells_list()
 				reload_list()
+				

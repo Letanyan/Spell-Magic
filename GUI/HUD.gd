@@ -1,8 +1,8 @@
 class_name HUD
 extends Control
 
-@onready var health_bar: TextureProgressBar = $HealthBar
-@onready var mana_bar: TextureProgressBar = $ManaBar
+@onready var health_bar: ProgressBar = $HealthBar
+@onready var mana_bar: ProgressBar = $ManaBar
 @onready var burning_bar: TextureProgressBar = $BurningBar
 @onready var freeze_bar: TextureProgressBar = $FreezeBar
 @onready var wet_bar: TextureProgressBar = $WetBar
@@ -226,9 +226,17 @@ func update_wand_mappings() -> void:
 			MagicBook.DisallowSpellReason.COOLDOWN:
 				return kd + " [b]" + title + "[/b]: [color=#F05]" + spell + "[/color]\n"
 			MagicBook.DisallowSpellReason.MANA:
-				return kd + " [b]" + title + "[/b]: [color=#50F]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: [color=#A0A]" + spell + "[/color]\n"
 			MagicBook.DisallowSpellReason.ACTIVE:
 				return kd + " [b]" + title + "[/b]: [color=#222]" + spell + "[/color]\n"
+			MagicBook.DisallowSpellReason.COUNT:
+				return kd + " [b]" + title + "[/b]: [color=#F700FF]" + spell + "[/color]\n"
+			MagicBook.DisallowSpellReason.POWER:
+				return kd + " [b]" + title + "[/b]: [color=#0008FF]" + spell + "[/color]\n"
+			MagicBook.DisallowSpellReason.DURATION:
+				return kd + " [b]" + title + "[/b]: [color=#00FF08]" + spell + "[/color]\n"
+			MagicBook.DisallowSpellReason.RADIUS:
+				return kd + " [b]" + title + "[/b]: [color=#7700FF]" + spell + "[/color]\n"
 			_:
 				return kd + " [b]" + title + "[/b]: [color=#F50]" + spell + "[/color]\n"
 		

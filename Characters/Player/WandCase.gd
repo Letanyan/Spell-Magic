@@ -38,3 +38,6 @@ func add(wand: Spell) -> void:
 	
 func remove(i: int) -> void:
 	wands.remove_at(i)
+
+func current_wand() -> Wand:
+	return wands[selected_wand]

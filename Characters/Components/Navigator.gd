@@ -192,7 +192,7 @@ static func neighbours(p: Node3D, from: Vector3, directions: int, distance: floa
 			
 	return result
 	
-const debug = true
+const debug = false
 static func astar(p: Node3D, target: Vector3, margin_from_target: float = 1.0, max_step_distance: float = 2.0, margin_from_obs: float = 0.0) -> Array[Vector3]:	
 	var start := p.global_position
 	var open := {start: true}

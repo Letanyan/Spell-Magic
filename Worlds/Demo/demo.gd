@@ -108,7 +108,7 @@ func run_on_ready() -> void:
 	settings.upgrade_settings.currency = 10000
 	menu.setup(book, case, artifacts, settings)
 	
-	wand = case.wands[0]
+	wand = case.current_wand()
 	menu.wand_case.use_current_wand = func(id: int) -> void:
 		wand = case.wands[id]
 		

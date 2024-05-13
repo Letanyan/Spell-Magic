@@ -33,6 +33,7 @@ func setup(_settings: WorldSettings) -> void:
 	book = GlobalData.magic_book
 	book.settings = settings
 	book.ignore_cooldown = true
+	book.settings.upgrade_settings.max_spells_in_book = 100
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
 	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:
@@ -98,7 +99,7 @@ func _ready() -> void:
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	menu.setup(book, case, artifacts, settings)
 	
-	wand = case.wands[0]
+	wand = case.current_wand()
 	menu.wand_case.use_current_wand = func(id: int) -> void:
 		wand = case.wands[id]
 		
