@@ -1,33 +1,6 @@
 class_name Navigator
-		
-static func vertices(parent: CollisionShape3D, shape: Shape3D) -> PackedVector3Array:
-	if shape is CylinderShape3D:
-		var bottom := parent.global_position
-		var radius: float = (shape as CylinderShape3D).radius * 2
-		var result: PackedVector3Array = []
-		var pivot := Vector3(radius, 0, 0)
-		var p := bottom + pivot
-		result.append(p)
-		for t in range(8):
-			p = bottom + pivot.rotated(Vector3.UP, t / 8.0 * 2.0 * PI)
-			result.append(p)
-		return result
-	elif shape is BoxShape3D:
-		var box := shape as BoxShape3D
-		var bottom := parent.global_position
-		var radius: float = max(box.size.x, max(box.size.y, box.size.z))
-		var result: PackedVector3Array = []
-		var pivot := Vector3(radius, 0, 0)
-		var p := bottom + pivot
-		result.append(p)
-		for t in range(8):
-			p = bottom + pivot.rotated(Vector3.UP, t / 8.0 * 2.0 * PI)
-			result.append(p)
-		return result
-		
-	return []
 	
-static func bounds(shape: Shape3D) -> float:
+static func shape_max_bound(shape: Shape3D) -> float:
 	if shape is BoxShape3D:
 		var box := shape as BoxShape3D
 		return max(box.size.x, box.size.y, box.size.z)
@@ -38,7 +11,7 @@ static func bounds(shape: Shape3D) -> float:
 		return max(capsule.radius * 2.0, capsule.height)
 	return 1.0
 	
-static func height(shape: Shape3D) -> float:
+static func shape_height(shape: Shape3D) -> float:
 	if shape is BoxShape3D:
 		var box := shape as BoxShape3D
 		return box.size.y
@@ -48,6 +21,23 @@ static func height(shape: Shape3D) -> float:
 		var capsule := shape as CapsuleShape3D
 		return capsule.height
 	return 1.0
+	
+static func shape_increase(shape: Shape3D, amount: float) -> Shape3D:
+	var result := shape.duplicate()
+	if result is BoxShape3D:
+		var box := result as BoxShape3D
+		box.size += Vector3(amount, amount, amount)
+		return box
+	elif result is SphereShape3D:
+		var sphere := result as SphereShape3D
+		sphere.radius += amount
+		return sphere
+	elif result is CapsuleShape3D:
+		var capsule := result as CapsuleShape3D
+		capsule.height += amount
+		capsule.radius += amount
+		return capsule
+	return shape
 
 static func get_point_intersection(p: CollisionObject3D, target: Vector3) -> CollisionShape3D:
 	var space_state := p.get_world_3d().direct_space_state
@@ -218,7 +208,7 @@ static func neighbours(p: CollisionObject3D, from: Vector3, directions: int, dis
 	for a in range(directions):
 		var to := from + direction * distance
 		if options & MovementOptions.CAN_FLY == 0:
-			to.y = get_world_height_from_node(p, to.x, to.z) + height(shape) / 2.0 + 0.05
+			to.y = get_world_height_from_node(p, to.x, to.z) + shape_height(shape) / 2.0 + 0.05
 		to = to.snapped(Vector3(distance, distance, distance))
 		var distance_away := get_shape_distance_away(p, from, to, shape, options & MovementOptions.UNDERGROUND != 0)
 		if distance_away[0] == 1.0 and distance_away[1] == 1.0:
@@ -250,7 +240,7 @@ static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options
 	g_score[start] = 0.0
 	var f_score := {}
 	f_score[start] = start.distance_to(target)
-	var distance := bounds(shape)
+	var distance := shape_max_bound(shape)
 	var max_look_up := 1200.0 / distance
 	
 	var best_distance := INF
@@ -272,7 +262,7 @@ static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options
 			var tentative: float = g_score[current] + distance
 			if tentative < g_score.get(n, INF):
 				if debug:
-					DebugDraw3D.draw_sphere(n, bounds(shape) / 2.0, Color(0, 1, 0), 0.5)
+					DebugDraw3D.draw_sphere(n, shape_max_bound(shape) / 2.0, Color(0, 1, 0), 0.5)
 				came_from[n] = current
 				g_score[n] = tentative
 				f_score[n] = tentative + n.distance_to(target)
@@ -296,43 +286,24 @@ static func will_collide(p: CollisionObject3D, shape: Shape3D, target: Vector3, 
 	return get_shape_collides(p, p.global_position, target, shape, exclude_ground)
 	
 # options is MovementOption set
-static func find_target_path(p: CollisionObject3D, target: Vector3, shape: Shape3D, options: int, margin_from_target: float = 2.0, margin_from_obs: float = 3.0) -> Array[Vector3]:
+static func find_target_path(p: CollisionObject3D, target: Vector3, shape: Shape3D, options: int, margin_from_target: float = 2.0, margin_from_obs: float = 0.5) -> Array[Vector3]:
+	var new_shape := shape_increase(shape, margin_from_obs)
 	if p.global_position.distance_to(target) > 100.0:
 		if debug: print("A")
 		return [target]
-	if not will_collide(p, shape, target, options & MovementOptions.UNDERGROUND != 0):
+	if not will_collide(p, new_shape, target, options & MovementOptions.UNDERGROUND != 0):
 		if debug: print("B")
 		return [target]
-	var target_in_shape := get_point_intersection(p, target)
-	if target_in_shape != null:
-		var candidates := vertices(target_in_shape, target_in_shape.shape)
-		if candidates.size() <= 0:
-			if debug: print("C")							
-			return [target]
-		var result: Vector3 = candidates[0]
-		var max_res := INF
-		for c in candidates:
-			if c.distance_to(target) < max_res:
-				max_res = c.distance_to(target)
-				result = c
-		target = result
 				
-	var path := astar(p, target, shape, options, margin_from_target, margin_from_obs)
+	var path := astar(p, target, new_shape, options, margin_from_target, margin_from_obs)
 	if path.is_empty():
 		if debug: print("D")		
 		return [target]
 	
 	if debug:
 		for pos in path:
-			DebugDraw3D.draw_sphere(pos, bounds(shape) / 2.0, Color(1, 0, 0), 0.5)
-	#while not path.is_empty():
-		#var x := Vector2(p.global_position.x, p.global_position.z)
-		#var y := Vector2(next.x, next.z)
-		#if x.distance_squared_to(y) > 2:
-			#break
-		#next = path.pop_front()
-		
-	#if debug: print("E: ", next, " <- ", target)	
+			DebugDraw3D.draw_sphere(pos, shape_max_bound(new_shape) / 2.0, Color(1, 0, 0), 0.5)
+				
 	return path 
 	
 # options is MovementOption set
