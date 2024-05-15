@@ -90,6 +90,17 @@ func impulse() -> Vector3:
 		_:
 			return Vector3.ZERO
 
+func get_collision_object() -> CollisionObject3D:
+	match spell.element:
+		Spell.Element.FIRE: return (get_node("source/area") as CollisionObject3D)
+		Spell.Element.WATER: return (get_node("source/area") as CollisionObject3D)
+		Spell.Element.ROCK: return (get_node("body") as CollisionObject3D)
+		Spell.Element.AIR: return (get_node("source/area") as CollisionObject3D)
+		Spell.Element.ICE: return (get_node("source/area") as CollisionObject3D)
+		Spell.Element.ELECTRIC: return (get_node("body/area") as CollisionObject3D)
+		Spell.Element.VOID: return (get_node("mesh/area") as CollisionObject3D)
+	return null
+
 func get_shape() -> Shape3D:
 	match spell.element:
 		Spell.Element.FIRE: return (get_node("source/area/shape") as CollisionShape3D).shape

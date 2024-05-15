@@ -20,7 +20,7 @@ func _ready() -> void:
 		.move_to(Vector3(0, 0, 0)) \
 		.line_to(Vector3(0, 0, 100), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.linear) \
 		.line_to(Vector3(0, 0, 0), snappedf(1.0, Globals.behaviour_tick()), PathStyle.Easing.linear)
-	idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_ground()
 	
 	#idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 10, 5).use_absolute().align_y_to_origin()
 	

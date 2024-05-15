@@ -133,7 +133,14 @@ func _physics_process(delta: float) -> void:
 				var next_movement := current_path.next_position(Globals.behaviour_tick(), self, player, is_done)
 				next_pos = Vector3(next_movement.x, next_movement.y, next_movement.z)
 				speed_for_current_behaviour_tick = next_movement.w
-			velocity_movement.target_position = Navigator.find_target(get_node(".") as Node3D, next_pos, 2.0, 2.0, bounds.length() * 2)
+			var box := BoxShape3D.new()
+			box.size = bounds
+			var options: int = 0
+			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT or current_path.coord_y == PathStyle.CoordY.ORIGIN:
+				options |= Navigator.MovementOptions.UNDERGROUND
+			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN:
+				options |= Navigator.MovementOptions.CAN_FLY
+			velocity_movement.target_position = Navigator.find_target(get_node(".") as CharacterBody, next_pos, box, options, 2.0, bounds.length() * 2)
 		if reset_spell_tick:
 			behavior_tick = Globals.behaviour_tick()
 		else:
