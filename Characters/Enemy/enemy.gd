@@ -113,8 +113,11 @@ func _physics_process(delta: float) -> void:
 			look_at(player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
 
 	var reset_spell_tick := false
-	if ((behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick())):
-		update_behaviour()
+	var behavior_ticked_over := ((behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick()))
+	
+	if behavior_ticked_over or not velocity_movement.has_navigation_target:
+		if behavior_ticked_over:
+			update_behaviour()
 		if not velocity_movement.has_navigation_target:
 			var is_done := Globals.Ref.new(false)
 			var next_pos: Vector3
@@ -133,14 +136,17 @@ func _physics_process(delta: float) -> void:
 				var next_movement := current_path.next_position(Globals.behaviour_tick(), self, player, is_done)
 				next_pos = Vector3(next_movement.x, next_movement.y, next_movement.z)
 				speed_for_current_behaviour_tick = next_movement.w
-			var box := BoxShape3D.new()
-			box.size = bounds
+			var collision_shape := get_node("Collision") as CollisionShape3D
 			var options: int = 0
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT or current_path.coord_y == PathStyle.CoordY.ORIGIN:
 				options |= Navigator.MovementOptions.UNDERGROUND
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN:
 				options |= Navigator.MovementOptions.CAN_FLY
-			velocity_movement.target_position = GlobalData.nav.find_target(get_node(".") as CharacterBody, next_pos, box, options, 1000.0, bounds.length() * 2)
+			var obj := get_node(".") as CharacterBody
+			var path := GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, bounds.length() * 2)
+			velocity_movement.target_position = Navigator.find_next_target_from_path(path, position, obj, next_pos)
+			var speed_mult := 1.0 if path.size() <= 1 else position.distance_to(velocity_movement.target_position)
+			speed_for_current_behaviour_tick *= speed_mult
 		if reset_spell_tick:
 			behavior_tick = Globals.behaviour_tick()
 		else:

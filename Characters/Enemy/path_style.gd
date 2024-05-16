@@ -355,12 +355,12 @@ class Pathway:
 		if index:
 			index.data = segment
 			
-		var change_in_t := delta / durations[segment]
-		var ratio := t / durations[segment]
-		var modifier := path_modifiers[segment]
+		#var change_in_t := delta / durations[segment]
+		#var ratio := t / durations[segment]
+		#var modifier := path_modifiers[segment]
 		# we use absolute here because the direction is maintained in the position calculation
-		var rate_of_change := absf(modifier.position_at_time(ratio + change_in_t).y - modifier.position_at_time(ratio).y) / change_in_t
-		return movement_speed[segment] * rate_of_change
+		#var rate_of_change := absf(modifier.position_at_time(ratio + change_in_t).y - modifier.position_at_time(ratio).y) / change_in_t
+		return movement_speed[segment] #* rate_of_change
 			
 	func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		var segment := 0

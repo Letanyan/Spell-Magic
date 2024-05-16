@@ -306,17 +306,30 @@ static func find_target_path(p: CollisionObject3D, target: Vector3, shape: Shape
 				
 	return path 
 	
-# options is MovementOption set
-static func find_target(p: CollisionObject3D, target: Vector3, shape: Shape3D, options: MovementOptions, margin_from_target: float = 2.0, margin_from_obs: float = 3.0) -> Vector3:
-	var path := find_target_path(p, target, shape, options, margin_from_target, margin_from_obs)
+static func find_next_target_from_path(path: PackedVector3Array, current: Vector3, p: CollisionObject3D, target: Vector3) -> Vector3:
 	if path.is_empty():
 		if debug: print("D")		
 		return target
 	var next: Vector3 = path[0]
-	while not path.is_empty():
-		var x := Vector2(p.global_position.x, p.global_position.z)
-		var y := Vector2(next.x, next.z)
-		if x.distance_squared_to(y) > 2:
-			break
-		next = path.pop_front()
+	while not path.is_empty() and next.is_equal_approx(current):
+		#var x := Vector2(p.global_position.x, p.global_position.z)
+		#var y := Vector2(next.x, next.z)
+		#if x.distance_squared_to(y) > 2:
+			#break
+		next = path[0]
+		path.remove_at(0)
 	return next
+	
+static func path_distance(path: PackedVector3Array) -> float:
+	var result := 0.0
+	var i := 0
+	while i < path.size() - 1:
+		result += path[i].distance_to(path[i + 1])
+		i += 1
+	return result
+	
+# options is MovementOption set
+static func find_target(current: Vector3, p: CollisionObject3D, target: Vector3, shape: Shape3D, options: MovementOptions, margin_from_target: float = 2.0, margin_from_obs: float = 3.0) -> Vector3:
+	var path := find_target_path(p, target, shape, options, margin_from_target, margin_from_obs)
+	return find_next_target_from_path(path, current, p, target)
+
