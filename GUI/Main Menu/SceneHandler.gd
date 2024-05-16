@@ -62,7 +62,7 @@ func monitor_load_status(on_complete: Callable) -> void:
 			_load_progress_timer.queue_free()
 			var content: Variant = (ResourceLoader.load_threaded_get(_content_path) as PackedScene).instantiate()
 			content_finished_loading.emit(content)
-			on_complete.call(content)
+			#on_complete.call(content)
 			return # this last return isn't necessary but I like how the 3 dead ends stand out as similar
 
 func on_content_failed_to_load(path:String) -> void:

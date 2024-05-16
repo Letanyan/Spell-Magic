@@ -192,9 +192,9 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		var coord := port.get_camera_3d().project_ray_origin(pos)
 		cdir = port.get_camera_3d().project_ray_normal(pos)
 		if body is CharacterBody:
-			node_to_track = Navigator.get_ray_intersection(body as CharacterBody, coord, coord + cdir * 500)
+			node_to_track = GlobalData.nav.get_ray_intersection(body as CharacterBody, coord, coord + cdir * 500)
 		elif body is SpellBody:
-			node_to_track = Navigator.get_ray_intersection((body as SpellBody).get_collision_object(), coord, coord + cdir * 500)
+			node_to_track = GlobalData.nav.get_ray_intersection((body as SpellBody).get_collision_object(), coord, coord + cdir * 500)
 		if node_to_track == null:
 			node_to_track = cdir
 	elif entity == Entity.PROJECTILE:

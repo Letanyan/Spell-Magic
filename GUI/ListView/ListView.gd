@@ -31,6 +31,9 @@ func setup(total: int, height: float, template: Callable, update: Callable) -> v
 	generate_items()
 
 func generate_items() -> void:
+	if height_for_items <= 0:
+		return
+	
 	items_shown = mini(ceili(size.y / height_for_items), total_items) + 1
 	if total_items + 1 == items_shown and size.y >= (items_shown - 1) * height_for_items:
 		scroll_bar.value = 0
