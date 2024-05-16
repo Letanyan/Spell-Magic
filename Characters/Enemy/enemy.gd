@@ -140,7 +140,7 @@ func _physics_process(delta: float) -> void:
 				options |= Navigator.MovementOptions.UNDERGROUND
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN:
 				options |= Navigator.MovementOptions.CAN_FLY
-			velocity_movement.target_position = Navigator.find_target(get_node(".") as CharacterBody, next_pos, box, options, 2.0, bounds.length() * 2)
+			velocity_movement.target_position = GlobalData.nav.find_target(get_node(".") as CharacterBody, next_pos, box, options, 1000.0, bounds.length() * 2)
 		if reset_spell_tick:
 			behavior_tick = Globals.behaviour_tick()
 		else:

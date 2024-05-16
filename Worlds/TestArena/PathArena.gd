@@ -2,17 +2,19 @@ extends Node3D
 
 @onready var target: MeshInstance3D = $Target
 @onready var agent: CharacterBody3D = $Agent
-var positions: Array[Vector3] = []
+var positions := PackedVector3Array()
 @onready var collision: CollisionShape3D = $Agent/collision
 @onready var camera_3d: Camera3D = $Camera3D
 
 var path_draw_tick := 1.0
-var camera_angle := 0.0
+var camera_angle := PI * 1.5
 var angle_increase := 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	camera_3d.position.x = cos(camera_angle) * 20
+	camera_3d.position.z = sin(camera_angle) * 20
+	camera_3d.look_at(Vector3.ZERO)
 
 
 func _physics_process(delta: float) -> void:
@@ -25,7 +27,7 @@ func _physics_process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("E"):
 		angle_increase = 0.0
-		positions = Navigator.find_target_path(agent, target.position, collision.shape, 0)
+		positions = GlobalData.nav.find_target_path(agent, target.position, collision.shape, 0, 500.0, 0.5)
 	elif event.is_action("RIGHT"):
 		angle_increase = clampf(angle_increase + 0.01, 0, 0.3)
 		camera_angle += angle_increase

@@ -75,8 +75,11 @@ static func particle_system_lifetime(p: GPUParticles3D) -> float:
 var game_settings: GameSettings = null
 var controller: Controller = null
 var magic_book: MagicBook = null
+var nav: GDNavigator = null
 
 func _ready() -> void:
+	nav = GDNavigator.new()
+	
 	game_settings = GameSettings.new()
 	game_settings.read(get_viewport())
 	
