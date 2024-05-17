@@ -17,6 +17,7 @@ var medium_chunk_width: float
 
 var player_position: Vector2 = Vector2.ZERO
 var player_coord: Vector2 = Vector2.ZERO
+var max_height_position: Vector3 = Vector3.ZERO
 
 var biome_shader := preload("res://Worlds/Generator/Terrain/biome_p.gdshader")
 var water_shader := preload("res://Worlds/SkyBox/water.gdshader")
@@ -225,6 +226,8 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		A = mdt.get_vertex(i)
 		A.y = blender.height(A.x + x, A.z + y)
 		mdt.set_vertex(i, A)
+		if A.y > max_height_position.y and r <= radius and mi.has_node("static"):
+			max_height_position = Vector3(A.x + x, A.y, A.z + y)
 	
 	if r <= radius and mi.has_node("static"):
 		var static_body := mi.get_node("static")

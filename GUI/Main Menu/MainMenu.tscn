@@ -65,11 +65,16 @@ offset_bottom = -56.0
 text = "Settings"
 
 [node name="Quit" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 608.0
-offset_right = 640.0
-offset_bottom = 639.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 1.0
+anchor_right = 0.472
+anchor_bottom = 1.0
+offset_left = -95.744
+offset_top = -40.0
+offset_right = 96.256
+offset_bottom = -9.0
 text = "Quit"
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]

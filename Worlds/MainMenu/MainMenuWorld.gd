@@ -22,6 +22,9 @@ var last_biome: World.Biome = World.Biome.WATER
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
+@onready var title: Label3D = $Player/Arm/Lens/Title
+@onready var source: GPUParticles3D = $Player/Arm/Lens/Title/Source
+@onready var placard: MeshInstance3D = $Player/Arm/Lens/placard
 
 
 var terrain_update_interval := 0
@@ -85,6 +88,10 @@ func _process(delta: float) -> void:
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
 		theme.change_tint_color(tint)
+		#title.modulate = tint
+		#title.outline_modulate = tint
+		(source.process_material as ParticleProcessMaterial).color = tint
+		(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)
 	
 func _physics_process(delta: float) -> void:
 	daytime_tick += delta
@@ -115,6 +122,8 @@ func _physics_process(delta: float) -> void:
 		has_init_terrain_population = true
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
+		
+	player.position.y = maxf(player.position.y, Globals.sea_level())
 				
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
@@ -128,6 +137,8 @@ func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
+	player.position = chunker.max_height_position
+	player.position.y = maxf(player.position.y, Globals.sea_level())
 
 func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)

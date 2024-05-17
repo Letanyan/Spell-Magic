@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=24 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://cevyetu4agssv" path="res://GUI/Main Menu/LoadGame.tscn" id="5_si7au"]
 [ext_resource type="PackedScene" uid="uid://oko6g6intlvw" path="res://GUI/Main Menu/NewGame.tscn" id="6_urucm"]
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
+[ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="8_7souk"]
+[ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="8_ebmq5"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wfpcw"]
 seed = 32
@@ -60,6 +62,68 @@ ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5mvey"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("8_7souk")
+shader_parameter/foreground = Color(1, 1, 1, 0.25098)
+shader_parameter/background = Color(0.101961, 0.101961, 0.101961, 0.752941)
+shader_parameter/percentage = 0.0
+shader_parameter/corner_radius = Vector2(0.011, 0.05)
+shader_parameter/outline_size = Vector2(0.006, 0.025)
+shader_parameter/outline_color = Color(1, 1, 1, 0.752941)
+shader_parameter/billboard = false
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_d0o2x"]
+material = SubResource("ShaderMaterial_5mvey")
+size = Vector2(5400, 1200)
+
+[sub_resource type="Gradient" id="Gradient_m2pju"]
+colors = PackedColorArray(0.5, 0.5, 0.5, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nnvr5"]
+gradient = SubResource("Gradient_m2pju")
+
+[sub_resource type="Curve" id="Curve_v2iut"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_64itr"]
+curve = SubResource("Curve_v2iut")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0jras"]
+emission_shape = 3
+emission_box_extents = Vector3(3000, 500, 1)
+direction = Vector3(0, 0, 0)
+gravity = Vector3(0, 0, 0)
+radial_accel_min = 10.0
+radial_accel_max = 50.0
+attractor_interaction_enabled = false
+scale_curve = SubResource("CurveTexture_64itr")
+color = Color(0, 0.498039, 0, 1)
+color_ramp = SubResource("GradientTexture1D_nnvr5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qxkoo"]
+shading_mode = 0
+specular_mode = 1
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_3prl5"]
+material = SubResource("StandardMaterial3D_qxkoo")
+radius = 20.0
+height = 40.0
+radial_segments = 6
+rings = 4
+
 [node name="MainMenuWorld" type="Node3D"]
 script = ExtResource("1_f55xg")
 noise_temperature = SubResource("FastNoiseLite_wfpcw")
@@ -103,3 +167,24 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 
 [node name="Lens" type="Camera3D" parent="Player/Arm"]
+
+[node name="placard" type="MeshInstance3D" parent="Player/Arm/Lens"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1000, -3000)
+mesh = SubResource("PlaneMesh_d0o2x")
+
+[node name="Title" type="Label3D" parent="Player/Arm/Lens"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, -3000)
+pixel_size = 1.0
+outline_modulate = Color(1, 1, 1, 1)
+text = "Spell Magic"
+font = ExtResource("8_ebmq5")
+font_size = 900
+outline_size = 0
+
+[node name="Source" type="GPUParticles3D" parent="Player/Arm/Lens/Title"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)
+amount = 500
+lifetime = 10.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_0jras")
+draw_pass_1 = SubResource("SphereMesh_3prl5")

@@ -19,6 +19,7 @@ shader_parameter/percentage = 0.5
 shader_parameter/corner_radius = Vector2(0.05, 0.5)
 shader_parameter/outline_size = Vector2(0.01, 0.1)
 shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/billboard = true
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
