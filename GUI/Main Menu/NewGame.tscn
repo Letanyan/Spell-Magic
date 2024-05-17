@@ -1,12 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://oko6g6intlvw"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
-[ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="3_83m73"]
-[ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="4_hfnhx"]
-[ext_resource type="Texture2D" uid="uid://bcljg3lbivvke" path="res://GUI/Images/rock.svg" id="5_8776u"]
-[ext_resource type="Texture2D" uid="uid://bmpgkw1tq23ok" path="res://GUI/Images/wind.svg" id="6_2gqe1"]
-[ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="7_8grbq"]
-[ext_resource type="Texture2D" uid="uid://dh6xbrgomcoq8" path="res://GUI/Images/electric.svg" id="8_iquhi"]
+[ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
+[ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="3_cyou0"]
+[ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="4_4nvek"]
+[ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="5_lff36"]
+[ext_resource type="Texture2D" uid="uid://d04ymp7lmbois" path="res://GUI/Images/tinted_ice.tres" id="6_1jtyh"]
+[ext_resource type="Texture2D" uid="uid://ddt4jjlnnqy2e" path="res://GUI/Images/tinted_electric.tres" id="7_jc3of"]
 
 [node name="NewGame" type="Control"]
 layout_mode = 3
@@ -20,22 +20,22 @@ script = ExtResource("1_g78rx")
 [node name="SaveName" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = -95.744
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -128.0
 offset_top = 48.0
-offset_right = 96.256
+offset_right = 128.0
 offset_bottom = 80.0
 placeholder_text = "Save Name"
 
 [node name="UseSeed" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = -127.744
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -128.0
 offset_top = 120.0
-offset_right = -7.74402
+offset_right = -8.0
 offset_bottom = 160.0
 toggle_mode = true
 button_pressed = true
@@ -44,11 +44,11 @@ text = "Using Seed"
 [node name="UseSaveFile" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = 8.25598
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 8.0
 offset_top = 120.0
-offset_right = 126.256
+offset_right = 126.0
 offset_bottom = 160.0
 toggle_mode = true
 text = "Using Save File"
@@ -56,48 +56,48 @@ text = "Using Save File"
 [node name="Seed" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = -95.744
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -128.0
 offset_top = 168.0
-offset_right = 96.2557
+offset_right = 128.0
 offset_bottom = 200.0
 placeholder_text = "Seed"
 
 [node name="Create" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
-offset_top = -136.0
-offset_right = 96.256
-offset_bottom = -105.0
+offset_left = -128.0
+offset_top = -88.0
+offset_right = 128.0
+offset_bottom = -57.0
 text = "Create"
 
 [node name="Cancel" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
-offset_top = -72.0
-offset_right = 96.256
-offset_bottom = -41.0
+offset_left = -128.0
+offset_top = -40.0
+offset_right = 128.0
+offset_bottom = -9.0
 text = "Cancel"
 
 [node name="Permadeath" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = -183.744
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
 offset_top = 256.0
-offset_right = -71.744
+offset_right = -80.0
 offset_bottom = 296.0
 toggle_mode = true
 text = "Permadeath"
@@ -105,11 +105,11 @@ text = "Permadeath"
 [node name="Respawn" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.465
-anchor_right = 0.465
-offset_left = -55.6801
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -56.0
 offset_top = 256.0
-offset_right = 56.3199
+offset_right = 56.0
 offset_bottom = 296.0
 toggle_mode = true
 button_pressed = true
@@ -118,11 +118,11 @@ text = "Respawn"
 [node name="Sandbox" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = 56.256
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 80.0
 offset_top = 256.0
-offset_right = 176.256
+offset_right = 192.0
 offset_bottom = 296.0
 toggle_mode = true
 text = "Sandbox"
@@ -130,11 +130,11 @@ text = "Sandbox"
 [node name="RespawnOptions" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.469
-anchor_right = 0.469
-offset_left = -148.288
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -152.0
 offset_top = 304.0
-offset_right = 147.712
+offset_right = 152.0
 offset_bottom = 424.0
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
@@ -190,11 +190,11 @@ grow_horizontal = 0
 [node name="Health" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 11.0
+offset_top = 8.0
 offset_right = 352.0
-offset_bottom = 37.0
+offset_bottom = 34.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/health.svg[/img] Health"
+text = "[img=l,16x16, color=#0A0]res://GUI/Images/health.svg[/img] Health"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Health"]
 layout_mode = 0
@@ -219,11 +219,11 @@ vertical_alignment = 1
 [node name="Attack" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 43.0
+offset_top = 40.0
 offset_right = 352.0
-offset_bottom = 69.0
+offset_bottom = 66.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/sword.svg[/img] ATK"
+text = "[img=l,16x16, color=#A00]res://GUI/Images/sword.svg[/img] ATK"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Attack"]
 layout_mode = 0
@@ -246,11 +246,11 @@ vertical_alignment = 1
 [node name="Defence" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 75.0
+offset_top = 72.0
 offset_right = 352.0
-offset_bottom = 101.0
+offset_bottom = 98.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/shield.svg[/img] DEF"
+text = "[img=l,16x16, color=#0AA]res://GUI/Images/shield.svg[/img] DEF"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Defence"]
 layout_mode = 0
@@ -273,11 +273,11 @@ vertical_alignment = 1
 [node name="Mana" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 107.0
+offset_top = 104.0
 offset_right = 352.0
-offset_bottom = 133.0
+offset_bottom = 130.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/mana.svg[/img] M"
+text = "[img=l,16x16, color=#A0A]res://GUI/Images/mana.svg[/img] M"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Mana"]
 layout_mode = 0
@@ -301,11 +301,11 @@ vertical_alignment = 1
 [node name="Velocity" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 139.0
+offset_top = 136.0
 offset_right = 352.0
-offset_bottom = 165.0
+offset_bottom = 162.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/velocity.svg[/img] v"
+text = "[img=l,16x16, color=#7F0]res://GUI/Images/velocity.svg[/img] v"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Velocity"]
 layout_mode = 0
@@ -329,9 +329,9 @@ vertical_alignment = 1
 [node name="SpellCount" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 171.0
+offset_top = 328.0
 offset_right = 352.0
-offset_bottom = 197.0
+offset_bottom = 354.0
 text = "Max Spells"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/SpellCount"]
@@ -357,11 +357,11 @@ vertical_alignment = 1
 [node name="T" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 203.0
+offset_top = 168.0
 offset_right = 352.0
-offset_bottom = 229.0
+offset_bottom = 194.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/time.svg[/img] T"
+text = "[img=l,16x16, color=#00ff08]res://GUI/Images/time.svg[/img] T"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/T"]
 layout_mode = 0
@@ -385,11 +385,11 @@ vertical_alignment = 1
 [node name="r" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 235.0
+offset_top = 232.0
 offset_right = 352.0
-offset_bottom = 261.0
+offset_bottom = 258.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/radius.svg[/img] r"
+text = "[img=l,16x16, color=#70F]res://GUI/Images/radius.svg[/img] r"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/r"]
 layout_mode = 0
@@ -413,11 +413,11 @@ vertical_alignment = 1
 [node name="P" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 267.0
+offset_top = 296.0
 offset_right = 352.0
-offset_bottom = 293.0
+offset_bottom = 322.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/power.svg[/img] P"
+text = "[img=l,16x16, color=#0008FF]res://GUI/Images/power.svg[/img] P"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/P"]
 layout_mode = 0
@@ -442,11 +442,11 @@ vertical_alignment = 1
 [node name="N" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 299.0
+offset_top = 264.0
 offset_right = 352.0
-offset_bottom = 325.0
+offset_bottom = 290.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/count.svg[/img] N"
+text = "[img=l,16x16, color=#F700FF]res://GUI/Images/count.svg[/img] N"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/N"]
 layout_mode = 0
@@ -470,11 +470,11 @@ vertical_alignment = 1
 [node name="S" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 336.0
+offset_top = 200.0
 offset_right = 352.0
-offset_bottom = 362.0
+offset_bottom = 226.0
 bbcode_enabled = true
-text = "[img=l,16x16]res://GUI/Images/running.svg[/img] S"
+text = "[img=l,16x16, color=#F6FF00]res://GUI/Images/running.svg[/img] S"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/S"]
 layout_mode = 0
@@ -510,7 +510,7 @@ offset_right = 32.0
 offset_bottom = 72.0
 toggle_mode = true
 button_pressed = true
-icon = ExtResource("3_83m73")
+icon = ExtResource("2_r3ufo")
 
 [node name="Water" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
@@ -519,7 +519,7 @@ offset_top = 32.0
 offset_right = 72.0
 offset_bottom = 72.0
 toggle_mode = true
-icon = ExtResource("4_hfnhx")
+icon = ExtResource("3_cyou0")
 
 [node name="Rock" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
@@ -528,7 +528,7 @@ offset_top = 32.0
 offset_right = 112.0
 offset_bottom = 72.0
 toggle_mode = true
-icon = ExtResource("5_8776u")
+icon = ExtResource("4_4nvek")
 
 [node name="Air" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
@@ -537,7 +537,7 @@ offset_top = 32.0
 offset_right = 152.0
 offset_bottom = 72.0
 toggle_mode = true
-icon = ExtResource("6_2gqe1")
+icon = ExtResource("5_lff36")
 
 [node name="Ice" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
@@ -546,7 +546,7 @@ offset_top = 32.0
 offset_right = 192.0
 offset_bottom = 72.0
 toggle_mode = true
-icon = ExtResource("7_8grbq")
+icon = ExtResource("6_1jtyh")
 
 [node name="Electric" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
@@ -555,7 +555,7 @@ offset_top = 32.0
 offset_right = 232.0
 offset_bottom = 72.0
 toggle_mode = true
-icon = ExtResource("8_iquhi")
+icon = ExtResource("7_jc3of")
 
 [node name="ChainMethods" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0

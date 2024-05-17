@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=27 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -8,7 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://oko6g6intlvw" path="res://GUI/Main Menu/NewGame.tscn" id="6_urucm"]
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="8_7souk"]
-[ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="8_ebmq5"]
+[ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
+[ext_resource type="Shader" path="res://Worlds/MainMenu/title.gdshader" id="10_22gpm"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wfpcw"]
 seed = 32
@@ -86,6 +87,21 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 [sub_resource type="PlaneMesh" id="PlaneMesh_d0o2x"]
 material = SubResource("ShaderMaterial_5mvey")
 size = Vector2(5400, 1200)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6gjmy"]
+render_priority = 0
+shader = ExtResource("10_22gpm")
+shader_parameter/base_seed = 2432
+shader_parameter/bg_color = Color(1, 1, 1, 1)
+shader_parameter/fg_color = Color(0, 0.490196, 0, 0.752941)
+shader_parameter/xy_ratio = 0.5
+
+[sub_resource type="TextMesh" id="TextMesh_diikd"]
+material = SubResource("ShaderMaterial_6gjmy")
+text = "Spell Magic"
+font = ExtResource("9_wxs5t")
+font_size = 127
+pixel_size = 7.0
 
 [sub_resource type="Gradient" id="Gradient_m2pju"]
 colors = PackedColorArray(0.5, 0.5, 0.5, 1, 1, 1, 1, 1)
@@ -172,14 +188,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1000, -3000)
 mesh = SubResource("PlaneMesh_d0o2x")
 
-[node name="Title" type="Label3D" parent="Player/Arm/Lens"]
+[node name="Title" type="MeshInstance3D" parent="Player/Arm/Lens"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, -3000)
-pixel_size = 1.0
-outline_modulate = Color(1, 1, 1, 1)
-text = "Spell Magic"
-font = ExtResource("8_ebmq5")
-font_size = 900
-outline_size = 0
+mesh = SubResource("TextMesh_diikd")
 
 [node name="Source" type="GPUParticles3D" parent="Player/Arm/Lens/Title"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)

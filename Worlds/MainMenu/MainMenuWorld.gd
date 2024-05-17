@@ -22,7 +22,7 @@ var last_biome: World.Biome = World.Biome.WATER
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
-@onready var title: Label3D = $Player/Arm/Lens/Title
+@onready var title: MeshInstance3D = $Player/Arm/Lens/Title
 @onready var source: GPUParticles3D = $Player/Arm/Lens/Title/Source
 @onready var placard: MeshInstance3D = $Player/Arm/Lens/placard
 
@@ -77,6 +77,8 @@ func _ready() -> void:
 	load_game.main_menu_world = get_node(".")
 	new_game.main_menu_world = get_node(".")
 	settings_menu.main_menu_world = get_node(".")
+	
+	(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("base_seed", randi_range(0, 1000000))
 
 		
 func _process(delta: float) -> void:
@@ -88,6 +90,12 @@ func _process(delta: float) -> void:
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
 		theme.change_tint_color(tint)
+		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
+		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
+		var fg := tint.lightened(0.5) if is_day else tint
+		var bg := tint if is_day else tint.lightened(0.5)
+		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 0.75))
+		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 0.75))
 		#title.modulate = tint
 		#title.outline_modulate = tint
 		(source.process_material as ParticleProcessMaterial).color = tint
@@ -162,8 +170,13 @@ func show_menu_screen(kind: MenuScreenKind) -> void:
 	load_game.hide()
 	new_game.hide()
 	settings_menu.hide()
+	title.hide()
+	placard.hide()
 	match kind:
-		MenuScreenKind.MAIN: main_menu.show()
+		MenuScreenKind.MAIN: 
+			main_menu.show()
+			placard.show()
+			title.show()
 		MenuScreenKind.LOAD: load_game.show()
 		MenuScreenKind.NEW: new_game.show()
 		MenuScreenKind.SETTINGS: settings_menu.show()

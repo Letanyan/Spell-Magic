@@ -139,7 +139,10 @@ func _on_create_pressed() -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
-		settings.sed = hash(seed_edit.text)
+		if seed_edit.text.is_valid_int():
+			settings.sed = seed_edit.text.to_int()
+		else:
+			settings.sed = hash(seed_edit.text)
 		
 		settings.game_mode_settings.mode = game_mode
 		match game_mode:
@@ -353,7 +356,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
-	seed_edit.placeholder_text = "Save Name"
+	seed_edit.placeholder_text = "Save File Name"
 	use_seed.set_pressed_no_signal(not toggled_on)
 	permadeath.visible = not toggled_on
 	respawn.visible = not toggled_on

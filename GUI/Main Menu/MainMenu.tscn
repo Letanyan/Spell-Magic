@@ -14,39 +14,39 @@ script = ExtResource("1_76i3t")
 [node name="Continue" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
+offset_left = -128.0
 offset_top = -208.0
-offset_right = 96.256
+offset_right = 128.0
 offset_bottom = -176.0
 text = "Continue"
 
 [node name="NewGame" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
+offset_left = -128.0
 offset_top = -168.0
-offset_right = 96.256
+offset_right = 128.0
 offset_bottom = -136.0
 text = "New Game"
 
 [node name="Load" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
+offset_left = -128.0
 offset_top = -128.0
-offset_right = 96.256
+offset_right = 128.0
 offset_bottom = -96.0
 text = "Load Game
 "
@@ -54,26 +54,26 @@ text = "Load Game
 [node name="Settings" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
+offset_left = -128.0
 offset_top = -88.0
-offset_right = 96.256
+offset_right = 128.0
 offset_bottom = -56.0
 text = "Settings"
 
 [node name="Quit" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
+offset_left = -128.0
 offset_top = -40.0
-offset_right = 96.256
+offset_right = 128.0
 offset_bottom = -9.0
 text = "Quit"
 
