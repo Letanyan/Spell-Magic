@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://daq4dig7l6c7e"]
+
+[ext_resource type="Shader" path="res://Worlds/MainMenu/title.gdshader" id="1_4bk08"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_4bk08")
+shader_parameter/base_seed = 2432
+shader_parameter/bg_color = Color(1, 1, 1, 1)
+shader_parameter/fg_color = Color(0, 0.490196, 0, 0.752941)
+shader_parameter/xy_ratio = 0.5

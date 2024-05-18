@@ -43,6 +43,16 @@ vec4 paint(vec4 bg, vec4 fg) {
 	return r;
 }
 
+vec4 linear_gradient(vec2 position, vec2 start_position, vec2 end_position, vec4 start_color, vec4 end_color) {
+	float a = clamp( (length(position) - length(start_position)) / (length(end_position) - length(start_position)), 0.0, 1.0);
+	return mix(start_color, end_color, a);
+}
+
+vec4 radial_gradient(vec2 position, vec3 circle, vec4 start_color, vec4 end_color) {
+	float a = clamp(distance(position, circle.xy) / circle.z, 0.0, 1.0);
+	return mix(start_color, end_color, a);
+}
+
 vec3 make_circle(inout uint seed, float t) {
 	vec3 base = vec3(rand(seed), rand(seed), rand(seed) * 0.2);
 	
@@ -68,10 +78,13 @@ void vertex() {
 void fragment() {
 	uint base = base_seed;
 	
-	vec4 final_color = bg_color;
+	vec4 final_color = vec4(ALBEDO, 1.0);
 	for (int i = 0; i < 100; i++) {
 		uint seed = hash(base + uint(i));
 		vec3 circ = make_circle(seed, TIME);
+		vec2 angle = normalize(vec2(rand(seed), rand(seed))) * circ.z;
+		//vec4 clr = linear_gradient(UV, circ.xy + angle, circ.xy - angle, fg_color, vec4(fg_color.rgb, fg_color.a * 0.25));
+		//vec4 clr = radial_gradient(UV, circ, fg_color, vec4(fg_color.rgb, fg_color.a * 0.25));
 		if (is_in_circle(UV, circ)) {
 			final_color = paint(final_color, fg_color);
 		}

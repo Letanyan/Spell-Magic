@@ -62,7 +62,7 @@ func _ready() -> void:
 	# Forest location for world seed 0
 	player.position.x = randf_range(-10000, 10000)
 	player.position.z = randf_range(-10000, 10000)
-	player_movement_direction = Vector3(randf(), 0, randf()).normalized()
+	player_movement_direction = Vector3(randf(), 0, randf()).normalized() * randfn(1.0, 0.1)
 	player_rotation_direction = (randf() * 2 - 1) * PI / 16
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
@@ -92,13 +92,19 @@ func _process(delta: float) -> void:
 		theme.change_tint_color(tint)
 		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
 		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
-		var fg := tint.lightened(0.5) if is_day else tint
-		var bg := tint if is_day else tint.lightened(0.5)
-		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 0.75))
-		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 0.75))
+		var fg := tint
+		var bg := tint
+		if not is_day:
+			fg.v = fg.v * 1.5
+		else:
+			bg.v = bg.v * 1.5
+		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
+		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 1.0))
 		#title.modulate = tint
 		#title.outline_modulate = tint
-		(source.process_material as ParticleProcessMaterial).color = tint
+		var particle_color := tint
+		particle_color.v *= 1.5
+		(source.process_material as ParticleProcessMaterial).color = particle_color
 		(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)
 	
 func _physics_process(delta: float) -> void:

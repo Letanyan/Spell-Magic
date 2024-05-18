@@ -226,8 +226,7 @@ func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, 
 		A = mdt.get_vertex(i)
 		A.y = blender.height(A.x + x, A.z + y)
 		mdt.set_vertex(i, A)
-		#FIXME: only check vertices more central of mesh to avoid missing static body on animate. 
-		if A.y > max_height_position.y and r <= radius and mi.has_node("static"): 
+		if A.y > max_height_position.y and r <= radius and absf(A.x) < size / 2.0 and absf(A.z) < size / 2.0 and mi.has_node("static"): 
 			max_height_position = Vector3(A.x + x, A.y, A.z + y)
 	
 	if r <= radius and mi.has_node("static"):
