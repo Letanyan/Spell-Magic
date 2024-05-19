@@ -359,6 +359,8 @@ func _on_constants_text_changed() -> void:
 	
 	for k: String in book.spells[current_index].expressions:
 		var e: Expr = book.spells[current_index].expressions[k]
+		if e.contains_variable(k):
+			e.error = "Recursive variable definition"
 		if e.error.length() > 0:
 			errors_list["constant " + k] = e.error
 		else:
@@ -430,6 +432,8 @@ func check_all_errors() -> void:
 			
 	for k: String in book.spells[current_index].expressions:
 		var expr: Expr = book.spells[current_index].expressions[k]
+		if expr.contains_variable(k):
+			expr.error = "Recursive variable definition"
 		if expr.error.length() > 0:
 			errors_list["constant " + k] = expr.error
 		else:

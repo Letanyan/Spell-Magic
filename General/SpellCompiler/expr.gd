@@ -4,12 +4,17 @@ class_name Expr
 #var error: String
 var back: GDExpr
 var error: String:
+	set(v):
+		back.error = v
 	get:
 		return back.error
 
 func _init(expr: String) -> void:
 	back = GDExpr.new()
 	back.build(expr)
+	
+func contains_variable(var_name: String) -> bool:
+	return back.contains_variable(var_name)
 	
 #	var tokens = Token.tokenize(expr)
 #

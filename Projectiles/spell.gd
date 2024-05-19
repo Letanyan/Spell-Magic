@@ -190,8 +190,12 @@ func compute_expressions(fvars: Dictionary, additional: Dictionary = {}) -> void
 	temp.merge(fvars)
 	temp.merge(additional)
 	for k: String in expressions:
-		fvars[k] = (expressions[k] as Expr).compute(temp)
-		temp[k] = fvars[k]
+		var e := expressions[k] as Expr
+		if e.contains_variable(k):
+			fvars[k] = 0.0
+		else:
+			fvars[k] = e.compute(temp)
+			temp[k] = fvars[k]
 			
 func find_chain_list(include_self: bool) -> PackedStringArray:
 	var result := PackedStringArray([])
