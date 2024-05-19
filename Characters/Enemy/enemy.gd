@@ -145,7 +145,8 @@ func _physics_process(delta: float) -> void:
 			var obj := get_node(".") as CharacterBody
 			var path := GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, bounds.length() * 2)
 			velocity_movement.target_position = Navigator.find_next_target_from_path(path, position, obj, next_pos)
-			var speed_mult := 1.0 if path.size() <= 1 else position.distance_to(velocity_movement.target_position)
+			var speed_mult := position.distance_to(velocity_movement.target_position)
+			
 			speed_for_current_behaviour_tick *= speed_mult
 		if reset_spell_tick:
 			behavior_tick = Globals.behaviour_tick()

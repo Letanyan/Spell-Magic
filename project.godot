@@ -213,6 +213,10 @@ pan_back={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://Translations/translations.en.translation", "res://Translations/translations.es.translation")
+
 [layer_names]
 
 3d_physics/layer_1="world"
