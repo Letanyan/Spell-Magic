@@ -6,6 +6,11 @@
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="4_0c2pf"]
 [ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="5_5ldaq"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="6_wqlw8"]
+[ext_resource type="Material" uid="uid://06vclpgwwyc8" path="res://addons/kenney_prototype_tools/materials/dark/material_07.tres" id="7_t87v3"]
+[ext_resource type="Material" uid="uid://d0gmvf62uyhd0" path="res://addons/kenney_prototype_tools/materials/red/material_01.tres" id="7_ul78n"]
+[ext_resource type="Material" uid="uid://bmrckkx3cdrkk" path="res://addons/kenney_prototype_tools/materials/red/material_13.tres" id="8_m1hqp"]
+[ext_resource type="Material" uid="uid://ddal25jay8fq1" path="res://addons/kenney_prototype_tools/materials/purple/material_01.tres" id="9_fy4ku"]
+[ext_resource type="Material" uid="uid://duhk80o1wa5hh" path="res://addons/kenney_prototype_tools/materials/purple/material_13.tres" id="10_wuc0v"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rh1cl"]
 shader = ExtResource("4_0c2pf")
@@ -115,48 +120,33 @@ size = Vector3(1000, 0.5, 1000)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ewebh"]
 data = PackedVector3Array(-500, 0.25, 500, 500, 0.25, 500, -500, -0.25, 500, 500, 0.25, 500, 500, -0.25, 500, -500, -0.25, 500, 500, 0.25, -500, -500, 0.25, -500, 500, -0.25, -500, -500, 0.25, -500, -500, -0.25, -500, 500, -0.25, -500, 500, 0.25, 500, 500, 0.25, -500, 500, -0.25, 500, 500, 0.25, -500, 500, -0.25, -500, 500, -0.25, 500, -500, 0.25, -500, -500, 0.25, 500, -500, -0.25, -500, -500, 0.25, 500, -500, -0.25, 500, -500, -0.25, -500, 500, 0.25, 500, -500, 0.25, 500, 500, 0.25, -500, -500, 0.25, 500, -500, 0.25, -500, 500, 0.25, -500, -500, -0.25, 500, 500, -0.25, 500, -500, -0.25, -500, 500, -0.25, 500, 500, -0.25, -500, -500, -0.25, -500)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84r31"]
-albedo_color = Color(1, 0, 0, 1)
-
 [sub_resource type="SphereMesh" id="SphereMesh_72t17"]
-material = SubResource("StandardMaterial3D_84r31")
+material = ExtResource("7_ul78n")
 radius = 50.0
 height = 100.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oox1y"]
-albedo_color = Color(1, 0.580392, 0.580392, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_fh87i"]
-material = SubResource("StandardMaterial3D_oox1y")
+material = ExtResource("8_m1hqp")
 radius = 50.0
 height = 100.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_foqro"]
-albedo_color = Color(0, 0, 1, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_4c0co"]
 resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_foqro")
+material = ExtResource("9_fy4ku")
 radius = 50.0
 height = 100.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e6lrj"]
-albedo_color = Color(0, 0.611765, 1, 1)
-
 [sub_resource type="SphereMesh" id="SphereMesh_xr5cq"]
 resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_e6lrj")
+material = ExtResource("10_wuc0v")
 radius = 50.0
 height = 100.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_d4i3w"]
 size = Vector3(30, 10, 5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4wb3"]
-transparency = 1
-
 [sub_resource type="BoxMesh" id="BoxMesh_hcdbc"]
-material = SubResource("StandardMaterial3D_d4wb3")
+material = ExtResource("7_t87v3")
 size = Vector3(30, 10, 5)
 
 [node name="TestArena" type="Node3D"]
