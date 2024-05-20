@@ -560,3 +560,25 @@ static func real_color_from_element(el: Element) -> Color:
 		Element.ELECTRIC: return Color(0.486, 0, 0.569)
 		Element.VOID: return Color.BLACK
 		_: return Color.WHITE
+
+func bake(new_name: String) -> Spell:
+	var bx := GDExpr.bake(x, expression_strings)
+	var by := GDExpr.bake(y, expression_strings)
+	var bz := GDExpr.bake(z, expression_strings)
+	var bd := GDExpr.bake(delay, expression_strings)
+	var result := Spell.new(follow, bx, by, bz, radius, power, duration, element, count, bd, is_bomb, mana_cost, player_is_origin)
+	result.chain = chain
+	result.chain_cast_kind = chain_cast_kind
+	result.name = new_name
+	result.limit_r = limit_r
+	result.limit_v = limit_v
+	result.buff_r = buff_r
+	result.buff_v = buff_v
+	result.buff_attack = buff_attack
+	result.buff_defence = buff_defence
+	result.expression_strings = {}
+	result.build_expressions()
+	result.calculate_cooldown()
+	result.charge = charge
+	result.is_active = is_active
+	return result
