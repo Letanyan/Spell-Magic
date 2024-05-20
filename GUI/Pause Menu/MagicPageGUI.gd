@@ -89,27 +89,26 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	for n: String in spell.expression_strings:
 		expressions.text += "%s = %s\n" % [n, spell.expression_strings[n]]
 		
-	if index < 0:
-		name_edit.editable = false
-		x_edit.editable = false
-		y_edit.editable = false
-		z_edit.editable = false
-		r_edit.editable = false
-		power_edit.editable = false
-		duration_edit.editable = false
-		delay_edit.editable = false
-		count_edit.editable = false
-		mana_edit.editable = false
-		element_combo.disabled = true
-		chain_edit.editable = false
-		chain_combo.disabled = true
-		is_rel.disabled = true
-		is_bomb.disabled = true
-		player_is_origin.disabled = true
-		expressions.editable = false
-		delete_button.disabled = true
-		view_chain_button.disabled = true
-		duplicate_button.disabled = true
+	name_edit.editable = false if index < 0 else true
+	x_edit.editable = false if index < 0 else true
+	y_edit.editable = false if index < 0 else true
+	z_edit.editable = false if index < 0 else true
+	r_edit.editable = false if index < 0 else true
+	power_edit.editable = false if index < 0 else true
+	duration_edit.editable = false if index < 0 else true
+	delay_edit.editable = false if index < 0 else true
+	count_edit.editable = false if index < 0 else true
+	mana_edit.editable = false if index < 0 else true
+	element_combo.disabled = true if index < 0 else false
+	chain_edit.editable = false if index < 0 else true
+	chain_combo.disabled = true if index < 0 else false
+	is_rel.disabled = true if index < 0 else false
+	is_bomb.disabled = true if index < 0 else false
+	player_is_origin.disabled = true if index < 0 else false
+	expressions.editable = false if index < 0 else true
+	delete_button.disabled = true if index < 0 else false
+	view_chain_button.disabled = true if index < 0 else false
+	duplicate_button.disabled = true if index < 0 else false
 		
 	check_all_errors()
 		

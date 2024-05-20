@@ -136,6 +136,6 @@ func drop_artifact() -> Artifact:
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
 	
 func drop_spell() -> Spell:
-	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"})
-	spell.name = player.name_generator.latin_names.generate(6, 2)
+	var new_name := player.name_generator.latin_names.generate(6, 2)
+	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"}).bake(new_name)
 	return spell

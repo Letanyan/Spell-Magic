@@ -36,6 +36,9 @@ func add_source(source_path: SourcePath, chunk_size: int = 2, clear_current_sour
 	if source_path == SourcePath.none:
 		return
 		
+	if source_paths.find(source_path) == -1:
+		return
+		
 	source_paths.append(source_path)
 	chunk_sizes.append(chunk_size)
 		
@@ -63,6 +66,7 @@ func add_source(source_path: SourcePath, chunk_size: int = 2, clear_current_sour
 				initial[s] += 1.0
 			if not transitions.has(s):
 				transitions[s] = {}
+			if not transition_count.has(s):
 				transition_count[s] = 0.0
 			if not (transitions[s] as Dictionary).has(r):
 				transitions[s][r] = 0.0
@@ -162,6 +166,21 @@ func load_dict(data: Dictionary) -> void:
 	output = data["output"]
 	source_paths.assign(data["source_paths"] as Array)
 	chunk_sizes.assign(data["chunk_sizes"] as Array)
+	
+	var remove_all: Array[SourcePath] = []
+	var found := {}
+	var path_index := 0
+	for path in source_paths:
+		if found.has(path):
+			remove_all.append(path_index)
+		else:
+			found[path] = true
+		path_index += 1
+			
+	remove_all.reverse()
+	for idx in remove_all:
+		source_paths.remove_at(idx)
+		chunk_sizes.remove_at(idx)
 	
 	for index in source_paths.size():
 		var path := source_paths[index]

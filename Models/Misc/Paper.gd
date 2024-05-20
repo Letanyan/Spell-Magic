@@ -18,7 +18,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if not eaten and body is Player and spell != null:
 		eaten = true
 		if not (body as Player).magic_book.spell_exists(spell.name):
-			(body as Player).magic_book.add(spell)
 			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' picked up" % spell.name)		
 		else:
 			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' already in Magic Book" % spell.name)
