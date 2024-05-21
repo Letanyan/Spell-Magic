@@ -164,7 +164,7 @@ func _physics_process(delta: float) -> void:
 			play_animation("attack")
 			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"] as StringName).length / 2.0).timeout
 			await get_tree().physics_frame
-			cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_sibling", p), spell)
+			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell)
 		
 
 	spell_caster.update(self, delta)

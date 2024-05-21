@@ -30,7 +30,7 @@ func update(body: Node3D, delta: float) -> void:
 			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
-				p.cast_spell(func(np: SpellBody) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
+				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			tracking_node.erase(p.name)
 			should_remove.append(i)
 
@@ -243,15 +243,15 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) -> void:
 	var q: Node3D = null
-	if delay > 0 and (p.spell.is_bomb or (not p.spell.follow and not body is SpellBody) ):
+	if delay > 0 and p.spell.is_bomb:
 		q = p.spell.get_turret(p.n, p.fixed_vars)
 		insert.call(q)
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
-	if not p.spell.is_bomb:
-		spell_variables(p.fixed_vars, body, SpellVariableKind.FIXED, p, p.spell)
-	else:
+	if p.spell.is_bomb:
 		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
+	else:
+		spell_variables(p.fixed_vars, body, SpellVariableKind.FIXED, p, p.spell)
 		
 	p.spell.compute_expressions(p.fixed_vars)
 	insert.call(p)

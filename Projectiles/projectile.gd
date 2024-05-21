@@ -28,7 +28,7 @@ var pause_time: float = 0.0
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PROJECTILE)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
-		cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
+		cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
 
 func _physics_process(delta: float) -> void:
 	spell_caster.update(self, delta)
@@ -211,7 +211,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(_body):
 			on_hit_casts[_body] = true
-			cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
+			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
 		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := _body as Player
@@ -278,7 +278,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(area):
 			on_hit_casts[area] = true
-			cast_spell(func(p: SpellBody) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
+			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
 		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Player
