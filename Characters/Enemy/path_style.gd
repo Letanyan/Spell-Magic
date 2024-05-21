@@ -192,7 +192,9 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 	var result := Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta))
 	
 	#if fmod(time, path.total_duration) < fmod(old_t, path.total_duration):
-	if time >= path.total_duration and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
+	
+	# don't use positions to determine completion as might get stuck if time near total_duration
+	if time >= path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
 		me_start_position = null
 		time = 0.0
 		if is_done:
