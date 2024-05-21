@@ -160,7 +160,7 @@ func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int)
 # xyz = position, w = speed
 func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector4:
 	time += delta
-	var old_t := last_t
+	#var old_t := last_t
 	last_t = time
 	if is_done:
 		is_done.data = false
@@ -188,16 +188,18 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
 	var v := path.position_at_time_with_rotation(duration, -player_vision_rotation, index) + temp_origin
+	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	var result := Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta))
 	
-	if fmod(time, path.total_duration) < fmod(old_t, path.total_duration):
+	#if fmod(time, path.total_duration) < fmod(old_t, path.total_duration):
+	if time >= path.total_duration and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
 		me_start_position = null
 		time = 0.0
 		if is_done:
 			is_done.data = true
 		stored_loops += 1
 		
-	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
-	return Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta))
+	return result
 
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:

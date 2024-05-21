@@ -210,10 +210,10 @@ static func neighbours(p: CollisionObject3D, from: Vector3, directions: int, dis
 		if options & MovementOptions.CAN_FLY == 0:
 			to.y = get_world_height_from_node(p, to.x, to.z) + shape_height(shape) / 2.0 + 0.05
 		to = to.snapped(Vector3(distance, distance, distance))
-		var distance_away := get_shape_distance_away(p, from, to, shape, options & MovementOptions.UNDERGROUND != 0)
+		var distance_away := get_shape_distance_away(p, from, to, shape, (options & MovementOptions.UNDERGROUND) != 0)
 		if distance_away[0] == 1.0 and distance_away[1] == 1.0:
 			result.append(to)
-		elif distance_away[0] >= 0.1 and not get_shape_collides(p, from, to, shape, options & MovementOptions.UNDERGROUND != 0):
+		elif distance_away[0] >= 0.1 and not get_shape_collides(p, from, to, shape, (options & MovementOptions.UNDERGROUND) != 0):
 			result.append(from.lerp(to, distance_away[0]))
 		direction = direction.rotated(Vector3.UP, angle)
 		
@@ -230,7 +230,7 @@ static func neighbours(p: CollisionObject3D, from: Vector3, directions: int, dis
 	return final_result
 	
 const debug = false
-enum MovementOptions { CAN_FLY = 1 << 1, UNDERGROUND = 1 << 2 }
+enum MovementOptions { CAN_FLY = 1 << 0, UNDERGROUND = 1 << 1 }
 # options is MovementOption set
 static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options: int, margin_from_target: float = 1.0, margin_from_obs: float = 0.0) -> Array[Vector3]:	
 	var start := p.global_position
@@ -253,7 +253,7 @@ static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options
 			best_distance = current_distance
 			closest_point = current
 		if current_distance <= distance:
-			if debug: print("++ A")
+			if debug: print("astar: A")
 			return reconstruct_path(came_from, current)
 			
 		open.erase(current)
@@ -275,35 +275,37 @@ static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options
 			# getting stuck in a local minima. Using the current path adds some 
 			# non-determinism to help the agent find other paths?
 			# return reconstruct_path(came_from, current)
-			if debug: print("++ B")
+			if debug: print("astar: B")
 			#print(open)
 			return reconstruct_path(came_from, closest_point)
 				
-	if debug: print("++ C")
+	if debug: print("astar: C")
 	return [target]
 	
 static func will_collide(p: CollisionObject3D, shape: Shape3D, target: Vector3, exclude_ground: bool) -> bool:
+	print("will_collide: ", target, exclude_ground)
 	return get_shape_collides(p, p.global_position, target, shape, exclude_ground)
 	
 # options is MovementOption set
 static func find_target_path(p: CollisionObject3D, target: Vector3, shape: Shape3D, options: int, margin_from_target: float = 2.0, margin_from_obs: float = 0.5) -> Array[Vector3]:
 	var new_shape := shape_increase(shape, margin_from_obs)
 	if p.global_position.distance_to(target) > 100.0:
-		if debug: print("A")
+		if debug: print("find_target_path: A")
 		return [target]
-	if not will_collide(p, new_shape, target, options & MovementOptions.UNDERGROUND != 0):
-		if debug: print("B")
+	if not will_collide(p, new_shape, target, (options & MovementOptions.UNDERGROUND) != 0):
+		if debug: print("find_target_path: B")
 		return [target]
 				
 	var path := astar(p, target, new_shape, options, margin_from_target, margin_from_obs)
 	if path.is_empty():
-		if debug: print("D")		
+		if debug: print("find_target_path: C")
 		return [target]
 	
 	if debug:
 		for pos in path:
 			DebugDraw3D.draw_sphere(pos, shape_max_bound(new_shape) / 2.0, Color(1, 0, 0), 0.5)
-				
+		
+	if debug: print("find_target_path: D")
 	return path 
 	
 static func find_next_target_from_path(path: PackedVector3Array, current: Vector3, p: CollisionObject3D, target: Vector3) -> Vector3:

@@ -2,7 +2,7 @@ class_name AttackSequence
 	
 enum Reset { PATH, ATTACK }
 
-var actions: Array # [](Reset, PathStyle, AttackPatterns)
+var actions: Array # [](Reset, PathStyle, AttackPatterns, ASLabel, ASCondition)
 var index: int
 var should_loop: bool
 
@@ -53,15 +53,53 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		var next_movement := last_path.next_position(delta, me, player, is_done)
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)
-		if is_done.data: 
+		if is_done.data:
 			# we can set stored_loops to -x to have last_path repeat x times
 			if last_path.stored_loops >= 0:
 				did_update_index = true
 				index += 1
 	elif current_action is AttackPatterns:
 		last_attack = current_action
-		did_update_index = true
+		if last_attack.is_complete:
+			did_update_index = true
+			index += 1
+			is_done.data = true
+	elif current_action is ASLabel:
 		index += 1
+		did_update_index = true
 		is_done.data = true
-		
+	elif current_action is ASCondition:
+		var new_label := (current_action as ASCondition).condition.call() as String
+		if new_label.is_empty():
+			index += 1
+			did_update_index = true
+			is_done.data = true
+		else:
+			var new_index := -1
+			for action: Variant in actions:
+				new_index += 1
+				if action is ASLabel:
+					if (action as ASLabel).label == new_label:
+						break
+			if new_index > -1:
+				index = new_index
+			else:
+				index += 1
+			did_update_index = true
+			is_done.data = true
+			
 	return did_update_index
+
+
+class ASLabel:
+	var label: String
+	func _init(lbl: String) -> void:
+		label = lbl
+		
+class ASCondition:
+	var condition: Callable
+	func _init(cond: Callable) -> void:
+		condition = cond
+		
+	static func probability_jump(map: Dictionary) -> ASCondition:
+		return ASCondition.new(func() -> String: return Population.random_entity_from_distribution(randf(), map, ""))
