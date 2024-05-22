@@ -18,8 +18,8 @@ func _ready() -> void:
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, 5, 0)) \
-		.line_to(Vector3(0, 5, 50), snappedf(10.0, Globals.behaviour_tick()), PathStyle.Easing.linear) \
-		.line_to(Vector3(0, 5, 0), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.linear)
+		.line_to(Vector3(0, 5, 50), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.in_quint) \
+		.line_to(Vector3(0, 5, 0), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
 	idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_ground_and_air()
 	
 	#idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 10, 5).use_absolute().align_y_to_origin()
