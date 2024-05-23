@@ -12,12 +12,13 @@ var seed_offset: float
 var mover: Mover = Mover.ABSOLUTE
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
-var last_t: float = 0.0
 var stored_loops: int = 0
 var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
 var time_offset: float = 0.0
 var time: float = 0.0
+var old_position: Vector4 = Vector4.ZERO
+var is_on_path: bool = false
 
 var me_start_position: Variant = null # used to store entity position (Vec3) at start of movement
 
@@ -33,6 +34,13 @@ func _init(_seed: float = randf(), _origin: Vector3 = Vector3.ZERO) -> void:
 	origin_kind = OriginKind.ABSOLUTE
 	if _seed == 0.0:
 		time_offset = Time.get_unix_time_from_system()
+		
+static func still_path() -> PathStyle:
+	var result := PathStyle.new()
+	result.use_absolute()
+	result.set_use_me_as_origin()
+	result.align_y_to_origin()
+	return result
 	
 func set_origin(o: Vector3) -> PathStyle:
 	origin = o
@@ -160,8 +168,6 @@ func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int)
 # xyz = position, w = speed
 func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector4:
 	time += delta
-	#var old_t := last_t
-	last_t = time
 	if is_done:
 		is_done.data = false
 	if me_start_position == null:
@@ -185,23 +191,28 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 		temp_origin += off
 	
 	
-	var duration := clampf(time, 0, path.total_duration)
-	var index := Globals.Ref.new(0)
-	var v := path.position_at_time_with_rotation(duration, -player_vision_rotation, index) + temp_origin
-	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
-	var result := Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta))
-	
 	#if fmod(time, path.total_duration) < fmod(old_t, path.total_duration):
 	
 	# don't use positions to determine completion as might get stuck if time near total_duration
-	if time >= path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
+	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
 		me_start_position = null
 		time = 0.0
 		if is_done:
 			is_done.data = true
 		stored_loops += 1
+	
+	if Vector3(old_position.x, old_position.y, old_position.z).is_equal_approx(me.position):
+		is_on_path = true
+	else:
+		is_on_path = false
+	
+	var duration := clampf(time, 0, path.total_duration)
+	var index := Globals.Ref.new(0)
+	var v := path.position_at_time_with_rotation(duration, -player_vision_rotation, index) + temp_origin
+	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
 		
-	return result
+	return old_position
 
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:
@@ -346,7 +357,7 @@ class Pathway:
 		var modifier := (path_modifiers[segment] as Segment).position_at_time(ratio).y
 		return (segments[segment] as Segment).position_at_time_with_rotation(modifier, angle)
 		
-	func speed_at_time(t: float, delta: float, index: Globals.Ref = null) -> float:
+	func speed_at_time(t: float, delta: float, use_relative_speed: float, index: Globals.Ref = null) -> float:
 		var running := 0.0
 		var segment := 0
 		for i in range(durations.size()):
@@ -359,12 +370,15 @@ class Pathway:
 		if index:
 			index.data = segment
 			
-		#var change_in_t := delta / durations[segment]
-		#var ratio := t / durations[segment]
-		#var modifier := path_modifiers[segment]
-		# we use absolute here because the direction is maintained in the position calculation
-		#var rate_of_change := absf(modifier.position_at_time(ratio + change_in_t).y - modifier.position_at_time(ratio).y) / change_in_t
-		return movement_speed[segment] #* rate_of_change
+		if use_relative_speed:
+			var change_in_t := delta / durations[segment]
+			var ratio := t / durations[segment]
+			var modifier := path_modifiers[segment]
+			# we use absolute here because the direction is maintained in the position calculation
+			var rate_of_change := absf(modifier.position_at_time(ratio + change_in_t).y - modifier.position_at_time(ratio).y) / change_in_t
+			return movement_speed[segment] * rate_of_change
+		else:
+			return movement_speed[segment]			
 			
 	func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		var segment := 0

@@ -11,6 +11,11 @@ var target_position: Vector3:
 	set(value):
 		target_position = value
 		has_navigation_target = true
+var target_path: PackedVector3Array:
+	set(value):
+		target_path = value
+		has_navigation_target = true
+var target_path_duration := 0.0
 var has_navigation_target: bool
 
 var vital_tick: float = 0.0
@@ -48,9 +53,21 @@ func increment_ticks(delta: float) -> void:
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
-	
+		
+	#if not target_path.is_empty():
+		#if target_path_duration < 0.0:
+			#target_path_duration = 0.0
+			#target_path.clear()
+			#has_navigation_target = false
+		#else:
+			#target_path_duration -= delta
+		
 	if body.position.is_equal_approx(target_position):
-		has_navigation_target = false
+		if target_path.is_empty():
+			has_navigation_target = false
+		else:
+			target_position = target_path[0]
+			target_path.remove_at(0)
 	
 	var navigation_velocity := Vector3.ZERO
 	if has_navigation_target:

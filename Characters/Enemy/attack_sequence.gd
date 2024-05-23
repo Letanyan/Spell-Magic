@@ -1,10 +1,12 @@
 class_name AttackSequence
 	
-enum Reset { PATH, ATTACK }
+enum ASOptions { RESET_PATH, RESET_ATTACK, PERSIST_PATH, PERSIST_ATTACK, AUTO_RESET_PATH, AUTO_RESET_ATTACK }
+enum Persist { PATH = 1 << 0, ATTACK = 1 << 1 }
 
-var actions: Array # [](Reset, PathStyle, AttackPatterns, ASLabel, ASCondition)
+var actions: Array # [](Options, PathStyle, AttackPatterns, ASLabel, ASCondition)
 var index: int
 var should_loop: bool
+var persist: int = 0 #Persist.ATTACK
 
 var last_path: PathStyle
 var last_attack: AttackPatterns
@@ -39,16 +41,31 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 	var did_update_index := false
 		
 	var current_action: Variant = actions[index]
-	
-	if current_action is Reset:
-		if current_action == Reset.ATTACK:
+	const DEBUG = false
+	if current_action is ASOptions:
+		if current_action == ASOptions.RESET_ATTACK:
+			if DEBUG: print(index, " RESET: ATTACK")
 			last_attack = null
-		elif current_action == Reset.PATH:
+		elif current_action == ASOptions.RESET_PATH:
+			if DEBUG: print(index, " RESET: PATH")			
 			last_path = null
+		elif current_action == ASOptions.PERSIST_ATTACK:
+			if DEBUG: print(index, " PERSIST: ATTACK")	
+			persist |= Persist.ATTACK
+		elif current_action == ASOptions.PERSIST_PATH:
+			if DEBUG: print(index, " PERSIST: PATH")	
+			persist |= Persist.PATH
+		elif current_action == ASOptions.AUTO_RESET_ATTACK:
+			if DEBUG: print(index, " AUTO RESET: ATTACK")	
+			persist &= ~Persist.ATTACK
+		elif current_action == ASOptions.AUTO_RESET_PATH:
+			if DEBUG: print(index, " AUTO RESET: PATH")	
+			persist &= ~Persist.PATH
 		index += 1
 		did_update_index = true
 		is_done.data = true
 	elif current_action is PathStyle:
+		if DEBUG: print(index, " PathStyle")
 		last_path = current_action
 		var next_movement := last_path.next_position(delta, me, player, is_done)
 		next_movement_speed = next_movement.w
@@ -58,17 +75,24 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 			if last_path.stored_loops >= 0:
 				did_update_index = true
 				index += 1
+				if (persist & Persist.PATH) == 0:
+					last_path = null
 	elif current_action is AttackPatterns:
+		if DEBUG: print(index, " AttackPatterns")
 		last_attack = current_action
 		if last_attack.is_complete:
 			did_update_index = true
 			index += 1
 			is_done.data = true
+			if (persist & Persist.ATTACK) == 0:
+				last_attack = null
 	elif current_action is ASLabel:
+		if DEBUG: print(index, " ASLabel")		
 		index += 1
 		did_update_index = true
 		is_done.data = true
 	elif current_action is ASCondition:
+		if DEBUG: print(index, " ASCondition")	
 		var new_label := (current_action as ASCondition).condition.call() as String
 		if new_label.is_empty():
 			index += 1
@@ -90,6 +114,8 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 			
 	return did_update_index
 
+func is_complete() -> bool:
+	return index >= actions.size()
 
 class ASLabel:
 	var label: String

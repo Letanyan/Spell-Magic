@@ -11,6 +11,18 @@ static func shape_max_bound(shape: Shape3D) -> float:
 		return max(capsule.radius * 2.0, capsule.height)
 	return 1.0
 	
+static func shape_bounds(shape: Shape3D) -> Vector3:
+	if shape is BoxShape3D:
+		var box := shape as BoxShape3D
+		return box.size
+	elif shape is SphereShape3D:
+		var r := (shape as SphereShape3D).radius * 2.0
+		return Vector3(r, r, r)
+	elif shape is CapsuleShape3D:
+		var capsule := shape as CapsuleShape3D
+		return Vector3(capsule.radius * 2.0, capsule.height, capsule.radius * 2.0)
+	return Vector3(1, 1, 1)
+	
 static func shape_height(shape: Shape3D) -> float:
 	if shape is BoxShape3D:
 		var box := shape as BoxShape3D
@@ -283,7 +295,7 @@ static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options
 	return [target]
 	
 static func will_collide(p: CollisionObject3D, shape: Shape3D, target: Vector3, exclude_ground: bool) -> bool:
-	print("will_collide: ", target, exclude_ground)
+	if debug: print("will_collide: ", target, exclude_ground)
 	return get_shape_collides(p, p.global_position, target, shape, exclude_ground)
 	
 # options is MovementOption set

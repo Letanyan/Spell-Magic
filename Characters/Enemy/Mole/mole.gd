@@ -51,7 +51,7 @@ func _ready() -> void:
 	var Z := Vector3.ZERO
 	var up_pathway := PathStyle.Pathway.new(
 		[PathStyle.Segment.linear(Vector3(0, U, 0), Z), PathStyle.Segment.point(Z, 1)],
-		[3, 2],
+		[3, 5],
 		[PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	var down_pathway := PathStyle.Pathway.new(
@@ -86,7 +86,6 @@ func _ready() -> void:
 		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
-		AttackSequence.Reset.ATTACK,
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
@@ -94,7 +93,6 @@ func _ready() -> void:
 		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
-		AttackSequence.Reset.ATTACK,
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
@@ -102,7 +100,6 @@ func _ready() -> void:
 		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
-		AttackSequence.Reset.ATTACK,
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
@@ -110,7 +107,6 @@ func _ready() -> void:
 		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
-		AttackSequence.Reset.ATTACK,
 		
 		PathStyle.new(0.0).follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new(0.0).follow_path(
@@ -118,7 +114,6 @@ func _ready() -> void:
 		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
 		PathStyle.new(0.0).follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
-		AttackSequence.Reset.ATTACK,
 	])
 	
 	animation_map["attack"] = "Weapon"
