@@ -98,7 +98,7 @@ func _process(delta: float) -> void:
 			fg.v = fg.v * 1.5
 		else:
 			bg.v = bg.v * 1.5
-		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
+		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
 		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 1.0))
 		#title.modulate = tint
 		#title.outline_modulate = tint

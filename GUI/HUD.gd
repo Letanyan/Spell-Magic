@@ -305,6 +305,8 @@ func update_settings(settings: WorldSettings) -> void:
 	stats_view.visible = not hud_settings.hide_stats_view
 	
 	player.cam.fov = settings.camera_settings.fov
+	
+	player.change_reticule_visible(hud_settings.hide_reticule)
 		
 	update_stats_view()
 	update_wand_mappings()

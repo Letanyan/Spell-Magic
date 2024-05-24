@@ -90,8 +90,8 @@ size = Vector2(5400, 1200)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_o5clw"]
 noise_type = 2
-seed = 1
-frequency = 0.0133
+seed = 3
+frequency = 0.0172
 fractal_type = 2
 fractal_octaves = 2
 fractal_lacunarity = 5.0
@@ -107,16 +107,18 @@ domain_warp_fractal_octaves = 2
 domain_warp_fractal_lacunarity = 10.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3ov41"]
+width = 128
+height = 128
 seamless = true
 noise = SubResource("FastNoiseLite_o5clw")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_agk7x"]
 render_priority = 0
 shader = ExtResource("11_u2pvt")
-shader_parameter/bg_color = Color(0.541176, 0.541176, 0.541176, 1)
-shader_parameter/fg_color = Color(1, 1, 1, 1)
-shader_parameter/movement_speed = Vector2(0, 0.25)
-shader_parameter/scale_speed = 1.0
+shader_parameter/bg_color = Color(1, 1, 1, 1)
+shader_parameter/fg_color = Color(0, 0.74902, 0, 1)
+shader_parameter/movement_speed = Vector2(0, 0.05)
+shader_parameter/scale_speed = 0.5
 shader_parameter/noise_tex = SubResource("NoiseTexture2D_3ov41")
 
 [sub_resource type="TextMesh" id="TextMesh_diikd"]

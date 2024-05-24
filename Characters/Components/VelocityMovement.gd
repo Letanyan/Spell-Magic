@@ -160,11 +160,11 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		
 	return result
 
-func rotate_character(body: Player, direction: Vector3) -> void:
+func rotate_character(body: Player, direction: Vector3, is_underwater: bool) -> void:
 	if direction != Vector3.ZERO:
 		var cam_pivot := body.get_node("CamPivot") as Marker3D
 		var pivot := body.get_node("Pivot") as Node3D
-		if direction != Vector3.ZERO:
+		if is_underwater:
 			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
 		else:
 			pivot.rotation.y = lerp_angle(pivot.rotation.y, cam_pivot.rotation.y, 0.3)

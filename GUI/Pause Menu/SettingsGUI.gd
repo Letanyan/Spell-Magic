@@ -126,6 +126,10 @@ func _on_hide_cooldown_timings_toggled(button_pressed: bool) -> void:
 func _on_hide_stats_view_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_stats_view = button_pressed
 	settings_changed.emit(world_settings)
+	
+func _on_hide_reticule_toggled(button_pressed: bool) -> void:
+	world_settings.hud_settings.hide_reticule = button_pressed
+	settings_changed.emit(world_settings)
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not has_focus():

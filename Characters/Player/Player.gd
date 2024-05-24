@@ -61,6 +61,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(on_pick_up_artifact)
 	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
 	
+	
 func emit_vitals_update() -> void:
 	vital_update.emit(vitals)
 	
@@ -117,7 +118,7 @@ func _physics_process(delta: float) -> void:
 	velocity = movement["velocity"]
 	var direction := movement["direction"] as Vector3
 	var is_underwater := not is_on_floor() and position.y <= Globals.sea_level() and direction != Vector3.ZERO and velocity != Vector3.ZERO
-	velocity_movement.rotate_character(get_node(".") as Player, direction if is_underwater else Vector3.ZERO)
+	velocity_movement.rotate_character(get_node(".") as Player, direction, is_underwater)
 	move_and_slide()
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor():
@@ -427,6 +428,9 @@ func transition_menu(is_open: bool) -> void:
 		cam_animator.play("OpenMenu")
 	else:		
 		cam_animator.play("CloseMenu")
+		
+func change_reticule_visible(should_hide: bool) -> void:
+	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide
 
 func play_walking_audio(stream: AudioStream) -> void:
 	if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:

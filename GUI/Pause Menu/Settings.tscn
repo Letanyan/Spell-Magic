@@ -110,6 +110,17 @@ offset_bottom = 250.0
 grow_horizontal = 2
 text = "Hide Stats View"
 
+[node name="HideReticule" type="CheckButton" parent="Tabs/HUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -152.0
+offset_top = 253.0
+offset_right = 144.0
+offset_bottom = 278.0
+text = "Hide Reticule"
+
 [node name="Camera" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
@@ -570,6 +581,7 @@ bbcode_enabled = true
 [connection signal="toggled" from="Tabs/HUD/HideHealthAndMana" to="." method="_on_hide_health_and_mana_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideCooldownTimings" to="." method="_on_hide_cooldown_timings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideStatsView" to="." method="_on_hide_stats_view_toggled"]
+[connection signal="toggled" from="Tabs/HUD/HideReticule" to="." method="_on_hide_reticule_toggled"]
 [connection signal="value_changed" from="Tabs/Camera/FOV Label/Slider" to="." method="_on_fov_slider_value_changed"]
 [connection signal="item_selected" from="Tabs/Graphics/Scaling Mode/Options" to="." method="_on_scaling_mode_options_item_selected"]
 [connection signal="drag_ended" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_drag_ended"]
