@@ -20,6 +20,8 @@ var last_biome: World.Biome = World.Biome.WATER
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
+var biome_tween_queue: Array[World.Biome] = []
+var biome_tween: Tween = null
 
 var terrain_update_interval := 0.0
 var has_init_terrain_population := false
@@ -218,6 +220,8 @@ func _physics_process(delta: float) -> void:
 	if last_biome != b:
 		player.current_biome = b
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
+		transition_to_biome(b)
+		biome_tween_queue.append(b)
 		last_biome = b
 			
 	if not menu.is_showing:
@@ -393,3 +397,24 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			
 			#FIXME: maybe delete save file? but definitly do something more
 			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
+
+func transition_to_biome(biome: World.Biome) -> void:
+	if not biome_tween_queue.is_empty():
+		return
+	
+	var env := get_node("WorldEnvironment") as WorldEnvironment
+	var update_world := func(a: float) -> void:
+		var shader := env.environment.sky.sky_material as ShaderMaterial
+		shader.set_shader_parameter("transition", a)
+		
+	biome_tween = get_tree().create_tween()
+	NoiseBlender.update_world_environment(env, biome, false)
+	biome_tween.tween_method(update_world, 0.0, 1.0, 0.5)
+	biome_tween.finished.connect(func() -> void: 
+		NoiseBlender.update_world_environment(env, biome, true)
+		update_world.call(0.0)
+		biome_tween_queue.pop_front()
+		if not biome_tween_queue.is_empty():
+			var b := biome_tween_queue[0] as World.Biome
+			transition_to_biome(b)
+	)

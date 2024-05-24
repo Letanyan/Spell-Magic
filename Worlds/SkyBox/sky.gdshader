@@ -3,38 +3,59 @@ render_mode use_quarter_res_pass;
 
 // Originaly based on https://godotshaders.com/shader/stylized-sky-shader-with-clouds/ but there's not much left
 
+uniform float transition = 0.0;
+
 group_uniforms sky;
-	uniform vec3 day_top_color : source_color = vec3( 0.1, 0.6, 1.0 );
-	uniform vec3 day_bottom_color : source_color = vec3( 0.4, 0.8, 1.0 );
-	uniform vec3 sunset_top_color : source_color = vec3( 0.7, 0.75, 1.0 );
-	uniform vec3 sunset_bottom_color : source_color = vec3( 1.0, 0.5, 0.7 );
-	uniform vec3 night_top_color : source_color = vec3( 0.02, 0.0, 0.04 );
-	uniform vec3 night_bottom_color : source_color = vec3( 0.1, 0.0, 0.2 );
+	uniform vec3 start_day_top_color : source_color = vec3( 0.1, 0.6, 1.0 );
+	uniform vec3 start_day_bottom_color : source_color = vec3( 0.4, 0.8, 1.0 );
+	uniform vec3 start_sunset_top_color : source_color = vec3( 0.7, 0.75, 1.0 );
+	uniform vec3 start_sunset_bottom_color : source_color = vec3( 1.0, 0.5, 0.7 );
+	uniform vec3 start_night_top_color : source_color = vec3( 0.02, 0.0, 0.04 );
+	uniform vec3 start_night_bottom_color : source_color = vec3( 0.1, 0.0, 0.2 );
+	uniform vec3 final_day_top_color : source_color = vec3( 0.1, 0.6, 1.0 );
+	uniform vec3 final_day_bottom_color : source_color = vec3( 0.4, 0.8, 1.0 );
+	uniform vec3 final_sunset_top_color : source_color = vec3( 0.7, 0.75, 1.0 );
+	uniform vec3 final_sunset_bottom_color : source_color = vec3( 1.0, 0.5, 0.7 );
+	uniform vec3 final_night_top_color : source_color = vec3( 0.02, 0.0, 0.04 );
+	uniform vec3 final_night_bottom_color : source_color = vec3( 0.1, 0.0, 0.2 );
 
 group_uniforms horizon;
-	uniform vec3 horizon_color : source_color = vec3( 0.0, 0.7, 0.8 );
-	uniform float horizon_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.05;
+	uniform vec3 start_horizon_color : source_color = vec3( 0.0, 0.7, 0.8 );
+	uniform float start_horizon_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.05;
+	uniform vec3 final_horizon_color : source_color = vec3( 0.0, 0.7, 0.8 );
+	uniform float final_horizon_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.05;
 
 group_uniforms sun; // First DirectionalLight3D will be the sun
-	uniform vec3 sun_color : source_color = vec3( 10.0, 8.0, 1.0 );
-	uniform vec3 sun_sunset_color : source_color = vec3( 10.0, 0.0, 0.0 );
-	uniform float sun_size : hint_range( 0.01, 1.0 ) = 0.2;
-	uniform float sun_blur : hint_range( 0.01, 20.0 ) = 10.0;
+	uniform vec3 start_sun_color : source_color = vec3( 10.0, 8.0, 1.0 );
+	uniform vec3 start_sun_sunset_color : source_color = vec3( 10.0, 0.0, 0.0 );
+	uniform float start_sun_size : hint_range( 0.01, 1.0 ) = 0.2;
+	uniform float start_sun_blur : hint_range( 0.01, 20.0 ) = 10.0;
+	uniform vec3 final_sun_color : source_color = vec3( 10.0, 8.0, 1.0 );
+	uniform vec3 final_sun_sunset_color : source_color = vec3( 10.0, 0.0, 0.0 );
+	uniform float final_sun_size : hint_range( 0.01, 1.0 ) = 0.2;
+	uniform float final_sun_blur : hint_range( 0.01, 20.0 ) = 10.0;
 
 group_uniforms moon; // Second DirectionalLight3D will be the moon
-	uniform vec3 moon_color : source_color = vec3( 1.0, 0.95, 0.7 );
-	uniform float moon_size : hint_range( 0.01, 1.0 ) = 0.06;
-	uniform float moon_blur : hint_range( 0.01, 10.0 ) = 0.1;
+	uniform vec3 start_moon_color : source_color = vec3( 1.0, 0.95, 0.7 );
+	uniform float start_moon_size : hint_range( 0.01, 1.0 ) = 0.06;
+	uniform float start_moon_blur : hint_range( 0.01, 10.0 ) = 0.1;
+	uniform vec3 final_moon_color : source_color = vec3( 1.0, 0.95, 0.7 );
+	uniform float final_moon_size : hint_range( 0.01, 1.0 ) = 0.06;
+	uniform float final_moon_blur : hint_range( 0.01, 10.0 ) = 0.1;
 
 group_uniforms clouds;
 	// Replaced by noise functions, unncomment if you want to use graphical textures
 //	uniform sampler2D clouds_top_texture : filter_linear_mipmap, hint_default_black;
 //	uniform sampler2D clouds_middle_texture : filter_linear_mipmap, hint_default_black;
 //	uniform sampler2D clouds_bottom_texture : filter_linear_mipmap, hint_default_black;
-	uniform vec3 clouds_edge_color : source_color = vec3( 0.8, 0.8, 0.98 );
-	uniform vec3 clouds_top_color : source_color = vec3( 1.0, 1.0, 1.00 );
-	uniform vec3 clouds_middle_color : source_color = vec3( 0.92, 0.92, 0.98 );
-	uniform vec3 clouds_bottom_color : source_color = vec3( 0.83, 0.83, 0.94 );
+	uniform vec3 start_clouds_edge_color : source_color = vec3( 0.8, 0.8, 0.98 );
+	uniform vec3 start_clouds_top_color : source_color = vec3( 1.0, 1.0, 1.00 );
+	uniform vec3 start_clouds_middle_color : source_color = vec3( 0.92, 0.92, 0.98 );
+	uniform vec3 start_clouds_bottom_color : source_color = vec3( 0.83, 0.83, 0.94 );
+	uniform vec3 final_clouds_edge_color : source_color = vec3( 0.8, 0.8, 0.98 );
+	uniform vec3 final_clouds_top_color : source_color = vec3( 1.0, 1.0, 1.00 );
+	uniform vec3 final_clouds_middle_color : source_color = vec3( 0.92, 0.92, 0.98 );
+	uniform vec3 final_clouds_bottom_color : source_color = vec3( 0.83, 0.83, 0.94 );
 	uniform float clouds_speed : hint_range( 0.0, 20.0, 0.01 ) = 2.0;
 	uniform float clouds_direction : hint_range( -0.5, 0.5, 0.0 ) = 0.2;
 	uniform float clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
@@ -146,6 +167,26 @@ float sphere_intersect( vec3 view_dir, vec3 sphere_pos, float radius )
 void sky()
 {
 	float time = overwritten_time != 0.0 ? overwritten_time : TIME;
+	
+	vec3 day_top_color = mix(start_day_top_color, final_day_top_color, transition); 
+	vec3 day_bottom_color = mix(start_day_bottom_color, final_day_bottom_color, transition); 
+	vec3 sunset_top_color = mix(start_sunset_top_color, final_sunset_top_color, transition); 
+	vec3 sunset_bottom_color = mix(start_sunset_bottom_color, final_sunset_bottom_color, transition); 
+	vec3 night_top_color = mix(start_night_top_color, final_night_top_color, transition); 
+	vec3 night_bottom_color = mix(start_night_bottom_color, final_night_bottom_color, transition);
+	vec3 horizon_color = mix(start_horizon_color, final_horizon_color, transition);
+	float horizon_blur = mix(start_horizon_blur, final_horizon_blur, transition);
+	vec3 sun_color = mix(start_sun_color, final_sun_color, transition);
+	vec3 sun_sunset_color = mix(start_sun_sunset_color, final_sun_sunset_color, transition);
+	float sun_size = mix(start_sun_size, final_sun_size, transition);
+	float sun_blur = mix(start_sun_blur, final_sun_blur, transition);
+	vec3 moon_color = mix(start_moon_color, final_moon_color, transition);
+	float moon_size = mix(start_moon_size, final_moon_size, transition);
+	float moon_blur = mix(start_moon_blur, final_moon_blur, transition);
+	vec3 clouds_edge_color = mix(start_clouds_edge_color, final_clouds_edge_color, transition);
+	vec3 clouds_top_color = mix(start_clouds_top_color, final_clouds_top_color, transition);
+	vec3 clouds_middle_color = mix(start_clouds_middle_color, final_clouds_middle_color, transition);
+	vec3 clouds_bottom_color = mix(start_clouds_bottom_color, final_clouds_bottom_color, transition);
 
 	//////////////////// SKY ///////////////////////////////////////////////////////////////////////
 	float _eyedir_y = abs( sin( EYEDIR.y * PI * 0.5 ));
