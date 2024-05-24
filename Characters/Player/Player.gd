@@ -126,7 +126,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
-				var flat_direction := Vector3(direction.x, 0, direction.y)
+				var flat_direction := Vector3(direction.x, 0, direction.z)
 				var direction_angle := flat_direction.signed_angle_to(pivot_vector, Vector3.UP)
 				var is_forward := false
 				var left_right := 0.0
@@ -138,7 +138,6 @@ func _physics_process(delta: float) -> void:
 					left_right = -(1.0 - absf((direction_angle + PI / 2) / (PI / 2)))
 				if direction_angle > 0.0:
 					left_right = 1.0 - absf((direction_angle - PI / 2) / (PI / 2))
-				print("forward" if is_forward else "backward", " ", left_right)
 				play_animation("run", {"parameters/run/Backward/blend_amount": left_right, "parameters/run/Forward/blend_amount": left_right, "parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0})
 	else:
 		if is_on_floor():
