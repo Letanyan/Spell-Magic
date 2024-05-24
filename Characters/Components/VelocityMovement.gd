@@ -162,8 +162,13 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 func rotate_character(body: Player, direction: Vector3) -> void:
 	if direction != Vector3.ZERO:
+		#var cam_arm := body.get_node("CamPivot/Arm") as SpringArm3D
+		var cam_pivot := body.get_node("CamPivot") as Marker3D
+		var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
+		var dir := Vector3(pivot_vector.x, 0, pivot_vector.y)
+		#var dir := flat_direction.signed_angle_to(pivot_vector, Vector3.UP)
 		var pivot: Node3D = body.get_node("Pivot")
-		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
+		pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-dir.x, -dir.z), 0.3)
 		var collision: Node3D = body.get_node("Collision")
 		collision.rotation.y = pivot.rotation.y
 		var wet_area: Node3D = body.get_node("WetArea")

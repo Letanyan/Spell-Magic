@@ -87,8 +87,10 @@ func current_animation_is(animation: String) -> bool:
 	var current := playback.get_current_node()
 	return current == animation
 
-func play_animation(animation: String) -> void:
+func play_animation(animation: String, parameters: Dictionary = {}) -> void:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+	for path: StringName in parameters:
+		animation_tree.set(path, parameters[path])
 	var current := playback.get_current_node()
 	if current != "death" and current != animation:
 		playback.travel(animation)
@@ -123,7 +125,21 @@ func _physics_process(delta: float) -> void:
 				play_animation("walk")
 			else:
 				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
-				play_animation("run")
+				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
+				var flat_direction := Vector3(direction.x, 0, direction.y)
+				var direction_angle := flat_direction.signed_angle_to(pivot_vector, Vector3.UP)
+				var is_forward := false
+				var left_right := 0.0
+				if absf(direction_angle) < PI / 2:
+					is_forward = true
+				if absf(direction_angle) > PI / 2:
+					is_forward = false
+				if direction_angle < 0.0:
+					left_right = -(1.0 - absf((direction_angle + PI / 2) / (PI / 2)))
+				if direction_angle > 0.0:
+					left_right = 1.0 - absf((direction_angle - PI / 2) / (PI / 2))
+				print("forward" if is_forward else "backward", " ", left_right)
+				play_animation("run", {"parameters/run/Backward/blend_amount": left_right, "parameters/run/Forward/blend_amount": left_right, "parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0})
 	else:
 		if is_on_floor():
 			play_walking_audio(null)
