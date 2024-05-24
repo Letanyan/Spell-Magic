@@ -164,7 +164,10 @@ func rotate_character(body: Player, direction: Vector3) -> void:
 	if direction != Vector3.ZERO:
 		var cam_pivot := body.get_node("CamPivot") as Marker3D
 		var pivot := body.get_node("Pivot") as Node3D
-		pivot.rotation.y = lerp_angle(pivot.rotation.y, cam_pivot.rotation.y, 0.3)
+		if direction != Vector3.ZERO:
+			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
+		else:
+			pivot.rotation.y = lerp_angle(pivot.rotation.y, cam_pivot.rotation.y, 0.3)
 		var collision: Node3D = body.get_node("Collision")
 		collision.rotation.y = pivot.rotation.y
 		var wet_area: Node3D = body.get_node("WetArea")

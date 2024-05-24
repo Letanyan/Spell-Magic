@@ -116,7 +116,8 @@ func _physics_process(delta: float) -> void:
 	
 	velocity = movement["velocity"]
 	var direction := movement["direction"] as Vector3
-	velocity_movement.rotate_character(get_node(".") as Player, direction)
+	var is_underwater := not is_on_floor() and position.y <= Globals.sea_level() and direction != Vector3.ZERO and velocity != Vector3.ZERO
+	velocity_movement.rotate_character(get_node(".") as Player, direction if is_underwater else Vector3.ZERO)
 	move_and_slide()
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor():
@@ -126,26 +127,27 @@ func _physics_process(delta: float) -> void:
 			else:
 				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
-				var flat_direction := Vector3(direction.x, 0, direction.z)
-				var direction_angle := flat_direction.signed_angle_to(pivot_vector, Vector3.UP)
-				var is_forward := false
+				var direction_angle := Vector3(direction.x, 0, direction.z).signed_angle_to(pivot_vector, Vector3.UP)
+				var is_forward := absf(direction_angle) < PI / 2
 				var left_right := 0.0
-				if absf(direction_angle) < PI / 2:
-					is_forward = true
-				if absf(direction_angle) > PI / 2:
-					is_forward = false
 				if direction_angle < 0.0:
 					left_right = -(1.0 - absf((direction_angle + PI / 2) / (PI / 2)))
 				if direction_angle > 0.0:
 					left_right = 1.0 - absf((direction_angle - PI / 2) / (PI / 2))
 				play_animation("run", {"parameters/run/Backward/blend_amount": left_right, "parameters/run/Forward/blend_amount": left_right, "parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0})
+		elif position.y <= Globals.sea_level():
+			play_animation("swim")
 	else:
 		if is_on_floor():
 			play_walking_audio(null)
 			play_animation("battle_idle")
 		
 	if not is_on_floor_only():
-		play_animation("fall")
+		if position.y <= Globals.sea_level():
+			if velocity.length() <= 0:
+				play_animation("float")
+		else:
+			play_animation("fall")
 	elif current_animation_is("fall"):
 		play_animation("land")
 		
