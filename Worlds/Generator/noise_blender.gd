@@ -287,9 +287,9 @@ static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
 
 static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_start: bool) -> void:
 	var prefix := "start_" if is_start else "final_"
+	var shader := env.environment.sky.sky_material as ShaderMaterial
 	match b:
 		World.Biome.GRASSLAND:
-			var shader := env.environment.sky.sky_material as ShaderMaterial
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.1, 0.6, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.8, 1))
 			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.702, 0.749, 1))
@@ -308,7 +308,6 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
 			env.environment.ambient_light_color = Color.WHITE
 		World.Biome.FOREST:
-			var shader := env.environment.sky.sky_material as ShaderMaterial
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.294, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.8, 0.557))
 			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.702, 0.749, 0.737))
@@ -326,8 +325,25 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
 			env.environment.ambient_light_color = Color(0, 0.5, 0)
+		World.Biome.TAIGA:
+			shader.set_shader_parameter(prefix + "day_top_color", Color(0.659, 0.847, 1))
+			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.8, 0.933, 1))
+			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.949, 0.663, 1))
+			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.502, 0.498))
+			shader.set_shader_parameter(prefix + "night_top_color", Color(0.02, 0, 0.039))
+			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.192, 0, 0))
+			shader.set_shader_parameter(prefix + "horizon_color", Color(0.545, 0.659, 0.8))
+			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
+			#shader.set_shader_parameter(prefix + "sun_color", 0.05)
+			#shader.set_shader_parameter(prefix + "sun_sunset_color", 0.05)
+			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.941, 0.961, 1))
+			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1))
+			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.922, 0.922, 0.98))
+			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.831, 0.831, 0.941))
+			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
+			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
+			env.environment.ambient_light_color = Color(0, 0.5, 0)
 		_:
-			var shader := env.environment.sky.sky_material as ShaderMaterial
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.594, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.3, 0.557))
 			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.702, 0.449, 0.737))
