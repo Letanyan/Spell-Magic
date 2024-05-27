@@ -22,6 +22,10 @@ var is_on_path: bool = false
 
 var me_start_position: Variant = null # used to store entity position (Vec3) at start of movement
 
+var previous_path_index: int = -1 # previous path index used to update `player_start_position`
+var player_start_position: Variant = null # used to store entity position (Vec3) at start of movement for each path
+var player_start_vision_rotation := 0.0 # used to store entity rotation (float) at start of movement for each path
+
 # (theta, radius, min_margin, max_margin) pair to describe offset from player. +theta is ccw from 
 # straight of player view. -theta is cw from player view. radius is distance away
 # from player. (min|max)_margin are the radi of disc with center (theta, radius)
@@ -172,22 +176,24 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 		is_done.data = false
 	if me_start_position == null:
 		me_start_position = me.position
+	if player_start_position == null:
+		player_start_position = player.position
+	if player_vision_offset and player_start_vision_rotation == null:
+		player_start_vision_rotation = (player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
 	var temp_origin := origin
 	if origin_kind == OriginKind.PLAYER:
-		temp_origin += player.position
+		temp_origin += player_start_position
 	elif origin_kind == OriginKind.ME:
 		temp_origin += me_start_position
 	
-	var player_vision_rotation := 0.0
 	if player_vision_offset:
-		player_vision_rotation = (player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
-		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_vision_rotation + player_vision_offset.x)
-		var rel_off := off + player.position
+		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation + player_vision_offset.x)
+		var rel_off := off + (player_start_position as Vector3)
 		var dist := me.position.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
-			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player.position
+			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player_start_position
 		elif dist < player_vision_offset.z + 0.1:
-			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player.position
+			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player_start_position
 		temp_origin += off
 	
 	
@@ -208,7 +214,12 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 	
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
-	var v := path.position_at_time_with_rotation(duration, -player_vision_rotation, index) + temp_origin
+	if previous_path_index != index.data:
+		if player_vision_offset:
+			player_start_vision_rotation = (player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
+		player_start_position = player.position
+		previous_path_index = index.data
+	var v := path.position_at_time_with_rotation(duration, -player_start_vision_rotation, index) + temp_origin
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
 		

@@ -81,6 +81,7 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		if DEBUG: print(index, " AttackPatterns")
 		last_attack = current_action
 		if last_attack.is_complete:
+			last_attack.is_complete = false
 			did_update_index = true
 			index += 1
 			is_done.data = true

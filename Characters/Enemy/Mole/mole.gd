@@ -51,7 +51,7 @@ func _ready() -> void:
 	var Z := Vector3.ZERO
 	var up_pathway := PathStyle.Pathway.new(
 		[PathStyle.Segment.linear(Vector3(0, U, 0), Z), PathStyle.Segment.point(Z, 1)],
-		[3, 5],
+		[3, 3],
 		[PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	var down_pathway := PathStyle.Pathway.new(
