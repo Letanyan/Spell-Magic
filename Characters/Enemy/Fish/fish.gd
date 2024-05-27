@@ -20,13 +20,13 @@ func _ready() -> void:
 	vitals.perception.value = 20
 	
 	const idle_r := 10.0
-	var a := Globals.rand_v3_abs(idle_r, 0, idle_r)
-	var b := Globals.rand_v3_abs(idle_r, 0, idle_r)
-	var c := Globals.rand_v3_abs(idle_r, 0, idle_r)
-	var d := Globals.rand_v3_abs(idle_r, 0, idle_r)
-	var e := Globals.rand_v3_abs(idle_r, 0, idle_r)
+	var a := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var b := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var c := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var d := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var e := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
-		.move_to(Vector3.ZERO) \
+		.move_to(Vector3(0, bounds.y / 2, 0)) \
 		.line_to(a, 2, PathStyle.Easing.linear) \
 		.quad_to(b, Globals.midpoint_tangent1(a, b) if randf() < 0.5 else Globals.midpoint_tangent2(a, b), 2, PathStyle.Easing.linear) \
 		.quad_to(c, Globals.midpoint_tangent1(b, c) if randf() < 0.5 else Globals.midpoint_tangent2(b, c), 2, PathStyle.Easing.linear) \
@@ -37,6 +37,13 @@ func _ready() -> void:
 	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).align_y_to_origin().set_origin(position).use_absolute()
 	attack_direct_path = PathStyle.new(randf()).towards_player(2, 4, 6).use_physics()
 	current_path = idle_path
+	
+	var jump_path: PathStyle.Pathway = PathStyle.Pathway.new() \
+		.move_to(Vector3(0, 0, 10)) \
+		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
+		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
+		
+	attack_jump_path = PathStyle.new().follow_path(jump_path).align_y_to_ground_and_air().set_player_body_vision_as_origin(0, 1)
 	
 	none_pattern = AttackPatterns.none()
 	
@@ -100,24 +107,30 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		sequence_pattern.reset()
-		default_pattern.reset()
-		current_path = attack_direct_path
-	elif current_path == attack_direct_path:
-		if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-			current_path = idle_path
-		elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:
-			create_attack_jump_path()
-			attack_direct_path.stored_loops = 0
-			sequence_pattern.reset()
-			default_pattern.reset()
-			current_path = attack_jump_path
-	elif current_path == attack_jump_path and attack_jump_path.stored_loops > 0:
-		attack_jump_path.stored_loops = 0
-		jump_timer = 0
-		sequence_pattern.reset()
-		default_pattern.reset()
-		current_path = attack_direct_path
+		current_path = attack_jump_path
+	elif current_path == attack_jump_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+		current_path = idle_path
+		
+	
+	#if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+		#sequence_pattern.reset()
+		#default_pattern.reset()
+		#current_path = attack_direct_path
+	#elif current_path == attack_direct_path:
+		#if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+			#current_path = idle_path
+		#elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:
+			##create_attack_jump_path()
+			#attack_direct_path.stored_loops = 0
+			#sequence_pattern.reset()
+			#default_pattern.reset()
+			#current_path = attack_jump_path
+	#elif current_path == attack_jump_path and attack_jump_path.stored_loops > 0:
+		#attack_jump_path.stored_loops = 0
+		#jump_timer = 0
+		#sequence_pattern.reset()
+		#default_pattern.reset()
+		#current_path = attack_direct_path
 			
 
 func create_attack_jump_path() -> void:
