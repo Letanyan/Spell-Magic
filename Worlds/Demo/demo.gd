@@ -67,6 +67,7 @@ func setup(_settings: WorldSettings) -> void:
 	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
+		player.vitals.mana.change_per_tick = us.max_mana_regen
 	)
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
@@ -136,6 +137,7 @@ func run_on_ready() -> void:
 	)
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
+	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()

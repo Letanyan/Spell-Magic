@@ -20,6 +20,12 @@ const HAS_CHAIN_ON_HIT := 1 << 2
 var has_chain_method := 0
 var cost_chain_method := 100
 
+# upgrade_* is the amount the upgrade is increased each level increase
+# max_* is the current value
+# cost_* is the amount required to perform upgrade
+# buff_* is a temporary upgrade gained from artifacts
+# LIMIT_* is the maximum amount allowed
+
 var upgrade_r := 0.1
 var max_r := 0.1:
 	set(value):
@@ -90,6 +96,11 @@ var cost_running_speed := 50
 var buff_running_speed := 0.0
 const LIMIT_RUNNING_SPEED := 15.0
 
+var upgrade_mana_regen := 0.5
+var max_mana_regen := 0.5
+var cost_mana_regen := 50
+const LIMIT_MANA_REGEN := 5
+
 var currency := 1000
 
 signal max_velocity_updated(value: float)
@@ -117,6 +128,7 @@ func reset_all_stats_to_default_values() -> void:
 	max_defence = 10.0
 	has_spell_element = 0b11
 	has_chain_method = 0
+	max_mana_regen = 0.5
 	
 func reset_all_stats_to_max_values() -> void:
 	max_health = UpgradeSettings.LIMIT_HEALTH
@@ -133,6 +145,7 @@ func reset_all_stats_to_max_values() -> void:
 	max_T = UpgradeSettings.LIMIT_T
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
+	max_mana_regen = UpgradeSettings.LIMIT_MANA_REGEN
 
 func emit_upgrade_purchase() -> void:
 	upgrade_was_purchased.emit(self)
@@ -305,6 +318,18 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 	currency -= cost_chain_method
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
+	
+func purchase_mana_regen() -> PurchaseError:
+	if currency < cost_mana_regen:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_mana_regen + upgrade_mana_regen > LIMIT_MANA_REGEN:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_mana_regen += upgrade_mana_regen
+	currency -= cost_mana_regen
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
 
 func save_dict() -> Dictionary:
 	return {
@@ -312,15 +337,18 @@ func save_dict() -> Dictionary:
 		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P, "max_v": max_v,
 		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
 		"max_attack": max_attack, "max_defence": max_defence, "max_running_speed": max_running_speed,
+		"max_mana_regen": max_mana_regen,
 				
 		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
 		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P, "cost_v": cost_v,
 		"cost_mana": cost_mana, "cost_health": cost_health, "cost_spells_in_book": cost_spells_in_book,
 		"cost_attack": cost_attack, "cost_defence": cost_defence, "cost_running_speed": cost_running_speed,
+		"cost_mana_regen": cost_mana_regen,
 		
 		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P, "upgrade_v": upgrade_v,
 		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
 		"upgrade_attack": upgrade_attack, "upgrade_defence": upgrade_defence, "upgrade_running_speed": upgrade_running_speed,
+		"upgrade_mana_regen": upgrade_mana_regen,
 		
 		"currency": currency,
 	}
@@ -340,6 +368,7 @@ func load_dict(data: Dictionary) -> void:
 	max_running_speed = data.get("max_running_speed", 2.0)
 	max_attack = data.get("max_attack", 100.0)
 	max_defence = data.get("max_defence", 100.0)
+	max_mana_regen = data.get("max_mana_regen", 0.5)
 	
 	cost_spell_element = data.get("cost_spell_element", 100)
 	cost_chain_method = data.get("cost_chain_method", 100)
@@ -355,6 +384,7 @@ func load_dict(data: Dictionary) -> void:
 	cost_running_speed = data.get("cost_running_speed", 50)
 	cost_attack = data.get("cost_attack", 10)
 	cost_defence = data.get("cost_defence", 10)
+	cost_mana_regen = data.get("cost_mana_regen", 50)
 	
 	upgrade_r = data.get("upgrade_r", 0.1)
 	upgrade_T = data.get("upgrade_T", 1.0)
@@ -368,5 +398,6 @@ func load_dict(data: Dictionary) -> void:
 	upgrade_running_speed = data.get("upgrade_running_speed", 0.25)
 	upgrade_attack = data.get("upgrade_attack", 10)
 	upgrade_defence = data.get("upgrade_defence", 10)
+	upgrade_mana_regen = data.get("upgrade_mana_regen", 0.5)
 	
 	currency = data.get("currency", 0)

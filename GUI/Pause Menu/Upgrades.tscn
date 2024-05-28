@@ -41,46 +41,42 @@ grow_vertical = 2
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -223.456
+offset_left = -255.456
 offset_top = 56.0
-offset_right = -183.456
-offset_bottom = 96.0
+offset_right = 256.544
+offset_bottom = 80.0
 
 [node name="label" type="RichTextLabel" parent="container/max_H"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 108.0
-offset_bottom = 26.0
-grow_horizontal = 2
+layout_mode = 2
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=00AA00]res://GUI/Images/health.svg[/img] Health"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_H"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 288.0
-offset_bottom = 26.0
+layout_mode = 2
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_H"]
-layout_mode = 0
-offset_left = 296.0
-offset_right = 396.0
-offset_bottom = 31.0
+layout_mode = 2
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_H/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
-offset_bottom = 26.0
+offset_left = 128.0
+offset_right = 240.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -89,45 +85,41 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -223.456
+offset_left = -255.456
 offset_top = 112.0
-offset_right = -183.456
-offset_bottom = 152.0
+offset_right = 256.544
+offset_bottom = 136.0
 
 [node name="label" type="RichTextLabel" parent="container/attack"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 108.0
-offset_bottom = 26.0
-grow_horizontal = 2
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[img=16, color=AA0000]res://GUI/Images/sword.svg[/img] Attack"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/attack"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 288.0
-offset_bottom = 26.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/attack"]
 layout_mode = 0
-offset_left = 296.0
-offset_right = 396.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/attack/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
+offset_left = 128.0
+offset_right = 240.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -137,47 +129,43 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
-offset_left = -240.544
+offset_left = -264.544
 offset_top = 112.0
-offset_right = -200.544
-offset_bottom = 152.0
+offset_right = 239.456
+offset_bottom = 136.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/defence"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 108.0
-offset_bottom = 26.0
-grow_horizontal = 2
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[img=16, color=00AAAA]res://GUI/Images/shield.svg[/img] Defence"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/defence"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 288.0
-offset_bottom = 26.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/defence"]
 layout_mode = 0
-offset_left = 296.0
-offset_right = 396.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/defence/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
-offset_bottom = 26.0
+offset_left = 128.0
+offset_right = 228.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -186,24 +174,25 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
-offset_left = -240.544
+offset_left = -264.544
 offset_top = 280.0
-offset_right = -200.544
-offset_bottom = 320.0
+offset_right = 239.456
+offset_bottom = 304.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_P"]
 layout_mode = 0
-offset_right = 86.0
-offset_bottom = 26.0
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=0008FF]res://GUI/Images/power.svg[/img] P"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_P"]
 layout_mode = 0
-offset_left = 159.0
-offset_right = 287.0
+offset_left = 136.0
+offset_right = 248.0
 offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
@@ -211,16 +200,16 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_P"]
 layout_mode = 0
-offset_left = 295.0
-offset_right = 395.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_P/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
+offset_left = 128.0
+offset_right = 228.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -230,30 +219,25 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
-offset_left = -240.544
+offset_left = -264.544
 offset_top = 56.0
-offset_right = -200.544
-offset_bottom = 96.0
+offset_right = 239.456
+offset_bottom = 80.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_M"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 61.0
-offset_bottom = 26.0
-grow_horizontal = 2
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] M"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_M"]
 layout_mode = 0
-offset_left = 160.0
-offset_top = -1.0
-offset_right = 288.0
+offset_left = 136.0
+offset_right = 248.0
 offset_bottom = 25.0
 text = "100"
 horizontal_alignment = 1
@@ -261,18 +245,17 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_M"]
 layout_mode = 0
-offset_left = 296.0
-offset_top = -1.0
-offset_right = 396.0
-offset_bottom = 30.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_M/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
-offset_bottom = 26.0
+offset_left = 128.0
+offset_right = 228.0
+offset_bottom = 25.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -281,22 +264,24 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
-offset_left = -240.544
+offset_left = -264.544
 offset_top = 336.0
-offset_right = -200.544
-offset_bottom = 376.0
+offset_right = 239.456
+offset_bottom = 384.0
 grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/max_spell_count"]
 layout_mode = 0
-offset_right = 144.0
-offset_bottom = 26.0
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 48.0
 text = "Max Active Spells"
+autowrap_mode = 2
 
 [node name="current" type="Label" parent="container/max_spell_count"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 288.0
+offset_left = 136.0
+offset_right = 248.0
 offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
@@ -304,16 +289,16 @@ vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_spell_count"]
 layout_mode = 0
-offset_left = 296.0
-offset_right = 396.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_spell_count/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
+offset_left = 128.0
+offset_right = 228.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -323,41 +308,42 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -223.456
+offset_left = -255.456
 offset_top = 280.0
-offset_right = -183.456
-offset_bottom = 320.0
+offset_right = 248.544
+offset_bottom = 304.0
 
 [node name="label" type="RichTextLabel" parent="container/running_speed"]
 layout_mode = 0
-offset_right = 144.0
-offset_bottom = 26.0
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=F6FF00]res://GUI/Images/running.svg[/img] Speed
 "
 
 [node name="current" type="Label" parent="container/running_speed"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 288.0
-offset_bottom = 26.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/running_speed"]
 layout_mode = 0
-offset_left = 296.0
-offset_right = 396.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/running_speed/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
-offset_bottom = 26.0
+offset_left = 128.0
+offset_right = 240.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -367,141 +353,135 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -448.0
-offset_top = 424.0
-offset_right = -408.0
-offset_bottom = 464.0
+offset_left = -552.0
+offset_top = 416.0
+offset_right = -8.0
+offset_bottom = 480.0
 grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/elements"]
 layout_mode = 0
-offset_right = 72.0
+offset_left = 8.0
+offset_right = 80.0
 offset_bottom = 26.0
 text = "Elements
 "
 
 [node name="Rock" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 352.0
-offset_top = -8.0
-offset_right = 452.0
-offset_bottom = 24.0
-text = "Rock"
+offset_left = 240.0
+offset_right = 272.0
+offset_bottom = 32.0
 icon = ExtResource("2_gtdpa")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Rock"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="Ice" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 800.0
-offset_top = -8.0
-offset_right = 900.0
-offset_bottom = 24.0
-text = "Ice"
+offset_left = 496.0
+offset_right = 528.0
+offset_bottom = 32.0
 icon = ExtResource("3_hrijs")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Ice"]
 layout_mode = 0
-offset_top = 32.0
-offset_right = 100.0
-offset_bottom = 58.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 66.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="Electric" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 464.0
-offset_top = -8.0
-offset_right = 564.0
-offset_bottom = 24.0
-text = "Electric"
+offset_left = 304.0
+offset_right = 336.0
+offset_bottom = 32.0
 icon = ExtResource("4_xsfxt")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Electric"]
 layout_mode = 0
-offset_top = 32.0
-offset_right = 100.0
-offset_bottom = 58.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="Fire" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 240.0
-offset_top = -8.0
-offset_right = 340.0
-offset_bottom = 24.0
-text = "Fire"
+offset_left = 176.0
+offset_right = 208.0
+offset_bottom = 32.0
 icon = ExtResource("5_3buty")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Fire"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="Water" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 576.0
-offset_top = -8.0
-offset_right = 676.0
-offset_bottom = 24.0
-text = "Water"
+offset_left = 368.0
+offset_right = 400.0
+offset_bottom = 32.0
 icon = ExtResource("6_qee75")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Water"]
 layout_mode = 0
-offset_top = 32.0
-offset_right = 100.0
-offset_bottom = 58.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="Air" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 688.0
-offset_top = -8.0
-offset_right = 788.0
-offset_bottom = 24.0
-text = "Air"
+offset_left = 432.0
+offset_right = 464.0
+offset_bottom = 32.0
 icon = ExtResource("7_wfy6i")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Air"]
 layout_mode = 0
-offset_top = 32.0
-offset_right = 100.0
-offset_bottom = 58.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="Void" type="Button" parent="container/elements"]
 layout_mode = 0
-offset_left = 128.0
-offset_top = -8.0
-offset_right = 228.0
-offset_bottom = 24.0
-text = "Void"
+offset_left = 112.0
+offset_right = 144.0
+offset_bottom = 32.0
 icon = ExtResource("8_6m44h")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Void"]
 layout_mode = 0
-offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -510,43 +490,42 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
-offset_left = -240.544
+offset_left = -264.544
 offset_top = 224.0
-offset_right = -200.544
-offset_bottom = 264.0
+offset_right = 239.456
+offset_bottom = 248.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_N"]
 layout_mode = 0
-offset_right = 159.0
-offset_bottom = 26.0
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=F700FF]res://GUI/Images/count.svg[/img] N"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_N"]
 layout_mode = 0
-offset_left = 159.0
-offset_top = -1.0
-offset_right = 287.0
-offset_bottom = 25.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_N"]
 layout_mode = 0
-offset_left = 295.0
-offset_top = -1.0
-offset_right = 395.0
-offset_bottom = 30.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_N/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
+offset_left = 128.0
+offset_right = 228.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -556,46 +535,42 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -223.456
+offset_left = -255.456
 offset_top = 224.0
-offset_right = -183.456
-offset_bottom = 264.0
+offset_right = 248.544
+offset_bottom = 248.0
 
 [node name="label" type="RichTextLabel" parent="container/max_T"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 127.0
-offset_bottom = 26.0
-grow_horizontal = 2
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=00FF08]res://GUI/Images/time.svg[/img] T"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_T"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 288.0
-offset_bottom = 26.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_T"]
 layout_mode = 0
-offset_left = 296.0
-offset_right = 396.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_T/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
-offset_bottom = 26.0
+offset_left = 128.0
+offset_right = 240.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -604,61 +579,62 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -223.456
+offset_left = -255.456
 offset_top = 336.0
-offset_right = -183.456
-offset_bottom = 376.0
+offset_right = 256.544
+offset_bottom = 392.0
 
 [node name="label" type="Label" parent="container/chain_methods"]
 layout_mode = 0
+offset_left = 8.0
 offset_right = 120.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "Chain Methods"
 
 [node name="at_start" type="Button" parent="container/chain_methods"]
 layout_mode = 0
-offset_left = 159.0
-offset_right = 259.0
-offset_bottom = 31.0
+offset_left = 136.0
+offset_right = 249.0
+offset_bottom = 25.0
 text = "At Start"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/at_start"]
 layout_mode = 0
 offset_top = 31.0
-offset_right = 100.0
-offset_bottom = 57.0
+offset_right = 112.0
+offset_bottom = 56.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="at_end" type="Button" parent="container/chain_methods"]
 layout_mode = 0
-offset_left = 271.0
-offset_right = 371.0
-offset_bottom = 31.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "At End"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/at_end"]
 layout_mode = 0
 offset_top = 32.0
-offset_right = 100.0
-offset_bottom = 58.0
+offset_right = 112.0
+offset_bottom = 56.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="on_hit" type="Button" parent="container/chain_methods"]
 layout_mode = 0
-offset_left = 383.0
-offset_right = 483.0
-offset_bottom = 31.0
+offset_left = 392.0
+offset_right = 504.0
+offset_bottom = 25.0
 text = "On Hit"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/on_hit"]
 layout_mode = 0
 offset_top = 32.0
-offset_right = 100.0
-offset_bottom = 58.0
+offset_right = 112.0
+offset_bottom = 56.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -667,42 +643,41 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
-offset_left = -240.544
+offset_left = -264.544
 offset_top = 168.0
-offset_right = -200.544
-offset_bottom = 208.0
+offset_right = 239.456
+offset_bottom = 192.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_r"]
 layout_mode = 0
-offset_right = 159.0
-offset_bottom = 26.0
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=7700FF]res://GUI/Images/radius.svg[/img] r"
 
 [node name="current" type="Label" parent="container/max_r"]
 layout_mode = 0
-offset_left = 159.0
-offset_top = -1.0
-offset_right = 287.0
-offset_bottom = 25.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 26.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_r"]
 layout_mode = 0
-offset_left = 295.0
-offset_top = -1.0
-offset_right = 395.0
-offset_bottom = 30.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_r/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
+offset_left = 128.0
+offset_right = 228.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -712,48 +687,83 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -223.456
+offset_left = -255.456
 offset_top = 168.0
-offset_right = -183.456
-offset_bottom = 208.0
+offset_right = 256.544
+offset_bottom = 192.0
 
 [node name="label" type="RichTextLabel" parent="container/max_v"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 139.0
-offset_bottom = 26.0
-grow_horizontal = 2
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=77FF00]res://GUI/Images/velocity.svg[/img] Velocity"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_v"]
 layout_mode = 0
-offset_left = 159.0
-offset_top = -1.0
-offset_right = 287.0
-offset_bottom = 25.0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 21.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_v"]
 layout_mode = 0
-offset_left = 295.0
-offset_top = -1.0
-offset_right = 395.0
-offset_bottom = 30.0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
 text = "+ 5
 "
 
 [node name="cost" type="RichTextLabel" parent="container/max_v/upgrade"]
 layout_mode = 0
-offset_left = 112.0
-offset_right = 212.0
-offset_bottom = 26.0
+offset_left = 128.0
+offset_right = 240.0
+offset_bottom = 25.0
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="mana_regen" type="Control" parent="container"]
+anchors_preset = 0
+offset_left = 592.0
+offset_top = 416.0
+offset_right = 1096.0
+offset_bottom = 464.0
+
+[node name="label" type="RichTextLabel" parent="container/mana_regen"]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 120.0
+offset_bottom = 48.0
+bbcode_enabled = true
+text = "Auto [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] M Regeneration"
+scroll_active = false
+
+[node name="current" type="Label" parent="container/mana_regen"]
+layout_mode = 0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 21.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/mana_regen"]
+layout_mode = 0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
+text = "+ 5"
+
+[node name="cost" type="RichTextLabel" parent="container/mana_regen/upgrade"]
+layout_mode = 0
+offset_left = 128.0
+offset_right = 232.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -766,13 +776,13 @@ anchor_right = 1.0
 offset_left = -312.0
 offset_top = 8.0
 offset_right = -16.0
-offset_bottom = 34.0
+offset_bottom = 32.0
 grow_horizontal = 0
 bbcode_enabled = true
 text = "[right]0 [img]res://GUI/Images/coins.svg[/img][/right]"
 scroll_active = false
 
-[node name="HSeparator6" type="HSeparator" parent="container"]
+[node name="HSep0" type="HSeparator" parent="container"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -781,25 +791,7 @@ offset_bottom = 48.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
-[node name="HSeparator5" type="HSeparator" parent="container"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 312.0
-offset_bottom = 328.0
-grow_horizontal = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
-
-[node name="HSeparator8" type="HSeparator" parent="container"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 392.0
-offset_bottom = 408.0
-grow_horizontal = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
-
-[node name="HSeparator7" type="HSeparator" parent="container"]
+[node name="HSep1" type="HSeparator" parent="container"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -808,25 +800,7 @@ offset_bottom = 104.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
-[node name="HSeparator2" type="HSeparator" parent="container"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 480.0
-offset_bottom = 496.0
-grow_horizontal = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
-
-[node name="HSeparator3" type="HSeparator" parent="container"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 200.0
-offset_bottom = 216.0
-grow_horizontal = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
-
-[node name="HSeparator" type="HSeparator" parent="container"]
+[node name="HSep2" type="HSeparator" parent="container"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -835,7 +809,16 @@ offset_bottom = 160.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
-[node name="HSeparator4" type="HSeparator" parent="container"]
+[node name="HSep3" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 200.0
+offset_bottom = 216.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSep4" type="HSeparator" parent="container"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -844,7 +827,34 @@ offset_bottom = 272.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
-[node name="VSeparator2" type="VSeparator" parent="container"]
+[node name="HSep5" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 312.0
+offset_bottom = 328.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSep6" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 392.0
+offset_bottom = 408.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSep7" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 480.0
+offset_bottom = 496.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="VSep" type="VSeparator" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -852,7 +862,7 @@ anchor_right = 0.5
 offset_left = -8.0
 offset_top = 40.0
 offset_right = 8.0
-offset_bottom = 400.0
+offset_bottom = 488.0
 grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
@@ -877,3 +887,4 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 [connection signal="pressed" from="container/chain_methods/on_hit" to="." method="_on_on_hit_upgrade_pressed"]
 [connection signal="pressed" from="container/max_r/upgrade" to="." method="_on_max_R_upgrade_pressed"]
 [connection signal="pressed" from="container/max_v/upgrade" to="." method="_on_max_v_upgrade_pressed"]
+[connection signal="pressed" from="container/mana_regen/upgrade" to="." method="_on_mana_regen_upgrade_pressed"]

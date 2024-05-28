@@ -53,7 +53,7 @@ var on_menu_close: Callable = func() -> void: pass
 
 func _ready() -> void:
 	velocity_movement = VelocityMovement.player()
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.55))
+	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PLAYER)
 	emit_vitals_update()
 	velocity = Vector3.ZERO

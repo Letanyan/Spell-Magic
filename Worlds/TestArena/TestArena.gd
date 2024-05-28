@@ -45,6 +45,7 @@ func setup(_settings: WorldSettings) -> void:
 	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
+		player.vitals.mana.change_per_tick = us.max_mana_regen
 	)
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
@@ -120,6 +121,7 @@ func _ready() -> void:
 	)
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
+	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
 	
 	skybox = SkyBox.new($WorldEnvironment as WorldEnvironment, $Sun as DirectionalLight3D, $Moon as DirectionalLight3D)
 	skybox.day_time = 14
