@@ -22,6 +22,9 @@ offset_left = -128.0
 offset_top = -208.0
 offset_right = 128.0
 offset_bottom = -176.0
+focus_neighbor_bottom = NodePath("../NewGame")
+focus_next = NodePath("../NewGame")
+focus_previous = NodePath("../Quit")
 text = "Continue"
 
 [node name="NewGame" type="Button" parent="."]
@@ -35,6 +38,10 @@ offset_left = -128.0
 offset_top = -168.0
 offset_right = 128.0
 offset_bottom = -136.0
+focus_neighbor_top = NodePath("../Continue")
+focus_neighbor_bottom = NodePath("../Load")
+focus_next = NodePath("../Load")
+focus_previous = NodePath("../Continue")
 text = "New Game"
 
 [node name="Load" type="Button" parent="."]
@@ -48,6 +55,10 @@ offset_left = -128.0
 offset_top = -128.0
 offset_right = 128.0
 offset_bottom = -96.0
+focus_neighbor_top = NodePath("../NewGame")
+focus_neighbor_bottom = NodePath("../Settings")
+focus_next = NodePath("../Settings")
+focus_previous = NodePath("../NewGame")
 text = "Load Game
 "
 
@@ -62,6 +73,10 @@ offset_left = -128.0
 offset_top = -88.0
 offset_right = 128.0
 offset_bottom = -56.0
+focus_neighbor_top = NodePath("../Load")
+focus_neighbor_bottom = NodePath("../Quit")
+focus_next = NodePath("../Quit")
+focus_previous = NodePath("../Load")
 text = "Settings"
 
 [node name="Quit" type="Button" parent="."]
@@ -75,6 +90,9 @@ offset_left = -128.0
 offset_top = -40.0
 offset_right = 128.0
 offset_bottom = -9.0
+focus_neighbor_top = NodePath("../Settings")
+focus_next = NodePath("../Continue")
+focus_previous = NodePath("../Settings")
 text = "Quit"
 
 [connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]

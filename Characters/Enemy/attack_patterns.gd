@@ -29,6 +29,8 @@ func choose_spell(vitals: Vitals) -> Spell:
 			waiting_for_pattern = null
 		else:
 			return waiting_for_pattern.choose_spell(vitals)
+	if is_complete:
+		return null
 			
 	var now_time := Time.get_unix_time_from_system()
 	time += now_time - last_time
@@ -49,9 +51,10 @@ func choose_spell(vitals: Vitals) -> Spell:
 	else:
 		return s as Spell
 
-static func choose_from_distribution(agro: float, weights: Array[int]) -> Callable:
+static func choose_from_distribution(agro: float, weights: Array[int], repeat: int = -1) -> Callable:
 	var total: float = 0.0
 	var probs: Array[float] = []
+	var repeat_count := repeat
 	for s in weights:
 		total += s
 		probs.append(0.0)
@@ -62,7 +65,9 @@ static func choose_from_distribution(agro: float, weights: Array[int]) -> Callab
 		if randf() > agro:
 			return -1
 		
-		is_done.data = true
+		repeat_count -= 1
+		if repeat_count == 0:
+			is_done.data = true
 		var range_end := 0.0
 		var p := randf()
 		for i in range(probs.size()):
@@ -73,21 +78,27 @@ static func choose_from_distribution(agro: float, weights: Array[int]) -> Callab
 			return i
 		return -1
 		
-static func choose_in_sequence(intervals: Array[float]) -> Callable:
+static func choose_in_sequence(intervals: Array[float], repeat: int = -1) -> Callable:
 	var starting_points: Array[float] = []
 	var completed: Array[bool] = []
 	var total := 0.0
+	var repeat_count := repeat
 	for s in intervals:
 		total += s
 		starting_points.append(total)
 		completed.append(false)
 	
 	return func(t: float, is_done: Globals.Ref) -> int:
+		if repeat_count == 0:
+			return -1
 		var end_index := starting_points.size() - 1
 		if t >= starting_points[end_index] and not completed[end_index]:
-			is_done.data = true
-			for i in completed.size():
-				completed[i] = false
+			if repeat_count == 0:
+				is_done.data = true
+			else:
+				repeat_count -= 1
+				for i in completed.size():
+					completed[i] = false
 			return end_index
 			
 		for i in range(end_index):

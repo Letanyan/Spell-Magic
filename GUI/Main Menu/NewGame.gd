@@ -23,6 +23,7 @@ extends Control
 @onready var P_slider: HSlider = $StartingUpgradesPanel/P/Slider
 @onready var N_slider: HSlider = $StartingUpgradesPanel/N/Slider
 @onready var S_slider: HSlider = $StartingUpgradesPanel/S/Slider
+@onready var auto_mana_slider: HSlider = $StartingUpgradesPanel/AutoMana/Slider
 
 @onready var health_value: Label = $StartingUpgradesPanel/Health/Value
 @onready var attack_value: Label = $StartingUpgradesPanel/Attack/Value
@@ -35,6 +36,7 @@ extends Control
 @onready var P_value: Label = $StartingUpgradesPanel/P/Value
 @onready var N_value: Label = $StartingUpgradesPanel/N/Value
 @onready var S_value: Label = $StartingUpgradesPanel/S/Value
+@onready var auto_mana_value: Label = $StartingUpgradesPanel/AutoMana/Value
 
 
 @onready var spell_elements_fire: Button = $StartingUpgradesPanel/SpellElements/Fire
@@ -81,6 +83,7 @@ func _ready() -> void:
 	P_slider.value = upgrades.max_P
 	N_slider.value = upgrades.max_N
 	S_slider.value = upgrades.max_running_speed
+	auto_mana_slider.value = upgrades.max_mana_regen
 	
 	health_slider.min_value = upgrades.max_health
 	attack_slider.min_value = upgrades.max_attack
@@ -93,6 +96,7 @@ func _ready() -> void:
 	P_slider.min_value = upgrades.max_P
 	N_slider.min_value = upgrades.max_N
 	S_slider.min_value = upgrades.max_running_speed
+	auto_mana_slider.min_value = upgrades.max_mana_regen 
 	
 	health_slider.max_value = upgrades.LIMIT_HEALTH
 	attack_slider.max_value = upgrades.LIMIT_ATTACK
@@ -105,6 +109,7 @@ func _ready() -> void:
 	P_slider.max_value = upgrades.LIMIT_P
 	N_slider.max_value = upgrades.LIMIT_N
 	S_slider.max_value = upgrades.LIMIT_RUNNING_SPEED
+	auto_mana_slider.max_value = upgrades.LIMIT_MANA_REGEN
 	
 	spell_elements_fire.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.FIRE)
 	spell_elements_water.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.WATER)
@@ -124,15 +129,9 @@ func _ready() -> void:
 	world_names = dir.get_directories()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
 func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
-
 
 func _on_create_pressed() -> void:
 	if use_seed.button_pressed:
@@ -241,6 +240,10 @@ func _on_spell_count_value_changed(value: float) -> void:
 	spell_count_value.text = str(int(value))
 	upgrades.max_spells_in_book = int(value)
 
+func _on_auto_mana_slider_value_changed(value: float) -> void:
+	auto_mana_value.text = "%.1f" % value
+	upgrades.max_mana_regen = value
+
 
 func _on_T_value_changed(value: float) -> void:
 	T_value.text = str(int(value))
@@ -248,7 +251,7 @@ func _on_T_value_changed(value: float) -> void:
 
 
 func _on_r_value_changed(value: float) -> void:
-	r_value.text = "%.2f" % value
+	r_value.text = "%.1f" % value
 	upgrades.max_r = value
 
 

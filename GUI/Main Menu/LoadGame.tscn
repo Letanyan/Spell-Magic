@@ -14,46 +14,67 @@ script = ExtResource("1_t0cvo")
 [node name="WorldsList" type="ItemList" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.815
-offset_left = -223.744
+offset_left = -256.0
 offset_top = 56.0
-offset_right = 288.256
+offset_right = 256.0
 offset_bottom = -0.120056
+focus_neighbor_bottom = NodePath("../Delete")
+focus_next = NodePath("../Delete")
+focus_previous = NodePath("../Cancel")
 
 [node name="Load" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 96.256
+offset_left = 64.0
 offset_top = -104.0
-offset_right = 288.256
+offset_right = 256.0
 offset_bottom = -73.0
+focus_neighbor_left = NodePath("../Delete")
+focus_neighbor_top = NodePath("../WorldsList")
+focus_neighbor_bottom = NodePath("../Cancel")
+focus_next = NodePath("../Cancel")
+focus_previous = NodePath("../Delete")
 text = "Load"
 
 [node name="Cancel" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.472
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 0.472
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -95.744
+offset_left = -128.0
 offset_top = -48.0
-offset_right = 160.256
+offset_right = 128.0
 offset_bottom = -17.0
+focus_neighbor_top = NodePath("../Load")
+focus_next = NodePath("../WorldsList")
+focus_previous = NodePath("../Load")
 text = "Cancel"
 
 [node name="Delete" type="Button" parent="."]
-layout_mode = 0
-offset_left = 320.0
-offset_top = 544.0
-offset_right = 512.0
-offset_bottom = 577.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -104.0
+offset_right = -64.0
+offset_bottom = -71.0
+focus_neighbor_top = NodePath("../WorldsList")
+focus_neighbor_right = NodePath("../Load")
+focus_neighbor_bottom = NodePath("../Cancel")
+focus_next = NodePath("../Load")
+focus_previous = NodePath("../WorldsList")
 text = "Delete"
 
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]

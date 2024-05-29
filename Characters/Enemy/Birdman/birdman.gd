@@ -102,15 +102,15 @@ func _ready() -> void:
 		[
 			AttackPatterns.new(
 				[water_small_slow, water_small_fast],
-				AttackPatterns.choose_in_sequence([ 2, 1 ])
+				AttackPatterns.choose_in_sequence([ 2, 1 ], 1)
 			),
 			AttackPatterns.new(
 				[water_med_slow, water_med_fast],
-				AttackPatterns.choose_in_sequence([ 3, 3])
+				AttackPatterns.choose_in_sequence([ 3, 3], 1)
 			),
 			AttackPatterns.new(
 				[water_large_slow, water_large_fast],
-				AttackPatterns.choose_in_sequence([ 5, 5 ])
+				AttackPatterns.choose_in_sequence([ 5, 5 ], 1)
 			),
 		],
 		AttackPatterns.choose_from_distribution(0.5, [ 2, 3, 5 ])
