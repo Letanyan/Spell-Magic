@@ -10,6 +10,14 @@ enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES, SETTINGS }
 @onready var settings: SettingsGUI = $Settings
 var current_index := 0
 
+@onready var spells_button: Button = $Tabbar/Spells
+@onready var wands_button: Button = $Tabbar/Wands
+@onready var artifacts_button: Button = $Tabbar/Artifacts
+@onready var quit_button: Button = $Tabbar/Quit
+@onready var upgrades_button: Button = $Tabbar/Upgrades
+@onready var settings_button: Button = $Tabbar/Settings
+
+
 var is_showing: bool = false
 var world_settings: WorldSettings
 
@@ -47,11 +55,11 @@ func update_index(index: int) -> void:
 	upgrades.visible = false
 	settings.visible = false
 	match current_index:
-		0: magic_book.visible = true
-		1: wand_case.visible = true
-		2: artifacts.visible = true
-		3: upgrades.visible = true
-		4: settings.visible = true
+		0: magic_book.visible = true; spells_button.grab_focus()
+		1: wand_case.visible = true; wands_button.grab_focus()
+		2: artifacts.visible = true; artifacts_button.grab_focus()
+		3: upgrades.visible = true; upgrades_button.grab_focus()
+		4: settings.visible = true; settings_button.grab_focus()
 
 func _on_spells_pressed() -> void:
 	update_index(0)
@@ -101,6 +109,19 @@ func close() -> void:
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
+		
+	if event is InputEventJoypadButton:
+		if event.is_action_pressed("RT"):
+			update_index(current_index + 1)
+		elif event.is_action_pressed("LT"):
+			update_index(current_index - 1)
+			
+	if event.is_action_pressed("Back"):
+		if not (spells_button.has_focus() or wands_button.has_focus() or artifacts_button.has_focus() or quit_button.has_focus() or upgrades_button.has_focus() or settings_button.has_focus()):
+			quit_button.grab_focus()
+		else:
+			close_menu.emit()
+	
 
 func save_changes() -> void:
 	if magic_book.visible:
@@ -121,4 +142,3 @@ func save_changes() -> void:
 
 func _on_quit_pressed() -> void:
 	close_menu.emit()
-
