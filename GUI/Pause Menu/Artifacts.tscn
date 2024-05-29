@@ -17,6 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_bottom = NodePath("artifacts_list")
 script = ExtResource("1_lsxrb")
 
 [node name="artifacts_list" type="ItemList" parent="."]
@@ -28,6 +29,9 @@ offset_top = 96.0
 offset_right = 184.0
 offset_bottom = -232.0
 grow_vertical = 2
+focus_neighbor_top = NodePath("../Left")
+focus_neighbor_right = NodePath("../artifact_grid")
+focus_neighbor_bottom = NodePath("../Destroy")
 
 [node name="artifact_grid" type="Container" parent="."]
 clip_contents = true
@@ -41,6 +45,7 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_left = NodePath("../artifacts_list")
 focus_mode = 2
 mouse_filter = 0
 script = ExtResource("2_reg1r")
@@ -72,6 +77,8 @@ offset_top = -40.0
 offset_right = 184.0
 offset_bottom = -8.0
 grow_vertical = 0
+focus_neighbor_top = NodePath("../artifacts_list")
+focus_neighbor_right = NodePath("../artifact_grid")
 text = "Destroy"
 
 [node name="Top" type="MenuButton" parent="."]
@@ -80,6 +87,10 @@ offset_left = 56.0
 offset_top = 56.0
 offset_right = 88.0
 offset_bottom = 88.0
+focus_neighbor_left = NodePath("../Left")
+focus_neighbor_right = NodePath("../Bottom")
+focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_mode = 2
 icon = ExtResource("4_hp0s5")
 flat = false
 item_count = 3
@@ -101,6 +112,9 @@ offset_left = 8.0
 offset_top = 57.0
 offset_right = 40.0
 offset_bottom = 89.0
+focus_neighbor_right = NodePath("../Top")
+focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_mode = 2
 icon = ExtResource("5_hb31u")
 flat = false
 item_count = 3
@@ -122,6 +136,10 @@ offset_left = 152.0
 offset_top = 57.0
 offset_right = 184.0
 offset_bottom = 89.0
+focus_neighbor_left = NodePath("../Bottom")
+focus_neighbor_right = NodePath("../artifact_grid")
+focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_mode = 2
 icon = ExtResource("6_j6i0q")
 flat = false
 item_count = 3
@@ -143,6 +161,10 @@ offset_left = 104.0
 offset_top = 57.0
 offset_right = 136.0
 offset_bottom = 89.0
+focus_neighbor_left = NodePath("../Top")
+focus_neighbor_right = NodePath("../Right")
+focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_mode = 2
 icon = ExtResource("7_s27d8")
 flat = false
 item_count = 3
@@ -161,6 +183,9 @@ popup/item_2/id = 2
 [connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
 [connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
+[connection signal="focus_entered" from="artifact_grid" to="." method="_on_artifact_grid_focus_entered"]
+[connection signal="focus_exited" from="artifact_grid" to="." method="_on_artifact_grid_focus_exited"]
+[connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
 [connection signal="on_cell_moused_over" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_moused_over"]
 [connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]

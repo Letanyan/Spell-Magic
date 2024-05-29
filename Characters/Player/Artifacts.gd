@@ -169,7 +169,7 @@ func is_still_continuous_after_removing(coord: Vector2) -> bool:
 	var to_visit := PackedVector2Array()
 	var visited := {coord: true}
 	# loop to find exactly one tile that has an artifact which is not the removed 'coord'
-	for a: Vector2 in connected:
+	for a: Artifact in connected:
 		var c: Vector2 = connected[a]
 		if c == coord:
 			continue

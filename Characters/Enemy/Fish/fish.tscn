@@ -982,7 +982,7 @@ _data = {
 "Yes": SubResource("Animation_p7hn8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7k41v"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ibrjs"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -998,11 +998,11 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_svp0m"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_g4brj"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ydncj"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mylvc"]
 resource_local_to_scene = true
 animation = &"Walk"
 
@@ -1102,7 +1102,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_e4elx"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_7k41v")
+states/attack/node = SubResource("AnimationNodeAnimation_ibrjs")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -1112,9 +1112,9 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(666, 175)
-states/on_hit/node = SubResource("AnimationNodeAnimation_svp0m")
+states/on_hit/node = SubResource("AnimationNodeAnimation_g4brj")
 states/on_hit/position = Vector2(464, 282)
-states/run/node = SubResource("AnimationNodeAnimation_ydncj")
+states/run/node = SubResource("AnimationNodeAnimation_mylvc")
 states/run/position = Vector2(265, 373)
 states/walk/node = SubResource("AnimationNodeAnimation_we7e5")
 states/walk/position = Vector2(441, 116)

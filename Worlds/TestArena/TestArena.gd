@@ -225,6 +225,10 @@ func _input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative)
+	else:
+		if event is InputEventJoypadMotion:
+			var movement = VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
+			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		
 	if not menu.is_showing:
 		for k: String in wand.basic_keys:

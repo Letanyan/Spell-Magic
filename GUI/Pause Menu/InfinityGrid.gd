@@ -135,28 +135,34 @@ func _gui_input(_event: InputEvent) -> void:
 				m_pos /= cell_size
 				m_pos = floor(m_pos)
 				on_cell_moused_over.emit(m_pos)
-	elif _event is InputEventKey:
-		if selected_cell_coord and has_focus():
-			if Input.is_action_pressed("DOWN"):
+	elif _event is InputEventKey or _event is InputEventJoypadButton:
+		if selected_cell_coord != null and has_focus():
+			if _event.is_action_pressed("DOWN"):
 				selected_cell_coord += Vector2(0, 1)
 				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(0, 1) * cell_size
 				accept_event()
-			if Input.is_action_pressed("UP"):
+			if _event.is_action_pressed("UP"):
 				selected_cell_coord += Vector2(0, -1)
 				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(0, -1) * cell_size
 				accept_event()
-			if Input.is_action_pressed("LEFT"):
+			if _event.is_action_pressed("LEFT"):
 				selected_cell_coord += Vector2(-1, 0)
 				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(-1, 0) * cell_size
 				accept_event()
-			if Input.is_action_pressed("RIGHT"):
+			if _event.is_action_pressed("RIGHT"):
 				selected_cell_coord += Vector2(1, 0)
 				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(1, 0) * cell_size
 				accept_event()
 			queue_redraw()
 			queue_sort()
+	elif _event is InputEventJoypadMotion:
+		var e := _event as InputEventJoypadMotion
+		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
+		current_offset += movement
+		queue_redraw()
+		queue_sort()
 

@@ -18,6 +18,7 @@ var filter_bottom_options := FilterOptions.new()
 
 var temporary_grid_tile: GridTile
 var last_moused_coord := Vector2.ZERO
+var saved_artifact_grid_selected_cell := Vector2.ZERO
 
 var artifacts: Artifacts:
 	set(value):
@@ -118,18 +119,23 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 
 func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		var was_removed := attempt_remove_artifact(coord)
-		if not was_removed:
-			temporary_grid_tile.artifact = null
-			update_temporary_grid_tile()
-		elif temporary_grid_tile.artifact != null:
-			artifact_grid.remove_tile_at_coord(coord)
-			artifact_grid.remove_grid_tile(temporary_grid_tile)
-			artifact_grid.add_grid_tile(temporary_grid_tile, coord)
-			attempt_place_artifact(temporary_grid_tile.artifact, coord, true)
-			update_list()
-		else:
-			update_list_and_grid()
+		attempt_remove_artifact_from_grid(coord)
+		
+			
+func attempt_remove_artifact_from_grid(coord: Vector2) -> void:
+	var was_removed := attempt_remove_artifact(coord)
+	if not was_removed:
+		temporary_grid_tile.artifact = null
+		update_temporary_grid_tile()
+	elif temporary_grid_tile.artifact != null:
+		artifact_grid.remove_tile_at_coord(coord)
+		artifact_grid.remove_grid_tile(temporary_grid_tile)
+		artifact_grid.add_grid_tile(temporary_grid_tile, coord)
+		attempt_place_artifact(temporary_grid_tile.artifact, coord, true)
+		update_list()
+	else:
+		update_list_and_grid()
+	
 
 func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array[Vector4]:
 	if artifact == null:
@@ -275,23 +281,6 @@ func _on_artifacts_list_item_selected(index: int) -> void:
 	if artifact_grid.selected_cell_coord:
 		update_temporary_grid_tile()
 
-func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree():
-		return
-			
-	if event is InputEventKey:
-		if Input.is_action_pressed("S", true):
-			if artifacts_list.has_focus():
-				if artifact_grid.selected_cell_coord != null:
-					var selected: Array[int] = artifacts_list.get_selected_items()
-					if selected.size() == 1:
-						var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(selected[0]))
-						attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
-			elif artifact_grid.has_focus():
-				artifacts_list.grab_focus()
-				if artifacts_list.item_count > 0:
-					artifacts_list.select(0)
-
 
 func _on_artifact_grid_on_cell_moused_over(coord: Vector2) -> void:
 	if coord == last_moused_coord:
@@ -358,7 +347,23 @@ func handle_artifact_drag(_event: InputEvent) -> void:
 			artifact_grid.add_grid_tile(temporary_grid_tile, coord)
 
 func _on_artifacts_list_gui_input(event: InputEvent) -> void:
-	handle_artifact_drag(event)
+	if event is InputEventKey:
+		var e := event as InputEventKey
+		if e.is_action_pressed("W"):
+			attempt_delete_artifact()
+		elif e.is_action_pressed("S"):
+			if not artifacts_list.get_selected_items().is_empty():
+				var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
+				temporary_grid_tile.artifact = artifact
+				if artifact_grid.selected_cell_coord != null:
+					attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
+				else:
+					artifact_grid.selected_cell_coord = saved_artifact_grid_selected_cell
+					update_temporary_grid_tile()
+					
+				artifact_grid.grab_focus()
+	else:
+		handle_artifact_drag(event)
 
 func _on_artifact_preview_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
@@ -368,15 +373,58 @@ func _on_artifact_preview_gui_input(event: InputEvent) -> void:
 
 
 func _on_destroy_pressed() -> void:
+	attempt_delete_artifact()
+	
+func _on_artifact_grid_focus_entered() -> void:
+	if artifact_grid.selected_cell_coord == null:
+		print("restore selected cell: ", saved_artifact_grid_selected_cell)
+		artifact_grid.selected_cell_coord = saved_artifact_grid_selected_cell
+		
+func _on_artifact_grid_focus_exited() -> void:
+	if artifact_grid.selected_cell_coord != null:
+		saved_artifact_grid_selected_cell = artifact_grid.selected_cell_coord
+
+func _on_artifact_grid_gui_input(event: InputEvent) -> void:
+	#print("grid: ", event)
+	if event is InputEventKey:
+		var e := event as InputEventKey
+		if e.is_action_pressed("E") or e.is_action_pressed("S"):
+			if e.is_action_pressed("E"):
+				saved_artifact_grid_selected_cell = artifact_grid.selected_cell_coord
+				artifact_grid.selected_cell_coord = null
+				temporary_grid_tile.artifact = null
+				if artifacts_list.item_count > 0:
+					artifacts_list.select(0)
+					_on_artifacts_list_item_selected(0)
+				update_list_and_grid()
+			elif e.is_action_pressed("S"):
+				if artifact_preview.artifact == null and artifacts_list.item_count > 0:
+					artifacts_list.select(0)
+					_on_artifacts_list_item_selected(0)
+				else:
+					temporary_grid_tile.artifact = artifact_preview.artifact
+					if temporary_grid_tile.artifact != null:
+						attempt_place_artifact(temporary_grid_tile.artifact, artifact_grid.selected_cell_coord as Vector2, false)
+			
+			artifacts_list.grab_focus()
+		elif e.is_action_pressed("W"):
+			if artifact_grid.selected_cell_coord != null:
+				attempt_remove_artifact(artifact_grid.selected_cell_coord as Vector2)
+			
+
+func attempt_delete_artifact() -> void:
 	if artifact_preview.artifact == null or artifact_preview.is_hidden:
 		return
 		
-	artifacts.delete_artifact(artifact_preview.artifact)
-	artifact_preview.artifact = null
-	temporary_grid_tile.artifact = null
-	update_list()
-	update_temporary_grid_tile()
-
+	var popup := PopupDialog.display("Are you sure you wish to delete the artifact '%s'" % artifact_preview.artifact.name)
+	popup.confirmed.connect(func() -> void:
+		artifacts.delete_artifact(artifact_preview.artifact)
+		artifact_preview.artifact = null
+		temporary_grid_tile.artifact = null
+		update_list()
+		update_temporary_grid_tile()
+	)
+	get_tree().root.add_child(popup)
 
 func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void:
 	var menu := button.get_popup() as PopupMenu
@@ -554,4 +602,3 @@ class FilterOptions:
 		events.clear()
 		effects.clear()
 		elements.clear()
-		
