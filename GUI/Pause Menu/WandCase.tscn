@@ -10,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_bottom = NodePath("WandIndex")
 script = ExtResource("1_1fquc")
 
 [node name="WandIndex" type="ItemList" parent="."]
@@ -21,6 +22,10 @@ offset_top = 56.0
 offset_right = 248.0
 offset_bottom = -48.0
 grow_vertical = 2
+focus_neighbor_right = NodePath("../name")
+focus_neighbor_bottom = NodePath("../create")
+focus_next = NodePath("../create")
+focus_previous = NodePath("../delete")
 
 [node name="create" type="Button" parent="."]
 layout_mode = 1
@@ -32,6 +37,10 @@ offset_top = -40.0
 offset_right = 248.0
 offset_bottom = -8.0
 grow_vertical = 0
+focus_neighbor_top = NodePath("../WandIndex")
+focus_neighbor_right = NodePath("../panel/ListView")
+focus_next = NodePath("../name")
+focus_previous = NodePath("../WandIndex")
 text = "Create"
 
 [node name="delete" type="Button" parent="."]
@@ -43,6 +52,10 @@ offset_left = -128.0
 offset_top = 56.0
 offset_right = -8.0
 offset_bottom = 88.0
+focus_neighbor_left = NodePath("../name")
+focus_neighbor_bottom = NodePath("../panel/ListView")
+focus_next = NodePath("../WandIndex")
+focus_previous = NodePath("../panel/ListView")
 text = "Delete"
 
 [node name="panel" type="Panel" parent="."]
@@ -59,6 +72,10 @@ grow_vertical = 2
 
 [node name="ListView" parent="panel" instance=ExtResource("2_ib5uu")]
 layout_mode = 1
+focus_neighbor_left = NodePath("../../WandIndex")
+focus_neighbor_top = NodePath("../../name")
+focus_next = NodePath("../../delete")
+focus_previous = NodePath("../../name")
 
 [node name="name" type="LineEdit" parent="."]
 layout_mode = 1
@@ -68,6 +85,12 @@ offset_left = 256.0
 offset_top = 56.0
 offset_right = -136.0
 offset_bottom = 88.0
+focus_neighbor_left = NodePath("../WandIndex")
+focus_neighbor_right = NodePath("../delete")
+focus_neighbor_bottom = NodePath("../panel/ListView")
+focus_next = NodePath("../panel/ListView")
+focus_previous = NodePath("../create")
+placeholder_text = "Wand Name"
 
 [connection signal="item_clicked" from="WandIndex" to="." method="_on_wand_index_item_clicked"]
 [connection signal="item_selected" from="WandIndex" to="." method="_on_wand_index_item_selected"]

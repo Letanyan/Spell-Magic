@@ -23,6 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_bottom = NodePath("container/max_H/upgrade")
 script = ExtResource("1_sw7ix")
 
 [node name="container" type="Panel" parent="."]
@@ -69,6 +70,10 @@ layout_mode = 2
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_right = NodePath("../../max_M/upgrade")
+focus_neighbor_bottom = NodePath("../../attack/upgrade")
+focus_next = NodePath("../../max_M/upgrade")
+focus_previous = NodePath("../../chain_methods/on_hit")
 text = "+ 5
 "
 
@@ -113,6 +118,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_top = NodePath("../../max_H/upgrade")
+focus_neighbor_right = NodePath("../../defence/upgrade")
+focus_neighbor_bottom = NodePath("../../max_v/upgrade")
+focus_next = NodePath("../../defence/upgrade")
+focus_previous = NodePath("../../max_M/upgrade")
 text = "+ 5
 "
 
@@ -158,6 +168,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../attack/upgrade")
+focus_neighbor_top = NodePath("../../max_M/upgrade")
+focus_neighbor_bottom = NodePath("../../max_r/upgrade")
+focus_next = NodePath("../../max_v/upgrade")
+focus_previous = NodePath("../../attack/upgrade")
 text = "+ 5
 "
 
@@ -203,6 +218,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../running_speed/upgrade")
+focus_neighbor_top = NodePath("../../max_N/upgrade")
+focus_neighbor_bottom = NodePath("../../max_spell_count/upgrade")
+focus_next = NodePath("../../mana_regen/upgrade")
+focus_previous = NodePath("../../running_speed/upgrade")
 text = "+ 5
 "
 
@@ -248,6 +268,10 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../max_H/upgrade")
+focus_neighbor_bottom = NodePath("../../defence/upgrade")
+focus_next = NodePath("../../attack/upgrade")
+focus_previous = NodePath("../../max_H/upgrade")
 text = "+ 5
 "
 
@@ -292,6 +316,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../mana_regen/upgrade")
+focus_neighbor_top = NodePath("../../max_P/upgrade")
+focus_neighbor_bottom = NodePath("../../chain_methods/at_start")
+focus_next = NodePath("../../elements/Void")
+focus_previous = NodePath("../../mana_regen/upgrade")
 text = "+ 5
 "
 
@@ -336,6 +365,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_top = NodePath("../../max_T/upgrade")
+focus_neighbor_right = NodePath("../../max_P/upgrade")
+focus_neighbor_bottom = NodePath("../../mana_regen/upgrade")
+focus_next = NodePath("../../max_P/upgrade")
+focus_previous = NodePath("../../max_N/upgrade")
 text = "+ 5
 "
 
@@ -372,6 +406,11 @@ layout_mode = 0
 offset_left = 240.0
 offset_right = 272.0
 offset_bottom = 32.0
+focus_neighbor_left = NodePath("../Fire")
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../Electric")
+focus_next = NodePath("../Electric")
+focus_previous = NodePath("../Fire")
 icon = ExtResource("2_gtdpa")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Rock"]
@@ -389,6 +428,11 @@ layout_mode = 0
 offset_left = 496.0
 offset_right = 528.0
 offset_bottom = 32.0
+focus_neighbor_left = NodePath("../Air")
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../chain_methods/at_start")
+focus_next = NodePath("../../chain_methods/at_start")
+focus_previous = NodePath("../Air")
 icon = ExtResource("3_hrijs")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Ice"]
@@ -406,6 +450,11 @@ layout_mode = 0
 offset_left = 304.0
 offset_right = 336.0
 offset_bottom = 32.0
+focus_neighbor_left = NodePath("../Rock")
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../Water")
+focus_next = NodePath("../Water")
+focus_previous = NodePath("../Rock")
 icon = ExtResource("4_xsfxt")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Electric"]
@@ -423,6 +472,11 @@ layout_mode = 0
 offset_left = 176.0
 offset_right = 208.0
 offset_bottom = 32.0
+focus_neighbor_left = NodePath("../Void")
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../Rock")
+focus_next = NodePath("../Rock")
+focus_previous = NodePath("../Void")
 icon = ExtResource("5_3buty")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Fire"]
@@ -440,6 +494,11 @@ layout_mode = 0
 offset_left = 368.0
 offset_right = 400.0
 offset_bottom = 32.0
+focus_neighbor_left = NodePath("../Electric")
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../Air")
+focus_next = NodePath("../Air")
+focus_previous = NodePath("../Electric")
 icon = ExtResource("6_qee75")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Water"]
@@ -457,6 +516,11 @@ layout_mode = 0
 offset_left = 432.0
 offset_right = 464.0
 offset_bottom = 32.0
+focus_neighbor_left = NodePath("../Water")
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../Ice")
+focus_next = NodePath("../Ice")
+focus_previous = NodePath("../Water")
 icon = ExtResource("7_wfy6i")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Air"]
@@ -474,6 +538,10 @@ layout_mode = 0
 offset_left = 112.0
 offset_right = 144.0
 offset_bottom = 32.0
+focus_neighbor_top = NodePath("../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../Fire")
+focus_next = NodePath("../Fire")
+focus_previous = NodePath("../../max_spell_count/upgrade")
 icon = ExtResource("8_6m44h")
 
 [node name="cost" type="RichTextLabel" parent="container/elements/Void"]
@@ -519,6 +587,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../max_T/upgrade")
+focus_neighbor_top = NodePath("../../max_r/upgrade")
+focus_neighbor_bottom = NodePath("../../max_P/upgrade")
+focus_next = NodePath("../../running_speed/upgrade")
+focus_previous = NodePath("../../max_T/upgrade")
 text = "+ 5
 "
 
@@ -563,6 +636,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_top = NodePath("../../max_v/upgrade")
+focus_neighbor_right = NodePath("../../max_N/upgrade")
+focus_neighbor_bottom = NodePath("../../running_speed/upgrade")
+focus_next = NodePath("../../max_N/upgrade")
+focus_previous = NodePath("../../max_r/upgrade")
 text = "+ 5
 "
 
@@ -579,10 +657,10 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = -255.456
-offset_top = 336.0
-offset_right = 256.544
-offset_bottom = 392.0
+offset_left = 312.544
+offset_top = 416.0
+offset_right = 824.544
+offset_bottom = 472.0
 
 [node name="label" type="Label" parent="container/chain_methods"]
 layout_mode = 0
@@ -596,6 +674,11 @@ layout_mode = 0
 offset_left = 136.0
 offset_right = 249.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../elements/Ice")
+focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
+focus_neighbor_right = NodePath("../at_end")
+focus_next = NodePath("../at_end")
+focus_previous = NodePath("../../elements/Ice")
 text = "At Start"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/at_start"]
@@ -612,6 +695,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../at_start")
+focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
+focus_neighbor_right = NodePath("../on_hit")
+focus_next = NodePath("../on_hit")
+focus_previous = NodePath("../at_start")
 text = "At End"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/at_end"]
@@ -628,6 +716,10 @@ layout_mode = 0
 offset_left = 392.0
 offset_right = 504.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../at_end")
+focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
+focus_next = NodePath("../../max_H/upgrade")
+focus_previous = NodePath("../at_end")
 text = "On Hit"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/on_hit"]
@@ -671,6 +763,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_left = NodePath("../../max_v/upgrade")
+focus_neighbor_top = NodePath("../../defence/upgrade")
+focus_neighbor_bottom = NodePath("../../max_N/upgrade")
+focus_next = NodePath("../../max_T/upgrade")
+focus_previous = NodePath("../../max_v/upgrade")
 text = "+ 5
 "
 
@@ -715,6 +812,11 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_top = NodePath("../../attack/upgrade")
+focus_neighbor_right = NodePath("../../max_r/upgrade")
+focus_neighbor_bottom = NodePath("../../max_T/upgrade")
+focus_next = NodePath("../../max_r/upgrade")
+focus_previous = NodePath("../../defence/upgrade")
 text = "+ 5
 "
 
@@ -729,10 +831,10 @@ scroll_active = false
 
 [node name="mana_regen" type="Control" parent="container"]
 anchors_preset = 0
-offset_left = 592.0
-offset_top = 416.0
-offset_right = 1096.0
-offset_bottom = 464.0
+offset_left = 24.0
+offset_top = 336.0
+offset_right = 528.0
+offset_bottom = 384.0
 
 [node name="label" type="RichTextLabel" parent="container/mana_regen"]
 layout_mode = 0
@@ -757,12 +859,17 @@ layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
 offset_bottom = 25.0
+focus_neighbor_top = NodePath("../../running_speed/upgrade")
+focus_neighbor_right = NodePath("../../max_spell_count/upgrade")
+focus_neighbor_bottom = NodePath("../../elements/Void")
+focus_next = NodePath("../../max_spell_count/upgrade")
+focus_previous = NodePath("../../max_P/upgrade")
 text = "+ 5"
 
 [node name="cost" type="RichTextLabel" parent="container/mana_regen/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 232.0
+offset_right = 240.0
 offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"

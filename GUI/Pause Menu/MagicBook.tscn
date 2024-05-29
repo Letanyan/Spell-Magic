@@ -32,7 +32,23 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_bottom = NodePath("SpellIndex")
 script = ExtResource("1_1c5yt")
+
+[node name="SpellIndex" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 96.0
+offset_right = 272.0
+offset_bottom = -64.0
+grow_vertical = 2
+focus_neighbor_top = NodePath("../SearchLineEdit")
+focus_neighbor_right = NodePath("../MagicPage")
+focus_neighbor_bottom = NodePath("../Create")
+focus_next = NodePath("../Create")
+focus_previous = NodePath("../SearchLineEdit")
 
 [node name="FilterButton" type="MenuButton" parent="."]
 layout_mode = 0
@@ -40,6 +56,10 @@ offset_left = 8.0
 offset_top = 56.0
 offset_right = 40.0
 offset_bottom = 88.0
+focus_neighbor_right = NodePath("../SortButton")
+focus_neighbor_bottom = NodePath("../SpellIndex")
+focus_next = NodePath(".")
+focus_previous = NodePath("../MagicPage")
 icon = ExtResource("4_f8nsx")
 flat = false
 item_count = 12
@@ -99,6 +119,11 @@ offset_left = 48.0
 offset_top = 56.0
 offset_right = 80.0
 offset_bottom = 88.0
+focus_neighbor_left = NodePath("../FilterButton")
+focus_neighbor_right = NodePath("../SearchLineEdit")
+focus_neighbor_bottom = NodePath("../SpellIndex")
+focus_next = NodePath("../SearchLineEdit")
+focus_previous = NodePath("../FilterButton")
 icon = ExtResource("3_owmtw")
 flat = false
 item_count = 9
@@ -146,17 +171,12 @@ offset_left = 88.0
 offset_top = 56.0
 offset_right = 272.0
 offset_bottom = 87.0
+focus_neighbor_left = NodePath("../SortButton")
+focus_neighbor_right = NodePath("../MagicPage")
+focus_neighbor_bottom = NodePath("../SpellIndex")
+focus_next = NodePath("../SpellIndex")
+focus_previous = NodePath("../SortButton")
 placeholder_text = "Search"
-
-[node name="SpellIndex" type="ItemList" parent="."]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 96.0
-offset_right = 272.0
-offset_bottom = -64.0
-grow_vertical = 2
 
 [node name="Create" type="Button" parent="."]
 layout_mode = 1
@@ -168,6 +188,10 @@ offset_top = -56.0
 offset_right = 272.0
 offset_bottom = -16.0
 grow_vertical = 0
+focus_neighbor_top = NodePath("../SpellIndex")
+focus_neighbor_right = NodePath("../MagicPage")
+focus_next = NodePath("../MagicPage")
+focus_previous = NodePath("../SpellIndex")
 text = "Create New Spell"
 
 [node name="MagicPage" parent="." instance=ExtResource("2_4a14e")]
@@ -176,8 +200,11 @@ offset_left = 280.0
 offset_top = 56.0
 offset_right = -8.0
 offset_bottom = -16.0
+focus_neighbor_left = NodePath("../SpellIndex")
+focus_next = NodePath("../FilterButton")
+focus_previous = NodePath("../Create")
 
-[connection signal="text_changed" from="SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="item_clicked" from="SpellIndex" to="." method="_on_spell_index_item_clicked"]
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
+[connection signal="text_changed" from="SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]

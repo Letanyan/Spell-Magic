@@ -24,7 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-focus_mode = 2
+focus_neighbor_right = NodePath("container/name_edit")
 script = ExtResource("1_ruo5p")
 
 [node name="container" type="Panel" parent="."]
@@ -32,6 +32,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
+focus_neighbor_right = NodePath("name_edit")
 
 [node name="name" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -50,6 +51,11 @@ offset_top = 8.0
 offset_right = -248.0
 offset_bottom = 40.0
 size_flags_vertical = 4
+focus_neighbor_right = NodePath("../element_combo")
+focus_neighbor_bottom = NodePath("../x_edit")
+focus_next = NodePath("../element_combo")
+focus_previous = NodePath("../Delete")
+placeholder_text = "Spell Name"
 
 [node name="element_combo" type="OptionButton" parent="container"]
 layout_mode = 1
@@ -61,6 +67,10 @@ offset_top = 8.0
 offset_right = -8.0
 offset_bottom = 40.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../name_edit")
+focus_neighbor_bottom = NodePath("../duration_edit")
+focus_next = NodePath("../x_edit")
+focus_previous = NodePath("../name_edit")
 item_count = 7
 selected = 0
 popup/item_0/text = "Void"
@@ -103,6 +113,12 @@ offset_left = 56.0
 offset_top = 57.96
 offset_right = -6.0
 offset_bottom = 89.96
+focus_neighbor_top = NodePath("../name_edit")
+focus_neighbor_right = NodePath("../duration_edit")
+focus_neighbor_bottom = NodePath("../y_edit")
+focus_next = NodePath("../y_edit")
+focus_previous = NodePath("../element_combo")
+placeholder_text = "expression"
 
 [node name="y" type="RichTextLabel" parent="container"]
 layout_mode = 2
@@ -122,6 +138,12 @@ offset_left = 56.0
 offset_top = 104.0
 offset_right = -6.0
 offset_bottom = 136.0
+focus_neighbor_top = NodePath("../x_edit")
+focus_neighbor_right = NodePath("../delay_edit")
+focus_neighbor_bottom = NodePath("../z_edit")
+focus_next = NodePath("../z_edit")
+focus_previous = NodePath("../x_edit")
+placeholder_text = "expression"
 
 [node name="z" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -141,6 +163,12 @@ offset_top = 152.0
 offset_right = -6.0
 offset_bottom = 184.0
 grow_horizontal = 0
+focus_neighbor_top = NodePath("../y_edit")
+focus_neighbor_right = NodePath("../count_edit")
+focus_neighbor_bottom = NodePath("../r_edit")
+focus_next = NodePath("../r_edit")
+focus_previous = NodePath("../y_edit")
+placeholder_text = "expression"
 
 [node name="r" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -160,6 +188,12 @@ offset_top = 200.0
 offset_right = -6.0
 offset_bottom = 232.0
 grow_horizontal = 0
+focus_neighbor_top = NodePath("../z_edit")
+focus_neighbor_right = NodePath("../power_edit")
+focus_neighbor_bottom = NodePath("../chain_edit")
+focus_next = NodePath("../duration_edit")
+focus_previous = NodePath("../z_edit")
+placeholder_text = "expression"
 
 [node name="duration" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -184,6 +218,12 @@ offset_top = 58.0
 offset_right = -8.0
 offset_bottom = 90.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../x_edit")
+focus_neighbor_top = NodePath("../element_combo")
+focus_neighbor_bottom = NodePath("../delay_edit")
+focus_next = NodePath("../delay_edit")
+focus_previous = NodePath("../r_edit")
+placeholder_text = "value"
 
 [node name="delay" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -207,6 +247,12 @@ offset_top = 104.0
 offset_right = -8.0
 offset_bottom = 136.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../y_edit")
+focus_neighbor_top = NodePath("../duration_edit")
+focus_neighbor_bottom = NodePath("../count_edit")
+focus_next = NodePath("../count_edit")
+focus_previous = NodePath("../duration_edit")
+placeholder_text = "expression"
 
 [node name="count" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -230,6 +276,12 @@ offset_top = 152.0
 offset_right = -8.0
 offset_bottom = 184.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../z_edit")
+focus_neighbor_top = NodePath("../delay_edit")
+focus_neighbor_bottom = NodePath("../power_edit")
+focus_next = NodePath("../power_edit")
+focus_previous = NodePath(".")
+placeholder_text = "value"
 
 [node name="power" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -253,6 +305,12 @@ offset_top = 200.0
 offset_right = -8.0
 offset_bottom = 232.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../r_edit")
+focus_neighbor_top = NodePath("../count_edit")
+focus_neighbor_bottom = NodePath("../chain_combo")
+focus_next = NodePath("../chain_edit")
+focus_previous = NodePath("../count_edit")
+placeholder_text = "value"
 
 [node name="chain" type="RichTextLabel" parent="container"]
 layout_mode = 0
@@ -272,6 +330,12 @@ offset_top = 248.0
 offset_right = -200.0
 offset_bottom = 280.0
 grow_horizontal = 2
+focus_neighbor_top = NodePath("../r_edit")
+focus_neighbor_right = NodePath("../chain_combo")
+focus_neighbor_bottom = NodePath("../player_is_origin")
+focus_next = NodePath("../chain_combo")
+focus_previous = NodePath("../power_edit")
+placeholder_text = "Spell Name"
 
 [node name="chain_combo" type="OptionButton" parent="container"]
 layout_mode = 1
@@ -283,6 +347,12 @@ offset_top = 248.0
 offset_right = -64.0
 offset_bottom = 280.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../chain_edit")
+focus_neighbor_top = NodePath("../power_edit")
+focus_neighbor_right = NodePath("../view_chain_button")
+focus_neighbor_bottom = NodePath("../expressions")
+focus_next = NodePath("../view_chain_button")
+focus_previous = NodePath("../chain_edit")
 item_count = 3
 selected = 0
 popup/item_0/text = "At Start"
@@ -302,6 +372,11 @@ offset_top = 248.0
 offset_right = -11.0
 offset_bottom = 280.0
 grow_horizontal = 0
+focus_neighbor_left = NodePath("../chain_combo")
+focus_neighbor_top = NodePath("../power_edit")
+focus_neighbor_bottom = NodePath("../expressions")
+focus_next = NodePath("../player_is_origin")
+focus_previous = NodePath("../chain_combo")
 text = "View"
 
 [node name="player_is_origin" type="CheckButton" parent="container"]
@@ -311,6 +386,11 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 288.0
 offset_bottom = 320.0
+focus_neighbor_top = NodePath("../chain_edit")
+focus_neighbor_right = NodePath("../expressions")
+focus_neighbor_bottom = NodePath("../is_bomb")
+focus_next = NodePath("../is_bomb")
+focus_previous = NodePath("../view_chain_button")
 text = "player is origin"
 icon = ExtResource("9_dae3a")
 
@@ -321,6 +401,11 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 319.0
 offset_bottom = 350.0
+focus_neighbor_top = NodePath("../player_is_origin")
+focus_neighbor_right = NodePath("../expressions")
+focus_neighbor_bottom = NodePath("../is_rel")
+focus_next = NodePath("../is_rel")
+focus_previous = NodePath("../player_is_origin")
 text = "is bomb"
 icon = ExtResource("10_5c3hv")
 
@@ -331,6 +416,11 @@ anchor_right = 0.5
 offset_left = 16.0
 offset_top = 352.0
 offset_bottom = 383.0
+focus_neighbor_top = NodePath("../is_bomb")
+focus_neighbor_right = NodePath("../expressions")
+focus_neighbor_bottom = NodePath("../mana_edit")
+focus_next = NodePath("../mana_edit")
+focus_previous = NodePath("../is_bomb")
 text = "follow player"
 icon = ExtResource("11_8d7vq")
 
@@ -352,6 +442,12 @@ offset_left = 64.0
 offset_top = 392.0
 offset_right = -224.632
 offset_bottom = 424.0
+focus_neighbor_top = NodePath("../is_rel")
+focus_neighbor_right = NodePath("../expressions")
+focus_neighbor_bottom = NodePath("../Duplicate")
+focus_next = NodePath("../expressions")
+focus_previous = NodePath("../is_rel")
+placeholder_text = "value"
 
 [node name="mana_cost" type="Label" parent="container"]
 layout_mode = 1
@@ -376,6 +472,11 @@ offset_left = 8.0
 offset_top = 296.0
 offset_right = -8.0
 offset_bottom = -64.0
+focus_neighbor_left = NodePath("../player_is_origin")
+focus_neighbor_top = NodePath("../chain_combo")
+focus_neighbor_bottom = NodePath("../Duplicate")
+focus_next = NodePath("../Duplicate")
+focus_previous = NodePath("../mana_edit")
 placeholder_text = "Constants
 Examples:
 speed=5
@@ -439,6 +540,10 @@ offset_right = -107.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
+focus_neighbor_top = NodePath("../expressions")
+focus_neighbor_right = NodePath("../Delete")
+focus_next = NodePath("../Delete")
+focus_previous = NodePath("../expressions")
 text = "Duplicate"
 icon = ExtResource("10_ne1rx")
 
@@ -453,6 +558,10 @@ offset_left = -96.0
 offset_top = -48.0
 offset_right = -11.0
 offset_bottom = -16.0
+focus_neighbor_left = NodePath("../Duplicate")
+focus_neighbor_top = NodePath("../expressions")
+focus_next = NodePath("../name_edit")
+focus_previous = NodePath("../Duplicate")
 text = "Delete
 "
 icon = ExtResource("2_ap1iy")

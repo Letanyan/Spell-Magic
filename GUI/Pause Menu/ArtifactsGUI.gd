@@ -351,7 +351,7 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 		var e := event as InputEventKey
 		if e.is_action_pressed("W"):
 			attempt_delete_artifact()
-		elif e.is_action_pressed("S"):
+		elif e.is_action_pressed("ui_accept"):
 			if not artifacts_list.get_selected_items().is_empty():
 				var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
 				temporary_grid_tile.artifact = artifact
@@ -388,7 +388,7 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 	#print("grid: ", event)
 	if event is InputEventKey:
 		var e := event as InputEventKey
-		if e.is_action_pressed("E") or e.is_action_pressed("S"):
+		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
 			if e.is_action_pressed("E"):
 				saved_artifact_grid_selected_cell = artifact_grid.selected_cell_coord
 				artifact_grid.selected_cell_coord = null
@@ -397,7 +397,7 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 					artifacts_list.select(0)
 					_on_artifacts_list_item_selected(0)
 				update_list_and_grid()
-			elif e.is_action_pressed("S"):
+			elif e.is_action_pressed("ui_accept"):
 				if artifact_preview.artifact == null and artifacts_list.item_count > 0:
 					artifacts_list.select(0)
 					_on_artifacts_list_item_selected(0)

@@ -272,12 +272,6 @@ func toggle_menu() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
-			
-	if not menu.is_showing and event.is_action_pressed("magic_book"):
-		menu.open(Menu.Kind.SPELLS)
-			
-	if not menu.is_showing and event.is_action_pressed("wand_case"):
-		menu.open(Menu.Kind.WANDS)
 		
 	if not menu.is_showing and event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
@@ -289,7 +283,7 @@ func _input(event: InputEvent) -> void:
 				player.pan_camera((event as InputEventMouseMotion).relative)
 	else:
 		if event is InputEventJoypadMotion:
-			var movement = VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
+			var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
 			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		
 	if not menu.is_showing:
