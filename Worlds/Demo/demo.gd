@@ -174,6 +174,9 @@ func _exit_tree() -> void:
 	pass
 	
 func _physics_process(delta: float) -> void:
+	if player.magic_book.settings.is_paused:
+		return
+	
 	knowledge_tick += delta
 	daytime_tick += delta
 	population_update_tick -= delta

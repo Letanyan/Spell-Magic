@@ -146,6 +146,9 @@ func _process(delta: float) -> void:
 	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
 func _physics_process(delta: float) -> void:
+	if player.magic_book.settings.is_paused:
+		return
+	
 	knowledge_tick += delta
 	daytime_tick += delta
 
