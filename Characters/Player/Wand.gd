@@ -243,7 +243,7 @@ func action_up(action: String, book: MagicBook) -> Spell:
 			if not current_actions.has(k):
 				found = false
 				break
-		if found and key.size() > best_candidate.size():
+		if found and key.size() > best_candidate.size() and key.find(action) != -1:
 			best_candidate = key
 			
 	if not best_candidate.is_empty():
