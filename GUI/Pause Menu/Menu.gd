@@ -116,11 +116,11 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_pressed("LT"):
 			update_index(current_index - 1)
 			
-	if event.is_action_pressed("Back"):
-		if not (spells_button.has_focus() or wands_button.has_focus() or artifacts_button.has_focus() or quit_button.has_focus() or upgrades_button.has_focus() or settings_button.has_focus()):
-			quit_button.grab_focus()
-		else:
-			close_menu.emit()
+		if event.is_action_pressed("Back"):
+			if not (spells_button.has_focus() or wands_button.has_focus() or artifacts_button.has_focus() or quit_button.has_focus() or upgrades_button.has_focus() or settings_button.has_focus()):
+				quit_button.grab_focus()
+			else:
+				close_menu.emit()
 	
 
 func save_changes() -> void:

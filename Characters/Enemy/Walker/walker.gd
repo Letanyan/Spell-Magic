@@ -97,7 +97,7 @@ func _physics_process(delta: float) -> void:
 func __default_pattern() -> AttackPatterns:
 	default_pattern.spells = [
 		GlobalData.magic_book.copy_spell("Rain"),
-		GlobalData.magic_book.copy_spell("parabola", {"height":"4", "speed":"4"})
+		GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "speed":"4"})
 	]
 	return default_pattern
 
