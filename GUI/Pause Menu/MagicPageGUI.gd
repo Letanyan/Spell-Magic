@@ -353,6 +353,34 @@ func _on_constants_text_changed() -> void:
 		if atoms.size() == 2:
 			result[atoms[0].strip_edges()] = atoms[1].strip_edges()
 	
+	# This is used to auto change the variable names in expressions when a name is changed.
+	# We need to do a lot of work to make sure we aren't changing wrong names e.g. Check if var name
+	# is not in conflict with fixed_vars or other var names that are prefixs/suffixs or paritally similar
+	# to the new var name.
+	#var old_expressions := book.spells[current_index].expression_strings.duplicate()
+	#if old_expressions.size() == result.size():
+		#var old_vars := PackedStringArray([])
+		#var new_vars := PackedStringArray([])
+		#var i := 0
+		#for v: String in result:
+			#if not v.is_empty() and book.spells[current_index].exp and v != old_expressions.keys()[i]:
+				#old_vars.append(old_expressions.keys()[i])
+				#new_vars.append(v)
+			#i += 1
+			#
+		#i = 0
+		#for v in old_vars:
+			#var nv := new_vars[i]
+			#var regex := RegEx.new()
+			#regex.compile("(?<=\\b)" + v + "(?=\\b)")
+			#x_edit.text = regex.sub(x_edit.text, nv, true)
+			#z_edit.text = regex.sub(z_edit.text, nv, true)
+			#y_edit.text = regex.sub(y_edit.text, nv, true)
+			#r_edit.text = regex.sub(r_edit.text, nv, true)
+			#for rv: String in result:
+				#result[rv] = regex.sub(result[rv] as String, nv, true)
+			#i += 1
+			
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
 	
