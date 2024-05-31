@@ -62,6 +62,29 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 	var c := e.x
 	var d := e.z
 	return Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), (s.y + e.y) / 2.0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
+	
+static func replace_ranges_in_string(source: String, ranges: Array, what: String) -> String:
+	var result := ""
+	var source_offset := 0
+	var largest_ending_index := 0
+	var shift_amount := 0
+	var i := 0
+	for found: Vector2i in ranges:
+		if found.x != source_offset:
+			var to_append := source.substr(source_offset, found.x - source_offset)
+			result += to_append
+			source_offset += to_append.length()
+		result += what
+		source_offset += found.y
+		if found.y > largest_ending_index:
+			largest_ending_index = found.y
+		ranges[i] = Vector2i(found.x + shift_amount, what.length())
+		shift_amount += what.length() - found.y
+		i += 1
+			
+	if largest_ending_index < source.length():
+		result += source.substr(source_offset, source.length() - source_offset)
+	return result
 
 class Ref extends RefCounted:
 	var data: Variant

@@ -39,6 +39,10 @@ var errors_list := {}
 var book: MagicBook
 var current_index := -1
 var old_chain_text: String = ""
+var selected_variables: Dictionary = {}
+var constants_text_changed: bool = false # Used to avoid triggering expressions caret changed when text is changed
+var selected_variables_origin_line := -1
+var last_selected_variable := ""
 
 signal spell_name_changed(new_text: String)
 signal request_to_view_spell(spell_name: String)
@@ -341,10 +345,58 @@ func _on_view_chain_button_pressed() -> void:
 	else:
 		request_to_view_spell.emit(n)
 		
-func _on_constants_text_changed() -> void:
+func _on_expressions_focus_exited() -> void:
+	selected_variables.clear()
+	selected_variables_origin_line = -1
+	constants_text_changed = false
+	last_selected_variable = ""
+		
+func _on_expressions_caret_changed() -> void:
+	if current_index < 0:
+		return
+		
+	if constants_text_changed:
+		constants_text_changed = false
+		return
+		
+	selected_variables.clear()
+	selected_variables_origin_line = expressions.get_caret_line()
+	var atoms := expressions.get_line(selected_variables_origin_line).split("=", false)
+	var selected := ""
+	if atoms.size() == 2:
+		selected = atoms[0].strip_edges()
+		
+	if selected.is_empty() or last_selected_variable == selected:
+		return
+	
+	var found := false
+	for v: String in book.spells[current_index].expression_strings:
+		if v == selected:
+			found = true
+		
+	if not found:
+		return
+		
+	selected_variables["x"] = []
+	selected_variables["y"] = []
+	selected_variables["z"] = []
+	selected_variables["D"] = []
+	var regex := RegEx.new()
+	regex.compile("(?<=\\b)" + selected + "(?=\\b)")
+	for find in regex.search_all(x_edit.text):
+		(selected_variables["x"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
+	for find in regex.search_all(y_edit.text):
+		(selected_variables["y"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
+	for find in regex.search_all(z_edit.text):
+		(selected_variables["z"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
+	for find in regex.search_all(delay_edit.text):
+		(selected_variables["D"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))	
+		
+func _on_expressions_text_changed() -> void:
 	if current_index < 0:
 		return
 	
+	constants_text_changed = true
 	var result := {}
 	var text: String = expressions.text
 	var definitions := text.split("\n", false)
@@ -353,33 +405,12 @@ func _on_constants_text_changed() -> void:
 		if atoms.size() == 2:
 			result[atoms[0].strip_edges()] = atoms[1].strip_edges()
 	
-	# This is used to auto change the variable names in expressions when a name is changed.
-	# We need to do a lot of work to make sure we aren't changing wrong names e.g. Check if var name
-	# is not in conflict with fixed_vars or other var names that are prefixs/suffixs or paritally similar
-	# to the new var name.
-	#var old_expressions := book.spells[current_index].expression_strings.duplicate()
-	#if old_expressions.size() == result.size():
-		#var old_vars := PackedStringArray([])
-		#var new_vars := PackedStringArray([])
-		#var i := 0
-		#for v: String in result:
-			#if not v.is_empty() and book.spells[current_index].exp and v != old_expressions.keys()[i]:
-				#old_vars.append(old_expressions.keys()[i])
-				#new_vars.append(v)
-			#i += 1
-			#
-		#i = 0
-		#for v in old_vars:
-			#var nv := new_vars[i]
-			#var regex := RegEx.new()
-			#regex.compile("(?<=\\b)" + v + "(?=\\b)")
-			#x_edit.text = regex.sub(x_edit.text, nv, true)
-			#z_edit.text = regex.sub(z_edit.text, nv, true)
-			#y_edit.text = regex.sub(y_edit.text, nv, true)
-			#r_edit.text = regex.sub(r_edit.text, nv, true)
-			#for rv: String in result:
-				#result[rv] = regex.sub(result[rv] as String, nv, true)
-			#i += 1
+	if selected_variables_origin_line > -1 and selected_variables_origin_line < result.size() and not selected_variables.is_empty():
+		var new_word := result.keys()[selected_variables_origin_line] as String
+		x_edit.text = Globals.replace_ranges_in_string(x_edit.text, selected_variables["x"] as Array, new_word)
+		y_edit.text = Globals.replace_ranges_in_string(y_edit.text, selected_variables["y"] as Array, new_word)
+		z_edit.text = Globals.replace_ranges_in_string(z_edit.text, selected_variables["z"] as Array, new_word)
+		delay_edit.text = Globals.replace_ranges_in_string(delay_edit.text, selected_variables["D"] as Array, new_word)
 			
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
@@ -493,3 +524,4 @@ func _on_duplicate_pressed() -> void:
 	if current_index < 0:
 		return
 	duplicate_spell.emit(current_index)
+
