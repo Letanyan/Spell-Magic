@@ -390,7 +390,14 @@ func _on_expressions_caret_changed() -> void:
 	for find in regex.search_all(z_edit.text):
 		(selected_variables["z"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
 	for find in regex.search_all(delay_edit.text):
-		(selected_variables["D"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))	
+		(selected_variables["D"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
+	for line_number in expressions.get_line_count():
+		if line_number == selected_variables_origin_line:
+			continue
+		var line := expressions.get_line(line_number)
+		selected_variables[str(line_number)] = []
+		for find in regex.search_all(line):
+			(selected_variables[str(line_number)] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
 		
 func _on_expressions_text_changed() -> void:
 	if current_index < 0:
@@ -411,6 +418,18 @@ func _on_expressions_text_changed() -> void:
 		y_edit.text = Globals.replace_ranges_in_string(y_edit.text, selected_variables["y"] as Array, new_word)
 		z_edit.text = Globals.replace_ranges_in_string(z_edit.text, selected_variables["z"] as Array, new_word)
 		delay_edit.text = Globals.replace_ranges_in_string(delay_edit.text, selected_variables["D"] as Array, new_word)
+		for line_number in expressions.get_line_count():
+			if line_number == selected_variables_origin_line:
+				continue
+			var line := expressions.get_line(line_number)
+			var new_line := Globals.replace_ranges_in_string(line, selected_variables[str(line_number)] as Array, new_word)
+			if new_line != line:
+				expressions.set_line(line_number, new_line)
+				var atoms := new_line.split("=", false)
+				if atoms.size() == 2:
+					result[atoms[0].strip_edges()] = atoms[1].strip_edges()
+		expressions.queue_redraw()
+		
 			
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
