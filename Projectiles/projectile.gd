@@ -149,9 +149,9 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	var is_world_object : int = _body.collision_layer & (1 << 9) != 0
 	var is_fire    : int = _body.collision_layer & 0b0_0000_1000 != 0
 	var is_rock    : int = _body.collision_layer & 0b0_0001_0000 != 0
-	var is_water   : int = _body.collision_layer & 0b0_0010_0000 != 0
+	#var is_water   : int = _body.collision_layer & 0b0_0010_0000 != 0
 	var is_ice     : int = _body.collision_layer & 0b0_1000_0000 != 0
-	var is_electric: int = _body.collision_layer & 0b1_0000_0000 != 0
+	#var is_electric: int = _body.collision_layer & 0b1_0000_0000 != 0
 	var dmg := {"el": spell.element, "dmg": spell.power} # set default for contact with non player/enemy
 	var invunerable: bool = (is_player or is_enemy) and (_body as CharacterBody).invunerable > 0.0
 	match spell.element:

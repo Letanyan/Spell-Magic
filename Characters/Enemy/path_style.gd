@@ -229,20 +229,20 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 
 func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 	match coord_y:
-		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
 		CoordY.GROUND_AND_DIRT: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
 			if y > 0:
 				return g
 			else:
 				return g + y
 		CoordY.GROUND_AND_AIR: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z)
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
 			if y < 0:
 				return g
 			else:
 				return g + y
-		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y
+		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me.bounds.y / 2.0
 		_: return 0
 
 class Pathway:

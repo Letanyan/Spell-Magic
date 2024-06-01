@@ -34,7 +34,7 @@ func _ready() -> void:
 		.quad_to(e, Globals.midpoint_tangent1(d, e) if randf() < 0.5 else Globals.midpoint_tangent2(d, e), 2, PathStyle.Easing.linear) \
 		.quad_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), 2, PathStyle.Easing.linear)
 	
-	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).align_y_to_origin().set_origin(position).use_absolute()
+	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).align_y_to_ground().set_origin(position).use_absolute()
 	attack_direct_path = PathStyle.new(randf()).towards_player(2, 4, 6).use_physics()
 	current_path = idle_path
 	
