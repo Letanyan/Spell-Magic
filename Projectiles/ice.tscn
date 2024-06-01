@@ -77,7 +77,7 @@ draw_pass_1 = SubResource("SphereMesh_b25tq")
 
 [node name="area" type="Area3D" parent="source"]
 collision_layer = 128
-collision_mask = 542
+collision_mask = 566
 monitoring = false
 monitorable = false
 

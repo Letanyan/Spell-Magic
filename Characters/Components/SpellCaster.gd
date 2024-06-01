@@ -220,6 +220,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		p.name += str(randi())
 		p.origin_node = origin_node
 		p.tracking_target = node_to_track
+		p.caster_vitals = vitals
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir

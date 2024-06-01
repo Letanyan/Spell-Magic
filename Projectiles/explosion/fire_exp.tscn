@@ -22,9 +22,9 @@ emission_shape = 1
 emission_sphere_radius = 0.5
 direction = Vector3(0, 0, 0)
 spread = 180.0
-gravity = Vector3(0, 0, 0)
 initial_velocity_min = 0.5
 initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_jbj8g")
 color_ramp = SubResource("GradientTexture1D_7he8g")
 

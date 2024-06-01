@@ -166,7 +166,6 @@ func wetness_scale() -> float:
 
 static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Spell.Element, show_label: bool, show_exp: bool, locations: Array[Vector3], r: float = 0, v: Vector3 = Vector3.ZERO) -> void:
 	amount = clampi(int(amount), 0, 100)
-	
 	if show_label:	
 		var lbl := (preload("res://Projectiles/explosion/BodyMessage.tscn") as PackedScene).instantiate() as BodyMessage
 		var collision: CollisionShape3D = body.get_node("Collision")
