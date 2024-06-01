@@ -19,7 +19,7 @@ static func make(kind: World.Building, rng: RandomNumberGenerator) -> Buildings:
 	(result.get_node("RootNode") as Node3D).rotate(Vector3.UP, r)
 	
 	result.entity_kind = kind
-	var box := result.get_node("./static/shape") as CollisionShape3D 
+	var box := result.get_node("./static/shape") as CollisionShape3D
 	match kind:
 		World.Building.FANTASY_VALLEY_SINGLE:
 			box.rotate(Vector3.UP, r)

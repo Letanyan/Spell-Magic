@@ -104,7 +104,7 @@ func _ready() -> void:
 	nav = GDNavigator.new()
 	
 	game_settings = GameSettings.new()
-	game_settings.read(get_viewport())
+	game_settings.read()
 	
 	controller = Controller.new()
 	

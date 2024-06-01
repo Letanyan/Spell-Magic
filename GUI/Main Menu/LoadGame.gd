@@ -16,8 +16,10 @@ func _ready() -> void:
 	var worlds := dir.get_directories()
 	var times: Array[Array] = []
 	for world in worlds:
-		var f := FileAccess.get_modified_time("user://worlds/%s/settings.json" % world)
-		times.append([world, f])
+		var settings := WorldSettings.new(null)
+		settings.read(world)
+		if not settings.is_test_arena:
+			times.append([world, settings.last_save_time])
 		
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])	
 		

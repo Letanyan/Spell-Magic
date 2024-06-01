@@ -47,7 +47,7 @@ func setup(_settings: WorldSettings) -> void:
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
-	if _settings.is_test_arena:
+	if settings.is_test_arena:
 		book = GlobalData.magic_book
 		book.settings = settings
 	else:
@@ -69,9 +69,6 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.mana.max_value = us.max_mana
 		player.vitals.mana.change_per_tick = us.max_mana_regen
 	)
-	player.world_settings = settings
-	player.name_generator = NameGenerator.new()
-	player.name_generator.read(settings.world_name)
 	
 	case = WandCase.new()
 	case.read(settings.world_name)
@@ -92,11 +89,8 @@ func setup(_settings: WorldSettings) -> void:
 	noise_dryness.seed = settings.sed
 	noise_temperature.seed = settings.sed
 	
-	var game_settings := GameSettings.new()
-	var viewport := get_viewport()
-	game_settings.read(viewport)
-	game_settings.last_world = settings.world_name
-	game_settings.save()
+	GlobalData.game_settings.last_world = settings.world_name
+	GlobalData.game_settings.save()
 	
 func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IN
@@ -138,6 +132,9 @@ func run_on_ready() -> void:
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
+	player.world_settings = settings
+	player.name_generator = NameGenerator.new()
+	player.name_generator.read(settings.world_name)
 		
 	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
 	build_terrain()
@@ -261,6 +258,7 @@ func toggle_menu() -> void:
 			sub_viewport_container.visible = true
 			pause_start = Time.get_unix_time_from_system()
 			settings.player_position = player.position
+			settings.last_save_time = Time.get_unix_time_from_system()
 			menu.open(Menu.Kind.ANY)
 			hud.hide()
 		

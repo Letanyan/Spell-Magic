@@ -200,6 +200,7 @@ func toggle_menu() -> void:
 			pause_start = Time.get_unix_time_from_system()
 			menu.open(Menu.Kind.ANY)
 			settings.player_position = player.position
+			settings.last_save_time = Time.get_unix_time_from_system()
 			hud.hide()
 		
 		player.setup_menu_transition(open, close)

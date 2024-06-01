@@ -19,7 +19,7 @@ var viewport: Viewport
 
 func _init(vp: Viewport, should_update: bool = false) -> void:
 	viewport = vp
-	if should_update:
+	if should_update and viewport != null:
 		update_sharpness(sharpness)
 		update_scaling(scaling)
 		update_scaling_mode(scaling_mode)
@@ -55,52 +55,62 @@ func load_dict(dict: Dictionary) -> void:
 
 func update_sharpness(s: float) -> void:
 	sharpness = s
-	ProjectSettings.set_setting("rendering/scaling_3d/sharpness", sharpness)
+	if viewport != null:
+		ProjectSettings.set_setting("rendering/scaling_3d/sharpness", sharpness)
 	
 func update_scaling(s: float) -> void:
 	scaling = s
-	ProjectSettings.set_setting("rendering/scaling_3d/scaling", scaling)
+	if viewport != null:
+		ProjectSettings.set_setting("rendering/scaling_3d/scaling", scaling)
 	
 func update_scaling_mode(s: int) -> void:
 	scaling_mode = s
-	ProjectSettings.set_setting("rendering/scaling_3d/scaling_mode", scaling_mode)
+	if viewport != null:
+		ProjectSettings.set_setting("rendering/scaling_3d/scaling_mode", scaling_mode)
 
 func update_display_style(style: DisplayStyle) -> void:
 	display_style = style
-	match display_style:
-		DisplayStyle.FULLSCREEN:
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
-		DisplayStyle.WINDOWED:
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayStyle.BORDERLESS:
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	if viewport != null:
+		match display_style:
+			DisplayStyle.FULLSCREEN:
+				DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+			DisplayStyle.WINDOWED:
+				DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayStyle.BORDERLESS:
+				DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 			
 func update_display_size(s: String) -> void:
 	display_size = s
 	var size := display_size.split(" ")
 	var sizes := size[0].split("x")
 	var res := Vector2i(int(sizes[0]) as int, int(sizes[1]) as int)
-	DisplayServer.window_set_size(res)
+	if viewport != null:
+		DisplayServer.window_set_size(res)
 	
 func update_msaa(aa: Viewport.MSAA) -> void:
 	msaa = aa
-	viewport.msaa_3d = msaa
+	if viewport != null:
+		viewport.msaa_3d = msaa
 	
 func update_ssaa(aa: Viewport.ScreenSpaceAA) -> void:
 	ssaa = aa
-	viewport.screen_space_aa = ssaa
+	if viewport != null:
+		viewport.screen_space_aa = ssaa
 	
 func update_taa(aa: bool) -> void:
 	taa = aa
-	viewport.use_taa = taa 
+	if viewport != null:
+		viewport.use_taa = taa 
 
 func update_max_fps(fps: int) -> void:
 	max_fps = fps
-	Engine.max_fps = fps
+	if viewport != null:
+		Engine.max_fps = fps
 	
 func update_vsync(v: bool) -> void:
 	vsync = v
-	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if v else DisplayServer.VSYNC_DISABLED)
+	if viewport != null:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if v else DisplayServer.VSYNC_DISABLED)

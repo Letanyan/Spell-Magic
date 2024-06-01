@@ -12,13 +12,13 @@ var is_ready := false
 var inhabitants: Dictionary = {}
 var garden: Array[Node3D] = []
 
-const undead = preload("res://Characters/Enemy/Undead/undead.tscn")
-const bat = preload("res://Characters/Enemy/Bat/bat.tscn")
-const mole = preload("res://Characters/Enemy/Mole/mole.tscn")
-const human = preload("res://Characters/Enemy/Human/human.tscn")
-const walker = preload("res://Characters/Enemy/Walker/walker.tscn")
-const fish = preload("res://Characters/Enemy/Fish/fish.tscn")
-const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn")
+const undead = preload("res://Characters/Enemy/Undead/undead.tscn") as PackedScene
+const bat = preload("res://Characters/Enemy/Bat/bat.tscn") as PackedScene
+const mole = preload("res://Characters/Enemy/Mole/mole.tscn") as PackedScene
+const human = preload("res://Characters/Enemy/Human/human.tscn") as PackedScene
+const walker = preload("res://Characters/Enemy/Walker/walker.tscn") as PackedScene
+const fish = preload("res://Characters/Enemy/Fish/fish.tscn") as PackedScene
+const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn") as PackedScene
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player) -> void:
 	rng = RandomNumberGenerator.new()

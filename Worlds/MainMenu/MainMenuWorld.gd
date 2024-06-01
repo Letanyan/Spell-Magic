@@ -45,12 +45,6 @@ func setup(_settings: WorldSettings) -> void:
 	noise_dryness.seed = settings.sed
 	noise_temperature.seed = settings.sed
 	
-	var game_settings := GameSettings.new()
-	game_settings.read(get_viewport())
-	game_settings.last_world = settings.world_name
-	game_settings.save()
-	
-	
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

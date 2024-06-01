@@ -2,6 +2,7 @@ class_name WorldSettings
 
 var world_name: String
 var player_position: Vector3
+var last_save_time: float
 var sed: int
 var enemies_killed := {} # [World.Enemy]int
 var is_paused: bool
@@ -18,7 +19,9 @@ var audio_settings: AudioSettings
 
 var viewport: Viewport
 
-func _init(vp: Viewport) -> void:
+func _init(vp: Viewport = null) -> void:
+	if vp == null:
+		return
 	viewport = vp
 	hud_settings = HUDSettings.new()
 	camera_settings = CameraSettings.new()
@@ -32,7 +35,7 @@ func save_dict() -> Dictionary:
 	return {
 		"name": world_name, "player": {"position": player_position}, "seed": sed,
 		"enemies_killed": enemies_killed, "day_of_the_year": day_of_the_year,
-		"time_of_day": time_of_day, "is_test_arena": is_test_arena,
+		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
@@ -54,6 +57,7 @@ func save() -> void:
 func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
 	player_position = (data.get("player", {}) as Dictionary).get("position", Vector3.ZERO)
+	last_save_time = data.get("last_save_time", 0.0)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})
 	is_paused = false
@@ -81,8 +85,11 @@ func load_dict(data: Dictionary) -> void:
 
 func read(filename: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/settings.json" % (filename), FileAccess.READ)
-	var data := file.get_var() as Dictionary
-	load_dict(data)
+	if file:
+		var data := file.get_var() as Dictionary
+		load_dict(data)
+	else:
+		load_dict({})
 
 func enemies_killed_table() -> String:
 	var result := "[table=2]\n"

@@ -29,7 +29,7 @@ signal vital_update(index_in_population: int, vitals: Vitals)
 @onready var health_bar: MeshInstance3D = $HealthBar/Bar
 @onready var level_text: Label3D = $HealthBar/Level
 
-@export var bounds: Vector3 = Vector3(0, 0, 0)
+var bounds: Vector3 = Vector3(0, 0, 0)
 
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
@@ -41,6 +41,8 @@ func _ready() -> void:
 	still_path = PathStyle.still_path()
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
+		#(get_node("Collision") as CollisionShape3D).disabled = true
+		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
 	
 func add_shake(amount: float) -> void:
 	player.add_shake(amount)
