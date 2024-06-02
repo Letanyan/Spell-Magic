@@ -1,0 +1,139 @@
+class_name EntityManager
+
+class EntityBuffer:
+	var buffer: Array[Node3D] = []
+	var high_watermark: int = 0
+	var allocater: Callable
+	var deinit: Callable
+	
+	func _init(capacity: int, alloc: Callable, deiniter: Callable) -> void:
+		buffer = []
+		high_watermark = 0
+		allocater = alloc
+		deinit = deiniter
+		for i in capacity:
+			buffer.append(allocater.call())
+		
+	func get_entity() -> Node3D:
+		if high_watermark == buffer.size():
+			# double the size of the capacity because it seems like good practice (who knows)
+			for i in buffer.size():
+				buffer.append(allocater.call())
+		high_watermark += 1
+		return buffer[high_watermark - 1]
+			
+	func free_entity(node: Node3D) -> void:
+		var i := 0
+		var index := -1
+		for n in buffer:
+			if n == node:
+				index = i
+				break
+			i += 1
+		
+		if index == -1:
+			push_error("free node that does not exist")
+			return
+		
+		high_watermark -= 1
+		var temp := buffer[index]
+		buffer[index] = buffer[high_watermark]
+		buffer[high_watermark] = temp
+		deinit.call(temp)
+		
+
+var buffer_round_trees: EntityBuffer
+var buffer_branched_trees: EntityBuffer
+var buffer_pyramid_trees: EntityBuffer
+var buffer_christmas_trees: EntityBuffer
+var buffer_safari_trees: EntityBuffer
+
+var buffer_undead: EntityBuffer
+var buffer_mole: EntityBuffer
+var buffer_walker: EntityBuffer
+var buffer_fish: EntityBuffer
+var buffer_bat: EntityBuffer
+var buffer_birdman: EntityBuffer
+var buffer_human: EntityBuffer
+
+var buffer_house_single: EntityBuffer
+var buffer_house_double: EntityBuffer
+var buffer_well: EntityBuffer
+
+func _init() -> void:
+	var deinit_tree := func(node: Node3D) -> void:
+		node.position.y = -1000
+	var deinit_enemy := func(node: Enemy) -> void:
+		node.position.y = -1000
+		node.kind = World.Enemy.NONE
+	var deinit_building := func(node: Buildings) -> void:
+		node.position.y = -1000
+	
+	buffer_round_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_ROUND), deinit_tree)
+	buffer_branched_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_BRANCHED), deinit_tree)
+	buffer_pyramid_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_PYRAMID), deinit_tree)
+	buffer_christmas_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_CHRISTMAS), deinit_tree)
+	buffer_safari_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_SAFARI), deinit_tree)
+	
+	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy)
+	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy)
+	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy)
+	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy)
+	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy)
+	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy)
+	buffer_human = EntityBuffer.new(10, func() -> Human: return Enemy.make(World.Enemy.HUMAN), deinit_enemy)
+	
+	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building)
+	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building)
+	buffer_well= EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building)
+
+func get_tree(kind: World.Foliage) -> Trees:
+	match kind:
+		World.Foliage.TREE_ROUND: return buffer_round_trees.get_entity()
+		World.Foliage.TREE_BRANCHED: return buffer_branched_trees.get_entity()
+		World.Foliage.TREE_PYRAMID: return buffer_pyramid_trees.get_entity()
+		World.Foliage.TREE_CHRISTMAS: return buffer_christmas_trees.get_entity()
+		World.Foliage.TREE_SAFARI: return buffer_safari_trees.get_entity()
+	return buffer_round_trees.get_entity()
+
+func free_tree(tree: Trees) -> void:
+	match tree.kind:
+		World.Foliage.TREE_ROUND: buffer_round_trees.free_entity(tree)
+		World.Foliage.TREE_BRANCHED: buffer_branched_trees.free_entity(tree)
+		World.Foliage.TREE_PYRAMID: buffer_pyramid_trees.free_entity(tree)
+		World.Foliage.TREE_CHRISTMAS: buffer_christmas_trees.free_entity(tree)
+		World.Foliage.TREE_SAFARI: buffer_safari_trees.free_entity(tree)
+		
+func get_enemy(kind: World.Enemy) -> Enemy:
+	match kind:
+		World.Enemy.UNDEAD: return buffer_undead.get_entity()
+		World.Enemy.MOLE: return buffer_mole.get_entity()
+		World.Enemy.WALKER: return buffer_walker.get_entity()
+		World.Enemy.FISH: return buffer_fish.get_entity()
+		World.Enemy.BAT: return buffer_bat.get_entity()
+		World.Enemy.BIRDMAN: return buffer_birdman.get_entity()
+		World.Enemy.HUMAN: return buffer_human.get_entity()
+	return buffer_undead.get_entity()
+
+func free_enemy(enemy: Enemy) -> void:
+	match enemy.kind:
+		World.Enemy.UNDEAD: buffer_undead.free_entity(enemy)
+		World.Enemy.MOLE: buffer_mole.free_entity(enemy)
+		World.Enemy.WALKER: buffer_walker.free_entity(enemy)
+		World.Enemy.FISH: buffer_fish.free_entity(enemy)
+		World.Enemy.BAT: buffer_bat.free_entity(enemy)
+		World.Enemy.BIRDMAN: buffer_birdman.free_entity(enemy)
+		World.Enemy.HUMAN: buffer_human.free_entity(enemy)
+		
+func get_building(kind: World.Building) -> Buildings:
+	match kind:
+		World.Building.FANTASY_VALLEY_SINGLE: return buffer_house_single.get_entity()
+		World.Building.FANTASY_VALLEY_DOUBLE: return buffer_house_double.get_entity()
+		World.Building.FANTASY_WELL: return buffer_well.get_entity()
+	return buffer_undead.get_entity()
+
+func free_building(building: Buildings) -> void:
+	match building.entity_kind:
+		World.Building.FANTASY_VALLEY_SINGLE: buffer_house_single.free_entity(building)
+		World.Building.FANTASY_VALLEY_DOUBLE: buffer_house_double.free_entity(building)
+		World.Building.FANTASY_WELL: buffer_well.free_entity(building)

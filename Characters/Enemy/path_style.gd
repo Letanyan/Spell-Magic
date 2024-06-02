@@ -44,6 +44,7 @@ static func still_path() -> PathStyle:
 	result.use_absolute()
 	result.set_use_me_as_origin()
 	result.align_y_to_origin()
+	result.path = Pathway.empty()
 	return result
 	
 func set_origin(o: Vector3) -> PathStyle:

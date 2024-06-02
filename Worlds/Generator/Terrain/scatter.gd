@@ -66,11 +66,13 @@ func spawn(world: Node3D, x: float, y: float, spacing: float) -> Node3D:
 	var displace := 0.0
 	match random_terrain(biome):
 		World.Foliage.TREE_ROUND:
-			result = Trees.make(World.Foliage.TREE_ROUND, rng)
+			result = Trees.make(World.Foliage.TREE_ROUND)
+			(result as Trees).init(rng)
 			displace = rng.randf_range(-0.5, 0.5)
 			result.name = "RoundTree" + str(rng.randi())
 		World.Foliage.TREE_PYRAMID:
-			result = Trees.make(World.Foliage.TREE_PYRAMID, rng)
+			result = Trees.make(World.Foliage.TREE_PYRAMID)
+			(result as Trees).init(rng)
 			displace = rng.randf_range(-0.5, 0.5)
 			result.name = "PyramidTree" + str(rng.randi())
 		

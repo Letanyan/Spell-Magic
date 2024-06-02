@@ -13,6 +13,7 @@ extends Node3D
 @export var noise_dryness: FastNoiseLite
 @onready var chunker: Terrain
 @onready var population: Dictionary = {} # [Vector2]Population
+var entity_manager: EntityManager
 
 var last_biome: World.Biome = World.Biome.WATER
 
@@ -88,6 +89,8 @@ func setup(_settings: WorldSettings) -> void:
 	noise_dryness.frequency = 0.0001
 	noise_dryness.seed = settings.sed
 	noise_temperature.seed = settings.sed
+	
+	entity_manager = EntityManager.new()
 	
 	GlobalData.game_settings.last_world = settings.world_name
 	GlobalData.game_settings.save()
@@ -185,7 +188,7 @@ func _physics_process(delta: float) -> void:
 			pop.update_info()
 			
 	if population_update_tick <= 0.0:
-		var duration := 0.0
+		var duration := 0.0		
 		if not population_items_to_add.is_empty():
 			var start_time := Time.get_unix_time_from_system()
 			var key := population_items_to_add.keys()[population_items_to_add.size() - 1] as Population
@@ -193,10 +196,12 @@ func _physics_process(delta: float) -> void:
 			var state := PhysicsServer3D.space_get_direct_state(space)
 			var items := key.spawn_all_into_world(state)
 			for item in items:
-				call_deferred("add_child", item)
+				if not item.get_parent():
+					add_child(item)
+				#call_deferred("add_child", item)
 			population_items_to_add.erase(key)
 			duration = clamp(Time.get_unix_time_from_system() - start_time, delta, 0.2)
-			
+
 		if population_items_to_add.is_empty():
 			population_update_tick = 3600.0
 		else:
@@ -351,7 +356,7 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 	for loc in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
-		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player)
+		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player, entity_manager)
 		#population_items_to_add[pop] = pop.spawn_all_into_world(state)
 		population_items_to_add[pop] = true
 		#result.append_array(pop.spawn_all_into_world(state))

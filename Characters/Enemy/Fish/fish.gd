@@ -13,9 +13,9 @@ var jump_timer: int = 0
 
 func _ready() -> void:
 	super._ready()
-	
 	velocity_movement = VelocityMovement.new()
 	
+func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 20
 	
@@ -70,6 +70,7 @@ func _ready() -> void:
 	)
 	
 	animation_map["attack"] = "Bite_Front"
+	kind = World.Enemy.FISH
 	
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)

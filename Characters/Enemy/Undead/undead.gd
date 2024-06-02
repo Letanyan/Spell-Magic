@@ -10,9 +10,9 @@ var attack_path: PathStyle
 
 func _ready() -> void:
 	super._ready()
-	
 	velocity_movement = VelocityMovement.new()
 	
+func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10 * 4
 	
@@ -85,6 +85,7 @@ func _ready() -> void:
 	#)
 	
 	animation_map["attack"] = "Weapon"
+	kind = World.Enemy.UNDEAD
 
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path

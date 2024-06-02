@@ -45,33 +45,36 @@ static func build(rng: RandomNumberGenerator) -> Node3D:
 	
 	return result
 
-const pyramid_tree = preload("res://Models/Nature/tree_pyramid.tscn")
-const round_tree = preload("res://Models/Nature/tree_round.tscn")
-const christmas_tree = preload("res://Models/Nature/tree_christmas.tscn")
-const safari_tree = preload("res://Models/Nature/tree_safari.tscn")
-const branched_tree = preload("res://Models/Nature/tree_branched.tscn")
+const pyramid_tree = preload("res://Models/Nature/tree_pyramid.tscn") as PackedScene
+const round_tree = preload("res://Models/Nature/tree_round.tscn") as PackedScene
+const christmas_tree = preload("res://Models/Nature/tree_christmas.tscn") as PackedScene
+const safari_tree = preload("res://Models/Nature/tree_safari.tscn") as PackedScene
+const branched_tree = preload("res://Models/Nature/tree_branched.tscn") as PackedScene
+
+var kind: World.Foliage
 	
-static func make(kind: World.Foliage, rng: RandomNumberGenerator) -> Trees:
+static func make(_kind: World.Foliage) -> Trees:
 	var result: Trees
-	match kind:
+	match _kind:
 		World.Foliage.TREE_PYRAMID: result = pyramid_tree.instantiate()
 		World.Foliage.TREE_ROUND: result = round_tree.instantiate()
 		World.Foliage.TREE_CHRISTMAS: result = christmas_tree.instantiate()
 		World.Foliage.TREE_SAFARI: result = safari_tree.instantiate()
 		World.Foliage.TREE_BRANCHED: result = branched_tree.instantiate()
 		_: result = round_tree.instantiate()
-		
-	var s := rng.randf_range(2, 5)
-	(result.get_node("RootNode") as Node3D).scale = Vector3(s, s, s)
-	var r := rng.randf_range(0, 2 * PI)
-	(result.get_node("RootNode") as Node3D).rotate(Vector3.UP, r)
+	result.kind = _kind
+	return result
 	
-	var box := result.get_node("./static/shape") as CollisionShape3D
+func setup(rng: RandomNumberGenerator) -> void:
+	var s := rng.randf_range(2, 5)
+	(get_node("RootNode") as Node3D).scale = Vector3(s, s, s)
+	var r := rng.randf_range(0, 2 * PI)
+	(get_node("RootNode") as Node3D).rotate(Vector3.UP, r)
+	
+	var box := get_node("./static/shape") as CollisionShape3D
 	(box.shape as CylinderShape3D).height = 4 * s
 	(box.shape as CylinderShape3D).radius = 0.25 * s
 	box.position.y = 2 * s
-		
-	return result
 				
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.TREE, position)

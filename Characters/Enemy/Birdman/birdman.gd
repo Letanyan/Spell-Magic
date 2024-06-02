@@ -15,6 +15,7 @@ func _ready() -> void:
 	
 	velocity_movement = VelocityMovement.new()
 	
+func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 35
 	vitals.attack.value = randf_range(level * 2, (level + 10) * 2)
@@ -117,6 +118,7 @@ func _ready() -> void:
 	)
 	
 	animation_map["attack"] = "Weapon"
+	kind = World.Enemy.BIRDMAN
 	
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)

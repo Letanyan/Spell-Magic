@@ -12,13 +12,16 @@ var hide_and_attack: AttackSequence
 
 func _ready() -> void:
 	super._ready()
-	
 	velocity_movement = VelocityMovement.new()
 	
+	
+func setup() -> void:
+	kind = World.Enemy.NONE # set to zero while we setup stuff
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new(randf()).circle(position, 7, 5, 0).use_absolute().align_y_to_ground()
+	current_path = PathStyle.new(randf()).circle(position, 7, 5, 0).use_absolute().align_y_to_ground()
+	idle_path = current_path
 	
 	var R := 25.0
 	var U := -5.0
@@ -44,7 +47,6 @@ func _ready() -> void:
 	)
 	
 	attack_path = PathStyle.new(0.0).follow_path(p).set_use_player_as_origin().align_y_to_origin().look_at_player().set_is_done_uses_path_segments()
-	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
@@ -117,6 +119,7 @@ func _ready() -> void:
 	])
 	
 	animation_map["attack"] = "Weapon"
+	kind = World.Enemy.MOLE
 
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path

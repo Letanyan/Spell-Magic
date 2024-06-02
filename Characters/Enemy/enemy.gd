@@ -17,6 +17,7 @@ var still_path: PathStyle
 var current_attack: AttackPatterns
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
 var is_dead: bool = false
+var kind: World.Enemy = World.Enemy.NONE
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
@@ -33,16 +34,40 @@ var bounds: Vector3 = Vector3(0, 0, 0)
 
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
-	current_path = PathStyle.new(randf()).circle(position, 2, 15)
+	still_path = PathStyle.still_path()
+	current_path = still_path
 	level_text.text = str(int(level))
 	animation_map = {}
 	animator = $AnimationPlayer
 	animation_tree = $AnimationTree
-	still_path = PathStyle.still_path()
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 		#(get_node("Collision") as CollisionShape3D).disabled = true
 		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
+	setup()
+	
+static func make(_kind: World.Enemy) -> Enemy:
+	var result: Enemy
+	const undead = preload("res://Characters/Enemy/Undead/undead.tscn") as PackedScene
+	const bat = preload("res://Characters/Enemy/Bat/bat.tscn") as PackedScene
+	const mole = preload("res://Characters/Enemy/Mole/mole.tscn") as PackedScene
+	const human = preload("res://Characters/Enemy/Human/human.tscn") as PackedScene
+	const walker = preload("res://Characters/Enemy/Walker/walker.tscn") as PackedScene
+	const fish = preload("res://Characters/Enemy/Fish/fish.tscn") as PackedScene
+	const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn") as PackedScene
+	match _kind:
+		World.Enemy.UNDEAD: result = undead.instantiate()
+		World.Enemy.MOLE: result = mole.instantiate()
+		World.Enemy.WALKER: result = walker.instantiate()
+		World.Enemy.BAT: result = bat.instantiate()
+		World.Enemy.BIRDMAN: result = birdman.instantiate()
+		World.Enemy.FISH: result = fish.instantiate()
+		World.Enemy.HUMAN: result = human.instantiate()
+		_: result = undead.instantiate()
+	return result
+	
+func setup() -> void:
+	pass
 	
 func add_shake(amount: float) -> void:
 	player.add_shake(amount)
@@ -74,7 +99,7 @@ func attack_state() -> AttackPatterns:
 	return AttackPatterns.none()
 
 func _physics_process(delta: float) -> void:
-	if player.magic_book.settings.is_paused:
+	if kind == World.Enemy.NONE or player.magic_book.settings.is_paused:
 		return
 	
 	increment_ticks(delta)
