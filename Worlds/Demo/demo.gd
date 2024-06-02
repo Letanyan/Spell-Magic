@@ -40,9 +40,6 @@ var daytime_tick: float = 0.0
 var settings: WorldSettings
 var pause_start: float
 
-var population_items_to_add: Dictionary = {} # [Population]bool
-var population_update_tick: float = 0.0
-
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
 	
@@ -179,33 +176,12 @@ func _physics_process(delta: float) -> void:
 	
 	knowledge_tick += delta
 	daytime_tick += delta
-	population_update_tick -= delta
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
 		for loc: Vector2 in population:
 			var pop := population[loc] as Population
 			pop.update_info()
-			
-	if population_update_tick <= 0.0:
-		var duration := 0.0		
-		if not population_items_to_add.is_empty():
-			var start_time := Time.get_unix_time_from_system()
-			var key := population_items_to_add.keys()[population_items_to_add.size() - 1] as Population
-			var space := get_world_3d().space
-			var state := PhysicsServer3D.space_get_direct_state(space)
-			var items := key.spawn_all_into_world(state)
-			for item in items:
-				if not item.get_parent():
-					add_child(item)
-				#call_deferred("add_child", item)
-			population_items_to_add.erase(key)
-			duration = clamp(Time.get_unix_time_from_system() - start_time, delta, 0.2)
-
-		if population_items_to_add.is_empty():
-			population_update_tick = 3600.0
-		else:
-			population_update_tick = duration
 			
 	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
@@ -335,10 +311,7 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 		var pop : Population = population.get(loc, null)
 		if pop == null:
 			continue
-		if population_items_to_add.has(pop):
-			population_items_to_add.erase(pop)
-		else:
-			pop.despawn_all_from_world(get_node(".") as Node3D)
+		pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
 	
 	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
@@ -353,17 +326,18 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 
 func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var result: Array[Node3D] = []
+	var items_to_add := {}
 	for loc in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
 		
 		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player, entity_manager)
-		#population_items_to_add[pop] = pop.spawn_all_into_world(state)
-		population_items_to_add[pop] = true
-		#result.append_array(pop.spawn_all_into_world(state))
+		items_to_add[pop] = pop.spawn_all_into_world(state)
 		population[loc] = pop
 		
-	if not locations.is_empty():
-		population_update_tick = 0.0
+	for pop: Population in items_to_add:
+		for item: Node3D in items_to_add[pop]:
+			if item.get_parent() == null:
+				call_deferred("add_child", item)
 		
 	return result
 
