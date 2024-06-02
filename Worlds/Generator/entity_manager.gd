@@ -5,12 +5,14 @@ class EntityBuffer:
 	var high_watermark: int = 0
 	var allocater: Callable
 	var deinit: Callable
+	var tag: String
 	
-	func _init(capacity: int, alloc: Callable, deiniter: Callable) -> void:
+	func _init(capacity: int, alloc: Callable, deiniter: Callable, k: String = "") -> void:
 		buffer = []
 		high_watermark = 0
 		allocater = alloc
 		deinit = deiniter
+		tag = k
 		for i in capacity:
 			buffer.append(allocater.call())
 		
@@ -61,7 +63,7 @@ var buffer_house_double: EntityBuffer
 var buffer_well: EntityBuffer
 
 func _init() -> void:
-	var deinit_tree := func(node: Node3D) -> void:
+	var deinit_tree := func(node: Trees) -> void:
 		node.position.y = -1000
 	var deinit_enemy := func(node: Enemy) -> void:
 		node.position.y = -1000
@@ -69,23 +71,23 @@ func _init() -> void:
 	var deinit_building := func(node: Buildings) -> void:
 		node.position.y = -1000
 	
-	buffer_round_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_ROUND), deinit_tree)
-	buffer_branched_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_BRANCHED), deinit_tree)
-	buffer_pyramid_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_PYRAMID), deinit_tree)
-	buffer_christmas_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_CHRISTMAS), deinit_tree)
-	buffer_safari_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_SAFARI), deinit_tree)
+	buffer_round_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_ROUND), deinit_tree, "round")
+	buffer_branched_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_BRANCHED), deinit_tree, "branched")
+	buffer_pyramid_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_PYRAMID), deinit_tree, "pyramid")
+	buffer_christmas_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_CHRISTMAS), deinit_tree, "christmas")
+	buffer_safari_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_SAFARI), deinit_tree, "safari")
 	
-	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy)
-	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy)
-	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy)
-	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy)
-	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy)
-	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy)
-	buffer_human = EntityBuffer.new(10, func() -> Human: return Enemy.make(World.Enemy.HUMAN), deinit_enemy)
+	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy, "undead")
+	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy, "mole")
+	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy, "walker")
+	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "fish")
+	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy, "bat")
+	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy, "birdman")
+	buffer_human = EntityBuffer.new(10, func() -> Human: return Enemy.make(World.Enemy.HUMAN), deinit_enemy, "human")
 	
-	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building)
-	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building)
-	buffer_well= EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building)
+	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building, "single")
+	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
+	buffer_well= EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
 
 func get_tree(kind: World.Foliage) -> Trees:
 	match kind:

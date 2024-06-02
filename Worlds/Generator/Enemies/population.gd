@@ -84,6 +84,13 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			return null
 		var info: Dictionary = user_info.call(world_normal) 
 		if not info.get("valid", true):
+			if is_enemy:
+				entity_manager.free_enemy(entity as Enemy)
+			else:
+				if entity is Trees:
+					entity_manager.free_tree(entity as Trees)
+				elif entity is Buildings:
+					entity_manager.free_building(entity as Buildings)
 			return null
 		entity.position.x = pos.x
 		entity.position.y = wh + info.get("y_offset", 0.0)

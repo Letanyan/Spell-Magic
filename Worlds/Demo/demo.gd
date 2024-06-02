@@ -308,12 +308,12 @@ func build_terrain() -> void:
 func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
 	for loc: Vector2 in chunks.get("removed", []):
-		var pop : Population = population.get(loc, null)
+		var pop := population.get(loc, null) as Population
 		if pop == null:
 			continue
 		pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
-	
+		
 	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
 
 	await get_tree().physics_frame
@@ -338,6 +338,7 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 		for item: Node3D in items_to_add[pop]:
 			if item.get_parent() == null:
 				call_deferred("add_child", item)
+				
 		
 	return result
 
