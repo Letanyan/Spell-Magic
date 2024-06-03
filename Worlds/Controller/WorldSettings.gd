@@ -57,6 +57,7 @@ func save() -> void:
 func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
 	player_position = (data.get("player", {}) as Dictionary).get("position", Vector3.ZERO)
+	player_position = Vector3.ZERO
 	last_save_time = data.get("last_save_time", 0.0)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})

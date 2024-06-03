@@ -13,6 +13,7 @@ var requested_player_height := 0.0
 
 @export var noise_temperature: FastNoiseLite
 @export var noise_dryness: FastNoiseLite
+@onready var blender: NoiseBlender
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
 
@@ -60,7 +61,8 @@ func _ready() -> void:
 	player_movement_direction = Vector3(randf(), 0, randf()).normalized() * randfn(1.0, 0.1)
 	player_rotation_direction = (randf() * 2 - 1) * PI / 16
 		
-	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
+	blender = NoiseBlender.new(noise_dryness, noise_temperature, settings.sed)
+	chunker = Terrain.new(blender, 256, 2, 0.0625)
 	#chunker.ignore_physics = true
 	build_terrain()
 	
@@ -77,8 +79,8 @@ func _ready() -> void:
 
 		
 func _process(delta: float) -> void:
-	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
-	var b := chunker.blender.biome
+	blender.compute_biome_distances(player.position.x, player.position.z)
+	var b := blender.biome
 	
 	if last_biome != b:
 		last_biome = b
@@ -148,7 +150,7 @@ func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
-	player.position = chunker.max_height_position
+	player.position = chunker.backing.get_max_height_position()
 	player.position.y = maxf(player.position.y, Globals.sea_level())
 
 func update_terrain(state: PhysicsDirectSpaceState3D) -> void:

@@ -9,8 +9,10 @@ extends Node3D
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 
 
+const CHUNK_SIZE = 256
 @export var noise_temperature: FastNoiseLite
 @export var noise_dryness: FastNoiseLite
+@onready var blender: NoiseBlender
 @onready var chunker: Terrain
 @onready var population: Dictionary = {} # [Vector2]Population
 var entity_manager: EntityManager
@@ -136,7 +138,8 @@ func run_on_ready() -> void:
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 		
-	chunker = Terrain.new(noise_dryness, noise_temperature, settings.sed, 256, 2, 0.0625)
+	blender = NoiseBlender.new(noise_dryness, noise_temperature, settings.sed)
+	chunker = Terrain.new(blender, CHUNK_SIZE, 2, 0.0625)
 	build_terrain()
 	
 	SignalBus.enemy_death.connect(enemy_dies)
@@ -197,8 +200,8 @@ func _physics_process(delta: float) -> void:
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
 		
-	chunker.blender.compute_biome_distances(player.position.x, player.position.z)
-	var b := chunker.blender.biome
+	blender.compute_biome_distances(player.position.x, player.position.z)
+	var b := blender.biome
 	fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	if last_biome != b:
 		player.current_biome = b
@@ -217,7 +220,7 @@ func _physics_process(delta: float) -> void:
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
-		var items := update_population_at(chunker.loaded_chunks_location, state)
+		var items := update_population_at(chunker.backing.get_loaded_chunks_location(), state)
 		for item in items:
 			add_child(item)
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
@@ -327,10 +330,10 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var items_to_add := {}
-	for loc in locations:
-		var coord := chunker.convert_position_to_coord(loc.x, loc.y, chunker.chunk_size)
+	for loc: Vector2 in locations:
+		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
 		
-		var pop := Population.new(coord, chunker.chunk_size, chunker.blender, player, entity_manager)
+		var pop := Population.new(coord, CHUNK_SIZE, blender, player, entity_manager)
 		items_to_add[pop] = pop.spawn_all_into_world(state)
 		population[loc] = pop
 		

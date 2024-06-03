@@ -77,6 +77,7 @@ void fragment() {
 	}
 
 	ALBEDO = color;
+	//ALBEDO = texture(dryness, UV).rgb;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 }
 
