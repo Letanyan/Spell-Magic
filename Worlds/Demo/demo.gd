@@ -138,7 +138,7 @@ func run_on_ready() -> void:
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 		
-	blender = NoiseBlender.new(noise_dryness, noise_temperature, settings.sed)
+	blender = NoiseBlender.new(GlobalData.encoded_dryness_noise, GlobalData.encoded_temperature_noise, settings.sed)
 	chunker = Terrain.new(blender, CHUNK_SIZE, 2, 0.0625)
 	build_terrain()
 	

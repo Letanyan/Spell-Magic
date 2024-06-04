@@ -2,6 +2,7 @@
 
 [resource]
 noise_type = 5
+seed = 10
 frequency = 0.1
 fractal_lacunarity = 9.0
 fractal_gain = 0.0

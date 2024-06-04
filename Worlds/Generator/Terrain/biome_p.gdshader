@@ -53,13 +53,13 @@ vec3 biome_color(vec4 V, vec2 uv) {
 		float dist = distance(p, locations[i]);
 		distances[i] = dist;
 		vec3 c = mix(colors[i], vec3(1), dist);
-		//if (dist <= 1.0) {
-			//color = color * c;
-		//}
+		if (dist <= 1.0) {
+			color = color * c;
+		}
 		if (dist < min_distance) {
 			min_distance = dist;
 			index = i;
-			color = c;
+			//color = c;
 		}
 	}
 	

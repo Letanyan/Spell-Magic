@@ -61,7 +61,7 @@ func _ready() -> void:
 	player_movement_direction = Vector3(randf(), 0, randf()).normalized() * randfn(1.0, 0.1)
 	player_rotation_direction = (randf() * 2 - 1) * PI / 16
 		
-	blender = NoiseBlender.new(noise_dryness, noise_temperature, settings.sed)
+	blender = NoiseBlender.new(GlobalData.encoded_dryness_noise, GlobalData.encoded_temperature_noise, settings.sed)
 	chunker = Terrain.new(blender, 256, 2, 0.0625)
 	#chunker.ignore_physics = true
 	build_terrain()
