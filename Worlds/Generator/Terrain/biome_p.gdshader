@@ -13,7 +13,7 @@ void vertex() {
 }
 
 vec3 biome_color(vec4 V, vec2 uv) {
-	// hack because godot generates textures with 1 pixel edges that have increased saturation?
+	// hack because fastnoise generates textures with 1 pixel edges that have increased saturation?
 	vec2 pixel = 1.0 / vec2(textureSize(temperature, 0)); 
 	vec2 w = vec2(clamp(uv.x, pixel.x, 1.0 - pixel.x), clamp(uv.y, pixel.y, 1.0 - pixel.y));
 	float t = texture(temperature, w).r;
@@ -53,12 +53,13 @@ vec3 biome_color(vec4 V, vec2 uv) {
 		float dist = distance(p, locations[i]);
 		distances[i] = dist;
 		vec3 c = mix(colors[i], vec3(1), dist);
-		if (dist <= 1.0) {
-			color = color * c;
-		}
+		//if (dist <= 1.0) {
+			//color = color * c;
+		//}
 		if (dist < min_distance) {
 			min_distance = dist;
 			index = i;
+			color = c;
 		}
 	}
 	

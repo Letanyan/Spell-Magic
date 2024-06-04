@@ -8,3 +8,18 @@ reloadable = true
 
 windows.debug.x86_64 = "res://bin/libgdexample.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "res://bin/libgdexample.windows.template_release.x86_64.dll"
+
+[dependencies]
+
+windows.debug.x86_64 = {
+    "res://bin/FastNoise.lib" : "",
+    "res://bin/FastNoiseD.lib" : "",
+    "res://bin/FastNoise.dll" : "",
+    "res://bin/FastNoiseD.dll" : ""
+}
+windows.release.x86_64 = {
+    "res://bin/FastNoise.lib" : "",
+    "res://bin/FastNoiseD.lib" : "",
+    "res://bin/FastNoise.dll" : "",
+    "res://bin/FastNoiseD.dll" : ""
+}

@@ -13,6 +13,7 @@ frequency = 0.001
 fractal_octaves = 6
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_sx4vb"]
+noise_type = 0
 frequency = 0.001
 fractal_type = 3
 fractal_octaves = 9

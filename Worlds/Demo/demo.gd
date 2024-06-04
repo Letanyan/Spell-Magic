@@ -333,9 +333,9 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 	for loc: Vector2 in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
 		
-		var pop := Population.new(coord, CHUNK_SIZE, blender, player, entity_manager)
-		items_to_add[pop] = pop.spawn_all_into_world(state)
-		population[loc] = pop
+		#var pop := Population.new(coord, CHUNK_SIZE, blender, player, entity_manager)
+		#items_to_add[pop] = pop.spawn_all_into_world(state)
+		#population[loc] = pop
 		
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:
