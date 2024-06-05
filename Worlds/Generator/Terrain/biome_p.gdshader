@@ -4,12 +4,16 @@ render_mode diffuse_toon, skip_vertex_transform, blend_mix;
 //uniform sampler2D elevation: source_color;
 uniform sampler2D temperature: source_color;
 uniform sampler2D dryness: source_color;
+uniform sampler2D height;
 uniform float texture_width;
 uniform float texture_depth;
 
 void vertex() {
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	//vec2 pixel = 1.0 / vec2(textureSize(height, 0)); 
+	//vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
+	//VERTEX.y += texture(height, UV).r;
 }
 
 vec3 biome_color(vec4 V, vec2 uv) {
@@ -78,7 +82,6 @@ void fragment() {
 	}
 
 	ALBEDO = color;
-	//ALBEDO = texture(dryness, UV).rgb;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 }
 
