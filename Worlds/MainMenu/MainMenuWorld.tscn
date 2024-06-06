@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=29 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -10,17 +10,6 @@
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="8_7souk"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
 [ext_resource type="Shader" path="res://Worlds/MainMenu/env_fire.gdshader" id="11_u2pvt"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wfpcw"]
-noise_type = 0
-seed = 32
-frequency = 0.001
-fractal_octaves = 6
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vmy4q"]
-noise_type = 0
-fractal_type = 3
-fractal_octaves = 9
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
 shader = ExtResource("2_okflh")
@@ -197,8 +186,6 @@ rings = 4
 
 [node name="MainMenuWorld" type="Node3D"]
 script = ExtResource("1_f55xg")
-noise_temperature = SubResource("FastNoiseLite_wfpcw")
-noise_dryness = SubResource("FastNoiseLite_vmy4q")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_e47ut")

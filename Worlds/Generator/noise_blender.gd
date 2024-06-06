@@ -69,16 +69,16 @@ const biome_list: Array[World.Biome] = [
 	World.Biome.OTHERWORLD,
 	World.Biome.HFIL,
 ]
-const biome_locations: PackedVector2Array = [
-	Vector2(0.5, 0.5), # grassland
-	Vector2(0.25, 0.75), # taiga
-	Vector2(0.5, 0.75), # forest
-	Vector2(0.75, 1.0), # desert
-	Vector2(0.25, 0.75), # jungle
-	Vector2(0.75, 0.75), # savannah
-	Vector2(0, 0), # tundra
-	Vector2(1, 0), # otherworld
-	Vector2(1, 1), # hfil
+const biome_locations: Array[Vector4] = [
+	Vector4(0.50, 0.50, 0.50, 0.50), # grassland
+	Vector4(0.25, 0.25, 0.25, 0.25), # taiga
+	Vector4(0.50, 0.75, 0.75, 0.75), # forest
+	Vector4(0.25, 0.25, 0.25, 0.75), # desert
+	Vector4(0.25, 0.25, 0.75, 0.25), # jungle
+	Vector4(0.25, 0.75, 0.25, 0.25), # savannah
+	Vector4(1.00, 0.00, 0.00, 0.00), # tundra
+	Vector4(1.00, 1.00, 1.00, 1.00), # otherworld
+	Vector4(0.00, 0.00, 0.00, 0.00)  # hfil
 ]
 const biome_colors: PackedVector3Array = [
 	Vector3(0.23, 0.83, 0.23),
@@ -122,27 +122,7 @@ static func color_for_biome(_biome: World.Biome) -> Color:
 
 var back: GDNoiseBlender
 
-func _init(dryness_encoded: String, temperature_encoded: String, s: int) -> void:
-	grassland_noise.frequency = 0.0005
-	jungle_noise.frequency = 0.0005
-	desert_noise.frequency = 0.0005
-	forest_noise.frequency = 0.0005
-	hfil_noise.frequency = 0.0005
-	otherworld_noise.frequency = 0.0005
-	savannah_noise.frequency = 0.0005
-	taiga_noise.frequency = 0.0005
-	tundra_noise.frequency = 0.0005
-	
-	grassland_noise.seed = s
-	taiga_noise.seed = s
-	forest_noise.seed = s
-	desert_noise.seed = s
-	jungle_noise.seed = s
-	savannah_noise.seed = s
-	tundra_noise.seed = s
-	otherworld_noise.seed = s
-	hfil_noise.seed = s
-	
+func _init(s: int) -> void:
 	back = GDNoiseBlender.new()
 	back.add_biome("EQAFAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAArXozsTAM3MzD0IAAAAAIA/AAAAAAAAAADwQQAAAEA/AAAAAAA=", s, grassland_curve, biome_locations[0], biome_colors[0])
 	back.add_biome("EQACAAAAAAAgQRAAzczMPQ0ABQAAAAAAAEATAArXozsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQABmZmY/AAAAAAA=", s, taiga_curve, biome_locations[1], biome_colors[1])
@@ -154,15 +134,11 @@ func _init(dryness_encoded: String, temperature_encoded: String, s: int) -> void
 	back.add_biome("EQAFAAAAAADAQBAAzcxMPQ8AAwAAAClcT0ATAArXozsTAM3MzD0GAAAAAAA/AAAAgD8AAAAAAAAAAAA/AAAAAAA=", s, otherworld_curve, biome_locations[7], biome_colors[7])
 	back.add_biome("DgACAAAAAACgQBMACtejOxMACtcjPAgAAAAAAD8AAAAAAAAAAABA", s, hfil_curve, biome_locations[8], biome_colors[8])
 	
-	back.set_dryness(dryness_encoded, s)
-	back.set_temperature(temperature_encoded, s)
+	back.set_biome_noise(Globals.encoded_x_noise, s, 0)
+	back.set_biome_noise(Globals.encoded_y_noise, s, 1)
+	back.set_biome_noise(Globals.encoded_z_noise, s, 2)
+	back.set_biome_noise(Globals.encoded_w_noise, s, 3)
 	
-#func dryness_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
-	#return texture(dryness, x, y, w, h, scale)
-	#
-#func temperature_texture(x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
-	#return texture(temperature, x, y, w, h, scale)
-
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)
 	#var result := NoiseTexture2D.new()
@@ -175,9 +151,9 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale
 	#result.normalize = false
 	#return result
 
-func height(x: float, y: float) -> float:
+#func height(x: float, y: float) -> float:
 	#return Globals.sea_level() + 100.0
-	return back.height(x, y)
+	#return back.height(x, y)
 	#var result := 0.0
 #
 	#compute_biome_distances(x, y)
@@ -199,7 +175,7 @@ func height(x: float, y: float) -> float:
 
 func compute_biome_distances(x: float, y: float) -> void:
 	back.compute_biome_stats(x, y)
-	biome = (back.get_biome() + 1) as World.Biome
+	biome = biome_list[back.get_biome()]
 	color = back.get_color()
 	distances = back.get_distances()
 	total_size = back.get_total_distance()
@@ -227,9 +203,9 @@ func compute_biome_distances(x: float, y: float) -> void:
 	#biome = biome_list[pos]
 	#color = Color(clr.x, clr.y, clr.z)
 	
-func compute_biome(x: float, y: float) -> World.Biome:
-	back.compute_biome_stats(x, y)
-	return biome_list[back.get_biome()]
+#func compute_biome(x: float, y: float) -> World.Biome:
+	#back.compute_biome_stats(x, y)
+	#return biome_list[back.get_biome()]
 	#var d := dryness.get_noise_2d(x, y) / 2.0 + 0.5
 	#var t := temperature.get_noise_2d(x, y) / 2.0 + 0.5
 	#

@@ -11,8 +11,6 @@ var player_movement_direction := Vector3.ZERO
 var player_rotation_direction := 0.0
 var requested_player_height := 0.0
 
-@export var noise_temperature: FastNoiseLite
-@export var noise_dryness: FastNoiseLite
 @onready var blender: NoiseBlender
 @onready var chunker: Terrain
 @onready var population: Dictionary = {}
@@ -41,11 +39,6 @@ func setup(_settings: WorldSettings) -> void:
 	
 	#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
-	noise_temperature.frequency = 0.0001
-	noise_dryness.frequency = 0.0001
-	noise_dryness.seed = settings.sed
-	noise_temperature.seed = settings.sed
-	
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -61,7 +54,7 @@ func _ready() -> void:
 	player_movement_direction = Vector3(randf(), 0, randf()).normalized() * randfn(1.0, 0.1)
 	player_rotation_direction = (randf() * 2 - 1) * PI / 16
 		
-	blender = NoiseBlender.new(GlobalData.encoded_dryness_noise, GlobalData.encoded_temperature_noise, settings.sed)
+	blender = NoiseBlender.new(settings.sed)
 	chunker = Terrain.new(blender, 256, 2, 0.0625)
 	#chunker.ignore_physics = true
 	build_terrain()

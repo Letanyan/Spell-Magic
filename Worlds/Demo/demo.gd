@@ -10,8 +10,6 @@ extends Node3D
 
 
 const CHUNK_SIZE = 256
-@export var noise_temperature: FastNoiseLite
-@export var noise_dryness: FastNoiseLite
 @onready var blender: NoiseBlender
 @onready var chunker: Terrain
 @onready var population: Dictionary = {} # [Vector2]Population
@@ -84,11 +82,6 @@ func setup(_settings: WorldSettings) -> void:
 #		artifact.right = Artifact.Option.make_random()
 #		artifacts.collection.append(artifact)
 	
-	noise_temperature.frequency = 0.0001
-	noise_dryness.frequency = 0.0001
-	noise_dryness.seed = settings.sed
-	noise_temperature.seed = settings.sed
-	
 	entity_manager = EntityManager.new()
 	
 	GlobalData.game_settings.last_world = settings.world_name
@@ -138,7 +131,7 @@ func run_on_ready() -> void:
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 		
-	blender = NoiseBlender.new(GlobalData.encoded_dryness_noise, GlobalData.encoded_temperature_noise, settings.sed)
+	blender = NoiseBlender.new(settings.sed)
 	chunker = Terrain.new(blender, CHUNK_SIZE, 2, 0.0625)
 	build_terrain()
 	
@@ -332,10 +325,9 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 	var items_to_add := {}
 	for loc: Vector2 in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
-		
-		#var pop := Population.new(coord, CHUNK_SIZE, blender, player, entity_manager)
-		#items_to_add[pop] = pop.spawn_all_into_world(state)
-		#population[loc] = pop
+		var pop := Population.new(coord, CHUNK_SIZE, blender, player, entity_manager)
+		items_to_add[pop] = pop.spawn_all_into_world(state)
+		population[loc] = pop
 		
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:

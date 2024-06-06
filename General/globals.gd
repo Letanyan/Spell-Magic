@@ -105,8 +105,20 @@ var controller: Controller = null
 var magic_book: MagicBook = null
 var nav: GDNavigator = null
 
-var encoded_dryness_noise := "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
-var encoded_temperature_noise := "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
+const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
+const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
+
+# Near spread
+#const encoded_x_noise = "DQACAAAAAAAAQBMAAACAPxMAbxKDOggAAArXIz4AAAAAAA=="
+#const encoded_y_noise = "DgADAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAAAAAABA"
+#const encoded_z_noise = "DgADAAAAAAAAQBMAAACAPxMAbxKDOgYAAAAAAD8AAAAAAAAAAABA"
+#const encoded_w_noise = "DQACAAAAZmYWQRMAAACAPxMAbxKDOgYAAGZmZj8AAAAAAA=="
+
+# Far spread
+const encoded_x_noise = "DQACAAAAAAAAQBMAzczMPRMAbxKDOggAAArXIz4AAAAAAA=="
+const encoded_y_noise = "DgADAAAAAAAAQBMAzczMPRMAbxKDOggAAAAAAD8AAAAAAAAAAABA"
+const encoded_z_noise = "DgADAAAAAAAAQBMAzczMPRMAbxKDOgYAAAAAAD8AAAAAAAAAAABA"
+const encoded_w_noise = "DQACAAAAZmYWQRMAzczMPRMAbxKDOgYAAGZmZj8AAAAAAA=="
 
 func _ready() -> void:
 	nav = GDNavigator.new()
