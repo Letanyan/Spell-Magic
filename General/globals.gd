@@ -7,7 +7,7 @@ static func sea_level() -> float:
 	# Once we have the average height of the world then we can set the sea level to some amount relative to that amount.
 	# For example if the the average world height is 400. We can decide 30% of the world should be underwater, then set sea level = 30% * 400.
 	# Maybe we could make sea level dynamic per world????   
-	return 0.0 
+	return 400.0 
 	
 static func behaviour_tick() -> float:
 	return 0.166667
@@ -113,8 +113,8 @@ const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAA
 #const encoded_y_noise = "EgACAAAAAAAAABAACtejPA0AAwAAAAAAAEATAM3MzD0TAArXIzwIAAAAAIA+AAAAAAAAAADIwgAAAAA/AAAAAAA="
 
 # Far spread
-const encoded_x_noise = "DQABAAAAAAAAQBMAzczMPRMAbxKDOggAAAAAAD8AAAAAAA=="
-const encoded_y_noise = "EgACAAAAAAAAABAACtejPA0AAwAAAAAAAEATAM3MzD0TAG8SgzoIAAAAAIA+AAAAAAAAAADIwgAAAAA/AAAAAAA="
+const encoded_x_noise = "DQADAAAAAAAAQBMAzczMPRMAbxKDOggAAAAAAAAAAAAAAA=="
+const encoded_y_noise = "EgACAAAAAAAAABAACtcjPA0ABAAAAOxRyEATAM3MzD0TAG8SgzoIAAAAAIA+AAAAAAAAAADIwgAAAAA/AAAAAAA="
 
 func _ready() -> void:
 	nav = GDNavigator.new()

@@ -16,9 +16,11 @@ void vertex() {
 	//VERTEX.y += texture(height, w).r;
 }
 
+#define axial_weight 2.0
+
 // (a.x, a.y, b.x, b.y) within range [0, 1]
 float axial_dependant_distance(vec2 a, vec2 b) {
-	return abs(b.x - a.x) * 10.0 + abs(b.y - a.y);
+	return abs(b.x - a.x) * axial_weight + abs(b.y - a.y);
 }
 
 vec3 biome_color(vec4 V, vec2 uv) {
@@ -57,18 +59,18 @@ vec3 biome_color(vec4 V, vec2 uv) {
 	float distances[9];
 	float total_distance = 0.0;
 	int index = 0;
-	float min_distance = 100.0;
+	float min_distance = 100000.0;
 	for (int i = 0; i < 9; i++) {
 		float dist = axial_dependant_distance(p, locations[i]);
 		distances[i] = dist;
-		if (dist <= 10.00) {
-			vec3 c = mix(colors[i], vec3(1), dist / 10.0);
+		if (dist <= (axial_weight + 1.0)) {
+			vec3 c = mix(vec3(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 2.0));
 			color = color * c;
 		}
 		if (dist < min_distance) {
 			min_distance = dist;
 			index = i;
-			//color = c;
+			//color = colors[i];
 		}
 	}
 	
