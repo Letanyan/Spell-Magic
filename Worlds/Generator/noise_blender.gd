@@ -69,16 +69,17 @@ const biome_list: Array[World.Biome] = [
 	World.Biome.OTHERWORLD,
 	World.Biome.HFIL,
 ]
-const biome_locations: Array[Vector4] = [
-	Vector4(0.50, 0.50, 0.50, 0.50), # grassland
-	Vector4(0.25, 0.25, 0.25, 0.25), # taiga
-	Vector4(0.50, 0.75, 0.75, 0.75), # forest
-	Vector4(0.25, 0.25, 0.25, 0.75), # desert
-	Vector4(0.25, 0.25, 0.75, 0.25), # jungle
-	Vector4(0.25, 0.75, 0.25, 0.25), # savannah
-	Vector4(1.00, 0.00, 0.00, 0.00), # tundra
-	Vector4(1.00, 1.00, 1.00, 1.00), # otherworld
-	Vector4(0.00, 0.00, 0.00, 0.00)  # hfil
+# x=temperature/elevation(0=hot,1=cold)[e.i. valleys(hot) upto mountain top(cold)] y=wetness(0=moist,1=dry) 
+const biome_locations: PackedVector2Array = [
+	Vector2(0.50, 0.50), # grassland
+	Vector2(0.75, 0.00), # taiga
+	Vector2(0.50, 0.25), # forest
+	Vector2(0.25, 0.75), # desert
+	Vector2(0.25, 0.25), # jungle
+	Vector2(0.25, 0.50), # savannah
+	Vector2(1.00, 0.50), # tundra
+	Vector2(1.00, 0.00), # otherworld
+	Vector2(0.00, 1.00)  # hfil
 ]
 const biome_colors: PackedVector3Array = [
 	Vector3(0.23, 0.83, 0.23),
@@ -136,8 +137,6 @@ func _init(s: int) -> void:
 	
 	back.set_biome_noise(Globals.encoded_x_noise, s, 0)
 	back.set_biome_noise(Globals.encoded_y_noise, s, 1)
-	back.set_biome_noise(Globals.encoded_z_noise, s, 2)
-	back.set_biome_noise(Globals.encoded_w_noise, s, 3)
 	
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)

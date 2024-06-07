@@ -4,8 +4,6 @@ render_mode diffuse_toon, skip_vertex_transform, blend_mix;
 //uniform sampler2D elevation: source_color;
 uniform sampler2D biome_x: source_color;
 uniform sampler2D biome_y: source_color;
-uniform sampler2D biome_z: source_color;
-uniform sampler2D biome_w: source_color;
 uniform sampler2D height;
 uniform float texture_width;
 uniform float texture_depth;
@@ -18,14 +16,17 @@ void vertex() {
 	//VERTEX.y += texture(height, w).r;
 }
 
+// (a.x, a.y, b.x, b.y) within range [0, 1]
+float axial_dependant_distance(vec2 a, vec2 b) {
+	return abs(b.x - a.x) * 10.0 + abs(b.y - a.y);
+}
+
 vec3 biome_color(vec4 V, vec2 uv) {
 	// hack because fastnoise generates textures with 1 pixel edges that have increased saturation?
 	vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0)); 
 	vec2 w = vec2(clamp(uv.x, pixel.x, 1.0 - pixel.x), clamp(uv.y, pixel.y, 1.0 - pixel.y));
 	float bx = texture(biome_x, w).r;
 	float by = texture(biome_y, w).r;
-	float bz = texture(biome_z, w).r;
-	float bw = texture(biome_w, w).r;
 
 	vec3 color = vec3(1);
 
@@ -40,28 +41,28 @@ vec3 biome_color(vec4 V, vec2 uv) {
 		vec3(0, 0, 0),
 		vec3(1, 0, 0)
 	};
-	vec4 locations[9] = {
-		vec4(0.50, 0.50, 0.50, 0.50), // grassland
-		vec4(0.25, 0.25, 0.25, 0.25), // taiga
-		vec4(0.50, 0.75, 0.75, 0.75), // forest
-		vec4(0.25, 0.25, 0.25, 0.75), // desert
-		vec4(0.25, 0.25, 0.75, 0.25), // jungle
-		vec4(0.25, 0.75, 0.25, 0.25), // savannah
-		vec4(1.00, 0.00, 0.00, 0.00), // tundra
-		vec4(1.00, 1.00, 1.00, 1.00), // otherworld
-		vec4(0.00, 0.00, 0.00, 0.00)  // hfil
+	vec2 locations[9] = {
+		vec2(0.50, 0.50), // grassland
+		vec2(0.75, 0.00), // taiga
+		vec2(0.50, 0.25), // forest
+		vec2(0.25, 0.75), // desert
+		vec2(0.25, 0.25), // jungle
+		vec2(0.25, 0.50), // savannah
+		vec2(1.00, 0.50), // tundra
+		vec2(1.00, 0.00), // otherworld
+		vec2(0.00, 1.00)  // hfil
 	};
 
-	vec4 p = vec4(bx, by, bz, bw);
+	vec2 p = vec2(bx, by);
 	float distances[9];
 	float total_distance = 0.0;
 	int index = 0;
 	float min_distance = 100.0;
 	for (int i = 0; i < 9; i++) {
-		float dist = clamp(distance(p, locations[i]), 0, 2.0);
+		float dist = axial_dependant_distance(p, locations[i]);
 		distances[i] = dist;
-		if (dist <= 2.00) {
-			vec3 c = mix(colors[i], vec3(1), dist / 2.00);
+		if (dist <= 10.00) {
+			vec3 c = mix(colors[i], vec3(1), dist / 10.0);
 			color = color * c;
 		}
 		if (dist < min_distance) {
