@@ -99,8 +99,14 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		var cam_pivot := body.get_node("CamPivot") as Node3D
 		var input_dir := VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
 		var input_len := input_dir.length()
-		direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
+		var port := body.get_viewport()
+		var pos := port.get_visible_rect().size / 2.0
+		direction = port.get_camera_3d().project_ray_normal(pos)
+		direction = direction.rotated(Vector3.UP, Vector3.FORWARD.signed_angle_to(Vector3(input_dir.x, 0, input_dir.y), Vector3.UP))
+		if input_dir.length() < 1.0:
+			direction *= input_dir.length()
+		#direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		#direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
 		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
 		target_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
