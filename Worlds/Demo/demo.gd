@@ -219,27 +219,28 @@ func _physics_process(delta: float) -> void:
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
 
+func close_menu_for_player() -> void:
+	settings.is_paused = false
+	var pause_duration := Time.get_unix_time_from_system() - pause_start
+	player.spell_caster.update_pause_time(pause_duration)
+	for loc: Vector2 in population:
+		var pop := population[loc] as Population
+		pop.update_pause_time(pause_duration)
+	menu.close()
+	hud.show()
+	
+func open_menu_for_player() -> void:
+	settings.is_paused = true
+	sub_viewport_container.visible = true
+	pause_start = Time.get_unix_time_from_system()
+	settings.player_position = player.position
+	settings.last_save_time = Time.get_unix_time_from_system()
+	menu.open(Menu.Kind.ANY)
+	hud.hide()
+
 func toggle_menu() -> void:
 	if not player.menu_callbacks_are_set:
-		var close := func() -> void:
-			settings.is_paused = false
-			var pause_duration := Time.get_unix_time_from_system() - pause_start
-			player.spell_caster.update_pause_time(pause_duration)
-			for loc: Vector2 in population:
-				var pop := population[loc] as Population
-				pop.update_pause_time(pause_duration)
-			menu.close()
-			hud.show()
-		var open := func() -> void:	
-			settings.is_paused = true
-			sub_viewport_container.visible = true
-			pause_start = Time.get_unix_time_from_system()
-			settings.player_position = player.position
-			settings.last_save_time = Time.get_unix_time_from_system()
-			menu.open(Menu.Kind.ANY)
-			hud.hide()
-		
-		player.setup_menu_transition(open, close)
+		player.setup_menu_transition(open_menu_for_player, close_menu_for_player)
 	
 	settings.is_paused = true
 	sub_viewport_container.visible = false

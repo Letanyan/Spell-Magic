@@ -175,35 +175,37 @@ func _physics_process(delta: float) -> void:
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
 
+func close_menu_for_player() -> void:
+	settings.is_paused = false
+	var pause_duration := Time.get_unix_time_from_system() - pause_start
+	player.spell_caster.update_pause_time(pause_duration)
+	var indices: Array[int] = []
+	var idx := 0
+	for e in inhabitants:
+		if e == null:
+			indices.append(idx)
+			continue
+		e.spell_caster.update_pause_time(pause_duration)
+		idx += 1
+	indices.reverse()
+	for i in indices:
+		inhabitants.remove_at(i)
+	menu.close()
+	hud.show()
+	
+func open_menu_for_player() -> void:
+	settings.is_paused = true
+	sub_viewport_container.visible = true
+	pause_start = Time.get_unix_time_from_system()
+	menu.open(Menu.Kind.ANY)
+	settings.player_position = player.position
+	settings.last_save_time = Time.get_unix_time_from_system()
+	hud.hide()
+	
+
 func toggle_menu() -> void:
 	if not player.menu_callbacks_are_set:
-		var close := func() -> void:
-			settings.is_paused = false
-			var pause_duration := Time.get_unix_time_from_system() - pause_start
-			player.spell_caster.update_pause_time(pause_duration)
-			var indices: Array[int] = []
-			var idx := 0
-			for e in inhabitants:
-				if e == null:
-					indices.append(idx)
-					continue
-				e.spell_caster.update_pause_time(pause_duration)
-				idx += 1
-			indices.reverse()
-			for i in indices:
-				inhabitants.remove_at(i)
-			menu.close()
-			hud.show()
-		var open := func() -> void:
-			settings.is_paused = true
-			sub_viewport_container.visible = true
-			pause_start = Time.get_unix_time_from_system()
-			menu.open(Menu.Kind.ANY)
-			settings.player_position = player.position
-			settings.last_save_time = Time.get_unix_time_from_system()
-			hud.hide()
-		
-		player.setup_menu_transition(open, close)
+		player.setup_menu_transition(open_menu_for_player, close_menu_for_player)
 	
 	settings.is_paused = true
 	sub_viewport_container.visible = false
