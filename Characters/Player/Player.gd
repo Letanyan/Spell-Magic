@@ -14,7 +14,6 @@ extends CharacterBody
 var current_bg_audio: int = 1
 
 @onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
-var current_biome: World.Biome = World.Biome.WATER
 var walking_tween: Tween = null
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
@@ -123,10 +122,10 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor():
 			if velocity.length() < 1:
-				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
+				play_walking_audio(NoiseBlender.walking_audio_for_biome(velocity_movement.current_biome))
 				play_animation("walk")
 			else:
-				play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
+				play_walking_audio(NoiseBlender.walking_audio_for_biome(velocity_movement.current_biome))
 				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
 				var direction_angle := Vector3(direction.x, 0, direction.z).signed_angle_to(pivot_vector, Vector3.UP)
 				var is_forward := absf(direction_angle) < PI / 2
@@ -230,6 +229,9 @@ func watch_enemy(enemy: Enemy) -> void:
 	
 func ignore_enemy(enemy: Enemy) -> void:
 	enemies_in_range.erase(enemy)
+	
+func set_current_biome(biome: World.Biome) -> void:
+	velocity_movement.current_biome = biome
 	
 func compute_max_watched_enemies_distance() -> float:
 	var result := 0.0

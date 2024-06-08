@@ -8,10 +8,6 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 var water_path: PathStyle
 var water_source: Vector3
-
-func _ready() -> void:
-	super._ready()
-	velocity_movement = VelocityMovement.new()
 	
 func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))

@@ -197,7 +197,7 @@ func _physics_process(delta: float) -> void:
 	var b := blender.biome
 	fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	if last_biome != b:
-		player.current_biome = b
+		player.set_current_biome(b)
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
 		transition_to_biome(b)
 		biome_tween_queue.append(b)
@@ -291,6 +291,8 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:
 	terrain_update_interval += delta
+	
+	chunker.hide_water(player.position.y)
 	
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0

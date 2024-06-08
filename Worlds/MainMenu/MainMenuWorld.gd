@@ -70,34 +70,6 @@ func _ready() -> void:
 	
 	(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("base_seed", randi_range(0, 1000000))
 
-		
-func _process(delta: float) -> void:
-	blender.compute_biome_distances(player.position.x, player.position.z)
-	var b := blender.biome
-	
-	if last_biome != b:
-		last_biome = b
-		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
-		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
-		theme.change_tint_color(tint)
-		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
-		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
-		var fg := tint
-		var bg := tint
-		if not is_day:
-			fg.v = fg.v * 1.5
-		else:
-			bg.v = bg.v * 1.5
-		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
-		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 1.0))
-		#title.modulate = tint
-		#title.outline_modulate = tint
-		var particle_color := tint
-		particle_color.v *= 1.5
-		(source.process_material as ParticleProcessMaterial).color = particle_color
-		(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)
-		transition_to_biome(b)
-		biome_tween_queue.append(b)
 	
 func _physics_process(delta: float) -> void:
 	daytime_tick += delta
@@ -121,6 +93,32 @@ func _physics_process(delta: float) -> void:
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
+	
+	blender.compute_biome_distances(player.position.x, player.position.z)
+	var b := blender.biome
+	if last_biome != b:
+		last_biome = b
+		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
+		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
+		theme.change_tint_color(tint)
+		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
+		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
+		var fg := tint
+		var bg := tint
+		if not is_day:
+			fg.v = fg.v * 1.5
+		else:
+			bg.v = bg.v * 1.5
+		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
+		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 1.0))
+		#title.modulate = tint
+		#title.outline_modulate = tint
+		var particle_color := tint
+		particle_color.v *= 1.5
+		(source.process_material as ParticleProcessMaterial).color = particle_color
+		(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)
+		transition_to_biome(b)
+		biome_tween_queue.append(b)
 			
 	if not has_init_terrain_population:
 		var space := get_world_3d().space

@@ -7,10 +7,6 @@ var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
-
-func _ready() -> void:
-	super._ready()
-	velocity_movement = VelocityMovement.new()
 	
 func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(10 * level, 0, 10 * level), Vitals.Stat.new(500, 0, 500, 10))

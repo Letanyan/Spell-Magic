@@ -9,11 +9,6 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 
 var hide_and_attack: AttackSequence
-
-func _ready() -> void:
-	super._ready()
-	velocity_movement = VelocityMovement.new()
-	
 	
 func setup() -> void:
 	kind = World.Enemy.NONE # set to zero while we setup stuff

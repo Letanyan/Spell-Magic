@@ -383,6 +383,9 @@ func init_grass() -> void:
 						#
 	#mm.visible_instance_count = i
 
+func hide_water(y: float) -> void:
+	backing.hide_water(y)
+
 func set_player_coord_using_position(x: float, y: float, cs: float) -> void:
 	backing.set_player_coord_using_position(x, y, cs)
 	#player_coord = convert_position_to_coord(x, y, cs)

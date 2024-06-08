@@ -10,10 +10,6 @@ var attack_direct_path: PathStyle
 var attack_jump_path: PathStyle
 
 var jump_timer: int = 0
-
-func _ready() -> void:
-	super._ready()
-	velocity_movement = VelocityMovement.new()
 	
 func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))

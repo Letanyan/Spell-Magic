@@ -51,12 +51,14 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
 				if p != null:
+					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.MOLE:
 				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
 				if p != null:
+					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.VILLAGE:
 				if area.size() - index < 100:
@@ -94,6 +96,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						result.append(p)
 						for k in house_size:
 							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
+							n.velocity_movement.current_biome = World.Biome.GRASSLAND
 							result.append(n)
 					if max_limit <= 0:
 						break
@@ -135,9 +138,11 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						for k in house_size:
 							if rng.randf() < 0.2:
 								var n: Bat = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
+								n.velocity_movement.current_biome = World.Biome.GRASSLAND
 								result.append(n)
 							else:
 								var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
+								n.velocity_movement.current_biome = World.Biome.GRASSLAND
 								result.append(n)
 					if max_limit <= 0:
 						break

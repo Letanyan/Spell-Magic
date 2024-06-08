@@ -17,6 +17,7 @@ var target_path: PackedVector3Array:
 		has_navigation_target = true
 var target_path_duration := 0.0
 var has_navigation_target: bool
+var current_biome: World.Biome = World.Biome.WATER
 
 var vital_tick: float = 0.0
 
@@ -117,12 +118,12 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if target_velocity.y > 0.0:
 			target_velocity.y = 0.0
 		
-	if body.position.y < 0.0 or is_nan(body.position.y):
+	if body.position.y < -1000.0 or is_nan(body.position.y):
 		body.position.y = Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
-		body.position.x = 0.0
-		body.position.z = 0.0
-	elif body.has_node("CamPivot"):
-		if Globals.sea_level() - 1.5 < body.position.y and body.position.y < Globals.sea_level() - 1.45:
+	else:
+		if current_biome == World.Biome.HFIL:
+			target_velocity.y -= 10.0
+		elif Globals.sea_level() - 1.5 < body.position.y and body.position.y < Globals.sea_level() - 1.45:
 			target_velocity.y = 0 
 		elif body.position.y < Globals.sea_level() - 1.5:
 			if target_velocity.y < 0:
