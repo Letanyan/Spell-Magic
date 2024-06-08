@@ -22,7 +22,7 @@ void fragment() {
 	
 	vec3 water_color = vec3(0, 0.1, 0.2) * texture(noise, UV + TIME / 16.0).rgb; 
 	ALBEDO = mix(water_color, vec3(ripple), depth);
-//	ALBEDO = vec3(UV.x, 0, UV.y);
+	//ALBEDO = vec3(UV.x, 0, UV.y);
 	ALPHA = 0.9;
 	ROUGHNESS = 0.0;
 	METALLIC = 1.0;

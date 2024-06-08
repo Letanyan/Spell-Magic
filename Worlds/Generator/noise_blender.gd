@@ -125,18 +125,18 @@ var back: GDNoiseBlender
 
 func _init(s: int) -> void:
 	back = GDNoiseBlender.new()
-	back.add_biome("EQAFAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAArXozsTAM3MzD0IAAAAAIA/AAAAAAAAAADwQQAAAEA/AAAAAAA=", s, grassland_curve, biome_locations[0], biome_colors[0])
-	back.add_biome("EQACAAAAAAAgQRAAzczMPQ0ABQAAAAAAAEATAArXozsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQABmZmY/AAAAAAA=", s, taiga_curve, biome_locations[1], biome_colors[1])
-	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0ABQAAAAAAQEATAArXozsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s, forest_curve, biome_locations[2], biome_colors[2])
-	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAArXozsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s, desert_curve, biome_locations[3], biome_colors[3])
-	back.add_biome("EAAAAAA/DQADAAAAAACAQBMACtejOxMAzczMPQgAAAAAAD8AAAAAAAEIAA==", s, jungle_curve, biome_locations[4], biome_colors[4])
-	back.add_biome("EgABAAAAAACgQBAAZmZmPw0ABQAAAAAAQEATAArXozsTAM3MzD0IAAAAAAAAAAAAAAAAAACgQAAAAAA/AAAAAAA=", s, savannah_curve, biome_locations[5], biome_colors[5])
-	back.add_biome("EQACAAAAAADAQBAAbxKDOg0ABQAAAAAAAEATAArXozsTAArXIzwGAAAAAIA/AAAAgD8AAEAcRgAAAAA/AAAAAAA=", s, tundra_curve, biome_locations[6], biome_colors[6])
-	back.add_biome("EQAFAAAAAADAQBAAzcxMPQ8AAwAAAClcT0ATAArXozsTAM3MzD0GAAAAAAA/AAAAgD8AAAAAAAAAAAA/AAAAAAA=", s, otherworld_curve, biome_locations[7], biome_colors[7])
-	back.add_biome("DgACAAAAAACgQBMACtejOxMACtcjPAgAAAAAAD8AAAAAAAAAAABA", s, hfil_curve, biome_locations[8], biome_colors[8])
+	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
+	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
+	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
+	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
+	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
+	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
+	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
+	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
+	back.add_biome("DQACAAAACtevQRMAbxIDPBMACtcjPAgAAQIA4XrUPwAAAIA/", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
 	
-	back.set_biome_noise(Globals.encoded_x_noise, s, 0)
-	back.set_biome_noise(Globals.encoded_y_noise, s, 1)
+	back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
+	back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)
