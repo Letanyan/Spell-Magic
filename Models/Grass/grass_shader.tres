@@ -58,17 +58,18 @@ void vertex() {
 	VERTEX.x += normalized_wind_direction.x * 0.001 * displacement_affect * wind_speed;
 	VERTEX.z += normalized_wind_direction.y * 0.001 * displacement_affect * wind_speed;
 	
+	/*
 	// At the moment the blades are pushed away in a perfectly circular manner.
 	// We could distort the distance to the character based on a noise, to break a bit the
 	// circular shape. We could distort the falloff by sampling in a noise based on the xz coordinates.
 	// The task is left to the reader
 	
-	vec3 dir_to_character = character_position - VIEW_MATRIX[3].xyz;
+	vec3 dir_to_character = character_position - (VIEW_MATRIX[3].xyz);
 	// uncomment the following line to have a horizontal only character push
-//	dir_to_character.y = 0.0;
+	dir_to_character.y = 0.0;
 	float distance_to_character = length(dir_to_character);
 	float falloff = 1.0 - smoothstep(0.0, 1.0, distance_to_character/character_radius);
-	// Because we operate in vertex space, we need to convert the direction to the character
+	 //Because we operate in vertex space, we need to convert the direction to the character
 	// in vertex space. Otherwise, it wouldn't work for rotated blades of grass.
 	// comment the next line to observe how the blades are not all facing away from the character.
 	dir_to_character = (inverse(VIEW_MATRIX) * vec4(dir_to_character, 0.0)).xyz;
@@ -78,6 +79,7 @@ void vertex() {
 	float falloff_curve = texture(character_distance_falloff_curve, vec2(falloff)).x;
 	// direction to character is inverted because we want to point away from it
 	VERTEX += normalize(-dir_to_character) * falloff_curve * character_push_strength * displacement_affect;
+	*/
 }
 
 void fragment() {

@@ -96,8 +96,9 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						result.append(p)
 						for k in house_size:
 							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
-							n.velocity_movement.current_biome = World.Biome.GRASSLAND
-							result.append(n)
+							if n != null:
+								n.velocity_movement.current_biome = World.Biome.GRASSLAND
+								result.append(n)
 					if max_limit <= 0:
 						break
 						
@@ -138,12 +139,14 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						for k in house_size:
 							if rng.randf() < 0.2:
 								var n: Bat = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
-								n.velocity_movement.current_biome = World.Biome.GRASSLAND
-								result.append(n)
+								if n != null:
+									n.velocity_movement.current_biome = World.Biome.GRASSLAND
+									result.append(n)
 							else:
 								var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
-								n.velocity_movement.current_biome = World.Biome.GRASSLAND
-								result.append(n)
+								if n != null:
+									n.velocity_movement.current_biome = World.Biome.GRASSLAND
+									result.append(n)
 					if max_limit <= 0:
 						break
 					

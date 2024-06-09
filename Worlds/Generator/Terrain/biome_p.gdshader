@@ -64,7 +64,7 @@ vec3 biome_color(vec4 V, vec2 uv) {
 		float dist = axial_dependant_distance(p, locations[i]);
 		distances[i] = dist;
 		if (dist <= (axial_weight + 1.0)) {
-			vec3 c = mix(vec3(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 2.0));
+			vec3 c = mix(vec3(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 3.0));
 			color = color * c;
 		}
 		if (dist < min_distance) {
