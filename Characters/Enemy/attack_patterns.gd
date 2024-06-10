@@ -51,7 +51,8 @@ func choose_spell(vitals: Vitals) -> Spell:
 	else:
 		return s as Spell
 
-static func choose_from_distribution(agro: float, weights: Array[int], repeat: int = -1) -> Callable:
+# use repeat < 0 for infinite
+static func choose_from_distribution(agro: float, weights: Array[int], repeat: int = 1) -> Callable:
 	var total: float = 0.0
 	var probs: Array[float] = []
 	var repeat_count := repeat
@@ -78,7 +79,8 @@ static func choose_from_distribution(agro: float, weights: Array[int], repeat: i
 			return i
 		return -1
 		
-static func choose_in_sequence(intervals: Array[float], repeat: int = -1) -> Callable:
+# use repeat < 0 for infinite
+static func choose_in_sequence(intervals: Array[float], repeat: int = 1) -> Callable:
 	var starting_points: Array[float] = []
 	var completed: Array[bool] = []
 	var total := 0.0

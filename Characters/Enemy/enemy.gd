@@ -30,8 +30,6 @@ signal vital_update(index_in_population: int, vitals: Vitals)
 @onready var health_bar: MeshInstance3D = $HealthBar/Bar
 @onready var level_text: Label3D = $HealthBar/Level
 
-var bounds: Vector3 = Vector3(0, 0, 0)
-
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
 	still_path = PathStyle.still_path()
@@ -125,12 +123,12 @@ func _physics_process(delta: float) -> void:
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if (position.y - bounds.y / 2.0 < g):
+				if (position.y - bounds.y / 2.0 - 0.05 < g):
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 						position.y = g + bounds.y / 2.0
 						t.y = 0
 						v.y = 0
-				elif (position.y - bounds.y / 2.0 > g):
+				elif (position.y - bounds.y / 2.0 - 0.05 > g):
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 						position.y = g + bounds.y / 2.0
 						t.y = 0

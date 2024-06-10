@@ -378,6 +378,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
 
 func transition_to_biome(biome: World.Biome) -> void:
+	#FIXME: change correctly when queued
 	if not biome_tween_queue.is_empty():
 		return
 	

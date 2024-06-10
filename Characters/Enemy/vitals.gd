@@ -15,7 +15,7 @@ class Stat:
 		resistance = res
 		
 	func amount_of_change(p: float) -> float:
-		return clampf((1 - resistance) * p, min_value, max_value)
+		return (1 - resistance) * p
 		
 	func apply_ignoring_resistance(amount: float) -> void:
 		value = clampf(value + amount, min_value, max_value)

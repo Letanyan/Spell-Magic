@@ -44,8 +44,6 @@ signal speed_was_buffed(amount: float)
 var spell_modifier: Dictionary # [Artifact.Element]Vector2(flat: int, percentage: float)
 var damage_resistance: Dictionary # [Artifact.Element]Vector2(flat: int, percentage: float)
 
-var bounds: Vector3 = Vector3(0.6, 1.9, 0.6)
-
 var menu_callbacks_are_set: bool = false
 var on_menu_open: Callable = func() -> void: pass
 var on_menu_close: Callable = func() -> void: pass
@@ -59,6 +57,8 @@ func _ready() -> void:
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
 	SignalBus.pick_up_world_item_artifact.connect(on_pick_up_artifact)
 	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
+	if not bounds:
+		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 	
 	
 func emit_vitals_update() -> void:
@@ -93,6 +93,7 @@ func play_animation(animation: String, parameters: Dictionary = {}) -> void:
 		animation_tree.set(path, parameters[path])
 	var current := playback.get_current_node()
 	if current != "death" and current != animation:
+		#FIXME: avoid travelling through swim animation when casting spell in air
 		playback.travel(animation)
 
 func can_move() -> bool:

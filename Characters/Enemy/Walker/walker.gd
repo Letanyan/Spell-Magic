@@ -15,7 +15,7 @@ func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	idle_path = PathStyle.new().random_points_in_circle(2, 10, 10).set_origin(position).align_y_to_ground()
+	idle_path = PathStyle.new().random_points_in_circle(2, 10, bounds.y / 2.0, 10).set_origin(position).align_y_to_ground()
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(2, 0, 10).use_physics().look_at_player()
 	current_path = idle_path
 	

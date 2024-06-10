@@ -34,6 +34,7 @@ func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float 
 	has_navigation_target = false
 	
 static func player() -> VelocityMovement:
+	# FIXME: apply this to enemies as well and update their animation speed accordingly
 	var desired_speed := 12.0
 	var s := (60.0 / 21.0) * 0.85
 	return VelocityMovement.new(s * desired_speed, 150, 150)
@@ -93,6 +94,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if body.position.y < Globals.sea_level():
 			var underwater := clampf(Globals.sea_level() - body.position.y, 0.0, 10.0) / 10.0
 			vitals.wetness.apply(underwater)
+			vitals.health.apply(clampf(body.position.y - Globals.sea_level(), -100.0, 0.0) / 100.0 * 5.0)
 
 	
 	var direction := Vector3.ZERO
@@ -129,7 +131,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + water_bouyancy * delta
-		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y:
+		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y - body.bounds.y / 2.0 - 0.05:
 			target_velocity.y = target_velocity.y - fall_acceleration * delta
 		else:
 			target_velocity.y = 0
