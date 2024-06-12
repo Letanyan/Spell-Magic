@@ -79,13 +79,14 @@ func current_animation_is(animation: String) -> bool:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 	var current := playback.get_current_node()
 	return current == animation
-	
-func play_animation(animation: String) -> void:
+		
+func play_animation(animation: String, parameters: Dictionary = {}) -> void:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
+	for path: StringName in parameters:
+		animation_tree.set(path, parameters[path])
 	var current := playback.get_current_node()
-	#if current == "on_hit" and playback.get_current_play_position() < playback.get_current_length():
-		#return
 	if current != "death" and current != animation:
+		#FIXME: avoid travelling through swim animation when casting spell in air
 		playback.travel(animation)
 
 func can_move() -> bool:

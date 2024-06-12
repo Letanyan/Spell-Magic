@@ -135,7 +135,12 @@ func _physics_process(delta: float) -> void:
 					left_right = -(1.0 - absf((direction_angle + PI / 2) / (PI / 2)))
 				if direction_angle > 0.0:
 					left_right = 1.0 - absf((direction_angle - PI / 2) / (PI / 2))
-				play_animation("run", {"parameters/run/Backward/blend_amount": left_right, "parameters/run/Forward/blend_amount": left_right, "parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0})
+				play_animation("run", {
+					"parameters/run/Backward/blend_amount": left_right, 
+					"parameters/run/Forward/blend_amount": left_right, 
+					"parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0,
+					"parameters/run/Speed/scale": velocity_movement.player_movement_speed_animation_scale()
+				})
 		elif position.y <= Globals.sea_level():
 			play_animation("swim")
 	else:

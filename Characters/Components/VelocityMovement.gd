@@ -43,6 +43,10 @@ func update_player_movement_speed(target: float) -> void:
 	var s := (60.0 / 21.0) * 0.85
 	speed = s * target
 
+func player_movement_speed_animation_scale() -> float:
+	var s := (60.0 / 21.0) * 0.85
+	return speed / s
+
 func increment_ticks(delta: float) -> void:
 	vital_tick += delta
 
