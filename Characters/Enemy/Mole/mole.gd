@@ -64,7 +64,7 @@ func setup() -> void:
 			Spell.new(false, "u * t * 5 + u * 5", "v * t * 5 + v * 5", "w * t * 5 + w * 5", 1, 0.1, 2, Spell.Element.ELECTRIC, 1),
 			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", 1, 0.1, 3, Spell.Element.ELECTRIC, 1),
 		],
-		AttackPatterns.choose_from_distribution(1.0, [ 5, 3, 2 ])
+		AttackPatterns.choose_from_distribution(1.0, [ 5, 3, 2 ], 1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -73,7 +73,7 @@ func setup() -> void:
 			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", 1, 0.1, 5, Spell.Element.FIRE, 1),
 			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", 1, 0.1, 5, Spell.Element.ELECTRIC, 1),
 		],
-		AttackPatterns.choose_in_sequence([ 1, 2, 1 ])
+		AttackPatterns.choose_in_sequence([ 1, 2, 1 ], -1)
 	)
 	
 	hide_and_attack = AttackSequence.new(true, [

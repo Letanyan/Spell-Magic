@@ -53,7 +53,7 @@ func setup() -> void:
 			water_line,
 			water_para,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 7, 3 ])
+		AttackPatterns.choose_from_distribution(0.25, [ 7, 3 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -62,7 +62,7 @@ func setup() -> void:
 			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.WATER, 1),
 			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.ROCK, 1),
 		],
-		AttackPatterns.choose_in_sequence([ 2, 5, 3 ])
+		AttackPatterns.choose_in_sequence([ 2, 5, 3 ], -1)
 	)
 	
 	animation_map["attack"] = "Weapon"

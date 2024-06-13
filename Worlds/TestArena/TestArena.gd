@@ -76,14 +76,14 @@ func setup(_settings: WorldSettings) -> void:
 	#add_enemy(bat2)
 	#var walker := Population.generate_enemy(World.Enemy.WALKER, player, -20, 1000, -20)
 	#add_enemy(walker)
-	var fish := Population.generate_enemy(World.Enemy.FISH, player, -20, 1000, 20)
-	add_enemy(fish)
+	#var fish := Population.generate_enemy(World.Enemy.FISH, player, -20, 1000, 20)
+	#add_enemy(fish)
 	#var mole := Population.generate_enemy(World.Enemy.MOLE, player, -20, 1000, 20)
 	#add_enemy(mole)
 	#var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
 	#add_enemy(birdman)
-	#var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
-	#add_enemy(fishman)
+	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
+	add_enemy(fishman)
 	
 
 func add_enemy(enemy: Enemy) -> void:

@@ -57,7 +57,7 @@ func setup() -> void:
 			ice_medium,
 			ice_large,
 		],
-		AttackPatterns.choose_from_distribution(0.5, [ 10, 4, 2, 10, 4, 2 ])
+		AttackPatterns.choose_from_distribution(0.5, [ 10, 4, 2, 10, 4, 2 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -75,12 +75,12 @@ func setup() -> void:
 			water_medium,
 			ice_medium,
 		],
-		AttackPatterns.choose_in_sequence([ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4 ])
+		AttackPatterns.choose_in_sequence([ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4 ], -1)
 	)
 	
 	defence_pattern = AttackPatterns.new(
 		[ice_wall],
-		AttackPatterns.choose_in_sequence([ 0 ])
+		AttackPatterns.choose_in_sequence([ 0 ], -1)
 	)
 	
 	animation_map["attack"] = "Weapon"

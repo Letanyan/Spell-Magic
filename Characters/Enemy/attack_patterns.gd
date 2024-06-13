@@ -1,6 +1,6 @@
 class_name AttackPatterns
 
-var spells: Array # [](Spell, AttackPatterns)
+var spells: Array # [](Spell | AttackPatterns)
 var waiting_for_pattern: AttackPatterns
 var is_complete: bool = false
 var time: float = 0.0
@@ -19,7 +19,7 @@ func reset() -> void:
 	last_time = Time.get_unix_time_from_system()
 	
 static func none() -> AttackPatterns:
-	return AttackPatterns.new([], func() -> void: return)
+	return AttackPatterns.new([], func() -> int: return -1)
 
 func choose_spell(vitals: Vitals) -> Spell:
 	if spells.is_empty():

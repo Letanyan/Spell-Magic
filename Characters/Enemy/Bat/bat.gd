@@ -80,7 +80,7 @@ func setup() -> void:
 			elec2,
 			elec3,
 		],
-		AttackPatterns.choose_from_distribution(0.55, [10, 3, 2])
+		AttackPatterns.choose_from_distribution(0.55, [10, 3, 2], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -92,7 +92,7 @@ func setup() -> void:
 			elec3,
 			elec_arc3,
 		],
-		AttackPatterns.choose_in_sequence([ 1, 1, 3, 1, 5, 1 ])
+		AttackPatterns.choose_in_sequence([ 1, 1, 3, 1, 5, 1 ], -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"

@@ -38,7 +38,7 @@ func setup() -> void:
 			ice_blast,
 			electric_blast,
 		],
-		AttackPatterns.choose_from_distribution(0.5, [ 5, 5, 5, 5, 5 ])
+		AttackPatterns.choose_from_distribution(0.5, [ 5, 5, 5, 5, 5 ], -1)
 	)
 	kind = World.Enemy.HUMAN
 

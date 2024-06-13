@@ -84,7 +84,7 @@ func setup() -> void:
 			water_small_med,
 			water_small_slow,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 5, 5, 7 ])
+		AttackPatterns.choose_from_distribution(0.25, [ 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern2 = AttackPatterns.new(
@@ -96,7 +96,7 @@ func setup() -> void:
 			water_med_med,
 			water_med_slow,
 		],
-		AttackPatterns.choose_from_distribution(0.33, [ 2, 2, 3, 5, 5, 7 ])
+		AttackPatterns.choose_from_distribution(0.33, [ 2, 2, 3, 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
@@ -114,7 +114,7 @@ func setup() -> void:
 				AttackPatterns.choose_in_sequence([ 5, 5 ], 1)
 			),
 		],
-		AttackPatterns.choose_from_distribution(0.5, [ 2, 3, 5 ])
+		AttackPatterns.choose_from_distribution(0.5, [ 2, 3, 5 ], -1)
 	)
 	
 	animation_map["attack"] = "Weapon"

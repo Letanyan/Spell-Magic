@@ -45,7 +45,7 @@ func setup() -> void:
 			rock_attack_medium,
 			rock_attack_large,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 10, 3, 1 ])
+		AttackPatterns.choose_from_distribution(0.25, [ 10, 3, 1 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -56,7 +56,7 @@ func setup() -> void:
 			rock_attack_large,
 			rock_attack_small,
 		],
-		AttackPatterns.choose_in_sequence([ 2, 5, 2, 4, 2 ])
+		AttackPatterns.choose_in_sequence([ 2, 5, 2, 4, 2 ], -1)
 	)
 	
 	#sequence_pattern = AttackPatterns.new(
