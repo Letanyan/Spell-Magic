@@ -124,17 +124,17 @@ func _physics_process(delta: float) -> void:
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if (position.y - bounds.y / 2.0 - 0.05 < g):
+				if (feet_position() - 0.05 < g):
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
-						position.y = g + bounds.y / 2.0
+						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				elif (position.y - bounds.y / 2.0 - 0.05 > g):
+				elif (feet_position() - 0.05 > g):
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
-						position.y = g + bounds.y / 2.0
+						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(position.y - bounds.y / 2.0 - g) < 0.05 else 2
+				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.05 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z)
 				
@@ -219,7 +219,7 @@ func _physics_process(delta: float) -> void:
 				play_animation("walk")
 			else:
 				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
-				play_animation("run")
+				play_animation("run", {"parameters/run/speed/scale": speed_for_current_behaviour_tick})
 	else:
 		if final_is_on_floor:
 			play_walking_audio(null)

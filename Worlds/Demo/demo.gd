@@ -215,7 +215,7 @@ func _physics_process(delta: float) -> void:
 		var items := update_population_at(chunker.backing.get_loaded_chunks_location(), state)
 		for item in items:
 			add_child(item)
-		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
+		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z) + player.bounds.y / 2.0
 		chunker.update_environment(player.position.x, player.position.z)
 
 func close_menu_for_player() -> void:

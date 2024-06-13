@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://bbbhddp25rxed"]
+[gd_scene load_steps=68 format=3 uid="uid://bbbhddp25rxed"]
 
 [sub_resource type="Animation" id="Animation_jfaqx"]
 resource_name = "Death"
@@ -10573,9 +10573,18 @@ animation = &"Roll"
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x7fhb"]
-resource_local_to_scene = true
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2rh0h"]
 animation = &"Run"
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kt5hg"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_emylv"]
+nodes/Animation/node = SubResource("AnimationNodeAnimation_2rh0h")
+nodes/Animation/position = Vector2(62, 161)
+nodes/output/position = Vector2(440, 160)
+nodes/speed/node = SubResource("AnimationNodeTimeScale_kt5hg")
+nodes/speed/position = Vector2(256, 171)
+node_connections = [&"output", 0, &"speed", &"speed", 0, &"Animation"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vd1gf"]
 animation = &"Walk"
@@ -10586,26 +10595,14 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1wdpc"]
 xfade_time = 0.25
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_nkwvf"]
-xfade_time = 0.1
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_j3bv1"]
 xfade_time = 0.1
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lwr0s"]
-xfade_time = 0.25
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_olpdr"]
 xfade_time = 0.2
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7ab2i"]
-xfade_time = 0.1
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gc81u"]
 xfade_time = 0.2
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_nig4j"]
-xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i4cx7"]
 xfade_time = 0.25
@@ -10617,22 +10614,10 @@ switch_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_50vu2"]
 xfade_time = 0.25
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fvvmy"]
-xfade_time = 0.25
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ci4rq"]
-xfade_time = 0.25
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f2aup"]
 xfade_time = 0.25
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w52kw"]
-xfade_time = 0.1
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m0l8p"]
-xfade_time = 0.1
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5qyv0"]
 xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0piw5"]
@@ -10648,9 +10633,6 @@ xfade_time = 0.1
 xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h506w"]
-xfade_time = 0.1
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cd54x"]
 xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_utcge"]
@@ -10669,6 +10651,33 @@ xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_htm01"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6w7ac"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rj3nb"]
+xfade_time = 0.25
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ippci"]
+xfade_time = 0.25
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dw7hi"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_grfww"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cjvuf"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i3nmw"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_few8l"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6bqmw"]
+xfade_time = 0.25
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_pykte"]
 resource_local_to_scene = true
 states/Start/position = Vector2(-21, 33)
@@ -10684,11 +10693,11 @@ states/land/node = SubResource("AnimationNodeAnimation_q8jj6")
 states/land/position = Vector2(617, 124)
 states/on_hit/node = SubResource("AnimationNodeAnimation_eyug3")
 states/on_hit/position = Vector2(463, 282)
-states/run/node = SubResource("AnimationNodeAnimation_x7fhb")
-states/run/position = Vector2(265, 374)
+states/run/node = SubResource("AnimationNodeBlendTree_emylv")
+states/run/position = Vector2(265, 383)
 states/walk/node = SubResource("AnimationNodeAnimation_vd1gf")
 states/walk/position = Vector2(441, 116)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_iuxla"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_1wdpc"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_nkwvf"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_j3bv1"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_lwr0s"), "walk", "on_hit", SubResource("AnimationNodeStateMachineTransition_olpdr"), "run", "on_hit", SubResource("AnimationNodeStateMachineTransition_7ab2i"), "walk", "attack", SubResource("AnimationNodeStateMachineTransition_gc81u"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_nig4j"), "on_hit", "walk", SubResource("AnimationNodeStateMachineTransition_i4cx7"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_dopwh"), "on_hit", "idle", SubResource("AnimationNodeStateMachineTransition_50vu2"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_fvvmy"), "on_hit", "run", SubResource("AnimationNodeStateMachineTransition_ci4rq"), "attack", "walk", SubResource("AnimationNodeStateMachineTransition_f2aup"), "idle", "on_hit", SubResource("AnimationNodeStateMachineTransition_w52kw"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_m0l8p"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_5qyv0"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_0piw5"), "attack", "on_hit", SubResource("AnimationNodeStateMachineTransition_jvjse"), "on_hit", "attack", SubResource("AnimationNodeStateMachineTransition_px5ok"), "idle", "death", SubResource("AnimationNodeStateMachineTransition_1ryxj"), "attack", "death", SubResource("AnimationNodeStateMachineTransition_h506w"), "run", "death", SubResource("AnimationNodeStateMachineTransition_cd54x"), "on_hit", "death", SubResource("AnimationNodeStateMachineTransition_utcge"), "walk", "death", SubResource("AnimationNodeStateMachineTransition_7xbj5"), "on_hit", "fall", SubResource("AnimationNodeStateMachineTransition_rgeut"), "attack", "fall", SubResource("AnimationNodeStateMachineTransition_p12yu"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_srpap"), "fall", "land", SubResource("AnimationNodeStateMachineTransition_iqjx1"), "land", "idle", SubResource("AnimationNodeStateMachineTransition_htm01")]
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_iuxla"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_1wdpc"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_j3bv1"), "walk", "on_hit", SubResource("AnimationNodeStateMachineTransition_olpdr"), "walk", "attack", SubResource("AnimationNodeStateMachineTransition_gc81u"), "on_hit", "walk", SubResource("AnimationNodeStateMachineTransition_i4cx7"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_dopwh"), "on_hit", "idle", SubResource("AnimationNodeStateMachineTransition_50vu2"), "attack", "walk", SubResource("AnimationNodeStateMachineTransition_f2aup"), "idle", "on_hit", SubResource("AnimationNodeStateMachineTransition_w52kw"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_0piw5"), "attack", "on_hit", SubResource("AnimationNodeStateMachineTransition_jvjse"), "on_hit", "attack", SubResource("AnimationNodeStateMachineTransition_px5ok"), "idle", "death", SubResource("AnimationNodeStateMachineTransition_1ryxj"), "attack", "death", SubResource("AnimationNodeStateMachineTransition_h506w"), "on_hit", "death", SubResource("AnimationNodeStateMachineTransition_utcge"), "walk", "death", SubResource("AnimationNodeStateMachineTransition_7xbj5"), "on_hit", "fall", SubResource("AnimationNodeStateMachineTransition_rgeut"), "attack", "fall", SubResource("AnimationNodeStateMachineTransition_p12yu"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_srpap"), "fall", "land", SubResource("AnimationNodeStateMachineTransition_iqjx1"), "land", "idle", SubResource("AnimationNodeStateMachineTransition_htm01"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_6w7ac"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_rj3nb"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_ippci"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_dw7hi"), "run", "death", SubResource("AnimationNodeStateMachineTransition_grfww"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_cjvuf"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_i3nmw"), "run", "on_hit", SubResource("AnimationNodeStateMachineTransition_few8l"), "on_hit", "run", SubResource("AnimationNodeStateMachineTransition_6bqmw")]
 graph_offset = Vector2(-143, -20)
 
 [node name="AnimationTree" type="AnimationTree"]
@@ -10698,3 +10707,4 @@ libraries = {
 }
 tree_root = SubResource("AnimationNodeStateMachine_pykte")
 anim_player = NodePath("../AnimationPlayer")
+parameters/run/speed/scale = 1.0

@@ -124,18 +124,18 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if target_velocity.y > 0.0:
 			target_velocity.y = 0.0
 		
-	if body.position.y < -1000.0 or is_nan(body.position.y):
-		body.position.y = Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+	if body.feet_position() < -1000.0 or is_nan(body.position.y):
+		body.set_feet_position(Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z))
 	else:
 		if current_biome == World.Biome.HFIL:
 			target_velocity.y -= 10.0
-		elif Globals.sea_level() - 1.5 < body.position.y and body.position.y < Globals.sea_level() - 1.45:
+		elif Globals.sea_level() - 1.5 < body.feet_position() and body.feet_position() < Globals.sea_level() - 1.45:
 			target_velocity.y = 0 
-		elif body.position.y < Globals.sea_level() - 1.5:
+		elif body.feet_position() < Globals.sea_level() - 1.5:
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + water_bouyancy * delta
-		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.position.y - body.bounds.y / 2.0 - 0.05:
+		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position() - 0.05:
 			target_velocity.y = target_velocity.y - fall_acceleration * delta
 		else:
 			target_velocity.y = 0
