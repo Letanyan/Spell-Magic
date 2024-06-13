@@ -128,6 +128,9 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.BIRDMAN:
 			result = entity_manager.get_enemy(World.Enemy.BIRDMAN)
 			result.name = "Birdman" + str(rng.randi())
+		World.Enemy.FISHMAN:
+			result = entity_manager.get_enemy(World.Enemy.FISHMAN)
+			result.name = "Fishman" + str(rng.randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
@@ -160,6 +163,9 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 		World.Enemy.BIRDMAN:
 			result = Enemy.make(World.Enemy.BIRDMAN)
 			result.name = "Birdman" + str(randi())
+		World.Enemy.FISHMAN:
+			result = Enemy.make(World.Enemy.FISHMAN)
+			result.name = "Fishman" + str(randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += randi_range(0, int(result.level * 0.2)) + 1.0

@@ -21,6 +21,7 @@ var kind: World.Enemy = World.Enemy.NONE
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
+var idle_tick: float = 0
 var speed_for_current_behaviour_tick := 0.0
 var path_movement_remaining_duration := 0.0
 var time_since_navigation_update := NAN
@@ -53,6 +54,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const walker = preload("res://Characters/Enemy/Walker/walker.tscn") as PackedScene
 	const fish = preload("res://Characters/Enemy/Fish/fish.tscn") as PackedScene
 	const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn") as PackedScene
+	const fishman = preload("res://Characters/Enemy/Fishman/fishman.tscn") as PackedScene
 	match _kind:
 		World.Enemy.UNDEAD: result = undead.instantiate()
 		World.Enemy.MOLE: result = mole.instantiate()
@@ -61,7 +63,8 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.BIRDMAN: result = birdman.instantiate()
 		World.Enemy.FISH: result = fish.instantiate()
 		World.Enemy.HUMAN: result = human.instantiate()
-		_: result = undead.instantiate()
+		World.Enemy.FISHMAN: result = fishman.instantiate()
+		_: push_error("Missing enemy")
 	return result
 	
 func setup() -> void:
@@ -124,12 +127,12 @@ func _physics_process(delta: float) -> void:
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if (feet_position() - 0.05 < g):
+				if feet_position() < g:
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				elif (feet_position() - 0.05 > g):
+				elif feet_position() > g:
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 						set_feet_position(g)
 						t.y = 0
@@ -221,9 +224,11 @@ func _physics_process(delta: float) -> void:
 				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 				play_animation("run", {"parameters/run/speed/scale": speed_for_current_behaviour_tick})
 	else:
-		if final_is_on_floor:
+		idle_tick += delta
+		if final_is_on_floor and idle_tick > 0.5:
 			play_walking_audio(null)
 			play_animation("idle")
+			idle_tick = 0
 		
 	if not final_is_on_floor:
 		play_animation("fall")
@@ -319,6 +324,8 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.FISH
 	elif n is Birdman:
 		return World.Enemy.BIRDMAN
+	elif n is Fishman:
+		return World.Enemy.FISHMAN
 	
 	return World.Enemy.NONE
 

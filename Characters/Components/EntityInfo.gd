@@ -11,7 +11,7 @@ enum Food {
 enum Kind {
 	PLAYER, ENEMY, BASE,
 	UNDEAD, BAT, MOLE, HUMAN,
-	TREE, BUILDING
+	TREE, BUILDING, FISHMAN
 }
 
 var kind: Kind
