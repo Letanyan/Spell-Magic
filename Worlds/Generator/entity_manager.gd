@@ -18,8 +18,7 @@ class EntityBuffer:
 		
 	func get_entity() -> Node3D:
 		if high_watermark == buffer.size():
-			# double the size of the capacity because it seems like good practice (who knows)
-			for i in buffer.size():
+			for i in mini(buffer.size(), 20):
 				buffer.append(allocater.call())
 		high_watermark += 1
 		return buffer[high_watermark - 1]
@@ -65,11 +64,21 @@ var buffer_well: EntityBuffer
 func _init() -> void:
 	var deinit_tree := func(node: Trees) -> void:
 		node.position.y = -1000
+		var s: CollisionShape3D = node.get_node("./static/shape")
+		if s != null:
+			s.disabled = true
 	var deinit_enemy := func(node: Enemy) -> void:
 		node.position.y = -1000
 		node.kind = World.Enemy.NONE
+		var col: CollisionShape3D = node.get_node("./Collision")
+		var area: CollisionShape3D = node.get_node("./WetArea/WetCollision")
+		col.disabled = true
+		area.disabled = col.disabled
 	var deinit_building := func(node: Buildings) -> void:
 		node.position.y = -1000
+		var s: CollisionShape3D = node.get_node("./static/shape")
+		if s != null:
+			s.disabled = true
 	
 	buffer_round_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_ROUND), deinit_tree, "round")
 	buffer_branched_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_BRANCHED), deinit_tree, "branched")

@@ -24,7 +24,7 @@ var last_biome: World.Biome = World.Biome.WATER
 @onready var title: MeshInstance3D = $Player/Arm/Lens/Title
 @onready var source: GPUParticles3D = $Player/Arm/Lens/Title/Source
 @onready var placard: MeshInstance3D = $Player/Arm/Lens/placard
-var biome_tween_next: World.Biome = -1
+var biome_tween_next: World.Biome = World.Biome.WATER
 var biome_tween: Tween = null
 
 
@@ -194,10 +194,10 @@ func transition_to_biome(biome: World.Biome) -> void:
 	biome_tween.finished.connect(func() -> void:
 		NoiseBlender.update_world_environment(env, biome, true)
 		update_world.call(0.0)
-		if biome_tween_next != -1:
+		if biome_tween_next != World.Biome.WATER:
 			biome_tween = null
 			var b := biome_tween_next
-			biome_tween_next = -1
+			biome_tween_next = World.Biome.WATER
 			transition_to_biome(b)
 		else:
 			biome_tween = null			

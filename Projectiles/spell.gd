@@ -34,11 +34,11 @@ var delay: String:
 		delay = value
 		d_expr = Expr.new(value)
 var mana_cost: float = 0.0
-var chain_cast_kind: ChainCastKind:
+var chain_cast_kind: ChainCastKind = ChainCastKind.START:
 	set(value):
 		chain_cast_kind = value
 		calculate_cooldown()
-var chain: Spell:
+var chain: Spell = null:
 	set(spell):
 		chain = spell
 		calculate_cooldown()
@@ -79,7 +79,6 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	element = _el
 	count = _N
 	delay = _delay
-	chain = null
 	mana_cost = _mana
 	
 	follow = _follow
@@ -88,12 +87,6 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	charge = 0.0
 	expression_strings = {}
 	
-	x_expr = Expr.new(x)
-	y_expr = Expr.new(y)
-	z_expr = Expr.new(z)
-	d_expr = Expr.new(delay)
-	
-	chain_cast_kind = ChainCastKind.START
 	is_active = true
 	
 func duplicate(override_expr: Dictionary = {}) -> Spell:
@@ -111,7 +104,8 @@ func duplicate(override_expr: Dictionary = {}) -> Spell:
 	if not override_expr.is_empty():
 		result.expression_strings.merge(override_expr, true)
 	result.build_expressions()
-	result.calculate_cooldown()
+	result.elemental_application = elemental_application
+	result.cooldown = cooldown
 	result.charge = charge
 	result.is_active = is_active
 	return result
