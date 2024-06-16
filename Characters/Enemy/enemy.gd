@@ -127,12 +127,12 @@ func _physics_process(delta: float) -> void:
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if feet_position() < g:
+				if feet_position() <= g:
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				elif feet_position() > g:
+				elif feet_position() >= g:
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 						set_feet_position(g)
 						t.y = 0
@@ -144,6 +144,11 @@ func _physics_process(delta: float) -> void:
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
 			look_at(player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+		elif current_path.lookat == PathStyle.LookAt.PLAYER_XZ:
+			var goal_position := position + velocity * 10
+			var player_position := player.position
+			player_position.y = position.y
+			look_at(player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
 		
 
 	var reset_spell_tick := false
@@ -183,9 +188,9 @@ func _physics_process(delta: float) -> void:
 			var obj := get_node(".") as CharacterBody
 			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, 0.5)
 			velocity_movement.target_position = Navigator.find_next_target_from_path(velocity_movement.target_path, position, obj, next_pos)
-			if not velocity_movement.target_path.is_empty():
-				var speed := 1.0 if is_zero_approx(speed_for_current_behaviour_tick) else speed_for_current_behaviour_tick
-				velocity_movement.target_path_duration = Navigator.path_distance(velocity_movement.target_path) / speed
+			#if not velocity_movement.target_path.is_empty():
+				#var speed := 1.0 if is_zero_approx(speed_for_current_behaviour_tick) else speed_for_current_behaviour_tick
+				#velocity_movement.target_path_duration = Navigator.path_distance(velocity_movement.target_path) / speed
 		if reset_spell_tick:
 			behavior_tick = Globals.behaviour_tick()
 		else:

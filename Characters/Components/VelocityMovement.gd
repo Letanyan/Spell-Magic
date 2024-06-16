@@ -15,7 +15,8 @@ var target_path: PackedVector3Array:
 	set(value):
 		target_path = value
 		has_navigation_target = true
-var target_path_duration := 0.0
+var position_at_last_update := Vector3.ZERO
+var position_is_same_as_last_update_count := 30
 var has_navigation_target: bool
 var current_biome: World.Biome = World.Biome.WATER
 
@@ -68,7 +69,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		#else:
 			#target_path_duration -= delta
 		
-	if body.position.is_equal_approx(target_position):
+	if position_is_same_as_last_update_count < 0 or body.global_position.is_equal_approx(target_position):
+		position_is_same_as_last_update_count = 30
 		if target_path.is_empty():
 			has_navigation_target = false
 		else:
@@ -77,6 +79,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	var navigation_velocity := Vector3.ZERO
 	if has_navigation_target:
+		if position_at_last_update == body.global_position:
+			position_is_same_as_last_update_count -= 1
+		position_at_last_update = body.global_position
 		var total_movement := target_position - body.global_position
 		var length := total_movement.length()
 		var direction := total_movement.normalized()
@@ -135,7 +140,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + water_bouyancy * delta
-		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position() - 0.05:
+		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
 			target_velocity.y = target_velocity.y - fall_acceleration * delta
 		else:
 			target_velocity.y = 0

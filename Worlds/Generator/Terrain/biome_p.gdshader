@@ -8,12 +8,27 @@ uniform sampler2D height;
 uniform float texture_width;
 uniform float texture_depth;
 
+// world sphere projection
+//uniform vec2 center_on_world;
+//uniform vec2 world_center;
+//#define world_radius 256.0*10.0
+
 void vertex() {
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	//vec2 pixel = 1.0 / vec2(textureSize(height, 0)); 
 	//vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
 	//VERTEX.y += texture(height, w).r;
+	
+	// Project onto sphere 
+	//vec3 old_vert = VERTEX;
+	//vec3 P = vec3(center_on_world.x, world_radius, center_on_world.y) + VERTEX;
+	//float p_len = length(P);
+	//vec3 Q = (world_radius / p_len) * P;
+	//Q.y -= world_radius - VERTEX.y;
+	//Q.x -= center_on_world.x;
+	//Q.z -= center_on_world.y;
+	//VERTEX = (MODELVIEW_MATRIX * vec4(Q, 1.0)).xyz;
 }
 
 #define axial_weight 2.0

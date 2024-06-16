@@ -2,7 +2,7 @@ class_name PathStyle
 
 enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT }
 enum Mover { PHYSICS, ABSOLUTE }
-enum LookAt { VELOCITY, PLAYER }
+enum LookAt { VELOCITY, PLAYER, PLAYER_XZ }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
 
 var origin := Vector3.ZERO
@@ -53,6 +53,14 @@ func set_origin(o: Vector3) -> PathStyle:
 	
 func look_at_player() -> PathStyle:
 	lookat = LookAt.PLAYER
+	return self
+	
+func look_at_direction() -> PathStyle:
+	lookat = LookAt.VELOCITY
+	return self
+	
+func look_at_player_xz() -> PathStyle:
+	lookat = LookAt.PLAYER_XZ
 	return self
 	
 func use_physics() -> PathStyle:
@@ -150,10 +158,10 @@ func follow_path(pathway: Pathway) -> PathStyle:
 	
 func random_points_in_circle(speed: float, radius: float, height: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var p := Vector3(randf() * 2 - 1, height, randf() * 2 - 1).normalized() * radius
+	var p := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
 	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
 	for i in range(count - 1):
-		var q := Vector3(randf() * 2 - 1, height, randf() * 2 - 1).normalized() * radius
+		var q := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
 		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
 		p = q
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
