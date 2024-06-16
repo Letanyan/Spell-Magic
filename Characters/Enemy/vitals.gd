@@ -215,7 +215,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				(visual_source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
 				(visual_source.process_material as ParticleProcessMaterial).scale_min = r * 2
 				(visual_source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				(visual_source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
+				(visual_source.process_material as ParticleProcessMaterial).initial_velocity_max = 0
 				visual_source.amount = amount
 		Spell.Element.WATER:
 			explosion = (load("res://Projectiles/explosion/water_exp.tscn") as PackedScene).instantiate()
@@ -230,16 +230,16 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				visual_effect.name = "wet_effect"
 				visual_source = visual_effect.get_node("source")
 				(visual_source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-				(visual_source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
+				(visual_source.process_material as ParticleProcessMaterial).initial_velocity_max = 0
 				(visual_source.process_material as ParticleProcessMaterial).scale_max = r * 2
 				visual_source.amount = amount
 		Spell.Element.ROCK:
 			explosion = (load("res://Projectiles/explosion/rock_exp.tscn") as PackedScene).instantiate()
 			source = explosion.get_node("source")
-			source.amount = (amount + 1) * 100
 			(source.draw_pass_1 as BoxMesh).size.x = r * 0.1
 			(source.draw_pass_1 as BoxMesh).size.y = r * 0.1
 			(source.draw_pass_1 as BoxMesh).size.z = r * 0.1
+			source.amount = amount
 		Spell.Element.AIR:
 			explosion = (load("res://Projectiles/explosion/air_exp.tscn") as PackedScene).instantiate()
 			source = explosion.get_node("source")

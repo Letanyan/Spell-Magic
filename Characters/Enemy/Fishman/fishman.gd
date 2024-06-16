@@ -22,7 +22,8 @@ func setup() -> void:
 	
 	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":"4"})
 	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":"15", "d":"1"})
+	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"5"})
+	water_line.duration = 5
 	water_line.element = Spell.Element.WATER
 	
 	default_pattern = AttackPatterns.new(

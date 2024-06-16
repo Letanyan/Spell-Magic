@@ -241,8 +241,8 @@ func _physics_process(delta: float) -> void:
 		play_animation("land")
 
 
-func cast_spell(insert: Callable, next_spell: Spell) -> void:
-	spell_caster.cast_spell(self, vitals, insert, next_spell)
+func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellReason:
+	return spell_caster.cast_spell(self, vitals, insert, next_spell)
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.ENEMY, position)

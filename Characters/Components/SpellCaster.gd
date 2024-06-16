@@ -14,7 +14,7 @@ var tracking_offset: Dictionary = {} # [String]Vector3
 func _init(o: Node3D, e: Entity) -> void:
 	origin_node = o
 	entity = e
-	ignore_mana_cost = false
+	ignore_mana_cost = true
 	
 func update(body: Node3D, delta: float) -> void:
 	var t := Time.get_unix_time_from_system()

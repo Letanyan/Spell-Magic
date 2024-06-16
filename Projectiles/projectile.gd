@@ -319,10 +319,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 func update_shape(r: float, ignore_time: bool) -> void:
 	if r == most_recent_radius:
 		return
-	if spell.element == Spell.Element.ROCK and not ignore_time:
-		most_recent_radius = r
-	elif spell.element != Spell.Element.ROCK:
-		most_recent_radius = r
+	most_recent_radius = r
 	
 	match spell.element:
 		Spell.Element.FIRE:

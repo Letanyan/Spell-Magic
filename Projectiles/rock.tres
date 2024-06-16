@@ -25,9 +25,8 @@ as_normal_map = true
 noise = SubResource("FastNoiseLite_obdun")
 
 [resource]
-transparency = 1
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.717647, 0.352941, 0.141176, 0.603922)
+albedo_color = Color(0.717647, 0.352941, 0.141176, 1)
 albedo_texture = SubResource("NoiseTexture2D_o07gf")
 normal_enabled = true
 normal_scale = 0.25

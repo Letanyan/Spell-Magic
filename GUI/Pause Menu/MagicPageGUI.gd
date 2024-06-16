@@ -422,7 +422,7 @@ func _on_expressions_text_changed() -> void:
 			if line_number == selected_variables_origin_line:
 				continue
 			var line := expressions.get_line(line_number)
-			var new_line := Globals.replace_ranges_in_string(line, selected_variables[str(line_number)] as Array, new_word)
+			var new_line := Globals.replace_ranges_in_string(line, selected_variables.get(str(line_number), []) as Array, new_word)
 			if new_line != line:
 				expressions.set_line(line_number, new_line)
 				var atoms := new_line.split("=", false)
