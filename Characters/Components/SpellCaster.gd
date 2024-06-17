@@ -130,9 +130,9 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 				result["rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 		elif entity == Entity.ENEMY:
 			if variable_kind == SpellVariableKind.FIXED:
-				result["abs_pos"] = _body.position + Vector3(0, 1.5, 0) + cdir
+				result["abs_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["rel_pos"] = _body.position + Vector3(0, 1.5, 0) + cdir
+				result["rel_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
 		else:
 			if variable_kind == SpellVariableKind.FIXED:
 				result["abs_pos"] = _body.position + cdir

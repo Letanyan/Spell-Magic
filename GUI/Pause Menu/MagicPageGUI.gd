@@ -363,8 +363,14 @@ func _on_expressions_caret_changed() -> void:
 	selected_variables_origin_line = expressions.get_caret_line()
 	var atoms := expressions.get_line(selected_variables_origin_line).split("=", false)
 	var selected := ""
+	
 	if atoms.size() == 2:
-		selected = atoms[0].strip_edges()
+		# use this for auto select variable to update
+		#selected = atoms[0].strip_edges()
+		
+		# use this for manual variable selection
+		if atoms[0].strip_edges() == expressions.get_selected_text():
+			selected = expressions.get_selected_text()
 		
 	if selected.is_empty() or last_selected_variable == selected:
 		return
