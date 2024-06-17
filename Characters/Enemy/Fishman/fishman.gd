@@ -15,14 +15,14 @@ func setup() -> void:
 	vitals.perception.value = 20
 	
 	idle_path = PathStyle.new(randf()).random_points_in_circle(10, 10, 0, 10).align_y_to_ground().set_origin(position).use_absolute()
-	attack_direct_path = PathStyle.new(randf(), position).towards_player(2, 4, 6).set_player_body_vision_as_origin(0, 10, 2, 3).align_y_to_ground().use_absolute().look_at_player_xz()
+	attack_direct_path = PathStyle.new(randf(), position).towards_player(2, 4, 6).set_player_body_vision_as_origin(0, 20, 2, 3).align_y_to_ground().use_absolute().look_at_player_xz()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":"4", "CC": "C"})
+	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":str(4+level*1.1), "CC": "C"})
 	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"2"})
+	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":str(5+level*1.1), "d":"2"})
 	water_line.duration = 5
 	water_line.element = Spell.Element.WATER
 	
@@ -70,7 +70,7 @@ func update_entity_info(info: EntityInfo) -> bool:
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		current_path = attack_direct_path
-	elif current_path == attack_direct_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+	elif current_path == attack_direct_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 5:
 		current_path = idle_path
 
 func drop_artifact() -> Artifact:

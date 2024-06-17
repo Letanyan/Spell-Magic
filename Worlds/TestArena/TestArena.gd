@@ -83,6 +83,7 @@ func setup(_settings: WorldSettings) -> void:
 	#var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
 	#add_enemy(birdman)
 	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
+	fishman.level = 50
 	add_enemy(fishman)
 	
 

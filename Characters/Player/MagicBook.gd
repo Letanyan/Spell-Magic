@@ -167,10 +167,10 @@ func find_spell(n: String) -> Spell:
 			return s
 	return null
 	
-func copy_spell(n: String, constants: Dictionary = {}) -> Spell:
+func copy_spell(n: String, constants: Dictionary = {}, for_player: bool = false) -> Spell:
 	for s in spells:
 		if s.name == n:
-			var result := s.duplicate()
+			var result := s.duplicate({}, for_player)
 			result.overwrite_expressions(constants)
 			return result
 	return null

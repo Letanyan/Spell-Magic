@@ -149,8 +149,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	target_velocity.y = clampf(target_velocity.y, -50.0, 50.0)
 	target_velocity.z = clampf(target_velocity.z, -50.0, 50.0)
 	
-	if absf(impulse.length()) > 1.0:
-		impulse -= impulse.normalized() * friction * delta
+	if impulse.length() > 1.0:
+		impulse -= impulse * 0.1
 	else:
 		impulse = Vector3.ZERO
 	

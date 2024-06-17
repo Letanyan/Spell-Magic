@@ -89,17 +89,18 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	
 	is_active = true
 	
-func duplicate(override_expr: Dictionary = {}) -> Spell:
+func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spell:
 	var result := Spell.new(follow, x, y, z, radius, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
-	result.limit_r = limit_r
-	result.limit_v = limit_v
-	result.buff_r = buff_r
-	result.buff_v = buff_v
-	result.buff_attack = buff_attack
-	result.buff_defence = buff_defence
+	if for_player:
+		result.limit_r = limit_r
+		result.limit_v = limit_v
+		result.buff_r = buff_r
+		result.buff_v = buff_v
+		result.buff_attack = buff_attack
+		result.buff_defence = buff_defence
 	result.expression_strings = expression_strings.duplicate()
 	if not override_expr.is_empty():
 		result.expression_strings.merge(override_expr, true)
@@ -119,7 +120,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	if vars.has("old_pos") and not only_delta:
 		var old_pos := vars["old_pos"] as Vector3
 		var frame_time := vars.get("__frame_time", 0.0166667) as float
-		var velocity := (result - old_pos) 
+		var velocity := (result - old_pos)
 		if not velocity.is_zero_approx():
 			var temp := old_pos + velocity.normalized() * clampf(velocity.length(), 0, (limit_v + buff_v) * frame_time)
 			result = temp
