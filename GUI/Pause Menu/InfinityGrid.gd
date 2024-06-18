@@ -19,7 +19,7 @@ var current_offset := Vector2.ZERO
 
 var child_grid := {} # [Vector2]Control
 
-signal on_cell_selected(coord: Vector2)
+signal on_cell_selected(coord: Vector2, old_coord: Vector2)
 signal on_cell_unselected(coord: Vector2)
 signal on_cell_clicked(coord: Vector2, mouse_button_index: int)
 signal on_cell_double_clicked(coord: Vector2, mouse_button_index: int)
@@ -125,8 +125,11 @@ func _gui_input(_event: InputEvent) -> void:
 							#selected_cell_coord = null
 							#on_cell_unselected.emit(m_pos)
 						else:
+							var old_pos: Vector2
+							if selected_cell_coord != null:
+								old_pos = selected_cell_coord as Vector2
 							selected_cell_coord = m_pos
-							on_cell_selected.emit(m_pos)
+							on_cell_selected.emit(m_pos, old_pos)
 					queue_redraw()
 					queue_sort()
 			current_offset = Vector2.ZERO
@@ -146,25 +149,26 @@ func _gui_input(_event: InputEvent) -> void:
 				on_cell_moused_over.emit(m_pos)
 	elif _event is InputEventKey or _event is InputEventJoypadButton:
 		if selected_cell_coord != null and has_focus():
+			var old_pos := selected_cell_coord as Vector2
 			if _event.is_action_pressed("ui_down"):
 				selected_cell_coord += Vector2(0, 1)
-				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(0, 1) * cell_size
+				on_cell_selected.emit(selected_cell_coord, old_pos)
 				accept_event()
 			if _event.is_action_pressed("ui_up"):
 				selected_cell_coord += Vector2(0, -1)
-				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(0, -1) * cell_size
+				on_cell_selected.emit(selected_cell_coord, old_pos)
 				accept_event()
 			if _event.is_action_pressed("ui_left"):
 				selected_cell_coord += Vector2(-1, 0)
-				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(-1, 0) * cell_size
+				on_cell_selected.emit(selected_cell_coord, old_pos)
 				accept_event()
 			if _event.is_action_pressed("ui_right"):
 				selected_cell_coord += Vector2(1, 0)
-				on_cell_selected.emit(selected_cell_coord)
 				offset -= Vector2(1, 0) * cell_size
+				on_cell_selected.emit(selected_cell_coord, old_pos)
 				accept_event()
 			queue_redraw()
 			queue_sort()
@@ -174,3 +178,6 @@ func _gui_input(_event: InputEvent) -> void:
 		queue_redraw()
 		queue_sort()
 
+func center_grid_on_cell(coord: Vector2) -> void:
+	offset.x = -coord.x * cell_size.x - cell_size.x / 2 + size.x / 2
+	offset.y = -coord.y * cell_size.y - cell_size.y / 2 + size.y / 2
