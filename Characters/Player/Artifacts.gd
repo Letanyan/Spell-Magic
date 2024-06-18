@@ -159,6 +159,76 @@ func update_active_options(artifact: Artifact, coord: Vector2) -> void:
 				else:
 					active_options[other_coord][RIGHT] = true
 
+func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array[Vector4]:
+	if artifact == null:
+		return [Vector4(coord.x, coord.y, 0, 0)]
+	if get_artifact_at_coord(coord) != null:
+		return [Vector4(coord.x, coord.y, 0, 0)]
+		
+	var check_count := 0
+	var result: Array[Vector4] = []
+		
+	# Check artifact fits with top artifact
+	var other := get_artifact_at_coord(coord + Vector2(0, -1))
+	if other != null:
+		check_count += 1
+		var ok1 : bool = other.bottom.event != Artifact.Event.NONE and artifact.top.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.bottom.effect != Artifact.Effect.NONE and artifact.top.event != Artifact.Event.NONE
+		var ok3 : bool = other.bottom.pattern == artifact.top.pattern
+		if not ok3:
+			var nc := coord + Vector2(0, -1)
+			result.append(Vector4(nc.x, nc.y, 2, 2))
+		if not (ok1 or ok2):
+			var nc := coord + Vector2(0, -1)
+			result.append(Vector4(nc.x, nc.y, 2, 0))
+			
+	# Check artifact fits with bottom artifact	
+	other = get_artifact_at_coord(coord + Vector2(0, 1))
+	if other != null:
+		check_count += 1
+		var ok1 : bool = other.top.event != Artifact.Event.NONE and artifact.bottom.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.top.effect != Artifact.Effect.NONE and artifact.bottom.event != Artifact.Event.NONE
+		var ok3 : bool = other.top.pattern == artifact.bottom.pattern
+		if not ok3:
+			var nc := coord + Vector2(0, 1)
+			result.append(Vector4(nc.x, nc.y, 0, 2))
+		if not (ok1 or ok2):
+			var nc := coord + Vector2(0, 1)
+			result.append(Vector4(nc.x, nc.y, 0, 0))
+			
+	# Check artifact fits with left artifact
+	other = get_artifact_at_coord(coord + Vector2(-1, 0))
+	if other != null:
+		check_count += 1
+		var ok1 : bool = other.right.event != Artifact.Event.NONE and artifact.left.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.right.effect != Artifact.Effect.NONE and artifact.left.event != Artifact.Event.NONE
+		var ok3 : bool = other.right.pattern == artifact.left.pattern
+		if not ok3:
+			var nc := coord + Vector2(-1, 0)
+			result.append(Vector4(nc.x, nc.y, 1, 2))
+		if not (ok1 or ok2):
+			var nc := coord + Vector2(-1, 0)
+			result.append(Vector4(nc.x, nc.y, 1, 0))
+			
+	# Check artifact fits with right artifact
+	other = get_artifact_at_coord(coord + Vector2(1, 0))
+	if other != null:
+		check_count += 1
+		var ok1 : bool = other.left.event != Artifact.Event.NONE and artifact.right.effect != Artifact.Effect.NONE
+		var ok2 : bool = other.left.effect != Artifact.Effect.NONE and artifact.right.event != Artifact.Event.NONE
+		var ok3 : bool = other.left.pattern == artifact.right.pattern
+		if not ok3:
+			var nc := coord + Vector2(1, 0)
+			result.append(Vector4(nc.x, nc.y, 3, 2))
+		if not (ok1 or ok2):
+			var nc := coord + Vector2(1, 0)
+			result.append(Vector4(nc.x, nc.y, 3, 0))
+			
+	if (check_count <= 0 and not is_empty()):
+		return [Vector4(coord.x, coord.y, 0, 0)]
+			
+	return result
+
 func is_still_continuous_after_removing(coord: Vector2) -> bool:
 	# flood fill from coord. If the total number of 'painted' tiles with artifacts
 	# is one less than the total then we have a fully connected path.
@@ -196,6 +266,25 @@ func is_still_continuous_after_removing(coord: Vector2) -> bool:
 		island_count += 1
 			
 	return island_count == connected.size() - 1
+	
+func highlight_all_available_cells_for_placement(artifact: Artifact) -> PackedVector2Array:
+	if artifact == null:
+		return PackedVector2Array([])
+		
+	var result := PackedVector2Array([])
+	var directions := PackedVector2Array([Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)])
+	var visited_cells := {}
+	for a: Artifact in connected:
+		var coord := connected[a] as Vector2
+		for dir in directions:
+			var new_coord := coord + dir
+			if visited_cells.has(new_coord):
+				continue
+			visited_cells[new_coord] = true
+			if can_place_artifact(artifact, new_coord).is_empty():
+				result.append(new_coord)
+				
+	return result
 	
 	
 func save(world_name: String) -> void:

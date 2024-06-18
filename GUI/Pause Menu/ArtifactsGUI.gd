@@ -19,6 +19,7 @@ var filter_bottom_options := FilterOptions.new()
 var temporary_grid_tile: GridTile
 var last_moused_coord := Vector2.ZERO
 var saved_artifact_grid_selected_cell := Vector2.ZERO
+var saved_artifact_grid_selected_cell_is_set := false
 
 var artifacts: Artifacts:
 	set(value):
@@ -81,6 +82,7 @@ func update_list() -> void:
 			if artifacts.get_artifact_by_name(artifacts_list.get_item_text(idx)) == artifact_preview.artifact:
 				artifacts_list.select(idx)
 				break
+	highlight_all_available_cells_for_placement()
 
 func update_list_and_grid() -> void:
 	update_list()
@@ -112,6 +114,7 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 		update_artifact_list_height()
 		if artifact_grid.selected_cell_coord:
 			update_temporary_grid_tile()
+		highlight_all_available_cells_for_placement()
 		
 		
 	list_clicked = true
@@ -280,6 +283,7 @@ func _on_artifacts_list_item_selected(index: int) -> void:
 	update_artifact_list_height()
 	if artifact_grid.selected_cell_coord:
 		update_temporary_grid_tile()
+	highlight_all_available_cells_for_placement()
 
 
 func _on_artifact_grid_on_cell_moused_over(coord: Vector2) -> void:
@@ -376,13 +380,14 @@ func _on_destroy_pressed() -> void:
 	attempt_delete_artifact()
 	
 func _on_artifact_grid_focus_entered() -> void:
-	if artifact_grid.selected_cell_coord == null:
+	if artifact_grid.selected_cell_coord == null and saved_artifact_grid_selected_cell_is_set:
 		print("restore selected cell: ", saved_artifact_grid_selected_cell)
 		artifact_grid.selected_cell_coord = saved_artifact_grid_selected_cell
 		
 func _on_artifact_grid_focus_exited() -> void:
 	if artifact_grid.selected_cell_coord != null:
 		saved_artifact_grid_selected_cell = artifact_grid.selected_cell_coord
+		saved_artifact_grid_selected_cell_is_set = true
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 	#print("grid: ", event)
@@ -391,6 +396,7 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
 			if e.is_action_pressed("E"):
 				saved_artifact_grid_selected_cell = artifact_grid.selected_cell_coord
+				saved_artifact_grid_selected_cell_is_set = true
 				artifact_grid.selected_cell_coord = null
 				temporary_grid_tile.artifact = null
 				if artifacts_list.item_count > 0:
@@ -425,6 +431,10 @@ func attempt_delete_artifact() -> void:
 		update_temporary_grid_tile()
 	)
 	get_tree().root.add_child(popup)
+	
+func highlight_all_available_cells_for_placement() -> void:
+	artifact_grid.highlighted_cells = artifacts.highlight_all_available_cells_for_placement(artifact_preview.artifact)
+	artifact_grid.queue_redraw()
 
 func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void:
 	var menu := button.get_popup() as PopupMenu

@@ -9,8 +9,10 @@ extends Container
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.9)
 var panel_style: StyleBox
 var hover_style: StyleBox
+var highlight_style: StyleBox
 
 var selected_cell_coord: Variant = null
+var highlighted_cells := PackedVector2Array([])
 
 var mouse_down: Variant = null
 var current_offset := Vector2.ZERO
@@ -31,9 +33,11 @@ func _ready() -> void:
 		var temp_theme: Theme = load(ProjectSettings.get_setting("gui/theme/custom") as String) as Theme
 		panel_style = temp_theme.get_stylebox("panel", "Panel")
 		hover_style = temp_theme.get_stylebox("focus", "Button")
+		highlight_style = temp_theme.get_stylebox("focus", "CheckButton")
 	else:
 		panel_style = theme.get_stylebox("panel", "Panel")
 		hover_style = theme.get_stylebox("focus", "Button")
+		highlight_style = theme.get_stylebox("focus", "CheckButton")
 
 func add_grid_tile(n: Control, coord: Vector2, overwrite: bool = false) -> void:
 	if overwrite or not child_grid.has(coord):
@@ -85,6 +89,9 @@ func _draw() -> void:
 	if selected_cell_coord != null:
 		draw_style_box(hover_style, Rect2(selected_cell_coord as Vector2 * cell_size + offset + current_offset, cell_size))
 		#draw_rect(Rect2(selected_cell_coord * cell_size + offset + current_offset, cell_size), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
+		
+	for highlighted_cell in highlighted_cells:
+		draw_style_box(highlight_style, Rect2(highlighted_cell * cell_size + offset + current_offset, cell_size))
 
 func _gui_input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
@@ -111,10 +118,12 @@ func _gui_input(_event: InputEvent) -> void:
 					else:
 						get_tree().create_timer(0.3).timeout.connect(func() -> void: double_click_timer[event.button_index] = false)
 						double_click_timer[event.button_index] = true
-					if event.button_index == 1:
+					if event.button_index == MOUSE_BUTTON_LEFT:
 						if m_pos == selected_cell_coord:
-							selected_cell_coord = null
-							on_cell_unselected.emit(m_pos)
+							pass
+							# uncomment to support deselect cell by clicking cell
+							#selected_cell_coord = null
+							#on_cell_unselected.emit(m_pos)
 						else:
 							selected_cell_coord = m_pos
 							on_cell_selected.emit(m_pos)
