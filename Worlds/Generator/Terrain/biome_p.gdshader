@@ -15,10 +15,10 @@ uniform float texture_depth;
 
 void vertex() {
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
-	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	//vec2 pixel = 1.0 / vec2(textureSize(height, 0)); 
 	//vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
-	//VERTEX.y += texture(height, w).r;
+	//VERTEX.y += texture(height, VERTEX.xz / 16.0).r * 50.0;
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
 	// Project onto sphere 
 	//vec3 old_vert = VERTEX;

@@ -336,7 +336,6 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 			if item.get_parent() == null:
 				call_deferred("add_child", item)
 				
-		
 	return result
 
 func enemy_dies(enemy: Enemy) -> void:
