@@ -7,8 +7,6 @@ var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_direct_path: PathStyle
-
-var jump_timer: int = 0
 	
 func setup() -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
@@ -45,11 +43,6 @@ func setup() -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.FISH
-	
-func _physics_process(delta: float) -> void:
-	super._physics_process(delta)
-	if current_path == attack_direct_path:
-		jump_timer += 1
 
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path

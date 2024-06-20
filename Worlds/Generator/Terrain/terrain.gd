@@ -38,14 +38,14 @@ var water_ripples_noise := preload("res://Worlds/SkyBox/ripples_noise.tres") as 
 #
 #var base_coords: PackedVector3Array = []
 
-func _init(b: NoiseBlender, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0) -> void:
+func _init(b: NoiseBlender, cs: float = 256, r: float = 3, subdivide: float = 1.0 / 16.0, mcw: float = 18) -> void:
 	#subdivide_percent = subdivide
 	#blender = b
 	#chunk_size = cs
 	#grass_size = cs * 0.5
 	#radius = r
 	backing = GDTerrain.new()
-	backing.init(b.back, cs, r, subdivide)
+	backing.init(b.back, cs, r, subdivide, mcw)
 	backing.set_biome_shader(biome_shader)
 	backing.set_water_shader(water_shader)
 	backing.set_water_noise(water_noise)

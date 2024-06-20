@@ -276,6 +276,7 @@ func update_info() -> void:
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
 		col.disabled = dist > 50
 		area.disabled = col.disabled
+		habitant.animation_tree.active = dist < 150
 	
 	for g in garden:
 		var s: CollisionShape3D = g.get_node("./static/shape")

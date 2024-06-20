@@ -119,9 +119,6 @@ func setup() -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.BIRDMAN
-	
-func _physics_process(delta: float) -> void:
-	super._physics_process(delta)
 
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path

@@ -74,6 +74,7 @@ func _init() -> void:
 		var area: CollisionShape3D = node.get_node("./WetArea/WetCollision")
 		col.disabled = true
 		area.disabled = col.disabled
+		node.animation_tree.active = false
 	var deinit_building := func(node: Buildings) -> void:
 		node.position.y = -1000
 		var s: CollisionShape3D = node.get_node("./static/shape")

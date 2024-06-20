@@ -132,7 +132,7 @@ func run_on_ready() -> void:
 	player.name_generator.read(settings.world_name)
 		
 	blender = NoiseBlender.new(settings.sed)
-	chunker = Terrain.new(blender, CHUNK_SIZE, 2, 0.0625)
+	chunker = Terrain.new(blender, CHUNK_SIZE, 2, 0.0625, 16)
 	build_terrain()
 	
 	SignalBus.enemy_death.connect(enemy_dies)
@@ -207,6 +207,8 @@ func _physics_process(delta: float) -> void:
 		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
+			
+	#print("total: ", Enemy.physics_time, ", movement: ", Enemy.movement_time, ", spell: ", Enemy.spell_time, ", behaviour: ", Enemy.behaviour_time, ", animation: ", Enemy.animation_time)
 			
 	if not has_init_terrain_population:
 		var space := get_world_3d().space

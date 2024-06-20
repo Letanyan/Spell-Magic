@@ -982,7 +982,7 @@ _data = {
 "Yes": SubResource("Animation_p7hn8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dq3me"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x100p"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -998,7 +998,7 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rcuid"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wjwwa"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
@@ -1112,7 +1112,7 @@ xfade_time = 0.25
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_81ahx"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_dq3me")
+states/attack/node = SubResource("AnimationNodeAnimation_x100p")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -1122,7 +1122,7 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(666, 175)
-states/on_hit/node = SubResource("AnimationNodeAnimation_rcuid")
+states/on_hit/node = SubResource("AnimationNodeAnimation_wjwwa")
 states/on_hit/position = Vector2(464, 282)
 states/run/node = SubResource("AnimationNodeBlendTree_8uqqi")
 states/run/position = Vector2(283, 403)
@@ -1157,7 +1157,7 @@ bones/1/name = "Head"
 bones/1/parent = -1
 bones/1/rest = Transform3D(1, 3.8726e-17, -3.40311e-18, -3.8726e-17, 0.984674, -0.174406, -3.40311e-18, 0.174406, 0.984674, 0, 0.610388, 0)
 bones/1/enabled = true
-bones/1/position = Vector3(0, 0.62965, 0)
+bones/1/position = Vector3(0, 0.63229, 0)
 bones/1/rotation = Quaternion(0, 0, 0, 1)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Head2"
@@ -1172,7 +1172,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, 1.65436e-24, -2.06795e-25, -1.65436e-24, 1, 0, 2.06795e-25, 0, 1, 3.30872e-24, 0.503513, 0)
 bones/3/enabled = true
 bones/3/position = Vector3(3.30872e-24, 0.503513, 0)
-bones/3/rotation = Quaternion(-9.17372e-35, 3.54758e-10, -0.0174539, 0.999848)
+bones/3/rotation = Quaternion(1.8718e-35, -1.25794e-09, 0.0103297, 0.999947)
 bones/3/scale = Vector3(1, 1, 1)
 
 [node name="Fish_Blob" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
@@ -1193,10 +1193,12 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_2h6o7")]
+active = false
 libraries = {
 "": SubResource("AnimationLibrary_lfc7j")
 }
 tree_root = SubResource("AnimationNodeStateMachine_81ahx")
+parameters/run/speedum/scale = 1.0
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_h6gw1")
