@@ -1,6 +1,7 @@
 class_name MagicBook
 
 var spells: Array[Spell]
+var spell_index: Dictionary
 var last_use: Dictionary # [String]Unix.Time
 var ignore_cooldown: bool
 enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE }
@@ -31,6 +32,7 @@ func read_absolute_path(file_path: String) -> void:
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	last_use = {}
 	ignore_cooldown = false
+	spell_index = {}
 	if not file:
 		spells = []
 		return 
@@ -48,6 +50,7 @@ func read_absolute_path(file_path: String) -> void:
 			active_count += 1
 		s.is_active = s.is_active and active_count < settings.upgrade_settings.max_spells_in_book
 		spells.append(s)
+		spell_index[s.name] = s
 	
 func _init() -> void:
 	spells = []
@@ -66,9 +69,12 @@ func add(spell: Spell) -> void:
 			active_count += 1
 	spell.is_active = active_count <= settings.upgrade_settings.max_spells_in_book
 	spells.append(spell)
+	spell_index[spell.name] = spell
 	
 func remove(i: int) -> void:
+	var s = spells[i]
 	spells.remove_at(i)
+	spell_index.erase(s.name)
 
 func use_spell(spell: Spell) -> void:
 	var t := Time.get_unix_time_from_system()
@@ -162,18 +168,15 @@ func spell_exists(n: String) -> bool:
 	return false
 	
 func find_spell(n: String) -> Spell:
-	for s in spells:
-		if s.name == n:
-			return s
-	return null
+	return spell_index.get(n, null) as Spell
 	
 func copy_spell(n: String, constants: Dictionary = {}, for_player: bool = false) -> Spell:
-	for s in spells:
-		if s.name == n:
-			var result := s.duplicate({}, for_player)
-			result.overwrite_expressions(constants)
-			return result
-	return null
+	var s := spell_index.get(n, null) as Spell
+	if s == null:
+		return null
+	var result := s.duplicate({}, for_player)
+	result.overwrite_expressions(constants)
+	return result
 
 func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, ignore_recursive_chains: Spell = null) -> String:
 	var text := edit.text

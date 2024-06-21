@@ -5,18 +5,9 @@ enum ChainCastKind { START, END, HIT }
 
 var element: Element
 var name: String
-var x: String:
-	set(value):
-		x = value
-		x_expr = Expr.new(value)
-var y: String:
-	set(value):
-		y = value
-		y_expr = Expr.new(value)
-var z: String:
-	set(value):
-		z = value
-		z_expr = Expr.new(value)
+var x: String
+var y: String
+var z: String
 var radius: float:
 	set(value):
 		radius = clamp(value, 0, UpgradeSettings.LIMIT_r)
@@ -29,10 +20,7 @@ var duration: float:
 var count: int:
 	set(value):
 		count = clamp(value, 1, UpgradeSettings.LIMIT_N)
-var delay: String:
-	set(value):
-		delay = value
-		d_expr = Expr.new(value)
+var delay: String
 var mana_cost: float = 0.0
 var chain_cast_kind: ChainCastKind = ChainCastKind.START:
 	set(value):
@@ -69,7 +57,7 @@ var buff_v: float = 0.0
 var buff_attack: float = 0.0
 var buff_defence: float = 0.0
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false) -> void:
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false, no_comp: bool = false) -> void:
 	x = _x
 	y = _y
 	z = _z
@@ -89,8 +77,19 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	
 	is_active = true
 	
+	if not no_comp:
+		x_expr = Expr.new(x)
+		y_expr = Expr.new(y)
+		z_expr = Expr.new(z)
+		d_expr = Expr.new(delay)
+		
+	
 func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spell:
-	var result := Spell.new(follow, x, y, z, radius, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin)
+	var result := Spell.new(follow, x, y, z, radius, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin, true)
+	result.x_expr = x_expr
+	result.y_expr = y_expr
+	result.z_expr = z_expr
+	result.d_expr = d_expr
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
@@ -104,7 +103,9 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.expression_strings = expression_strings.duplicate()
 	if not override_expr.is_empty():
 		result.expression_strings.merge(override_expr, true)
-	result.build_expressions()
+	# use build_expressions() if override_expr adds new vars. But we do this copy 
+	# for performance reasons
+	result.expressions = expressions 
 	result.elemental_application = elemental_application
 	result.cooldown = cooldown
 	result.charge = charge

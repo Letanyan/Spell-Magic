@@ -336,7 +336,8 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:
 			if item.get_parent() == null:
-				call_deferred("add_child", item)
+				add_child(item)
+				#call_deferred("add_child", item)
 				
 	return result
 
