@@ -214,9 +214,7 @@ func _physics_process(delta: float) -> void:
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
-		var items := update_population_at(chunker.backing.get_loaded_chunks_location(), state)
-		for item in items:
-			add_child(item)
+		update_population_at(chunker.backing.get_loaded_chunks_location(), state)
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z) + player.bounds.y / 2.0
 		chunker.update_environment(player.position.x, player.position.z)
 
@@ -317,15 +315,12 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
 
 	await get_tree().physics_frame
-	var items := update_population_at(updated_chunks, state)
-	for item in items:
-		add_child(item)
+	update_population_at(updated_chunks, state)
 	
 	chunker.update_environment(player.position.x, player.position.z)
 	
 
-func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
-	var result: Array[Node3D] = []
+func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D):
 	var items_to_add := {}
 	for loc: Vector2 in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
@@ -338,8 +333,6 @@ func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceSt
 			if item.get_parent() == null:
 				add_child(item)
 				#call_deferred("add_child", item)
-				
-	return result
 
 func enemy_dies(enemy: Enemy) -> void:
 	var enemy_kind := enemy.world_enemy_enum()

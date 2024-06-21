@@ -4,6 +4,7 @@
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_p2h4u"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ajok1"]
+resource_local_to_scene = true
 size = Vector3(7, 6, 5)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_xcmud"]

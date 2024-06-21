@@ -4,6 +4,7 @@
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_k6qpc"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jc745"]
+resource_local_to_scene = true
 height = 3.0
 radius = 1.5
 

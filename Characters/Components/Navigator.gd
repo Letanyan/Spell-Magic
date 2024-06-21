@@ -21,6 +21,11 @@ static func shape_bounds(shape: Shape3D) -> Vector3:
 	elif shape is CapsuleShape3D:
 		var capsule := shape as CapsuleShape3D
 		return Vector3(capsule.radius * 2.0, capsule.height, capsule.radius * 2.0)
+	elif shape is CylinderShape3D:
+		var cylinder := shape as CylinderShape3D
+		if cylinder.height > 4:
+			print(cylinder)
+		return Vector3(cylinder.radius * 2.0, cylinder.height, cylinder.radius * 2.0)
 	return Vector3(1, 1, 1)
 	
 static func shape_height(shape: Shape3D) -> float:

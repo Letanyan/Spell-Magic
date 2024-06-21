@@ -96,8 +96,14 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		if is_enemy:
 			(entity as Enemy).player = player
 			(entity as Enemy).index_in_population = inhabitants.size()
+			if entity.get_parent() != null:
+				(entity as Enemy).setup()
 			inhabitants[inhabitants.size()] = entity
 		else:
+			if entity is Trees:
+				(entity as Trees).setup(rng)
+			elif entity is Buildings:
+				(entity as Buildings).setup(rng)
 			garden.append(entity)
 	return entity
 	
@@ -133,8 +139,6 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
 	result.vital_update.connect(habitant_vitals_update)
-	if result.get_parent(): 
-		result.setup()
 	return prepare_entity(state, result, pos, true)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
@@ -183,8 +187,6 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 			result.name = World.Foliage.keys()[foliage] + str(rng.randi())
-	
-	(result as Trees).setup(rng)
 	return prepare_entity(state, result, pos, false, on_flat_surface(PI / 8))
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
@@ -204,7 +206,6 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			result.name = World.Building.keys()[building] + str(rng.randi())
 			ground_angle = PI / 16
-	(result as Buildings).setup(rng)
 	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
@@ -241,6 +242,7 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 	
 func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	const spacing = 16.0
+	rng.seed = hash(coord)
 	var areas := group_spawn_points(spacing)
 	var points: Array[PackedVector2Array] = areas["points"]
 	var biomes: Array[World.Biome] = areas["biomes"]
@@ -280,7 +282,6 @@ func update_info() -> void:
 		var s: CollisionShape3D = g.get_node("./static/shape")
 		if s != null:
 			s.disabled = g.position.distance_to(player.position) > 50
-				
 
 func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 	if index <= -1:

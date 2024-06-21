@@ -72,7 +72,7 @@ func add(spell: Spell) -> void:
 	spell_index[spell.name] = spell
 	
 func remove(i: int) -> void:
-	var s = spells[i]
+	var s := spells[i]
 	spells.remove_at(i)
 	spell_index.erase(s.name)
 

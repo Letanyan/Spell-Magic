@@ -5,6 +5,7 @@ const house_single = preload("res://Models/FantasyValley/house_single.tscn")
 const house_double = preload("res://Models/FantasyValley/house_double.tscn")
 const fantasy_well = preload("res://Models/FantasyValley/fantasy_well.tscn")
 
+static var base_size := PackedVector3Array([])
 var entity_kind: World.Building
 var _entity_info: EntityInfo
 
@@ -15,9 +16,17 @@ static func make(kind: World.Building) -> Buildings:
 		World.Building.FANTASY_VALLEY_DOUBLE: result = house_double.instantiate()
 		World.Building.FANTASY_WELL: result = fantasy_well.instantiate()
 	result.entity_kind = kind
+	if base_size.size() <= kind:
+		while base_size.size() < (kind + 1):
+			base_size.append(Vector3.ZERO)
+		base_size[kind] = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
+	elif base_size[kind] == Vector3.ZERO:
+		base_size[kind] = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
+	#result.base_size = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
 	return result
 	
 func setup(rng: RandomNumberGenerator) -> void:
+	rng.seed = hash(Vector2(position.x, position.z))
 	var r := rng.randf_range(0, 2 * PI)
 	(get_node("RootNode") as Node3D).rotate(Vector3.UP, r)
 	

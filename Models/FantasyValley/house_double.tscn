@@ -4,6 +4,7 @@
 [ext_resource type="Material" uid="uid://d2pki46yykpq3" path="res://Models/FantasyValley/FantasyValley_01.tres" id="2_bkerj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cio04"]
+resource_local_to_scene = true
 size = Vector3(7, 9, 5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y11t8"]
