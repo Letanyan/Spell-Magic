@@ -11054,7 +11054,7 @@ _data = {
 "Wave": SubResource("Animation_4dpwb")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iy14g"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tpxd3"]
 resource_local_to_scene = true
 animation = &"Gun_Shoot"
 
@@ -11070,11 +11070,11 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q8jj6"]
 animation = &"Roll"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_e4kyh"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4j26u"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wdxv3"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_38r6u"]
 resource_local_to_scene = true
 animation = &"Run"
 
@@ -11173,7 +11173,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ggcgp"]
 resource_local_to_scene = true
 states/Start/position = Vector2(-21, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_iy14g")
+states/attack/node = SubResource("AnimationNodeAnimation_tpxd3")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_j2maf")
 states/death/position = Vector2(265, 33)
@@ -11183,9 +11183,9 @@ states/idle/node = SubResource("AnimationNodeAnimation_2f2sh")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_q8jj6")
 states/land/position = Vector2(617, 124)
-states/on_hit/node = SubResource("AnimationNodeAnimation_e4kyh")
+states/on_hit/node = SubResource("AnimationNodeAnimation_4j26u")
 states/on_hit/position = Vector2(463, 282)
-states/run/node = SubResource("AnimationNodeAnimation_wdxv3")
+states/run/node = SubResource("AnimationNodeAnimation_38r6u")
 states/run/position = Vector2(265, 374)
 states/walk/node = SubResource("AnimationNodeAnimation_vd1gf")
 states/walk/position = Vector2(441, 116)
@@ -11197,11 +11197,12 @@ graph_offset = Vector2(-143, -20)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_udlwn"]
 
 [node name="human" type="CharacterBody3D"]
+collision_layer = 4
 collision_mask = 593
 script = ExtResource("1_ur14w")
 
 [node name="CharacterArmature" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, -1, 0)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="CharacterArmature"]
 bones/0/name = "Root"

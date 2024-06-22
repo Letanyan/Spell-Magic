@@ -85,6 +85,8 @@ func setup(_settings: WorldSettings) -> void:
 	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
 	fishman.level = 50
 	add_enemy(fishman)
+	#var human := Population.generate_enemy(World.Enemy.HUMAN, player, 10, 1000, 10)
+	#add_enemy(human)
 	
 
 func add_enemy(enemy: Enemy) -> void:
@@ -98,6 +100,9 @@ func _ready() -> void:
 		_settings.read("test+arena")
 		_settings.is_test_arena = true
 		setup(_settings)
+		
+	for enemy in inhabitants:
+		enemy.animation_tree.active = true
 		
 	settings.upgrade_settings.currency = 10000
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS

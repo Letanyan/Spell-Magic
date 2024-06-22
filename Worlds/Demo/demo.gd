@@ -320,7 +320,7 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	chunker.update_environment(player.position.x, player.position.z)
 	
 
-func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D):
+func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> void:
 	var items_to_add := {}
 	for loc: Vector2 in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
