@@ -57,6 +57,7 @@ func _ready() -> void:
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
 	SignalBus.pick_up_world_item_artifact.connect(on_pick_up_artifact)
 	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
+	animation_tree.active = true
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 	
