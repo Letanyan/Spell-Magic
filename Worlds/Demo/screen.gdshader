@@ -1,7 +1,8 @@
 shader_type canvas_item;
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
-uniform sampler2D debug_texture;
+uniform sampler2D noise_texture : repeat_enable;
+uniform sampler2D debug_texture : repeat_disable;
 uniform float underwater = 0.0;
 
 vec3 rgb2hsv(vec3 c) {
@@ -35,15 +36,18 @@ void fragment() {
 	#define tex screen_texture
 	//#define tex debug_texture
 	if (underwater > 0.0) {
-		vec4 col = texture(tex, SCREEN_UV) * 0.16;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, SCREEN_PIXEL_SIZE.y)) * 0.15;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, -SCREEN_PIXEL_SIZE.y)) * 0.15;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, 2.0 * SCREEN_PIXEL_SIZE.y)) * 0.12;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, 2.0 * -SCREEN_PIXEL_SIZE.y)) * 0.12;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, 3.0 * SCREEN_PIXEL_SIZE.y)) * 0.09;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, 3.0 * -SCREEN_PIXEL_SIZE.y)) * 0.09;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, 4.0 * SCREEN_PIXEL_SIZE.y)) * 0.05;
-	    col += texture(tex, SCREEN_UV + vec2(0.0, 4.0 * -SCREEN_PIXEL_SIZE.y)) * 0.05;
+		vec2 offset = texture(noise_texture, UV + sin(TIME / 10.0) / 1.0).rg * 0.05;
+		vec2 base_uv = UV + offset;
+		
+		vec4 col = texture(tex, base_uv) * 0.16;
+	    col += texture(tex, base_uv + vec2(0.0, SCREEN_PIXEL_SIZE.y)) * 0.15;
+	    col += texture(tex, base_uv + vec2(0.0, -SCREEN_PIXEL_SIZE.y)) * 0.15;
+	    col += texture(tex, base_uv + vec2(0.0, 2.0 * SCREEN_PIXEL_SIZE.y)) * 0.12;
+	    col += texture(tex, base_uv + vec2(0.0, 2.0 * -SCREEN_PIXEL_SIZE.y)) * 0.12;
+	    col += texture(tex, base_uv + vec2(0.0, 3.0 * SCREEN_PIXEL_SIZE.y)) * 0.09;
+	    col += texture(tex, base_uv + vec2(0.0, 3.0 * -SCREEN_PIXEL_SIZE.y)) * 0.09;
+	    col += texture(tex, base_uv + vec2(0.0, 4.0 * SCREEN_PIXEL_SIZE.y)) * 0.05;
+	    col += texture(tex, base_uv + vec2(0.0, 4.0 * -SCREEN_PIXEL_SIZE.y)) * 0.05;
 		
 	    COLOR = mix(col, vec4(0, 0.1, 0.2, 1.0), underwater);
 	} else {

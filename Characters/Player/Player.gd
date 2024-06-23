@@ -162,11 +162,7 @@ func _physics_process(delta: float) -> void:
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		player_moved.emit(delta, state)
-		var rect: ColorRect = get_node("CanvasLayer/ColorRect")
-		if position.y + 2.0 < Globals.sea_level():
-			(rect.material as ShaderMaterial).set_shader_parameter("underwater", 0.5)
-		else:
-			(rect.material as ShaderMaterial).set_shader_parameter("underwater", 0.0)
+		set_underwater()
 		
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
@@ -238,6 +234,13 @@ func ignore_enemy(enemy: Enemy) -> void:
 	
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
+
+func set_underwater(underwater: float = 0.5) -> void:
+	var rect: ColorRect = get_node("CanvasLayer/ColorRect")
+	if position.y + 2.0 < Globals.sea_level():
+		(rect.material as ShaderMaterial).set_shader_parameter("underwater", underwater)
+	else:
+		(rect.material as ShaderMaterial).set_shader_parameter("underwater", 0.0)
 	
 func compute_max_watched_enemies_distance() -> float:
 	var result := 0.0
