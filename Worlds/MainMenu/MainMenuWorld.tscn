@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=37 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -9,7 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="8_7souk"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
+[ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="11_sslk6"]
 [ext_resource type="Shader" path="res://Worlds/MainMenu/env_fire.gdshader" id="11_u2pvt"]
+[ext_resource type="Texture2D" uid="uid://dgj6xbk5yv1vo" path="res://Worlds/Generator/Terrain/noise_texture.tres" id="12_hijy3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
 shader = ExtResource("2_okflh")
@@ -184,6 +186,33 @@ height = 40.0
 radial_segments = 6
 rings = 4
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_oelc8"]
+frequency = 0.0001
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_805q4"]
+noise = SubResource("FastNoiseLite_oelc8")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7y25k"]
+seed = 1
+frequency = 0.0001
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_udh5n"]
+noise = SubResource("FastNoiseLite_7y25k")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hra85"]
+render_priority = 0
+shader = ExtResource("11_sslk6")
+shader_parameter/texture_width = null
+shader_parameter/texture_depth = null
+shader_parameter/locations = PackedVector2Array(0, 0.5, 0.5, 0, 0, 1, 1, 0, 0.25, 0, 0, 0.25, 0.75, 0, 0, 0.75, 0.5, 0.5)
+shader_parameter/biome_x = SubResource("NoiseTexture2D_805q4")
+shader_parameter/biome_y = SubResource("NoiseTexture2D_udh5n")
+shader_parameter/noise = ExtResource("12_hijy3")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_oqkeh"]
+material = SubResource("ShaderMaterial_hra85")
+size = Vector2(256, 256)
+
 [node name="MainMenuWorld" type="Node3D"]
 script = ExtResource("1_f55xg")
 
@@ -241,3 +270,6 @@ lifetime = 10.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_0jras")
 draw_pass_1 = SubResource("SphereMesh_3prl5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_oqkeh")

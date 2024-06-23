@@ -7,6 +7,8 @@ uniform sampler2D biome_y: source_color;
 uniform sampler2D height;
 uniform float texture_width;
 uniform float texture_depth;
+uniform sampler2D noise: source_color;
+uniform vec2 locations[9];
 
 // world sphere projection
 //uniform vec2 center_on_world;
@@ -58,17 +60,17 @@ vec3 biome_color(vec4 V, vec2 uv) {
 		vec3(0, 0, 0),
 		vec3(1, 0, 0)
 	};
-	vec2 locations[9] = {
-		vec2(0.50, 0.50), // grassland
-		vec2(0.75, 0.00), // taiga
-		vec2(0.50, 0.25), // forest
-		vec2(0.25, 0.75), // desert
-		vec2(0.25, 0.25), // jungle
-		vec2(0.25, 0.50), // savannah
-		vec2(1.00, 0.50), // tundra
-		vec2(1.00, 0.00), // otherworld
-		vec2(0.00, 1.00)  // hfil
-	};
+	//vec2 locations[9] = {
+		//vec2(0.50, 0.50), // grassland
+		//vec2(0.75, 0.00), // taiga
+		//vec2(0.50, 0.25), // forest
+		//vec2(0.25, 0.75), // desert
+		//vec2(0.25, 0.25), // jungle
+		//vec2(0.25, 0.50), // savannah
+		//vec2(1.00, 0.50), // tundra
+		//vec2(1.00, 0.00), // otherworld
+		//vec2(0.00, 1.00)  // hfil
+	//};
 
 	vec2 p = vec2(bx, by);
 	float distances[9];
@@ -96,6 +98,7 @@ void fragment() {
 	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
 	
 	vec3 color = biome_color(v, UV);
+	color = mix(color, texture(noise, UV).rgb, 0.05);
 	
 	float norm_angle = distance(vec3(0, 1, 0), -normalize(cross(dFdx(v.xyz), dFdy(v.xyz))));
 	if (norm_angle > inversesqrt(2)) {

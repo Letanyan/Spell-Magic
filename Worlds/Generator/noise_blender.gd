@@ -70,17 +70,17 @@ const biome_list: Array[World.Biome] = [
 	World.Biome.HFIL,
 ]
 # x=temperature/elevation(0=hot,1=cold)[e.i. valleys(hot) upto mountain top(cold)] y=wetness(0=moist,1=dry) 
-const biome_locations: PackedVector2Array = [
-	Vector2(0.50, 0.50), # grassland
-	Vector2(0.75, 0.00), # taiga
-	Vector2(0.50, 0.25), # forest
-	Vector2(0.25, 0.75), # desert
-	Vector2(0.25, 0.25), # jungle
-	Vector2(0.25, 0.50), # savannah
-	Vector2(1.00, 0.50), # tundra
-	Vector2(1.00, 0.00), # otherworld
-	Vector2(0.00, 1.00)  # hfil
-]
+#var biome_locations: PackedVector2Array = [
+	#Vector2(0.50, 0.50), # grassland
+	#Vector2(0.75, 0.00), # taiga
+	#Vector2(0.50, 0.25), # forest
+	#Vector2(0.25, 0.75), # desert
+	#Vector2(0.25, 0.25), # jungle
+	#Vector2(0.25, 0.50), # savannah
+	#Vector2(1.00, 0.50), # tundra
+	#Vector2(1.00, 0.00), # otherworld
+	#Vector2(0.00, 1.00)  # hfil
+#]
 const biome_colors: PackedVector3Array = [
 	Vector3(0.23, 0.83, 0.23),
 	Vector3(0, 1, 1),
@@ -125,6 +125,9 @@ var back: GDNoiseBlender
 
 func _init(s: int) -> void:
 	back = GDNoiseBlender.new()
+	
+	var biome_locations := shuffle_biome_locations(s)
+	
 	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
 	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
 	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
@@ -230,6 +233,24 @@ func grass_height(b: World.Biome, x: float, y: float) -> float:
 		#return snapped(e * 4, 0.1)
 	#else:
 		#return 0.5 + s
+		
+func shuffle_biome_locations(s: int) -> PackedVector2Array:
+	var result := PackedVector2Array([])
+	var source: Array[Vector2] = [
+		Vector2(0.00, 1.00), Vector2(0.25, 1.00), Vector2(0.50, 1.00), Vector2(0.75, 1.00), Vector2(1.00, 1.00),
+		Vector2(0.00, 0.75), Vector2(0.25, 0.75), Vector2(0.50, 0.75), Vector2(0.75, 0.75), Vector2(1.00, 0.75),
+		Vector2(0.00, 0.50), Vector2(0.25, 0.50), Vector2(0.50, 0.50), Vector2(0.75, 0.50), Vector2(1.00, 0.50),
+		Vector2(0.00, 0.25), Vector2(0.25, 0.25), Vector2(0.50, 0.25), Vector2(0.75, 0.25), Vector2(1.00, 0.25),
+		Vector2(0.00, 0.00), Vector2(0.25, 0.00), Vector2(0.50, 0.00), Vector2(0.75, 0.00), Vector2(1.00, 0.00),
+	]
+	var rng := RandomNumberGenerator.new()
+	rng.seed = s
+	for i in biome_colors.size():
+		var j := rng.randi_range(0, source.size() - 1)
+		result.append(source[j])
+		source.remove_at(j)
+	return result
+		
 
 static func audio_for_biome(b: World.Biome) -> AudioStream:
 	match b:
