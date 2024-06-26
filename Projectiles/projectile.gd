@@ -41,14 +41,14 @@ func has_expired(t: float) -> bool:
 		return false
 	return expired or (t - time_start) >= spell.duration + pause_time
 	
-func expire_now(p: Node3D, q: Node3D) -> void:
-	SignalBus.projectile_hit.emit(origin_node, spell, Time.get_unix_time_from_system())
+func expire_now(p: Node3D, q: CollisionObject3D) -> void:
+	SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 	expired = true
 	
-func explode_after(p: Node3D, q: Node3D, t: float) -> void:
+func explode_after(p: Node3D, q: CollisionObject3D, t: float) -> void:
 	var timer := get_tree().create_timer(t)
 	timer.timeout.connect(func() -> void:
-		SignalBus.projectile_hit.emit(origin_node, spell, Time.get_unix_time_from_system())
+		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 		expired = true
 		var amount := clampi(int(spell.damage(caster_vitals)), 0, 100)
 		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius, velocity)
@@ -57,16 +57,17 @@ func explode_after(p: Node3D, q: Node3D, t: float) -> void:
 func is_active() -> bool:
 	return in_control and time_start > 0.0  
 	
-func lose_control(p: Node3D, q: Node3D) -> void:
+func lose_control(p: Node3D, q: CollisionObject3D) -> void:
 	in_control = false
 	if spell.element == Spell.Element.ROCK:
 		var body: RigidBody3D = p.get_node("body")
 		if body.freeze:
 			body.freeze = false
 			body.apply_central_impulse(velocity)
+			SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 
-func nothing(p: Node3D, q: Node3D) -> void:
-	pass
+func nothing(p: Node3D, q: CollisionObject3D) -> void:
+	SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 	
 func actual_duration() -> float:
 	var result := (spell.duration + pause_time) - (Time.get_unix_time_from_system() - time_start)
@@ -243,7 +244,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				body.play_animation("on_hit")
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
-	var _body := area.get_parent_node_3d()
+	var _body := area.get_parent_node_3d() as CollisionObject3D
 	var is_world  : int = area.collision_layer & 0b0001 != 0
 	var is_player : int = area.collision_layer & 0b0010 != 0
 	var is_enemy  : int = area.collision_layer & 0b0100 != 0

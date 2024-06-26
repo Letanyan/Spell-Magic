@@ -204,7 +204,6 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 		emit_spell_was_cast(next_spell)
 	else:
 		spell_was_disallowed.emit(new_spell, err)
-	update_artifact_effects(Artifact.Event.DEAL, next_spell)
 	emit_vitals_update()
 			
 		
@@ -218,7 +217,7 @@ func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
 	return true
 
-func give_back_mana_after_hit(origin: Node3D, spell: Spell, time: float) -> void:
+func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: float) -> void:
 	if not origin is Player:
 		return
 	var c := spell.cooldown
@@ -226,6 +225,8 @@ func give_back_mana_after_hit(origin: Node3D, spell: Spell, time: float) -> void
 	var v := minf((time - u) / (c + spell.mana_cost), 1.0)
 	var t := (1.0 - (-1.5 * (v ** 3.0 / 3.0 - v))) * spell.mana_cost / float(spell.count)
 	vitals.mana.apply_ignoring_resistance(t)
+	if target & 0b0100 != 0: # is enemy
+		update_artifact_effects(Artifact.Event.DEAL, spell)
 	
 func watch_enemy(enemy: Enemy) -> void:
 	enemies_in_range[enemy] = true

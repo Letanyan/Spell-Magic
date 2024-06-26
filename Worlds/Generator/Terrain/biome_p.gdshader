@@ -40,25 +40,26 @@ float axial_dependant_distance(vec2 a, vec2 b) {
 	return abs(b.x - a.x) * axial_weight + abs(b.y - a.y);
 }
 
-vec3 biome_color(vec4 V, vec2 uv) {
+vec4 biome_color(vec4 V, vec2 uv) {
 	// hack because fastnoise generates textures with 1 pixel edges that have increased saturation?
 	vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0)); 
 	vec2 w = vec2(clamp(uv.x, pixel.x, 1.0 - pixel.x), clamp(uv.y, pixel.y, 1.0 - pixel.y));
 	float bx = texture(biome_x, w).r;
 	float by = texture(biome_y, w).r;
 
-	vec3 color = vec3(1);
+	vec4 color = vec4(1);
 
-	vec3 colors[9] = {
-		vec3(0.23, 0.83, 0.23),
-		vec3(0, 1, 1),
-		vec3(0.55, 0.28, 0.0),
-		vec3(1, 1, 0),
-		vec3(0, 0.4, 0.0),
-		vec3(1, 0.5, 0),
-		vec3(1, 1, 1),
-		vec3(0, 0, 0),
-		vec3(1, 0, 0)
+	// TODO: use vec4 alpha to denote rock color which we can mix later for better rock faces
+	vec4 colors[9] = {
+		vec4(0.23, 0.83, 0.23, 0.15),
+		vec4(0, 1, 1, 0.1),
+		vec4(0.55, 0.28, 0.0, 0.08),
+		vec4(1, 1, 0, 0.2),
+		vec4(0, 0.4, 0.0, 0.08),
+		vec4(1, 0.5, 0, 0.2),
+		vec4(1, 1, 1, 1.0),
+		vec4(0, 0, 0, 1.0),
+		vec4(1, 0, 0, 0.0)
 	};
 	//vec2 locations[9] = {
 		//vec2(0.50, 0.50), // grassland
@@ -81,7 +82,7 @@ vec3 biome_color(vec4 V, vec2 uv) {
 		float dist = axial_dependant_distance(p, locations[i]);
 		distances[i] = dist;
 		if (dist <= (axial_weight + 1.0)) {
-			vec3 c = mix(vec3(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 3.0));
+			vec4 c = mix(vec4(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 3.0));
 			color = color * c;
 		}
 		if (dist < min_distance) {
@@ -97,16 +98,17 @@ vec3 biome_color(vec4 V, vec2 uv) {
 void fragment() {
 	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
 	
-	vec3 color = biome_color(v, UV);
-	color = mix(color, texture(noise, UV).rgb, 0.05);
+	vec4 color = biome_color(v, UV);
+	//color = mix(color, texture(noise, UV).rgba, 0.05);
+	color.rgb = color.rgb - texture(noise, UV).rgb * 0.025;
 	
 	float norm_angle = distance(vec3(0, 1, 0), -normalize(cross(dFdx(v.xyz), dFdy(v.xyz))));
-	if (norm_angle > inversesqrt(2)) {
+	if (norm_angle > inversesqrt(2.0)) {
 		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(2.0)), 5.0), 0.0, 1.0);
-		color = mix(color, vec3(0.15), blend);
+		color.rgb = mix(color.rgb, vec3(color.a), blend);
 	}
 
-	ALBEDO = color;
+	ALBEDO = color.rgb;
 	//vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0)); 
 	//vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
 	//ALBEDO = texture(biome_w, w).rgb;
