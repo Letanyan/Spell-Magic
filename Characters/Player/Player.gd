@@ -42,8 +42,9 @@ signal attack_was_buffed(amount: float)
 signal defence_was_buffed(amount: float)
 signal speed_was_buffed(amount: float)
 
-var spell_modifier: Dictionary # [Artifact.Element]Vector2(flat: int, percentage: float)
-var damage_resistance: Dictionary # [Artifact.Element]Vector2(flat: int, percentage: float)
+var active_effects: Dictionary = {} # [Vector2i][int]bool
+var spell_modifier: Dictionary = {} # [Artifact.Element]Vector2(flat: int, percentage: float)
+var damage_resistance: Dictionary = {} # [Artifact.Element]Vector2(flat: int, percentage: float)
 
 var menu_callbacks_are_set: bool = false
 var on_menu_open: Callable = func() -> void: pass
@@ -261,14 +262,19 @@ func pick_up_key(key: int) -> bool:
 		return false
 	
 func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> void:
-	# FIXME: disallow effects from the same artifact side to stack
 	for event: Vector2i in artifacts.effects:
+		if not active_effects.has(event):
+			active_effects[event] = {}
 		var duration := float(event.x) as float
 		@warning_ignore("integer_division")
 		var event_kind: Artifact.Event = (event.y / Artifact.Element.size()) as Artifact.Event
 		var event_el: Artifact.Element = (event.y % Artifact.Element.size()) as Artifact.Element
 		if event_kind == event_to_match and (event_el == spell.element or event_el == Artifact.Element.ANY):
 			for effect: int in artifacts.effects[event]:
+				if (active_effects[event] as Dictionary).get(effect, false):
+					continue
+				else:
+					active_effects[event][effect] = true
 				var amount := artifacts.effects[event][effect] as Vector2
 				@warning_ignore("integer_division")
 				var effect_kind: Artifact.Effect = (effect / Artifact.Element.size()) as Artifact.Effect
@@ -290,7 +296,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_P * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_P += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_P -= value)
+					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_P -= value; active_effects[event][effect] = false)
 				elif effect_el == Artifact.Element.COUNT:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -298,7 +304,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_N * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_N += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_N -= value)
+					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_N -= value; active_effects[event][effect] = false)
 				elif effect_el == Artifact.Element.DURATION:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -306,7 +312,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_T * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_T += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_T -= value)
+					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_T -= value; active_effects[event][effect] = false)
 				elif effect_el == Artifact.Element.MANA_BUMP:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -314,7 +320,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_mana * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_mana += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_mana -= value)
+					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_mana -= value; active_effects[event][effect] = false)
 				elif effect_el == Artifact.Element.HEALTH_BUMP:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -322,7 +328,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_health * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_health += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_health -= value)
+					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_health -= value; active_effects[event][effect] = false)
 				elif effect_el == Artifact.Element.SPELL_VELOCITY:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -334,6 +340,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
 						magic_book.settings.upgrade_settings.buff_v -= value
 						spell_velocity_was_buffed.emit(magic_book.settings.upgrade_settings.buff_v)
+						active_effects[event][effect] = false
 					)
 				elif effect_el == Artifact.Element.SPELL_RADIUS:
 					var value := 0.0
@@ -346,6 +353,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
 						magic_book.settings.upgrade_settings.buff_r -= value
 						spell_radius_was_buffed.emit(magic_book.settings.upgrade_settings.buff_r)
+						active_effects[event][effect] = false
 					)
 				elif effect_el == Artifact.Element.ATTACK:
 					var value := 0.0
@@ -362,6 +370,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
 						magic_book.settings.upgrade_settings.buff_attack -= value
 						attack_was_buffed.emit(magic_book.settings.upgrade_settings.buff_attack)
+						active_effects[event][effect] = false
 					)
 				elif effect_el == Artifact.Element.DEFENCE:
 					var value := 0.0
@@ -378,6 +387,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
 						magic_book.settings.upgrade_settings.buff_defence -= value
 						defence_was_buffed.emit(magic_book.settings.upgrade_settings.buff_defence)
+						active_effects[event][effect] = false
 					)
 				elif effect_el == Artifact.Element.RUNNING_SPEED:
 					var value := 0.0
@@ -394,6 +404,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
 						magic_book.settings.upgrade_settings.buff_running_speed -= value
 						speed_was_buffed.emit(magic_book.settings.upgrade_settings.buff_running_speed)
+						active_effects[event][effect] = false
 					)
 				else:
 					if effect_el == Artifact.Element.ANY:
@@ -402,25 +413,25 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 								spell_modifier[eff_el] = Vector2.ZERO
 							if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 								spell_modifier[eff_el] += amount
-								get_tree().create_timer(duration).timeout.connect(func() -> void: spell_modifier[eff_el] -= amount)
+								get_tree().create_timer(duration).timeout.connect(func() -> void: spell_modifier[eff_el] -= amount; active_effects[event][effect] = false)
 								
 							if not damage_resistance.has(eff_el):
 								damage_resistance[eff_el] = Vector2.ZERO
 							if effect_kind == Artifact.Effect.RESISTANCE_FLAT or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 								damage_resistance[eff_el] += amount
-								get_tree().create_timer(duration).timeout.connect(func() -> void: damage_resistance[eff_el] -= amount)
+								get_tree().create_timer(duration).timeout.connect(func() -> void: damage_resistance[eff_el] -= amount; active_effects[event][effect] = false)
 					else:
 						if not spell_modifier.has(effect_el):
 							spell_modifier[effect_el] = Vector2.ZERO
 						if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
 							spell_modifier[effect_el] += amount
-							get_tree().create_timer(duration).timeout.connect(func() -> void: spell_modifier[effect_el] -= amount)
+							get_tree().create_timer(duration).timeout.connect(func() -> void: spell_modifier[effect_el] -= amount; active_effects[event][effect] = false)
 							
 						if not damage_resistance.has(effect_el):
 							damage_resistance[effect_el] = Vector2.ZERO
 						if effect_kind == Artifact.Effect.RESISTANCE_FLAT or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 							damage_resistance[effect_el] += amount
-							get_tree().create_timer(duration).timeout.connect(func() -> void: damage_resistance[effect_el] -= amount)
+							get_tree().create_timer(duration).timeout.connect(func() -> void: damage_resistance[effect_el] -= amount; active_effects[event][effect] = false)
 					
 	vitals.damage_resistance = damage_resistance
 	

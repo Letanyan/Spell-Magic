@@ -38,6 +38,8 @@ class Option:
 	var amount: int
 	var pattern: Pattern
 	
+	# TODO: make tiered creation of effects and events (like genshin artifact levels) 
+	
 	static func empty() -> Option:
 		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0, Pattern.CIRCLE)
 		
