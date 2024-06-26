@@ -125,7 +125,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor():
-			if velocity.length() < 1:
+			if velocity.length() < 0.166667:
 				play_walking_audio(NoiseBlender.walking_audio_for_biome(velocity_movement.current_biome))
 				play_animation("walk")
 			else:

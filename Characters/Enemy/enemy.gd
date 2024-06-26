@@ -210,7 +210,6 @@ func _physics_process(delta: float) -> void:
 	spell_caster.update(self, delta)
 	var final_is_on_floor: bool
 	# TODO: work on precision of on floor when using physics
-	# TODO: work on animation speeds for walking and running
 	if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
 		final_is_on_floor = is_on_floor()
 	else:
@@ -218,12 +217,12 @@ func _physics_process(delta: float) -> void:
 		
 	if velocity != Vector3.ZERO:
 		if final_is_on_floor:
-			if velocity.length() < 1:
+			if velocity.length() < 0.166667:
 				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
-				play_animation("walk")
+				play_animation("walk", {"parameters/walk/speed/scale": speed_for_current_behaviour_tick})
 			else:
 				#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
-				play_animation("run", {"parameters/run/speed/scale": speed_for_current_behaviour_tick})
+				play_animation("run", {"parameters/run/speed/scale": speed_for_current_behaviour_tick / 10.0})
 	else:
 		idle_tick += delta
 		if final_is_on_floor and idle_tick > 0.5:
