@@ -43,6 +43,7 @@ func _ready() -> void:
 	($SpellCooldownTimer as Timer).start()
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode_new_item(m), 5))
+	SignalBus.pick_up_world_item_key.connect(func(k: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:

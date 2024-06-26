@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxui63i8hypoq"]
+
+[ext_resource type="Script" path="res://Models/Misc/Key.gd" id="1_4lwlw"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_ea8fi"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_f301y"]
+radius = 1.0
+
+[node name="Key" type="Node3D"]
+script = ExtResource("1_4lwlw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04589, 0)
+mesh = SubResource("PrismMesh_ea8fi")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("SphereShape3D_f301y")

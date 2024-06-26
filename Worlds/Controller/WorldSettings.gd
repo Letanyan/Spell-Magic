@@ -2,6 +2,7 @@ class_name WorldSettings
 
 var world_name: String
 var player_position: Vector3
+var keys: int
 var last_save_time: float
 var sed: int
 var enemies_killed := {} # [World.Enemy]int
@@ -33,7 +34,7 @@ func _init(vp: Viewport = null) -> void:
 
 func save_dict() -> Dictionary:
 	return {
-		"name": world_name, "player": {"position": player_position}, "seed": sed,
+		"name": world_name, "player": {"position": player_position, "keys": keys}, "seed": sed,
 		"enemies_killed": enemies_killed, "day_of_the_year": day_of_the_year,
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		
@@ -57,6 +58,7 @@ func save() -> void:
 func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
 	player_position = (data.get("player", {}) as Dictionary).get("position", Vector3.ZERO)
+	keys = (data.get("player", {}) as Dictionary).get("keys", 0)
 	last_save_time = data.get("last_save_time", 0.0)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})
@@ -96,6 +98,8 @@ func enemies_killed_table() -> String:
 	result += "[cell border=white][b]Enemy[/b][/cell][cell border=white][b]Total Killed[/b][/cell]"
 	for kind: String in World.Enemy.keys():
 		var number := enemies_killed.get(kind, 0) as int
+		if kind == "NONE":
+			continue
 		result += "[cell border=white][b]%s[/b][/cell][cell border=white]%d[/cell]\n" % [kind, number]
 	result += "[/table]"
 	return result

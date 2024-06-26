@@ -279,6 +279,7 @@ func update_info() -> void:
 [b]Seed:[/b] %d
 [b]Game Mode:[/b] %s
 [b]Flags:[/b] %s
+[b]Keys Obtained:[/b] %s
 
 [b]Enemies Killed:[/b]
 %s
@@ -289,6 +290,7 @@ func update_info() -> void:
 """ % [
 	world_settings.world_name, world_settings.sed,
 	world_settings.game_mode_settings.game_mode_description(), game_flags,
+	String.num_int64(world_settings.keys, 2),
 	world_settings.enemies_killed_table(),
 	world_settings.day_of_the_year, time
 ]

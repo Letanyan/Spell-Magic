@@ -23,6 +23,7 @@ var magic_book: MagicBook
 var artifacts: Artifacts
 var world_settings: WorldSettings
 var name_generator: NameGenerator
+var keys: int
 
 var enemies_in_range: Dictionary = {} # [Enemy]bool
 var max_watched_enemies_distance := 0.0
@@ -57,6 +58,7 @@ func _ready() -> void:
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
 	SignalBus.pick_up_world_item_artifact.connect(on_pick_up_artifact)
 	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
+	SignalBus.pick_up_world_item_key.connect(on_pick_up_key)
 	animation_tree.active = true
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
@@ -250,7 +252,16 @@ func compute_max_watched_enemies_distance() -> float:
 		result = maxf(result, position.distance_to(e.position))
 	return result
 	
+func pick_up_key(key: int) -> bool:
+	if keys & (1 << key) == 0:
+		keys |= (1 << key)
+		world_settings.keys = keys
+		return true
+	else:
+		return false
+	
 func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> void:
+	# FIXME: disallow effects from the same artifact side to stack
 	for event: Vector2i in artifacts.effects:
 		var duration := float(event.x) as float
 		@warning_ignore("integer_division")
@@ -471,6 +482,9 @@ func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
 func on_pick_up_spell(spell: Spell, message: String) -> void:
 	magic_book.save(world_settings.world_name)
 	save_name_generator()
+	
+func on_pick_up_key(key: int, message: String) -> void:
+	world_settings.save()
 	
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)

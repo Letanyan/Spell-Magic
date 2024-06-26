@@ -275,15 +275,18 @@ func die() -> void:
 	world.add_child(explosion)
 	source.emitting = true
 	spell_caster.free_particles()
-	drop_artifact_item(world)
-	drop_spell_item(world)
+	
+	# drop only one of key/artifact/spell based on said priority
+	if not drop_key_item(world):
+		if not drop_artifact_item(world):
+			drop_spell_item(world)
 	
 	queue_free()
 	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 	world.remove_child(explosion)
 	
 		
-func drop_artifact_item(world: Node3D) -> void:
+func drop_artifact_item(world: Node3D) -> bool:
 	var artifact: Artifact = drop_artifact()
 	if artifact:
 		var item := (preload("res://Models/Misc/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
@@ -291,9 +294,11 @@ func drop_artifact_item(world: Node3D) -> void:
 		item.global_transform = global_transform
 		item.artifact = artifact
 		world.add_child(item)
+		return true
+	return false
 		
 		
-func drop_spell_item(world: Node3D) -> void:
+func drop_spell_item(world: Node3D) -> bool:
 	var spell: Spell = drop_spell()
 	if spell:
 		var item := (preload("res://Models/Misc/Paper.tscn") as PackedScene).instantiate() as SpellPaper
@@ -301,7 +306,19 @@ func drop_spell_item(world: Node3D) -> void:
 		item.global_transform = global_transform
 		item.spell = spell
 		world.add_child(item)
+		return true
+	return false
 		
+func drop_key_item(world: Node3D) -> bool:
+	var key: int = drop_key()
+	if key != 0:
+		var item := (preload("res://Models/Misc/Key.tscn") as PackedScene).instantiate() as KeyPrism
+		item.position = position
+		item.global_transform = global_transform
+		item.key = key
+		world.add_child(item)
+		return true
+	return false
 	
 func update_vitals_display() -> void:
 	(health_bar.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("percentage", vitals.health.percentage())
@@ -311,6 +328,9 @@ func drop_artifact() -> Artifact:
 	
 func drop_spell() -> Spell:
 	return null
+	
+func drop_key() -> int:
+	return 0
 
 func world_enemy_enum() -> World.Enemy:
 	var n := get_node(".")
