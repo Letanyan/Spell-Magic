@@ -24,6 +24,7 @@ var daytime_tick: float = 0.0
 var settings: WorldSettings
 var pause_start: float
 var inhabitants: Array[Enemy] = []
+var spawner: ItemSpawner
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
@@ -46,6 +47,8 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 		player.vitals.mana.change_per_tick = us.max_mana_regen
+		player.vitals.attack.set_fixed_value(us.max_attack)
+		player.vitals.defence.set_fixed_value(us.max_defence)
 	)
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
@@ -57,7 +60,7 @@ func setup(_settings: WorldSettings) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
-	SignalBus.enemy_death.connect(func(e: Enemy) -> void: print(e, " died"))
+	SignalBus.enemy_death.connect(func(e: Enemy) -> void: e.queue_free(); print(e, " died"))
 
 	#var seq := " 1"
 	#for i in ["flower", "feather", "goblet", "sands", "crown", "glove", "brace", "gown", "helmet"]:
@@ -85,6 +88,12 @@ func setup(_settings: WorldSettings) -> void:
 	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
 	fishman.level = 50
 	add_enemy(fishman)
+	
+	spawner = ItemSpawner.key_spawner(fishman.position, 8)
+	spawner.nodes_to_be_cleared[fishman] = true
+	SignalBus.enemy_death.connect(spawner.remove_node)
+	
+	
 	#var human := Population.generate_enemy(World.Enemy.HUMAN, player, 10, 1000, 10)
 	#add_enemy(human)
 	
@@ -130,6 +139,11 @@ func _ready() -> void:
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
+	player.vitals.health.set_value(settings.player_health)
+	player.vitals.mana.set_value(settings.player_mana)
+	print(settings.player_health)
+	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack)
+	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence)
 	
 	skybox = SkyBox.new($WorldEnvironment as WorldEnvironment, $Sun as DirectionalLight3D, $Moon as DirectionalLight3D)
 	skybox.day_time = 14
@@ -207,6 +221,8 @@ func open_menu_for_player() -> void:
 	pause_start = Time.get_unix_time_from_system()
 	menu.open(Menu.Kind.ANY)
 	settings.player_position = player.position
+	settings.player_health = player.vitals.health.value
+	settings.player_mana = player.vitals.mana.value
 	settings.last_save_time = Time.get_unix_time_from_system()
 	hud.hide()
 	

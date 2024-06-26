@@ -17,6 +17,9 @@ class Stat:
 	func amount_of_change(p: float) -> float:
 		return (1 - resistance) * p
 		
+	func set_value(amount: float) -> void:
+		value = clampf(amount, min_value, max_value)
+		
 	func apply_ignoring_resistance(amount: float) -> void:
 		value = clampf(value + amount, min_value, max_value)
 		
@@ -29,6 +32,12 @@ class Stat:
 		
 	func percentage() -> float:
 		return value / (max_value - min_value)
+		
+	func set_fixed_value(amount: float) -> void:
+		min_value = amount
+		max_value = amount
+		value = amount
+		
 		
 
 var health: Stat

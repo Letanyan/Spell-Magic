@@ -66,6 +66,8 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.max_value = us.max_health
 		player.vitals.mana.max_value = us.max_mana
 		player.vitals.mana.change_per_tick = us.max_mana_regen
+		player.vitals.attack.set_fixed_value(us.max_attack)
+		player.vitals.defence.set_fixed_value(us.max_defence)
 	)
 	
 	case = WandCase.new()
@@ -127,6 +129,10 @@ func run_on_ready() -> void:
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
+	player.vitals.health.set_value(settings.player_health)
+	player.vitals.mana.set_value(settings.player_mana)
+	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack)
+	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence)
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
@@ -238,6 +244,8 @@ func open_menu_for_player() -> void:
 	sub_viewport_container.visible = true
 	pause_start = Time.get_unix_time_from_system()
 	settings.player_position = player.position
+	settings.player_health = player.vitals.health.value
+	settings.player_mana = player.vitals.mana.value
 	settings.last_save_time = Time.get_unix_time_from_system()
 	menu.open(Menu.Kind.ANY)
 	hud.hide()

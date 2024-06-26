@@ -255,7 +255,7 @@ func compute_max_watched_enemies_distance() -> float:
 func pick_up_key(key: int) -> bool:
 	if keys & (1 << key) == 0:
 		keys |= (1 << key)
-		world_settings.keys = keys
+		world_settings.player_keys = keys
 		return true
 	else:
 		return false

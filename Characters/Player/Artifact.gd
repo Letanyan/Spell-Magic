@@ -42,10 +42,10 @@ class Option:
 		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0, Pattern.CIRCLE)
 		
 	static func make_event(ev: Event, el: Element, tier: int, pt: Pattern) -> Option:
-		return Option.new(Effect.NONE, ev, el, event_amount_at_tier(abs(tier), ev, el), pt)
+		return Option.new(Effect.NONE, ev, el, event_amount_at_tier(absi(tier), ev, el), pt)
 		
 	static func make_effect(ef: Effect, el: Element, tier: int, pt: Pattern) -> Option:
-		return Option.new(ef, Event.NONE, el, effect_amount_at_tier(abs(tier), ef, el) * signi(tier), pt)
+		return Option.new(ef, Event.NONE, el, effect_amount_at_tier(absi(tier), ef, el) * signi(tier), pt)
 		
 	static func make_random(
 		is_ef: float = 0.5, 
@@ -71,9 +71,9 @@ class Option:
 		var tier := randi_range(tier_range.x, tier_range.y)
 		var am: int
 		if not flip: # is event
-			am = event_amount_at_tier(abs(tier), ev, el)
+			am = event_amount_at_tier(absi(tier), ev, el)
 		else:
-			am = effect_amount_at_tier(abs(tier), ef, el) * signi(tier)
+			am = effect_amount_at_tier(absi(tier), ef, el) * signi(tier)
 		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
 	
@@ -83,7 +83,7 @@ class Option:
 			Event.RECEIVE, Event.DEAL:
 				match el:
 					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE: 
-						return tier * (tier + 1.0) / 2.0
+						return roundi(tier * (tier + 1.0) / 2.0)
 		return 0
 		
 	static func effect_amount_at_tier(tier: int, ef: Effect, el: Element) -> int:

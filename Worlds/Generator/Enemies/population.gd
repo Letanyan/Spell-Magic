@@ -12,6 +12,7 @@ var is_ready := false
 
 var inhabitants: Dictionary = {}
 var garden: Array[Node3D] = []
+var other_objects: Array = []
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
 	rng = RandomNumberGenerator.new()
@@ -96,6 +97,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		if is_enemy:
 			(entity as Enemy).player = player
 			(entity as Enemy).index_in_population = inhabitants.size()
+			(entity as Enemy).is_dead = false
 			if entity.get_parent() != null:
 				(entity as Enemy).setup()
 			inhabitants[inhabitants.size()] = entity
@@ -264,7 +266,8 @@ func despawn_all_from_world(world: Node3D) -> void:
 		if f is Trees:
 			entity_manager.free_tree(f as Trees)
 		elif f is Buildings:
-			entity_manager.free_building(f as Buildings)
+			entity_manager.free_building(f as Buildings)	
+	other_objects.clear()		
 	inhabitants.clear()
 	garden.clear()
 
