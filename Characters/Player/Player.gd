@@ -282,12 +282,12 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						vitals.health.apply(amount.x)
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
-						vitals.health.apply(vitals.health.value * amount.y / 100.0)
+						vitals.health.apply(vitals.health.max_value * amount.y / 100.0)
 				elif effect_el == Artifact.Element.MANA:
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						vitals.mana.apply(amount.x)
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
-						vitals.mana.apply(vitals.mana.value * amount.y / 100.0)
+						vitals.mana.apply(vitals.mana.max_value * amount.y / 100.0)
 				elif effect_el == Artifact.Element.POWER:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:

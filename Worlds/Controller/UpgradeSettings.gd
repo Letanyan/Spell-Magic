@@ -94,7 +94,7 @@ var upgrade_running_speed := 0.25
 var max_running_speed := 2.0
 var cost_running_speed := 50
 var buff_running_speed := 0.0
-const LIMIT_RUNNING_SPEED := 15.0
+const LIMIT_RUNNING_SPEED := 10.0
 
 var upgrade_mana_regen := 0.5
 var max_mana_regen := 0.5

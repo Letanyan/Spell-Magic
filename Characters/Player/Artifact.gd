@@ -38,16 +38,14 @@ class Option:
 	var amount: int
 	var pattern: Pattern
 	
-	# TODO: make tiered creation of effects and events (like genshin artifact levels) 
-	
 	static func empty() -> Option:
 		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0, Pattern.CIRCLE)
 		
-	static func make_event(ev: Event, el: Element, am: int, pt: Pattern) -> Option:
-		return Option.new(Effect.NONE, ev, el, am, pt)
+	static func make_event(ev: Event, el: Element, tier: int, pt: Pattern) -> Option:
+		return Option.new(Effect.NONE, ev, el, event_amount_at_tier(abs(tier), ev, el), pt)
 		
-	static func make_effect(ef: Effect, el: Element, am: int, pt: Pattern) -> Option:
-		return Option.new(ef, Event.NONE, el, am, pt)
+	static func make_effect(ef: Effect, el: Element, tier: int, pt: Pattern) -> Option:
+		return Option.new(ef, Event.NONE, el, effect_amount_at_tier(abs(tier), ef, el) * signi(tier), pt)
 		
 	static func make_random(
 		is_ef: float = 0.5, 
@@ -57,7 +55,7 @@ class Option:
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
 		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
 		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1, Element.HEALTH_BUMP: 0.1}, 
-		amount_range: Vector2i = Vector2i(-100, 100), 
+		tier_range: Vector2i = Vector2i(-10, 10), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
 		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
@@ -70,11 +68,58 @@ class Option:
 				el_prob = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.ANY: 0.1}
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
-		var am := randi_range(amount_range.x, amount_range.y)
-		if not flip:
-			am = abs(am)
+		var tier := randi_range(tier_range.x, tier_range.y)
+		var am: int
+		if not flip: # is event
+			am = event_amount_at_tier(abs(tier), ev, el)
+		else:
+			am = effect_amount_at_tier(abs(tier), ef, el) * signi(tier)
 		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
+	
+	static func event_amount_at_tier(tier: int, ev: Event, el: Element) -> int:
+		match ev:
+			Event.NONE: return 0
+			Event.RECEIVE, Event.DEAL:
+				match el:
+					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE: 
+						return tier * (tier + 1.0) / 2.0
+		return 0
+		
+	static func effect_amount_at_tier(tier: int, ef: Effect, el: Element) -> int:
+		match ef:
+			Effect.NONE: return 0
+			Effect.BOOST_PERCENTAGE, Effect.RESISTANCE_PERCENTAGE:
+				return tier * tier
+			Effect.BOOST_FLAT, Effect.RESISTANCE_FLAT:
+				match el:
+					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE: 
+						return tier * tier
+					Element.HEALTH: 
+						return tier * tier * tier
+					Element.MANA: 
+						return tier * tier * tier
+					Element.ATTACK: 
+						return tier * tier
+					Element.DEFENCE: 
+						return tier * tier
+					Element.SPELL_VELOCITY:
+						return tier * tier
+					Element.DURATION:
+						return roundi(tier * tier / 4.0)
+					Element.RUNNING_SPEED:
+						return tier
+					Element.SPELL_RADIUS:
+						return roundi(tier * tier / 20.0)
+					Element.COUNT:
+						return roundi(tier * tier / 4.0)
+					Element.POWER:
+						return tier * tier
+					Element.HEALTH_BUMP:
+						return tier * tier * tier
+					Element.MANA_BUMP:
+						return tier * tier * tier
+		return 0
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:
 		effect = ef
