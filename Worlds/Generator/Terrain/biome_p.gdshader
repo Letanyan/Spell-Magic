@@ -49,7 +49,6 @@ vec4 biome_color(vec4 V, vec2 uv) {
 
 	vec4 color = vec4(1);
 
-	// TODO: use vec4 alpha to denote rock color which we can mix later for better rock faces
 	vec4 colors[9] = {
 		vec4(0.23, 0.83, 0.23, 0.15),
 		vec4(0, 1, 1, 0.1),

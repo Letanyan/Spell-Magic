@@ -97,7 +97,6 @@ func play_animation(animation: String, parameters: Dictionary = {}) -> void:
 		animation_tree.set(path, parameters[path])
 	var current := playback.get_current_node()
 	if current != "death" and current != animation:
-		#FIXME: avoid travelling through swim animation when casting spell in air
 		playback.travel(animation)
 
 func can_move() -> bool:
