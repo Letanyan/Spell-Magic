@@ -345,6 +345,7 @@ func enemy_dies(enemy: Enemy) -> void:
 		settings.enemies_killed[enemy_kind] += 1
 	else:
 		settings.enemies_killed[enemy_kind] = 1
+	entity_manager.free_enemy(enemy)
 
 func _on_player_vital_update(vitals: Vitals) -> void:
 	if settings == null or settings.game_mode_settings == null:

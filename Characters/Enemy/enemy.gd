@@ -260,8 +260,6 @@ func die() -> void:
 	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
 	var source := explosion.get_node("source") as GPUParticles3D
 	(source.process_material as ParticleProcessMaterial).emission_box_extents = death_box()
-	
-	SignalBus.enemy_death.emit(get_node("."))
 		
 	play_animation("death")
 	
@@ -279,7 +277,7 @@ func die() -> void:
 		if not drop_artifact_item(world):
 			drop_spell_item(world)
 	
-	queue_free()
+	SignalBus.enemy_death.emit(get_node("."))
 	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 	world.remove_child(explosion)
 	

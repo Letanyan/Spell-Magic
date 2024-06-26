@@ -70,6 +70,7 @@ func _init() -> void:
 	var deinit_enemy := func(node: Enemy) -> void:
 		node.position.y = -1000
 		node.kind = World.Enemy.NONE
+		node.is_dead = false
 		var col: CollisionShape3D = node.get_node("./Collision")
 		var area: CollisionShape3D = node.get_node("./WetArea/WetCollision")
 		col.disabled = true
