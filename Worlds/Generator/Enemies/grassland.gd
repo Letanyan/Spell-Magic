@@ -103,7 +103,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						break
 						
 			GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE:
-				# FIXME: add some spawner that when a certain condition is met drop artifact/spell/key 
 				if area.size() - index < 100:
 					index += 1
 					continue

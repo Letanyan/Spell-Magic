@@ -141,7 +141,6 @@ func _ready() -> void:
 	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
 	player.vitals.health.set_value(settings.player_health)
 	player.vitals.mana.set_value(settings.player_mana)
-	print(settings.player_health)
 	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack)
 	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence)
 	
