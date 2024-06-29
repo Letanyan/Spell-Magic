@@ -1,0 +1,34 @@
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=6 format=3 uid="uid://c70m1t8xexqmx"]
+
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_ec782"]
+
+[sub_resource type="Gradient" id="Gradient_c50nc"]
+colors = PackedColorArray(0, 0.501961, 1, 0, 0, 0.501961, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_uo7lh"]
+gradient = SubResource("Gradient_c50nc")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="Gradient" id="Gradient_odgie"]
+colors = PackedColorArray(0, 0, 0, 1, 0.09, 0.09, 0.09, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_a28f6"]
+gradient = SubResource("Gradient_odgie")
+fill_to = Vector2(0, 1)
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+script = ExtResource("1_ec782")
+top_right_corner_radius = 4.0
+top_left_corner_radius = 4.0
+bottom_left_corner_radius = 4.0
+bottom_right_corner_radius = 4.0
+fill_texture = SubResource("GradientTexture2D_a28f6")
+border_texture = SubResource("GradientTexture2D_uo7lh")
+border_width = 1.0
