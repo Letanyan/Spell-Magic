@@ -65,17 +65,18 @@ _data = {
 script = ExtResource("1_mts56")
 
 [node name="Key" type="MeshInstance3D" parent="."]
-transform = Transform3D(102.497, -102.598, -137.724, 141.491, 141.352, 2.98023e-06, 97.3378, -97.4337, 145.024, 0, 1, 0)
+transform = Transform3D(141.352, -141.491, 0, 141.491, 141.352, 0, 0, 0, 200, 0, 0, 0)
 mesh = SubResource("ArrayMesh_n5brf")
 skeleton = NodePath("")
 
 [node name="Area3D" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("SphereShape3D_f301y")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_kicsb")
 }
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

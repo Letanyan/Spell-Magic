@@ -73,7 +73,7 @@ radius = 1.0
 script = ExtResource("1_5l2ut")
 
 [node name="Parchment" type="MeshInstance3D" parent="."]
-transform = Transform3D(-90.4336, -41.9649, 41.9236, 6.68237e-06, -76.4374, -76.5127, 59.3181, -63.9777, 63.9147, 0, 1.5, 0)
+transform = Transform3D(100, 0, 0, 0, -70.6758, -70.7455, 0, 70.7455, -70.6758, 0, 0, 0)
 mesh = SubResource("ArrayMesh_jgo3a")
 skeleton = NodePath("")
 
@@ -88,7 +88,6 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("SphereShape3D_ppy1q")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
