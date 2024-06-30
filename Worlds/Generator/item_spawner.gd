@@ -40,7 +40,7 @@ func remove_node(node: Node3D) -> void:
 	
 func drop_artifact_item(world: Node3D) -> bool:
 	if artifact:
-		var item := (preload("res://Models/Misc/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
+		var item := (preload("res://Models/Misc/Artifact/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
 		item.position = position
 		item.artifact = artifact
 		world.add_child(item)
@@ -50,7 +50,7 @@ func drop_artifact_item(world: Node3D) -> bool:
 		
 func drop_spell_item(world: Node3D) -> bool:
 	if spell:
-		var item := (preload("res://Models/Misc/Paper.tscn") as PackedScene).instantiate() as SpellPaper
+		var item := (preload("res://Models/Misc/Spell/Paper.tscn") as PackedScene).instantiate() as SpellPaper
 		item.position = position
 		item.spell = spell
 		world.add_child(item)
@@ -59,7 +59,7 @@ func drop_spell_item(world: Node3D) -> bool:
 		
 func drop_key_item(world: Node3D) -> bool:
 	if key != 0:
-		var item := (preload("res://Models/Misc/Key.tscn") as PackedScene).instantiate() as KeyPrism
+		var item := (preload("res://Models/Misc/Key/Key.tscn") as PackedScene).instantiate() as KeyPrism
 		item.position = position
 		item.key = key
 		world.add_child(item)

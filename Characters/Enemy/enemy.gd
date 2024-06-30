@@ -284,7 +284,7 @@ func die() -> void:
 func drop_artifact_item(world: Node3D) -> bool:
 	var artifact: Artifact = drop_artifact()
 	if artifact:
-		var item := (preload("res://Models/Misc/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
+		var item := (preload("res://Models/Misc/Artifact/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
 		item.position = position
 		item.global_transform = global_transform
 		item.artifact = artifact
@@ -296,7 +296,7 @@ func drop_artifact_item(world: Node3D) -> bool:
 func drop_spell_item(world: Node3D) -> bool:
 	var spell: Spell = drop_spell()
 	if spell:
-		var item := (preload("res://Models/Misc/Paper.tscn") as PackedScene).instantiate() as SpellPaper
+		var item := (preload("res://Models/Misc/Spell/Paper.tscn") as PackedScene).instantiate() as SpellPaper
 		item.position = position
 		item.global_transform = global_transform
 		item.spell = spell
@@ -307,7 +307,7 @@ func drop_spell_item(world: Node3D) -> bool:
 func drop_key_item(world: Node3D) -> bool:
 	var key: int = drop_key()
 	if key != 0:
-		var item := (preload("res://Models/Misc/Key.tscn") as PackedScene).instantiate() as KeyPrism
+		var item := (preload("res://Models/Misc/Key/Key.tscn") as PackedScene).instantiate() as KeyPrism
 		item.position = position
 		item.global_transform = global_transform
 		item.key = key
