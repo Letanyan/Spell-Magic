@@ -42,7 +42,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_ie2x6")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_f301y"]
-radius = 1.0
+radius = 3.0
 
 [sub_resource type="Animation" id="Animation_a7p0a"]
 resource_name = "idle"

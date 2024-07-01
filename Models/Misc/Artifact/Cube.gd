@@ -12,4 +12,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		eaten = true
 		(body as Player).artifacts.collection.append(artifact)
 		SignalBus.pick_up_world_item_artifact.emit(artifact, "Artifact '%s' picked up" % artifact.name)
-		queue_free()
+		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25)
+		tween.finished.connect(func() -> void: queue_free())
+		tween.play()

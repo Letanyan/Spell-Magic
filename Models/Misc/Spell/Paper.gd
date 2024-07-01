@@ -21,4 +21,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' picked up" % spell.name)		
 		else:
 			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' already in Magic Book" % spell.name)
-		queue_free()
+		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25)
+		tween.finished.connect(func() -> void: queue_free())
+		tween.play()

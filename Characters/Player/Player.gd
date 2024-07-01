@@ -500,5 +500,11 @@ func on_pick_up_key(key: int, message: String) -> void:
 func on_pick_up_coin(coin: int, message: String) -> void:
 	world_settings.save()
 	
+static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, duration: float) -> Tween:
+	var tween := item.create_tween()
+	tween.tween_property(item, "position", target, duration)
+	tween.stop()
+	return tween
+	
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)

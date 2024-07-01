@@ -14,4 +14,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' picked up" % key)
 		else:
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' already obtained" % key)
-		queue_free()
+		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25)
+		tween.finished.connect(func() -> void: queue_free())
+		tween.play()

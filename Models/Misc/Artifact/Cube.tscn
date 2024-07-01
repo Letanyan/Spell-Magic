@@ -68,7 +68,7 @@ _data = {
 }
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_v5rpu"]
-radius = 1.0
+radius = 3.0
 
 [node name="Cube" type="Node3D"]
 script = ExtResource("1_qeju3")

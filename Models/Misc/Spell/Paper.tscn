@@ -67,7 +67,7 @@ _data = {
 }
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ppy1q"]
-radius = 1.0
+radius = 3.0
 
 [node name="Scroll" type="Node3D"]
 script = ExtResource("1_5l2ut")
