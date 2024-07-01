@@ -60,6 +60,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(on_pick_up_artifact)
 	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
 	SignalBus.pick_up_world_item_key.connect(on_pick_up_key)
+	SignalBus.pick_up_world_item_coin.connect(on_pick_up_coin)
 	animation_tree.active = true
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
@@ -494,6 +495,9 @@ func on_pick_up_spell(spell: Spell, message: String) -> void:
 	save_name_generator()
 	
 func on_pick_up_key(key: int, message: String) -> void:
+	world_settings.save()
+	
+func on_pick_up_coin(coin: int, message: String) -> void:
 	world_settings.save()
 	
 func save_name_generator() -> void:

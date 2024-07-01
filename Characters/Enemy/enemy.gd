@@ -276,6 +276,7 @@ func die() -> void:
 	if not drop_key_item(world):
 		if not drop_artifact_item(world):
 			drop_spell_item(world)
+	drop_coin_items(world)
 	
 	SignalBus.enemy_death.emit(get_node("."))
 	world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout.connect(func() -> void: world.remove_child(explosion))
@@ -315,6 +316,18 @@ func drop_key_item(world: Node3D) -> bool:
 		return true
 	return false
 	
+func drop_coin_items(world: Node3D) -> bool:
+	var coins := drop_coins()
+	if not coins.is_empty():
+		for coin in coins:
+			var item := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
+			item.position = position
+			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(2, 0))
+			item.amount = coin
+			world.add_child(item)
+		return true
+	return false
+	
 func update_vitals_display() -> void:
 	(health_bar.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("percentage", vitals.health.percentage())
 
@@ -326,6 +339,9 @@ func drop_spell() -> Spell:
 	
 func drop_key() -> int:
 	return 0
+	
+func drop_coins() -> Array[int]:
+	return []
 
 func world_enemy_enum() -> World.Enemy:
 	var n := get_node(".")

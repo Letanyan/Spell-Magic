@@ -5,7 +5,7 @@ var key: int = 0
 var eaten: bool = false
 
 func _ready() -> void:
-	pass
+	($AnimationPlayer as AnimationPlayer).play("idle")
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if not eaten and body is Player and key != 0:
