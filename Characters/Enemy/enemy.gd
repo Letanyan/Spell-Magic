@@ -322,7 +322,7 @@ func drop_coin_items(world: Node3D) -> bool:
 		for coin in coins:
 			var item := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
 			item.position = position
-			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(2, 0))
+			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(1.0 + log(coins.size()), 0))
 			item.amount = coin
 			world.add_child(item)
 		return true
