@@ -501,9 +501,11 @@ func on_pick_up_coin(coin: int, message: String) -> void:
 	world_settings.save()
 	
 static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, duration: float) -> Tween:
-	var tween := item.create_tween()
-	var path := PathStyle.Segment.quad(item.position, target, Globals.midpoint_tangent1(item.position, target) + Vector3(0, randf_range(-1, 5), 0))
+	var tween := item.create_tween().set_parallel()
+	var mid := Globals.midpoint_tangent1(item.position, target) if randf() < 0.5 else Globals.midpoint_tangent2(item.position, target)
+	var path := PathStyle.Segment.quad(item.position, target, mid + Vector3(0, randf_range(-1, 5), 0))
 	tween.tween_method(func(t: float) -> void: item.position = path.position_at_time(t), 0.0, 1.0, duration)
+	tween.tween_property(item, "scale", Vector3(), duration)
 	tween.stop()
 	return tween
 	

@@ -38,7 +38,7 @@ shadow_mesh = SubResource("ArrayMesh_t5ycg")
 resource_local_to_scene = true
 albedo_color = Color(1, 0, 0, 1)
 metallic = 1.0
-roughness = 0.51
+roughness = 0.75
 
 [sub_resource type="Animation" id="Animation_h1uu1"]
 resource_name = "idle"
