@@ -74,4 +74,4 @@ func drop_artifact() -> Artifact:
 	return Artifact.new(Time.get_datetime_string_from_system(), t, r, b, l)
 
 func drop_coins() -> Array[int]:
-	return [1, 2, 3, 4, 5, 10]
+	return [1, 5, 10, 5, 5, 10, 1, 1, 1, 1]

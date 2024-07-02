@@ -89,7 +89,7 @@ func setup(_settings: WorldSettings) -> void:
 	fishman.level = 50
 	add_enemy(fishman)
 	
-	spawner = ItemSpawner.key_spawner(fishman.position, 8)
+	spawner = ItemSpawner.key_spawner(fishman.position, 16)
 	spawner.nodes_to_be_cleared[fishman] = true
 	SignalBus.enemy_death.connect(spawner.remove_node)
 	

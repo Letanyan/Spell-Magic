@@ -36,7 +36,7 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	vec4 color_at_percentage = texture(color_transitions, vec2(percentage, 0.0));
+	vec4 color_at_percentage = texture(color_transitions, vec2(clamp(percentage, 0.01, 0.99), 0.0));
 	
 	float x = UV.x;
 	float y = UV.y;
