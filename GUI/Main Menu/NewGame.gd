@@ -59,7 +59,7 @@ extends Control
 
 
 var game_mode: GameModeSettings.GameMode = GameModeSettings.GameMode.RESPAWN
-var respawn_flags: int = GameModeSettings.RESPAWN_WITH_UPGRADES
+var game_flags: int = GameModeSettings.RESPAWN_WITH_UPGRADES
 
 var upgrades: UpgradeSettings
 
@@ -146,7 +146,7 @@ func _on_create_pressed() -> void:
 		settings.game_mode_settings.mode = game_mode
 		match game_mode:
 			GameModeSettings.GameMode.RESPAWN:
-				settings.game_mode_settings.flags = respawn_flags
+				settings.game_mode_settings.flags = game_flags
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
 		settings.save()
 
@@ -193,24 +193,31 @@ func _on_sandbox_toggled(button_pressed: bool) -> void:
 
 func _on_upgrades_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		respawn_flags |= GameModeSettings.RESPAWN_WITH_UPGRADES
+		game_flags |= GameModeSettings.RESPAWN_WITH_UPGRADES
 	else:
-		respawn_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_UPGRADES)
+		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_UPGRADES)
 
 
 func _on_artifacts_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		respawn_flags |= GameModeSettings.RESPAWN_WITH_ARTIFACTS
+		game_flags |= GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	else:
-		respawn_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_ARTIFACTS)
+		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_ARTIFACTS)
 
 
 func _on_spells_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		respawn_flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
+		game_flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
 	else:
-		respawn_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS)
-
+		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS)
+		
+		
+func _on_spell_editing_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		game_flags |= GameModeSettings.DISALLOW_SPELL_EDITING
+	else:
+		game_flags &= ~(1 << GameModeSettings.DISALLOW_SPELL_EDITING)
+		
 
 func _on_health_value_changed(value: float) -> void:
 	health_value.text = str(int(value))

@@ -230,40 +230,7 @@ func filter_popup_selected(id: int) -> void:
 func _on_search_line_edit_text_changed(new_text: String) -> void:
 	update_spells_list()
 	reload_list()
-
-func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not has_focus():
-		return
-		
-	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
 	
-	if filter_button.has_focus():
-		if direction.x > 0:
-			sort_button.grab_focus()
-		if direction.y < 0:
-			spell_index.grab_focus()
-	elif sort_button.has_focus():
-		if direction.x < 0:
-			filter_button.grab_focus()
-		if direction.x > 0:
-			search_line_edit.grab_focus()
-		if direction.y < 0:
-			spell_index.grab_focus()
-	elif search_line_edit.has_focus():
-		if direction.x < 0:
-			filter_button.grab_focus()
-		if direction.x > 0:
-			page.grab_focus()
-		if direction.y < 0:
-			spell_index.grab_focus()
-	elif spell_index.has_focus():
-		if direction.x > 0:
-			page.grab_focus()
-		if direction.y < 0:
-			filter_button.grab_focus()
-		if direction.y > 0:
-			create_button.grab_focus()
-
 
 func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == 1 and at_position.x < 32:

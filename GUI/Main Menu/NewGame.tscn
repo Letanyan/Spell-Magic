@@ -23,9 +23,9 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -128.0
-offset_top = 48.0
+offset_top = 8.0
 offset_right = 128.0
-offset_bottom = 80.0
+offset_bottom = 40.0
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../UseSeed")
 focus_next = NodePath("../UseSeed")
@@ -38,9 +38,9 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -128.0
-offset_top = 120.0
+offset_top = 48.0
 offset_right = -8.0
-offset_bottom = 160.0
+offset_bottom = 88.0
 focus_neighbor_top = NodePath("../SaveName")
 focus_neighbor_right = NodePath("../UseSaveFile")
 focus_neighbor_bottom = NodePath("../Seed")
@@ -56,9 +56,9 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = 8.0
-offset_top = 120.0
+offset_top = 48.0
 offset_right = 126.0
-offset_bottom = 160.0
+offset_bottom = 88.0
 focus_neighbor_left = NodePath("../UseSeed")
 focus_neighbor_top = NodePath("../SaveName")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
@@ -74,9 +74,9 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -128.0
-offset_top = 168.0
+offset_top = 96.0
 offset_right = 128.0
-offset_bottom = 200.0
+offset_bottom = 128.0
 focus_neighbor_top = NodePath("../UseSeed")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../Permadeath")
@@ -124,10 +124,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -192.0
-offset_top = 256.0
-offset_right = -80.0
-offset_bottom = 296.0
+offset_left = -184.0
+offset_top = 144.0
+offset_right = -72.0
+offset_bottom = 184.0
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../Respawn")
 focus_neighbor_bottom = NodePath("../RespawnOptions")
@@ -142,9 +142,9 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -56.0
-offset_top = 256.0
+offset_top = 144.0
 offset_right = 56.0
-offset_bottom = 296.0
+offset_bottom = 184.0
 focus_neighbor_left = NodePath("../Permadeath")
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../Sandbox")
@@ -160,10 +160,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 80.0
-offset_top = 256.0
-offset_right = 192.0
-offset_bottom = 296.0
+offset_left = 72.0
+offset_top = 144.0
+offset_right = 184.0
+offset_bottom = 184.0
 focus_neighbor_left = NodePath("../Respawn")
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
@@ -179,9 +179,9 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -152.0
-offset_top = 304.0
+offset_top = 264.0
 offset_right = 152.0
-offset_bottom = 424.0
+offset_bottom = 384.0
 focus_neighbor_bottom = NodePath("Upgrades")
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
@@ -801,6 +801,25 @@ offset_right = 240.256
 offset_bottom = 197.0
 text = "No such save exists"
 
+[node name="GameOptions" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -152.0
+offset_top = 200.0
+offset_right = 152.0
+offset_bottom = 256.0
+grow_horizontal = 2
+
+[node name="SpellEditing" type="CheckBox" parent="GameOptions"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 16.0
+offset_right = 217.0
+offset_bottom = 44.0
+text = "Disallow Spell Editing"
+
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]
 [connection signal="text_changed" from="Seed" to="." method="_on_seed_text_changed"]
@@ -834,3 +853,4 @@ text = "No such save exists"
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtStart" to="." method="_on_chain_at_start_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtEnd" to="." method="_on_chain_at_end_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainOnHit" to="." method="_on_chain_on_hit_toggled"]
+[connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]

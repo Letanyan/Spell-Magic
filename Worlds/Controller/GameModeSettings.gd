@@ -5,6 +5,7 @@ enum GameMode { PERMADEATH, RESPAWN, SANDBOX }
 const RESPAWN_WITH_SPELLS_AND_WANDS: int = 1 << 0
 const RESPAWN_WITH_UPGRADES: int = 1 << 1
 const RESPAWN_WITH_ARTIFACTS: int = 1 << 2
+const DISALLOW_SPELL_EDITING: int = 1 << 3
 
 var mode: GameMode 
 var flags: int = 0
@@ -18,6 +19,9 @@ static func respawn_with_upgrades_only() -> GameModeSettings:
 	
 static func permadeath() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.PERMADEATH, 0)
+	
+func has_flag(flag: int) -> bool:
+	return flags & flag != 0
 	
 func game_mode_description() -> String:
 	match mode:
@@ -34,6 +38,8 @@ func flags_description() -> PackedStringArray:
 		result.append("Respawn with Spells and Wands")
 	if flags & RESPAWN_WITH_UPGRADES != 0:
 		result.append("Respawn with Upgrades")
+	if flags & DISALLOW_SPELL_EDITING != 0:
+		result.append("Disallow Spell Editing")
 	return result
 	
 func save_dict() -> Dictionary:
