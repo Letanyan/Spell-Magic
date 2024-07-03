@@ -68,6 +68,8 @@ class Option:
 				el_prob = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.ANY: 0.1}
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+		else:
+			el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 		var tier := randi_range(tier_range.x, tier_range.y)
 		var am: int
 		if not flip: # is event

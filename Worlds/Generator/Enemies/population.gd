@@ -22,6 +22,7 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 	chunk_size = _chunk_size
 	entity_manager = _entity_manager
 	seed_location()
+	SignalBus.enemy_death.connect(mark_entity)
 	
 func seed_location() -> void:
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
@@ -81,7 +82,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 	if entity != null:
 		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
-		var info: Dictionary = user_info.call(world_normal) 
+		var info: Dictionary = user_info.call(world_normal)
 		if not info.get("valid", true) or wh < Globals.sea_level():
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
@@ -100,12 +101,21 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			(entity as Enemy).is_dead = false
 			if entity.get_parent() != null:
 				(entity as Enemy).setup()
-			inhabitants[inhabitants.size()] = entity
+			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
+			var tag := get_tag_from_name(entity.name)
+			var is_marked := (player.world_settings.marked_entities.get(coord, []) as Array[int]).find(tag) != -1
+			if is_marked:
+				entity_manager.free_enemy(entity as Enemy)
+				return null
+			else:
+				inhabitants[inhabitants.size()] = entity
 		else:
 			if entity is Trees:
 				(entity as Trees).setup(rng)
+				entity.name = World.Foliage.keys()[(entity as Trees).kind] + " " + str(rng.randi())
 			elif entity is Buildings:
 				(entity as Buildings).setup(rng)
+				entity.name = World.Building.keys()[(entity as Buildings).entity_kind] + " " + str(rng.randi())
 			garden.append(entity)
 	return entity
 	
@@ -115,28 +125,20 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 	match enemy:
 		World.Enemy.UNDEAD:
 			result = entity_manager.get_enemy(World.Enemy.UNDEAD)
-			result.name = "Undead" + str(rng.randi())
 		World.Enemy.BAT:
 			result = entity_manager.get_enemy(World.Enemy.BAT)
-			result.name = "Bat" + str(rng.randi())
 		World.Enemy.MOLE:
 			result = entity_manager.get_enemy(World.Enemy.MOLE)
-			result.name = "Mole" + str(rng.randi())
 		World.Enemy.HUMAN:
 			result = entity_manager.get_enemy(World.Enemy.HUMAN)
-			result.name = "Human" + str(rng.randi())
 		World.Enemy.WALKER:
 			result = entity_manager.get_enemy(World.Enemy.WALKER)
-			result.name = "Walker" + str(rng.randi())
 		World.Enemy.FISH:
 			result = entity_manager.get_enemy(World.Enemy.FISH)
-			result.name = "Fish" + str(rng.randi())
 		World.Enemy.BIRDMAN:
 			result = entity_manager.get_enemy(World.Enemy.BIRDMAN)
-			result.name = "Birdman" + str(rng.randi())
 		World.Enemy.FISHMAN:
 			result = entity_manager.get_enemy(World.Enemy.FISHMAN)
-			result.name = "Fishman" + str(rng.randi())
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
@@ -270,6 +272,7 @@ func despawn_all_from_world(world: Node3D) -> void:
 	other_objects.clear()		
 	inhabitants.clear()
 	garden.clear()
+	SignalBus.enemy_death.disconnect(mark_entity)
 
 func update_info() -> void:
 	for habitant_index: int in inhabitants:
@@ -298,3 +301,21 @@ func update_pause_time(pause_time: float) -> void:
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.update_pause_time(pause_time)
+
+func mark_entity(entity: Node3D) -> void:
+	mark_entity_name(entity.name)
+	
+func get_tag_from_name(name: String) -> int:
+	var tag := name.substr(name.find(" ") + 1)
+	if tag.is_valid_int():
+		return tag.to_int()
+	else:
+		return -1
+
+func mark_entity_name(name: String) -> void:
+	var tag := get_tag_from_name(name)
+	if tag != -1:
+		if not player.world_settings.marked_entities.has(coord):
+			player.world_settings.marked_entities[coord] = []
+		(player.world_settings.marked_entities[coord] as Array[int]).append(tag)
+	

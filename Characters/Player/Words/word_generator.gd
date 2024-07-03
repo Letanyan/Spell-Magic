@@ -36,7 +36,7 @@ func add_source(source_path: SourcePath, chunk_size: int = 2, clear_current_sour
 	if source_path == SourcePath.none:
 		return
 		
-	if source_paths.find(source_path) == -1:
+	if source_paths.find(source_path) != -1:
 		return
 		
 	source_paths.append(source_path)

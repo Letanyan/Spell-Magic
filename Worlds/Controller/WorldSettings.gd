@@ -8,6 +8,7 @@ var player_mana: float
 var last_save_time: float
 var sed: int
 var enemies_killed := {} # [World.Enemy]int
+var marked_entities := {} # [Vector2][]int
 var is_paused: bool
 var day_of_the_year: int
 var time_of_day: float
@@ -41,7 +42,7 @@ func save_dict() -> Dictionary:
 			"health": player_health, "mana": player_mana,
 		}, 
 		"seed": sed,
-		"enemies_killed": enemies_killed, "day_of_the_year": day_of_the_year,
+		"enemies_killed": enemies_killed, "marked_entities": marked_entities, "day_of_the_year": day_of_the_year,
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
@@ -71,6 +72,7 @@ func load_dict(data: Dictionary) -> void:
 	last_save_time = data.get("last_save_time", 0.0)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})
+	marked_entities = data.get("marked_entities", {})
 	is_paused = false
 	day_of_the_year = data.get("day_of_the_year", 1)
 	time_of_day = data.get("time_of_day", 12.0)

@@ -136,8 +136,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						max_limit -= 1
 						exclusion[j] = true
 						result.append(p)
-						var spawner := ItemSpawner.key_spawner(p.position, 2)
-						pop.other_objects.append(spawner)
+						var spawner := ItemSpawner.key_spawner(rng, pop, p.position, 2)
 						SignalBus.enemy_death.connect(spawner.remove_node)
 						for k in house_size:
 							if rng.randf() < 0.2:

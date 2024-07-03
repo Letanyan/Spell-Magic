@@ -1,5 +1,7 @@
 class_name ItemSpawner
 
+var population: Population = null
+var name: String = ""
 var nodes_to_be_cleared := {}
 var position: Vector3 = Vector3.ZERO
 var artifact: Artifact = null
@@ -9,26 +11,37 @@ var key: int = 0
 func _init() -> void:
 	pass
 
-static func artifact_spawner(pos: Vector3, a: Artifact) -> ItemSpawner:
+static func artifact_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, a: Artifact) -> ItemSpawner:
 	var result := ItemSpawner.new()
+	result.name = "ArtifactSpawner " + str(rng.randi())
+	result.population = pop
 	result.artifact = a
 	result.position = pos
 	return result
 	
-static func spell_spawner(pos: Vector3, s: Spell) -> ItemSpawner:
+static func spell_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, s: Spell) -> ItemSpawner:
 	var result := ItemSpawner.new()
+	result.name = "SpellSpawner " + str(rng.randi())
+	result.population = pop
 	result.spell = s
 	result.position = pos
 	return result
 	
-static func key_spawner(pos: Vector3, k: int) -> ItemSpawner:
+static func key_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, k: int) -> ItemSpawner:
 	var result := ItemSpawner.new()
+	result.name = "KeySpawner " + str(rng.randi())
+	result.population = pop
 	result.key = k
 	result.position = pos
 	return result
 	
 func remove_node(node: Node3D) -> void:
 	nodes_to_be_cleared.erase(node)
+	if population:
+		population.other_objects.append(self)
+		population.mark_entity_name(name)
+	else:
+		print("no population set")
 	if nodes_to_be_cleared.is_empty():
 		var world := node.get_parent_node_3d()
 		if key != 0:
