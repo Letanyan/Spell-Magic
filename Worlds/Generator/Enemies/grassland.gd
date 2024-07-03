@@ -65,7 +65,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					index += 1
 					continue
 				index += 1
-				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion)
+				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
 				
 				var w: Buildings
 				for i in range(0, candidates.size()):
@@ -107,7 +107,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					index += 1
 					continue
 				index += 1
-				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion)
+				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
 				
 				var w: Buildings
 				for i in range(0, candidates.size()):

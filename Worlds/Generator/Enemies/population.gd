@@ -142,6 +142,8 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 			
 	result.level = Vector2(x, y).length() / 1000.0
 	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
+	for conn: Dictionary in result.vital_update.get_connections():
+		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
 	return prepare_entity(state, result, pos, true)
 	
@@ -226,22 +228,40 @@ func group_spawn_points(spacing: float) -> Dictionary:
 			var p := Vector2(coord.x * chunk_size + x, coord.y * chunk_size + y)
 			blender.compute_biome_distances(p.x, p.y)
 			var biome := blender.biome
-			var found_subset := false
+			var found_subsets := PackedInt32Array([])
 			for i in range(result.size()):
 				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
-					result[i].append(p)
-					found_subset = true
-					break
-			if not found_subset:
+					found_subsets.append(i)
+					break		
+			if found_subsets.is_empty():
 				result.append(PackedVector2Array([p]))
 				biomes.append(biome)
+			elif found_subsets.size() == 1:
+				result[found_subsets[0]].append(p)
+			else:
+				found_subsets.sort()
+				found_subsets.reverse()
+				var new_pack := PackedVector2Array([])
+				for subset in found_subsets:
+					new_pack.append_array(result[subset])
+					result.remove_at(subset)
+					biomes.remove_at(subset)
+				result.append(new_pack)
+				biomes.append(biome)
+				
 	return {"points": result, "biomes": biomes}
 	
-static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary) -> PackedInt64Array:
+static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, rng: RandomNumberGenerator) -> PackedInt64Array:
 	var indices: PackedInt64Array = []
 	for i in range(offset, area.size()):
 		if point.distance_to(area[i]) < distance and not exluding.has(i):
 			indices.append(i)
+	if rng != null:
+		for i in indices.size():
+			var temp := indices[i]
+			var j := rng.randi_range(0, indices.size() - 1)
+			indices[i] = indices[j]
+			indices[j] = temp
 	return indices
 	
 func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
@@ -250,7 +270,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var areas := group_spawn_points(spacing)
 	var points: Array[PackedVector2Array] = areas["points"]
 	var biomes: Array[World.Biome] = areas["biomes"]
-
+	
 	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
 		match biomes[i]:
