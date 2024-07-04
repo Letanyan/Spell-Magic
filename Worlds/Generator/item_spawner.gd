@@ -51,11 +51,11 @@ static func coins_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vect
 	return result
 	
 func remove_node(node: Node3D) -> void:
+	var world := node.get_parent_node_3d()
 	nodes_to_be_cleared.erase(node)
 	if nodes_to_be_cleared.is_empty():
 		if population:
 			population.mark_entity_name(name)
-		var world := node.get_parent_node_3d()
 		if key != 0:
 			drop_key_item(world)
 		if artifact != null:

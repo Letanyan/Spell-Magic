@@ -23,3 +23,7 @@ enum Building {
 	FANTASY_WELL
 }
 
+enum Item {
+	NONE,
+	TARGET, KEY, ARTIFACT, COIN, SPELL
+}

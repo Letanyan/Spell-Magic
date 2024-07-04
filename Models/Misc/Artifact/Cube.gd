@@ -1,10 +1,18 @@
 class_name ArtifactCube
-extends Node3D
+extends WorldItem
 
 var artifact: Artifact = null
 var eaten: bool = false
 
+static func make() -> ArtifactCube:
+	var result := (preload("res://Models/Misc/Artifact/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
+	result.kind = World.Item.ARTIFACT
+	return result
+
 func _ready() -> void:
+	setup()
+	
+func setup() -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 
 func _on_area_3d_body_entered(body: Node3D) -> void:

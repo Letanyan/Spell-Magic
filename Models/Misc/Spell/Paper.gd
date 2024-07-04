@@ -1,13 +1,21 @@
 class_name SpellPaper
-extends Node3D
+extends WorldItem
 
 var spell: Spell = null
 var eaten: bool = false
 
+static func make() -> SpellPaper:
+	var result := (preload("res://Models/Misc/Spell/Paper.tscn") as PackedScene).instantiate() as SpellPaper
+	result.kind = World.Item.SPELL
+	return result
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	($AnimationPlayer as AnimationPlayer).play("idle")
+	setup()
 
+
+func setup() -> void:
+	($AnimationPlayer as AnimationPlayer).play("idle")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

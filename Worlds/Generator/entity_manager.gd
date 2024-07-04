@@ -61,6 +61,12 @@ var buffer_house_single: EntityBuffer
 var buffer_house_double: EntityBuffer
 var buffer_well: EntityBuffer
 
+var buffer_target: EntityBuffer
+var buffer_artifact: EntityBuffer
+var buffer_coin: EntityBuffer
+var buffer_spell: EntityBuffer
+var buffer_key: EntityBuffer
+
 func _init() -> void:
 	var deinit_tree := func(node: Trees) -> void:
 		node.position.y = -1000
@@ -80,6 +86,9 @@ func _init() -> void:
 		var s: CollisionShape3D = node.get_node("./static/shape")
 		if s != null:
 			s.disabled = true
+	var deinit_world_item := func(node: WorldItem) -> void:
+		node.position.y = -1000
+		node.is_active = false
 	
 	buffer_round_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_ROUND), deinit_tree, "round")
 	buffer_branched_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_BRANCHED), deinit_tree, "branched")
@@ -98,6 +107,12 @@ func _init() -> void:
 	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building, "single")
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
 	buffer_well= EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
+	
+	buffer_target = EntityBuffer.new(10, func() -> WorldItem: return TargetShape.make(), deinit_world_item, "target")
+	buffer_artifact = EntityBuffer.new(0, func() -> WorldItem: return ArtifactCube.make(), deinit_world_item, "artifact")
+	buffer_coin = EntityBuffer.new(0, func() -> WorldItem: return CoinDisc.make(), deinit_world_item, "coin")
+	buffer_key = EntityBuffer.new(0, func() -> WorldItem: return KeyPrism.make(), deinit_world_item, "key")
+	buffer_spell = EntityBuffer.new(0, func() -> WorldItem: return SpellPaper.make(), deinit_world_item, "spell")
 
 func get_tree(kind: World.Foliage) -> Trees:
 	match kind:
@@ -149,3 +164,20 @@ func free_building(building: Buildings) -> void:
 		World.Building.FANTASY_VALLEY_SINGLE: buffer_house_single.free_entity(building)
 		World.Building.FANTASY_VALLEY_DOUBLE: buffer_house_double.free_entity(building)
 		World.Building.FANTASY_WELL: buffer_well.free_entity(building)
+		
+func get_world_item(kind: World.Item) -> WorldItem:
+	match kind:
+		World.Item.TARGET: buffer_target.get_entity()
+		World.Item.ARTIFACT: buffer_artifact.get_entity()
+		World.Item.KEY: buffer_key.get_entity()
+		World.Item.COIN: buffer_coin.get_entity()
+		World.Item.SPELL: buffer_spell.get_entity()
+	return buffer_target.get_entity()
+
+func free_world_item(node: WorldItem) -> void:
+	match node.kind:
+		World.Item.TARGET: buffer_target.free_entity(node)
+		World.Item.ARTIFACT: buffer_artifact.free_entity(node)
+		World.Item.KEY: buffer_key.free_entity(node)
+		World.Item.COIN: buffer_coin.free_entity(node)
+		World.Item.SPELL: buffer_spell.free_entity(node)

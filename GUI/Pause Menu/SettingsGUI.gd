@@ -272,7 +272,7 @@ func update_info() -> void:
 		
 	var hour := floori(world_settings.time_of_day)
 	var time := "%d:%d" % [hour, clampi(int(world_settings.time_of_day - hour) * 60, 0, 59)]
-	
+	print(world_settings.player_keys)
 	info_label.text = """
 [center]
 [b]World Name:[/b] %s

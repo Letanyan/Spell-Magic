@@ -13,6 +13,7 @@ var is_ready := false
 var inhabitants: Dictionary = {}
 var garden: Array[Node3D] = []
 var other_objects: Array = []
+var world_items: Array[WorldItem] = []
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
 	rng = RandomNumberGenerator.new()
@@ -91,6 +92,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 					entity_manager.free_tree(entity as Trees)
 				elif entity is Buildings:
 					entity_manager.free_building(entity as Buildings)
+				elif entity is WorldItem:
+					entity_manager.free_world_item(entity as WorldItem)
 			return null
 		entity.position.x = pos.x
 		entity.position.y = wh + info.get("y_offset", 0.0)
@@ -102,8 +105,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			if entity.get_parent() != null:
 				(entity as Enemy).setup()
 			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
-			var tag := get_tag_from_name(entity.name)
-			var is_marked := (player.world_settings.marked_entities.get(coord, []) as Array[int]).find(tag) != -1
+			var is_marked := entity_name_is_marked(entity.name)
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)
 				return null
@@ -113,10 +115,15 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			if entity is Trees:
 				(entity as Trees).setup(rng)
 				entity.name = World.Foliage.keys()[(entity as Trees).kind] + " " + str(rng.randi())
+				garden.append(entity)
 			elif entity is Buildings:
 				(entity as Buildings).setup(rng)
 				entity.name = World.Building.keys()[(entity as Buildings).entity_kind] + " " + str(rng.randi())
-			garden.append(entity)
+				garden.append(entity)
+			elif entity is WorldItem:
+				(entity as WorldItem).setup()
+				entity.name = World.Item.keys()[(entity as WorldItem).kind] + " " + str(rng.randi())
+				world_items.append(entity)
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
@@ -192,7 +199,6 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 			result = entity_manager.get_tree(foliage) as Trees
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
-			result.name = World.Foliage.keys()[foliage] + str(rng.randi())
 	return prepare_entity(state, result, pos, false, on_flat_surface(PI / 8))
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
@@ -204,15 +210,27 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			result = entity_manager.get_building(building)
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
-			result.name = World.Building.keys()[building] + str(rng.randi())
 			ground_angle = PI / 8
 		World.Building.FANTASY_WELL:
 			result = entity_manager.get_building(building)
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
-			result.name = World.Building.keys()[building] + str(rng.randi())
 			ground_angle = PI / 16
 	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
+	
+func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float, config: Dictionary) -> Node3D:
+	var result: Node3D = entity_manager.get_world_item(item)
+	var pos := Vector3(x, 0, y)
+	
+	match item:
+		World.Item.TARGET:
+			var temp := result as TargetShape
+			temp.element = config.get("element", Spell.Element.VOID)
+			temp.spawner = config.get("spawner", null)
+			temp.respawn_time = config.get("respawn_time", INF)
+			temp.path = config.get("path", PathStyle.still_path())
+	
+	return prepare_entity(state, result, pos, false, always_valid)
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
 	for p in collection:
@@ -288,10 +306,13 @@ func despawn_all_from_world(world: Node3D) -> void:
 		if f is Trees:
 			entity_manager.free_tree(f as Trees)
 		elif f is Buildings:
-			entity_manager.free_building(f as Buildings)	
+			entity_manager.free_building(f as Buildings)
+	for item in world_items:
+		entity_manager.free_world_item(item)
 	other_objects.clear()		
 	inhabitants.clear()
 	garden.clear()
+	world_items.clear()
 	SignalBus.enemy_death.disconnect(mark_entity)
 
 func update_info() -> void:
@@ -308,6 +329,9 @@ func update_info() -> void:
 		var s: CollisionShape3D = g.get_node("./static/shape")
 		if s != null:
 			s.disabled = g.position.distance_to(player.position) > 50
+			
+	for item in world_items:
+		item.is_active = item.position.distance_to(player.position) < 150 and not player.world_settings.is_paused
 
 func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 	if index <= -1:

@@ -7,6 +7,7 @@ enum GRASSLAND_STRUCTURES_KIND {
 	VILLAGE,
 	UNDEAD, MOLE,
 	ABANDONED_VILLAGE,
+	TARGET_PUZZLE,
 }
 
 const GRASSLAND_STRUCTURE = {
@@ -17,6 +18,7 @@ const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.0005,
 	GRASSLAND_STRUCTURES_KIND.UNDEAD: 0.01,
 	GRASSLAND_STRUCTURES_KIND.MOLE: 0.005,
+	GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE: 0.01
 }
 
 
@@ -60,6 +62,26 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
+			GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE:
+				index += 1
+				var pos := area[index] as Vector2
+				
+				var pos3 := Vector3.ZERO
+				var spawner := ItemSpawner.key_spawner(rng, pop, pos3, 2)
+				var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
+				
+				for i in 3:
+					var path := PathStyle.new(randf(), pos3).random_points_in_circle(2, 2, 2, 8).align_y_to_ground_and_air()
+					var config := {"element": Spell.Element.FIRE, "respawn_time": 5, "path": path, "spawner": spawner}
+					var p := pop.spawn_world_item(World.Item.TARGET, state, pos.x, pos.y, spacing, config)
+					pos3 = p.position
+					path.origin = pos3
+					if p != null and can_add_spawner:
+						spawner.nodes_to_be_cleared[p] = true
+						result.append(p)				
+					
+				spawner.position = pos3
+					
 			GRASSLAND_STRUCTURES_KIND.VILLAGE:
 				if area.size() - index < 100:
 					index += 1
@@ -137,7 +159,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						exclusion[j] = true
 						result.append(p)
 						var spawner := ItemSpawner.key_spawner(rng, pop, p.position, 2)
-						var can_add_spawner := pop.entity_name_is_marked(spawner.name)
+						var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
 						if can_add_spawner:
 							SignalBus.enemy_death.connect(spawner.remove_node)
 						for k in house_size:

@@ -1,9 +1,8 @@
 class_name TargetShape
-extends Node3D
+extends WorldItem
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var area_3d: Area3D = $Area3D
-
 
 var is_down: bool = false
 var time_when_down: float = 0.0 
@@ -11,20 +10,24 @@ var element: Spell.Element = Spell.Element.VOID
 var respawn_time: float = INF
 var spawner: ItemSpawner = null
 var path := PathStyle.still_path()
-var movement := VelocityMovement.new()
+var start_position := Vector3.ZERO
+var target := Vector3.ZERO
 var movement_tick: float = 0.0
 
-static func make_target(el: Spell.Element, re_time: float, spwner: ItemSpawner) -> TargetShape:
+static func make() -> TargetShape:
 	var result := (preload("res://Models/Misc/Target/Target.tscn") as PackedScene).instantiate() as TargetShape
-	result.element = el
-	result.respawn_time = re_time
-	result.set_spawner(spwner)
-	result.update_mesh_color()
-	spwner.condition_met.connect(result.remove_when_done)
+	result.kind = World.Item.TARGET
 	return result
+	
+func setup() -> void:
+	update_mesh_color()
+	spawner.condition_met.connect(remove_when_done)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if not is_active:
+		return
+	
 	if is_down and Time.get_unix_time_from_system() - time_when_down > respawn_time:
 		is_down = false
 		time_when_down = 0.0
@@ -34,12 +37,11 @@ func _process(delta: float) -> void:
 			
 	movement_tick -= delta
 	if movement_tick <= 0.0:
+		var next := path.next_position_basic(0.5, self, Vector3.ZERO)
+		target = Vector3(next.x, next.y, next.z)
+		start_position = position
 		movement_tick = 0.5
-		
-			
-func set_spawner(value: ItemSpawner) -> void:
-	spawner = value
-	spawner.nodes_to_be_cleared[self] = true
+	position = lerp(start_position, target, (0.5 - movement_tick) / 0.5)
 
 func _on_area_3d_area_entered(layer: int) -> void:
 	var is_fire    : int = layer & 0b0_0000_1000 != 0

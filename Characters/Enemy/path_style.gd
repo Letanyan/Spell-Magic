@@ -250,6 +250,77 @@ func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 				return g + y
 		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me.bounds.y / 2.0
 		_: return 0
+		
+# xyz = position, w = speed
+func next_position_basic(delta: float, me: Node3D, player: Vector3, is_done: Globals.Ref = null) -> Vector4:
+	time += delta
+	if is_done:
+		is_done.data = false
+	if me_start_position == null:
+		me_start_position = me.position
+	if player_start_position == null:
+		player_start_position = player
+	if origin_kind == OriginKind.VISION and player_start_vision_rotation == null:
+		player_start_vision_rotation = 0
+	var temp_origin := origin
+	if origin_kind == OriginKind.PLAYER or origin_kind == OriginKind.VISION:
+		temp_origin += player_start_position
+	elif origin_kind == OriginKind.ME:
+		temp_origin += me_start_position
+	
+	if origin_kind == OriginKind.VISION:
+		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation + player_vision_offset.x)
+		var rel_off := off + (player_start_position as Vector3)
+		var dist := me.position.distance_to(rel_off)
+		if dist > player_vision_offset.w + 0.1:
+			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player_start_position
+		elif dist < player_vision_offset.z + 0.1:
+			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player_start_position
+		temp_origin += off
+	
+	# don't use positions to determine completion as might get stuck if time near total_duration
+	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
+		me_start_position = null
+		time = 0.0
+		if is_done:
+			is_done.data = true
+		stored_loops += 1
+	
+	if Vector3(old_position.x, old_position.y, old_position.z).is_equal_approx(me.position):
+		is_on_path = true
+	else:
+		is_on_path = false
+	
+	var duration := clampf(time, 0, path.total_duration)
+	var index := Globals.Ref.new(0)
+	var v := path.position_at_time_with_rotation(duration, -player_start_vision_rotation, index) + temp_origin
+	if previous_path_index != index.data or is_zero_approx(time):
+		if origin_kind == OriginKind.VISION:
+			player_start_vision_rotation = 0
+		player_start_position = player
+		previous_path_index = index.data
+	var y := next_y_position_basic(me, v.x, v.y - temp_origin.y, v.z)
+	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
+		
+	return old_position
+
+func next_y_position_basic(me: Node3D, x: float, y: float, z: float) -> float:
+	match coord_y:
+		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) #+ me.bounds.y / 2.0
+		CoordY.GROUND_AND_DIRT: 
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) #+ me.bounds.y / 2.0
+			if y > 0:
+				return g
+			else:
+				return g + y
+		CoordY.GROUND_AND_AIR: 
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) #+ me.bounds.y / 2.0
+			if y < 0:
+				return g
+			else:
+				return g + y
+		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y #+ me.bounds.y / 2.0
+		_: return 0
 
 class Pathway:
 	var segments: Array[Segment]

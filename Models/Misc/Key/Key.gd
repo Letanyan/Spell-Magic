@@ -1,10 +1,18 @@
 class_name KeyPrism
-extends Node3D
+extends WorldItem
 
 var key: int = 0
 var eaten: bool = false
 
+static func make() -> KeyPrism:
+	var result := (preload("res://Models/Misc/Key/Key.tscn") as PackedScene).instantiate() as KeyPrism
+	result.kind = World.Item.KEY
+	return result
+
 func _ready() -> void:
+	setup()
+	
+func setup() -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 	update_mesh_color()
 

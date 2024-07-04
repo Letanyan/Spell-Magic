@@ -1,10 +1,18 @@
 class_name CoinDisc
-extends Node3D
+extends WorldItem
 
 var amount: int = 0
 var eaten: bool = false
 
+static func make() -> CoinDisc:
+	var result := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
+	result.kind = World.Item.COIN
+	return result
+
 func _ready() -> void:
+	setup()
+	
+func setup() -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 	update_mesh_color()
 
