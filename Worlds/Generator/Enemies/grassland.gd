@@ -137,20 +137,24 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						exclusion[j] = true
 						result.append(p)
 						var spawner := ItemSpawner.key_spawner(rng, pop, p.position, 2)
-						SignalBus.enemy_death.connect(spawner.remove_node)
+						var can_add_spawner := pop.entity_name_is_marked(spawner.name)
+						if can_add_spawner:
+							SignalBus.enemy_death.connect(spawner.remove_node)
 						for k in house_size:
 							if rng.randf() < 0.2:
 								var n: Bat = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
 								if n != null:
 									n.velocity_movement.current_biome = World.Biome.GRASSLAND
 									result.append(n)
-									spawner.nodes_to_be_cleared[n] = true
+									if can_add_spawner:
+										spawner.nodes_to_be_cleared[n] = true
 							else:
 								var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
 								if n != null:
 									n.velocity_movement.current_biome = World.Biome.GRASSLAND
 									result.append(n)
-									spawner.nodes_to_be_cleared[n] = true
+									if can_add_spawner:
+										spawner.nodes_to_be_cleared[n] = true
 					if max_limit <= 0:
 						break
 					

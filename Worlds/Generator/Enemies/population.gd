@@ -339,3 +339,6 @@ func mark_entity_name(name: String) -> void:
 			player.world_settings.marked_entities[coord] = []
 		(player.world_settings.marked_entities[coord] as Array[int]).append(tag)
 	
+func entity_name_is_marked(name: String) -> bool:
+	var tag := get_tag_from_name(name)
+	return (player.world_settings.marked_entities.get(coord, []) as Array[int]).find(tag) != -1
