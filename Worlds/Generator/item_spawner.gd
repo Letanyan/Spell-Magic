@@ -1,12 +1,19 @@
 class_name ItemSpawner
 
-var population: Population = null
+var population: Population = null:
+	set(value):
+		population = value
+		if population != null:
+			population.other_objects.append(self)
 var name: String = ""
 var nodes_to_be_cleared := {}
 var position: Vector3 = Vector3.ZERO
 var artifact: Artifact = null
 var spell: Spell = null
 var key: int = 0
+var coins: Array[int] = []
+
+signal condition_met
 
 func _init() -> void:
 	pass
@@ -35,21 +42,29 @@ static func key_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector
 	result.position = pos
 	return result
 	
+static func coins_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, cs: Array[int]) -> ItemSpawner:
+	var result := ItemSpawner.new()
+	result.name = "CoinsSpawner " + str(rng.randi())
+	result.population = pop
+	result.coins = cs
+	result.position = pos
+	return result
+	
 func remove_node(node: Node3D) -> void:
 	nodes_to_be_cleared.erase(node)
-	if population:
-		population.other_objects.append(self)
-		population.mark_entity_name(name)
-	else:
-		print("no population set")
 	if nodes_to_be_cleared.is_empty():
+		if population:
+			population.mark_entity_name(name)
 		var world := node.get_parent_node_3d()
 		if key != 0:
 			drop_key_item(world)
-		elif artifact != null:
+		if artifact != null:
 			drop_artifact_item(world)
-		elif spell != null:
+		if spell != null:
 			drop_spell_item(world)
+		if not coins.is_empty():
+			drop_coin_items(world)
+		condition_met.emit() 
 	
 func drop_artifact_item(world: Node3D) -> bool:
 	if artifact:
@@ -76,5 +91,15 @@ func drop_key_item(world: Node3D) -> bool:
 		item.position = position
 		item.key = key
 		world.add_child(item)
+		return true
+	return false
+
+func drop_coin_items(world: Node3D) -> bool:
+	if not coins.is_empty():
+		for coin in coins:
+			var item := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
+			item.position = position + Globals.rand_point_in_circle(1.0 + log(coins.size()), 0)
+			item.amount = coin
+			world.add_child(item)
 		return true
 	return false

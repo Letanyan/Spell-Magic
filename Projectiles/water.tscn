@@ -109,7 +109,7 @@ script = ExtResource("1_dkd3k")
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_ygggg")
 target_position = Vector3(0, 0, 0)
-collision_mask = 791
+collision_mask = 1815
 collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]

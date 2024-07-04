@@ -442,7 +442,12 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		if spell.element == Spell.Element.ROCK and (obj == get_node("body")):
 			continue
 		if obj is Area3D:
-			_on_area_entered(obj as Area3D, [point])
+			if (obj as Area3D).collision_layer & 0b0100_0000_0000 != 0:
+				var parent := (obj as Area3D).get_parent() as Node3D
+				if parent != null and parent is TargetShape:
+					((obj as Area3D).get_parent() as TargetShape)._on_area_3d_area_entered(Spell.collision_layer_from_element(spell.element))
+			else:
+				_on_area_entered(obj as Area3D, [point])
 		elif obj is CollisionObject3D:
 			_on_body_entered(obj as CollisionObject3D, [point])
 	

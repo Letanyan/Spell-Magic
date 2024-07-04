@@ -68,7 +68,7 @@ script = ExtResource("1_a23cr")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CylinderShape3D_i1ldc")
 target_position = Vector3(0, 0, 0)
-collision_mask = 534
+collision_mask = 1558
 
 [node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)

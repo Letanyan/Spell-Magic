@@ -251,15 +251,15 @@ func group_spawn_points(spacing: float) -> Dictionary:
 				
 	return {"points": result, "biomes": biomes}
 	
-static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, rng: RandomNumberGenerator) -> PackedInt64Array:
+static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, rang: RandomNumberGenerator) -> PackedInt64Array:
 	var indices: PackedInt64Array = []
 	for i in range(offset, area.size()):
 		if point.distance_to(area[i]) < distance and not exluding.has(i):
 			indices.append(i)
-	if rng != null:
+	if rang != null:
 		for i in indices.size():
 			var temp := indices[i]
-			var j := rng.randi_range(0, indices.size() - 1)
+			var j := rang.randi_range(0, indices.size() - 1)
 			indices[i] = indices[j]
 			indices[j] = temp
 	return indices

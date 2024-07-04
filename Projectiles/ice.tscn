@@ -66,7 +66,7 @@ script = ExtResource("1_gw4hd")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_hwdgd")
 target_position = Vector3(0, 0, 0.1)
-collision_mask = 542
+collision_mask = 1566
 collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]

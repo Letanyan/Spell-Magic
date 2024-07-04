@@ -535,6 +535,17 @@ static func element_from_name(_name: String) -> Element:
 		"electric": return Element.ELECTRIC
 		"void": return Element.VOID
 		_: return Element.FIRE
+		
+static func collision_layer_from_element(el: Element) -> int:
+	match el:
+		Element.FIRE: return 0b0000_1000
+		Element.ROCK: return 0b0001_0000
+		Element.WATER: return 0b0010_0000
+		Element.AIR: return 0b0100_0000
+		Element.ICE: return 0b1000_0000
+		Element.ELECTRIC: return 0b1_0000_0000
+		Element.VOID: return 0b0000_0000
+		_: return 0
 
 static func color_from_element(el: Element) -> Color:
 	match el:

@@ -91,7 +91,19 @@ func setup(_settings: WorldSettings) -> void:
 	
 	var rng := RandomNumberGenerator.new()
 	spawner = ItemSpawner.key_spawner(rng, null, fishman.position, 16)
-	spawner.nodes_to_be_cleared[fishman] = true
+	#spawner.nodes_to_be_cleared[fishman] = true
+	
+	var target1 := TargetShape.make_target(Spell.Element.FIRE, 3.0, spawner)
+	var target2 := TargetShape.make_target(Spell.Element.FIRE, 3.0, spawner)
+	var target3 := TargetShape.make_target(Spell.Element.FIRE, 3.0, spawner)
+	target1.position = Vector3(-20, 1000, 20)
+	target2.position = Vector3(-20, 1000, 25)
+	target3.position = Vector3(-20, 1000, 30)
+	add_child(target1)
+	add_child(target2)
+	add_child(target3)
+	
+	
 	SignalBus.enemy_death.connect(spawner.remove_node)
 	
 	

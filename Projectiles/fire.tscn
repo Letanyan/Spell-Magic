@@ -108,7 +108,7 @@ script = ExtResource("1_ku5ha")
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_i6n1l")
 target_position = Vector3(0, 0, 0)
-collision_mask = 823
+collision_mask = 1847
 collide_with_areas = true
 debug_shape_custom_color = Color(0, 0, 1, 1)
 
