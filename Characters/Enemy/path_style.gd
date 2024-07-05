@@ -633,7 +633,7 @@ class Segment:
 		return Vector3.ZERO
 		
 	func position_at_time_with_rotation(t: float, angle: float) -> Vector3:
-		var mat := Transform3D.IDENTITY.rotated(Vector3.UP, angle).affine_inverse()
+		var mat := Transform3D.IDENTITY.rotated(Vector3.UP, angle)
 		match kind:
 			BezierKind.LINEAR:
 				return lerp(mat * start, mat * end, t)
@@ -667,7 +667,7 @@ class Segment:
 		return distance / s
 		
 	func apply_transform(transform: Transform3D) -> void:
-		var mat := transform.affine_inverse()
+		var mat := transform
 		match kind:
 			BezierKind.LINEAR:
 				start = mat * start

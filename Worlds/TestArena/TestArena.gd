@@ -93,7 +93,7 @@ func setup(_settings: WorldSettings) -> void:
 	spawner = ItemSpawner.key_spawner(rng, null, fishman.position, 16)
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
-	var T := Transform3D.IDENTITY.rotated_local(Vector3.FORWARD, PI / 2).translated_local(Vector3(0, -10, 0))
+	var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
 	var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
 	var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
 	var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
