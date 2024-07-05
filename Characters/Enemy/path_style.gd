@@ -252,7 +252,7 @@ func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
 		_: return 0
 		
 # xyz = position, w = speed
-func next_position_basic(delta: float, me: Node3D, player: Vector3, is_done: Globals.Ref = null) -> Vector4:
+func next_position_basic(delta: float, me: TargetShape, player: Vector3, is_done: Globals.Ref = null) -> Vector4:
 	time += delta
 	if is_done:
 		is_done.data = false
@@ -304,22 +304,22 @@ func next_position_basic(delta: float, me: Node3D, player: Vector3, is_done: Glo
 		
 	return old_position
 
-func next_y_position_basic(me: Node3D, x: float, y: float, z: float) -> float:
+func next_y_position_basic(me: TargetShape, x: float, y: float, z: float) -> float:
 	match coord_y:
-		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) #+ me.bounds.y / 2.0
+		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
 		CoordY.GROUND_AND_DIRT: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) #+ me.bounds.y / 2.0
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
 			if y > 0:
 				return g
 			else:
 				return g + y
 		CoordY.GROUND_AND_AIR: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) #+ me.bounds.y / 2.0
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
 			if y < 0:
 				return g
 			else:
 				return g + y
-		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y #+ me.bounds.y / 2.0
+		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me.bounds.y / 2.0
 		_: return 0
 
 class Pathway:

@@ -25,9 +25,12 @@ var spawner: ItemSpawner = null
 var path := PathStyle.still_path()
 var start_position := Vector3.ZERO
 var target_position := Vector3.ZERO
+var bounds := Vector3(1, 1, 1)
 var movement_tick: float = 0.0
 var vital_tick: float = 1.0
 var invunerable: int = 0
+
+var focus_point := Vector3.ZERO
 
 static func make() -> TargetShape:
 	var result := (preload("res://Models/Misc/Target/Target.tscn") as PackedScene).instantiate() as TargetShape
@@ -41,6 +44,12 @@ func setup() -> void:
 func _ready() -> void:
 	setup()
 
+func feet_position() -> float:
+	return position.y - bounds.y / 2.0
+	
+func set_feet_position(y: float) -> void:
+	position.y = y + bounds.y / 2.0
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	if not is_active:
@@ -60,12 +69,38 @@ func _physics_process(delta: float) -> void:
 			
 	movement_tick -= delta
 	if movement_tick <= 0.0:
-		var next := path.next_position_basic(0.5, self, Vector3.ZERO)
+		var next := path.next_position_basic(0.5, self, focus_point)
 		target_position = Vector3(next.x, next.y, next.z)
-		start_position = position
 		movement_tick = 0.5
+		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
+		if feet_position() <= g:
+			if path.coord_y == PathStyle.CoordY.GROUND or path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
+				set_feet_position(g)
+				if target_position.y < position.y:
+					target_position.y = position.y
+		elif feet_position() >= g:
+			if path.coord_y == PathStyle.CoordY.GROUND or path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
+				set_feet_position(g)
+				if target_position.y > position.y:
+					target_position.y = position.y
+		start_position = position
+				
 	position = lerp(start_position, target_position, (0.5 - movement_tick) / 0.5)
-	
+	if true:
+		var velocity := (target_position - start_position)
+		if path.lookat == PathStyle.LookAt.PLAYER:
+			var goal_position := position + velocity.normalized() * 10
+			look_at(focus_point.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+		elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
+			var goal_position := position + velocity * 10
+			var player_position := focus_point
+			player_position.y = position.y
+			look_at(player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+		elif path.lookat == PathStyle.LookAt.VELOCITY:
+			velocity = velocity.normalized()
+			rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)
+			
+			
 	vital_tick -= delta
 	if vital_tick <= 0.0:
 		vital_tick = 1.0
