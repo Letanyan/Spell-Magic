@@ -9,12 +9,12 @@ var attack_path: PathStyle
 var water_path: PathStyle
 var water_source: Vector3
 	
-func setup() -> void:
+func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10
 	
-	idle_path = PathStyle.new(randf(), position).random_points_in_circle(2, 10, 0, 10).align_y_to_ground().use_absolute()
-	attack_path = PathStyle.new(randf()).towards_player(3, 3, 5).use_physics()
+	idle_path = PathStyle.new(seedling, position).random_points_in_circle(2, 10, 0, 10).align_y_to_ground().use_absolute()
+	attack_path = PathStyle.new().towards_player(3, 3, 5).use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()

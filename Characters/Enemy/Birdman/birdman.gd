@@ -15,7 +15,7 @@ func _ready() -> void:
 	
 	velocity_movement = VelocityMovement.new()
 	
-func setup() -> void:
+func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 35
 	vitals.attack.value = randf_range(level * 2, (level + 10) * 2)
@@ -25,7 +25,7 @@ func setup() -> void:
 		.move_to(Vector3(0, -4, 0)) \
 		.line_to(Vector3(0, 20, 0), 5, PathStyle.Easing.out_quart) \
 		.line_to(Vector3(0, -4, 0), 2, PathStyle.Easing.out_quart)
-	idle_path = PathStyle.new(randf()).follow_path(idle_pathway).align_y_to_ground_and_air().set_origin(position).use_absolute()
+	idle_path = PathStyle.new().follow_path(idle_pathway).align_y_to_ground_and_air().set_origin(position).use_absolute()
 	
 	var attack_pathway := PathStyle.Pathway.new()
 	attack_pathway.append(
@@ -36,7 +36,7 @@ func setup() -> void:
 		[5, 2],
 		[PathStyle.Easing.out_quart, PathStyle.Easing.out_quart]
 	)
-	attack_path = PathStyle.new(randf()).follow_path(attack_pathway)\
+	attack_path = PathStyle.new().follow_path(attack_pathway)\
 	.align_y_to_ground_and_air()\
 	.set_use_player_as_origin()\
 	.set_player_body_vision_as_origin(0, 0, 10.0 + randf_range(10.0, 20.0) + (level / 10.0) )\

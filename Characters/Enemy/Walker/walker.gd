@@ -11,7 +11,7 @@ var attack_path: PathStyle
 
 var ice_wall_timer: int = 0
 	
-func setup() -> void:
+func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	

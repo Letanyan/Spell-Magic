@@ -20,7 +20,12 @@ var gauge  := Vitals.Stat.new(0.0, 0, 1.0)
 
 var element: Spell.Element = Spell.Element.VOID
 
-var spawner: ItemSpawner = null
+var spawner: ItemSpawner = null:
+	set(value):
+		if spawner != null:
+			spawner.condition_met.disconnect(remove_when_done)
+		spawner = value
+		spawner.condition_met.connect(remove_when_done)
 
 var path := PathStyle.still_path()
 var start_position := Vector3.ZERO
@@ -39,7 +44,6 @@ static func make() -> TargetShape:
 	
 func setup() -> void:
 	update_mesh_color()
-	spawner.condition_met.connect(remove_when_done)
 	
 func _ready() -> void:
 	setup()
@@ -167,6 +171,8 @@ func update_mesh_with_color(color: Color) -> void:
 	update_health_bar()
 	
 func update_health_bar() -> void:
+	if get_parent() == null:
+		return
 	health_bar_level.hide()
 	match puzzle_kind:
 		PuzzleKind.SINGLE_HIT:

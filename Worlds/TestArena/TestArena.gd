@@ -97,8 +97,6 @@ func setup(_settings: WorldSettings) -> void:
 	var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
 	var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
 	var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
-	for segment: PathStyle.Segment in path1.path.segments:
-		print(segment.start, " -> ", segment.end)
 	var target1 := TargetShape.make()
 	target1.configure(TargetShape.config_for_gauge(Spell.Element.WATER, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.1), path1))
 	var target2 := TargetShape.make()

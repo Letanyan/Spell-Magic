@@ -8,7 +8,7 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 	
-func setup() -> void:
+func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(10 * level, 0, 10 * level), Vitals.Stat.new(500, 0, 500, 10))
 	vitals.perception.value = 0
 	
@@ -16,7 +16,7 @@ func setup() -> void:
 		.move_to(Vector3(0, 5, 0)) \
 		.line_to(Vector3(0, 5, 50), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.in_quint) \
 		.line_to(Vector3(0, 5, 0), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
-	idle_path = PathStyle.new(randf(), position).follow_path(idle_pathway).use_absolute().align_y_to_ground_and_air()
+	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).use_absolute().align_y_to_ground_and_air()
 	
 	#idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 10, 5).use_absolute().align_y_to_origin()
 	
@@ -37,7 +37,7 @@ func setup() -> void:
 	
 	#attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()
 	
-	attack_path = PathStyle.new(0.0).follow_path(PathStyle.Pathway.new() \
+	attack_path = PathStyle.new().follow_path(PathStyle.Pathway.new() \
 	.move_to(Vector3(0, 5, 0)) \
 	.line_to(Vector3(-10, 5, 0), 5, PathStyle.Easing.linear) \
 	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \

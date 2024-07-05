@@ -43,7 +43,7 @@ func _ready() -> void:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 		#(get_node("Collision") as CollisionShape3D).disabled = true
 		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
-	setup()
+	setup(0)
 	
 static func make(_kind: World.Enemy) -> Enemy:
 	var result: Enemy
@@ -67,7 +67,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 		_: push_error("Missing enemy")
 	return result
 	
-func setup() -> void:
+func setup(seedling: int) -> void:
 	pass
 	
 func add_shake(amount: float) -> void:

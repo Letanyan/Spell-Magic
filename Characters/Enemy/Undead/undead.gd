@@ -8,12 +8,12 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 	
-func setup() -> void:
+func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 10
 	
-	idle_path = PathStyle.new(randf()).random_points_in_circle(2, 2, bounds.y / 2.0, 10).set_origin(position + Vector3(0, bounds.y / 2.0, 0)).align_y_to_ground()
-	attack_path = PathStyle.new(randf(), position + Vector3(0, bounds.y / 2.0, 0)).towards_player(2, 1, 2).use_absolute() #.use_physics()
+	idle_path = PathStyle.new(seedling).random_points_in_circle(2, 2, bounds.y / 2.0, 10).set_origin(position + Vector3(0, bounds.y / 2.0, 0)).align_y_to_ground()
+	attack_path = PathStyle.new(0, position + Vector3(0, bounds.y / 2.0, 0)).towards_player(2, 1, 2).use_absolute() #.use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()

@@ -102,8 +102,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			(entity as Enemy).player = player
 			(entity as Enemy).index_in_population = inhabitants.size()
 			(entity as Enemy).is_dead = false
-			if entity.get_parent() != null:
-				(entity as Enemy).setup()
+			(entity as Enemy).setup(rng.randi())
 			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
 			var is_marked := entity_name_is_marked(entity.name)
 			if is_marked:
@@ -186,8 +185,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	result.level += randi_range(0, int(result.level * 0.2)) + 1.0
 	result.player = _player
 	result.position = Vector3(x, y, z)
-	if result.get_parent():
-		result.setup()
+	result.setup(0)
 	return result
 
 	
