@@ -225,10 +225,7 @@ func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, x: flo
 	match item:
 		World.Item.TARGET:
 			var temp := result as TargetShape
-			temp.element = config.get("element", Spell.Element.VOID)
-			temp.spawner = config.get("spawner", null)
-			temp.respawn_time = config.get("respawn_time", INF)
-			temp.path = config.get("path", PathStyle.still_path())
+			temp.configure(config)
 	
 	return prepare_entity(state, result, pos, false, always_valid)
 	

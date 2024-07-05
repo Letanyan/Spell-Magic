@@ -93,6 +93,21 @@ func setup(_settings: WorldSettings) -> void:
 	spawner = ItemSpawner.key_spawner(rng, null, fishman.position, 16)
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
+	var path := PathStyle.new(randf(), Vector3(20, 1000, -20)).random_points_in_circle(2, 5, 3, 7).align_y_to_ground_and_air()
+	var target1 := TargetShape.make()
+	target1.configure(TargetShape.config_for_gauge(Spell.Element.WATER, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.1), path))
+	var target2 := TargetShape.make()
+	target2.configure(TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 3, Vitals.Stat.new(100, 0, 100, 5), path))
+	var target3 := TargetShape.make()
+	target3.configure(TargetShape.config_for_gauge(Spell.Element.VOID, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.05), path))
+	spawner.nodes_to_be_cleared[target1] = true
+	spawner.nodes_to_be_cleared[target2] = true
+	spawner.nodes_to_be_cleared[target3] = true
+	
+	add_child(target1)
+	add_child(target2)
+	add_child(target3)
+	
 	SignalBus.enemy_death.connect(spawner.remove_node)
 	
 	

@@ -4,7 +4,7 @@ class Stat:
 	@export var min_value: float
 	@export var max_value: float
 	@export var value: float
-	@export var change_per_tick: float
+	@export var change_per_tick: float # assumed once per second
 	@export var resistance: float
 	
 	func _init(v: float, min_v: float = v, max_v: float = v, change: float = 0, res: float = 0) -> void:
@@ -115,6 +115,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 	
 	return {"dmg": power, "el": kind}
 
+# we assume this is called once per second everywhere
 func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](float, Spell.Element)
 	freeze.update_per_tick()
 	wetness.update_per_tick()
