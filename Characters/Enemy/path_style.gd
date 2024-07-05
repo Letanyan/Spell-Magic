@@ -8,14 +8,13 @@ enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
 var origin := Vector3.ZERO
 var path: Pathway = null
 var origin_kind: OriginKind
-var seed_offset: float
+var rng: RandomNumberGenerator
 var mover: Mover = Mover.ABSOLUTE
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var stored_loops: int = 0
 var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
-var time_offset: float = 0.0
 var time: float = 0.0
 var old_position: Vector4 = Vector4.ZERO
 var is_on_path: bool = false
@@ -32,12 +31,11 @@ var player_start_vision_rotation := 0.0 # used to store entity rotation (float) 
 var player_vision_offset: Vector4 = Vector4.ZERO
 var use_player_camera_as_vision: bool = false # if false use player body orientation else camera
 
-func _init(_seed: float = randf(), _origin: Vector3 = Vector3.ZERO) -> void:
+func _init(_seed: int = randi(), _origin: Vector3 = Vector3.ZERO) -> void:
 	origin = _origin
-	seed_offset = _seed
+	rng = RandomNumberGenerator.new()
+	rng.seed = _seed
 	origin_kind = OriginKind.ABSOLUTE
-	if _seed == 0.0:
-		time_offset = Time.get_unix_time_from_system()
 		
 static func still_path() -> PathStyle:
 	var result := PathStyle.new()
@@ -156,23 +154,28 @@ func follow_path(pathway: Pathway) -> PathStyle:
 	path = pathway
 	return self
 	
+func transform_path(transform: Transform3D) -> PathStyle:
+	path.apply_transform(transform)
+	return self
+	
 func random_points_in_circle(speed: float, radius: float, height: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var p := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
+	var start := Vector3(rng.randf() * 2 - 1, 0, rng.randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0) 
+	var p := Vector3(rng.randf() * 2 - 1, 0, rng.randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
+	path.add_with_speed(Segment.linear(start, p), speed, Easing.linear)
 	for i in range(count - 1):
-		var q := Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
+		var q := Vector3(rng.randf() * 2 - 1, 0, rng.randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
 		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
 		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
+	path.add_with_speed(Segment.linear(p, start), speed, Easing.linear)
 	return self
 	
 func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var p := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
+	var p := Vector3(rng.randf_range(min_r, max_r) * cos(rng.randf_range(-PI, PI)), 0, rng.randf_range(min_r, max_r) * sin(rng.randf_range(-PI, PI)))
 	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
 	for i in range(count - 1):
-		var q := Vector3(randf_range(min_r, max_r) * cos(randf_range(-PI, PI)), 0, randf_range(min_r, max_r) * sin(randf_range(-PI, PI)))
+		var q := Vector3(rng.randf_range(min_r, max_r) * cos(rng.randf_range(-PI, PI)), 0, rng.randf_range(min_r, max_r) * sin(rng.randf_range(-PI, PI)))
 #		var m := (p + q) / 2.0
 #		path.add(Segment.quad(p, q, m))
 		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)

@@ -93,13 +93,21 @@ func setup(_settings: WorldSettings) -> void:
 	spawner = ItemSpawner.key_spawner(rng, null, fishman.position, 16)
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
-	var path := PathStyle.new(randf(), Vector3(20, 1000, -20)).random_points_in_circle(2, 5, 3, 7).align_y_to_ground_and_air()
+	var T := Transform3D.IDENTITY.rotated_local(Vector3.FORWARD, PI / 2).translated_local(Vector3(0, -10, 0))
+	var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
+	var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
+	var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
+	for segment: PathStyle.Segment in path1.path.segments:
+		print(segment.start, " -> ", segment.end)
 	var target1 := TargetShape.make()
-	target1.configure(TargetShape.config_for_gauge(Spell.Element.WATER, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.1), path))
+	target1.configure(TargetShape.config_for_gauge(Spell.Element.WATER, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.1), path1))
 	var target2 := TargetShape.make()
-	target2.configure(TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 3, Vitals.Stat.new(100, 0, 100, 5), path))
+	target2.configure(TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 3, Vitals.Stat.new(100, 0, 100, 5), path2))
 	var target3 := TargetShape.make()
-	target3.configure(TargetShape.config_for_gauge(Spell.Element.VOID, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.05), path))
+	target3.configure(TargetShape.config_for_gauge(Spell.Element.VOID, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.05), path3))
+	target1.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 10
+	target2.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 10
+	target3.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 10
 	spawner.nodes_to_be_cleared[target1] = true
 	spawner.nodes_to_be_cleared[target2] = true
 	spawner.nodes_to_be_cleared[target3] = true

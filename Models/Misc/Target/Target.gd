@@ -25,7 +25,7 @@ var spawner: ItemSpawner = null
 var path := PathStyle.still_path()
 var start_position := Vector3.ZERO
 var target_position := Vector3.ZERO
-var bounds := Vector3(1, 1, 1)
+var bounds := Vector3(2, 2, 2)
 var movement_tick: float = 0.0
 var vital_tick: float = 1.0
 var invunerable: int = 0
@@ -86,19 +86,18 @@ func _physics_process(delta: float) -> void:
 		start_position = position
 				
 	position = lerp(start_position, target_position, (0.5 - movement_tick) / 0.5)
-	if true:
-		var velocity := (target_position - start_position)
-		if path.lookat == PathStyle.LookAt.PLAYER:
-			var goal_position := position + velocity.normalized() * 10
-			look_at(focus_point.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
-		elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
-			var goal_position := position + velocity * 10
-			var player_position := focus_point
-			player_position.y = position.y
-			look_at(player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
-		elif path.lookat == PathStyle.LookAt.VELOCITY:
-			velocity = velocity.normalized()
-			rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)
+	var velocity := (target_position - start_position)
+	if path.lookat == PathStyle.LookAt.PLAYER:
+		var goal_position := position + velocity.normalized() * 10
+		look_at(focus_point.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+	elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
+		var goal_position := position + velocity * 10
+		var player_position := focus_point
+		player_position.y = position.y
+		look_at(player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+	elif path.lookat == PathStyle.LookAt.VELOCITY:
+		velocity = velocity.normalized()
+		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)
 			
 			
 	vital_tick -= delta
