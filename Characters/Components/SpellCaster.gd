@@ -1,6 +1,6 @@
 class_name SpellCaster
 
-enum Entity { PLAYER, ENEMY, PROJECTILE }
+enum Entity { PLAYER, ENEMY, PROJECTILE, TARGET }
 
 var origin_node: Node3D = null
 var entity: Entity
@@ -86,6 +86,13 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			if p != null:
 				var hit_on := (body.position - p.position).normalized()
 				track = get_direction_to_tracking(body, p, hit_on)
+			# TODO: define Bx, By, Bz, Br for projectile using spell size i.e. (r)
+				
+		Entity.TARGET:
+			var body := _body as TargetShape
+			result[prefix + "C"] = (body as TargetShape).caster_position.distance_to(body.global_position)
+			cdir = (body.global_position - (body as TargetShape).caster_position).normalized() # direction to player
+			
 	
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
@@ -107,6 +114,8 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 		Entity.PROJECTILE:
 			var body := _body as SpellBody
 			c = (body.velocity as Vector3).normalized()
+		Entity.TARGET:
+			c = cdir
 	result[prefix + "i"] = c.x
 	result[prefix + "j"] = c.y
 	result[prefix + "k"] = c.z
@@ -133,16 +142,25 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 				result["abs_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
 			elif variable_kind == SpellVariableKind.TIMED:
 				result["rel_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
-		else:
+		elif entity == Entity.PROJECTILE:
 			if variable_kind == SpellVariableKind.FIXED:
 				result["abs_pos"] = _body.position + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
 				result["rel_pos"] = _body.position + cdir
+		elif entity == Entity.TARGET:
+			if variable_kind == SpellVariableKind.FIXED:
+				result["abs_pos"] = (_body as TargetShape).caster_position + cdir
+			elif variable_kind == SpellVariableKind.TIMED:
+				result["rel_pos"] = (_body as TargetShape).caster_position + cdir
 			
 	
 	if p != null: # direction from character to spell
 		var old_origin := Vector3(result.get(prefix + "X", 0) as float, result.get(prefix + "Y", 0) as float, result.get(prefix + "Z", 0) as float)
-		var origin := old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
+		var origin: Vector3
+		if entity == Entity.TARGET:
+			origin = old_origin.lerp(((_body as TargetShape).caster_position - p.position).normalized(), 0.0166667).normalized()
+		else:
+			origin = old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
 		result[prefix + "X"] = origin.x
 		result[prefix + "Y"] = origin.y
 		result[prefix + "Z"] = origin.z

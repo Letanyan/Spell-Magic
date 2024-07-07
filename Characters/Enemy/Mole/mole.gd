@@ -15,7 +15,7 @@ func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 25
 	
-	current_path = PathStyle.new().circle(position, 7, 5, bounds.y / 2.0).use_absolute().align_y_to_ground()
+	current_path = PathStyle.new(0, position).circle(7, 5, bounds.y / 2.0).use_absolute().align_y_to_ground()
 	idle_path = current_path
 	
 	var R := 25.0

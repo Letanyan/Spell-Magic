@@ -124,12 +124,11 @@ func align_y_to_ground_and_dirt() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_DIRT
 	return self
 	
-func circle(center: Vector3, speed: float, radius: float, h: float) -> PathStyle:
+func circle(speed: float, radius: float, h: float) -> PathStyle:
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
 	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
 	path.append_with_speed([a, b], [speed, speed], [Easing.linear, Easing.linear])
-	origin = center
 	origin_kind = OriginKind.ABSOLUTE
 	return self
 	
@@ -184,16 +183,22 @@ func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int)
 	return self
 	
 # xyz = position, w = speed
-func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref = null) -> Vector4:
+func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref = null) -> Vector4:
 	time += delta
 	if is_done:
 		is_done.data = false
 	if me_start_position == null:
 		me_start_position = me.position
 	if player_start_position == null:
-		player_start_position = player.position
+		if player is Player:
+			player_start_position = (player as Player).position
+		elif player is Vector3:
+			player_start_position = player
 	if origin_kind == OriginKind.VISION and player_start_vision_rotation == null:
-		player_start_vision_rotation = (player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
+		if player is Player:
+			player_start_vision_rotation = ((player as Player).get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
+		else:
+			player_start_vision_rotation = 0.0
 	var temp_origin := origin
 	if origin_kind == OriginKind.PLAYER or origin_kind == OriginKind.VISION:
 		temp_origin += player_start_position
@@ -209,11 +214,11 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 		elif dist < player_vision_offset.z + 0.1:
 			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player_start_position
 		temp_origin += off
-	
-	# don't use positions to determine completion as might get stuck if time near total_duration
+		
+	# don't use positions to determine completion as we might get stuck if time near total_duration
 	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
 		me_start_position = null
-		time = 0.0
+		time = time - path.total_duration
 		if is_done:
 			is_done.data = true
 		stored_loops += 1
@@ -226,103 +231,43 @@ func next_position(delta: float, me: Enemy, player: Player, is_done: Globals.Ref
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
 	var v := path.position_at_time_with_rotation(duration, -player_start_vision_rotation, index) + temp_origin
-	if previous_path_index != index.data or is_zero_approx(time):
+	if previous_path_index != index.data or is_zero_approx(time) or (player is Player and player.position != player_start_position) or (player is Vector3 and player != player_start_position):
 		if origin_kind == OriginKind.VISION:
-			player_start_vision_rotation = (player.get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
-		player_start_position = player.position
+			if player is Player:
+				player_start_vision_rotation = ((player as Player).get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
+			else:
+				player_start_vision_rotation = 0.0
+		if player is Player:
+			player_start_position = (player as Player).position
+		elif player is Vector3:
+			player_start_position = player
 		previous_path_index = index.data
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
 		
 	return old_position
 
-func next_y_position(me: Enemy, x: float, y: float, z: float) -> float:
+func next_y_position(me: Node3D, x: float, y: float, z: float) -> float:
+	var me_y := 0.0
+	if me is Enemy:
+		me_y = (me as Enemy).bounds.y
+	elif me is TargetShape:
+		me_y = (me as TargetShape).bounds.y		
 	match coord_y:
-		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
+		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 		CoordY.GROUND_AND_DIRT: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y > 0:
 				return g
 			else:
 				return g + y
 		CoordY.GROUND_AND_AIR: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y < 0:
 				return g
 			else:
 				return g + y
-		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me.bounds.y / 2.0
-		_: return 0
-		
-# xyz = position, w = speed
-func next_position_basic(delta: float, me: TargetShape, player: Vector3, is_done: Globals.Ref = null) -> Vector4:
-	time += delta
-	if is_done:
-		is_done.data = false
-	if me_start_position == null:
-		me_start_position = me.position
-	if player_start_position == null:
-		player_start_position = player
-	if origin_kind == OriginKind.VISION and player_start_vision_rotation == null:
-		player_start_vision_rotation = 0
-	var temp_origin := origin
-	if origin_kind == OriginKind.PLAYER or origin_kind == OriginKind.VISION:
-		temp_origin += player_start_position
-	elif origin_kind == OriginKind.ME:
-		temp_origin += me_start_position
-	
-	if origin_kind == OriginKind.VISION:
-		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation + player_vision_offset.x)
-		var rel_off := off + (player_start_position as Vector3)
-		var dist := me.position.distance_to(rel_off)
-		if dist > player_vision_offset.w + 0.1:
-			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player_start_position
-		elif dist < player_vision_offset.z + 0.1:
-			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player_start_position
-		temp_origin += off
-	
-	# don't use positions to determine completion as might get stuck if time near total_duration
-	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
-		me_start_position = null
-		time = 0.0
-		if is_done:
-			is_done.data = true
-		stored_loops += 1
-	
-	if Vector3(old_position.x, old_position.y, old_position.z).is_equal_approx(me.position):
-		is_on_path = true
-	else:
-		is_on_path = false
-	
-	var duration := clampf(time, 0, path.total_duration)
-	var index := Globals.Ref.new(0)
-	var v := path.position_at_time_with_rotation(duration, -player_start_vision_rotation, index) + temp_origin
-	if previous_path_index != index.data or is_zero_approx(time):
-		if origin_kind == OriginKind.VISION:
-			player_start_vision_rotation = 0
-		player_start_position = player
-		previous_path_index = index.data
-	var y := next_y_position_basic(me, v.x, v.y - temp_origin.y, v.z)
-	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
-		
-	return old_position
-
-func next_y_position_basic(me: TargetShape, x: float, y: float, z: float) -> float:
-	match coord_y:
-		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
-		CoordY.GROUND_AND_DIRT: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
-			if y > 0:
-				return g
-			else:
-				return g + y
-		CoordY.GROUND_AND_AIR: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me.bounds.y / 2.0
-			if y < 0:
-				return g
-			else:
-				return g + y
-		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me.bounds.y / 2.0
+		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me_y / 2.0
 		_: return 0
 
 class Pathway:
@@ -499,42 +444,42 @@ class Pathway:
 		cursor = start
 		return self
 		
-	func line_to(end: Vector3, d: float, m: Segment) -> Pathway:
+	func line_to(end: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:
 		add(Segment.linear(cursor, end), d, m)
 		cursor = end
 		return self
 		
-	func cubic_to(end: Vector3, c1: Vector3, c2: Vector3, d: float, m: Segment) -> Pathway:
+	func cubic_to(end: Vector3, c1: Vector3, c2: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:
 		add(Segment.cubic(cursor, end, c1, c2), d, m)
 		cursor = end
 		return self
 		
-	func quad_to(end: Vector3, c1: Vector3, d: float, m: Segment) -> Pathway:
+	func quad_to(end: Vector3, c1: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:
 		add(Segment.quad(cursor, end, c1), d, m)
 		cursor = end
 		return self
 		
-	func line_with_speed_to(end: Vector3, s: float, m: Segment) -> Pathway:
+	func line_with_speed_to(end: Vector3, s: float, m: Segment = Easing.linear) -> Pathway:
 		add_with_speed(Segment.linear(cursor, end), s, m)
 		cursor = end
 		return self
 		
-	func cubic_with_speed_to(end: Vector3, c1: Vector3, c2: Vector3, s: float, m: Segment) -> Pathway:
+	func cubic_with_speed_to(end: Vector3, c1: Vector3, c2: Vector3, s: float, m: Segment = Easing.linear) -> Pathway:
 		add_with_speed(Segment.cubic(cursor, end, c1, c2), s, m)
 		cursor = end
 		return self
 		
-	func quad_with_speed_to(end: Vector3, c1: Vector3, s: float, m: Segment) -> Pathway:
+	func quad_with_speed_to(end: Vector3, c1: Vector3, s: float, m: Segment = Easing.linear) -> Pathway:
 		add_with_speed(Segment.quad(cursor, end, c1), s, m)
 		cursor = end
 		return self
 		
-	func arc_to(end: Vector3, clockwise: bool, dur: float, m: Segment) -> Pathway:
+	func arc_to(end: Vector3, clockwise: bool, dur: float, m: Segment = Easing.linear) -> Pathway:
 		add(Segment.arc_between_of_points(cursor, end), dur, m)
 		cursor = end
 		return self
 		
-	func arc_with_speed_to(end: Vector3, clockwise: bool, s: float, m: Segment) -> Pathway:
+	func arc_with_speed_to(end: Vector3, clockwise: bool, s: float, m: Segment = Easing.linear) -> Pathway:
 		add_with_speed(Segment.arc_between_of_points(cursor, end), s, m)
 		cursor = end
 		return self

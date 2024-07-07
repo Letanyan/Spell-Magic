@@ -1,7 +1,7 @@
 class_name TargetShape
 extends WorldItem
 
-enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION }
+enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID_EA }
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var area_3d: Area3D = $Area3D
@@ -20,6 +20,11 @@ var gauge  := Vitals.Stat.new(0.0, 0, 1.0)
 
 var element: Spell.Element = Spell.Element.VOID
 
+var spell_caster: SpellCaster = null
+var caster_position := Vector3.ZERO
+var vitals: Vitals = null
+var spell: Spell = null
+
 var spawner: ItemSpawner = null:
 	set(value):
 		if spawner != null:
@@ -33,6 +38,7 @@ var target_position := Vector3.ZERO
 var bounds := Vector3(2, 2, 2)
 var movement_tick: float = 0.0
 var vital_tick: float = 1.0
+var spell_tick: float = 0.0
 var invunerable: int = 0
 
 var focus_point := Vector3.ZERO
@@ -64,8 +70,14 @@ func _physics_process(delta: float) -> void:
 	if is_down and Time.get_unix_time_from_system() - time_when_down > respawn_time:
 		is_down = false
 		time_when_down = 0.0
-		health.value = health.max_value
-		gauge.value = gauge.min_value
+		if is_blocking_puzzle():
+			health.value = health.min_value
+			gauge.value = gauge.max_value
+		else:
+			if not is_zero_approx(health.change_per_tick):
+				health.value = health.max_value
+			if not is_zero_approx(gauge.change_per_tick):
+				gauge.value = gauge.min_value
 		if spawner != null:
 			spawner.nodes_to_be_cleared[self] = true
 		update_health_bar()
@@ -73,7 +85,7 @@ func _physics_process(delta: float) -> void:
 			
 	movement_tick -= delta
 	if movement_tick <= 0.0:
-		var next := path.next_position_basic(0.5, self, focus_point)
+		var next := path.next_position(0.5, self, focus_point)
 		target_position = Vector3(next.x, next.y, next.z)
 		movement_tick = 0.5
 		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
@@ -106,23 +118,43 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)
 			
 			
+	if spell_caster != null:
+		spell_caster.update(self, delta)
+		if spell != null:
+			spell_tick += delta
+			if spell_tick >= spell.calculate_delay({}):
+				cast_spell(func(p: SpellBody) -> void: add_sibling(p))
+				spell_tick = 0.0
+			
 	vital_tick -= delta
 	if vital_tick <= 0.0:
 		vital_tick = 1.0
 		health.update_per_tick()
 		gauge.update_per_tick()
 		update_health_bar()
+		if not is_down:
+			if puzzle_kind == PuzzleKind.AVOID_DAMAGE and health.value >= health.max_value:
+				is_down = true
+				time_when_down = Time.get_unix_time_from_system()
+				spawner.remove_node(self)
+				animation_player.play("set_down")
+			elif puzzle_kind == PuzzleKind.AVOID_EA and gauge.value <= gauge.min_value:
+				is_down = true
+				time_when_down = Time.get_unix_time_from_system()
+				spawner.remove_node(self)
+				animation_player.play("set_down")
+			
 
-func _on_area_3d_area_entered(spell: Spell, caster_vitals: Vitals) -> void:
-	if invunerable > 0:
+func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> void:
+	if invunerable > 0 or is_down:
 		return
 		
-	var is_fire    : int = spell.element == Spell.Element.FIRE
-	var is_rock    : int = spell.element == Spell.Element.ROCK
-	var is_water   : int = spell.element == Spell.Element.WATER
-	var is_air     : int = spell.element == Spell.Element.AIR
-	var is_ice     : int = spell.element == Spell.Element.ICE
-	var is_electric: int = spell.element == Spell.Element.ELECTRIC
+	var is_fire    : int = attack_spell.element == Spell.Element.FIRE
+	var is_rock    : int = attack_spell.element == Spell.Element.ROCK
+	var is_water   : int = attack_spell.element == Spell.Element.WATER
+	var is_air     : int = attack_spell.element == Spell.Element.AIR
+	var is_ice     : int = attack_spell.element == Spell.Element.ICE
+	var is_electric: int = attack_spell.element == Spell.Element.ELECTRIC
 
 	var is_hit := false
 	match element:
@@ -142,7 +174,7 @@ func _on_area_3d_area_entered(spell: Spell, caster_vitals: Vitals) -> void:
 				spawner.remove_node(self)
 				animation_player.play("set_down")
 			PuzzleKind.DAMAGE:
-				var dmg := spell.damage(caster_vitals)
+				var dmg := attack_spell.damage(caster_vitals)
 				health.apply(-dmg)
 				invunerable = 20
 				if health.value <= health.min_value:
@@ -151,7 +183,7 @@ func _on_area_3d_area_entered(spell: Spell, caster_vitals: Vitals) -> void:
 					spawner.remove_node(self)
 					animation_player.play("set_down")
 			PuzzleKind.ELEMENTAL_APPLICATION:
-				var app := spell.elemental_application
+				var app := attack_spell.elemental_application
 				gauge.apply(app)
 				invunerable = 20
 				if gauge.value >= gauge.max_value:
@@ -159,6 +191,15 @@ func _on_area_3d_area_entered(spell: Spell, caster_vitals: Vitals) -> void:
 					time_when_down = Time.get_unix_time_from_system()
 					spawner.remove_node(self)
 					animation_player.play("set_down")
+			PuzzleKind.AVOID_DAMAGE:
+				var dmg := attack_spell.damage(caster_vitals)
+				health.apply(-dmg)
+				invunerable = 20
+			PuzzleKind.AVOID_EA:
+				var app := attack_spell.elemental_application
+				gauge.apply(app)
+				invunerable = 20
+			
 		update_health_bar()
 
 func set_down() -> void:
@@ -179,11 +220,11 @@ func update_health_bar() -> void:
 	match puzzle_kind:
 		PuzzleKind.SINGLE_HIT:
 			health_bar.hide()
-		PuzzleKind.DAMAGE:
+		PuzzleKind.DAMAGE, PuzzleKind.AVOID_DAMAGE:
 			health_bar.show()
 			(health_bar_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("color_transitions", preload("res://Characters/Enemy/Health Bar/health_gradient.tres"))
 			(health_bar_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("percentage", health.percentage())
-		PuzzleKind.ELEMENTAL_APPLICATION:
+		PuzzleKind.ELEMENTAL_APPLICATION, PuzzleKind.AVOID_EA:
 			health_bar.show()
 			match element:
 				Spell.Element.FIRE:
@@ -205,6 +246,9 @@ func update_health_bar() -> void:
 func update_mesh_color() -> void:
 	update_mesh_with_color(Spell.color_from_element(element))
 	update_health_bar()
+	
+func is_blocking_puzzle() -> bool:
+	return puzzle_kind == PuzzleKind.AVOID_DAMAGE or puzzle_kind == PuzzleKind.AVOID_EA
 
 func remove_when_done() -> void:
 	var parent := get_parent()
@@ -229,6 +273,18 @@ static func config_for_gauge(el: Spell.Element, spwnr: ItemSpawner, retime: floa
 		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "gauge": gg,
 	}
 	
+static func config_for_avoid_damage(el: Spell.Element, spwnr: ItemSpawner, retime: float, hlth: Vitals.Stat, pth: PathStyle, spll: Spell, caster_pos: Vector3) -> Dictionary:
+	return {
+		"puzzle": PuzzleKind.AVOID_DAMAGE, "spell": spll, "caster_position": caster_pos,
+		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "health": hlth
+	}
+	
+static func config_for_avoid_gauge(el: Spell.Element, spwnr: ItemSpawner, retime: float, gg: Vitals.Stat, pth: PathStyle, spll: Spell, caster_pos: Vector3) -> Dictionary:
+	return {
+		"puzzle": PuzzleKind.AVOID_EA, "spell": spll, "caster_position": caster_pos,
+		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "gauge": gg,
+	}
+	
 func configure(config: Dictionary) -> void:
 	element = config.get("element", Spell.Element.VOID)
 	spawner = config.get("spawner", null)
@@ -237,3 +293,15 @@ func configure(config: Dictionary) -> void:
 	health = config.get("health", Vitals.Stat.new(100, 0, 100))
 	gauge = config.get("gauge", Vitals.Stat.new(0, 0, 1))
 	puzzle_kind = config.get("puzzle", PuzzleKind.SINGLE_HIT)
+	spell = config.get("spell", null)
+	caster_position = config.get("caster_position", Vector3.ZERO)
+	if is_blocking_puzzle():
+		spell_caster = SpellCaster.new(self, SpellCaster.Entity.TARGET)
+		vitals = Vitals.new(Vitals.Stat.new(0), Vitals.Stat.new(0))
+		vitals.attack.value = 100
+		vitals.defence.value = 100
+
+func cast_spell(insert: Callable) -> void:
+	if spell_caster == null:
+		return
+	spell_caster.cast_spell(self, vitals, insert, spell)

@@ -94,18 +94,23 @@ func setup(_settings: WorldSettings) -> void:
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
 	var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
-	var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
-	var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
-	var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).random_points_in_circle(1, 3, 0, 7).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
+	var RT := Transform3D.IDENTITY.rotated(Vector3.UP, 2 * PI / 3)
+	var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).circle(1, 4, 2).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
+	var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).circle(1, 4, 2).align_y_to_ground_and_air().look_at_player_xz().transform_path(RT).transform_path(T)
+	var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).circle(1, 4, 2).align_y_to_ground_and_air().look_at_player_xz().transform_path(RT).transform_path(RT).transform_path(T)
 	var target1 := TargetShape.make()
 	target1.configure(TargetShape.config_for_gauge(Spell.Element.WATER, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.1), path1))
 	var target2 := TargetShape.make()
 	target2.configure(TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 3, Vitals.Stat.new(100, 0, 100, 5), path2))
+	
 	var target3 := TargetShape.make()
-	target3.configure(TargetShape.config_for_gauge(Spell.Element.VOID, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.05), path3))
-	target1.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 10
-	target2.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 10
-	target3.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 10
+	var spell := Spell.new(false, "tu*10*t", "tv*10*t", "tw*10*t", 0.5, 7, 2.0, Spell.Element.FIRE, 1, "2.5", false, 0.0)
+	var caster_pos := Vector3(20, 1000 + 10, -20) + Vector3.RIGHT * 10
+	target3.configure(TargetShape.config_for_avoid_damage(Spell.Element.VOID, spawner, 3, Vitals.Stat.new(0, 0, 100, 15), path3, spell, caster_pos))
+	
+	target1.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 3e10
+	target2.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 3e10
+	target3.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 3e10
 	spawner.nodes_to_be_cleared[target1] = true
 	spawner.nodes_to_be_cleared[target2] = true
 	spawner.nodes_to_be_cleared[target3] = true
@@ -115,7 +120,6 @@ func setup(_settings: WorldSettings) -> void:
 	add_child(target3)
 	
 	SignalBus.enemy_death.connect(spawner.remove_node)
-	
 	
 	#var human := Population.generate_enemy(World.Enemy.HUMAN, player, 10, 1000, 10)
 	#add_enemy(human)
