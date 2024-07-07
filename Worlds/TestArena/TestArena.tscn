@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bayn6retdbrwm"]
+[gd_scene load_steps=23 format=3 uid="uid://bayn6retdbrwm"]
 
 [ext_resource type="Script" path="res://Worlds/TestArena/TestArena.gd" id="1_so5kd"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_g4l27"]
@@ -6,8 +6,8 @@
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="4_0c2pf"]
 [ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="5_5ldaq"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="6_wqlw8"]
-[ext_resource type="Material" uid="uid://06vclpgwwyc8" path="res://addons/kenney_prototype_tools/materials/dark/material_07.tres" id="7_t87v3"]
 [ext_resource type="Material" uid="uid://d0gmvf62uyhd0" path="res://addons/kenney_prototype_tools/materials/red/material_01.tres" id="7_ul78n"]
+[ext_resource type="Material" uid="uid://bx6qeabdhq2s" path="res://addons/kenney_prototype_tools/materials/dark/material_01.tres" id="7_xb0vc"]
 [ext_resource type="Material" uid="uid://bmrckkx3cdrkk" path="res://addons/kenney_prototype_tools/materials/red/material_13.tres" id="8_m1hqp"]
 [ext_resource type="Material" uid="uid://ddal25jay8fq1" path="res://addons/kenney_prototype_tools/materials/purple/material_01.tres" id="9_fy4ku"]
 [ext_resource type="Material" uid="uid://duhk80o1wa5hh" path="res://addons/kenney_prototype_tools/materials/purple/material_13.tres" id="10_wuc0v"]
@@ -74,68 +74,9 @@ ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
 
-[sub_resource type="Shader" id="Shader_xdkw7"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.1.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	
-	ALBEDO = vec3(UV.x / 8.0, 0, UV.y / 8.0);
-	ALPHA = 0.5;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_dnpfu"]
-render_priority = 0
-shader = SubResource("Shader_xdkw7")
-shader_parameter/albedo = Color(0, 0.337255, 0, 1)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
-
-[sub_resource type="BoxMesh" id="BoxMesh_6qqcb"]
-material = SubResource("ShaderMaterial_dnpfu")
-size = Vector3(1000, 0.5, 1000)
+[sub_resource type="PlaneMesh" id="PlaneMesh_wjmcb"]
+material = ExtResource("7_xb0vc")
+size = Vector2(1000, 1000)
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_ru3nu"]
 
@@ -165,7 +106,7 @@ height = 100.0
 size = Vector3(30, 10, 5)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hcdbc"]
-material = ExtResource("7_t87v3")
+material = ExtResource("9_fy4ku")
 size = Vector3(30, 10, 5)
 
 [node name="TestArena" type="Node3D"]
@@ -210,7 +151,7 @@ shadow_blur = 4.0
 directional_shadow_blend_splits = true
 
 [node name="Player" parent="." instance=ExtResource("6_wqlw8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000.7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1000.95, 0)
 
 [node name="FPS" type="Label" parent="."]
 anchors_preset = 1
@@ -223,8 +164,8 @@ text = "FPS: 0"
 horizontal_alignment = 2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 999.5, 0)
-mesh = SubResource("BoxMesh_6qqcb")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, 0)
+mesh = SubResource("PlaneMesh_wjmcb")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
 
@@ -249,7 +190,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1105.99, -668.555)
 mesh = SubResource("SphereMesh_xr5cq")
 
 [node name="rigid_block" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 999.75, -8.501)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, -8.501)
 collision_layer = 528
 collision_mask = 0
 mass = 0.01

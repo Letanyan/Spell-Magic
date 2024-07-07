@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://8w1sklpqfgkw"]
+[gd_scene load_steps=16 format=3 uid="uid://8w1sklpqfgkw"]
 
 [ext_resource type="Script" path="res://Models/Misc/Target/Target.gd" id="1_gfhpr"]
 [ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/Health Bar/health_bar.tscn" id="2_02115"]
@@ -76,6 +76,9 @@ shadow_mesh = SubResource("ArrayMesh_ukxrv")
 resource_local_to_scene = true
 albedo_color = Color(0.74902, 0.188235, 0.188235, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hm6m2"]
+size = Vector3(1, 1, 0.25)
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_j35xe"]
 
 [sub_resource type="Animation" id="Animation_8ppje"]
@@ -146,6 +149,13 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ycjys")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_wp538")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 512
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_hm6m2")
 
 [node name="Area3D" type="Area3D" parent="."]
 collision_layer = 1024

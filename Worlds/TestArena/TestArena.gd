@@ -85,12 +85,13 @@ func setup(_settings: WorldSettings) -> void:
 	#add_enemy(mole)
 	#var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
 	#add_enemy(birdman)
-	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
-	fishman.level = 50
-	add_enemy(fishman)
+	
+	#var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
+	#fishman.level = 50
+	#add_enemy(fishman)
 	
 	var rng := RandomNumberGenerator.new()
-	spawner = ItemSpawner.key_spawner(rng, null, fishman.position, 16)
+	spawner = ItemSpawner.key_spawner(rng, null, Vector3(20, 1000, 20), 16)
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
 	var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
@@ -120,6 +121,13 @@ func setup(_settings: WorldSettings) -> void:
 	add_child(target3)
 	
 	SignalBus.enemy_death.connect(spawner.remove_node)
+	
+	
+	var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(PathStyle.Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_player()
+	var target4 := TargetShape.make()
+	target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
+	target4.focus_point = Vector3.UP * 3e10
+	add_child(target4)
 	
 	#var human := Population.generate_enemy(World.Enemy.HUMAN, player, 10, 1000, 10)
 	#add_enemy(human)

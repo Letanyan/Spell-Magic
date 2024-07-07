@@ -18,6 +18,10 @@ var walking_tween: Tween = null
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
+@onready var ground_cast: RayCast3D = $GroundCast
+var platform: PhysicsBody3D = null
+var old_platform_position: Vector3 = Vector3.ZERO
+
 var spell_caster: SpellCaster
 var magic_book: MagicBook
 var artifacts: Artifacts
@@ -151,6 +155,16 @@ func _physics_process(delta: float) -> void:
 		if is_on_floor():
 			play_walking_audio(null)
 			play_animation("battle_idle")
+			var collider := ground_cast.get_collider() as PhysicsBody3D
+			if collider == null:
+				platform = null
+			elif platform != collider:
+				platform = collider
+				old_platform_position = platform.global_position
+			else:
+				var platform_delta := platform.global_position - old_platform_position
+				old_platform_position = platform.global_position
+				position += platform_delta
 		
 	if not is_on_floor_only():
 		if position.y <= Globals.sea_level():

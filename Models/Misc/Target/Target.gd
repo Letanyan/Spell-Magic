@@ -1,7 +1,7 @@
 class_name TargetShape
 extends WorldItem
 
-enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID_EA }
+enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID_EA, PLATFORM }
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var area_3d: Area3D = $Area3D
@@ -12,7 +12,7 @@ enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID
 var puzzle_kind: PuzzleKind = PuzzleKind.DAMAGE
 
 var is_down: bool = false
-var time_when_down: float = 0.0
+var respawn_ticks: float = 0.0
 var respawn_time: float = INF
 
 var health := Vitals.Stat.new(100, 0, 100)
@@ -30,7 +30,8 @@ var spawner: ItemSpawner = null:
 		if spawner != null:
 			spawner.condition_met.disconnect(remove_when_done)
 		spawner = value
-		spawner.condition_met.connect(remove_when_done)
+		if spawner != null:
+			spawner.condition_met.connect(remove_when_done)
 
 var path := PathStyle.still_path()
 var start_position := Vector3.ZERO
@@ -62,26 +63,28 @@ func set_feet_position(y: float) -> void:
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	if not is_active:
+	if not is_active or GlobalData.magic_book.settings.is_paused:
 		return
 	
 	invunerable -= 1
 	
-	if is_down and Time.get_unix_time_from_system() - time_when_down > respawn_time:
-		is_down = false
-		time_when_down = 0.0
-		if is_blocking_puzzle():
-			health.value = health.min_value
-			gauge.value = gauge.max_value
-		else:
-			if not is_zero_approx(health.change_per_tick):
-				health.value = health.max_value
-			if not is_zero_approx(gauge.change_per_tick):
-				gauge.value = gauge.min_value
-		if spawner != null:
-			spawner.nodes_to_be_cleared[self] = true
-		update_health_bar()
-		animation_player.play("unset_down")
+	if is_down:
+		respawn_ticks += delta
+		if respawn_ticks >= respawn_time:
+			is_down = false
+			respawn_ticks = 0.0
+			if is_blocking_puzzle():
+				health.value = health.min_value
+				gauge.value = gauge.max_value
+			else:
+				if not is_zero_approx(health.change_per_tick):
+					health.value = health.max_value
+				if not is_zero_approx(gauge.change_per_tick):
+					gauge.value = gauge.min_value
+			if spawner != null:
+				spawner.nodes_to_be_cleared[self] = true
+			update_health_bar()
+			animation_player.play("unset_down")
 			
 	movement_tick -= delta
 	if movement_tick <= 0.0:
@@ -105,14 +108,22 @@ func _physics_process(delta: float) -> void:
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:
 		var goal_position := position + velocity.normalized() * 10
-		look_at(focus_point.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+		var actual_goal := focus_point.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0))
+		if actual_goal != position:
+			if actual_goal.normalized().cross(Vector3.UP).is_equal_approx(Vector3.ZERO):
+				look_at(actual_goal, Vector3.BACK)
+			else:
+				look_at(actual_goal)
 	elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
 		var goal_position := position + velocity * 10
 		var player_position := focus_point
 		player_position.y = position.y
 		var target := player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)) 
 		if target != position:
-			look_at(target)
+			if target.normalized().cross(Vector3.UP).is_equal_approx(Vector3.ZERO):
+				look_at(target, Vector3.BACK)
+			else:
+				look_at(target)
 	elif path.lookat == PathStyle.LookAt.VELOCITY:
 		velocity = velocity.normalized()
 		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)
@@ -134,15 +145,9 @@ func _physics_process(delta: float) -> void:
 		update_health_bar()
 		if not is_down:
 			if puzzle_kind == PuzzleKind.AVOID_DAMAGE and health.value >= health.max_value:
-				is_down = true
-				time_when_down = Time.get_unix_time_from_system()
-				spawner.remove_node(self)
-				animation_player.play("set_down")
+				set_is_down()
 			elif puzzle_kind == PuzzleKind.AVOID_EA and gauge.value <= gauge.min_value:
-				is_down = true
-				time_when_down = Time.get_unix_time_from_system()
-				spawner.remove_node(self)
-				animation_player.play("set_down")
+				set_is_down()
 			
 
 func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> void:
@@ -169,28 +174,19 @@ func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> voi
 	if is_hit:
 		match puzzle_kind:
 			PuzzleKind.SINGLE_HIT:
-				is_down = true
-				time_when_down = Time.get_unix_time_from_system()
-				spawner.remove_node(self)
-				animation_player.play("set_down")
+				set_is_down()
 			PuzzleKind.DAMAGE:
 				var dmg := attack_spell.damage(caster_vitals)
 				health.apply(-dmg)
 				invunerable = 20
 				if health.value <= health.min_value:
-					is_down = true
-					time_when_down = Time.get_unix_time_from_system()
-					spawner.remove_node(self)
-					animation_player.play("set_down")
+					set_is_down()
 			PuzzleKind.ELEMENTAL_APPLICATION:
 				var app := attack_spell.elemental_application
 				gauge.apply(app)
 				invunerable = 20
 				if gauge.value >= gauge.max_value:
-					is_down = true
-					time_when_down = Time.get_unix_time_from_system()
-					spawner.remove_node(self)
-					animation_player.play("set_down")
+					set_is_down()
 			PuzzleKind.AVOID_DAMAGE:
 				var dmg := attack_spell.damage(caster_vitals)
 				health.apply(-dmg)
@@ -202,11 +198,21 @@ func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> voi
 			
 		update_health_bar()
 
+func set_is_down() -> void:
+	is_down = true
+	respawn_ticks = 0.0
+	spawner.remove_node(self)
+	animation_player.play("set_down")
+	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = true
+	($Area3D/CollisionShape3D as CollisionShape3D).disabled = true
+
 func set_down() -> void:
 	hide()
 	
 func unset_down() -> void:
 	show()
+	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
+	($Area3D/CollisionShape3D as CollisionShape3D).disabled = false
 
 func update_mesh_with_color(color: Color) -> void:
 	var mat := ($coin as MeshInstance3D).get_surface_override_material(0) as StandardMaterial3D
@@ -218,7 +224,7 @@ func update_health_bar() -> void:
 		return
 	health_bar_level.hide()
 	match puzzle_kind:
-		PuzzleKind.SINGLE_HIT:
+		PuzzleKind.SINGLE_HIT, PuzzleKind.PLATFORM:
 			health_bar.hide()
 		PuzzleKind.DAMAGE, PuzzleKind.AVOID_DAMAGE:
 			health_bar.show()
@@ -246,6 +252,13 @@ func update_health_bar() -> void:
 func update_mesh_color() -> void:
 	update_mesh_with_color(Spell.color_from_element(element))
 	update_health_bar()
+	
+func resize_target(size: float) -> void:
+	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
+	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size, size / 4.0)
+	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
+	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
+	bounds = Vector3(size, size, size)
 	
 func is_blocking_puzzle() -> bool:
 	return puzzle_kind == PuzzleKind.AVOID_DAMAGE or puzzle_kind == PuzzleKind.AVOID_EA
@@ -285,6 +298,12 @@ static func config_for_avoid_gauge(el: Spell.Element, spwnr: ItemSpawner, retime
 		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "gauge": gg,
 	}
 	
+static func config_for_platform(el: Spell.Element, size: float, pth: PathStyle) -> Dictionary:
+	return {
+		"puzzle": PuzzleKind.PLATFORM,
+		"element": el, "path": pth, "size": size
+	}
+	
 func configure(config: Dictionary) -> void:
 	element = config.get("element", Spell.Element.VOID)
 	spawner = config.get("spawner", null)
@@ -295,6 +314,11 @@ func configure(config: Dictionary) -> void:
 	puzzle_kind = config.get("puzzle", PuzzleKind.SINGLE_HIT)
 	spell = config.get("spell", null)
 	caster_position = config.get("caster_position", Vector3.ZERO)
+	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
+	if config.has("size"):
+		resize_target(config["size"] as float)
+	else:
+		resize_target(1.0)
 	if is_blocking_puzzle():
 		spell_caster = SpellCaster.new(self, SpellCaster.Entity.TARGET)
 		vitals = Vitals.new(Vitals.Stat.new(0), Vitals.Stat.new(0))
