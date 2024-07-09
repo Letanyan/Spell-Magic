@@ -46,14 +46,14 @@ func expire_now(p: Node3D, q: CollisionObject3D) -> void:
 		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 	expired = true
 	
-func explode_after(p: Node3D, q: CollisionObject3D, t: float) -> void:
+func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool) -> void:
 	var timer := get_tree().create_timer(t)
 	timer.timeout.connect(func() -> void:
 		if q != null:
 			SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 		expired = true
 		var amount := clampi(int(spell.damage(caster_vitals)), 0, 100)
-		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius, velocity)
+		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius, velocity, is_alternate)
 	)
 	
 func is_active() -> bool:
@@ -264,10 +264,11 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_water:
-				expire_now(self, _body) # TODO: add steam explosion
+				expire_now(self, _body)
+				explode_after(self, _body, 0.0166667 * 2, true)
 			elif is_electric:
 				update_shape(spell.radius * 3, true)
-				explode_after(self, _body, 0.0166667 * 2)
+				explode_after(self, _body, 0.0166667 * 2, false)
 		Spell.Element.WATER:
 			if is_ice:
 				expire_now(self, _body)
@@ -280,7 +281,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 				pass
 			elif is_fire:
 				update_shape(spell.radius * 3, true)
-				explode_after(self, _body, 0.0166667 * 2)
+				explode_after(self, _body, 0.0166667 * 2, false)
 				pass
 			elif (is_player or is_enemy) and is_water and not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody

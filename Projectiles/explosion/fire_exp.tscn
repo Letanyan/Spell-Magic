@@ -30,7 +30,7 @@ gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_jbj8g")
 color_ramp = SubResource("GradientTexture1D_7he8g")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1j032"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_un6f1"]
 render_priority = 0
 shader = ExtResource("1_vy5ia")
 shader_parameter/albedo = Color(1, 1, 1, 1)
@@ -44,8 +44,8 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 
-[sub_resource type="SphereMesh" id="SphereMesh_orbll"]
-material = SubResource("ShaderMaterial_1j032")
+[sub_resource type="SphereMesh" id="SphereMesh_i3d46"]
+material = SubResource("ShaderMaterial_un6f1")
 radius = 0.25
 height = 0.5
 radial_segments = 6
@@ -60,4 +60,4 @@ amount = 100
 one_shot = true
 explosiveness = 0.5
 process_material = SubResource("ParticleProcessMaterial_be67v")
-draw_pass_1 = SubResource("SphereMesh_orbll")
+draw_pass_1 = SubResource("SphereMesh_i3d46")

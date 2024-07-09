@@ -69,7 +69,6 @@ func _ready() -> void:
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 	
-	
 func emit_vitals_update() -> void:
 	vital_update.emit(vitals)
 	
