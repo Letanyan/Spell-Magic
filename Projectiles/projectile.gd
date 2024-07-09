@@ -264,7 +264,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_water:
-				expire_now(self, _body)
+				expire_now(self, _body) # TODO: add steam explosion
 			elif is_electric:
 				update_shape(spell.radius * 3, true)
 				explode_after(self, _body, 0.0166667 * 2)

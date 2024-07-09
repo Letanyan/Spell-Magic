@@ -43,6 +43,7 @@ var is_active: bool
 var cooldown: float
 var charge: float
 var elemental_application: float
+# TODO: add crit rate and damage
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}

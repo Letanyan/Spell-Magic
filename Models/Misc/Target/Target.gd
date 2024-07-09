@@ -151,6 +151,7 @@ func _physics_process(delta: float) -> void:
 			
 
 func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> void:
+	# TODO: pass SpellBody and call destruction methods when target hit
 	if invunerable > 0 or is_down:
 		return
 		

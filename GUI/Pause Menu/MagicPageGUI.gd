@@ -132,6 +132,10 @@ func update_cooldown() -> void:
 func _on_name_edit_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
+	var old_key := book.spells[current_index].name
+	var old_value := book.spell_index[old_key] as Spell
+	book.spell_index.erase(old_key)
+	book.spell_index[new_text] = old_value
 	book.spells[current_index].name = new_text
 	spell_name_changed.emit(new_text)
 	

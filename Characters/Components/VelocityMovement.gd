@@ -120,9 +120,10 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		#direction = (body.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		#direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
-		var stun_value := 0.0 if vitals.stun.value > 0 else 1.0
+		var stun_value := 0.005 if vitals.stun.value > 0 else 1.0
 		target_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 		target_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
+		(body as Player).add_shake(vitals.stun.value)
 	else:
 		target_velocity.x = 0.0
 		target_velocity.z = 0.0

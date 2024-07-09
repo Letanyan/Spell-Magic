@@ -159,7 +159,7 @@ func delete_spell_at_index(index: int) -> void:
 
 func add_spell(spell: Spell) -> void:
 	spell.id = book.spells.size()
-	book.spells.append(spell)
+	book.add(spell)
 	update_spells_list()
 	reload_list()
 	var k_index := -1

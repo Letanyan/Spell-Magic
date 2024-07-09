@@ -290,8 +290,8 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				visual_source.amount = amount
 			
 			
-	if visual_effect != null and (body is Enemy or body is Player):
-		visual_effect.position = body.to_local(location)
+	if visual_effect != null and (body is CharacterBody):
+		visual_effect.position = Vector3(0, (body as CharacterBody).bounds.y / 4, 0) # body.to_local(location)
 		visual_source.one_shot = false
 		visual_source.explosiveness = 0.0
 		visual_source.emitting = true
