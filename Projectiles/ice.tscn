@@ -9,6 +9,7 @@ resource_local_to_scene = true
 size = Vector3(1, 0.2, 1)
 
 [sub_resource type="Gradient" id="Gradient_k3a7i"]
+interpolation_color_space = 2
 offsets = PackedFloat32Array(0, 0.754286, 1)
 colors = PackedColorArray(0, 0.239216, 1, 1, 0.321569, 1, 1, 1, 1, 1, 1, 0)
 

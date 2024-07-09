@@ -55,6 +55,7 @@ void fragment() {
 "
 
 [sub_resource type="Gradient" id="Gradient_16oty"]
+interpolation_color_space = 2
 colors = PackedColorArray(0.788235, 0.54902, 0.435294, 1, 1, 1, 1, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dqfwf"]
@@ -79,6 +80,7 @@ domain_warp_fractal_gain = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j0l14"]
 as_normal_map = true
+bump_strength = 21.4
 noise = SubResource("FastNoiseLite_obdun")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_82sog"]

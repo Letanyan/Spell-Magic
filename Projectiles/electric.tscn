@@ -9,6 +9,7 @@
 resource_local_to_scene = true
 
 [sub_resource type="Gradient" id="Gradient_t57qq"]
+interpolation_color_space = 2
 offsets = PackedFloat32Array(0, 0.151394)
 colors = PackedColorArray(0.466667, 0, 0.498039, 1, 1, 1, 1, 0)
 

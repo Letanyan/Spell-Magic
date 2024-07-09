@@ -3,6 +3,7 @@
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="1_ihm7o"]
 
 [sub_resource type="Gradient" id="Gradient_dmsxn"]
+interpolation_color_space = 2
 offsets = PackedFloat32Array(0, 0.177143)
 colors = PackedColorArray(0.454902, 0, 0.501961, 1, 1, 1, 1, 0)
 
@@ -11,16 +12,16 @@ gradient = SubResource("Gradient_dmsxn")
 width = 32
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cjwec"]
+particle_flag_rotate_y = true
 emission_shape = 1
 emission_sphere_radius = 1.0
-particle_flag_rotate_y = true
-direction = Vector3(0, 1, 0)
-spread = 180.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 1.0
 angle_min = 360.0
 angle_max = 360.0
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
 color = Color(1, 0, 1, 1)
 color_ramp = SubResource("GradientTexture1D_ya8v8")
 

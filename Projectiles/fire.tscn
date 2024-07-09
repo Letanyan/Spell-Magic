@@ -7,11 +7,13 @@
 resource_local_to_scene = true
 
 [sub_resource type="Gradient" id="Gradient_k1smn"]
+interpolation_color_space = 2
 offsets = PackedFloat32Array(0, 0.12, 0.274286, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 0, 1, 1, 0.68, 0, 1, 1, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_lctcp"]
 gradient = SubResource("Gradient_k1smn")
+width = 64
 
 [sub_resource type="Curve" id="Curve_ou0qk"]
 _data = [Vector2(0, 0.481818), 0.0, 0.0, 0, 0, Vector2(0.514286, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

@@ -3,7 +3,7 @@
 [ext_resource type="Shader" path="res://Projectiles/water_droplet.gdshader" id="1_172ln"]
 
 [sub_resource type="Gradient" id="Gradient_cc2r1"]
-interpolation_mode = 2
+interpolation_color_space = 2
 offsets = PackedFloat32Array(0, 0.137143, 0.542857, 1)
 colors = PackedColorArray(1, 1, 1, 1, 0.0196078, 0.0509804, 0.501961, 1, 0.0243498, 0.0555706, 0.50437, 1, 1, 1, 1, 1)
 
