@@ -150,17 +150,16 @@ func _physics_process(delta: float) -> void:
 				set_is_down()
 			
 
-func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> void:
-	# TODO: pass SpellBody and call destruction methods when target hit
+func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area: Area3D, contact_points: Array[Vector3]) -> void:
 	if invunerable > 0 or is_down:
 		return
 		
-	var is_fire    : int = attack_spell.element == Spell.Element.FIRE
-	var is_rock    : int = attack_spell.element == Spell.Element.ROCK
-	var is_water   : int = attack_spell.element == Spell.Element.WATER
-	var is_air     : int = attack_spell.element == Spell.Element.AIR
-	var is_ice     : int = attack_spell.element == Spell.Element.ICE
-	var is_electric: int = attack_spell.element == Spell.Element.ELECTRIC
+	var is_fire    : int = projectile.spell.element == Spell.Element.FIRE
+	var is_rock    : int = projectile.spell.element == Spell.Element.ROCK
+	var is_water   : int = projectile.spell.element == Spell.Element.WATER
+	var is_air     : int = projectile.spell.element == Spell.Element.AIR
+	var is_ice     : int = projectile.spell.element == Spell.Element.ICE
+	var is_electric: int = projectile.spell.element == Spell.Element.ELECTRIC
 
 	var is_hit := false
 	match element:
@@ -177,27 +176,37 @@ func _on_area_3d_area_entered(attack_spell: Spell, caster_vitals: Vitals) -> voi
 			PuzzleKind.SINGLE_HIT:
 				set_is_down()
 			PuzzleKind.DAMAGE:
-				var dmg := attack_spell.damage(caster_vitals)
+				var dmg := projectile.spell.damage(caster_vitals)
 				health.apply(-dmg)
 				invunerable = 20
 				if health.value <= health.min_value:
 					set_is_down()
 			PuzzleKind.ELEMENTAL_APPLICATION:
-				var app := attack_spell.elemental_application
+				var app := projectile.spell.elemental_application
 				gauge.apply(app)
 				invunerable = 20
 				if gauge.value >= gauge.max_value:
 					set_is_down()
 			PuzzleKind.AVOID_DAMAGE:
-				var dmg := attack_spell.damage(caster_vitals)
+				var dmg := projectile.spell.damage(caster_vitals)
 				health.apply(-dmg)
 				invunerable = 20
 			PuzzleKind.AVOID_EA:
-				var app := attack_spell.elemental_application
+				var app := projectile.spell.elemental_application
 				gauge.apply(app)
 				invunerable = 20
-			
 		update_health_bar()
+		
+	if is_rock:
+		projectile.lose_control(projectile, area)
+	else:
+		projectile.expire_now(projectile, area)
+	if projectile.spell.chain_cast_kind == Spell.ChainCastKind.HIT and projectile.spell.chain != null and not projectile.on_hit_casts.has(area):
+		projectile.on_hit_casts[area] = true
+		projectile.cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), projectile.spell.chain)
+	var dmg := projectile.spell.damage(caster_vitals)
+	Vitals.apply_damage(projectile.get_parent() as Node3D, area, dmg, projectile.spell.element, false, true, contact_points, projectile.most_recent_radius, projectile.velocity)
+		
 
 func set_is_down() -> void:
 	is_down = true

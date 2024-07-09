@@ -446,7 +446,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			if (obj as Area3D).collision_layer & 0b0100_0000_0000 != 0:
 				var parent := (obj as Area3D).get_parent() as Node3D
 				if parent != null and parent is TargetShape:
-					((obj as Area3D).get_parent() as TargetShape)._on_area_3d_area_entered(spell, caster_vitals)
+					((obj as Area3D).get_parent() as TargetShape)._on_area_3d_area_entered(self, caster_vitals, obj as Area3D, [point])
 			else:
 				_on_area_entered(obj as Area3D, [point])
 		elif obj is CollisionObject3D:

@@ -79,7 +79,8 @@ albedo_color = Color(0.74902, 0.188235, 0.188235, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_hm6m2"]
 size = Vector3(1, 1, 0.25)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_j35xe"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_cbt3o"]
+resource_local_to_scene = true
 
 [sub_resource type="Animation" id="Animation_8ppje"]
 resource_name = "set_down"
@@ -163,7 +164,7 @@ collision_mask = 504
 monitoring = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("SphereShape3D_j35xe")
+shape = SubResource("SphereShape3D_cbt3o")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
