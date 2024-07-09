@@ -126,6 +126,12 @@ func run_on_ready() -> void:
 	player.defence_was_buffed.connect(func(def: float) -> void:
 		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
 	)
+	player.crit_rate_was_buffed.connect(func(rate: float) -> void:
+		book.update_spell_crit(rate, settings.upgrade_settings.buff_crit_dmg)
+	)
+	player.crit_dmg_was_buffed.connect(func(dmg: float) -> void:
+		book.update_spell_crit(settings.upgrade_settings.buff_crit_rate, dmg)
+	)
 	player.vitals.health.max_value = settings.upgrade_settings.max_health
 	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
 	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen

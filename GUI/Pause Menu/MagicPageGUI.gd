@@ -12,6 +12,8 @@ extends Control
 @onready var duration_edit: LineEdit = $container/duration_edit
 @onready var delay_edit: LineEdit = $container/delay_edit
 @onready var count_edit: LineEdit = $container/count_edit
+@onready var cr_edit: LineEdit = $container/CR_edit
+@onready var cd_edit: LineEdit = $container/CD_edit
 
 @onready var element_combo: OptionButton = $container/element_combo
 @onready var chain_edit: LineEdit = $container/chain_edit
@@ -79,6 +81,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	delay_edit.text = spell.delay
 	count_edit.text = "%d" % spell.count
 	mana_edit.text = Globals.format_number_nearest_place(spell.mana_cost)
+	cr_edit.text = Globals.format_number_nearest_place(spell.crit_rate)
+	cd_edit.text = Globals.format_number_nearest_place(spell.crit_dmg)
 	update_cooldown()
 	
 	element_combo.selected = spell.element
@@ -114,6 +118,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	delete_button.disabled = not is_editable
 	view_chain_button.disabled = not is_editable
 	duplicate_button.disabled = not is_editable
+	cr_edit.editable = is_editable
+	cd_edit.editable = is_editable
 		
 	check_all_errors()
 		
@@ -262,6 +268,30 @@ func _on_D_text_changed(new_text: String) -> void:
 		errors_list["D"] = e.error
 	else:
 		errors_list.erase("D")
+	update_spells_that_chain_to_current_spell()
+	
+func _on_cr_text_changed(new_text: String) -> void:
+	if current_index < 0:
+		return
+	if not new_text.is_valid_float():
+		errors_list["CR"] = "'%s' is not a valid number" % new_text
+	else:
+		errors_list.erase("CR")
+	var raw: float = new_text.to_float()
+	book.spells[current_index].crit_rate = raw
+	update_cooldown()
+	update_spells_that_chain_to_current_spell()
+
+func _on_cd_text_changed(new_text: String) -> void:
+	if current_index < 0:
+		return
+	if not new_text.is_valid_float():
+		errors_list["CD"] = "'%s' is not a valid number" % new_text
+	else:
+		errors_list.erase("CD")
+	var raw: float = new_text.to_float()
+	book.spells[current_index].crit_dmg = raw
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_chain_text_changed(new_text: String) -> void:
@@ -507,6 +537,14 @@ func check_all_errors() -> void:
 	raw = text.to_float()
 	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
 		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana) + "s"
+	
+	text = cr_edit.text
+	if not text.is_valid_float():
+		errors_list["CR"] = "'%s' is not a valid number" % text
+		
+	text = cd_edit.text
+	if not text.is_valid_float():
+		errors_list["CD"] = "'%s' is not a valid number" % text
 		
 	text = chain_edit.text
 	if not text.is_empty():

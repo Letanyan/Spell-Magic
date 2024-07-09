@@ -25,6 +25,7 @@ enum Element {
 	SPELL_VELOCITY, DURATION, RUNNING_SPEED,
 	SPELL_RADIUS, COUNT, POWER, 
 	HEALTH_BUMP, MANA_BUMP,
+	CRIT_RATE, CRIT_DMG,
 }
 
 enum Pattern {
@@ -54,14 +55,15 @@ class Option:
 		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
 		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
-		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1, Element.HEALTH_BUMP: 0.1}, 
+		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1, Element.HEALTH_BUMP: 0.1, 
+		Element.CRIT_RATE: 0.1, Element.CRIT_DMG: 0.1}, 
 		tier_range: Vector2i = Vector2i(-10, 10), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
 		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
 		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
 		var ev := Population.random_entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
 		var el: Element
-		if el_prob.size() == 19:
+		if el_prob.size() == 21:
 			if flip:
 				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 			else:
@@ -121,6 +123,10 @@ class Option:
 						return tier * tier * tier
 					Element.MANA_BUMP:
 						return tier * tier * tier
+					Element.CRIT_RATE:
+						return roundi(tier * tier / 4.0)
+					Element.CRIT_DMG:
+						return tier * tier
 		return 0
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:
@@ -244,6 +250,10 @@ class Option:
 				return preload("res://GUI/Images/radius.svg")
 			Element.RUNNING_SPEED:
 				return preload("res://GUI/Images/velocity.svg")
+			Element.CRIT_RATE:
+				return preload("res://GUI/Images/cubes.svg")
+			Element.CRIT_DMG:
+				return preload("res://GUI/Images/hypersonic.svg")
 		return preload("res://GUI/Images/infinity.svg")
 		
 	func element_color() -> Color:
@@ -286,6 +296,10 @@ class Option:
 				return Color("7700FF")
 			Element.RUNNING_SPEED:
 				return Color("F6FF00")
+			Element.CRIT_RATE:
+				return Color("0000AA")
+			Element.CRIT_DMG:
+				return Color("#AAAA00")
 		return Color.DEEP_PINK
 		
 	func color() -> Color:

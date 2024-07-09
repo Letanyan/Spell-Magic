@@ -6,6 +6,8 @@ extends Control
 @onready var attack: Label = $"container/Value ATK"
 @onready var defence: Label = $"container/Value DEF"
 @onready var velocity: Label = $"container/Value Velocity"
+@onready var crit_rate: Label = $"container/Value Crit Rate"
+@onready var crit_dmg: Label = $"container/Value Crit Dmg"
 @onready var r: Label = $"container/Value r"
 @onready var T: Label = $"container/Value T"
 @onready var N: Label = $"container/Value N"

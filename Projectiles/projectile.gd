@@ -265,13 +265,14 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		Spell.Element.FIRE:
 			if is_water:
 				expire_now(self, _body)
-				explode_after(self, _body, 0.0166667 * 2, true)
 			elif is_electric:
 				update_shape(spell.radius * 3, true)
 				explode_after(self, _body, 0.0166667 * 2, false)
 		Spell.Element.WATER:
 			if is_ice:
 				expire_now(self, _body)
+			elif is_fire:
+				explode_after(self, _body, 0.0166667 * 2, true)
 		Spell.Element.ICE:
 			if is_water:
 				spell.elemental_application = clampf(spell.elemental_application * 1.1, 0.0, 1.0)

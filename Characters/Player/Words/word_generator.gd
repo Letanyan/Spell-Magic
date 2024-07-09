@@ -164,7 +164,8 @@ func save_dict() -> Dictionary:
 	
 func load_dict(data: Dictionary) -> void:
 	output = data["output"]
-	source_paths.assign(data["source_paths"] as Array)
+	var temp_source_paths: Array[SourcePath] = []
+	temp_source_paths.assign(data["source_paths"] as Array)
 	chunk_sizes.assign(data["chunk_sizes"] as Array)
 	
 	var remove_all: Array[SourcePath] = []
@@ -182,8 +183,8 @@ func load_dict(data: Dictionary) -> void:
 		source_paths.remove_at(idx)
 		chunk_sizes.remove_at(idx)
 	
-	for index in source_paths.size():
-		var path := source_paths[index]
+	for index in temp_source_paths.size():
+		var path := temp_source_paths[index]
 		var chunk := chunk_sizes[index]
 		add_source(path, chunk, false)
 		

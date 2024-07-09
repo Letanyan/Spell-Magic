@@ -44,6 +44,8 @@ var cooldown: float
 var charge: float
 var elemental_application: float
 # TODO: add crit rate and damage
+var crit_rate: float
+var crit_dmg: float
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
@@ -76,6 +78,9 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	charge = 0.0
 	expression_strings = {}
 	
+	crit_rate = 0.0
+	crit_dmg = 0.0
+	
 	is_active = true
 	
 	if not no_comp:
@@ -94,6 +99,8 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
+	result.crit_rate = crit_rate
+	result.crit_dmg = crit_dmg
 	if for_player:
 		result.limit_r = limit_r
 		result.limit_v = limit_v
@@ -211,7 +218,11 @@ func calculate_cooldown() -> float:
 	if element == Element.VOID:
 		basic_cost = 0.0
 	else:
-		basic_cost = maxf((power / UpgradeSettings.LIMIT_P) ** 1.25 * 30.0, 1.0) * \
+		var no_crit_hit := power / UpgradeSettings.LIMIT_P
+		var crit_hit := no_crit_hit * (1.0 + crit_dmg / 100.0)
+		var rate := clampf(crit_rate / 100.0, 0.0, 1.0)
+		var avg_dmg := crit_hit * rate + no_crit_hit * (1.0 - rate)
+		basic_cost = maxf(avg_dmg ** 1.25 * 30.0, 1.0) * \
 		(duration / UpgradeSettings.LIMIT_T + 1.0) * \
 		(((radius + 1) ** 2) / UpgradeSettings.LIMIT_r + 1.0) * \
 		(maxf(1.0, count * 0.98))
@@ -234,13 +245,14 @@ func actual_mana_cost() -> float:
 	return result
 	
 func damage(vitals: Vitals) -> float:
+	var crit := (1.0 + crit_dmg / 100.0) if (crit_rate / 100.0) >= randf() else 1.0
 	match element:
-		Element.FIRE: return (power / UpgradeSettings.LIMIT_P) * (vitals.attack.value + buff_attack)
-		Element.WATER: return (power / UpgradeSettings.LIMIT_P * 0.1) * vitals.health.value
-		Element.AIR: return power
-		Element.ROCK: return (power / UpgradeSettings.LIMIT_P) * (vitals.defence.value + buff_defence)
-		Element.ICE: return (power / UpgradeSettings.LIMIT_P) * (vitals.health.value * 0.0005 + (vitals.attack.value + buff_attack) * 0.005)
-		Element.ELECTRIC: return power
+		Element.FIRE: return (power / UpgradeSettings.LIMIT_P) * (vitals.attack.value + buff_attack) * crit
+		Element.WATER: return (power / UpgradeSettings.LIMIT_P * 0.1) * vitals.health.value * crit
+		Element.AIR: return power * crit
+		Element.ROCK: return (power / UpgradeSettings.LIMIT_P) * (vitals.defence.value + buff_defence) * crit
+		Element.ICE: return (power / UpgradeSettings.LIMIT_P) * (vitals.health.value * 0.0005 + (vitals.attack.value + buff_attack) * 0.005) * crit
+		Element.ELECTRIC: return power * crit
 		Element.VOID: return 0.0
 	return 0.0
 	
@@ -387,7 +399,7 @@ func save_dict() -> Dictionary:
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
 		"expression_strings": expression_strings, "is_active": is_active, 
-		"elemental_application": elemental_application
+		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -404,6 +416,8 @@ func load_dict(dict: Dictionary) -> void:
 	delay = dict["delay"]
 	is_bomb = dict.get("is_bomb", false)
 	follow = dict["is_rel"]
+	crit_rate = dict.get("crit_rate", 0.0)
+	crit_dmg = dict.get("crit_dmg", 0.0)
 	charge = 0.0
 	if dict["chain"] != {}:
 		chain = Spell.new()
@@ -486,6 +500,8 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 %s.calculate_cooldown()
 %s.charge = %s
 %s.is_active = %s
+%s.crit_rate = %s
+%s.crit_dmg = %s
 """ % [
 	chain_creation,
 	variable_name, repr.call(follow), repr.call(x), repr.call(y), repr.call(z),
@@ -506,6 +522,8 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 	variable_name,
 	variable_name, repr.call(charge),
 	variable_name, repr.call(is_active),
+	variable_name, repr.call(crit_rate),
+	variable_name, repr.call(crit_dmg),
 ]
 
 	if wrap_in_function:

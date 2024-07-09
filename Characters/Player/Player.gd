@@ -49,6 +49,8 @@ signal speed_was_buffed(amount: float)
 var active_effects: Dictionary = {} # [Vector2i][int]bool
 var spell_modifier: Dictionary = {} # [Artifact.Element]Vector2(flat: int, percentage: float)
 var damage_resistance: Dictionary = {} # [Artifact.Element]Vector2(flat: int, percentage: float)
+var buff_crit_rate := Vector2.ZERO
+var buff_crit_dmg := Vector2.ZERO
 
 var menu_callbacks_are_set: bool = false
 var on_menu_open: Callable = func() -> void: pass
@@ -212,6 +214,8 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	for e: Artifact.Element in spell_modifier:
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
+	new_spell.crit_rate = new_spell.crit_rate * (1.0 + buff_crit_rate.y / 100.0) + buff_crit_rate.x 
+	new_spell.crit_dmg = new_spell.crit_dmg * (1.0 + buff_crit_dmg.y / 100.0) + buff_crit_dmg.x 
 	play_animation("attack")
 #	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	await get_tree().physics_frame
@@ -417,6 +421,18 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
 						magic_book.settings.upgrade_settings.buff_running_speed -= value
 						speed_was_buffed.emit(magic_book.settings.upgrade_settings.buff_running_speed)
+						active_effects[event][effect] = false
+					)
+				elif effect_el == Artifact.Element.CRIT_RATE:
+					buff_crit_rate += amount
+					get_tree().create_timer(duration).timeout.connect(func() -> void: 
+						buff_crit_rate -= amount
+						active_effects[event][effect] = false
+					)
+				elif effect_el == Artifact.Element.CRIT_DMG:
+					buff_crit_dmg += amount
+					get_tree().create_timer(duration).timeout.connect(func() -> void: 
+						buff_crit_dmg -= amount
 						active_effects[event][effect] = false
 					)
 				else:
