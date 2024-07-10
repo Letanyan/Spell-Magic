@@ -21,11 +21,10 @@ enum Event {
 enum Element {
 	ANY, # is used as an offset so the next 6 elements map to Spell.Element 
 	FIRE, ROCK, ELECTRIC, WATER, AIR, ICE,
-	HEALTH, MANA, ATTACK, DEFENCE,
+	HEALTH, MANA, ATTACK, DEFENCE, CRIT_RATE, CRIT_DMG,
 	SPELL_VELOCITY, DURATION, RUNNING_SPEED,
 	SPELL_RADIUS, COUNT, POWER, 
 	HEALTH_BUMP, MANA_BUMP,
-	CRIT_RATE, CRIT_DMG,
 }
 
 enum Pattern {
@@ -107,6 +106,10 @@ class Option:
 						return tier * tier
 					Element.DEFENCE: 
 						return tier * tier
+					Element.CRIT_RATE:
+						return roundi(tier * tier / 4.0)
+					Element.CRIT_DMG:
+						return tier * tier
 					Element.SPELL_VELOCITY:
 						return tier * tier
 					Element.DURATION:
@@ -123,10 +126,6 @@ class Option:
 						return tier * tier * tier
 					Element.MANA_BUMP:
 						return tier * tier * tier
-					Element.CRIT_RATE:
-						return roundi(tier * tier / 4.0)
-					Element.CRIT_DMG:
-						return tier * tier
 		return 0
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:
@@ -234,6 +233,10 @@ class Option:
 				return preload("res://GUI/Images/sword.svg")
 			Element.DEFENCE:
 				return preload("res://GUI/Images/shield.svg")
+			Element.CRIT_RATE:
+				return preload("res://GUI/Images/cubes.svg")
+			Element.CRIT_DMG:
+				return preload("res://GUI/Images/hypersonic.svg")
 			Element.POWER:
 				return preload("res://GUI/Images/power.svg")
 			Element.DURATION:
@@ -250,10 +253,6 @@ class Option:
 				return preload("res://GUI/Images/radius.svg")
 			Element.RUNNING_SPEED:
 				return preload("res://GUI/Images/velocity.svg")
-			Element.CRIT_RATE:
-				return preload("res://GUI/Images/cubes.svg")
-			Element.CRIT_DMG:
-				return preload("res://GUI/Images/hypersonic.svg")
 		return preload("res://GUI/Images/infinity.svg")
 		
 	func element_color() -> Color:
@@ -280,6 +279,10 @@ class Option:
 				return Color("AA0000")
 			Element.DEFENCE:
 				return Color("00AAAA")
+			Element.CRIT_RATE:
+				return Color("0000AA")
+			Element.CRIT_DMG:
+				return Color("#AAAA00")
 			Element.POWER:
 				return Color("0008FF")
 			Element.DURATION:
@@ -296,10 +299,6 @@ class Option:
 				return Color("7700FF")
 			Element.RUNNING_SPEED:
 				return Color("F6FF00")
-			Element.CRIT_RATE:
-				return Color("0000AA")
-			Element.CRIT_DMG:
-				return Color("#AAAA00")
 		return Color.DEEP_PINK
 		
 	func color() -> Color:
@@ -354,6 +353,10 @@ class Option:
 				result += "AT"
 			Element.DEFENCE:
 				result += "DF"
+			Element.CRIT_RATE:
+				result += "CR"
+			Element.CRIT_DMG:
+				result += "CD"
 			Element.POWER:
 				result += "P"
 			Element.DURATION:

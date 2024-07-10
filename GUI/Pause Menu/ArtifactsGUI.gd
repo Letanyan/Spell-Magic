@@ -416,24 +416,26 @@ func filter_update_popup_menu_items(menu: PopupMenu, option: int) -> void:
 		menu.add_icon_check_item(preload("res://GUI/Images/circle.png") as Texture2D, "Circle", Artifact.Pattern.CIRCLE + 8)
 		menu.add_separator()
 		menu.add_check_item("Any", Artifact.Element.ANY + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_water.tres") as Texture2D, "Water", Artifact.Element.WATER + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_wind.tres") as Texture2D, "Wind", Artifact.Element.AIR + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_ice.tres") as Texture2D, "Ice", Artifact.Element.ICE + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health.tres") as Texture2D, "Health", Artifact.Element.HEALTH + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana.tres") as Texture2D, "Mana", Artifact.Element.MANA + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_sword.tres") as Texture2D, "Attack", Artifact.Element.ATTACK + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_shield.tres") as Texture2D, "Defence", Artifact.Element.DEFENCE + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_velocity.tres") as Texture2D, "v", Artifact.Element.SPELL_VELOCITY + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_time.tres") as Texture2D, "T", Artifact.Element.DURATION + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_running.tres") as Texture2D, "Movement Speed", Artifact.Element.RUNNING_SPEED + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_radius.tres") as Texture2D, "r", Artifact.Element.SPELL_RADIUS + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_count.tres") as Texture2D, "N", Artifact.Element.COUNT + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_power.tres") as Texture2D, "P", Artifact.Element.POWER + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health_outline.tres") as Texture2D, "Max Health", Artifact.Element.HEALTH_BUMP + 11)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana_outline.tres") as Texture2D, "Max Mana", Artifact.Element.MANA_BUMP + 11)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_water.tres") as Texture2D, "Water", Artifact.Element.WATER + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_wind.tres") as Texture2D, "Wind", Artifact.Element.AIR + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_ice.tres") as Texture2D, "Ice", Artifact.Element.ICE + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health.tres") as Texture2D, "Health", Artifact.Element.HEALTH + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana.tres") as Texture2D, "Mana", Artifact.Element.MANA + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_sword.tres") as Texture2D, "Attack", Artifact.Element.ATTACK + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_shield.tres") as Texture2D, "Defence", Artifact.Element.DEFENCE + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_cubes.tres") as Texture2D, "Crit Rate", Artifact.Element.CRIT_RATE + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_hypersonic.tres") as Texture2D, "Crit Dmg", Artifact.Element.CRIT_DMG + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_velocity.tres") as Texture2D, "v", Artifact.Element.SPELL_VELOCITY + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_time.tres") as Texture2D, "T", Artifact.Element.DURATION + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_running.tres") as Texture2D, "Movement Speed", Artifact.Element.RUNNING_SPEED + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_radius.tres") as Texture2D, "r", Artifact.Element.SPELL_RADIUS + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_count.tres") as Texture2D, "N", Artifact.Element.COUNT + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_power.tres") as Texture2D, "P", Artifact.Element.POWER + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health_outline.tres") as Texture2D, "Max Health", Artifact.Element.HEALTH_BUMP + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana_outline.tres") as Texture2D, "Max Mana", Artifact.Element.MANA_BUMP + 13)
 		
 func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions) -> void:
 	var index := 3
@@ -455,7 +457,7 @@ func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions) -> v
 		for e: Artifact.Pattern in data.patterns:
 			menu.set_item_checked(menu.get_item_index(e + 8), true)
 		for e: Artifact.Element in data.elements:
-			menu.set_item_checked(menu.get_item_index(e + 11), true)
+			menu.set_item_checked(menu.get_item_index(e + 13), true)
 	
 func filter_artifact_option_matches(option: Artifact.Option, filter: FilterOptions) -> bool:
 	if filter.main_option == 0:

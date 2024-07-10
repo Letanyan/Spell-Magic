@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://ceu2a3huxi5ar"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_kclai"]
+[ext_resource type="Texture2D" uid="uid://c4hcd2nbfilkc" path="res://GUI/Images/hypersonic.svg" id="2_5qsmx"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_kclai")
+texture = ExtResource("2_5qsmx")
+tint = Color(0.666667, 0.666667, 0, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/hypersonic.svg-f03bf0a0d3932ca0d6a3e88674be73f2.ctex"
+script = ExtResource("1_kclai")

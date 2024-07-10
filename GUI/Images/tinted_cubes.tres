@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://cybccwuanvbks"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_dxo07"]
+[ext_resource type="Texture2D" uid="uid://bhgsrvtcjjrro" path="res://GUI/Images/cubes.svg" id="2_65cpy"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_dxo07")
+texture = ExtResource("2_65cpy")
+tint = Color(0, 0, 0.666667, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/cubes.svg-1ad4aeac6427e84a44035e90ba636d25.ctex"
+script = ExtResource("1_dxo07")
