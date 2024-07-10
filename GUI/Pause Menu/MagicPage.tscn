@@ -48,7 +48,7 @@ layout_mode = 2
 anchor_right = 1.0
 offset_left = 96.0
 offset_top = 8.0
-offset_right = -248.0
+offset_right = -328.0
 offset_bottom = 40.0
 size_flags_vertical = 4
 focus_neighbor_right = NodePath("../element_combo")
@@ -62,9 +62,9 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -240.0
+offset_left = -320.0
 offset_top = 8.0
-offset_right = -8.0
+offset_right = -88.0
 offset_bottom = 40.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../name_edit")
@@ -177,7 +177,7 @@ offset_top = 200.0
 offset_right = 56.0
 offset_bottom = 232.0
 bbcode_enabled = true
-text = "[center][font_size=16][img=l,24x24, color=7700FF]res://GUI/Images/radius.svg[/img] r[/font_size][/center]"
+text = "[center][font_size=16]r[/font_size][/center]"
 
 [node name="r_edit" type="LineEdit" parent="container"]
 layout_mode = 1
@@ -369,6 +369,7 @@ offset_top = 296.0
 offset_right = 0.0639648
 offset_bottom = 328.0
 grow_horizontal = 0
+tooltip_text = "Open chained spell"
 focus_neighbor_left = NodePath("../chain_combo")
 focus_neighbor_top = NodePath("../power_edit")
 focus_neighbor_bottom = NodePath("../expressions")
@@ -379,9 +380,11 @@ text = "View"
 [node name="player_is_origin" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.5
-offset_left = 8.0
+anchor_left = 0.632
+anchor_right = 1.0
+offset_left = -0.0640259
 offset_top = 344.0
+offset_right = -8.0
 offset_bottom = 376.0
 focus_neighbor_top = NodePath("../chain_edit")
 focus_neighbor_right = NodePath("../expressions")
@@ -394,9 +397,11 @@ icon = ExtResource("9_dae3a")
 [node name="is_bomb" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.5
-offset_left = 8.0
+anchor_left = 0.632
+anchor_right = 1.0
+offset_left = -0.0640259
 offset_top = 376.0
+offset_right = -8.0
 offset_bottom = 407.0
 focus_neighbor_top = NodePath("../player_is_origin")
 focus_neighbor_right = NodePath("../expressions")
@@ -409,9 +414,11 @@ icon = ExtResource("10_5c3hv")
 [node name="is_rel" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.5
-offset_left = 8.0
+anchor_left = 0.632
+anchor_right = 1.0
+offset_left = -0.0640259
 offset_top = 408.0
+offset_right = -8.0
 offset_bottom = 439.0
 focus_neighbor_top = NodePath("../is_bomb")
 focus_neighbor_right = NodePath("../expressions")
@@ -466,13 +473,12 @@ vertical_alignment = 1
 [node name="expressions" type="TextEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 1.0
+anchor_right = 0.618
 anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 344.0
-offset_right = -8.0
-offset_bottom = -64.0
+offset_right = 0.0639648
+offset_bottom = -8.0
 focus_neighbor_left = NodePath("../player_is_origin")
 focus_neighbor_top = NodePath("../chain_combo")
 focus_neighbor_bottom = NodePath("../Duplicate")
@@ -485,45 +491,43 @@ angle=sin(pi)*n"
 wrap_mode = 1
 scroll_smooth = true
 
-[node name="element_application" type="Label" parent="container"]
+[node name="element_application" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.236
-anchor_top = 1.0
-anchor_right = 0.236
-anchor_bottom = 1.0
-offset_left = 0.127991
-offset_top = -96.0
-offset_right = 304.128
-offset_bottom = -64.0
+anchor_left = 0.632
+anchor_right = 1.0
+offset_left = -0.0640259
+offset_top = 448.0
+offset_right = -8.0
+offset_bottom = 480.0
+bbcode_enabled = true
 text = "Burning: 0"
-horizontal_alignment = 2
 
 [node name="cooldown" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -96.0
-offset_right = 256.0
-offset_bottom = -64.0
+anchor_left = 0.632
+anchor_right = 1.0
+offset_left = -0.0640259
+offset_top = 488.0
+offset_right = -16.0
+offset_bottom = 520.0
 bbcode_enabled = true
 text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: 0s[/font_size][/left]"
 
 [node name="error_label" type="Label" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 1.028
-anchor_right = 1.009
-anchor_bottom = 1.028
-offset_left = 8.0
-offset_top = -74.144
-offset_right = -242.368
-offset_bottom = -25.144
+anchor_left = 0.632
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.0640259
+offset_top = 528.0
+offset_right = -8.0
+offset_bottom = -8.0
 label_settings = SubResource("LabelSettings_sv8m3")
 horizontal_alignment = 1
-vertical_alignment = 1
+vertical_alignment = 2
 autowrap_mode = 2
 clip_text = true
 text_overrun_behavior = 3
@@ -531,41 +535,35 @@ max_lines_visible = 2
 
 [node name="Duplicate" type="Button" parent="container"]
 layout_mode = 1
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -224.0
-offset_top = -48.0
-offset_right = -107.0
-offset_bottom = -16.0
+offset_left = -80.0
+offset_top = 8.0
+offset_right = -48.0
+offset_bottom = 40.0
 grow_horizontal = 0
-grow_vertical = 0
+tooltip_text = "Duplicate Spell"
 focus_neighbor_top = NodePath("../expressions")
 focus_neighbor_right = NodePath("../Delete")
 focus_next = NodePath("../Delete")
 focus_previous = NodePath("../expressions")
-text = "Duplicate"
 icon = ExtResource("10_ne1rx")
 
 [node name="Delete" type="Button" parent="container"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -96.0
-offset_top = -48.0
-offset_right = -11.0
-offset_bottom = -16.0
+offset_left = -40.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 40.0
+tooltip_text = "Delete Spell"
 focus_neighbor_left = NodePath("../Duplicate")
 focus_neighbor_top = NodePath("../expressions")
 focus_next = NodePath("../name_edit")
 focus_previous = NodePath("../Duplicate")
-text = "Delete
-"
 icon = ExtResource("2_ap1iy")
 
 [node name="CR" type="RichTextLabel" parent="container"]

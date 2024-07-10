@@ -26,7 +26,7 @@ extends Control
 @onready var mana_edit: LineEdit = $container/mana_edit
 @onready var cooldown_label: RichTextLabel = $container/cooldown
 @onready var mana_cost: Label = $container/mana_cost
-@onready var element_application: Label = $container/element_application
+@onready var element_application: RichTextLabel = $container/element_application
 
 @onready var view_chain_button: Button = $container/view_chain_button 
 
