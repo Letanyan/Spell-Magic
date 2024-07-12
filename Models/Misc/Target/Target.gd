@@ -225,8 +225,16 @@ func unset_down() -> void:
 	($Area3D/CollisionShape3D as CollisionShape3D).disabled = false
 
 func update_mesh_with_color(color: Color) -> void:
-	var mat := ($coin as MeshInstance3D).get_surface_override_material(0) as StandardMaterial3D
-	mat.albedo_color = color
+	if puzzle_kind == PuzzleKind.PLATFORM:
+		($platform as MeshInstance3D).show()
+		($coin as MeshInstance3D).hide()		
+		var mat := ($platform as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
+		mat.set_shader_parameter("albedo", color.darkened(0.2))
+	else:
+		($platform as MeshInstance3D).hide()
+		($coin as MeshInstance3D).show()
+		var mat := ($coin as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
+		mat.set_shader_parameter("albedo", color.darkened(0.2))
 	update_health_bar()
 	
 func update_health_bar() -> void:
@@ -265,10 +273,19 @@ func update_mesh_color() -> void:
 	
 func resize_target(size: float) -> void:
 	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
+	($platform as MeshInstance3D).scale = Vector3(0.5, 0.1, 0.5) * size
 	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size, size / 4.0)
 	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
 	bounds = Vector3(size, size, size)
+	
+func rescale_target(size: Vector3) -> void:
+	($coin as MeshInstance3D).scale = size * 5
+	($platform as MeshInstance3D).scale = size * 0.5
+	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = size
+	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size.y / 2.0
+	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
+	bounds = size
 	
 func is_blocking_puzzle() -> bool:
 	return puzzle_kind == PuzzleKind.AVOID_DAMAGE or puzzle_kind == PuzzleKind.AVOID_EA

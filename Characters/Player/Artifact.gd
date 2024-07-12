@@ -256,50 +256,7 @@ class Option:
 		return preload("res://GUI/Images/infinity.svg")
 		
 	func element_color() -> Color:
-		match element:
-			Element.ANY:
-				return Color("FFFFFF")
-			Element.FIRE:
-				return Color("FF0000")
-			Element.WATER:
-				return Color("0080FF")
-			Element.AIR:
-				return Color("00FF80")
-			Element.ROCK:
-				return Color("FF8000")
-			Element.ELECTRIC:
-				return Color("FF0080")
-			Element.ICE:
-				return Color("00FFFF")
-			Element.HEALTH:
-				return Color("00AA00")
-			Element.MANA:
-				return Color("AA00AA")
-			Element.ATTACK:
-				return Color("AA0000")
-			Element.DEFENCE:
-				return Color("00AAAA")
-			Element.CRIT_RATE:
-				return Color("0000AA")
-			Element.CRIT_DMG:
-				return Color("#AAAA00")
-			Element.POWER:
-				return Color("0008FF")
-			Element.DURATION:
-				return Color("00FF08")
-			Element.COUNT:
-				return Color("F700FF")
-			Element.MANA_BUMP:
-				return Color("AA77AA")
-			Element.HEALTH_BUMP:
-				return Color("77AA77")
-			Element.SPELL_VELOCITY:
-				return Color("77FF00")
-			Element.SPELL_RADIUS:
-				return Color("7700FF")
-			Element.RUNNING_SPEED:
-				return Color("F6FF00")
-		return Color.DEEP_PINK
+		return Artifact.color_for_element(element)
 		
 	func color() -> Color:
 		var result := element_color()
@@ -420,3 +377,48 @@ func load_dict(dict: Dictionary) -> void:
 	bottom = Option.empty()
 	bottom.load_dict(dict["bottom"] as Dictionary)
 	
+static func color_for_element(element: Element) -> Color:
+	match element:
+		Element.ANY:
+			return Color("FFFFFF")
+		Element.FIRE:
+			return Color("FF0000")
+		Element.WATER:
+			return Color("0080FF")
+		Element.AIR:
+			return Color("00FF80")
+		Element.ROCK:
+			return Color("FF8000")
+		Element.ELECTRIC:
+			return Color("FF0080")
+		Element.ICE:
+			return Color("00FFFF")
+		Element.HEALTH:
+			return Color("00AA00")
+		Element.MANA:
+			return Color("AA00AA")
+		Element.ATTACK:
+			return Color("AA0000")
+		Element.DEFENCE:
+			return Color("00AAAA")
+		Element.CRIT_RATE:
+			return Color("0000AA")
+		Element.CRIT_DMG:
+			return Color("#AAAA00")
+		Element.POWER:
+			return Color("0008FF")
+		Element.DURATION:
+			return Color("00FF08")
+		Element.COUNT:
+			return Color("F700FF")
+		Element.MANA_BUMP:
+			return Color("AA77AA")
+		Element.HEALTH_BUMP:
+			return Color("77AA77")
+		Element.SPELL_VELOCITY:
+			return Color("77FF00")
+		Element.SPELL_RADIUS:
+			return Color("7700FF")
+		Element.RUNNING_SPEED:
+			return Color("F6FF00")
+	return Color.DEEP_PINK

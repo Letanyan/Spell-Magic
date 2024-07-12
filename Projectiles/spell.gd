@@ -567,15 +567,10 @@ static func collision_layer_from_element(el: Element) -> int:
 		_: return 0
 
 static func color_from_element(el: Element) -> Color:
-	match el:
-		Element.FIRE: return Color.RED
-		Element.ROCK: return Color.SADDLE_BROWN
-		Element.WATER: return Color.BLUE
-		Element.AIR: return Color.GREEN_YELLOW
-		Element.ICE: return Color.DODGER_BLUE
-		Element.ELECTRIC: return Color.WEB_PURPLE
-		Element.VOID: return Color.BLACK
-		_: return Color.WHITE
+	if el == Element.VOID:
+		return Color(0.25, 0.25, 0.25)
+	else:
+		return Artifact.color_for_element(el as Artifact.Element)
 		
 static func real_color_from_element(el: Element) -> Color:
 	match el:
@@ -585,7 +580,7 @@ static func real_color_from_element(el: Element) -> Color:
 		Element.AIR: return Color(0.502, 1, 0.502)
 		Element.ICE: return Color(0.133, 0.553, 1)
 		Element.ELECTRIC: return Color(0.486, 0, 0.569)
-		Element.VOID: return Color.BLACK
+		Element.VOID: return Color(0.25, 0.25, 0.25)
 		_: return Color.WHITE
 
 func bake(new_name: String) -> Spell:

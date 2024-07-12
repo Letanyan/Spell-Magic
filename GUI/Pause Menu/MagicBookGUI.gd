@@ -49,6 +49,7 @@ func duplicate_book() -> void:
 	for i in book.spells.size():
 		var s := book.spells[i].duplicate()
 		book.spells[i] = s
+		book.spell_index[s.name] = s
 		s.id = i
 
 func _on_spell_index_item_selected(index: int) -> void:
