@@ -43,7 +43,6 @@ var is_active: bool
 var cooldown: float
 var charge: float
 var elemental_application: float
-# TODO: add crit rate and damage
 var crit_rate: float
 var crit_dmg: float
 
@@ -171,7 +170,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 
 	
 func calculate_delay(vars: Dictionary) -> float:
-	var result := clampf(d_expr.compute(vars), 0, 25)
+	var result := clampf(d_expr.compute(vars), 0, UpgradeSettings.LIMIT_T)
 	return result
 	
 func _mass() -> float:
