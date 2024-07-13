@@ -143,6 +143,10 @@ func _on_name_edit_text_changed(new_text: String) -> void:
 	book.spell_index.erase(old_key)
 	book.spell_index[new_text] = old_value
 	book.spells[current_index].name = new_text
+	for s in book.spells:
+		if s.name == old_key:
+			book.spell_index[s.name] = s
+			break
 	spell_name_changed.emit(new_text)
 	
 func _on_element_combo_selected(index: int) -> void:

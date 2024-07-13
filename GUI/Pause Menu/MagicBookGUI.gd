@@ -17,7 +17,6 @@ var book: MagicBook:
 	set(value):
 		book = value
 		duplicate_book()
-		update_spells_list()
 		reload_list()
 
 var spells_index_map := {}
@@ -137,12 +136,21 @@ func update_spells_list() -> void:
 	create_button.disabled = k < book.spells.size()
 	
 func reload_list() -> void:
+	var spell_name := ""
+	if current_index > -1:
+		spell_name = book.spells[current_index].name
+		
 	spell_index.clear()
-#	for s in book.spells:
-#		spell_index.add_item(s.name)
+	update_spells_list()
 	for k: int in spells_index_map:
 		var s := book.spells[spells_index_map[k]]
 		spell_index.add_item(s.name, load("res://GUI/Images/check-full.svg") as Texture2D if s.is_active else load("res://GUI/Images/check-empty.svg") as Texture2D)
+		
+	if not spell_name.is_empty():
+		for i in spell_index.item_count:
+			if spell_index.get_item_text(i) == spell_name:
+				spell_index.select(i)
+				break
 	
 func update_book_without_selection() -> void:
 	current_index = -1
@@ -150,7 +158,6 @@ func update_book_without_selection() -> void:
 	update_book()
 	
 func update_book() -> void:
-	update_spells_list()
 	reload_list()
 		
 func delete_spell_at_index(index: int) -> void:
@@ -161,7 +168,6 @@ func delete_spell_at_index(index: int) -> void:
 func add_spell(spell: Spell) -> void:
 	spell.id = book.spells.size()
 	book.add(spell)
-	update_spells_list()
 	reload_list()
 	var k_index := -1
 	for k: int in spells_index_map:
@@ -211,7 +217,6 @@ func sort_popup_selected(id: int) -> void:
 		sort_popup.set_item_checked(id, true)
 		sort_selected = id
 		
-	update_spells_list()
 	reload_list()
 	
 func filter_popup_selected(id: int) -> void:
@@ -224,12 +229,10 @@ func filter_popup_selected(id: int) -> void:
 	if id == TOTAL_FILTER_ITEMS - 1 and current_index != -1:
 		filter_chain = book.spells[current_index].name
 		
-	update_spells_list()
 	reload_list()
 	
 
 func _on_search_line_edit_text_changed(new_text: String) -> void:
-	update_spells_list()
 	reload_list()
 	
 
@@ -247,7 +250,6 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				get_tree().root.add_child(popup)
 			else:
 				spell.is_active = false
-				update_spells_list()
 				reload_list()
 		else:
 			var active_count := 0
@@ -266,6 +268,5 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				get_tree().root.add_child(popup)
 			else:
 				spell.is_active = true
-				update_spells_list()
 				reload_list()
 				
