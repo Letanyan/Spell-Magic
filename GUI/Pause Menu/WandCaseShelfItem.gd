@@ -47,23 +47,3 @@ func _on_spell_text_changed(new_text: String) -> void:
 	
 func update_state(ignore_signals: bool) -> void:
 	spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, ignore_signals)
-
-func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not has_focus():
-		return
-		
-	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
-	
-	if cast_combo.has_focus():
-		if direction.x < 0:
-			return_focus.emit()
-		if direction.x > 0:
-			spell.grab_focus()
-	elif spell.has_focus():
-		if direction.x < 0:
-			cast_combo.grab_focus()
-			
-	if direction.y > 0:
-		move_down_request.emit()
-	if direction.y < 0:
-		move_up_request.emit()

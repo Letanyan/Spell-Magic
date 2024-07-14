@@ -135,44 +135,6 @@ func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_reticule = button_pressed
 	settings_changed.emit(world_settings)
 
-func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not has_focus():
-		return
-		
-	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
-	
-	if hide_wand_mappings.has_focus():
-		if direction.y > 0:
-			hide_wand_modifier_hints.grab_focus()
-	elif hide_wand_modifier_hints.has_focus():
-		if direction.y > 0:
-			hide_notifications.grab_focus()
-		if direction.y < 0:
-			hide_wand_mappings.grab_focus()
-	elif hide_notifications.has_focus():
-		if direction.y > 0:
-			hide_status_effects.grab_focus()
-		if direction.y < 0:
-			hide_wand_modifier_hints.grab_focus()
-	elif hide_status_effects.has_focus():
-		if direction.y > 0:
-			hide_health_and_mana.grab_focus()
-		if direction.y < 0:
-			hide_notifications.grab_focus()
-	elif hide_health_and_mana.has_focus():
-		if direction.y > 0:
-			hide_cooldown_timings.grab_focus()
-		if direction.y < 0:
-			hide_status_effects.grab_focus()
-	elif hide_cooldown_timings.has_focus():
-		if direction.y > 0:
-			hide_stats_view.grab_focus()
-		if direction.y < 0:
-			hide_health_and_mana.grab_focus()
-	elif hide_stats_view.has_focus():
-		if direction.y < 0:
-			hide_cooldown_timings.grab_focus()
-
 
 func _on_fov_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.fov = int(value)

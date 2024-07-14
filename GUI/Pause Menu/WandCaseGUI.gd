@@ -166,37 +166,3 @@ func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_
 		use_current_wand.call(current_index)
 		new_wand_selected.emit(case.wands[current_index])
 		reload_list()
-
-func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not has_focus():
-		return
-		
-	var direction := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back")
-	
-	if wand_index.has_focus():
-		if direction.x > 0:
-			list_view.grab_focus()
-		if direction.y > 0:
-			create_button.grab_focus()
-	elif create_button.has_focus():
-		if direction.x > 0:
-			name_edit.grab_focus()
-		if direction.y < 0:
-			wand_index.grab_focus()
-	elif list_view.has_focus():
-		if direction.x < 0:
-			wand_index.grab_focus()
-		if direction.y > 0:
-			name_edit.grab_focus()
-	elif name_edit.has_focus():
-		if direction.x < 0:
-			create_button.grab_focus()
-		if direction.x > 0:
-			delete_button.grab_focus()
-		if direction.y < 0:
-			list_view.grab_focus()
-	elif delete_button.has_focus():
-		if direction.x < 0:
-			name_edit.grab_focus()
-		if direction.y < 0:
-			list_view.grab_focus()
