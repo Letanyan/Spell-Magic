@@ -34,6 +34,8 @@ extends Control
 
 @onready var info_label: RichTextLabel = $Tabs/Game/Info
 
+@onready var user_functions: TextEdit = $Tabs/Tools/user_functions
+
 var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
@@ -48,7 +50,7 @@ signal exit_game
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	user_functions.text = GlobalData.game_settings.user_functions_text
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -92,6 +94,8 @@ func update_controls() -> void:
 	master_slider.value = world_settings.audio_settings.master
 	music_slider.value = world_settings.audio_settings.bg
 	sfx_slider.value = world_settings.audio_settings.sfx
+	
+	user_functions.text = GlobalData.game_settings.user_functions_text
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -314,3 +318,7 @@ func _on_exit_game_pressed() -> void:
 func _on_tabs_tab_selected(tab: int) -> void:
 	if tab == 4:
 		update_info()
+
+func _on_user_functions_focus_exited() -> void:
+	GlobalData.game_settings.build_user_functions(user_functions.text)
+	GlobalData.game_settings.save()

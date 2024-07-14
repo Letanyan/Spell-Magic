@@ -99,7 +99,7 @@ func operator_precedes(op1: Token, op2: Token) -> bool:
 func compute(vars: Dictionary, display: bool = false) -> float:
 	if not back.error.is_empty():
 		return 0.0
-	return back.compute(vars)
+	return back.compute(vars, GlobalData.game_settings.user_functions)
 	
 #	var tape: PackedFloat64Array = [] 
 #	var tape_index := 0
