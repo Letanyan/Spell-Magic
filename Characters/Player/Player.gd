@@ -257,12 +257,14 @@ func ignore_enemy(enemy: Enemy) -> void:
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
 
-func set_underwater(underwater: float = 0.5) -> void:
+func set_underwater(underwater: float = 0.5) -> float:
 	var rect: ColorRect = get_node("CanvasLayer/ColorRect")
 	if position.y + 2.0 < Globals.sea_level():
 		(rect.material as ShaderMaterial).set_shader_parameter("underwater", underwater)
+		return underwater
 	else:
 		(rect.material as ShaderMaterial).set_shader_parameter("underwater", 0.0)
+		return 0.0
 	
 func compute_max_watched_enemies_distance() -> float:
 	var result := 0.0

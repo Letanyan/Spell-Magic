@@ -84,7 +84,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		var info: Dictionary = user_info.call(world_normal)
-		if not info.get("valid", true) or wh < Globals.sea_level():
+		if not info.get("valid", true):
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
 			else:

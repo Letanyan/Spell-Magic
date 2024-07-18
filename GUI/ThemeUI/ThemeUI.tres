@@ -1,4 +1,4 @@
-[gd_resource type="Theme" script_class="ThemeUI" load_steps=27 format=3 uid="uid://dmnfauhx880ds"]
+[gd_resource type="Theme" script_class="ThemeUI" load_steps=28 format=3 uid="uid://dmnfauhx880ds"]
 
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="1_csxah"]
 [ext_resource type="StyleBox" uid="uid://dacirujsofcjw" path="res://GUI/ThemeUI/DisabledStyle.tres" id="1_pinm1"]
@@ -26,6 +26,8 @@
 [ext_resource type="StyleBox" uid="uid://bto8y6v6fmxj1" path="res://GUI/ThemeUI/TabStyles/BaseStyle.tres" id="15_0ypeh"]
 [ext_resource type="FontFile" uid="uid://db7oq7odngmli" path="res://GUI/ThemeUI/ChakraPetch-Italic.ttf" id="15_dglxo"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/ThemeUI.gd" id="19_t71ay"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v1du1"]
 
 [resource]
 default_font = ExtResource("1_csxah")
@@ -86,12 +88,13 @@ RichTextLabel/fonts/bold_font = ExtResource("13_sqwc1")
 RichTextLabel/fonts/bold_italics_font = ExtResource("14_u2jn3")
 RichTextLabel/fonts/italics_font = ExtResource("15_dglxo")
 RichTextLabel/fonts/normal_font = ExtResource("1_csxah")
+TabBar/constants/h_separation = 0
 TabBar/styles/tab_disabled = ExtResource("11_h00o4")
 TabBar/styles/tab_focus = ExtResource("12_i4oa7")
 TabBar/styles/tab_hovered = ExtResource("13_xhdjg")
 TabBar/styles/tab_selected = ExtResource("14_ba8dc")
 TabBar/styles/tab_unselected = ExtResource("15_0ypeh")
-TabContainer/styles/panel = ExtResource("4_qxh2l")
+TabContainer/styles/panel = SubResource("StyleBoxEmpty_v1du1")
 TabContainer/styles/tab_disabled = ExtResource("11_h00o4")
 TabContainer/styles/tab_focus = ExtResource("12_i4oa7")
 TabContainer/styles/tab_hovered = ExtResource("13_xhdjg")

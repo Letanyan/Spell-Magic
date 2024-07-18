@@ -26,6 +26,7 @@ var water_shader := preload("res://Worlds/SkyBox/water.gdshader") as Shader
 var water_noise := preload("res://Worlds/SkyBox/water_noise.tres") as NoiseTexture2D
 var water_ripples_noise := preload("res://Worlds/SkyBox/ripples_noise.tres") as NoiseTexture2D
 var noise_texture := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
+var caustic_texture := preload("res://Worlds/Generator/Terrain/caustic_texture.tres") as NoiseTexture2D
 
 #var loaded_chunks_location := PackedVector2Array()
 #var loaded_chunks: Array[Node3D] = []
@@ -53,6 +54,7 @@ func _init(b: NoiseBlender, cs: float = 256, r: float = 3, subdivide: float = 1.
 	backing.set_water_ripples_noise(water_ripples_noise)
 	backing.set_sea_level(Globals.sea_level())
 	backing.set_noise_texture(noise_texture)
+	backing.set_caustic_texture(caustic_texture)
 	
 	
 func init_chunks_of_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Array[Node3D]:
@@ -385,8 +387,8 @@ func init_grass() -> void:
 						#
 	#mm.visible_instance_count = i
 
-func hide_water(y: float) -> void:
-	backing.hide_water(y)
+func hide_water(y: float, force_update: bool) -> void:
+	backing.hide_water(y, force_update)
 
 func set_player_coord_using_position(x: float, y: float, cs: float) -> void:
 	backing.set_player_coord_using_position(x, y, cs)
