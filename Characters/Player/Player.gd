@@ -258,12 +258,19 @@ func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
 
 func set_underwater(underwater: float = 0.5) -> float:
-	var rect: ColorRect = get_node("CanvasLayer/ColorRect")
+	var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
+	var screen_mesh: Mesh = screen_filter.mesh
+	var screen_material: ShaderMaterial = screen_mesh.surface_get_material(0)
 	if position.y + 2.0 < Globals.sea_level():
-		(rect.material as ShaderMaterial).set_shader_parameter("underwater", underwater)
+		screen_filter.visible = true
+		screen_material.set_shader_parameter("underwater", underwater)
+		var meters_below_sea := Globals.sea_level() - (position.y + 2.0)
+		screen_material.set_shader_parameter("depth_distance", maxf(10.0, 500.0 - meters_below_sea))
 		return underwater
 	else:
-		(rect.material as ShaderMaterial).set_shader_parameter("underwater", 0.0)
+		screen_filter.visible = false
+		screen_material.set_shader_parameter("underwater", 0.0)
+		screen_material.set_shader_parameter("depth_distance", 0.0)
 		return 0.0
 	
 func compute_max_watched_enemies_distance() -> float:

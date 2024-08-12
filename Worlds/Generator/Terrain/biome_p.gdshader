@@ -102,6 +102,7 @@ void fragment() {
 	vec4 color = biome_color(v, UV);
 	//color = mix(color, texture(noise, UV).rgba, 0.05);
 	vec3 cch = texture(caustic, (UV - sin(TIME / 10.0)) * ((sin(TIME / 10.0) / 2.0 + 0.5) * 0.15 + 0.85) + vec2(TIME, 3.0) * 0.125).rgb;
+	//vec3 ccv = texture(caustic, (sin(UV * cch.r) - sin(TIME / 10.0)) * ((sin(TIME / 10.0) / 2.0 + 0.5) * 0.15 + 0.85) + vec2(0.0, TIME) * 0.125).rgb;
 	vec3 ccv = texture(caustic, (UV - sin(TIME / 10.0)) * ((sin(TIME / 10.0) / 2.0 + 0.5) * 0.15 + 0.85) + vec2(0.0, TIME) * 0.125).rgb;
 	vec3 caustic_color = pow((cch + ccv) / 2.0, vec3(7.0)) * 1.0;
 	color.rgb = color.rgb - texture(noise, UV).rgb * 0.025 + caustic_color * underwater;

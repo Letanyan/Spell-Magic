@@ -1,9 +1,8 @@
 [gd_scene load_steps=139 format=3 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
+[ext_resource type="Shader" path="res://Characters/Player/MainPlayer.gdshader" id="2_nairg"]
 [ext_resource type="Texture2D" uid="uid://o3cab8bv33d" path="res://GUI/Images/circle.png" id="2_y1bhm"]
-[ext_resource type="Shader" path="res://Worlds/Demo/screen.gdshader" id="3_hukkp"]
-[ext_resource type="Texture2D" uid="uid://b7tw50v1oijwf" path="res://icon.svg" id="4_qeh5a"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xubmj"]
 resource_name = "Metal"
@@ -13969,6 +13968,32 @@ shading_mode = 0
 material = SubResource("StandardMaterial3D_ork78")
 size = Vector2(1.5, 0.75)
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_puico"]
+frequency = 0.0243
+fractal_octaves = 1
+fractal_lacunarity = 0.0
+fractal_gain = 0.001
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_neadm"]
+width = 64
+height = 64
+seamless = true
+seamless_blend_skirt = 0.5
+normalize = false
+noise = SubResource("FastNoiseLite_puico")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_irbof"]
+render_priority = 0
+shader = ExtResource("2_nairg")
+shader_parameter/underwater = 0.0
+shader_parameter/depth_distance = 0.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_neadm")
+
+[sub_resource type="QuadMesh" id="QuadMesh_gpvbd"]
+material = SubResource("ShaderMaterial_irbof")
+flip_faces = true
+size = Vector2(2, 2)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_582ty"]
 radius = 0.3
 height = 1.9
@@ -14181,26 +14206,6 @@ _data = {
 "OpenMenu": SubResource("Animation_twrnx"),
 "camera_rotate": SubResource("Animation_y3sh5")
 }
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_puico"]
-frequency = 0.0243
-fractal_octaves = 1
-fractal_lacunarity = 0.0
-fractal_gain = 0.001
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_neadm"]
-width = 64
-height = 64
-seamless = true
-seamless_blend_skirt = 0.5
-normalize = false
-noise = SubResource("FastNoiseLite_puico")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bla0t"]
-shader = ExtResource("3_hukkp")
-shader_parameter/underwater = 0.0
-shader_parameter/noise_texture = SubResource("NoiseTexture2D_neadm")
-shader_parameter/debug_texture = ExtResource("4_qeh5a")
 
 [sub_resource type="Gradient" id="Gradient_p78vi"]
 colors = PackedColorArray(0, 1, 1, 1, 0, 0, 1, 1)
@@ -14753,6 +14758,11 @@ collision_mask = 513
 [node name="Lens" type="Camera3D" parent="CamPivot/Arm"]
 h_offset = 0.4
 
+[node name="ScreenFilter" type="MeshInstance3D" parent="CamPivot/Arm/Lens"]
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_gpvbd")
+
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_582ty")
 
@@ -14783,19 +14793,6 @@ offset_right = 12.0
 offset_bottom = 8.0
 texture = ExtResource("2_y1bhm")
 stretch_mode = 3
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-material = SubResource("ShaderMaterial_bla0t")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-color = Color(0.482353, 0, 1, 1)
-metadata/_edit_use_anchors_ = true
 
 [node name="BGAudio2" type="AudioStreamPlayer3D" parent="."]
 max_distance = 50.0

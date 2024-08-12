@@ -10,7 +10,7 @@ resource_local_to_scene = true
 
 [sub_resource type="Gradient" id="Gradient_t57qq"]
 interpolation_color_space = 2
-offsets = PackedFloat32Array(0, 0.151394)
+offsets = PackedFloat32Array(0, 0.121771)
 colors = PackedColorArray(0.466667, 0, 0.498039, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ig4cv"]
@@ -80,7 +80,7 @@ collide_with_areas = true
 [node name="source" type="GPUParticles3D" parent="."]
 sorting_offset = 1.0
 cast_shadow = 0
-amount = 80
+amount = 40
 lifetime = 2.0
 interpolate = false
 visibility_aabb = AABB(-2.16439, -2.3909, -2.06765, 4.28472, 4.93733, 4.21857)
