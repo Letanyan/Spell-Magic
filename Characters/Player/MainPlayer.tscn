@@ -1,8 +1,9 @@
-[gd_scene load_steps=139 format=3 uid="uid://cs66h1r8861hy"]
+[gd_scene load_steps=140 format=3 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="Shader" path="res://Characters/Player/MainPlayer.gdshader" id="2_nairg"]
 [ext_resource type="Texture2D" uid="uid://o3cab8bv33d" path="res://GUI/Images/circle.png" id="2_y1bhm"]
+[ext_resource type="Texture2D" uid="uid://c7buo0xdor3it" path="res://Worlds/Generator/Terrain/caustic_texture.tres" id="3_en07u"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xubmj"]
 resource_name = "Metal"
@@ -13988,6 +13989,7 @@ shader = ExtResource("2_nairg")
 shader_parameter/underwater = 0.0
 shader_parameter/depth_distance = 0.0
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_neadm")
+shader_parameter/caustic = ExtResource("3_en07u")
 
 [sub_resource type="QuadMesh" id="QuadMesh_gpvbd"]
 material = SubResource("ShaderMaterial_irbof")

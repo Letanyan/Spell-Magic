@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=37 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -11,7 +11,6 @@
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="11_sslk6"]
 [ext_resource type="Shader" path="res://Worlds/MainMenu/env_fire.gdshader" id="11_u2pvt"]
-[ext_resource type="Texture2D" uid="uid://c7buo0xdor3it" path="res://Worlds/Generator/Terrain/caustic_texture.tres" id="12_e6jkx"]
 [ext_resource type="Texture2D" uid="uid://dgj6xbk5yv1vo" path="res://Worlds/Generator/Terrain/noise_texture.tres" id="12_hijy3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
@@ -210,7 +209,6 @@ shader_parameter/locations = PackedVector2Array(0, 0.5, 0.5, 0, 0, 1, 1, 0, 0.25
 shader_parameter/biome_x = SubResource("NoiseTexture2D_805q4")
 shader_parameter/biome_y = SubResource("NoiseTexture2D_udh5n")
 shader_parameter/noise = ExtResource("12_hijy3")
-shader_parameter/caustic = ExtResource("12_e6jkx")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_oqkeh"]
 material = SubResource("ShaderMaterial_hra85")
