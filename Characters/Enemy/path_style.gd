@@ -36,6 +36,7 @@ func _init(_seed: int = randi(), _origin: Vector3 = Vector3.ZERO) -> void:
 	rng = RandomNumberGenerator.new()
 	rng.seed = _seed
 	origin_kind = OriginKind.ABSOLUTE
+	path = Pathway.empty()
 		
 static func still_path() -> PathStyle:
 	var result := PathStyle.new()
