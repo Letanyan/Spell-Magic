@@ -10,7 +10,7 @@ var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
 var lifetime_velocity: float = 0.0 
 var old_pos: Vector3 = Vector3.ZERO
-var most_recent_radius: float = 0
+var most_recent_radius: Vector3 = Vector3.ZERO
 
 var caster_vitals: Vitals
 var spell_caster: SpellCaster
@@ -53,7 +53,7 @@ func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool
 			SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
 		expired = true
 		var amount := clampi(int(spell.damage(caster_vitals)), 0, 100)
-		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius, velocity, is_alternate)
+		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius.length(), velocity, is_alternate)
 	)
 	
 func is_active() -> bool:
@@ -229,7 +229,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(_body):
 			on_hit_casts[_body] = true
 			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
-		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
+		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := _body as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 10000.0, 0.0, 1.0))
@@ -305,7 +305,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(area):
 			on_hit_casts[area] = true
 			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
-		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius, velocity)
+		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 10000.0, 0.0, 1.0))
@@ -323,10 +323,13 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 				body.invunerable = 0.33
 				body.play_animation("on_hit")
 
-func update_shape(r: float, ignore_time: bool) -> void:
-	if r == most_recent_radius:
+func update_shape(r: float, ignore_time: bool, box_size: Vector3 = Vector3.ZERO) -> void:
+	if (r == most_recent_radius.length() and not is_zero_approx(r)) or box_size == most_recent_radius:
 		return
-	most_recent_radius = r
+	if not is_zero_approx(r):
+		most_recent_radius = Vector3(1, 1, 1).normalized() * r
+	else:
+		most_recent_radius = box_size
 	
 	match spell.element:
 		Spell.Element.FIRE:
@@ -346,22 +349,27 @@ func update_shape(r: float, ignore_time: bool) -> void:
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			var m_shape: CollisionShape3D = get_node("body/mesh/area/shape")
-			(p_shape.shape as BoxShape3D).size.x = r
-			(p_shape.shape as BoxShape3D).size.y = r
-			(p_shape.shape as BoxShape3D).size.z = r
-			(m_shape.shape as BoxShape3D).size.x = r
-			(m_shape.shape as BoxShape3D).size.y = r
-			(m_shape.shape as BoxShape3D).size.z = r
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = r
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = r
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = r
+			
+			var rx := r if is_zero_approx(box_size.x) else box_size.x
+			var ry := r if is_zero_approx(box_size.y) else box_size.y
+			var rz := r if is_zero_approx(box_size.z) else box_size.z
+			
+			(p_shape.shape as BoxShape3D).size.x = rx
+			(p_shape.shape as BoxShape3D).size.y = ry
+			(p_shape.shape as BoxShape3D).size.z = rz
+			(m_shape.shape as BoxShape3D).size.x = rx
+			(m_shape.shape as BoxShape3D).size.y = ry
+			(m_shape.shape as BoxShape3D).size.z = rz
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rx
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = ry
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = rz
 			var mesh: MeshInstance3D = get_node("body/mesh")
-			(mesh.mesh as BoxMesh).size.x = r
-			(mesh.mesh as BoxMesh).size.y = r
-			(mesh.mesh as BoxMesh).size.z = r
+			(mesh.mesh as BoxMesh).size.x = rx
+			(mesh.mesh as BoxMesh).size.y = ry
+			(mesh.mesh as BoxMesh).size.z = rz
 			
 			var body: RigidBody3D = get_node("body")
-			body.mass = r
+			body.mass = (rx + ry + rz) / 3.0
 			scale = Vector3(1, 1, 1)
 			
 		Spell.Element.WATER:

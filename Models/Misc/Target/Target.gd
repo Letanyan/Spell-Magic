@@ -205,7 +205,7 @@ func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area
 		projectile.on_hit_casts[area] = true
 		projectile.cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), projectile.spell.chain)
 	var dmg := projectile.spell.damage(caster_vitals)
-	Vitals.apply_damage(projectile.get_parent() as Node3D, area, dmg, projectile.spell.element, false, true, contact_points, projectile.most_recent_radius, projectile.velocity)
+	Vitals.apply_damage(projectile.get_parent() as Node3D, area, dmg, projectile.spell.element, false, true, contact_points, projectile.most_recent_radius.length(), projectile.velocity)
 		
 
 func set_is_down() -> void:
