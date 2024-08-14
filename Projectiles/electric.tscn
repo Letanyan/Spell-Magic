@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://8p44w2bikis2"]
+[gd_scene load_steps=13 format=3 uid="uid://8p44w2bikis2"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_pf3b3"]
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
@@ -65,9 +65,6 @@ material = SubResource("ShaderMaterial_g1ktx")
 radial_segments = 16
 rings = 8
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_erm55"]
-resource_local_to_scene = true
-
 [node name="electric" type="Node3D"]
 script = ExtResource("1_pf3b3")
 
@@ -91,15 +88,6 @@ draw_pass_1 = SubResource("BoxMesh_a4wuh")
 [node name="body" type="MeshInstance3D" parent="."]
 cast_shadow = 0
 mesh = SubResource("SphereMesh_sdaq3")
-
-[node name="area" type="Area3D" parent="body"]
-collision_layer = 256
-collision_mask = 575
-monitoring = false
-monitorable = false
-
-[node name="shape" type="CollisionShape3D" parent="body/area"]
-shape = SubResource("SphereShape3D_erm55")
 
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("4_gu14i")

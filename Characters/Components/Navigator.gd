@@ -142,6 +142,22 @@ static func get_ray_intersection(p: CollisionObject3D, from: Vector3, target: Ve
 			break
 	return c
 	
+static func get_ray_intersection_from_spell_body(p: SpellBody, from: Vector3, target: Vector3) -> CollisionShape3D:
+	var space_state := p.get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(from + Vector3(0, 1, 0), target + Vector3(0, 1, 0), ~1, [])
+	var result := space_state.intersect_ray(query)
+	if result.is_empty():
+		return null
+	var obj: CollisionObject3D = result.get("collider")	
+	if obj == null:
+		return null
+	var c: CollisionShape3D = null
+	for o in obj.get_children():
+		if o.name == "shape" or o.name == "Collision":
+			c = o
+			break
+	return c
+	
 static func get_shape_intersection(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, exclude_ground: bool) -> bool:
 	var space_state := p.get_world_3d().direct_space_state
 	var query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()

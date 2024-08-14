@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dgdyy3dwir84s"]
+[gd_scene load_steps=5 format=3 uid="uid://dgdyy3dwir84s"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_i25j6"]
 
@@ -16,8 +16,6 @@ material = SubResource("StandardMaterial3D_tshma")
 radial_segments = 12
 rings = 6
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_42hc4"]
-
 [node name="void" type="Node3D"]
 script = ExtResource("1_i25j6")
 
@@ -28,12 +26,3 @@ collision_mask = 1559
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_5q8f3")
-
-[node name="area" type="Area3D" parent="mesh"]
-collision_layer = 1024
-collision_mask = 535
-monitoring = false
-monitorable = false
-
-[node name="shape" type="CollisionShape3D" parent="mesh/area"]
-shape = SubResource("SphereShape3D_42hc4")

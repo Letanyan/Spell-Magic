@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=12 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
 [ext_resource type="AudioStream" uid="uid://blus3u8usi3fc" path="res://Audio/projectile/water.mp3" id="2_7rwhp"]
@@ -100,9 +100,6 @@ height = 0.5
 radial_segments = 8
 rings = 4
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_6etye"]
-resource_local_to_scene = true
-
 [node name="water" type="Node3D"]
 script = ExtResource("1_dkd3k")
 
@@ -116,15 +113,6 @@ collide_with_areas = true
 amount = 80
 process_material = SubResource("ParticleProcessMaterial_tnio6")
 draw_pass_1 = SubResource("SphereMesh_37v5l")
-
-[node name="area" type="Area3D" parent="source"]
-collision_layer = 32
-collision_mask = 799
-monitoring = false
-monitorable = false
-
-[node name="shape" type="CollisionShape3D" parent="source/area"]
-shape = SubResource("SphereShape3D_6etye")
 
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("2_7rwhp")
