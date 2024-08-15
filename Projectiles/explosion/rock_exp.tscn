@@ -26,7 +26,7 @@ size = Vector3(0.1, 0.1, 0.1)
 
 [node name="source" type="GPUParticles3D" parent="."]
 emitting = false
-amount = 20
+amount = 100
 lifetime = 0.5
 one_shot = true
 explosiveness = 1.0

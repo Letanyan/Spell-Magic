@@ -305,9 +305,9 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	p.position = calculate_location(fixed_vars)
 	if element == Element.ROCK and is_zero_approx(radius):
 		var nr := Vector3(fixed_vars.get("rx", 0.1) as float, fixed_vars.get("ry", 0.1) as float, fixed_vars.get("rz", 0.1) as float)
-		p.update_shape(radius, true, nr)
+		p.update_shape(nr, true)
 	else:
-		p.update_shape(radius, true)
+		p.update_shape(Vector3(1, 1, 1).normalized() * radius, true)
 	
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)

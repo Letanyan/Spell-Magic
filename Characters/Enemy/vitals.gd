@@ -197,13 +197,13 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 		for location in locations:
 			build_explosion(world, body, int(amount), element, location, r, v, false)
 
-const steam_exp = preload("res://Projectiles/explosion/steam_exp.tscn")
-const fire_exp = preload("res://Projectiles/explosion/fire_exp.tscn")
-const water_exp = preload("res://Projectiles/explosion/water_exp.tscn")
-const ice_exp = preload("res://Projectiles/explosion/ice_exp.tscn")
-const air_exp = preload("res://Projectiles/explosion/air_exp.tscn")
-const rock_exp = preload("res://Projectiles/explosion/rock_exp.tscn")
-const electric_exp = preload("res://Projectiles/explosion/electric_exp.tscn")
+const steam_exp = preload("res://Projectiles/explosion/steam_exp.tscn") as PackedScene
+const fire_exp = preload("res://Projectiles/explosion/fire_exp.tscn") as PackedScene
+const water_exp = preload("res://Projectiles/explosion/water_exp.tscn") as PackedScene
+const ice_exp = preload("res://Projectiles/explosion/ice_exp.tscn") as PackedScene
+const air_exp = preload("res://Projectiles/explosion/air_exp.tscn") as PackedScene
+const rock_exp = preload("res://Projectiles/explosion/rock_exp.tscn") as PackedScene
+const electric_exp = preload("res://Projectiles/explosion/electric_exp.tscn") as PackedScene
 
 static func build_explosion(world: Node3D, body: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3, is_alternate: bool) -> void:
 	if element == Spell.Element.VOID:

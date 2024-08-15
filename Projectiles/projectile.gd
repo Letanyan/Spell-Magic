@@ -184,7 +184,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 			if is_world or is_rock or is_world_object:
 				pass
 			elif is_fire:
-				update_shape(spell.radius * 2, true)
+				update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 2, true)
 			elif (is_player or is_enemy):
 				dmg = {} # set to empty so we know we can skip doing invunerable stuff
 				# Look at `_on_area_entered` for implementation
@@ -239,7 +239,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 			if is_water:
 				expire_now(self, _body)
 			elif is_electric:
-				update_shape(spell.radius * 3, true)
+				update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
 				explode_after(self, _body, 0.0166667 * 2, false)
 		Spell.Element.WATER:
 			if is_ice:
@@ -254,7 +254,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 				# Look at `_on_body_entered` for implementation
 				pass
 			elif is_fire:
-				update_shape(spell.radius * 3, true)
+				update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
 				explode_after(self, _body, 0.0166667 * 2, false)
 				pass
 			elif (is_player or is_enemy) and is_water and not invunerable:
@@ -296,22 +296,20 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 				body.invunerable = 0.33
 				body.play_animation("on_hit")
 
-func update_shape(r: float, ignore_time: bool, box_size: Vector3 = Vector3.ZERO) -> void:
-	if (r == most_recent_radius.length() and not is_zero_approx(r)) or box_size == most_recent_radius:
+func update_shape(r: Vector3, ignore_time: bool) -> void:
+	if r == most_recent_radius:
 		return
-	if not is_zero_approx(r):
-		most_recent_radius = Vector3(1, 1, 1).normalized() * r
-	else:
-		most_recent_radius = box_size
+	most_recent_radius = r
+	var rl := r.length()
 	
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")
-			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-			(particles.process_material as ParticleProcessMaterial).scale_min = r * 2
-			(particles.process_material as ParticleProcessMaterial).scale_max = r * 2
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = r
+			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
+			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2
+			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
@@ -320,71 +318,67 @@ func update_shape(r: float, ignore_time: bool, box_size: Vector3 = Vector3.ZERO)
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			
-			var rx := r if is_zero_approx(box_size.x) else box_size.x
-			var ry := r if is_zero_approx(box_size.y) else box_size.y
-			var rz := r if is_zero_approx(box_size.z) else box_size.z
-			
-			(p_shape.shape as BoxShape3D).size.x = rx
-			(p_shape.shape as BoxShape3D).size.y = ry
-			(p_shape.shape as BoxShape3D).size.z = rz
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rx
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = ry
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = rz
+			(p_shape.shape as BoxShape3D).size.x = r.x
+			(p_shape.shape as BoxShape3D).size.y = r.y
+			(p_shape.shape as BoxShape3D).size.z = r.z
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = r.x
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = r.y
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = r.z
 			var mesh: MeshInstance3D = get_node("body/mesh")
-			(mesh.mesh as BoxMesh).size.x = rx
-			(mesh.mesh as BoxMesh).size.y = ry
-			(mesh.mesh as BoxMesh).size.z = rz
+			(mesh.mesh as BoxMesh).size.x = r.x
+			(mesh.mesh as BoxMesh).size.y = r.y
+			(mesh.mesh as BoxMesh).size.z = r.z
 			
 			var body: RigidBody3D = get_node("body")
-			body.mass = (rx + ry + rz) / 3.0
+			body.mass = (r.x + r.y + r.z) / 3.0
 			scale = Vector3(1, 1, 1)
 			
 		Spell.Element.WATER:
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = r
+			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
 			var particles: GPUParticles3D = get_node("source")
-			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
-			(particles.process_material as ParticleProcessMaterial).scale_max = r * 2
-			(particles.process_material as ParticleProcessMaterial).scale_min = r * 2.0 / 3.0
+			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
+			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
+			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
 			
 		Spell.Element.AIR:
-			(get_node("source/area") as Node3D).position.y = r * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = r * 4
-			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).radius = r
+			(get_node("source/area") as Node3D).position.y = rl * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = rl * 4
+			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).radius = rl
 			
 			var source: GPUParticles3D = get_node("source")
-			(source.process_material as ParticleProcessMaterial).emission_ring_height = r * 4
+			(source.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			
 			var source2: GPUParticles3D = get_node("source")
 			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", r / 10.0)
 			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", r)
 			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", r / 2)
 			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", r / 4)
-			(source2.process_material as ParticleProcessMaterial).emission_ring_radius = r
+			(source2.process_material as ParticleProcessMaterial).emission_ring_radius = rl
 			
 		Spell.Element.ICE:
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = r * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = r * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rl * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = rl * 2
 			
 			var source: GPUParticles3D = get_node("source")
-			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(r, 0.2, r)
+			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
 			
 		Spell.Element.ELECTRIC:
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = r
+			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
 			
 			var source: GPUParticles3D = get_node("source")
-			(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
+			(source.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
 			mat.set_shader_parameter("len", r * 5)
 			var body := get_node("body") as MeshInstance3D
-			(body.mesh as SphereMesh).radius = r
-			(body.mesh as SphereMesh).height = r * 2
+			(body.mesh as SphereMesh).radius = rl
+			(body.mesh as SphereMesh).height = rl * 2
 			
 		Spell.Element.VOID:
 			var mesh: SphereMesh = (get_node("mesh") as MeshInstance3D).mesh
-			mesh.radius = r
-			mesh.height = r * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = r
+			mesh.radius = rl
+			mesh.height = rl * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
 #			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
 			
 
