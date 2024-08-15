@@ -4888,9 +4888,6 @@ libraries = {
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_33dey")]
 active = false
-libraries = {
-"": SubResource("AnimationLibrary_d7jp5")
-}
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_dgy5i")
