@@ -19,8 +19,8 @@ void fragment() {
 //	depth = texture(ripples, SCREEN_UV + TIME / 16.0).r * round(depth);
 	float ripple = step(texture(ripples, UV * mod(TIME / 32.0, 2.0)).r, depth);
 	ALBEDO = vec3(ripple);
-	
-	vec3 water_color = vec3(0, 0.1, 0.2) * texture(noise, UV + TIME / 16.0).rgb; 
+
+	vec3 water_color = vec3(0, 0.1, 0.2) * texture(noise, UV + TIME / 16.0).rgb;
 	ALBEDO = mix(water_color, vec3(ripple), depth);
 	//ALBEDO = vec3(UV.x, 0, UV.y);
 	ALPHA = 0.9;

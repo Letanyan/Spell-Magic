@@ -18,12 +18,12 @@ uniform vec2 locations[9];
 
 void vertex() {
 //	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
-	//vec2 pixel = 1.0 / vec2(textureSize(height, 0)); 
+	//vec2 pixel = 1.0 / vec2(textureSize(height, 0));
 	//vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
 	//VERTEX.y += texture(height, VERTEX.xz / 16.0).r * 50.0;
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	
-	// Project onto sphere 
+
+	// Project onto sphere
 	//vec3 old_vert = VERTEX;
 	//vec3 P = vec3(center_on_world.x, world_radius, center_on_world.y) + VERTEX;
 	//float p_len = length(P);
@@ -43,7 +43,7 @@ float axial_dependant_distance(vec2 a, vec2 b) {
 
 vec4 biome_color(vec4 V, vec2 uv) {
 	// hack because fastnoise generates textures with 1 pixel edges that have increased saturation?
-	vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0)); 
+	vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0));
 	vec2 w = vec2(clamp(uv.x, pixel.x, 1.0 - pixel.x), clamp(uv.y, pixel.y, 1.0 - pixel.y));
 	float bx = texture(biome_x, w).r;
 	float by = texture(biome_y, w).r;
@@ -91,17 +91,17 @@ vec4 biome_color(vec4 V, vec2 uv) {
 			//color = colors[i];
 		}
 	}
-	
+
 	return color;
 }
 
 void fragment() {
 	vec4 v = INV_VIEW_MATRIX * vec4(VERTEX, 1);
-	
+
 	vec4 color = biome_color(v, UV);
 	//color = mix(color, texture(noise, UV).rgba, 0.05);
 	color.rgb = color.rgb - texture(noise, UV).rgb * 0.025;
-	
+
 	float norm_angle = distance(vec3(0, 1, 0), -normalize(cross(dFdx(v.xyz), dFdy(v.xyz))));
 	if (norm_angle > inversesqrt(2.0)) {
 		float blend = clamp(1.0 - pow(1.0 - (norm_angle - inversesqrt(2.0)), 5.0), 0.0, 1.0);
@@ -109,7 +109,7 @@ void fragment() {
 	}
 
 	ALBEDO = color.rgb;
-	//vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0)); 
+	//vec2 pixel = 1.0 / vec2(textureSize(biome_x, 0));
 	//vec2 w = vec2(clamp(UV.x, pixel.x, 1.0 - pixel.x), clamp(UV.y, pixel.y, 1.0 - pixel.y));
 	//ALBEDO = texture(biome_w, w).rgb;
 	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
