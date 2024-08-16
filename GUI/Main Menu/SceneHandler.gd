@@ -87,4 +87,3 @@ func on_content_finished_loading(content: Variant) -> void:
 		# wait for LoadingScreen's transition to finish playing
 		await loading_screen.anim_player.animation_finished
 		loading_screen = null
-

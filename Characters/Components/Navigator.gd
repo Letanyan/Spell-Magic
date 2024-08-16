@@ -367,4 +367,3 @@ static func path_distance(path: PackedVector3Array) -> float:
 static func find_target(current: Vector3, p: CollisionObject3D, target: Vector3, shape: Shape3D, options: MovementOptions, margin_from_target: float = 2.0, margin_from_obs: float = 3.0) -> Vector3:
 	var path := find_target_path(p, target, shape, options, margin_from_target, margin_from_obs)
 	return find_next_target_from_path(path, current, p, target)
-

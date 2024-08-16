@@ -55,7 +55,7 @@ func choose_spell(vitals: Vitals) -> Spell:
 static func choose_from_distribution(agro: float, weights: Array[int], repeat: int = 1) -> Callable:
 	var total: float = 0.0
 	var probs: Array[float] = []
-	var repeat_count := repeat
+	var repeat_count := Globals.Ref.new(repeat)
 	for s in weights:
 		total += s
 		probs.append(0.0)
@@ -66,8 +66,8 @@ static func choose_from_distribution(agro: float, weights: Array[int], repeat: i
 		if randf() > agro:
 			return -1
 		
-		repeat_count -= 1
-		if repeat_count == 0:
+		repeat_count.data -= 1
+		if repeat_count.data == 0:
 			is_done.data = true
 		var range_end := 0.0
 		var p := randf()
@@ -84,21 +84,21 @@ static func choose_in_sequence(intervals: Array[float], repeat: int = 1) -> Call
 	var starting_points: Array[float] = []
 	var completed: Array[bool] = []
 	var total := 0.0
-	var repeat_count := repeat
+	var repeat_count := Globals.Ref.new(repeat)
 	for s in intervals:
 		total += s
 		starting_points.append(total)
 		completed.append(false)
 	
 	return func(t: float, is_done: Globals.Ref) -> int:
-		if repeat_count == 0:
+		if repeat_count.data == 0:
 			return -1
 		var end_index := starting_points.size() - 1
 		if t >= starting_points[end_index] and not completed[end_index]:
-			if repeat_count == 0:
+			if repeat_count.data == 0:
 				is_done.data = true
 			else:
-				repeat_count -= 1
+				repeat_count.data -= 1
 				for i in completed.size():
 					completed[i] = false
 			return end_index

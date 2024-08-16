@@ -596,4 +596,3 @@ func _on_duplicate_pressed() -> void:
 	if current_index < 0:
 		return
 	duplicate_spell.emit(current_index)
-
