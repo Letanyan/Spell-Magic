@@ -1,35 +1,79 @@
-linear:
+arc:  fires multiple projectilesin an arc
+	R ; arc radius
+	s ; speed
+	d ; offset
+	
+bomb: places a projectile some distance `d` away multiplied by `C` 
+	d ; offset
+	
+buck-shot: fires multiple projectiles from a center point to angles defined by (x/y/z)range
+	s ; speed
+	S ; starting distance
+	E ; ending distance
+	yrange ; 
+	xrange ;
+	zrange ; 
+	
+linear: fires a projectile straight from camera
 	s ; speed
 	d ; offset
 	ax, ay, az ; offset
 	bx, by, bz ; speed
-
-arc:
+	
+linear-arc: fires multiple projectiles in a straight line set in an arc starting point
 	R ; arc radius
-	h ; height
-	s ; speed
 	d ; offset
+	s ; speed
+	
+linear-clamp:
+	
+linear-shower:
+	d ; offset
+	s ; speed
+	r ; 
 	
 linear-turret:
 	d ; offset
 	ix, iy, iz ; (ix, iy, iz) * n defines line of turret
+	s ; speed
 	
-parabola:
-	s; speed
-	d; offset xz
-	H; y arc max height
-	D; distance should always equal T
+loop-shot: fires projectiles in an arc trajectory with each projectile spread in an arc
+	CC ; distance to travel
+	H ; max height
+	spread ; horizontal arc
+	B ; offset 
 	
-scatter shot:
-	harc ; horizontal xz-arc
-	varc ; vertical y-arc
-	u, v, w ; overwrite chain spell 'linear' uvw
-	n ; overwrite linear n value
+orbit-xz: projectiles spin around a point
+	d ; offset
+	s ; rotation speed
+	or ; projectile offset
+	r ; radius
+	
+scatter shot: fires multiple projectiles in range defined by harc and varc
+	harc ; horizontal arc range
+	varc ; vertical arc range
+	s ; speed
 	
 sniper:
 	harc ; horizontal xz-arc
 	varc ; vertical y-arc
 	s ; speed
+	
+solar-system: fires multiple projectiles that orbit around a center in multiple rings
+	r ; base radius
+	H ; height
+	rs ; speed
+	r0 ; offset
+	
+sphere-linear: fires multiple projectiles from center in multiple directions
+	d ; offset
+	r ; radius
+	dx, dy, dz ; direction
+	
+top-down: fires projectile from top down
+	H ; height to start at Top and to travel to Bottom
+	Top ; starting height
+	Bottom ; distance to travel down
 
 wall:
 	s ; speed really small to look static
