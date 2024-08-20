@@ -236,36 +236,41 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	var invunerable: bool = (is_player or is_enemy) and (_body as CharacterBody).invunerable > 0.0
 	match spell.element:
 		Spell.Element.FIRE:
-			if is_water:
-				expire_now(self, _body)
-			elif is_electric:
-				update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
-				explode_after(self, _body, 0.0166667 * 2, false)
+			if not (is_enemy or is_player):
+				if is_water:
+					expire_now(self, _body)
+				elif is_electric:
+					update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
+					explode_after(self, _body, 0.0166667 * 2, false)
 		Spell.Element.WATER:
-			if is_ice:
-				expire_now(self, _body)
-			elif is_fire:
-				explode_after(self, _body, 0.0166667 * 2, true)
+			if not (is_enemy or is_player):
+				if is_ice:
+					expire_now(self, _body)
+				elif is_fire:
+					explode_after(self, _body, 0.0166667 * 2, true)
 		Spell.Element.ICE:
-			if is_water:
-				spell.elemental_application = clampf(spell.elemental_application * 1.1, 0.0, 1.0)
+			if not (is_enemy or is_player):
+				if is_water:
+					spell.elemental_application = clampf(spell.elemental_application * 1.1, 0.0, 1.0)
 		Spell.Element.ELECTRIC:
-			if is_world or is_rock or is_world_object:
-				# Look at `_on_body_entered` for implementation
-				pass
-			elif is_fire:
-				update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
-				explode_after(self, _body, 0.0166667 * 2, false)
-				pass
-			elif (is_player or is_enemy) and is_water and not invunerable:
+			if not (is_enemy or is_player):
+				if is_world or is_rock or is_world_object:
+					# Look at `_on_body_entered` for implementation
+					pass
+				elif is_fire:
+					update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
+					explode_after(self, _body, 0.0166667 * 2, false)
+					pass
+			elif is_water and not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.damage(caster_vitals), spell.elemental_application)
 				nothing(self, body)
 		Spell.Element.VOID:
-			if is_world or is_rock or is_world_object:
-				nothing(self, _body)
-			elif (is_enemy or is_player) and not invunerable:
+			if not (is_player or is_enemy):
+				if is_world or is_rock or is_world_object:
+					nothing(self, _body)
+			elif not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.VOID, spell.damage(caster_vitals), spell.elemental_application)

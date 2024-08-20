@@ -20,6 +20,7 @@ func setup(seedling: int) -> void:
 	
 	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":str(4+level*1.1), "CC": "C"})
 	water_para.element = Spell.Element.WATER
+	water_para.count = 1
 	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":str(5+level*1.1), "d":"2"})
 	water_line.duration = 5
 	water_line.element = Spell.Element.WATER
@@ -29,7 +30,7 @@ func setup(seedling: int) -> void:
 			water_line,
 			water_para,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 7, 3 ], -1)
+		AttackPatterns.choose_from_distribution(1.5, [ 7, 3 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(

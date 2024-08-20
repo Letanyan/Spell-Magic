@@ -11,7 +11,7 @@ func _init(_spells: Array, _predicate: Callable) -> void:
 	spells = _spells
 	waiting_for_pattern = null
 	time = 0.0
-	last_time = Time.get_unix_time_from_system()
+	last_time = -1.0
 	predicate = _predicate
 	
 func reset() -> void:
@@ -32,13 +32,17 @@ func choose_spell(vitals: Vitals) -> Spell:
 	if is_complete:
 		return null
 			
+	if last_time <= 0.0:
+		last_time = Time.get_unix_time_from_system()
 	var now_time := Time.get_unix_time_from_system()
 	time += now_time - last_time
 	last_time = now_time
 	var is_done := Globals.Ref.new(false)
-	var index: int = predicate.call(time, is_done)
+	var should_reset := Globals.Ref.new(false)
+	var index: int = predicate.call(time, is_done, should_reset)
 	if is_done.data:
 		is_complete = true
+	if should_reset.data or is_done.data:
 		reset()
 	if index <= -1 or index >= spells.size():
 		return null
@@ -52,7 +56,7 @@ func choose_spell(vitals: Vitals) -> Spell:
 		return s as Spell
 
 # use repeat < 0 for infinite
-static func choose_from_distribution(agro: float, weights: Array[int], repeat: int = 1) -> Callable:
+static func choose_from_distribution(interval: float, weights: Array[int], repeat: int = 1) -> Callable:
 	var total: float = 0.0
 	var probs: Array[float] = []
 	var repeat_count := Globals.Ref.new(repeat)
@@ -62,13 +66,15 @@ static func choose_from_distribution(agro: float, weights: Array[int], repeat: i
 	for i in range(weights.size()):
 		probs[i] = weights[i] / total
 	
-	return func(t: float, is_done: Globals.Ref) -> int:
-		if randf() > agro:
+	return func(t: float, is_done: Globals.Ref, should_reset: Globals.Ref) -> int:
+		if t < interval or repeat_count.data == 0:
 			return -1
 		
 		repeat_count.data -= 1
 		if repeat_count.data == 0:
 			is_done.data = true
+		if repeat_count.data <= 0:
+			should_reset.data = true
 		var range_end := 0.0
 		var p := randf()
 		for i in range(probs.size()):
@@ -90,7 +96,7 @@ static func choose_in_sequence(intervals: Array[float], repeat: int = 1) -> Call
 		starting_points.append(total)
 		completed.append(false)
 	
-	return func(t: float, is_done: Globals.Ref) -> int:
+	return func(t: float, is_done: Globals.Ref, should_reset: Globals.Ref) -> int:
 		if repeat_count.data == 0:
 			return -1
 		var end_index := starting_points.size() - 1
@@ -101,6 +107,8 @@ static func choose_in_sequence(intervals: Array[float], repeat: int = 1) -> Call
 				repeat_count.data -= 1
 				for i in completed.size():
 					completed[i] = false
+			if repeat_count.data <= 0:
+				should_reset.data = true
 			return end_index
 			
 		for i in range(end_index):

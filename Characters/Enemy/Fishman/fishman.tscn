@@ -4898,6 +4898,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02099, 0)
 [node name="WetArea" type="Area3D" parent="."]
 collision_layer = 36
 collision_mask = 256
+monitoring = false
 
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 shape = SubResource("CapsuleShape3D_hgsdb")
