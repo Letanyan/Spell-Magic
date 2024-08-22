@@ -30,7 +30,7 @@ func setup(seedling: int) -> void:
 			water_line,
 			water_para,
 		],
-		AttackPatterns.choose_from_distribution(2.5, [ 7, 3 ], -1)
+		AttackPatterns.choose_from_distribution(3.5, [ 7, 3 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(

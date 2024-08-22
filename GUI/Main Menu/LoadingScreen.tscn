@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cj1doo6y1k4vk"]
+[gd_scene load_steps=10 format=3 uid="uid://cj1doo6y1k4vk"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/LoadingScreen.gd" id="1_lx61i"]
 [ext_resource type="Texture2D" uid="uid://b78atkfmuchnc" path="res://GUI/Images/check-empty.svg" id="2_602if"]
@@ -59,8 +59,18 @@ tracks/1/keys = {
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_umwyj"]
+resource_name = "blink_to"
+length = 0.1
+
+[sub_resource type="Animation" id="Animation_4tcun"]
+resource_name = "blink_from"
+length = 0.1
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tw3lk"]
 _data = {
+"blink_from": SubResource("Animation_4tcun"),
+"blink_to": SubResource("Animation_umwyj"),
 "fade_from_black": SubResource("Animation_l8i2d"),
 "fade_to_black": SubResource("Animation_crayt")
 }
@@ -115,7 +125,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -146,8 +156,8 @@ offset_right = 24.0
 offset_bottom = 23.888
 value = 60.0
 fill_mode = 4
-texture_progress = ExtResource("2_602if")
 radial_initial_angle = 199.629
+texture_progress = ExtResource("2_602if")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -160,7 +170,7 @@ offset_left = -128.0
 offset_top = -27.576
 offset_right = 128.0
 offset_bottom = 27.424
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 0)
 theme_override_font_sizes/font_size = 42
 text = "Loading..."
 horizontal_alignment = 1

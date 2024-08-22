@@ -89,6 +89,12 @@ func setup(_settings: WorldSettings) -> void:
 	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
 	fishman.level = 50
 	add_enemy(fishman)
+	var fishman2 := Population.generate_enemy(World.Enemy.FISHMAN, player, 15, 1000, 20)
+	fishman2.level = 50
+	add_enemy(fishman2)
+	var fishman3 := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 15)
+	fishman3.level = 50
+	add_enemy(fishman3)
 	
 	var rng := RandomNumberGenerator.new()
 	spawner = ItemSpawner.key_spawner(rng, null, Vector3(20, 1000, 20), 16)

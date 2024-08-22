@@ -65,10 +65,10 @@ func _on_delete_pressed() -> void:
 	var filename := filenames[selected[0]] as String
 	var popup := PopupDialog.display("Are you sure you want to delete the save '" + filename + "'")
 	popup.confirmed.connect(func() -> void:
-		selected = list.get_selected_items()
-		if selected.is_empty():
+		var current_selected := list.get_selected_items()
+		if current_selected.is_empty():
 			return
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
-		list.remove_item(selected[0])
+		list.remove_item(current_selected[0])
 	)
 	get_tree().root.add_child(popup)

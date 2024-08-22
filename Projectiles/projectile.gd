@@ -43,14 +43,14 @@ func has_expired(t: float) -> bool:
 	
 func expire_now(p: Node3D, q: CollisionObject3D) -> void:
 	if q != null:
-		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
+		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
 	expired = true
 	
 func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool) -> void:
 	var timer := get_tree().create_timer(t)
 	timer.timeout.connect(func() -> void:
 		if q != null:
-			SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
+			SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
 		expired = true
 		var amount := clampi(int(spell.damage(caster_vitals)), 0, 100)
 		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius.length(), velocity, is_alternate)
@@ -67,11 +67,11 @@ func lose_control(p: Node3D, q: CollisionObject3D) -> void:
 			body.freeze = false
 			body.apply_central_impulse(velocity)
 			if q != null:
-				SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
+				SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
 
 func nothing(p: Node3D, q: CollisionObject3D) -> void:
 	if q != null:
-		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system())
+		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
 	
 func actual_duration() -> float:
 	var result := (spell.duration + pause_time) - (Time.get_unix_time_from_system() - time_start)

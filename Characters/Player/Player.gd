@@ -237,13 +237,14 @@ func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
 	return true
 
-func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: float) -> void:
+func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: float, p: SpellBody) -> void:
 	if not origin is Player:
 		return
 	var c := spell.cooldown
 	var u := magic_book.last_use.get(spell.name, 0.0) as float
 	var v := minf((time - u) / (c + spell.mana_cost), 1.0)
 	var t := (1.0 - (-1.5 * (v ** 3.0 / 3.0 - v))) * spell.mana_cost / float(spell.count)
+	t = t / (absf(p.lifetime_velocity) * 0.15 + 1) # scale payback down when spell has high velocity.
 	vitals.mana.apply_ignoring_resistance(t)
 	if target & 0b0100 != 0: # is enemy
 		update_artifact_effects(Artifact.Event.DEAL, spell)

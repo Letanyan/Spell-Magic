@@ -153,7 +153,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	ftp.z = z_expr.compute(temp_vars)
 	
 	var result := 0.0
-	var step := time / float(samples)
+	var step := time / randf_range(samples - 5, samples + 5)
 	var t := step
 	
 	# calculate distance

@@ -183,16 +183,16 @@ func transition_to_biome(biome: World.Biome) -> void:
 		biome_tween_next = biome
 		return
 	
-	var env := get_node("WorldEnvironment") as WorldEnvironment
+	#var env := get_node("WorldEnvironment") as WorldEnvironment
 	var update_world := func(a: float) -> void:
-		var shader := env.environment.sky.sky_material as ShaderMaterial
+		var shader := world_environment.environment.sky.sky_material as ShaderMaterial
 		shader.set_shader_parameter("transition", a)
 		
 	biome_tween = get_tree().create_tween()
-	NoiseBlender.update_world_environment(env, biome, false)
+	NoiseBlender.update_world_environment(world_environment, biome, false)
 	biome_tween.tween_method(update_world, 0.0, 1.0, 0.5)
 	biome_tween.finished.connect(func() -> void:
-		NoiseBlender.update_world_environment(env, biome, true)
+		NoiseBlender.update_world_environment(world_environment, biome, true)
 		update_world.call(0.0)
 		if biome_tween_next != World.Biome.WATER:
 			biome_tween = null
