@@ -1,0 +1,20 @@
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=3 format=3 uid="uid://bhmtpt5vqdmx"]
+
+[ext_resource type="Texture2D" uid="uid://utk065nspovn" path="res://GUI/ThemeUI/NeoColorHighlightGradient.tres" id="1_hsngf"]
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_sw1md"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+script = ExtResource("1_sw1md")
+top_right_corner_radius = 4.0
+top_left_corner_radius = 4.0
+bottom_left_corner_radius = 4.0
+bottom_right_corner_radius = 4.0
+fill_texture = ExtResource("1_hsngf")
+border_width = 0.0
+corner_radius_detail = 4.0

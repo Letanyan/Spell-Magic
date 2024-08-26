@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=9 format=3 uid="uid://oko6g6intlvw"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
+[ext_resource type="StyleBox" uid="uid://b5hkii08bovm3" path="res://GUI/ThemeUI/NeoBaseStyle.tres" id="2_qeuom"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="3_cyou0"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="4_4nvek"]
@@ -46,6 +47,7 @@ focus_neighbor_right = NodePath("../UseSaveFile")
 focus_neighbor_bottom = NodePath("../Seed")
 focus_next = NodePath("../UseSaveFile")
 focus_previous = NodePath("../SaveName")
+theme_override_styles/pressed = ExtResource("2_qeuom")
 toggle_mode = true
 button_pressed = true
 text = "Using Seed"
@@ -57,7 +59,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 offset_left = 8.0
 offset_top = 48.0
-offset_right = 126.0
+offset_right = 128.0
 offset_bottom = 88.0
 focus_neighbor_left = NodePath("../UseSeed")
 focus_neighbor_top = NodePath("../SaveName")
@@ -238,7 +240,6 @@ toggle_mode = true
 text = "Starting Upgrades"
 
 [node name="StartingUpgradesPanel" type="Panel" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0

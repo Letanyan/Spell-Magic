@@ -3,52 +3,72 @@ extends Theme
 
 
 func change_tint_color(tint: Color) -> void:
-	var root_base_style: StyleBoxFlat = get_stylebox("normal", "Button") as StyleBoxFlat
-	var root_disabled_style: StyleBoxFlat = get_stylebox("disabled", "Button") as StyleBoxFlat
-	var root_focus_style: StyleBoxFlat = get_stylebox("focus", "Button") as StyleBoxFlat
-	var root_hover_style: StyleBoxFlat = get_stylebox("hover", "Button") as StyleBoxFlat
-	var root_pressed_style: StyleBoxFlat = get_stylebox("pressed", "Button") as StyleBoxFlat
+	print("change tint color")
+	var root_base_style: StyleBoxGradientFill = get_stylebox("normal", "Button") as StyleBoxGradientFill
+	var root_focus_style: StyleBoxGradientFill = get_stylebox("focus", "Button") as StyleBoxGradientFill
+	var root_hover_style: StyleBoxGradientFill = get_stylebox("hover", "Button") as StyleBoxGradientFill
+	var root_pressed_style: StyleBoxGradientFill = get_stylebox("pressed", "Button") as StyleBoxGradientFill
 	
-	root_base_style.border_color = tint
-	root_disabled_style.border_color = tint
-	root_focus_style.border_color = tint
-	root_hover_style.border_color = tint
-	root_pressed_style.border_color = tint
+	var base_tint := tint
+	var base_degen_tint := tint
+	base_degen_tint.h = clampf(base_degen_tint.h - 0.0555556, 0.0, 1.0)
 	
-	root_disabled_style.bg_color = tint.darkened(0.75)
-	root_hover_style.bg_color = tint.darkened(0.25)
-	root_pressed_style.bg_color = tint.darkened(0.5)
+	var degen_tint := base_degen_tint
+	
+	root_base_style.set_border_gradient(tint, Color(1, 0, 0))
+	root_hover_style.set_border_gradient(tint, degen_tint)
+	root_hover_style.set_fill_gradient(tint, degen_tint)
+	root_pressed_style.set_border_gradient(tint, degen_tint)
+	
+	degen_tint.a = 0.0
+	root_focus_style.set_fill_gradient(tint, degen_tint)
+	
+	degen_tint.s = 1.0
+	degen_tint.a = 1.0
+	tint.s = 1.0
+	root_pressed_style.set_fill_gradient(tint, degen_tint)
 	
 	#var check_base_style: StyleBoxFlat = get_stylebox("normal", "CheckBox") as StyleBoxFlat
 	#var check_disabled_style: StyleBoxFlat = get_stylebox("disabled", "CheckBox") as StyleBoxFlat
-	var check_focus_style: StyleBoxFlat = get_stylebox("focus", "CheckBox") as StyleBoxFlat
-	var check_hover_style: StyleBoxFlat = get_stylebox("hover", "CheckBox") as StyleBoxFlat
+	var check_focus_style: StyleBoxGradientFill = get_stylebox("focus", "CheckBox") as StyleBoxGradientFill
+	var check_hover_style: StyleBoxGradientFill = get_stylebox("hover", "CheckBox") as StyleBoxGradientFill
 	#var check_pressed_style: StyleBoxFlat = get_stylebox("pressed", "CheckBox") as StyleBoxFlat
 	
-	check_hover_style.bg_color = tint
-	check_hover_style.bg_color.a = 0.25
-	check_focus_style.bg_color = tint
-	check_focus_style.bg_color.a = 0.25
+	tint = base_tint
+	degen_tint = base_degen_tint
+	degen_tint.a = 0.0
 	
-	var tab_base_style: StyleBoxFlat = get_stylebox("tab_unselected", "TabBar") as StyleBoxFlat
-	var tab_disabled_style: StyleBoxFlat = get_stylebox("tab_disabled", "TabBar") as StyleBoxFlat
-	var tab_focus_style: StyleBoxFlat = get_stylebox("tab_focus", "TabBar") as StyleBoxFlat
-	var tab_hover_style: StyleBoxFlat = get_stylebox("tab_hovered", "TabBar") as StyleBoxFlat
-	var tab_pressed_style: StyleBoxFlat = get_stylebox("tab_selected", "TabBar") as StyleBoxFlat
+	check_hover_style.set_fill_gradient(tint, degen_tint)
+	check_focus_style.set_fill_gradient(tint, degen_tint)
 	
-	tab_base_style.border_color = tint
-	tab_disabled_style.border_color = tint
-	tab_focus_style.border_color = tint
-	tab_hover_style.border_color = tint
-	tab_pressed_style.border_color = tint
+	var tab_base_style: StyleBoxGradientFill = get_stylebox("tab_unselected", "TabBar") as StyleBoxGradientFill
+	var tab_focus_style: StyleBoxGradientFill = get_stylebox("tab_focus", "TabBar") as StyleBoxGradientFill
+	var tab_hover_style: StyleBoxGradientFill = get_stylebox("tab_hovered", "TabBar") as StyleBoxGradientFill
+	var tab_pressed_style: StyleBoxGradientFill = get_stylebox("tab_selected", "TabBar") as StyleBoxGradientFill
 	
-	tab_disabled_style.bg_color = tint.darkened(0.75)
-	tab_hover_style.bg_color = tint.darkened(0.25)
-	tab_pressed_style.bg_color = tint.darkened(0.5)
+	tint = base_tint
+	degen_tint = base_degen_tint
 	
-	var slider_base_style: StyleBoxFlat = get_stylebox("slider", "HSlider") as StyleBoxFlat
-	var slider_pressed_style: StyleBoxFlat = get_stylebox("grabber_area", "HSlider") as StyleBoxFlat
+	tab_base_style.set_border_gradient(tint, degen_tint)
+	tab_hover_style.set_border_gradient(tint, degen_tint)
+	tab_hover_style.set_fill_gradient(tint, degen_tint)
+	tab_pressed_style.set_border_gradient(tint, degen_tint)
 	
-	slider_base_style.border_color = tint
-	slider_pressed_style.bg_color = tint
-	slider_pressed_style.border_color = tint
+	degen_tint.a = 0.0
+	tab_focus_style.set_fill_gradient(tint, degen_tint)
+	
+	degen_tint.s = 1.0
+	degen_tint.a = 1.0
+	tint.s = 1.0
+	tab_pressed_style.set_fill_gradient(tint, degen_tint)
+	
+	var slider_pressed_style: StyleBoxGradientFill = get_stylebox("grabber_area", "HSlider") as StyleBoxGradientFill
+	
+	tint = base_tint
+	degen_tint = base_degen_tint
+	
+	slider_pressed_style.set_border_gradient(tint, degen_tint)
+	
+	tint.s = 1.0
+	degen_tint.s = 1.0
+	slider_pressed_style.set_fill_gradient(tint, degen_tint)

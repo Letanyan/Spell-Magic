@@ -1,0 +1,35 @@
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=6 format=3 uid="uid://csitcpjypnmfe"]
+
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_v4k5m"]
+
+[sub_resource type="Gradient" id="Gradient_obhf2"]
+colors = PackedColorArray(0.1, 0.1, 0.1, 1, 0.3, 0.3, 0.3, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m5khu"]
+gradient = SubResource("Gradient_obhf2")
+width = 16
+
+[sub_resource type="Gradient" id="Gradient_f7vnh"]
+interpolation_color_space = 2
+colors = PackedColorArray(0, 0, 0, 1, 0.2, 0.2, 0.2, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_e50ol"]
+gradient = SubResource("Gradient_f7vnh")
+width = 64
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+script = ExtResource("1_v4k5m")
+top_right_corner_radius = 4.0
+top_left_corner_radius = 4.0
+bottom_left_corner_radius = 0.0
+bottom_right_corner_radius = 0.0
+fill_texture = SubResource("GradientTexture1D_e50ol")
+border_texture = SubResource("GradientTexture1D_m5khu")
+border_width = 1.0
+corner_radius_detail = 4.0

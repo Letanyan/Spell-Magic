@@ -158,7 +158,7 @@ func run_on_ready() -> void:
 	hud.update_settings(settings)
 	
 	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
-	theme.change_tint_color(Color(0.0, 0.360784, 0.643137))
+	theme.change_tint_color(Color(0, 0.533, 0.8))
 	ready_state = GameSettings.ReadyState.IS
 	
 	await RenderingServer.frame_post_draw

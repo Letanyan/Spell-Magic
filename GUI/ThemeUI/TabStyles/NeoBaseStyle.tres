@@ -1,0 +1,22 @@
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://co2qr7diy4ox1"]
+
+[ext_resource type="Texture2D" uid="uid://bo4x5b1s3342" path="res://GUI/ThemeUI/NeoColorGradient.tres" id="1_xt0l6"]
+[ext_resource type="Texture2D" uid="uid://cp0dy8gl2oxr5" path="res://GUI/ThemeUI/NeoBaseGradient.tres" id="2_d6ytf"]
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="3_y17mu"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+script = ExtResource("3_y17mu")
+top_right_corner_radius = 4.0
+top_left_corner_radius = 4.0
+bottom_left_corner_radius = 0.0
+bottom_right_corner_radius = 0.0
+fill_texture = ExtResource("2_d6ytf")
+border_texture = ExtResource("1_xt0l6")
+border_width = 1.0
+corner_radius_detail = 4.0
