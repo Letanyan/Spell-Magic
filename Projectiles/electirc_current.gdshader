@@ -31,7 +31,7 @@ void vertex() {
 			comp_count += 1.0;
 		}
 	}
-	
+
 	VERTEX.z += (fft / comp_count) * radius;
 	VERTEX.z += cos((UV.y - 0.5) * 4.0 * PI) * (cos(TIME * center_bend_growth + float(INSTANCE_ID)) / 2.0 + 0.5) * center_bend;
 }
