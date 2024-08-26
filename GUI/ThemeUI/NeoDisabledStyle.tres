@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_rylgy"]
 
 [sub_resource type="Gradient" id="Gradient_obhf2"]
-colors = PackedColorArray(0.71, 0.71, 0.71, 1, 1, 1, 1, 1)
+colors = PackedColorArray(0.6, 0.6, 0.6, 1, 0.7, 0.7, 0.7, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_m5khu"]
 gradient = SubResource("Gradient_obhf2")
@@ -11,7 +11,7 @@ width = 16
 
 [sub_resource type="Gradient" id="Gradient_f7vnh"]
 interpolation_color_space = 2
-colors = PackedColorArray(0, 0.28, 0.6, 1, 0, 0.513333, 0.7, 1)
+colors = PackedColorArray(0.24, 0.408, 0.6, 1, 0.28, 0.588, 0.7, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_e50ol"]
 gradient = SubResource("Gradient_f7vnh")

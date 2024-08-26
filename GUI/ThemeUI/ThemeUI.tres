@@ -1,4 +1,4 @@
-[gd_resource type="Theme" script_class="ThemeUI" load_steps=29 format=3 uid="uid://dmnfauhx880ds"]
+[gd_resource type="Theme" script_class="ThemeUI" load_steps=30 format=3 uid="uid://dmnfauhx880ds"]
 
 [ext_resource type="StyleBox" uid="uid://d12shiwt887us" path="res://GUI/ThemeUI/NeoDisabledStyle.tres" id="1_cdj88"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="1_csxah"]
@@ -27,6 +27,8 @@
 [ext_resource type="StyleBox" uid="uid://ut83uprwdmhm" path="res://GUI/ThemeUI/TabStyles/NeoHoverStyle.tres" id="23_iyn4d"]
 [ext_resource type="StyleBox" uid="uid://dll2go7qm3d76" path="res://GUI/ThemeUI/TabStyles/NeoPressedStyle.tres" id="24_o7hu0"]
 [ext_resource type="StyleBox" uid="uid://co2qr7diy4ox1" path="res://GUI/ThemeUI/TabStyles/NeoBaseStyle.tres" id="25_wftg8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3o71h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v1du1"]
 
@@ -65,7 +67,7 @@ HScrollBar/styles/scroll_focus = ExtResource("16_8e6jg")
 HSlider/styles/grabber_area = ExtResource("15_8muip")
 HSlider/styles/grabber_area_highlight = ExtResource("15_8muip")
 HSlider/styles/slider = ExtResource("16_8e6jg")
-ItemList/styles/focus = ExtResource("2_sdp1v")
+ItemList/styles/focus = SubResource("StyleBoxEmpty_3o71h")
 ItemList/styles/hovered = ExtResource("3_xn2xs")
 ItemList/styles/panel = ExtResource("4_gjk61")
 ItemList/styles/selected = ExtResource("3_xn2xs")

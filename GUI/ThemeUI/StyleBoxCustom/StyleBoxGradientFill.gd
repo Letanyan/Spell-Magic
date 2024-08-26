@@ -117,8 +117,9 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 		uvs.append(top_right_corner_uv)
 		colors.append(top_right_corner_color)
 		
+		
 	if not Geometry2D.triangulate_polygon(vertices).is_empty():
-		RenderingServer.canvas_item_add_polygon(canvas_id, vertices, colors, uvs)
+		RenderingServer.canvas_item_add_polygon(canvas_id, vertices, colors, uvs, texture.get_rid())
 	else:
 		RenderingServer.canvas_item_add_rect(canvas_id, rect, Color(1, 0, 0, 1))
 	#RenderingServer.canvas_item_add_polyline(canvas_id, vertices, colors, 1, true)
@@ -137,7 +138,7 @@ func get_color_from_image(img: Image, coord: Vector2) -> Color:
 func set_border_gradient(start: Color, end: Color) -> void:
 	if border_texture is GradientTexture1D:
 		var tex := border_texture as GradientTexture1D
-		var grad := Gradient.new()
+		var grad := tex.gradient
 		grad.set_color(0, start)
 		grad.set_color(1, end)
 		tex.gradient = grad
@@ -145,7 +146,31 @@ func set_border_gradient(start: Color, end: Color) -> void:
 func set_fill_gradient(start: Color, end: Color) -> void:
 	if fill_texture is GradientTexture1D:
 		var tex := fill_texture as GradientTexture1D
-		var grad := Gradient.new()
+		var grad := tex.gradient
 		grad.set_color(0, start)
 		grad.set_color(1, end)
 		tex.gradient = grad
+
+var border_gradient_start_color: Color:
+	set(value):
+		if border_texture is GradientTexture1D:
+			var tex := border_texture as GradientTexture1D
+			tex.gradient.set_color(0, value)
+			
+var border_gradient_end_color: Color:
+	set(value):
+		if border_texture is GradientTexture1D:
+			var tex := border_texture as GradientTexture1D
+			tex.gradient.set_color(1, value)
+			
+var fill_gradient_start_color: Color:
+	set(value):
+		if fill_texture is GradientTexture1D:
+			var tex := fill_texture as GradientTexture1D
+			tex.gradient.set_color(0, value)
+			
+var fill_gradient_end_color: Color:
+	set(value):
+		if fill_texture is GradientTexture1D:
+			var tex := fill_texture as GradientTexture1D
+			tex.gradient.set_color(1, value)
