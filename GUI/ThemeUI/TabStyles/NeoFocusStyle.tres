@@ -1,13 +1,7 @@
-[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://cjvypra5wie3t"]
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=3 format=3 uid="uid://cjvypra5wie3t"]
 
+[ext_resource type="Texture2D" uid="uid://utk065nspovn" path="res://GUI/ThemeUI/NeoColorHighlightGradient.tres" id="1_61io0"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_rc3du"]
-
-[sub_resource type="Gradient" id="Gradient_3dqpy"]
-interpolation_color_space = 2
-colors = PackedColorArray(0, 0.533333, 0.8, 1, 0, 0.8, 0.8, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_83y8o"]
-gradient = SubResource("Gradient_3dqpy")
 
 [resource]
 resource_local_to_scene = false
@@ -17,10 +11,11 @@ content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
 script = ExtResource("1_rc3du")
-top_right_corner_radius = 4.0
-top_left_corner_radius = 4.0
-bottom_left_corner_radius = 0.0
-bottom_right_corner_radius = 0.0
-fill_texture = SubResource("GradientTexture1D_83y8o")
-border_width = 0.0
+expanded = 0.0
+corner_radius_top_right = 4.0
+corner_radius_top_left = 4.0
+corner_radius_bottom_left = 0.0
+corner_radius_bottom_right = 0.0
 corner_radius_detail = 4.0
+fill_texture = ExtResource("1_61io0")
+border_width = 0.0

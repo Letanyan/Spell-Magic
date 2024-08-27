@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://bjmb52fbvbnqj"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_285nj"]
+[ext_resource type="Texture2D" uid="uid://b78atkfmuchnc" path="res://GUI/Images/check-empty.svg" id="2_5gea4"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_285nj")
+texture = ExtResource("2_5gea4")
+tint = Color(0.2, 0.2, 0.2, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/check-empty.svg-9595e43bb61d7e3eafb011769bb08b4f.ctex"
+script = ExtResource("1_285nj")

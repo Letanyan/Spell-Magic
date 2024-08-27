@@ -2,15 +2,21 @@
 class_name StyleBoxGradientFill
 extends StyleBox
 
-@export var top_right_corner_radius: float = 0.0
-@export var top_left_corner_radius: float = 0.0
-@export var bottom_left_corner_radius: float = 0.0
-@export var bottom_right_corner_radius: float = 0.0
+@export var expanded: float = 0.0
+
+@export_group("Corner Radius", "corner_radius")
+@export var corner_radius_top_right: float = 0.0
+@export var corner_radius_top_left: float = 0.0
+@export var corner_radius_bottom_left: float = 0.0
+@export var corner_radius_bottom_right: float = 0.0
+@export var corner_radius_detail: float = 4.0
+
+@export_group("Fill", "fill")
 @export var fill_texture: Texture2D
+
+@export_group("Border", "border")
 @export var border_texture: Texture2D
 @export var border_width: float = 0.0
-@export var expanded: float = 0.0
-@export var corner_radius_detail: float = 4.0
 
 
 func _draw(to_canvas_item: RID, rect: Rect2) -> void:
@@ -33,100 +39,81 @@ func _test_mask(point: Vector2, rect: Rect2) -> bool:
 	return rect.has_point(point)
 
 func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
-	#GDStyleMat.render_rect(canvas_id, rect, texture, Vector4(top_right_corner_radius, top_left_corner_radius, bottom_left_corner_radius, bottom_right_corner_radius), border_width, corner_radius_detail)
 	var vertices := PackedVector2Array([])
 	var uvs := PackedVector2Array([])
 	var colors := PackedColorArray([])
 	
 	var top_right_corner_vertex := Vector2.ZERO
 	var top_right_corner_uv := Vector2.ZERO
-	#var top_right_corner_color := Color.WHITE
 	
-	var img: Image = null
-	if texture != null:
-		img = texture.get_image()
-	
-	if top_right_corner_radius != 0:
-		var center := rect.position + Vector2(rect.size.x - top_right_corner_radius, 0 + top_right_corner_radius)
+	if corner_radius_top_right != 0:
+		var center := rect.position + Vector2(rect.size.x - corner_radius_top_right, 0 + corner_radius_top_right)
 		var angle := 0.0
-		top_right_corner_vertex = center + Vector2(cos(angle) * top_right_corner_radius, -sin(angle) * top_right_corner_radius)
+		top_right_corner_vertex = center + Vector2(cos(angle) * corner_radius_top_right, -sin(angle) * corner_radius_top_right)
 		top_right_corner_uv = Vector2((top_right_corner_vertex.x - rect.position.x) / rect.size.x, (top_right_corner_vertex.y - rect.position.y) / rect.size.y)
-		#top_right_corner_color = get_color_from_image(img, top_right_corner_uv)
-		for i in top_right_corner_radius * corner_radius_detail + 1:
-			var point := center + Vector2(cos(angle) * top_right_corner_radius, -sin(angle) * top_right_corner_radius)
+		for i in corner_radius_top_right * corner_radius_detail + 1:
+			var point := center + Vector2(cos(angle) * corner_radius_top_right, -sin(angle) * corner_radius_top_right)
 			if vertices.is_empty() or vertices[vertices.size() - 1] != point:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				#colors.append(get_color_from_image(img, u))
-			angle += (PI / 2.0) / (top_right_corner_radius * corner_radius_detail)
+			angle += (PI / 2.0) / (corner_radius_top_right * corner_radius_detail)
 	else:
 		top_right_corner_vertex = rect.position + Vector2(rect.size.x, 0)
 		top_right_corner_uv = Vector2(1, 0)
-		#top_right_corner_color = get_color_from_image(img, Vector2(1, 0))
 		vertices.append(top_right_corner_vertex)
 		uvs.append(top_right_corner_uv)
-		#colors.append(top_right_corner_color)
 		
-	if top_left_corner_radius != 0:
-		var center := rect.position + Vector2(0 + top_left_corner_radius, 0 + top_left_corner_radius)
+	if corner_radius_top_left != 0:
+		var center := rect.position + Vector2(0 + corner_radius_top_left, 0 + corner_radius_top_left)
 		var angle := PI / 2.0
-		for i in top_left_corner_radius * corner_radius_detail + 1:
-			var point := center + Vector2(cos(angle) * top_left_corner_radius, -sin(angle) * top_left_corner_radius)
+		for i in corner_radius_top_left * corner_radius_detail + 1:
+			var point := center + Vector2(cos(angle) * corner_radius_top_left, -sin(angle) * corner_radius_top_left)
 			if vertices[vertices.size() - 1] != point:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				#colors.append(get_color_from_image(img, u))
-			angle += (PI / 2.0) / (top_left_corner_radius * corner_radius_detail)
+			angle += (PI / 2.0) / (corner_radius_top_left * corner_radius_detail)
 	else:
 		vertices.append(rect.position + Vector2(0, 0))
 		uvs.append(Vector2(0, 0))
-		#colors.append(get_color_from_image(img, Vector2(0, 0)))
 		
-	if bottom_left_corner_radius != 0:
-		var center := rect.position + Vector2(0 + bottom_left_corner_radius, rect.size.y - bottom_left_corner_radius)
+	if corner_radius_bottom_left != 0:
+		var center := rect.position + Vector2(0 + corner_radius_bottom_left, rect.size.y - corner_radius_bottom_left)
 		var angle := PI
-		for i in bottom_left_corner_radius * corner_radius_detail + 1:
-			var point := center + Vector2(cos(angle) * bottom_left_corner_radius, -sin(angle) * bottom_left_corner_radius)
+		for i in corner_radius_bottom_left * corner_radius_detail + 1:
+			var point := center + Vector2(cos(angle) * corner_radius_bottom_left, -sin(angle) * corner_radius_bottom_left)
 			if vertices[vertices.size() - 1] != point:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				#colors.append(get_color_from_image(img, u))
-			angle += (PI / 2.0) / (bottom_left_corner_radius * corner_radius_detail)
+			angle += (PI / 2.0) / (corner_radius_bottom_left * corner_radius_detail)
 	else:
 		vertices.append(rect.position + Vector2(0, rect.size.y))
 		uvs.append(Vector2(0, 1))
-		#colors.append(get_color_from_image(img, Vector2(0, 1)))
 		
-	if bottom_right_corner_radius != 0:
-		var center := rect.position + Vector2(rect.size.x - bottom_right_corner_radius, rect.size.y - bottom_right_corner_radius)
+	if corner_radius_bottom_right != 0:
+		var center := rect.position + Vector2(rect.size.x - corner_radius_bottom_right, rect.size.y - corner_radius_bottom_right)
 		var angle := PI / 2.0 * 3.0
-		for i in bottom_right_corner_radius * corner_radius_detail + 1:
-			var point := center + Vector2(cos(angle) * bottom_right_corner_radius, -sin(angle) * bottom_right_corner_radius)
+		for i in corner_radius_bottom_right * corner_radius_detail + 1:
+			var point := center + Vector2(cos(angle) * corner_radius_bottom_right, -sin(angle) * corner_radius_bottom_right)
 			if vertices[vertices.size() - 1] != point:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				#colors.append(get_color_from_image(img, u))
-			angle += (PI / 2.0) / (bottom_right_corner_radius * corner_radius_detail)
+			angle += (PI / 2.0) / (corner_radius_bottom_right * corner_radius_detail)
 	else:
 		vertices.append(rect.position + Vector2(rect.size.x, rect.size.y))
 		uvs.append(Vector2(1, 1))
-		#colors.append(get_color_from_image(img, Vector2(1, 1)))
 		
 	if vertices[vertices.size() - 1] != top_right_corner_vertex:
 		vertices.append(top_right_corner_vertex)
 		uvs.append(top_right_corner_uv)
-		#colors.append(top_right_corner_color)
-		
 		
 	if not Geometry2D.triangulate_polygon(vertices).is_empty():
 		RenderingServer.canvas_item_add_polygon(canvas_id, vertices, colors, uvs, texture.get_rid())
 	else:
 		RenderingServer.canvas_item_add_rect(canvas_id, rect, Color(1, 0, 0, 1))
-	#RenderingServer.canvas_item_add_polyline(canvas_id, vertices, colors, 1, true)
 	
 func get_color(tex: Texture2D, coord: Vector2) -> Color:
 	if tex != null:
@@ -183,7 +170,6 @@ var fill_gradient_start_color: Color:
 	set(value):
 		if fill_texture is GradientTexture1D:
 			var tex := fill_texture as GradientTexture1D
-			print(value)
 			tex.gradient.set_color(0, value)
 	get:
 		if fill_texture is GradientTexture1D:

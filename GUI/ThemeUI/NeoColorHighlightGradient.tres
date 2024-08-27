@@ -2,6 +2,7 @@
 
 [sub_resource type="Gradient" id="Gradient_3dqpy"]
 interpolation_color_space = 2
+offsets = PackedFloat32Array(0.25, 1)
 colors = PackedColorArray(0, 0.533333, 0.8, 1, 0, 0.8, 0.8, 0)
 
 [resource]

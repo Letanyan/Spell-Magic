@@ -50,7 +50,7 @@ func change_tint_color(tint: Color) -> void:
 	check_focus_style.set_fill_gradient(tint, degen_tint)
 	
 	var tab_base_style: StyleBoxGradientFill = get_stylebox("tab_unselected", "TabBar") as StyleBoxGradientFill
-	#var tab_disabled_style: StyleBoxGradientFill = get_stylebox("tab_disabled", "TabBar") as StyleBoxGradientFill
+	var tab_disabled_style: StyleBoxGradientFill = get_stylebox("tab_disabled", "TabBar") as StyleBoxGradientFill
 	var tab_focus_style: StyleBoxGradientFill = get_stylebox("tab_focus", "TabBar") as StyleBoxGradientFill
 	var tab_hover_style: StyleBoxGradientFill = get_stylebox("tab_hovered", "TabBar") as StyleBoxGradientFill
 	var tab_pressed_style: StyleBoxGradientFill = get_stylebox("tab_selected", "TabBar") as StyleBoxGradientFill
@@ -71,13 +71,13 @@ func change_tint_color(tint: Color) -> void:
 	tint.s = 1.0
 	tab_pressed_style.set_fill_gradient(tint, degen_tint)
 	
-	#tint = base_tint
-	#tint.s = 0.7
-	#tint.v = 0.7
-	#degen_tint = base_degen_tint
-	#degen_tint.s = 0.7
-	#degen_tint.v = 0.7
-	#tab_disabled_style.set_fill_gradient(tint, degen_tint)
+	tint = base_tint
+	tint.s = 0.7
+	tint.v = 0.7
+	degen_tint = base_degen_tint
+	degen_tint.s = 0.7
+	degen_tint.v = 0.7
+	tab_disabled_style.set_fill_gradient(tint, degen_tint)
 	
 	var slider_pressed_style: StyleBoxGradientFill = get_stylebox("grabber_area", "HSlider") as StyleBoxGradientFill
 	

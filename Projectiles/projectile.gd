@@ -347,7 +347,6 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
 			
 		Spell.Element.AIR:
-			(get_node("source/area") as Node3D).position.y = rl * 2
 			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = rl * 4
 			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).radius = rl
 			

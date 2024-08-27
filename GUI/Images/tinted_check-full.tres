@@ -1,0 +1,15 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://dk1w8ewsadjw6"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_80wab"]
+[ext_resource type="Texture2D" uid="uid://blghd2xvrcth8" path="res://GUI/Images/check-full.svg" id="2_alped"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_80wab")
+texture = ExtResource("2_alped")
+tint = Color(0.2, 0.2, 0.2, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/check-full.svg-4c3b4e6ce0cbf5f094b4f71b0114e5ca.ctex"
+script = ExtResource("1_80wab")
