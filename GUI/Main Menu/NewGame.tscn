@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=8 format=3 uid="uid://oko6g6intlvw"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
-[ext_resource type="Script" path="res://GUI/Animation/AnimationControl.gd" id="3_2dovw"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="3_cyou0"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="4_4nvek"]
 [ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="5_lff36"]
@@ -50,9 +49,6 @@ focus_previous = NodePath("../SaveName")
 toggle_mode = true
 button_pressed = true
 text = "Using Seed"
-
-[node name="AnimationControl" type="Node" parent="UseSeed"]
-script = ExtResource("3_2dovw")
 
 [node name="UseSaveFile" type="Button" parent="."]
 layout_mode = 1

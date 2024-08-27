@@ -19,4 +19,5 @@ bottom_right_corner_radius = 2.0
 fill_texture = ExtResource("2_yw6bc")
 border_texture = ExtResource("1_famy6")
 border_width = 0.0
+expanded = null
 corner_radius_detail = 1.0

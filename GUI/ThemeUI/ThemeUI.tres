@@ -1,4 +1,4 @@
-[gd_resource type="Theme" script_class="ThemeUI" load_steps=30 format=3 uid="uid://dmnfauhx880ds"]
+[gd_resource type="Theme" script_class="ThemeUI" load_steps=31 format=3 uid="uid://dmnfauhx880ds"]
 
 [ext_resource type="StyleBox" uid="uid://d12shiwt887us" path="res://GUI/ThemeUI/NeoDisabledStyle.tres" id="1_cdj88"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="1_csxah"]
@@ -21,6 +21,7 @@
 [ext_resource type="FontFile" uid="uid://db7oq7odngmli" path="res://GUI/ThemeUI/ChakraPetch-Italic.ttf" id="15_dglxo"]
 [ext_resource type="StyleBox" uid="uid://dvudojspv3f35" path="res://GUI/ThemeUI/SliderStyles/NeoHoverStyle.tres" id="15_lbyck"]
 [ext_resource type="StyleBox" uid="uid://bt2uef030k22w" path="res://GUI/ThemeUI/SliderStyles/NeoBaseStyle.tres" id="16_8e6jg"]
+[ext_resource type="StyleBox" uid="uid://btmm4i21buk03" path="res://GUI/ThemeUI/NeoEmptyStyle.tres" id="17_842hd"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/ThemeUI.gd" id="19_t71ay"]
 [ext_resource type="StyleBox" uid="uid://csitcpjypnmfe" path="res://GUI/ThemeUI/TabStyles/NeoDisabledStyle.tres" id="21_ix36v"]
 [ext_resource type="StyleBox" uid="uid://cjvypra5wie3t" path="res://GUI/ThemeUI/TabStyles/NeoFocusStyle.tres" id="22_efaug"]
@@ -62,8 +63,8 @@ CheckButton/styles/pressed = ExtResource("14_wyryu")
 HScrollBar/styles/grabber = ExtResource("15_lbyck")
 HScrollBar/styles/grabber_highlight = ExtResource("15_8muip")
 HScrollBar/styles/grabber_pressed = ExtResource("15_8muip")
-HScrollBar/styles/scroll = ExtResource("16_8e6jg")
-HScrollBar/styles/scroll_focus = ExtResource("16_8e6jg")
+HScrollBar/styles/scroll = ExtResource("17_842hd")
+HScrollBar/styles/scroll_focus = ExtResource("17_842hd")
 HSlider/styles/grabber_area = ExtResource("15_8muip")
 HSlider/styles/grabber_area_highlight = ExtResource("15_8muip")
 HSlider/styles/slider = ExtResource("16_8e6jg")
@@ -111,8 +112,8 @@ TextEdit/styles/read_only = ExtResource("1_cdj88")
 VScrollBar/styles/grabber = ExtResource("15_lbyck")
 VScrollBar/styles/grabber_highlight = ExtResource("15_8muip")
 VScrollBar/styles/grabber_pressed = ExtResource("15_8muip")
-VScrollBar/styles/scroll = ExtResource("16_8e6jg")
-VScrollBar/styles/scroll_focus = ExtResource("16_8e6jg")
+VScrollBar/styles/scroll = ExtResource("17_842hd")
+VScrollBar/styles/scroll_focus = ExtResource("17_842hd")
 VSlider/styles/grabber_area = ExtResource("15_8muip")
 VSlider/styles/grabber_area_highlight = ExtResource("15_8muip")
 VSlider/styles/slider = ExtResource("16_8e6jg")

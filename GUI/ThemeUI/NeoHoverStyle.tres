@@ -18,4 +18,5 @@ bottom_right_corner_radius = 4.0
 fill_texture = ExtResource("1_3vmpg")
 border_texture = ExtResource("1_3vmpg")
 border_width = 1.0
+expanded = 4.0
 corner_radius_detail = 4.0

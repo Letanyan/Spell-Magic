@@ -9,15 +9,19 @@ extends StyleBox
 @export var fill_texture: Texture2D
 @export var border_texture: Texture2D
 @export var border_width: float = 0.0
+@export var expanded: float = 0.0
 @export var corner_radius_detail: float = 4.0
 
 
 func _draw(to_canvas_item: RID, rect: Rect2) -> void:
+	var ex_rect := rect
+	ex_rect.position -= Vector2(expanded / 2, expanded / 2)
+	ex_rect.size += Vector2(expanded, expanded)
 	if border_width > 0.0:
-		render_rect(to_canvas_item, rect, border_texture)
-	rect.position += Vector2(border_width, border_width)
-	rect.size -= Vector2(border_width * 2, border_width * 2)
-	render_rect(to_canvas_item, rect, fill_texture)
+		render_rect(to_canvas_item, ex_rect, border_texture)
+	ex_rect.position += Vector2(border_width, border_width)
+	ex_rect.size -= Vector2(border_width * 2, border_width * 2)
+	render_rect(to_canvas_item, ex_rect, fill_texture)
 
 func _get_draw_rect(rect: Rect2) -> Rect2:
 	return rect
@@ -36,7 +40,7 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 	
 	var top_right_corner_vertex := Vector2.ZERO
 	var top_right_corner_uv := Vector2.ZERO
-	var top_right_corner_color := Color.WHITE
+	#var top_right_corner_color := Color.WHITE
 	
 	var img: Image = null
 	if texture != null:
@@ -47,22 +51,22 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 		var angle := 0.0
 		top_right_corner_vertex = center + Vector2(cos(angle) * top_right_corner_radius, -sin(angle) * top_right_corner_radius)
 		top_right_corner_uv = Vector2((top_right_corner_vertex.x - rect.position.x) / rect.size.x, (top_right_corner_vertex.y - rect.position.y) / rect.size.y)
-		top_right_corner_color = get_color_from_image(img, top_right_corner_uv)
+		#top_right_corner_color = get_color_from_image(img, top_right_corner_uv)
 		for i in top_right_corner_radius * corner_radius_detail + 1:
 			var point := center + Vector2(cos(angle) * top_right_corner_radius, -sin(angle) * top_right_corner_radius)
 			if vertices.is_empty() or vertices[vertices.size() - 1] != point:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				colors.append(get_color_from_image(img, u))
+				#colors.append(get_color_from_image(img, u))
 			angle += (PI / 2.0) / (top_right_corner_radius * corner_radius_detail)
 	else:
 		top_right_corner_vertex = rect.position + Vector2(rect.size.x, 0)
 		top_right_corner_uv = Vector2(1, 0)
-		top_right_corner_color = get_color_from_image(img, Vector2(1, 0))
+		#top_right_corner_color = get_color_from_image(img, Vector2(1, 0))
 		vertices.append(top_right_corner_vertex)
 		uvs.append(top_right_corner_uv)
-		colors.append(top_right_corner_color)
+		#colors.append(top_right_corner_color)
 		
 	if top_left_corner_radius != 0:
 		var center := rect.position + Vector2(0 + top_left_corner_radius, 0 + top_left_corner_radius)
@@ -73,12 +77,12 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				colors.append(get_color_from_image(img, u))
+				#colors.append(get_color_from_image(img, u))
 			angle += (PI / 2.0) / (top_left_corner_radius * corner_radius_detail)
 	else:
 		vertices.append(rect.position + Vector2(0, 0))
 		uvs.append(Vector2(0, 0))
-		colors.append(get_color_from_image(img, Vector2(0, 0)))
+		#colors.append(get_color_from_image(img, Vector2(0, 0)))
 		
 	if bottom_left_corner_radius != 0:
 		var center := rect.position + Vector2(0 + bottom_left_corner_radius, rect.size.y - bottom_left_corner_radius)
@@ -89,12 +93,12 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				colors.append(get_color_from_image(img, u))
+				#colors.append(get_color_from_image(img, u))
 			angle += (PI / 2.0) / (bottom_left_corner_radius * corner_radius_detail)
 	else:
 		vertices.append(rect.position + Vector2(0, rect.size.y))
 		uvs.append(Vector2(0, 1))
-		colors.append(get_color_from_image(img, Vector2(0, 1)))
+		#colors.append(get_color_from_image(img, Vector2(0, 1)))
 		
 	if bottom_right_corner_radius != 0:
 		var center := rect.position + Vector2(rect.size.x - bottom_right_corner_radius, rect.size.y - bottom_right_corner_radius)
@@ -105,17 +109,17 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 				vertices.append(point)
 				var u := Vector2((point.x - rect.position.x) / rect.size.x, (point.y - rect.position.y) / rect.size.y)
 				uvs.append(u)
-				colors.append(get_color_from_image(img, u))
+				#colors.append(get_color_from_image(img, u))
 			angle += (PI / 2.0) / (bottom_right_corner_radius * corner_radius_detail)
 	else:
 		vertices.append(rect.position + Vector2(rect.size.x, rect.size.y))
 		uvs.append(Vector2(1, 1))
-		colors.append(get_color_from_image(img, Vector2(1, 1)))
+		#colors.append(get_color_from_image(img, Vector2(1, 1)))
 		
 	if vertices[vertices.size() - 1] != top_right_corner_vertex:
 		vertices.append(top_right_corner_vertex)
 		uvs.append(top_right_corner_uv)
-		colors.append(top_right_corner_color)
+		#colors.append(top_right_corner_color)
 		
 		
 	if not Geometry2D.triangulate_polygon(vertices).is_empty():
@@ -156,21 +160,46 @@ var border_gradient_start_color: Color:
 		if border_texture is GradientTexture1D:
 			var tex := border_texture as GradientTexture1D
 			tex.gradient.set_color(0, value)
+	get:
+		if border_texture is GradientTexture1D:
+			var tex := border_texture as GradientTexture1D
+			return tex.gradient.get_color(0)
+		else:
+			return Color(0, 0, 0, 0)
 			
 var border_gradient_end_color: Color:
 	set(value):
 		if border_texture is GradientTexture1D:
 			var tex := border_texture as GradientTexture1D
 			tex.gradient.set_color(1, value)
+	get:
+		if border_texture is GradientTexture1D:
+			var tex := border_texture as GradientTexture1D
+			return tex.gradient.get_color(1)
+		else:
+			return Color(0, 0, 0, 0)
 			
 var fill_gradient_start_color: Color:
 	set(value):
 		if fill_texture is GradientTexture1D:
 			var tex := fill_texture as GradientTexture1D
+			print(value)
 			tex.gradient.set_color(0, value)
+	get:
+		if fill_texture is GradientTexture1D:
+			var tex := fill_texture as GradientTexture1D
+			return tex.gradient.get_color(0)
+		else:
+			return Color(0, 0, 0, 0)
 			
 var fill_gradient_end_color: Color:
 	set(value):
 		if fill_texture is GradientTexture1D:
 			var tex := fill_texture as GradientTexture1D
 			tex.gradient.set_color(1, value)
+	get:
+		if fill_texture is GradientTexture1D:
+			var tex := fill_texture as GradientTexture1D
+			return tex.gradient.get_color(1)
+		else:
+			return Color(0, 0, 0, 0)
