@@ -277,10 +277,10 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 		Spell.Element.AIR:
 			explosion = air_exp.instantiate()
 			source = explosion.get_node("source")
-			((source.draw_pass_1 as BoxMesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", r / 10.0)
-			((source.draw_pass_1 as BoxMesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", r)
-			((source.draw_pass_1 as BoxMesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", r / 2)
-			((source.draw_pass_1 as BoxMesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", r / 4)
+			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", r / 10.0)
+			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", r)
+			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", r / 2)
+			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", r / 4)
 			(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
 			(source.process_material as ParticleProcessMaterial).direction = v.normalized()
 			source.amount = int(float(amount) / 10.0) + 1

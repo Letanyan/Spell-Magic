@@ -352,13 +352,11 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
-			
-			var source2: GPUParticles3D = get_node("source")
-			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", r / 10.0)
-			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", r)
-			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", r / 2)
-			(source2.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", r / 4)
-			(source2.process_material as ParticleProcessMaterial).emission_ring_radius = rl
+			(source.process_material as ParticleProcessMaterial).emission_ring_radius = rl
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", rl / 10.0)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
 			
 		Spell.Element.ICE:
 			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rl * 2
@@ -373,7 +371,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
-			mat.set_shader_parameter("len", r * 5)
+			mat.set_shader_parameter("len", rl * 5)
 			var body := get_node("body") as MeshInstance3D
 			(body.mesh as SphereMesh).radius = rl
 			(body.mesh as SphereMesh).height = rl * 2

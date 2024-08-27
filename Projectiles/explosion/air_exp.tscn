@@ -35,7 +35,7 @@ scale_curve = SubResource("CurveTexture_ijg8r")
 color = Color(0.501961, 1, 0.501961, 0.501961)
 color_ramp = SubResource("GradientTexture1D_nwxdy")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0nrmu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1w4xr"]
 render_priority = 0
 shader = ExtResource("1_cpkdh")
 shader_parameter/alpha = 1.0
@@ -46,9 +46,12 @@ shader_parameter/width = 0.1
 shader_parameter/use_vertex_color = true
 shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_m6pj8"]
-material = SubResource("ShaderMaterial_0nrmu")
-size = Vector3(2, 2, 2)
+[sub_resource type="SphereMesh" id="SphereMesh_asn2j"]
+material = SubResource("ShaderMaterial_1w4xr")
+radius = 1.0
+height = 2.0
+radial_segments = 16
+rings = 8
 
 [node name="air_exp" type="Node3D"]
 
@@ -56,9 +59,9 @@ size = Vector3(2, 2, 2)
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 cast_shadow = 0
 emitting = false
-amount = 80
+amount = 20
 lifetime = 4.0
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_f4flv")
-draw_pass_1 = SubResource("BoxMesh_m6pj8")
+draw_pass_1 = SubResource("SphereMesh_asn2j")
