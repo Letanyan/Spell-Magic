@@ -28,6 +28,7 @@ func _draw(to_canvas_item: RID, rect: Rect2) -> void:
 	ex_rect.position += Vector2(border_width, border_width)
 	ex_rect.size -= Vector2(border_width * 2, border_width * 2)
 	render_rect(to_canvas_item, ex_rect, fill_texture)
+	
 
 func _get_draw_rect(rect: Rect2) -> Rect2:
 	return rect
@@ -112,6 +113,7 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D) -> void:
 		
 	if not Geometry2D.triangulate_polygon(vertices).is_empty():
 		RenderingServer.canvas_item_add_polygon(canvas_id, vertices, colors, uvs, texture.get_rid())
+		#RenderingServer.canvas_item_add_circle(canvas_id, rect.position, randf_range(5, 10), Color(1, 0, 0))
 	else:
 		RenderingServer.canvas_item_add_rect(canvas_id, rect, Color(1, 0, 0, 1))
 	

@@ -25,6 +25,8 @@ var tracking_target: Variant = null
 
 var pause_time: float = 0.0
 
+const INVUNERABLE_DURATION: float = 0.5
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PROJECTILE)
@@ -206,7 +208,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := _body as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 10000.0, 0.0, 1.0))
-			body.invunerable = 0.33
+			body.invunerable = INVUNERABLE_DURATION
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 			body.emit_vitals_update()
@@ -217,7 +219,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()
 			else:
-				body.invunerable = 0.33
+				body.invunerable = INVUNERABLE_DURATION
 				body.play_animation("on_hit")
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
@@ -262,6 +264,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 					explode_after(self, _body, 0.0166667 * 2, false)
 					pass
 			elif is_water and not invunerable:
+				print("damage")
 				var body := area.get_parent_node_3d() as CharacterBody
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.damage(caster_vitals), spell.elemental_application)
@@ -287,7 +290,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 10000.0, 0.0, 1.0))
-			body.invunerable = 0.33
+			body.invunerable = INVUNERABLE_DURATION
 			body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 			body.emit_vitals_update()
@@ -298,7 +301,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()
 			else:
-				body.invunerable = 0.33
+				body.invunerable = INVUNERABLE_DURATION
 				body.play_animation("on_hit")
 
 func update_shape(r: Vector3, ignore_time: bool) -> void:

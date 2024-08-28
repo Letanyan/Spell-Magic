@@ -303,7 +303,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 			mat.set_shader_parameter("len", r * 1.2)
 			(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
 			@warning_ignore("integer_division")
-			source.amount = amount / 10
+			source.amount = clampi(amount / 10, 1, 100)
 			
 			if not body.has_node("stun_effect"):
 				visual_effect = electric_exp.instantiate()
@@ -313,7 +313,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				visual_mat.set_shader_parameter("len", r * 1.2)
 				(visual_source.process_material as ParticleProcessMaterial).emission_ring_radius = r
 				@warning_ignore("integer_division")
-				visual_source.amount = amount / 10
+				visual_source.amount = clampi(amount / 10, 1, 100)
 			
 			
 	if visual_effect != null and (body is CharacterBody):
