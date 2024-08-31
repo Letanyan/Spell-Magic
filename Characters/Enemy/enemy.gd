@@ -105,6 +105,7 @@ func _physics_process(delta: float) -> void:
 	
 	increment_ticks(delta)
 			
+	var group_positioning_adjustment := player.enemies_normalised_separations.get(self, Vector3.ZERO) as Vector3
 	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
@@ -138,7 +139,7 @@ func _physics_process(delta: float) -> void:
 						v.y = 0
 				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.05 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
-				position += Vector3(v.x, v.y + t.y, v.z)
+				position += Vector3(v.x, v.y + t.y, v.z) + group_positioning_adjustment * delta * speed_for_current_behaviour_tick
 				
 		if current_path.lookat == PathStyle.LookAt.PLAYER:
 			var goal_position := position + velocity * 10
@@ -187,6 +188,10 @@ func _physics_process(delta: float) -> void:
 			var obj := get_node(".") as CharacterBody
 			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, 0.5)
 			velocity_movement.target_position = Navigator.find_next_target_from_path(velocity_movement.target_path, position, obj, next_pos)
+			#var clr := Color(randf(), randf(), randf())
+			#DebugDraw3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
+			#for p in velocity_movement.target_path:
+				#DebugDraw3D.draw_sphere(p, 0.1, clr, 0.2)
 		if reset_spell_tick:
 			behavior_tick = Globals.behaviour_tick()
 		else:

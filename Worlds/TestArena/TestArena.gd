@@ -86,15 +86,24 @@ func setup(_settings: WorldSettings) -> void:
 	#var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
 	#add_enemy(birdman)
 	
-	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
-	fishman.level = 50
-	add_enemy(fishman)
+	#var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
+	#fishman.level = 50
+	#add_enemy(fishman)
 	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 15, 1000, 20)
 	undead.level = 50
 	add_enemy(undead)
-	var fish := Population.generate_enemy(World.Enemy.FISH, player, 25, 1000, 20)
-	fish.level = 50
-	add_enemy(fish)
+	var undead2 := Population.generate_enemy(World.Enemy.UNDEAD, player, 18, 1000, 20)
+	undead2.level = 50
+	add_enemy(undead2)
+	var undead3 := Population.generate_enemy(World.Enemy.UNDEAD, player, 12, 1000, 20)
+	undead3.level = 50
+	add_enemy(undead3)
+	var undead4 := Population.generate_enemy(World.Enemy.UNDEAD, player, 9, 1000, 20)
+	undead4.level = 50
+	add_enemy(undead4)
+	#var fish := Population.generate_enemy(World.Enemy.FISH, player, 25, 1000, 20)
+	#fish.level = 50
+	#add_enemy(fish)
 	#var fishman2 := Population.generate_enemy(World.Enemy.FISHMAN, player, 15, 1000, 20)
 	#fishman2.level = 50
 	#add_enemy(fishman2)

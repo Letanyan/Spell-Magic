@@ -13,7 +13,7 @@ func setup(seedling: int) -> void:
 	vitals.perception.value = 10
 	
 	idle_path = PathStyle.new(seedling).random_points_in_circle(2, 2, bounds.y / 2.0, 10).set_origin(position + Vector3(0, bounds.y / 2.0, 0)).align_y_to_ground()
-	attack_path = PathStyle.new(0, position + Vector3(0, bounds.y / 2.0, 0)).towards_player(2, 1, 2).use_absolute() #.use_physics()
+	attack_path = PathStyle.new(0, position + Vector3(0, bounds.y / 2.0, 0)).towards_player(2, 1, 2).use_absolute().look_at_player_xz() #.use_physics()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -104,8 +104,10 @@ func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
 		sequence_pattern.reset()
 		random_pattern.reset()
+		player.watch_enemy(self)
 		current_path = attack_path
 	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+		player.ignore_enemy(self)
 		current_path = idle_path
 
 func death_box() -> Vector3:

@@ -4946,7 +4946,7 @@ size = Vector3(3, 3, 1.8)
 
 [node name="birdman" type="CharacterBody3D"]
 collision_layer = 4
-collision_mask = 593
+collision_mask = 599
 script = ExtResource("1_e7t1t")
 
 [node name="CharacterArmature" type="Node3D" parent="."]

@@ -15,7 +15,7 @@ var target_path: PackedVector3Array:
 	set(value):
 		target_path = value
 		has_navigation_target = true
-var position_at_last_update := Vector3.ZERO
+var closest_position_at_last_update := Vector3.ZERO
 var position_is_same_as_last_update_count := 30
 var has_navigation_target: bool
 var current_biome: World.Biome = World.Biome.WATER
@@ -79,9 +79,11 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	var navigation_velocity := Vector3.ZERO
 	if has_navigation_target:
-		if position_at_last_update == body.global_position:
+		#print(position_at_last_update, " == ", body.global_position, " => ", position_at_last_update.is_equal_approx(body.global_position))
+		if target_position.distance_squared_to(body.global_position) >= target_position.distance_squared_to(closest_position_at_last_update):
 			position_is_same_as_last_update_count -= 1
-		position_at_last_update = body.global_position
+		else:
+			closest_position_at_last_update = body.global_position
 		var total_movement := target_position - body.global_position
 		var length := total_movement.length()
 		var direction := total_movement.normalized()

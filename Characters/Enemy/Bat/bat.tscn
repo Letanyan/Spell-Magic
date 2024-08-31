@@ -1210,7 +1210,7 @@ size = Vector3(4, 2.5, 2)
 
 [node name="bat" type="CharacterBody3D"]
 collision_layer = 4
-collision_mask = 593
+collision_mask = 599
 script = ExtResource("1_vuppn")
 
 [node name="CharacterArmature" type="Node3D" parent="."]

@@ -4809,7 +4809,7 @@ size = Vector3(1.5, 3, 1.5)
 
 [node name="mole" type="CharacterBody3D"]
 collision_layer = 4
-collision_mask = 593
+collision_mask = 599
 script = ExtResource("1_m74wm")
 
 [node name="CharacterArmature" type="Node3D" parent="."]
