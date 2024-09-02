@@ -288,15 +288,12 @@ func update_watched_enemies_positions(delta: float) -> void:
 	for enemy: Enemy in enemies_in_range:
 		var movement := Vector3.ZERO
 		
-		# move away from other entites
 		var enemy_seperation := maxf(enemy.bounds.x, maxf(enemy.bounds.y, enemy.bounds.z)) * 1.05
 		for other: Enemy in enemies_in_range:
 			if enemy == other:
-				# ignore our own position
 				continue
 			var distance := enemy.position.distance_to(other.position)
 			if distance < enemy_seperation:
-				#movement += (enemy.position - other.position).normalized()
 				movement += (enemy.position - other.position).normalized() * (1.0 - distance / enemy_seperation)
 				
 		if movement.is_zero_approx():			

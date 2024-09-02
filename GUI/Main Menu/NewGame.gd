@@ -5,12 +5,14 @@ extends Control
 @onready var use_seed: Button = $UseSeed
 @onready var use_save_file: Button = $UseSaveFile
 @onready var seed_edit: TextEdit = $Seed
+@onready var worlds_list: ItemList = $WorldsList
 
 @onready var permadeath: Button = $Permadeath
 @onready var respawn: Button = $Respawn
 @onready var sandbox: Button = $Sandbox
 
 @onready var respawn_options: Panel = $RespawnOptions
+@onready var game_options: Panel = $GameOptions
 
 @onready var health_slider: HSlider = $StartingUpgradesPanel/Health/Slider
 @onready var attack_slider: HSlider = $StartingUpgradesPanel/Attack/Slider
@@ -65,7 +67,7 @@ var upgrades: UpgradeSettings
 
 var main_menu_world: MainMenuWorld = null
 
-var world_names: PackedStringArray = PackedStringArray([])
+var world_data: Array = []
 var world_name_exists := false
 
 
@@ -122,16 +124,24 @@ func _ready() -> void:
 	chain_methods_chain_at_end.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.END)
 	chain_methods_chain_on_hit.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
-	var dir := DirAccess.open("user://")
-	if not dir.dir_exists("worlds"):
-		dir.make_dir("worlds")
-	dir.change_dir("worlds")
-	world_names = dir.get_directories()
+	world_data = GameSettings.get_world_names()
+	for t: Array in world_data:
+		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 
 
 func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
+	
+func _on_worlds_list_item_activated(index: int) -> void:
+	if worlds_list.get_selected_items().is_empty():
+		return
+	var selected_world_name := world_data[index][0] as String
+	var settings := WorldSettings.new(get_viewport())
+	settings.read(selected_world_name)
+	settings.world_name = save_name.text
+	settings.save()
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
 
 func _on_create_pressed() -> void:
 	if use_seed.button_pressed:
@@ -152,22 +162,14 @@ func _on_create_pressed() -> void:
 
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
 	elif use_save_file.button_pressed:
-		if not world_name_exists:
+		if worlds_list.get_selected_items().is_empty():
 			return
+		var selected_world_name := world_data[worlds_list.get_selected_items()[0]][0] as String
 		var settings := WorldSettings.new(get_viewport())
-		settings.read(seed_edit.text)
+		settings.read(selected_world_name)
 		settings.world_name = save_name.text
 		settings.save()
-
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
-
-	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
-	#demo.setup(settings)
-	#
-	#var current = get_tree().current_scene
-	#get_tree().root.add_child(demo)
-	#current.call_deferred("free")
-	#get_tree().current_scene = demo
 
 
 func _on_permadeath_toggled(button_pressed: bool) -> void:
@@ -347,8 +349,8 @@ func _on_S_value_changed(value: float) -> void:
 func _on_seed_text_changed() -> void:
 	if use_save_file.button_pressed:
 		save_name_missing.visible = false
-		for world_name in world_names:
-			if world_name == seed_edit.text:
+		for world_item: Array in world_data:
+			if world_item[0] == seed_edit.text:
 				world_name_exists = true
 				return
 		world_name_exists = false
@@ -357,21 +359,27 @@ func _on_seed_text_changed() -> void:
 
 func _on_use_seed_toggled(toggled_on: bool) -> void:
 	seed_edit.placeholder_text = "Seed"
+	seed_edit.visible = toggled_on
 	use_save_file.set_pressed_no_signal(not toggled_on)
+	worlds_list.visible = not toggled_on
 	permadeath.visible = toggled_on
 	respawn.visible = toggled_on
 	sandbox.visible = toggled_on
 	respawn_options.visible = toggled_on
+	game_options.visible = toggled_on
 	starting_upgrades.visible = toggled_on
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
 	seed_edit.placeholder_text = "Save File Name"
+	seed_edit.visible = not toggled_on
 	use_seed.set_pressed_no_signal(not toggled_on)
+	worlds_list.visible = toggled_on
 	permadeath.visible = not toggled_on
 	respawn.visible = not toggled_on
 	sandbox.visible = not toggled_on
 	respawn_options.visible = not toggled_on
+	game_options.visible = not toggled_on
 	starting_upgrades.visible = not toggled_on
 	if toggled_on:
 		starting_upgrades.set_pressed_no_signal(false)

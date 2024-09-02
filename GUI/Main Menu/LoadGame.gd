@@ -3,29 +3,15 @@ extends Control
 
 @onready var worlds_list: ItemList = $WorldsList
 
-var dir: DirAccess
 var filenames: Array[String]
 var main_menu_world: MainMenuWorld = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	dir = DirAccess.open("user://")
-	if not dir.dir_exists("worlds"):
-		dir.make_dir("worlds")
-	dir.change_dir("worlds")
-	var worlds := dir.get_directories()
-	var times: Array[Array] = []
-	for world in worlds:
-		var settings := WorldSettings.new(null)
-		settings.read(world)
-		if not settings.is_test_arena:
-			times.append([world, settings.last_save_time])
-		
-	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])	
-		
-	for t in times:
+	var times := GameSettings.get_world_names()
+	for t: Array in times:
 		filenames.append(t[0])
-		worlds_list.add_item("%s (%s)" % [t[0], Time.get_datetime_string_from_unix_time(t[1] as int, true)])
+		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 	
 
 func _on_cancel_pressed() -> void:

@@ -66,7 +66,7 @@ focus_neighbor_bottom = NodePath("../Seed")
 focus_next = NodePath("../Seed")
 focus_previous = NodePath("../UseSeed")
 toggle_mode = true
-text = "Using Save File"
+text = "Copy Save File"
 
 [node name="Seed" type="TextEdit" parent="."]
 layout_mode = 1
@@ -820,6 +820,20 @@ offset_right = 217.0
 offset_bottom = 44.0
 text = "Disallow Spell Editing"
 
+[node name="WorldsList" type="ItemList" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -184.0
+offset_top = 96.0
+offset_right = 184.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]
 [connection signal="text_changed" from="Seed" to="." method="_on_seed_text_changed"]
@@ -854,3 +868,4 @@ text = "Disallow Spell Editing"
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtEnd" to="." method="_on_chain_at_end_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainOnHit" to="." method="_on_chain_on_hit_toggled"]
 [connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
+[connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]

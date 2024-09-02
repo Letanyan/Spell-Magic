@@ -64,3 +64,19 @@ func set_user_function(fn: String, args: PackedStringArray, expr: String) -> voi
 
 func remove_user_function(fn: String) -> void:
 	user_functions.erase(fn)
+
+static func get_world_names() -> Array:
+	var dir := DirAccess.open("user://")
+	if not dir.dir_exists("worlds"):
+		dir.make_dir("worlds")
+	dir.change_dir("worlds")
+	var worlds := dir.get_directories()
+	var times: Array[Array] = []
+	for world in worlds:
+		var settings := WorldSettings.new(null)
+		settings.read(world)
+		if not settings.is_test_arena:
+			times.append([world, settings.last_save_time])
+		
+	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
+	return times

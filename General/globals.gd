@@ -91,6 +91,24 @@ static func replace_ranges_in_string(source: String, ranges: Array, what: String
 		result += source.substr(source_offset, source.length() - source_offset)
 	return result
 
+func get_date_time_string(timestamp: int) -> String:
+	var dict := Time.get_datetime_dict_from_unix_time(timestamp)
+	var month := ""
+	match dict.month:
+		1: month = "January"
+		2: month = "February"
+		3: month = "March"
+		4: month = "April"
+		5: month = "May"
+		6: month = "June"
+		7: month = "July"
+		8: month = "August"
+		9: month = "September"
+		10: month = "October"
+		11: month = "November"
+		12: month = "December"
+	return "%d %s %d (%02d:%02d)" % [dict.day, month, dict.year, dict.hour, dict.minute]
+
 class Ref extends RefCounted:
 	var data: Variant
 	
