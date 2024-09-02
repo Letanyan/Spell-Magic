@@ -70,6 +70,17 @@ static func make(_kind: World.Enemy) -> Enemy:
 func setup(seedling: int) -> void:
 	pass
 	
+func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
+	var p := clampf(Vector2(x, y).length() / 1000.0, 0.0, 100.0)
+	var base := 45.0 * (log(p + 1.0) / log(10.0))
+	var offset_max_range := (p * p) / 1000.0 + 2 * sin(p * PI / 10.0)
+	var random_offset := 0.0
+	if rng == null:
+		random_offset = randf_range(0.0, absf(offset_max_range))
+	else:
+		random_offset = rng.randf_range(0.0, absf(offset_max_range))
+	level = maxf(base + random_offset, 1.0)
+	
 func add_shake(amount: float) -> void:
 	player.add_shake(amount)
 	
@@ -328,7 +339,7 @@ func drop_coin_items(world: Node3D) -> bool:
 			var item := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
 			item.position = position
 			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(1.0 + log(coins.size()), 0))
-			item.amount = coin
+			item.amount = ceili(coin * level)
 			world.add_child(item)
 		return true
 	return false

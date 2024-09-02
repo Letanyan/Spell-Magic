@@ -146,8 +146,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.FISHMAN:
 			result = entity_manager.get_enemy(World.Enemy.FISHMAN)
 			
-	result.level = Vector2(x, y).length() / 1000.0
-	result.level += rng.randi_range(0, int(result.level * 0.2)) + 1.0
+	result.set_level_relative_to_location(rng, x, y)
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
@@ -181,8 +180,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 			result = Enemy.make(World.Enemy.FISHMAN)
 			result.name = "Fishman" + str(randi())
 			
-	result.level = Vector2(x, y).length() / 1000.0
-	result.level += randi_range(0, int(result.level * 0.2)) + 1.0
+	result.set_level_relative_to_location(null, x, y)
 	result.player = _player
 	result.position = Vector3(x, y, z)
 	result.setup(0)

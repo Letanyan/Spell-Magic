@@ -4,6 +4,13 @@ enum PurchaseError {
 	NONE, NOT_ENOUGH_CURRENCY, UPGRADE_IS_OVER_LIMIT
 }
 
+signal max_velocity_updated(value: float)
+signal max_radius_updated(value: float)
+signal upgrade_was_purchased(settings: UpgradeSettings)
+
+var currency := 1000
+
+
 const HAS_VOID := 1 << 0
 const HAS_FIRE := 1 << 1
 const HAS_WATER := 1 << 2
@@ -13,12 +20,41 @@ const HAS_ICE := 1 << 5
 const HAS_ELECTRIC := 1 << 6
 var has_spell_element := 0b11 # Start with fire and void
 var cost_spell_element := 100
+func purchase_spell_element(el: Spell.Element) -> PurchaseError:
+	if currency < cost_spell_element:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if check_if_has_spell_element(el):
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	has_spell_element |= (1 << el)
+	currency -= cost_spell_element
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+	
+func check_if_has_spell_element(el: Spell.Element) -> bool:
+	return has_spell_element & (1 << el) != 0
 
 const HAS_CHAIN_ON_START := 1 << 0
 const HAS_CHAIN_ON_END := 1 << 1
 const HAS_CHAIN_ON_HIT := 1 << 2
 var has_chain_method := 0
 var cost_chain_method := 100
+func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
+	if currency < cost_spell_element:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if check_if_has_chain_method(cm):
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	has_chain_method |= (1 << cm)
+	currency -= cost_chain_method
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
+	return has_chain_method & (1 << el) != 0
+	
 
 # upgrade_* is the amount the upgrade is increased each level increase
 # max_* is the current value
@@ -34,26 +70,91 @@ var max_r := 0.1:
 var cost_r := 10
 var buff_r := 0.0
 const LIMIT_r := 5.0
+func purchase_r() -> PurchaseError:
+	if currency < cost_r:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_r + upgrade_r > LIMIT_r:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_r += upgrade_r
+	currency -= cost_r
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_T := 1.0
 var max_T := 1.0
 var cost_T := 10
 var buff_T := 0.0
 const LIMIT_T := 25.0
+func purchase_T() -> PurchaseError:
+	if currency < cost_T:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_T + upgrade_T > LIMIT_T:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_T += upgrade_T
+	currency -= cost_T
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_N := 1
 var max_N := 1
 var cost_N := 10
 var buff_N := 0.0
 const LIMIT_N := 25
+func purchase_N() -> PurchaseError:
+	if currency < cost_N:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_N + upgrade_N > LIMIT_N:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_N += upgrade_N
+	currency -= cost_N
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_D := 1.0
 var max_D := 0.0
 var cost_D := 10
 var buff_D := 0.0
 const LIMIT_D := 30.0
+func purchase_D() -> PurchaseError:
+	if currency < cost_D:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_D + upgrade_D > LIMIT_D:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_D += upgrade_D
+	currency -= cost_D
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_P := 5
 var max_P := 10
 var cost_P := 10
 var buff_P := 0.0
 const LIMIT_P := 100
+func purchase_P() -> PurchaseError:
+	if currency < cost_P:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_P + upgrade_P > LIMIT_P:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_P += upgrade_P
+	currency -= cost_P
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_v := 2.5
 var max_v := 2.5:
 	set(value):
@@ -62,57 +163,144 @@ var max_v := 2.5:
 var cost_v := 10
 var buff_v := 0.0
 const LIMIT_v := 100.0
+func purchase_v() -> PurchaseError:
+	if currency < cost_v:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_v + upgrade_v > LIMIT_v:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_v += upgrade_v
+	currency -= cost_v
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
 
 var upgrade_mana := 10.0
 var max_mana := 100.0
 var cost_mana := 10
 var buff_mana := 0.0
-const LIMIT_MANA := 1000 
+const LIMIT_MANA := 1000
+func purchase_mana() -> PurchaseError:
+	if currency < cost_mana:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_mana + upgrade_mana > LIMIT_MANA:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_mana += upgrade_mana
+	currency -= cost_mana
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_health := 10.0
 var max_health := 100.0
 var cost_health := 10
 var buff_health := 0.0
 const LIMIT_HEALTH := 1000.0
+func purchase_health() -> PurchaseError:
+	if currency < cost_health:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_health + upgrade_health > LIMIT_HEALTH:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_health += upgrade_health
+	currency -= cost_health
+	
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
 
 var upgrade_attack := 5.0
 var max_attack := 10.0
 var cost_attack := 10
 var buff_attack := 0.0
 const LIMIT_ATTACK := 100
+func purchase_attack() -> PurchaseError:
+	if currency < cost_attack:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_attack + upgrade_attack > LIMIT_ATTACK:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_attack += upgrade_attack
+	currency -= cost_attack
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+
 var upgrade_defence := 5.0
 var max_defence := 10.0
 var cost_defence := 10
 var buff_defence := 0.0
 const LIMIT_DEFENCE := 100
+func purchase_defence() -> PurchaseError:
+	if currency < cost_defence:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_defence + upgrade_defence > LIMIT_DEFENCE:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_defence += upgrade_defence
+	currency -= cost_defence
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
 
 var upgrade_spells_in_book := 2
 var max_spells_in_book := 4
 var cost_spells_in_book := 25
 const LIMIT_SPELLS_IN_BOOK := 200
+func purchase_spells_in_book() -> PurchaseError:
+	if currency < cost_spells_in_book:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_spells_in_book + upgrade_spells_in_book > LIMIT_SPELLS_IN_BOOK:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_spells_in_book += upgrade_spells_in_book
+	currency -= cost_spells_in_book
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
 
 var upgrade_running_speed := 0.25
 var max_running_speed := 2.0
 var cost_running_speed := 50
 var buff_running_speed := 0.0
 const LIMIT_RUNNING_SPEED := 10.0
+func purchase_running_speed() -> PurchaseError:
+	if currency < cost_running_speed:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_running_speed + upgrade_running_speed > LIMIT_RUNNING_SPEED:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_running_speed += upgrade_running_speed
+	currency -= cost_running_speed
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
 
 var upgrade_mana_regen := 0.5
 var max_mana_regen := 0.5
 var cost_mana_regen := 50
 const LIMIT_MANA_REGEN := 5
+func purchase_mana_regen() -> PurchaseError:
+	if currency < cost_mana_regen:
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if max_mana_regen + upgrade_mana_regen > LIMIT_MANA_REGEN:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	max_mana_regen += upgrade_mana_regen
+	currency -= cost_mana_regen
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
 
-var currency := 1000
-
-signal max_velocity_updated(value: float)
-signal max_radius_updated(value: float)
-signal upgrade_was_purchased(settings: UpgradeSettings)
-
-func check_if_has_spell_element(el: Spell.Element) -> bool:
-	return has_spell_element & (1 << el) != 0
-
-func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
-	return has_chain_method & (1 << el) != 0
-
+	
 func reset_all_stats_to_default_values() -> void:
 	max_r = 0.1
 	max_T = 1.0
@@ -149,187 +337,6 @@ func reset_all_stats_to_max_values() -> void:
 
 func emit_upgrade_purchase() -> void:
 	upgrade_was_purchased.emit(self)
-
-func purchase_spells_in_book() -> PurchaseError:
-	if currency < cost_spells_in_book:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_spells_in_book + upgrade_spells_in_book > LIMIT_SPELLS_IN_BOOK:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_spells_in_book += upgrade_spells_in_book
-	currency -= cost_spells_in_book
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_running_speed() -> PurchaseError:
-	if currency < cost_running_speed:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_running_speed + upgrade_running_speed > LIMIT_RUNNING_SPEED:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_running_speed += upgrade_running_speed
-	currency -= cost_running_speed
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_health() -> PurchaseError:
-	if currency < cost_health:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_health + upgrade_health > LIMIT_HEALTH:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_health += upgrade_health
-	currency -= cost_health
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-
-func purchase_mana() -> PurchaseError:
-	if currency < cost_mana:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_mana + upgrade_mana > LIMIT_MANA:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_mana += upgrade_mana
-	currency -= cost_mana
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_attack() -> PurchaseError:
-	if currency < cost_attack:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_attack + upgrade_attack > LIMIT_ATTACK:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_attack += upgrade_attack
-	currency -= cost_attack
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-
-func purchase_defence() -> PurchaseError:
-	if currency < cost_defence:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_defence + upgrade_defence > LIMIT_DEFENCE:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_defence += upgrade_defence
-	currency -= cost_defence
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-	
-func purchase_v() -> PurchaseError:
-	if currency < cost_v:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_v + upgrade_v > LIMIT_v:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_v += upgrade_v
-	currency -= cost_v
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-
-func purchase_P() -> PurchaseError:
-	if currency < cost_P:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_P + upgrade_P > LIMIT_P:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_P += upgrade_P
-	currency -= cost_P
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-
-func purchase_D() -> PurchaseError:
-	if currency < cost_D:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_D + upgrade_D > LIMIT_D:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_D += upgrade_D
-	currency -= cost_D
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_N() -> PurchaseError:
-	if currency < cost_N:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_N + upgrade_N > LIMIT_N:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_N += upgrade_N
-	currency -= cost_N
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_T() -> PurchaseError:
-	if currency < cost_T:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_T + upgrade_T > LIMIT_T:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_T += upgrade_T
-	currency -= cost_T
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-
-func purchase_r() -> PurchaseError:
-	if currency < cost_r:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_r + upgrade_r > LIMIT_r:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_r += upgrade_r
-	currency -= cost_r
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_spell_element(el: Spell.Element) -> PurchaseError:
-	if currency < cost_spell_element:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if check_if_has_spell_element(el):
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	has_spell_element |= (1 << el)
-	currency -= cost_spell_element
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
-	if currency < cost_spell_element:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if check_if_has_chain_method(cm):
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	has_chain_method |= (1 << cm)
-	currency -= cost_chain_method
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
-	
-func purchase_mana_regen() -> PurchaseError:
-	if currency < cost_mana_regen:
-		return PurchaseError.NOT_ENOUGH_CURRENCY
-		
-	if max_mana_regen + upgrade_mana_regen > LIMIT_MANA_REGEN:
-		return PurchaseError.UPGRADE_IS_OVER_LIMIT
-		
-	max_mana_regen += upgrade_mana_regen
-	currency -= cost_mana_regen
-	emit_upgrade_purchase()
-	return PurchaseError.NONE
 
 func save_dict() -> Dictionary:
 	return {
