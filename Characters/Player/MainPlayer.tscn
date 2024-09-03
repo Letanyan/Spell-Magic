@@ -4,6 +4,8 @@
 [ext_resource type="Shader" path="res://Characters/Player/MainPlayer.gdshader" id="2_nairg"]
 [ext_resource type="Texture2D" uid="uid://o3cab8bv33d" path="res://GUI/Images/circle.png" id="2_y1bhm"]
 [ext_resource type="Texture2D" uid="uid://c7buo0xdor3it" path="res://Worlds/Generator/Terrain/caustic_texture.tres" id="3_en07u"]
+[ext_resource type="AudioStream" uid="uid://d2l4v4uaejwcg" path="res://Audio/biome/ambience.tres" id="5_ql3oh"]
+[ext_resource type="AudioStream" uid="uid://efnlhhufuwhw" path="res://Audio/walking/walking.tres" id="6_4wfaj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xubmj"]
 resource_name = "Metal"
@@ -14004,86 +14006,6 @@ height = 1.9
 radius = 0.3
 height = 1.9
 
-[sub_resource type="Animation" id="Animation_ajfuw"]
-resource_name = "BGCrossFade1"
-length = 4.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BGAudio1:volume_db")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [-80.0, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BGAudio2:volume_db")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, -80.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("BGAudio2:playing")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(4),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="Animation" id="Animation_akot5"]
-resource_name = "BGCrossFade2"
-length = 4.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BGAudio1:volume_db")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, -80.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BGAudio2:volume_db")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [-80.0, 0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("BGAudio1:playing")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(4),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
 [sub_resource type="Animation" id="Animation_k142q"]
 resource_name = "CloseMenu"
 length = 0.1
@@ -14201,8 +14123,6 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_okr23"]
 _data = {
-"BGCrossFade1": SubResource("Animation_ajfuw"),
-"BGCrossFade2": SubResource("Animation_akot5"),
 "CloseMenu": SubResource("Animation_k142q"),
 "MovementAudioFade": SubResource("Animation_lype0"),
 "OpenMenu": SubResource("Animation_twrnx"),
@@ -14802,16 +14722,15 @@ offset_bottom = 8.0
 texture = ExtResource("2_y1bhm")
 stretch_mode = 3
 
-[node name="BGAudio2" type="AudioStreamPlayer3D" parent="."]
-max_distance = 50.0
-bus = &"BG"
-
-[node name="BGAudio1" type="AudioStreamPlayer3D" parent="."]
-volume_db = -80.0
+[node name="BGAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("5_ql3oh")
 max_distance = 50.0
 bus = &"BG"
 
 [node name="MovementAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("6_4wfaj")
+autoplay = true
+max_distance = 50.0
 
 [node name="Rain" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.5072, 0)

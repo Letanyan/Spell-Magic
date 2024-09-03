@@ -242,7 +242,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		idle_tick += delta
 		if final_is_on_floor and idle_tick > 0.5:
-			play_walking_audio(null)
+			play_walking_audio("empty")
 			play_animation("idle")
 			idle_tick = 0
 		
@@ -378,22 +378,5 @@ func world_enemy_enum() -> World.Enemy:
 	
 	return World.Enemy.NONE
 
-func play_walking_audio(stream: AudioStream) -> void:
+func play_walking_audio(stream: String) -> void:
 	pass
-	#if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:
-		#if stream != null:
-			#if walking_tween:
-				#walking_tween.kill()
-				#walking_tween = null
-			#walking_audio.stream = stream
-			#walking_audio.volume_db = 0
-			#walking_audio.play()
-		#elif walking_audio.stream != null and not walking_tween:
-			#walking_tween = create_tween()
-			#walking_tween.tween_property(walking_audio, "volume_db", -80, 2)
-			#walking_tween.tween_callback(func(): 
-				#walking_audio.stop()
-				#walking_audio.stream = null
-				#walking_tween.kill()
-				#walking_tween = null
-			#)

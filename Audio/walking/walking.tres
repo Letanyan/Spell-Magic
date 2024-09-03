@@ -1,0 +1,21 @@
+[gd_resource type="AudioStreamInteractive" load_steps=3 format=3 uid="uid://efnlhhufuwhw"]
+
+[ext_resource type="AudioStream" uid="uid://dbc425m8kt347" path="res://Audio/walking/grassland.mp3" id="1_i4hcj"]
+[ext_resource type="AudioStream" uid="uid://dv6gocts6n1kn" path="res://Audio/walking/empty.mp3" id="2_kx1vx"]
+
+[resource]
+clip_count = 2
+clip_0/name = &"empty"
+clip_0/stream = ExtResource("2_kx1vx")
+clip_0/auto_advance = 0
+clip_1/name = &"Grassland"
+clip_1/stream = ExtResource("1_i4hcj")
+clip_1/auto_advance = 0
+_transitions = {
+Vector2i(-1, -1): {
+"fade_beats": 1,
+"fade_mode": 3,
+"from_time": 0,
+"to_time": 0
+}
+}

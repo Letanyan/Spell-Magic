@@ -20,10 +20,6 @@ var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elev
 var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
 var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
 
-const grassland_audio: AudioStream = preload("res://Audio/biome/grassland.mp3")
-const forest_audio: AudioStream = preload("res://Audio/biome/forest.mp3")
-const lake_audio: AudioStream = preload("res://Audio/biome/lake.mp3")
-
 const grassland_walking: AudioStream = preload("res://Audio/walking/grassland.mp3")
 
 """
@@ -252,33 +248,33 @@ func shuffle_biome_locations(s: int) -> PackedVector2Array:
 	return result
 		
 
-static func audio_for_biome(b: World.Biome) -> AudioStream:
+static func audio_for_biome(b: World.Biome) -> String:
 	match b:
-		World.Biome.WATER: return lake_audio
-		World.Biome.TAIGA: return lake_audio
-		World.Biome.GRASSLAND: return grassland_audio
-		World.Biome.FOREST: return forest_audio
-		World.Biome.DESERT: return lake_audio
-		World.Biome.JUNGLE: return lake_audio
-		World.Biome.SAVANNAH: return lake_audio
-		World.Biome.TUNDRA: return lake_audio
-		World.Biome.OTHERWORLD: return lake_audio
-		World.Biome.HFIL: return lake_audio
-		_: return lake_audio
+		World.Biome.WATER: return "Lake"
+		World.Biome.TAIGA: return "Lake"
+		World.Biome.GRASSLAND: return "Grassland"
+		World.Biome.FOREST: return "Forest"
+		World.Biome.DESERT: return "Lake"
+		World.Biome.JUNGLE: return "Lake"
+		World.Biome.SAVANNAH: return "Lake"
+		World.Biome.TUNDRA: return "Lake"
+		World.Biome.OTHERWORLD: return "Lake"
+		World.Biome.HFIL: return "Lake"
+		_: return "Lake"
 		
-static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
+static func walking_audio_for_biome(b: World.Biome) -> String:
 	match b:
-		World.Biome.WATER: return grassland_walking
-		World.Biome.TAIGA: return grassland_walking
-		World.Biome.GRASSLAND: return grassland_walking
-		World.Biome.FOREST: return grassland_walking
-		World.Biome.DESERT: return grassland_walking
-		World.Biome.JUNGLE: return grassland_walking
-		World.Biome.SAVANNAH: return grassland_walking
-		World.Biome.TUNDRA: return grassland_walking
-		World.Biome.OTHERWORLD: return grassland_walking
-		World.Biome.HFIL: return grassland_walking
-		_: return grassland_walking
+		World.Biome.WATER: return "Grassland"
+		World.Biome.TAIGA: return "Grassland"
+		World.Biome.GRASSLAND: return "Grassland"
+		World.Biome.FOREST: return "Grassland"
+		World.Biome.DESERT: return "Grassland"
+		World.Biome.JUNGLE: return "Grassland"
+		World.Biome.SAVANNAH: return "Grassland"
+		World.Biome.TUNDRA: return "Grassland"
+		World.Biome.OTHERWORLD: return "Grassland"
+		World.Biome.HFIL: return "Grassland"
+		_: return "empty"
 
 static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_start: bool) -> void:
 	var prefix := "start_" if is_start else "final_"

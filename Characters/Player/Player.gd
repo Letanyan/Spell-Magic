@@ -9,12 +9,8 @@ extends CharacterBody
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
 @onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
 
-@onready var bg_audio1: AudioStreamPlayer3D = $BGAudio1
-@onready var bg_audio2: AudioStreamPlayer3D = $BGAudio2
-var current_bg_audio: int = 1
-
+@onready var bg_audio: AudioStreamPlayer3D = $BGAudio
 @onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
-var walking_tween: Tween = null
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
@@ -156,7 +152,7 @@ func _physics_process(delta: float) -> void:
 			play_animation("swim")
 	else:
 		if is_on_floor():
-			play_walking_audio(null)
+			play_walking_audio("empty")
 			play_animation("battle_idle")
 			var collider := ground_cast.get_collider() as PhysicsBody3D
 			if collider == null:
@@ -496,17 +492,8 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					
 	vitals.damage_resistance = damage_resistance
 	
-func transition_bg_audio(stream: AudioStream) -> void:
-	if current_bg_audio == 1:
-		bg_audio2.stream = stream
-		bg_audio2.play()
-		cam_animator.play("BGCrossFade2")
-		current_bg_audio = 2
-	else:
-		bg_audio1.stream = stream
-		bg_audio1.play()
-		cam_animator.play("BGCrossFade1")
-		current_bg_audio = 1
+func transition_bg_audio(clip: String) -> void:
+	bg_audio["parameters/switch_to_clip"] = clip
 		
 func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_open = open
@@ -528,24 +515,8 @@ func transition_menu(is_open: bool) -> void:
 func change_reticule_visible(should_hide: bool) -> void:
 	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide
 
-func play_walking_audio(stream: AudioStream) -> void:
-	if walking_audio.stream == null or walking_audio.stream != stream or walking_tween:
-		if stream != null:
-			if walking_tween:
-				walking_tween.kill()
-				walking_tween = null
-			walking_audio.stream = stream
-			walking_audio.volume_db = 0
-			walking_audio.play()
-		elif walking_audio.stream != null and not walking_tween:
-			walking_tween = create_tween()
-			walking_tween.tween_property(walking_audio, "volume_db", -80, 2)
-			walking_tween.tween_callback(func() -> void: 
-				walking_audio.stop()
-				walking_audio.stream = null
-				walking_tween.kill()
-				walking_tween = null
-			)
+func play_walking_audio(clip: String) -> void:
+	walking_audio["parameters/switch_to_clip"] = clip
 		
 func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
 	artifacts.save(world_settings.world_name)
