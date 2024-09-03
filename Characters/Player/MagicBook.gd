@@ -44,11 +44,11 @@ func read_absolute_path(file_path: String) -> void:
 	for d: Dictionary in data:
 		var s := Spell.new()
 		s.load_dict(d)
-		s.limit_r = settings.upgrade_settings.max_r
-		s.limit_v = settings.upgrade_settings.max_v
+		s.limit_r = settings.upgrade_settings.max_r()
+		s.limit_v = settings.upgrade_settings.max_v()
 		if s.is_active:
 			active_count += 1
-		s.is_active = s.is_active and active_count < settings.upgrade_settings.max_spells_in_book
+		s.is_active = s.is_active and active_count < settings.upgrade_settings.max_spells_in_book()
 		spells.append(s)
 		spell_index[s.name] = s
 	
@@ -67,7 +67,7 @@ func add(spell: Spell) -> void:
 	for s in spells:
 		if s.is_active:
 			active_count += 1
-	spell.is_active = active_count <= settings.upgrade_settings.max_spells_in_book
+	spell.is_active = active_count <= settings.upgrade_settings.max_spells_in_book()
 	spells.append(spell)
 	spell_index[spell.name] = spell
 	
@@ -92,27 +92,27 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 	if elapsed < spell.cooldown and not ignore_cooldown:
 		return DisallowSpellReason.COOLDOWN
 		
-	if spell.count > settings.upgrade_settings.max_N + settings.upgrade_settings.buff_N:
+	if spell.count > settings.upgrade_settings.max_N() + settings.upgrade_settings.buff_N:
 		return DisallowSpellReason.COUNT
 	elif spell.count > settings.upgrade_settings.LIMIT_N:
 		return DisallowSpellReason.COUNT
 		
-	if spell.duration > settings.upgrade_settings.max_T + settings.upgrade_settings.buff_T:
+	if spell.duration > settings.upgrade_settings.max_T() + settings.upgrade_settings.buff_T:
 		return DisallowSpellReason.DURATION
 	elif spell.duration > settings.upgrade_settings.LIMIT_T:
 		return DisallowSpellReason.DURATION
 		
-	if spell.power > settings.upgrade_settings.max_P + settings.upgrade_settings.buff_P:
+	if spell.power > settings.upgrade_settings.max_P() + settings.upgrade_settings.buff_P:
 		return DisallowSpellReason.POWER
 	elif spell.power > settings.upgrade_settings.LIMIT_P:
 		return DisallowSpellReason.POWER
 		
-	if spell.radius > settings.upgrade_settings.max_r + settings.upgrade_settings.buff_r:
+	if spell.radius > settings.upgrade_settings.max_r() + settings.upgrade_settings.buff_r:
 		return DisallowSpellReason.RADIUS
 	elif spell.radius > settings.upgrade_settings.LIMIT_r:
 		return DisallowSpellReason.RADIUS
 		
-	if spell.actual_mana_cost() > settings.upgrade_settings.max_mana + settings.upgrade_settings.buff_mana:
+	if spell.actual_mana_cost() > settings.upgrade_settings.max_mana() + settings.upgrade_settings.buff_mana:
 		return DisallowSpellReason.MANA
 		
 	return DisallowSpellReason.NONE

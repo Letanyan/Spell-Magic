@@ -207,8 +207,8 @@ func _on_r_text_changed(new_text: String) -> void:
 		errors_list.erase("r")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].radius = raw
-	if raw > book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r:
-		errors_list["r"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r]
+	if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
+		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
 	else:
 		errors_list.erase("r")
 	update_cooldown()
@@ -223,8 +223,8 @@ func _on_N_text_changed(new_text: String) -> void:
 		errors_list.erase("N")
 	var raw: int = new_text.to_int()
 	book.spells[current_index].count = raw
-	if raw > book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N:
-		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N]
+	if raw > book.settings.upgrade_settings.max_N() + book.settings.upgrade_settings.buff_N:
+		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_N() + book.settings.upgrade_settings.buff_N]
 	else:
 		errors_list.erase("N")
 	update_cooldown()
@@ -239,8 +239,8 @@ func _on_P_text_changed(new_text: String) -> void:
 		errors_list.erase("P")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].power = raw
-	if raw > book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P:
-		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P]
+	if raw > book.settings.upgrade_settings.max_P() + book.settings.upgrade_settings.buff_P:
+		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_P() + book.settings.upgrade_settings.buff_P]
 	else:
 		errors_list.erase("P")
 	update_cooldown()
@@ -255,8 +255,8 @@ func _on_T_text_changed(new_text: String) -> void:
 		errors_list.erase("T")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].duration = raw
-	if raw > book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T:
-		errors_list["T"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T) + "s"
+	if raw > book.settings.upgrade_settings.max_T() + book.settings.upgrade_settings.buff_T:
+		errors_list["T"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_T() + book.settings.upgrade_settings.buff_T) + "s"
 	else:
 		errors_list.erase("T")
 	update_cooldown()
@@ -359,8 +359,8 @@ func _on_M_text_changed(new_text: String) -> void:
 		errors_list.erase("M")
 	var raw: float = new_text.to_float()
 	book.spells[current_index].mana_cost = raw
-	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
-		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana) + "s"
+	if raw > book.settings.upgrade_settings.max_mana() + book.settings.upgrade_settings.buff_mana:
+		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana() + book.settings.upgrade_settings.buff_mana) + "s"
 	else:
 		errors_list.erase("M")
 	update_cooldown()
@@ -511,36 +511,36 @@ func check_all_errors() -> void:
 	if not text.is_valid_float():
 		errors_list["r"] = "'%s' is not a valid number" % text
 	var raw: float = text.to_float()
-	if raw > book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r:
-		errors_list["r"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_r + book.settings.upgrade_settings.buff_r]
+	if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
+		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
 		
 	text = power_edit.text
 	if not text.is_valid_float():
 		errors_list["P"] = "'%s' is not a valid number" % text
 	raw = text.to_float()
-	if raw > book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P:
-		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_P + book.settings.upgrade_settings.buff_P]
+	if raw > book.settings.upgrade_settings.max_P() + book.settings.upgrade_settings.buff_P:
+		errors_list["P"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_P() + book.settings.upgrade_settings.buff_P]
 		
 	text = duration_edit.text
 	if not text.is_valid_float():
 		errors_list["T"] = "'%s' is not a valid number" % text
 	raw = text.to_float()
-	if raw > book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T:
-		errors_list["T"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_T + book.settings.upgrade_settings.buff_T) + "s"
+	if raw > book.settings.upgrade_settings.max_T() + book.settings.upgrade_settings.buff_T:
+		errors_list["T"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_T() + book.settings.upgrade_settings.buff_T) + "s"
 		
 	text = count_edit.text
 	if not text.is_valid_float():
 		errors_list["N"] = "'%s' is not a valid number" % text
 	raw = text.to_float()
-	if raw > book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N:
-		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_N + book.settings.upgrade_settings.buff_N]
+	if raw > book.settings.upgrade_settings.max_N() + book.settings.upgrade_settings.buff_N:
+		errors_list["N"] = "Value of %d exceeds maximum of %d" % [raw, book.settings.upgrade_settings.max_N() + book.settings.upgrade_settings.buff_N]
 		
 	text = mana_edit.text
 	if not text.is_valid_float():
 		errors_list["M"] = "'%s' is not a valid number" % text
 	raw = text.to_float()
-	if raw > book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana:
-		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana + book.settings.upgrade_settings.buff_mana) + "s"
+	if raw > book.settings.upgrade_settings.max_mana() + book.settings.upgrade_settings.buff_mana:
+		errors_list["M"] = "Value of " + Globals.format_number_nearest_place(raw) + "s exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_mana() + book.settings.upgrade_settings.buff_mana) + "s"
 	
 	text = cr_edit.text
 	if not text.is_valid_float():

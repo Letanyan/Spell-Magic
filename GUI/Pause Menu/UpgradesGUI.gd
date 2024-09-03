@@ -87,18 +87,28 @@ func _process(delta: float) -> void:
 	pass
 
 func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
-	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book)
-	max_running_speed_current.text = str(settings.upgrade_settings.max_running_speed)
-	max_P_current.text = str(settings.upgrade_settings.max_P)
-	max_v_current.text = str(settings.upgrade_settings.max_v)
-	max_N_current.text = str(settings.upgrade_settings.max_N)
-	max_T_current.text = str(settings.upgrade_settings.max_T)
-	max_M_current.text = str(settings.upgrade_settings.max_mana)
-	max_r_current.text = str(settings.upgrade_settings.max_r)
-	max_H_current.text = str(settings.upgrade_settings.max_health)
-	attack_current.text = str(settings.upgrade_settings.max_attack)
-	defence_current.text = str(settings.upgrade_settings.max_defence)
-	mana_regen_current.text = str(settings.upgrade_settings.max_mana_regen)
+	if purchase_error != UpgradeSettings.PurchaseError.NONE:
+		var message := ""
+		if purchase_error == UpgradeSettings.PurchaseError.NOT_ENOUGH_CURRENCY:
+			message = "Not enough coins to make purchase. Defeat enemies to gain coins."
+		elif purchase_error == UpgradeSettings.PurchaseError.UPGRADE_IS_OVER_LIMIT:
+			message = "Max level reached. Can not upgrade furthur."
+		var popup := PopupDialog.display(message, "Okay", "")
+		get_tree().root.add_child(popup)
+		return
+	
+	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book())
+	max_running_speed_current.text = str(settings.upgrade_settings.max_running_speed())
+	max_P_current.text = str(settings.upgrade_settings.max_P())
+	max_v_current.text = str(settings.upgrade_settings.max_v())
+	max_N_current.text = str(settings.upgrade_settings.max_N())
+	max_T_current.text = str(settings.upgrade_settings.max_T())
+	max_M_current.text = str(settings.upgrade_settings.max_mana())
+	max_r_current.text = str(settings.upgrade_settings.max_r())
+	max_H_current.text = str(settings.upgrade_settings.max_health())
+	attack_current.text = str(settings.upgrade_settings.max_attack())
+	defence_current.text = str(settings.upgrade_settings.max_defence())
+	mana_regen_current.text = str(settings.upgrade_settings.max_mana_regen())
 	
 	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID)
 	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE)
@@ -113,18 +123,18 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
 	var coin_suffix := " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/center]"
-	max_spell_count_cost.text = "[center]" + str(settings.upgrade_settings.cost_spells_in_book) + coin_suffix
-	max_running_speed_cost.text = "[center]" + str(settings.upgrade_settings.cost_running_speed) + coin_suffix
-	max_P_cost.text = "[center]" + str(settings.upgrade_settings.cost_P) + coin_suffix
-	max_v_cost.text = "[center]" + str(settings.upgrade_settings.cost_v) + coin_suffix
-	max_N_cost.text = "[center]" + str(settings.upgrade_settings.cost_N) + coin_suffix
-	max_T_cost.text = "[center]" + str(settings.upgrade_settings.cost_T) + coin_suffix
-	max_M_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana) + coin_suffix
-	max_r_cost.text = "[center]" + str(settings.upgrade_settings.cost_r) + coin_suffix
-	max_H_cost.text = "[center]" + str(settings.upgrade_settings.cost_health) + coin_suffix
-	attack_cost.text = "[center]" + str(settings.upgrade_settings.cost_attack) + coin_suffix
-	defence_cost.text = "[center]" + str(settings.upgrade_settings.cost_defence) + coin_suffix
-	mana_regen_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana_regen) + coin_suffix
+	max_spell_count_cost.text = "[center]" + str(settings.upgrade_settings.cost_spells_in_book()) + coin_suffix
+	max_running_speed_cost.text = "[center]" + str(settings.upgrade_settings.cost_running_speed()) + coin_suffix
+	max_P_cost.text = "[center]" + str(settings.upgrade_settings.cost_P()) + coin_suffix
+	max_v_cost.text = "[center]" + str(settings.upgrade_settings.cost_v()) + coin_suffix
+	max_N_cost.text = "[center]" + str(settings.upgrade_settings.cost_N()) + coin_suffix
+	max_T_cost.text = "[center]" + str(settings.upgrade_settings.cost_T()) + coin_suffix
+	max_M_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana()) + coin_suffix
+	max_r_cost.text = "[center]" + str(settings.upgrade_settings.cost_r()) + coin_suffix
+	max_H_cost.text = "[center]" + str(settings.upgrade_settings.cost_health()) + coin_suffix
+	attack_cost.text = "[center]" + str(settings.upgrade_settings.cost_attack()) + coin_suffix
+	defence_cost.text = "[center]" + str(settings.upgrade_settings.cost_defence()) + coin_suffix
+	mana_regen_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana_regen()) + coin_suffix
 	
 	element_void_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
 	element_fire_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
@@ -140,31 +150,31 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	
 	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/right]"
 	
-	max_spell_count_upgrade.disabled = settings.upgrade_settings.max_spells_in_book >= UpgradeSettings.LIMIT_SPELLS_IN_BOOK
-	max_running_speed_upgrade.disabled = settings.upgrade_settings.max_running_speed >= UpgradeSettings.LIMIT_RUNNING_SPEED
-	max_P_upgrade.disabled = settings.upgrade_settings.max_P >= UpgradeSettings.LIMIT_P
-	max_v_upgrade.disabled = settings.upgrade_settings.max_v >= UpgradeSettings.LIMIT_v
-	max_T_upgrade.disabled = settings.upgrade_settings.max_T >= UpgradeSettings.LIMIT_T
-	max_N_upgrade.disabled = settings.upgrade_settings.max_N >= UpgradeSettings.LIMIT_N
-	max_H_upgrade.disabled = settings.upgrade_settings.max_health >= UpgradeSettings.LIMIT_HEALTH
-	max_M_upgrade.disabled = settings.upgrade_settings.max_mana >= UpgradeSettings.LIMIT_MANA
-	max_r_upgrade.disabled = settings.upgrade_settings.max_r >= UpgradeSettings.LIMIT_r
-	attack_upgrade.disabled = settings.upgrade_settings.max_attack >= UpgradeSettings.LIMIT_ATTACK
-	defence_upgrade.disabled = settings.upgrade_settings.max_defence >= UpgradeSettings.LIMIT_DEFENCE
-	mana_regen_upgrade.disabled = settings.upgrade_settings.max_mana_regen >= UpgradeSettings.LIMIT_MANA_REGEN
+	max_spell_count_upgrade.disabled = settings.upgrade_settings.level_spells_in_book >= UpgradeSettings.level_max_spells_in_book
+	max_running_speed_upgrade.disabled = settings.upgrade_settings.level_running_speed >= UpgradeSettings.level_max_running_speed
+	max_P_upgrade.disabled = settings.upgrade_settings.level_P >= UpgradeSettings.level_max_P
+	max_v_upgrade.disabled = settings.upgrade_settings.level_v >= UpgradeSettings.level_max_v
+	max_T_upgrade.disabled = settings.upgrade_settings.level_T >= UpgradeSettings.level_max_T
+	max_N_upgrade.disabled = settings.upgrade_settings.level_N >= UpgradeSettings.level_max_N
+	max_H_upgrade.disabled = settings.upgrade_settings.level_health >= UpgradeSettings.level_max_health
+	max_M_upgrade.disabled = settings.upgrade_settings.level_mana >= UpgradeSettings.level_max_mana
+	max_r_upgrade.disabled = settings.upgrade_settings.level_r >= UpgradeSettings.level_max_r
+	attack_upgrade.disabled = settings.upgrade_settings.level_attack >= UpgradeSettings.level_max_attack
+	defence_upgrade.disabled = settings.upgrade_settings.level_defence >= UpgradeSettings.level_max_defence
+	mana_regen_upgrade.disabled = settings.upgrade_settings.level_mana_regen >= UpgradeSettings.level_max_mana_regen
 	
-	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book)
-	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed)
-	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P)
-	max_v_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_v)
-	max_T_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_T)
-	max_N_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_N)
-	max_H_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_health)
-	max_M_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana)
-	max_r_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_r)
-	attack_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_attack)
-	defence_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_defence)
-	mana_regen_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana_regen)
+	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book())
+	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed())
+	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P())
+	max_v_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_v())
+	max_T_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_T())
+	max_N_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_N())
+	max_H_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_health())
+	max_M_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana())
+	max_r_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_r())
+	attack_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_attack())
+	defence_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_defence())
+	mana_regen_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana_regen())
 
 func _on_max_spell_count_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spells_in_book()

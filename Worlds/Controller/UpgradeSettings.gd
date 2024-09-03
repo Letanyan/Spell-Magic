@@ -39,7 +39,7 @@ const HAS_CHAIN_ON_START := 1 << 0
 const HAS_CHAIN_ON_END := 1 << 1
 const HAS_CHAIN_ON_HIT := 1 << 2
 var has_chain_method := 0
-var cost_chain_method := 100
+var cost_chain_method := 500
 func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 	if currency < cost_spell_element:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
@@ -62,278 +62,325 @@ func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
 # buff_* is a temporary upgrade gained from artifacts
 # LIMIT_* is the maximum amount allowed
 
-var upgrade_r := 0.1
-var max_r := 0.1:
+
+var level_r := 1:
 	set(value):
-		max_r = value
-		max_radius_updated.emit(value)
-var cost_r := 10
+		level_r = clampi(value, 1, level_max_r)
+		max_radius_updated.emit(max_r())
+const level_max_r := 50
+func max_r(x: int = level_r) -> float: return x * 0.1
+func upgrade_r() -> float: return max_r(level_r + 1) - max_r(level_r)
+func cost_r() -> int: return 50
 var buff_r := 0.0
 const LIMIT_r := 5.0
 func purchase_r() -> PurchaseError:
-	if currency < cost_r:
+	if currency < cost_r():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_r + upgrade_r > LIMIT_r:
+	if level_r >= level_max_r:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_r += upgrade_r
-	currency -= cost_r
+	currency -= cost_r()
+	level_r += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_T := 1.0
-var max_T := 1.0
-var cost_T := 10
+var level_T := 0:
+	set(value):
+		level_T = clampi(value, 1, level_max_T)
+const level_max_T := 25
+func max_T(x: int = level_T) -> float: return x
+func upgrade_T() -> float: return max_T(level_T + 1) - max_T(level_T)
+func cost_T() -> int: return 10
 var buff_T := 0.0
 const LIMIT_T := 25.0
 func purchase_T() -> PurchaseError:
-	if currency < cost_T:
+	if currency < cost_T():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_T + upgrade_T > LIMIT_T:
+	if level_T >= level_max_T:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_T += upgrade_T
-	currency -= cost_T
+	currency -= cost_T()
+	level_T += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_N := 1
-var max_N := 1
-var cost_N := 10
+var level_N := 1:
+	set(value):
+		level_N = clampi(value, 1, level_max_N)
+const level_max_N := 25
+func max_N(x: int = level_N) -> int: return x
+func upgrade_N() -> int: return max_N(level_N + 1) - max_N(level_N)
+func cost_N() -> int: return 10
 var buff_N := 0.0
 const LIMIT_N := 25
 func purchase_N() -> PurchaseError:
-	if currency < cost_N:
+	if currency < cost_N():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_N + upgrade_N > LIMIT_N:
+	if level_N >= level_max_N:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_N += upgrade_N
-	currency -= cost_N
+	currency -= cost_N()
+	level_N += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_D := 1.0
-var max_D := 0.0
-var cost_D := 10
+var level_D := 1:
+	set(value):
+		level_D = clampi(value, 1, level_max_D)
+const level_max_D := 26
+func max_D(x: int = level_D) -> float: return (x - 1.0)
+func upgrade_D() -> float: return max_D(level_D + 1) - max_D(level_D)
+func cost_D() -> int: return 10
 var buff_D := 0.0
 const LIMIT_D := 30.0
 func purchase_D() -> PurchaseError:
-	if currency < cost_D:
+	if currency < cost_D():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_D + upgrade_D > LIMIT_D:
+	if level_D >= level_max_D:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_D += upgrade_D
-	currency -= cost_D
+	currency -= cost_D()
+	level_D += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_P := 5
-var max_P := 10
-var cost_P := 10
+var level_P := 1:
+	set(value):
+		level_P = clampi(value, 1, level_max_P)
+const level_max_P := 20
+func max_P(x: int = level_P) -> int: return x * 5
+func upgrade_P() -> int: return max_P(level_P + 1) - max_P(level_P)
+func cost_P() -> int: return 10
 var buff_P := 0.0
 const LIMIT_P := 100
 func purchase_P() -> PurchaseError:
-	if currency < cost_P:
+	if currency < cost_P():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_P + upgrade_P > LIMIT_P:
+	if level_P >= level_max_P:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_P += upgrade_P
-	currency -= cost_P
+	currency -= cost_P()
+	level_P += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
-
-var upgrade_v := 2.5
-var max_v := 2.5:
+var level_v := 1:
 	set(value):
-		max_v = value
-		max_velocity_updated.emit(value)
-var cost_v := 10
+		level_v = clampi(value, 1, level_max_v)
+		max_velocity_updated.emit(max_v())
+const level_max_v := 25
+func max_v(x: int = level_v) -> float: return x * 4.0
+func upgrade_v() -> float: return max_v(level_v + 1) - max_v(level_v)
+func cost_v() -> int: return 10
 var buff_v := 0.0
 const LIMIT_v := 100.0
 func purchase_v() -> PurchaseError:
-	if currency < cost_v:
+	if currency < cost_v():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_v + upgrade_v > LIMIT_v:
+	if level_v >= level_max_v:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_v += upgrade_v
-	currency -= cost_v
+	currency -= cost_v()
+	level_v += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_mana := 10.0
-var max_mana := 100.0
-var cost_mana := 10
+var level_mana := 1:
+	set(value):
+		level_mana = clampi(value, 1, level_max_mana)
+const level_max_mana := 100
+func max_mana(x: int = level_mana) -> float: return x * 100.0
+func upgrade_mana() -> float: return max_mana(level_mana + 1) - max_mana(level_mana)
+func cost_mana() -> int: return 10
 var buff_mana := 0.0
 const LIMIT_MANA := 1000
 func purchase_mana() -> PurchaseError:
-	if currency < cost_mana:
+	if currency < cost_mana():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_mana + upgrade_mana > LIMIT_MANA:
+	if level_mana >= level_max_mana:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_mana += upgrade_mana
-	currency -= cost_mana
+	currency -= cost_mana()
+	level_mana += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_health := 10.0
-var max_health := 100.0
-var cost_health := 10
+var level_health := 1:
+	set(value):
+		level_health = clampi(value, 1, level_max_health)
+const level_max_health := 100
+func max_health(x: int = level_health) -> float: return x * 100.0
+func upgrade_health() -> float: return max_health(level_health + 1) - max_health(level_health)
+func cost_health() -> int: return 10
 var buff_health := 0.0
 const LIMIT_HEALTH := 1000.0
 func purchase_health() -> PurchaseError:
-	if currency < cost_health:
+	if currency < cost_health():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_health + upgrade_health > LIMIT_HEALTH:
+	if level_health >= level_max_health:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_health += upgrade_health
-	currency -= cost_health
-	
+	currency -= cost_health()
+	level_health += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_attack := 5.0
-var max_attack := 10.0
-var cost_attack := 10
+var level_attack := 1:
+	set(value):
+		level_attack = clampi(value, 1, level_max_attack)
+const level_max_attack := 20
+func max_attack(x: int = level_attack) -> float: return x * 5.0
+func upgrade_attack() -> float: return max_attack(level_attack + 1) - max_attack(level_attack)
+func cost_attack() -> int: return 10
 var buff_attack := 0.0
 const LIMIT_ATTACK := 100
 func purchase_attack() -> PurchaseError:
-	if currency < cost_attack:
+	if currency < cost_attack():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_attack + upgrade_attack > LIMIT_ATTACK:
+	if level_attack >= level_max_attack:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_attack += upgrade_attack
-	currency -= cost_attack
+	currency -= cost_attack()
+	level_attack += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_defence := 5.0
-var max_defence := 10.0
-var cost_defence := 10
+var level_defence := 1:
+	set(value):
+		level_defence = clampi(value, 1, level_max_defence)
+const level_max_defence := 20
+func max_defence(x: int = level_defence) -> float: return x * 5.0
+func upgrade_defence() -> float: return max_defence(level_defence + 1) - max_defence(level_defence) 
+func cost_defence() -> int: return 10
 var buff_defence := 0.0
 const LIMIT_DEFENCE := 100
 func purchase_defence() -> PurchaseError:
-	if currency < cost_defence:
+	if currency < cost_defence():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_defence + upgrade_defence > LIMIT_DEFENCE:
+	if level_defence >= level_max_defence:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_defence += upgrade_defence
-	currency -= cost_defence
+	currency -= cost_defence()
+	level_defence += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_spells_in_book := 2
-var max_spells_in_book := 4
-var cost_spells_in_book := 25
+var level_spells_in_book := 1:
+	set(value):
+		level_spells_in_book = clampi(value, 1, level_max_spells_in_book)
+const level_max_spells_in_book := 50
+func max_spells_in_book(x: int = level_spells_in_book) -> int: return x * 4
+func upgrade_spells_in_book() -> int: return max_spells_in_book(level_spells_in_book + 1) - max_spells_in_book(level_spells_in_book)
+func cost_spells_in_book() -> int: return 25
 const LIMIT_SPELLS_IN_BOOK := 200
 func purchase_spells_in_book() -> PurchaseError:
-	if currency < cost_spells_in_book:
+	if currency < cost_spells_in_book():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_spells_in_book + upgrade_spells_in_book > LIMIT_SPELLS_IN_BOOK:
+	if level_spells_in_book >= level_max_spells_in_book:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_spells_in_book += upgrade_spells_in_book
-	currency -= cost_spells_in_book
+	currency -= cost_spells_in_book()
+	level_spells_in_book += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_running_speed := 0.25
-var max_running_speed := 2.0
-var cost_running_speed := 50
+var level_running_speed := 1:
+	set(value):
+		level_running_speed = clampi(value, 1, level_max_running_speed)
+const level_max_running_speed := 16
+func max_running_speed(x: int = level_running_speed) -> float: return (x * 0.25) + 2.0
+func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
+func cost_running_speed() -> int: return 50
 var buff_running_speed := 0.0
-const LIMIT_RUNNING_SPEED := 10.0
+const LIMIT_RUNNING_SPEED := 8.0
 func purchase_running_speed() -> PurchaseError:
-	if currency < cost_running_speed:
+	if currency < cost_running_speed():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_running_speed + upgrade_running_speed > LIMIT_RUNNING_SPEED:
+	if level_running_speed >= level_max_running_speed:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_running_speed += upgrade_running_speed
-	currency -= cost_running_speed
+	currency -= cost_running_speed()
+	level_running_speed += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 
-var upgrade_mana_regen := 0.5
-var max_mana_regen := 0.5
-var cost_mana_regen := 50
+var level_mana_regen := 1:
+	set(value):
+		level_mana_regen = clampi(value, 1, level_max_mana_regen)
+const level_max_mana_regen := 10
+func max_mana_regen(x: int = level_mana_regen) -> float: return x * 0.5
+func upgrade_mana_regen() -> float: return max_mana_regen(level_mana_regen + 1) - max_mana_regen(level_mana_regen)
+func cost_mana_regen() -> int: return 50
 const LIMIT_MANA_REGEN := 5
 func purchase_mana_regen() -> PurchaseError:
-	if currency < cost_mana_regen:
+	if currency < cost_mana_regen():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if max_mana_regen + upgrade_mana_regen > LIMIT_MANA_REGEN:
+	if level_mana_regen >= level_max_mana_regen:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	max_mana_regen += upgrade_mana_regen
-	currency -= cost_mana_regen
+	currency -= cost_mana_regen()
+	level_mana_regen += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
 	
 func reset_all_stats_to_default_values() -> void:
-	max_r = 0.1
-	max_T = 1.0
-	max_N = 1
-	max_D = 0.0
-	max_P = 1
-	max_v = 2.5
-	max_mana = 100.0
-	max_health = 100.0
-	max_spells_in_book = 4
-	max_running_speed = 2.0
-	max_attack = 10.0
-	max_defence = 10.0
+	level_r = 1
+	level_T = 1
+	level_N = 1
+	level_D = 1
+	level_P = 1
+	level_v = 1
+	level_mana = 1
+	level_health = 1
+	level_spells_in_book = 1
+	level_running_speed = 1
+	level_attack = 1
+	level_defence = 1
+	level_mana_regen = 1
 	has_spell_element = 0b11
 	has_chain_method = 0
-	max_mana_regen = 0.5
 	
 func reset_all_stats_to_max_values() -> void:
-	max_health = UpgradeSettings.LIMIT_HEALTH
-	max_mana = UpgradeSettings.LIMIT_MANA
-	max_attack = UpgradeSettings.LIMIT_ATTACK
-	max_defence = UpgradeSettings.LIMIT_DEFENCE
-	max_D = UpgradeSettings.LIMIT_D
-	max_N = UpgradeSettings.LIMIT_N
-	max_P = UpgradeSettings.LIMIT_P
-	max_r = UpgradeSettings.LIMIT_r
-	max_spells_in_book = UpgradeSettings.LIMIT_SPELLS_IN_BOOK
-	max_running_speed = UpgradeSettings.LIMIT_RUNNING_SPEED
-	max_v = UpgradeSettings.LIMIT_v
-	max_T = UpgradeSettings.LIMIT_T
+	level_health = 999
+	level_mana = 999
+	level_attack = 999
+	level_defence = 999
+	level_D = 999
+	level_N = 999
+	level_P = 999
+	level_r = 999
+	level_spells_in_book = 999
+	level_running_speed = 999
+	level_v = 999
+	level_T = 999
+	level_mana_regen = 999
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
-	max_mana_regen = UpgradeSettings.LIMIT_MANA_REGEN
 
 func emit_upgrade_purchase() -> void:
 	upgrade_was_purchased.emit(self)
@@ -341,21 +388,21 @@ func emit_upgrade_purchase() -> void:
 func save_dict() -> Dictionary:
 	return {
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
-		"max_r": max_r, "max_T": max_T, "max_N": max_N, "max_D": max_D, "max_P": max_P, "max_v": max_v,
-		"max_mana": max_mana, "max_health": max_health, "max_spells_in_book": max_spells_in_book,
-		"max_attack": max_attack, "max_defence": max_defence, "max_running_speed": max_running_speed,
-		"max_mana_regen": max_mana_regen,
-				
 		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
-		"cost_r": cost_r, "cost_T": cost_T, "cost_N": cost_N, "cost_D": cost_D, "cost_P": cost_P, "cost_v": cost_v,
-		"cost_mana": cost_mana, "cost_health": cost_health, "cost_spells_in_book": cost_spells_in_book,
-		"cost_attack": cost_attack, "cost_defence": cost_defence, "cost_running_speed": cost_running_speed,
-		"cost_mana_regen": cost_mana_regen,
 		
-		"upgrade_r": upgrade_r, "upgrade_T": upgrade_T, "upgrade_N": upgrade_N, "upgrade_D": upgrade_D, "upgrade_P": upgrade_P, "upgrade_v": upgrade_v,
-		"upgrade_mana": upgrade_mana, "upgrade_health": upgrade_health, "upgrade_spells_in_book": upgrade_spells_in_book,
-		"upgrade_attack": upgrade_attack, "upgrade_defence": upgrade_defence, "upgrade_running_speed": upgrade_running_speed,
-		"upgrade_mana_regen": upgrade_mana_regen,
+		"level_r": level_r,
+		"level_T": level_T, 
+		"level_N": level_N, 
+		"level_D": level_D, 
+		"level_P": level_P, 
+		"level_v": level_v,
+		"level_mana": level_mana, 
+		"level_health": level_health, 
+		"level_spells_in_book": level_spells_in_book,
+		"level_attack": level_attack, 
+		"level_defence": level_defence, 
+		"level_running_speed": level_running_speed,
+		"level_mana_regen": level_mana_regen,
 		
 		"currency": currency,
 	}
@@ -363,48 +410,21 @@ func save_dict() -> Dictionary:
 func load_dict(data: Dictionary) -> void:
 	has_spell_element = data.get("has_spell_element", 0b1)
 	has_chain_method = data.get("has_chain_method", 0)
-	max_r = data.get("max_r", 1)
-	max_T = data.get("max_T", 1.0)
-	max_N = data.get("max_N", 1)
-	max_D = data.get("max_D", 0.0)
-	max_P = data.get("max_P", 1.0)
-	max_v = data.get("max_v", 2.5)
-	max_mana = data.get("max_mana", 100.0)
-	max_health = data.get("max_health", 100.0)
-	max_spells_in_book = data.get("max_spells_in_book", 4)
-	max_running_speed = data.get("max_running_speed", 2.0)
-	max_attack = data.get("max_attack", 100.0)
-	max_defence = data.get("max_defence", 100.0)
-	max_mana_regen = data.get("max_mana_regen", 0.5)
-	
 	cost_spell_element = data.get("cost_spell_element", 100)
 	cost_chain_method = data.get("cost_chain_method", 100)
-	cost_r = data.get("cost_r", 10)
-	cost_T = data.get("cost_T", 10)
-	cost_N = data.get("cost_N", 10)
-	cost_D = data.get("cost_D", 10)
-	cost_P = data.get("cost_P", 10)
-	cost_v = data.get("cost_v", 10)
-	cost_mana = data.get("cost_mana", 10)
-	cost_health = data.get("cost_health", 10)
-	cost_spells_in_book = data.get("cost_spells_in_book", 25)
-	cost_running_speed = data.get("cost_running_speed", 50)
-	cost_attack = data.get("cost_attack", 10)
-	cost_defence = data.get("cost_defence", 10)
-	cost_mana_regen = data.get("cost_mana_regen", 50)
 	
-	upgrade_r = data.get("upgrade_r", 0.1)
-	upgrade_T = data.get("upgrade_T", 1.0)
-	upgrade_N = data.get("upgrade_N", 1)
-	upgrade_D = data.get("upgrade_D", 1.0)
-	upgrade_P = data.get("upgrade_P", 5)
-	upgrade_v = data.get("upgrade_v", 2.5)
-	upgrade_mana = data.get("upgrade_mana", 10.0)
-	upgrade_health = data.get("upgrade_health", 10.0)
-	upgrade_spells_in_book = data.get("upgrade_spells_in_book", 2)
-	upgrade_running_speed = data.get("upgrade_running_speed", 0.25)
-	upgrade_attack = data.get("upgrade_attack", 10)
-	upgrade_defence = data.get("upgrade_defence", 10)
-	upgrade_mana_regen = data.get("upgrade_mana_regen", 0.5)
+	level_r = data.get("level_r", 1)
+	level_T = data.get("level_T", 1)
+	level_N = data.get("level_N", 1)
+	level_D = data.get("level_D", 1)
+	level_P = data.get("level_P", 1)
+	level_v = data.get("level_v", 1)
+	level_mana = data.get("level_mana", 1)
+	level_health = data.get("level_health", 1)
+	level_spells_in_book = data.get("level_spells_in_book", 1)
+	level_running_speed = data.get("level_running_speed", 1)
+	level_attack = data.get("level_attack", 1)
+	level_defence = data.get("level_defence", 1)
+	level_mana_regen = data.get("level_mana_regen", 1)
 	
 	currency = data.get("currency", 0)

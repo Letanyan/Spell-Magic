@@ -319,18 +319,18 @@ func update_stats_view() -> void:
 	
 	var ws := world_settings.upgrade_settings
 	var sv := stats_view
-	sv.health.text = "%d+%d" % [ws.max_health, ws.buff_health]
-	sv.velocity.text = "%.1f+%.1f" % [ws.max_v, ws.buff_v]
-	sv.mana.text = "%d+%d" % [ws.max_mana, ws.buff_mana]
-	sv.attack.text = "%d+%d" % [ws.max_attack, ws.buff_attack]
-	sv.defence.text = "%d+%d" % [ws.max_defence, ws.buff_defence]
+	sv.health.text = "%d+%d" % [ws.max_health(), ws.buff_health]
+	sv.velocity.text = "%.1f+%.1f" % [ws.max_v(), ws.buff_v]
+	sv.mana.text = "%d+%d" % [ws.max_mana(), ws.buff_mana]
+	sv.attack.text = "%d+%d" % [ws.max_attack(), ws.buff_attack]
+	sv.defence.text = "%d+%d" % [ws.max_defence(), ws.buff_defence]
 	sv.crit_rate.text = "%s+%%%s" % [Globals.format_number_nearest_place(player.buff_crit_rate.x), Globals.format_number_nearest_place(player.buff_crit_rate.y)]
 	sv.crit_dmg.text = "%s+%%%s" % [Globals.format_number_nearest_place(player.buff_crit_dmg.x), Globals.format_number_nearest_place(player.buff_crit_dmg.y)]
-	sv.r.text = "%.1f+%.1f" % [ws.max_r, ws.buff_r]
-	sv.T.text = "%d+%d" % [ws.max_T, ws.buff_T]
-	sv.N.text = "%d+%d" % [ws.max_N, ws.buff_N]
-	sv.P.text = "%d+%d" % [ws.max_P, ws.buff_P]
-	sv.S.text = "%.1f+%.1f" % [ws.max_running_speed, ws.buff_running_speed]
+	sv.r.text = "%.1f+%.1f" % [ws.max_r(), ws.buff_r]
+	sv.T.text = "%d+%d" % [ws.max_T(), ws.buff_T]
+	sv.N.text = "%d+%d" % [ws.max_N(), ws.buff_N]
+	sv.P.text = "%d+%d" % [ws.max_P(), ws.buff_P]
+	sv.S.text = "%.1f+%.1f" % [ws.max_running_speed(), ws.buff_running_speed]
 	
 	var v: Vector2 = Vector2.ZERO
 	sv.fireDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]

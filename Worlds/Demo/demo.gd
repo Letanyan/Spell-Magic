@@ -55,19 +55,19 @@ func setup(_settings: WorldSettings) -> void:
 		book.rebuild_spell_chains()
 		book.ignore_cooldown = OS.is_debug_build()
 	
-	book.update_spell_limits(settings.upgrade_settings.max_v, settings.upgrade_settings.max_r)
+	book.update_spell_limits(settings.upgrade_settings.max_v(), settings.upgrade_settings.max_r())
 	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:
-		book.update_spell_limits(v, settings.upgrade_settings.max_r)
+		book.update_spell_limits(v, settings.upgrade_settings.max_r())
 	)
 	settings.upgrade_settings.max_radius_updated.connect(func(r: float) -> void:
-		book.update_spell_limits(settings.upgrade_settings.max_v, r)
+		book.update_spell_limits(settings.upgrade_settings.max_v(), r)
 	)
 	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings) -> void:
-		player.vitals.health.max_value = us.max_health
-		player.vitals.mana.max_value = us.max_mana
-		player.vitals.mana.change_per_tick = us.max_mana_regen
-		player.vitals.attack.set_fixed_value(us.max_attack)
-		player.vitals.defence.set_fixed_value(us.max_defence)
+		player.vitals.health.max_value = us.max_health()
+		player.vitals.mana.max_value = us.max_mana()
+		player.vitals.mana.change_per_tick = us.max_mana_regen()
+		player.vitals.attack.set_fixed_value(us.max_attack())
+		player.vitals.defence.set_fixed_value(us.max_defence())
 	)
 	
 	case = WandCase.new()
@@ -126,13 +126,13 @@ func run_on_ready() -> void:
 	player.defence_was_buffed.connect(func(def: float) -> void:
 		book.update_spell_attack_and_defence(settings.upgrade_settings.buff_attack, def)
 	)
-	player.vitals.health.max_value = settings.upgrade_settings.max_health
-	player.vitals.mana.max_value = settings.upgrade_settings.max_mana
-	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen
+	player.vitals.health.max_value = settings.upgrade_settings.max_health()
+	player.vitals.mana.max_value = settings.upgrade_settings.max_mana()
+	player.vitals.mana.change_per_tick = settings.upgrade_settings.max_mana_regen()
 	player.vitals.health.set_value(settings.player_health)
 	player.vitals.mana.set_value(settings.player_mana)
-	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack)
-	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence)
+	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack())
+	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence())
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)

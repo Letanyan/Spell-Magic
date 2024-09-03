@@ -74,44 +74,44 @@ var world_name_exists := false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	upgrades = UpgradeSettings.new()
-	health_slider.value = upgrades.max_health
-	attack_slider.value = upgrades.max_attack
-	defence_slider.value = upgrades.max_defence
-	mana_slider.value = upgrades.max_mana
-	velocity_slider.value = upgrades.max_v
-	spell_count_slider.value = upgrades.max_spells_in_book
-	T_slider.value = upgrades.max_T
-	r_slider.value = upgrades.max_r
-	P_slider.value = upgrades.max_P
-	N_slider.value = upgrades.max_N
-	S_slider.value = upgrades.max_running_speed
-	auto_mana_slider.value = upgrades.max_mana_regen
+	health_slider.value = upgrades.level_health
+	attack_slider.value = upgrades.level_attack
+	defence_slider.value = upgrades.level_defence
+	mana_slider.value = upgrades.level_mana
+	velocity_slider.value = upgrades.level_v
+	spell_count_slider.value = upgrades.level_spells_in_book
+	T_slider.value = upgrades.level_T
+	r_slider.value = upgrades.level_r
+	P_slider.value = upgrades.level_P
+	N_slider.value = upgrades.level_N
+	S_slider.value = upgrades.level_running_speed
+	auto_mana_slider.value = upgrades.level_mana_regen
 	
-	health_slider.min_value = upgrades.max_health
-	attack_slider.min_value = upgrades.max_attack
-	defence_slider.min_value = upgrades.max_defence
-	mana_slider.min_value = upgrades.max_mana
-	velocity_slider.min_value = upgrades.max_v
-	spell_count_slider.min_value = upgrades.max_spells_in_book
-	T_slider.min_value = upgrades.max_T
-	r_slider.min_value = upgrades.max_r
-	P_slider.min_value = upgrades.max_P
-	N_slider.min_value = upgrades.max_N
-	S_slider.min_value = upgrades.max_running_speed
-	auto_mana_slider.min_value = upgrades.max_mana_regen 
+	health_slider.min_value = upgrades.level_health
+	attack_slider.min_value = upgrades.level_attack
+	defence_slider.min_value = upgrades.level_defence
+	mana_slider.min_value = upgrades.level_mana
+	velocity_slider.min_value = upgrades.level_v
+	spell_count_slider.min_value = upgrades.level_spells_in_book
+	T_slider.min_value = upgrades.level_T
+	r_slider.min_value = upgrades.level_r
+	P_slider.min_value = upgrades.level_P
+	N_slider.min_value = upgrades.level_N
+	S_slider.min_value = upgrades.level_running_speed
+	auto_mana_slider.min_value = upgrades.level_mana_regen
 	
-	health_slider.max_value = upgrades.LIMIT_HEALTH
-	attack_slider.max_value = upgrades.LIMIT_ATTACK
-	defence_slider.max_value = upgrades.LIMIT_DEFENCE
-	mana_slider.max_value = upgrades.LIMIT_MANA
-	velocity_slider.max_value = upgrades.LIMIT_v
-	spell_count_slider.max_value = upgrades.LIMIT_SPELLS_IN_BOOK
-	T_slider.max_value = upgrades.LIMIT_T
-	r_slider.max_value = upgrades.LIMIT_r
-	P_slider.max_value = upgrades.LIMIT_P
-	N_slider.max_value = upgrades.LIMIT_N
-	S_slider.max_value = upgrades.LIMIT_RUNNING_SPEED
-	auto_mana_slider.max_value = upgrades.LIMIT_MANA_REGEN
+	health_slider.max_value = upgrades.level_max_health
+	attack_slider.max_value = upgrades.level_max_attack
+	defence_slider.max_value = upgrades.level_max_defence
+	mana_slider.max_value = upgrades.level_max_mana
+	velocity_slider.max_value = upgrades.level_max_v
+	spell_count_slider.max_value = upgrades.level_max_spells_in_book
+	T_slider.max_value = upgrades.level_max_T
+	r_slider.max_value = upgrades.level_max_r
+	P_slider.max_value = upgrades.level_max_P
+	N_slider.max_value = upgrades.level_max_N
+	S_slider.max_value = upgrades.level_max_running_speed
+	auto_mana_slider.max_value = upgrades.level_max_mana_regen
 	
 	spell_elements_fire.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.FIRE)
 	spell_elements_water.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.WATER)
@@ -222,56 +222,56 @@ func _on_spell_editing_toggled(toggled_on: bool) -> void:
 		
 
 func _on_health_value_changed(value: float) -> void:
-	health_value.text = str(int(value))
-	upgrades.max_health = int(value)
+	upgrades.level_health = int(value)
+	health_value.text = str(upgrades.max_health())
 	
 func _on_defence_value_changed(value: float) -> void:
-	defence_value.text = str(int(value))
-	upgrades.max_attack = int(value)
+	upgrades.level_attack = int(value)
+	defence_value.text = str(upgrades.max_defence())
 
 
 func _on_attack_value_changed(value: float) -> void:
-	attack_value.text = str(int(value))
-	upgrades.max_defence = int(value)
+	upgrades.level_defence = int(value)
+	attack_value.text = str(upgrades.max_attack())
 
 
 func _on_mana_value_changed(value: float) -> void:
-	mana_value.text = str(int(value))
-	upgrades.max_mana = int(value)
+	upgrades.level_mana = int(value)
+	mana_value.text = str(upgrades.max_mana())
 
 
 func _on_velocity_value_changed(value: float) -> void:
-	velocity_value.text = "%.1f" % value
-	upgrades.max_v = value
+	upgrades.level_v = value
+	velocity_value.text = "%.1f" % upgrades.max_v()
 
 
 func _on_spell_count_value_changed(value: float) -> void:
-	spell_count_value.text = str(int(value))
-	upgrades.max_spells_in_book = int(value)
+	upgrades.level_spells_in_book = int(value)
+	spell_count_value.text = str(upgrades.max_spells_in_book())
 
 func _on_auto_mana_slider_value_changed(value: float) -> void:
-	auto_mana_value.text = "%.1f" % value
-	upgrades.max_mana_regen = value
+	upgrades.level_mana_regen = value
+	auto_mana_value.text = "%.1f" % upgrades.max_mana_regen()
 
 
 func _on_T_value_changed(value: float) -> void:
-	T_value.text = str(int(value))
-	upgrades.max_T = int(value)
+	upgrades.level_T = int(value)
+	T_value.text = str(upgrades.max_T())
 
 
 func _on_r_value_changed(value: float) -> void:
-	r_value.text = "%.1f" % value
-	upgrades.max_r = value
+	upgrades.level_r = value
+	r_value.text = "%.1f" % upgrades.max_r()
 
 
 func _on_P_value_changed(value: float) -> void:
-	P_value.text = str(int(value))
-	upgrades.max_P = int(value)
+	upgrades.level_P = int(value)
+	P_value.text = str(upgrades.max_P())
 
 
 func _on_N_value_changed(value: float) -> void:
-	N_value.text = str(int(value))
-	upgrades.max_N = int(value)
+	upgrades.level_N = int(value)
+	N_value.text = str(upgrades.max_N())
 
 
 func _on_fire_toggled(button_pressed: bool) -> void:
@@ -342,8 +342,8 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 
 
 func _on_S_value_changed(value: float) -> void:
-	S_value.text = "%.2f" % value
-	upgrades.max_running_speed = value
+	upgrades.level_running_speed = value
+	S_value.text = "%.2f" % upgrades.max_running_speed()
 
 
 func _on_seed_text_changed() -> void:
