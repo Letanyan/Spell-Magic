@@ -339,7 +339,7 @@ func drop_coin_items(world: Node3D) -> bool:
 			var item := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
 			item.position = position
 			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(1.0 + log(coins.size()), 0))
-			item.amount = ceili(coin * level)
+			item.amount = ceili(coin * maxf(level / 10.0, 1.0))
 			world.add_child(item)
 		return true
 	return false
@@ -356,7 +356,7 @@ func drop_spell() -> Spell:
 func drop_key() -> int:
 	return 0
 	
-func drop_coins() -> Array[int]:
+func drop_coins() -> Array[int]: # values must be in range [1, 10]
 	return []
 
 func world_enemy_enum() -> World.Enemy:

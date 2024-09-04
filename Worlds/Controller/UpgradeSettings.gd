@@ -70,7 +70,7 @@ var level_r := 1:
 const level_max_r := 50
 func max_r(x: int = level_r) -> float: return x * 0.1
 func upgrade_r() -> float: return max_r(level_r + 1) - max_r(level_r)
-func cost_r() -> int: return 50
+func cost_r() -> int: return level_r * 50
 var buff_r := 0.0
 const LIMIT_r := 5.0
 func purchase_r() -> PurchaseError:
@@ -86,13 +86,13 @@ func purchase_r() -> PurchaseError:
 	return PurchaseError.NONE
 
 
-var level_T := 0:
+var level_T := 1:
 	set(value):
 		level_T = clampi(value, 1, level_max_T)
 const level_max_T := 25
 func max_T(x: int = level_T) -> float: return x
 func upgrade_T() -> float: return max_T(level_T + 1) - max_T(level_T)
-func cost_T() -> int: return 10
+func cost_T() -> int: return ceili(level_T ** 1.5 * 10)
 var buff_T := 0.0
 const LIMIT_T := 25.0
 func purchase_T() -> PurchaseError:
@@ -114,7 +114,7 @@ var level_N := 1:
 const level_max_N := 25
 func max_N(x: int = level_N) -> int: return x
 func upgrade_N() -> int: return max_N(level_N + 1) - max_N(level_N)
-func cost_N() -> int: return 10
+func cost_N() -> int: return level_N * 150
 var buff_N := 0.0
 const LIMIT_N := 25
 func purchase_N() -> PurchaseError:
@@ -136,7 +136,7 @@ var level_D := 1:
 const level_max_D := 26
 func max_D(x: int = level_D) -> float: return (x - 1.0)
 func upgrade_D() -> float: return max_D(level_D + 1) - max_D(level_D)
-func cost_D() -> int: return 10
+func cost_D() -> int: return level_D * 25
 var buff_D := 0.0
 const LIMIT_D := 30.0
 func purchase_D() -> PurchaseError:
@@ -158,7 +158,7 @@ var level_P := 1:
 const level_max_P := 20
 func max_P(x: int = level_P) -> int: return x * 5
 func upgrade_P() -> int: return max_P(level_P + 1) - max_P(level_P)
-func cost_P() -> int: return 10
+func cost_P() -> int: return level_P * 200
 var buff_P := 0.0
 const LIMIT_P := 100
 func purchase_P() -> PurchaseError:
@@ -180,7 +180,7 @@ var level_v := 1:
 const level_max_v := 25
 func max_v(x: int = level_v) -> float: return x * 4.0
 func upgrade_v() -> float: return max_v(level_v + 1) - max_v(level_v)
-func cost_v() -> int: return 10
+func cost_v() -> int: return level_v * 175
 var buff_v := 0.0
 const LIMIT_v := 100.0
 func purchase_v() -> PurchaseError:
@@ -202,7 +202,7 @@ var level_mana := 1:
 const level_max_mana := 100
 func max_mana(x: int = level_mana) -> float: return x * 100.0
 func upgrade_mana() -> float: return max_mana(level_mana + 1) - max_mana(level_mana)
-func cost_mana() -> int: return 10
+func cost_mana() -> int: return level_mana * 50
 var buff_mana := 0.0
 const LIMIT_MANA := 1000
 func purchase_mana() -> PurchaseError:
@@ -224,7 +224,7 @@ var level_health := 1:
 const level_max_health := 100
 func max_health(x: int = level_health) -> float: return x * 100.0
 func upgrade_health() -> float: return max_health(level_health + 1) - max_health(level_health)
-func cost_health() -> int: return 10
+func cost_health() -> int: return level_health * 50
 var buff_health := 0.0
 const LIMIT_HEALTH := 1000.0
 func purchase_health() -> PurchaseError:
@@ -246,7 +246,7 @@ var level_attack := 1:
 const level_max_attack := 20
 func max_attack(x: int = level_attack) -> float: return x * 5.0
 func upgrade_attack() -> float: return max_attack(level_attack + 1) - max_attack(level_attack)
-func cost_attack() -> int: return 10
+func cost_attack() -> int: return level_attack * 180
 var buff_attack := 0.0
 const LIMIT_ATTACK := 100
 func purchase_attack() -> PurchaseError:
@@ -268,7 +268,7 @@ var level_defence := 1:
 const level_max_defence := 20
 func max_defence(x: int = level_defence) -> float: return x * 5.0
 func upgrade_defence() -> float: return max_defence(level_defence + 1) - max_defence(level_defence) 
-func cost_defence() -> int: return 10
+func cost_defence() -> int: return level_defence * 140
 var buff_defence := 0.0
 const LIMIT_DEFENCE := 100
 func purchase_defence() -> PurchaseError:
@@ -290,7 +290,7 @@ var level_spells_in_book := 1:
 const level_max_spells_in_book := 50
 func max_spells_in_book(x: int = level_spells_in_book) -> int: return x * 4
 func upgrade_spells_in_book() -> int: return max_spells_in_book(level_spells_in_book + 1) - max_spells_in_book(level_spells_in_book)
-func cost_spells_in_book() -> int: return 25
+func cost_spells_in_book() -> int: return 15
 const LIMIT_SPELLS_IN_BOOK := 200
 func purchase_spells_in_book() -> PurchaseError:
 	if currency < cost_spells_in_book():
@@ -308,10 +308,10 @@ func purchase_spells_in_book() -> PurchaseError:
 var level_running_speed := 1:
 	set(value):
 		level_running_speed = clampi(value, 1, level_max_running_speed)
-const level_max_running_speed := 16
-func max_running_speed(x: int = level_running_speed) -> float: return (x * 0.25) + 2.0
+const level_max_running_speed := 25
+func max_running_speed(x: int = level_running_speed) -> float: return ((x - 1) * 0.25) + 2.0
 func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
-func cost_running_speed() -> int: return 50
+func cost_running_speed() -> int: return level_running_speed * 500
 var buff_running_speed := 0.0
 const LIMIT_RUNNING_SPEED := 8.0
 func purchase_running_speed() -> PurchaseError:
@@ -333,7 +333,7 @@ var level_mana_regen := 1:
 const level_max_mana_regen := 10
 func max_mana_regen(x: int = level_mana_regen) -> float: return x * 0.5
 func upgrade_mana_regen() -> float: return max_mana_regen(level_mana_regen + 1) - max_mana_regen(level_mana_regen)
-func cost_mana_regen() -> int: return 50
+func cost_mana_regen() -> int: return level_mana_regen * 300
 const LIMIT_MANA_REGEN := 5
 func purchase_mana_regen() -> PurchaseError:
 	if currency < cost_mana_regen():
@@ -364,6 +364,7 @@ func reset_all_stats_to_default_values() -> void:
 	level_mana_regen = 1
 	has_spell_element = 0b11
 	has_chain_method = 0
+	currency = 0
 	
 func reset_all_stats_to_max_values() -> void:
 	level_health = 999
@@ -381,6 +382,7 @@ func reset_all_stats_to_max_values() -> void:
 	level_mana_regen = 999
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
+	currency = 9_999_999
 
 func emit_upgrade_purchase() -> void:
 	upgrade_was_purchased.emit(self)

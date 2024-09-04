@@ -4,6 +4,8 @@ extends Control
 @onready var save_name: TextEdit = $SaveName
 @onready var use_seed: Button = $UseSeed
 @onready var use_save_file: Button = $UseSaveFile
+@onready var use_normal: Button = $UseNormal
+@onready var use_hardcore: Button = $UseHardcore
 @onready var seed_edit: TextEdit = $Seed
 @onready var worlds_list: ItemList = $WorldsList
 
@@ -127,6 +129,8 @@ func _ready() -> void:
 	world_data = GameSettings.get_world_names()
 	for t: Array in world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
+		
+	_on_use_normal_toggled(true)
 
 
 func _on_cancel_pressed() -> void:
@@ -144,6 +148,11 @@ func _on_worlds_list_item_activated(index: int) -> void:
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
 
 func _on_create_pressed() -> void:
+	if save_name.text.is_empty():
+		var popup := PopupDialog.display("Please provide a save name", "Okay", "")
+		get_tree().root.add_child(popup)
+		return
+	
 	if use_seed.button_pressed:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
@@ -168,6 +177,29 @@ func _on_create_pressed() -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.read(selected_world_name)
 		settings.world_name = save_name.text
+		settings.save()
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+	elif use_normal.button_pressed:
+		var settings := WorldSettings.new(get_viewport())
+		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
+		settings.world_name = save_name.text
+		settings.sed = randi()
+		settings.game_mode_settings = GameModeSettings.normal_mode()
+		var temp_upgrades := UpgradeSettings.new()
+		temp_upgrades.reset_all_stats_to_default_values()
+		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		settings.save()
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+	elif use_hardcore.button_pressed:
+		var settings := WorldSettings.new(get_viewport())
+		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
+		settings.world_name = save_name.text
+		settings.sed = randi()
+		settings.game_mode_settings = GameModeSettings.hardcore_mode()
+		upgrades.reset_all_stats_to_default_values()
+		var temp_upgrades := UpgradeSettings.new()
+		temp_upgrades.reset_all_stats_to_default_values()
+		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.save()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
 
@@ -222,55 +254,55 @@ func _on_spell_editing_toggled(toggled_on: bool) -> void:
 		
 
 func _on_health_value_changed(value: float) -> void:
-	upgrades.level_health = int(value)
+	upgrades.level_health = ceili(value)
 	health_value.text = str(upgrades.max_health())
 	
 func _on_defence_value_changed(value: float) -> void:
-	upgrades.level_attack = int(value)
+	upgrades.level_defence = ceili(value)
 	defence_value.text = str(upgrades.max_defence())
 
 
 func _on_attack_value_changed(value: float) -> void:
-	upgrades.level_defence = int(value)
+	upgrades.level_attack = ceili(value)
 	attack_value.text = str(upgrades.max_attack())
 
 
 func _on_mana_value_changed(value: float) -> void:
-	upgrades.level_mana = int(value)
+	upgrades.level_mana = ceili(value)
 	mana_value.text = str(upgrades.max_mana())
 
 
 func _on_velocity_value_changed(value: float) -> void:
-	upgrades.level_v = value
+	upgrades.level_v = ceili(value)
 	velocity_value.text = "%.1f" % upgrades.max_v()
 
 
 func _on_spell_count_value_changed(value: float) -> void:
-	upgrades.level_spells_in_book = int(value)
+	upgrades.level_spells_in_book = ceili(value)
 	spell_count_value.text = str(upgrades.max_spells_in_book())
 
 func _on_auto_mana_slider_value_changed(value: float) -> void:
-	upgrades.level_mana_regen = value
+	upgrades.level_mana_regen = ceili(value)
 	auto_mana_value.text = "%.1f" % upgrades.max_mana_regen()
 
 
 func _on_T_value_changed(value: float) -> void:
-	upgrades.level_T = int(value)
+	upgrades.level_T = ceili(value)
 	T_value.text = str(upgrades.max_T())
 
 
 func _on_r_value_changed(value: float) -> void:
-	upgrades.level_r = value
+	upgrades.level_r = ceili(value)
 	r_value.text = "%.1f" % upgrades.max_r()
 
 
 func _on_P_value_changed(value: float) -> void:
-	upgrades.level_P = int(value)
+	upgrades.level_P = ceili(value)
 	P_value.text = str(upgrades.max_P())
 
 
 func _on_N_value_changed(value: float) -> void:
-	upgrades.level_N = int(value)
+	upgrades.level_N = ceili(value)
 	N_value.text = str(upgrades.max_N())
 
 
@@ -339,10 +371,26 @@ func _on_chain_on_hit_toggled(button_pressed: bool) -> void:
 
 func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	starting_upgrades_panel.visible = button_pressed
+	var pos_delta := starting_upgrades_panel.size.x * (-0.5 if button_pressed else 0.5)
+	save_name.position.x += pos_delta
+	use_seed.position.x += pos_delta
+	use_save_file.position.x += pos_delta
+	use_normal.position.x += pos_delta
+	use_hardcore.position.x += pos_delta
+	seed_edit.position.x += pos_delta
+	($Create as Button).position.x += pos_delta
+	($Cancel as Button).position.x += pos_delta
+	permadeath.position.x += pos_delta
+	respawn.position.x += pos_delta
+	sandbox.position.x += pos_delta
+	respawn_options.position.x += pos_delta
+	save_name_missing.position.x += pos_delta
+	game_options.position.x += pos_delta
+	worlds_list.position.x += pos_delta
 
 
 func _on_S_value_changed(value: float) -> void:
-	upgrades.level_running_speed = value
+	upgrades.level_running_speed = ceili(value)
 	S_value.text = "%.2f" % upgrades.max_running_speed()
 
 
@@ -358,29 +406,66 @@ func _on_seed_text_changed() -> void:
 
 
 func _on_use_seed_toggled(toggled_on: bool) -> void:
-	seed_edit.placeholder_text = "Seed"
-	seed_edit.visible = toggled_on
-	use_save_file.set_pressed_no_signal(not toggled_on)
-	worlds_list.visible = not toggled_on
-	permadeath.visible = toggled_on
-	respawn.visible = toggled_on
-	sandbox.visible = toggled_on
-	respawn_options.visible = toggled_on
-	game_options.visible = toggled_on
-	starting_upgrades.visible = toggled_on
+	if toggled_on:
+		seed_edit.placeholder_text = "Seed"
+		seed_edit.visible = true
+		use_save_file.set_pressed_no_signal(false)
+		use_normal.set_pressed_no_signal(false)
+		use_hardcore.set_pressed_no_signal(false)
+		worlds_list.visible = false
+		permadeath.visible = true
+		respawn.visible = true
+		sandbox.visible = true
+		respawn_options.visible = true
+		game_options.visible = true
+		starting_upgrades.visible = true
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
-	seed_edit.placeholder_text = "Save File Name"
-	seed_edit.visible = not toggled_on
-	use_seed.set_pressed_no_signal(not toggled_on)
-	worlds_list.visible = toggled_on
-	permadeath.visible = not toggled_on
-	respawn.visible = not toggled_on
-	sandbox.visible = not toggled_on
-	respawn_options.visible = not toggled_on
-	game_options.visible = not toggled_on
-	starting_upgrades.visible = not toggled_on
 	if toggled_on:
+		seed_edit.placeholder_text = "Save File Name"
+		use_seed.set_pressed_no_signal(false)
+		use_normal.set_pressed_no_signal(false)
+		use_hardcore.set_pressed_no_signal(false)
+		worlds_list.visible = true
+		seed_edit.visible = false
+		permadeath.visible = false
+		respawn.visible = false
+		sandbox.visible = false
+		respawn_options.visible = false
+		game_options.visible = false
+		starting_upgrades.visible = false
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
+
+func _on_use_normal_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		use_seed.set_pressed_no_signal(false)
+		use_save_file.set_pressed_no_signal(false)
+		use_hardcore.set_pressed_no_signal(false)
+		seed_edit.visible = false
+		permadeath.visible = false
+		respawn.visible = false
+		sandbox.visible = false
+		respawn_options.visible = false
+		game_options.visible = false
+		starting_upgrades.visible = false
+		starting_upgrades.set_pressed_no_signal(false)
+		starting_upgrades_panel.visible = false
+		worlds_list.visible = false
+
+func _on_use_hardcore_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		use_seed.set_pressed_no_signal(false)
+		use_normal.set_pressed_no_signal(false)
+		use_save_file.set_pressed_no_signal(false)
+		seed_edit.visible = false
+		permadeath.visible = false
+		respawn.visible = false
+		sandbox.visible = false
+		respawn_options.visible = false
+		game_options.visible = false
+		starting_upgrades.visible = false
+		starting_upgrades.set_pressed_no_signal(false)
+		starting_upgrades_panel.visible = false
+		worlds_list.visible = false

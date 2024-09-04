@@ -21,11 +21,13 @@ script = ExtResource("1_g78rx")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = 8.0
+offset_top = -236.0
 offset_right = 128.0
-offset_bottom = 40.0
+offset_bottom = -204.0
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../UseSeed")
 focus_next = NodePath("../UseSeed")
@@ -36,29 +38,33 @@ placeholder_text = "Save Name"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -128.0
-offset_top = 48.0
-offset_right = -8.0
-offset_bottom = 88.0
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -196.0
+offset_right = 128.0
+offset_bottom = -156.0
 focus_neighbor_top = NodePath("../SaveName")
 focus_neighbor_right = NodePath("../UseSaveFile")
 focus_neighbor_bottom = NodePath("../Seed")
 focus_next = NodePath("../UseSaveFile")
 focus_previous = NodePath("../SaveName")
 toggle_mode = true
-button_pressed = true
-text = "Using Seed"
+text = "Custom
+"
 
 [node name="UseSaveFile" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = 8.0
-offset_top = 48.0
-offset_right = 128.0
-offset_bottom = 88.0
+anchor_bottom = 0.5
+offset_left = 144.0
+offset_top = -196.0
+offset_right = 264.0
+offset_bottom = -156.0
 focus_neighbor_left = NodePath("../UseSeed")
 focus_neighbor_top = NodePath("../SaveName")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
@@ -68,15 +74,49 @@ focus_previous = NodePath("../UseSeed")
 toggle_mode = true
 text = "Copy Save File"
 
+[node name="UseNormal" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -264.0
+offset_top = -196.0
+offset_right = -148.0
+offset_bottom = -156.0
+grow_horizontal = 2
+grow_vertical = 2
+toggle_mode = true
+button_pressed = true
+text = "Normal Mode"
+
+[node name="UseHardcore" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.493
+anchor_top = 0.5
+anchor_right = 0.493
+anchor_bottom = 0.5
+offset_left = -119.936
+offset_top = -196.0
+offset_right = 0.0639648
+offset_bottom = -156.0
+grow_horizontal = 2
+toggle_mode = true
+text = "Hardcore Mode"
+
 [node name="Seed" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = 96.0
+offset_top = -148.0
 offset_right = 128.0
-offset_bottom = 128.0
+offset_bottom = -116.0
 focus_neighbor_top = NodePath("../UseSeed")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../Permadeath")
@@ -84,50 +124,17 @@ focus_next = NodePath("../Permadeath")
 focus_previous = NodePath("../UseSaveFile")
 placeholder_text = "Seed"
 
-[node name="Create" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -128.0
-offset_top = -88.0
-offset_right = 128.0
-offset_bottom = -57.0
-focus_neighbor_top = NodePath("../RespawnOptions/Spells")
-focus_neighbor_right = NodePath("../StartingUpgradesPanel")
-focus_neighbor_bottom = NodePath("../Cancel")
-focus_next = NodePath("../Cancel")
-focus_previous = NodePath("../RespawnOptions/Spells")
-text = "Create"
-
-[node name="Cancel" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -128.0
-offset_top = -40.0
-offset_right = 128.0
-offset_bottom = -9.0
-focus_neighbor_top = NodePath("../Create")
-focus_neighbor_right = NodePath("../StartingUpgradesPanel")
-focus_next = NodePath("../StartingUpgradesPanel")
-focus_previous = NodePath("../Create")
-text = "Cancel"
-
 [node name="Permadeath" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -184.0
-offset_top = 144.0
-offset_right = -72.0
-offset_bottom = 184.0
+anchor_bottom = 0.5
+offset_left = -192.0
+offset_top = -100.0
+offset_right = -80.0
+offset_bottom = -60.0
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../Respawn")
 focus_neighbor_bottom = NodePath("../RespawnOptions")
@@ -140,11 +147,13 @@ text = "Permadeath"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -56.0
-offset_top = 144.0
-offset_right = 56.0
-offset_bottom = 184.0
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -100.0
+offset_right = 48.0
+offset_bottom = -60.0
 focus_neighbor_left = NodePath("../Permadeath")
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../Sandbox")
@@ -159,11 +168,13 @@ text = "Respawn"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = 72.0
-offset_top = 144.0
-offset_right = 184.0
-offset_bottom = 184.0
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -100.0
+offset_right = 176.0
+offset_bottom = -60.0
 focus_neighbor_left = NodePath("../Respawn")
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
@@ -173,15 +184,38 @@ focus_previous = NodePath("../Respawn")
 toggle_mode = true
 text = "Sandbox"
 
+[node name="GameOptions" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.488
+anchor_right = 0.5
+anchor_bottom = 0.488
+offset_left = -152.0
+offset_top = -36.224
+offset_right = 152.0
+offset_bottom = 19.776
+grow_horizontal = 2
+
+[node name="SpellEditing" type="CheckBox" parent="GameOptions"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 16.0
+offset_right = 217.0
+offset_bottom = 44.0
+text = "Disallow Spell Editing"
+
 [node name="RespawnOptions" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -152.0
-offset_top = 264.0
+offset_top = 28.0
 offset_right = 152.0
-offset_bottom = 384.0
+offset_bottom = 148.0
 focus_neighbor_bottom = NodePath("Upgrades")
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
@@ -223,6 +257,41 @@ focus_neighbor_bottom = NodePath("../../Create")
 focus_next = NodePath("../../Create")
 focus_previous = NodePath("../Artifacts")
 text = "Respawn with Spells"
+
+[node name="Create" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -88.0
+offset_right = 128.0
+offset_bottom = -57.0
+focus_neighbor_top = NodePath("../RespawnOptions/Spells")
+focus_neighbor_right = NodePath("../StartingUpgradesPanel")
+focus_neighbor_bottom = NodePath("../Cancel")
+focus_next = NodePath("../Cancel")
+focus_previous = NodePath("../RespawnOptions/Spells")
+text = "Create"
+
+[node name="Cancel" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -40.0
+offset_right = 128.0
+offset_bottom = -9.0
+focus_neighbor_top = NodePath("../Create")
+focus_neighbor_right = NodePath("../StartingUpgradesPanel")
+focus_next = NodePath("../StartingUpgradesPanel")
+focus_previous = NodePath("../Create")
+text = "Cancel"
 
 [node name="StartingUpgrades" type="Button" parent="."]
 layout_mode = 1
@@ -270,8 +339,7 @@ focus_next = NodePath("../../Attack/Slider")
 focus_previous = NodePath("../../../Cancel")
 min_value = 1.0
 max_value = 1000.0
-step = 10.0
-value = 101.0
+value = 1.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/Health"]
@@ -302,8 +370,8 @@ focus_neighbor_top = NodePath("../../Health/Slider")
 focus_neighbor_bottom = NodePath("../../Defence/Slider")
 focus_next = NodePath("../../Defence/Slider")
 focus_previous = NodePath("../../Health/Slider")
-step = 5.0
-value = 10.0
+min_value = 1.0
+value = 1.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/Attack"]
@@ -334,8 +402,8 @@ focus_neighbor_top = NodePath("../../Attack/Slider")
 focus_neighbor_bottom = NodePath("../../Mana/Slider")
 focus_next = NodePath("../../Mana/Slider")
 focus_previous = NodePath("../../Attack/Slider")
-step = 5.0
-value = 10.0
+min_value = 1.0
+value = 1.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/Defence"]
@@ -366,9 +434,9 @@ focus_neighbor_top = NodePath("../../Defence/Slider")
 focus_neighbor_bottom = NodePath("../../Velocity/Slider")
 focus_next = NodePath("../../Velocity/Slider")
 focus_previous = NodePath("../../Defence/Slider")
+min_value = 1.0
 max_value = 1000.0
-step = 10.0
-value = 100.0
+value = 1.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/Mana"]
@@ -399,9 +467,8 @@ focus_neighbor_top = NodePath("../../Mana/Slider")
 focus_neighbor_bottom = NodePath("../../T/Slider")
 focus_next = NodePath("../../T/Slider")
 focus_previous = NodePath("../../Mana/Slider")
-min_value = 2.5
-step = 2.5
-value = 2.5
+min_value = 1.0
+value = 1.0
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/Velocity"]
 layout_mode = 0
@@ -431,10 +498,9 @@ focus_neighbor_top = NodePath("../../P/Slider")
 focus_neighbor_bottom = NodePath("../../AutoMana/Slider")
 focus_next = NodePath("../../AutoMana/Slider")
 focus_previous = NodePath("../../P/Slider")
-min_value = 4.0
+min_value = 1.0
 max_value = 200.0
-step = 2.0
-value = 4.0
+value = 1.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/SpellCount"]
@@ -498,10 +564,9 @@ focus_neighbor_top = NodePath("../../S/Slider")
 focus_neighbor_bottom = NodePath("../../N/Slider")
 focus_next = NodePath("../../N/Slider")
 focus_previous = NodePath("../../S/Slider")
-min_value = 0.1
+min_value = 1.0
 max_value = 5.0
-step = 0.1
-value = 0.1
+value = 1.0
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/r"]
 layout_mode = 0
@@ -531,10 +596,9 @@ focus_neighbor_top = NodePath("../../N/Slider")
 focus_neighbor_bottom = NodePath("../../SpellCount/Slider")
 focus_next = NodePath("../../SpellCount/Slider")
 focus_previous = NodePath("../../N/Slider")
-min_value = 10.0
+min_value = 1.0
 max_value = 1000.0
-step = 10.0
-value = 10.0
+value = 1.0
 rounded = true
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/P"]
@@ -598,10 +662,9 @@ focus_neighbor_top = NodePath("../../T/Slider")
 focus_neighbor_bottom = NodePath("../../r/Slider")
 focus_next = NodePath("../../r/Slider")
 focus_previous = NodePath("../../T/Slider")
-min_value = 2.0
+min_value = 1.0
 max_value = 15.0
-step = 0.25
-value = 2.0
+value = 1.0
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/S"]
 layout_mode = 0
@@ -631,10 +694,9 @@ focus_neighbor_top = NodePath("../../SpellCount/Slider")
 focus_neighbor_bottom = NodePath("../../SpellElements/Fire")
 focus_next = NodePath("../../SpellElements/Fire")
 focus_previous = NodePath("../../SpellCount/Slider")
-min_value = 0.5
+min_value = 1.0
 max_value = 5.0
-step = 0.5
-value = 0.5
+value = 1.0
 
 [node name="Value" type="Label" parent="StartingUpgradesPanel/AutoMana"]
 layout_mode = 0
@@ -801,25 +863,6 @@ offset_right = 240.256
 offset_bottom = 197.0
 text = "No such save exists"
 
-[node name="GameOptions" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -152.0
-offset_top = 200.0
-offset_right = 152.0
-offset_bottom = 256.0
-grow_horizontal = 2
-
-[node name="SpellEditing" type="CheckBox" parent="GameOptions"]
-layout_mode = 0
-offset_left = 48.0
-offset_top = 16.0
-offset_right = 217.0
-offset_bottom = 44.0
-text = "Disallow Spell Editing"
-
 [node name="WorldsList" type="ItemList" parent="."]
 visible = false
 layout_mode = 1
@@ -836,15 +879,18 @@ grow_vertical = 2
 
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]
+[connection signal="toggled" from="UseNormal" to="." method="_on_use_normal_toggled"]
+[connection signal="toggled" from="UseHardcore" to="." method="_on_use_hardcore_toggled"]
 [connection signal="text_changed" from="Seed" to="." method="_on_seed_text_changed"]
-[connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
-[connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
 [connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]
+[connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
 [connection signal="toggled" from="RespawnOptions/Upgrades" to="." method="_on_upgrades_toggled"]
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]
+[connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="toggled" from="StartingUpgrades" to="." method="_on_starting_upgrades_toggled"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Health/Slider" to="." method="_on_health_value_changed"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Attack/Slider" to="." method="_on_attack_value_changed"]
@@ -867,5 +913,4 @@ grow_vertical = 2
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtStart" to="." method="_on_chain_at_start_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtEnd" to="." method="_on_chain_at_end_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainOnHit" to="." method="_on_chain_on_hit_toggled"]
-[connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
