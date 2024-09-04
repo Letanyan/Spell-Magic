@@ -27,7 +27,10 @@ var keys: int
 
 var enemies_in_range: Dictionary = {} # [Enemy]bool
 var enemies_normalised_separations: Dictionary = {} # [Enemy]Vector3
+var projectile_indicators: Dictionary = {} # [SpellBody]MeshInstance
 var max_watched_enemies_distance := 0.0
+var indicator_update_tick := 0.0
+const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
 
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
@@ -201,6 +204,8 @@ func _physics_process(delta: float) -> void:
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
 				
 	spell_caster.update(self, delta)
+	
+	update_projectile_indicators(world_settings.hud_settings.hide_projectile_indicator)
 	
 	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
@@ -543,3 +548,39 @@ static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, d
 	
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)
+
+func update_projectile(pivot: Node3D, spell: SpellBody) -> bool:
+	if not spell.is_inside_tree():
+		return false
+	if cam.is_position_in_frustum(spell.global_position):
+		return false
+		
+	if projectile_indicators.has(spell):
+		var mi := projectile_indicators[spell] as Node3D
+		mi.look_at(spell.position)
+	else:
+		var mi := projectile_indicator.instantiate() as ProjectileIndicator
+		mi.position = Vector3(0, 2, 0)
+		projectile_indicators[spell] = mi
+		pivot.add_child(mi)
+		var mat := mi.mesh_instance.mesh.surface_get_material(0) as ShaderMaterial
+		mat.set_shader_parameter("albedo", Spell.color_from_element(spell.spell.element))
+		
+	return true
+	
+
+func update_projectile_indicators(should_hide: bool) -> void:
+	var pivot := $Pivot as Node3D
+	var updated_spell_bodies := {} # [SpellBody]bool
+	if not should_hide:
+		for enemy: Enemy in enemies_in_range:
+			for spell: SpellBody in enemy.spell_caster.particles:
+				updated_spell_bodies[spell] = update_projectile(pivot, spell)
+		for spell: SpellBody in spell_caster.particles:
+			updated_spell_bodies[spell] = update_projectile(pivot, spell)
+		
+	for spell: SpellBody in projectile_indicators:
+		if not updated_spell_bodies.get(spell, false) as bool:
+			var mi := projectile_indicators[spell] as Node3D
+			pivot.remove_child(mi)
+			projectile_indicators.erase(spell)

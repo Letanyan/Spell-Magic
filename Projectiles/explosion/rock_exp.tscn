@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://b3nif5h2enne2"]
+[gd_scene load_steps=12 format=3 uid="uid://b3nif5h2enne2"]
 
-[ext_resource type="Material" uid="uid://tyc0j0x8j2w7" path="res://Projectiles/rock.tres" id="1_3bf6l"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="1_v4pw8"]
 
 [sub_resource type="Curve" id="Curve_4phsl"]
 _data = [Vector2(0, 0.881818), 0.0, 0.0, 0, 0, Vector2(0.145631, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -18,8 +18,54 @@ gravity = Vector3(0, -1, 0)
 scale_min = 0.3
 scale_curve = SubResource("CurveTexture_46fth")
 
+[sub_resource type="Gradient" id="Gradient_16oty"]
+interpolation_color_space = 2
+colors = PackedColorArray(0.788235, 0.54902, 0.435294, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dqfwf"]
+noise_type = 2
+frequency = 0.0005
+fractal_octaves = 4
+cellular_distance_function = 3
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_o07gf"]
+color_ramp = SubResource("Gradient_16oty")
+noise = SubResource("FastNoiseLite_dqfwf")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_obdun"]
+noise_type = 2
+frequency = 0.0005
+fractal_octaves = 4
+cellular_distance_function = 3
+cellular_return_type = 0
+domain_warp_frequency = 1.0
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j0l14"]
+as_normal_map = true
+bump_strength = 21.4
+noise = SubResource("FastNoiseLite_obdun")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x45fb"]
+render_priority = 0
+shader = ExtResource("1_v4pw8")
+shader_parameter/albedo = Color(0.717647, 0.352941, 0.141176, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = 7.6e-07
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_o07gf")
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_j0l14")
+
 [sub_resource type="BoxMesh" id="BoxMesh_wsgmk"]
-material = ExtResource("1_3bf6l")
+material = SubResource("ShaderMaterial_x45fb")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="rock_exp" type="Node3D"]

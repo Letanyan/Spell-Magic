@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://c4jdkt8sl85d6"]
 
-[ext_resource type="Shader" path="res://Projectiles/explosion/steam_exp.gdshader" id="1_cb2wv"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="1_70dps"]
 
 [sub_resource type="Gradient" id="Gradient_t4is2"]
 interpolation_color_space = 2
@@ -46,11 +46,12 @@ color_ramp = SubResource("GradientTexture1D_7xorf")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vh7et"]
 render_priority = 0
-shader = ExtResource("1_cb2wv")
+shader = ExtResource("1_70dps")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)

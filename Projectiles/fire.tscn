@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_ku5ha"]
-[ext_resource type="Shader" path="res://Projectiles/fire.gdshader" id="2_fgy1d"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="2_l30px"]
 [ext_resource type="AudioStream" uid="uid://do6eak53t6bri" path="res://Audio/projectile/fire.mp3" id="2_uwget"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_i6n1l"]
@@ -38,7 +38,7 @@ color_ramp = SubResource("GradientTexture1D_lctcp")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6bos1"]
 render_priority = 0
-shader = ExtResource("2_fgy1d")
+shader = ExtResource("2_l30px")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0

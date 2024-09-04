@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
 [ext_resource type="AudioStream" uid="uid://blus3u8usi3fc" path="res://Audio/projectile/water.mp3" id="2_7rwhp"]
-[ext_resource type="Shader" path="res://Projectiles/water_droplet.gdshader" id="2_uad2a"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="2_p4jf5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ygggg"]
 resource_local_to_scene = true
@@ -37,11 +37,12 @@ color_ramp = SubResource("GradientTexture1D_a2dhw")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pib4b"]
 render_priority = 0
-shader = ExtResource("2_uad2a")
+shader = ExtResource("2_p4jf5")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)

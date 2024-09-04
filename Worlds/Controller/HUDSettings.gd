@@ -8,13 +8,15 @@ var hide_health_mana: bool = false
 var hide_cooldown_timings: bool = false
 var hide_stats_view: bool = true
 var hide_reticule: bool = false
+var hide_projectile_indicator: bool = false
 
 func save_dict() -> Dictionary:
 	return {
 		"hide_wand_mappings": hide_wand_mappings, "hide_wand_modifier_hints": hide_wand_modifier_hints,
 		"hide_notifications": hide_notifications, "hide_status_effects": hide_status_effects,
 		"hide_health_mana": hide_health_mana, "hide_cooldown_timings": hide_cooldown_timings,
-		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule
+		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule,
+		"hide_projectile_indicator": hide_projectile_indicator,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -26,3 +28,4 @@ func load_dict(dict: Dictionary) -> void:
 	hide_cooldown_timings = dict.get("hide_cooldown_timings", false)
 	hide_stats_view = dict.get("hide_stats_view", true)
 	hide_reticule = dict.get("hide_reticule", false)
+	hide_projectile_indicator = dict.get("hide_projectile_indicator", false)

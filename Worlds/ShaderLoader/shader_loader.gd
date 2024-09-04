@@ -7,18 +7,6 @@ func _ready() -> void:
 	var mat: ShaderMaterial = (mesh.mesh as QuadMesh).material as ShaderMaterial
 	const WAIT_TIME = 0.05
 	
-	mat.shader = load("res://Projectiles/water_droplet.gdshader")
-	await get_tree().create_timer(WAIT_TIME).timeout
-	
-	mat.shader = load("res://Projectiles/rock.gdshader")
-	await get_tree().create_timer(WAIT_TIME).timeout
-	
-	mat.shader = load("res://Projectiles/ice.gdshader")
-	await get_tree().create_timer(WAIT_TIME).timeout
-	
-	mat.shader = load("res://Projectiles/fire.gdshader")
-	await get_tree().create_timer(WAIT_TIME).timeout
-	
 	mat.shader = load("res://Projectiles/electric.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
@@ -28,10 +16,7 @@ func _ready() -> void:
 	mat.shader = load("res://Projectiles/air_trail.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
-	mat.shader = load("res://Projectiles/void.tscn::Shader_b7sdq")
-	await get_tree().create_timer(WAIT_TIME).timeout
-	
-	mat.shader = load("res://Projectiles/explosion/steam_exp.gdshader")
+	mat.shader = load("res://General/standard.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
 	mat.shader = load("res://Characters/Enemy/Health Bar/health_bar.gdshader")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://nvx12omqgpe2"]
 
-[ext_resource type="Shader" path="res://Projectiles/fire.gdshader" id="1_vy5ia"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="1_oa7hk"]
 
 [sub_resource type="Gradient" id="Gradient_ce2kv"]
 interpolation_color_space = 2
@@ -32,11 +32,12 @@ color_ramp = SubResource("GradientTexture1D_7he8g")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_un6f1"]
 render_priority = 0
-shader = ExtResource("1_vy5ia")
+shader = ExtResource("1_oa7hk")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = null
 shader_parameter/roughness = null
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = null
 shader_parameter/metallic = null
 shader_parameter/uv1_scale = null

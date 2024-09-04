@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://kjdhhq3p1a5m"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_gw4hd"]
-[ext_resource type="Shader" path="res://Projectiles/ice.gdshader" id="2_d6dw3"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="2_a6nxg"]
 [ext_resource type="AudioStream" uid="uid://mnk2xn0q2pnw" path="res://Audio/projectile/ice.mp3" id="3_7ubeh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwdgd"]
@@ -37,7 +37,7 @@ hue_variation_max = 0.02
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n2y1k"]
 render_priority = 0
-shader = ExtResource("2_d6dw3")
+shader = ExtResource("2_a6nxg")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0

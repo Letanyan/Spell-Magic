@@ -8,6 +8,8 @@ extends Control
 @onready var hide_health_and_mana := $Tabs/HUD/HideHealthAndMana as CheckButton
 @onready var hide_cooldown_timings := $Tabs/HUD/HideCooldownTimings as CheckButton
 @onready var hide_stats_view := $Tabs/HUD/HideStatsView as CheckButton
+@onready var hide_reticule: CheckButton = $Tabs/HUD/HideReticule as CheckButton
+@onready var hide_projectile_indicator: CheckButton = $Tabs/HUD/HideProjectileIndicator as CheckButton
 
 @onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
@@ -64,6 +66,8 @@ func update_controls() -> void:
 	hide_health_and_mana.button_pressed = world_settings.hud_settings.hide_health_mana
 	hide_cooldown_timings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
 	hide_stats_view.button_pressed = world_settings.hud_settings.hide_stats_view
+	hide_reticule.button_pressed = world_settings.hud_settings.hide_reticule
+	hide_projectile_indicator.button_pressed = world_settings.hud_settings.hide_projectile_indicator
 	
 	fov_slider.value = int(world_settings.camera_settings.fov)
 	fov_value.text = str(int(world_settings.camera_settings.fov))
@@ -134,7 +138,10 @@ func _on_hide_stats_view_toggled(button_pressed: bool) -> void:
 func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_reticule = button_pressed
 	settings_changed.emit(world_settings)
-
+	
+func _on_hide_projectile_indicator_toggled(toggled_on: bool) -> void:
+	world_settings.hud_settings.hide_projectile_indicator = toggled_on
+	settings_changed.emit(world_settings)
 
 func _on_fov_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.fov = int(value)
