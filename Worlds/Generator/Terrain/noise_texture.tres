@@ -2,11 +2,9 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_gxyc8"]
 seed = 3
-frequency = 1.0
-fractal_octaves = 2
-fractal_lacunarity = 10.0
-fractal_gain = 1.0
-domain_warp_enabled = true
+frequency = 0.4185
+fractal_octaves = 1
+fractal_weighted_strength = 1.0
 domain_warp_frequency = -0.375
 domain_warp_fractal_type = 2
 domain_warp_fractal_octaves = 1

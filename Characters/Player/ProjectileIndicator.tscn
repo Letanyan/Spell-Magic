@@ -3,7 +3,8 @@
 [ext_resource type="Script" path="res://Characters/Player/ProjectileIndicator.gd" id="1_3msps"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_sugu8"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_606bu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sofkb"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_sugu8")
 shader_parameter/albedo = Color(1, 1, 1, 1)
@@ -18,8 +19,9 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_xacey"]
-material = SubResource("ShaderMaterial_606bu")
+[sub_resource type="CylinderMesh" id="CylinderMesh_1xt23"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_sofkb")
 top_radius = 0.0
 bottom_radius = 0.01
 height = 0.05
@@ -31,4 +33,4 @@ script = ExtResource("1_3msps")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.05)
-mesh = SubResource("CylinderMesh_xacey")
+mesh = SubResource("CylinderMesh_1xt23")

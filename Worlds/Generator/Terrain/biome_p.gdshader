@@ -1,6 +1,8 @@
 shader_type spatial;
 render_mode diffuse_toon, skip_vertex_transform, blend_mix;
 
+#include "res://General/basic.gdshaderinc"
+
 //uniform sampler2D elevation: source_color;
 uniform sampler2D biome_x: source_color;
 uniform sampler2D biome_y: source_color;
@@ -50,28 +52,18 @@ vec4 biome_color(vec4 V, vec2 uv) {
 
 	vec4 color = vec4(1);
 
-	vec4 colors[9] = {
-		vec4(0.23, 0.83, 0.23, 0.15),
-		vec4(0, 1, 1, 0.1),
-		vec4(0.55, 0.28, 0.0, 0.08),
-		vec4(1, 1, 0, 0.2),
-		vec4(0, 0.4, 0.0, 0.08),
-		vec4(1, 0.5, 0, 0.2),
-		vec4(1, 1, 1, 1.0),
-		vec4(0, 0, 0, 1.0),
-		vec4(1, 0, 0, 0.0)
+	// use alpha channel to store cliff side gray color
+	vec4 colors[9] = { 
+		vec4(0.23, 0.83, 0.23, 0.15), // grassland
+		vec4(0, 1, 1, 0.1),           // taiga
+		vec4(0.55, 0.28, 0.0, 0.08),  // forest
+		vec4(1, 1, 0, 0.2),           // desert
+		vec4(0, 0.4, 0.0, 0.08),      // jungle
+		vec4(1, 0.5, .0, 0.2),        // savannah
+		vec4(1, 1, 1, 1.0),           // tundra
+		vec4(0, 0, 0, 1.0),           // otherworld
+		vec4(1, 0, 0, 0.0)            // hfil
 	};
-	//vec2 locations[9] = {
-		//vec2(0.50, 0.50), // grassland
-		//vec2(0.75, 0.00), // taiga
-		//vec2(0.50, 0.25), // forest
-		//vec2(0.25, 0.75), // desert
-		//vec2(0.25, 0.25), // jungle
-		//vec2(0.25, 0.50), // savannah
-		//vec2(1.00, 0.50), // tundra
-		//vec2(1.00, 0.00), // otherworld
-		//vec2(0.00, 1.00)  // hfil
-	//};
 
 	vec2 p = vec2(bx, by);
 	float distances[9];
@@ -80,10 +72,14 @@ vec4 biome_color(vec4 V, vec2 uv) {
 	float min_distance = 100000.0;
 	for (int i = 0; i < 9; i++) {
 		float dist = axial_dependant_distance(p, locations[i]);
+		//float dist = distance(w, locations[i]);
 		distances[i] = dist;
 		if (dist <= (axial_weight + 1.0)) {
-			vec4 c = mix(vec4(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 3.0));
-			color = color * c;
+			float mix_alpha = pow(1.0 - dist / (axial_weight + 1.0), 3.0);
+			vec3 c = oklab_mix(vec3(1), colors[i].rgb, mix_alpha);
+			color = color * vec4(c, mix(1, colors[i].a, mix_alpha));
+			//vec4 c = mix(vec4(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 3.0));
+			//color = color * c;
 		}
 		if (dist < min_distance) {
 			min_distance = dist;
@@ -100,7 +96,7 @@ void fragment() {
 
 	vec4 color = biome_color(v, UV);
 	//color = mix(color, texture(noise, UV).rgba, 0.05);
-	color.rgb = color.rgb - texture(noise, UV).rgb * 0.025;
+	color.rgb = color.rgb - texture(noise, UV).rgb * 0.005;
 
 	float norm_angle = distance(vec3(0, 1, 0), -normalize(cross(dFdx(v.xyz), dFdy(v.xyz))));
 	if (norm_angle > inversesqrt(2.0)) {

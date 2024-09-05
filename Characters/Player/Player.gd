@@ -557,7 +557,9 @@ func update_projectile(pivot: Node3D, spell: SpellBody) -> bool:
 		
 	if projectile_indicators.has(spell):
 		var mi := projectile_indicators[spell] as Node3D
-		mi.look_at(spell.position)
+		if spell.position != mi.position:
+			if not Vector3.UP.cross(spell.position - mi.global_position).is_zero_approx():
+				mi.look_at(spell.position)
 	else:
 		var mi := projectile_indicator.instantiate() as ProjectileIndicator
 		mi.position = Vector3(0, 2, 0)

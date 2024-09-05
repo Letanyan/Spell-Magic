@@ -44,9 +44,9 @@ varying vec4 instance_custom;
 void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	instance_custom = INSTANCE_CUSTOM;
-	
+
 	vec4 world_coord = INV_VIEW_MATRIX * vec4(VERTEX, 0);
-	
+
 	float wind_speed = texture(wind_speed_change, vec2(0.5, TIME * wind_speed_multiplier)).r;
 	vec2 wind_dir = vec2(
 		texture(wind_horizontal_direction, vec2(TIME * wind_speed * 0.1, 0.5 + instance_custom.a)).r * 2.0 - 1.0,
@@ -54,16 +54,16 @@ void vertex() {
 	);
 	vec2 normalized_wind_direction = wind_dir; // normalize(wind_dir);
 	float displacement_affect = pow(1.0 - UV.y, 3.0);
-	
+
 	VERTEX.x += normalized_wind_direction.x * 0.001 * displacement_affect * wind_speed;
 	VERTEX.z += normalized_wind_direction.y * 0.001 * displacement_affect * wind_speed;
-	
+
 	/*
 	// At the moment the blades are pushed away in a perfectly circular manner.
 	// We could distort the distance to the character based on a noise, to break a bit the
 	// circular shape. We could distort the falloff by sampling in a noise based on the xz coordinates.
 	// The task is left to the reader
-	
+
 	vec3 dir_to_character = character_position - (VIEW_MATRIX[3].xyz);
 	// uncomment the following line to have a horizontal only character push
 	dir_to_character.y = 0.0;
