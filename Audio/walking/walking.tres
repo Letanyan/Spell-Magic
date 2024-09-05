@@ -1,21 +1,29 @@
-[gd_resource type="AudioStreamInteractive" load_steps=3 format=3 uid="uid://efnlhhufuwhw"]
+[gd_resource type="AudioStreamInteractive" load_steps=5 format=3 uid="uid://efnlhhufuwhw"]
 
 [ext_resource type="AudioStream" uid="uid://dbc425m8kt347" path="res://Audio/walking/grassland.mp3" id="1_i4hcj"]
 [ext_resource type="AudioStream" uid="uid://dv6gocts6n1kn" path="res://Audio/walking/empty.mp3" id="2_kx1vx"]
+[ext_resource type="AudioStream" uid="uid://khsmsvf62bmc" path="res://Audio/walking/forest.mp3" id="3_026h3"]
+[ext_resource type="AudioStream" uid="uid://co3bjyj1o0g1y" path="res://Audio/walking/water.mp3" id="4_mcnc6"]
 
 [resource]
-clip_count = 2
+clip_count = 4
 clip_0/name = &"empty"
 clip_0/stream = ExtResource("2_kx1vx")
 clip_0/auto_advance = 0
 clip_1/name = &"Grassland"
 clip_1/stream = ExtResource("1_i4hcj")
 clip_1/auto_advance = 0
+clip_2/name = &"Forest"
+clip_2/stream = ExtResource("3_026h3")
+clip_2/auto_advance = 0
+clip_3/name = &"Water"
+clip_3/stream = ExtResource("4_mcnc6")
+clip_3/auto_advance = 0
 _transitions = {
 Vector2i(-1, -1): {
 "fade_beats": 1,
 "fade_mode": 3,
 "from_time": 0,
-"to_time": 0
+"to_time": 2
 }
 }

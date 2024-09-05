@@ -264,10 +264,10 @@ static func audio_for_biome(b: World.Biome) -> String:
 		
 static func walking_audio_for_biome(b: World.Biome) -> String:
 	match b:
-		World.Biome.WATER: return "Grassland"
+		World.Biome.WATER: return "Water"
 		World.Biome.TAIGA: return "Grassland"
 		World.Biome.GRASSLAND: return "Grassland"
-		World.Biome.FOREST: return "Grassland"
+		World.Biome.FOREST: return "Forest"
 		World.Biome.DESERT: return "Grassland"
 		World.Biome.JUNGLE: return "Grassland"
 		World.Biome.SAVANNAH: return "Grassland"
