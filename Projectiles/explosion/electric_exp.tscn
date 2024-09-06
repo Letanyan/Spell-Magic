@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgffub1e330rf"]
+[gd_scene load_steps=8 format=3 uid="uid://bgffub1e330rf"]
 
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="1_ihm7o"]
+[ext_resource type="AudioStream" uid="uid://c1beha6qeyexs" path="res://Audio/projectile/explosion/electric.mp3" id="2_ynbjx"]
 
 [sub_resource type="Gradient" id="Gradient_dmsxn"]
 interpolation_color_space = 2
@@ -56,3 +57,7 @@ interpolate = false
 transform_align = 2
 process_material = SubResource("ParticleProcessMaterial_cjwec")
 draw_pass_1 = SubResource("BoxMesh_s2fkk")
+
+[node name="audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_ynbjx")
+autoplay = true

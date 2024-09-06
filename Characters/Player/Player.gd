@@ -498,7 +498,8 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 	vitals.damage_resistance = damage_resistance
 	
 func transition_bg_audio(clip: String) -> void:
-	bg_audio["parameters/switch_to_clip"] = clip
+	if bg_audio["parameters/switch_to_clip"] != clip:
+		bg_audio["parameters/switch_to_clip"] = clip
 		
 func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_open = open
@@ -521,7 +522,8 @@ func change_reticule_visible(should_hide: bool) -> void:
 	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide
 
 func play_walking_audio(clip: String) -> void:
-	walking_audio["parameters/switch_to_clip"] = clip
+	if walking_audio["parameters/switch_to_clip"] != clip:
+		walking_audio["parameters/switch_to_clip"] = clip
 		
 func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
 	artifacts.save(world_settings.world_name)

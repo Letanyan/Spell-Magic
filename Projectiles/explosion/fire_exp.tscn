@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://nvx12omqgpe2"]
+[gd_scene load_steps=10 format=3 uid="uid://nvx12omqgpe2"]
 
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="1_oa7hk"]
+[ext_resource type="AudioStream" uid="uid://ba8kanoevsp7r" path="res://Audio/projectile/explosion/fire.mp3" id="2_5t3jg"]
 
 [sub_resource type="Gradient" id="Gradient_ce2kv"]
 interpolation_color_space = 2
@@ -63,3 +64,7 @@ explosiveness = 0.5
 visibility_aabb = AABB(-1.37659, -1.56162, -1.68611, 2.74808, 3.00775, 3.01759)
 process_material = SubResource("ParticleProcessMaterial_be67v")
 draw_pass_1 = SubResource("SphereMesh_i3d46")
+
+[node name="audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_5t3jg")
+autoplay = true

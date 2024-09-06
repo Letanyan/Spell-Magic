@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://cxtrqt12eq34o"]
+[gd_scene load_steps=10 format=3 uid="uid://cxtrqt12eq34o"]
 
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="1_ctvo3"]
+[ext_resource type="AudioStream" uid="uid://c08lk1j1hs2aw" path="res://Audio/projectile/explosion/water.mp3" id="2_dct14"]
 
 [sub_resource type="Gradient" id="Gradient_cc2r1"]
 interpolation_color_space = 2
@@ -60,3 +61,7 @@ one_shot = true
 explosiveness = 0.75
 process_material = SubResource("ParticleProcessMaterial_dqvif")
 draw_pass_1 = SubResource("SphereMesh_peij8")
+
+[node name="audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_dct14")
+autoplay = true
