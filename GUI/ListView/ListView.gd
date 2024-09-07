@@ -14,6 +14,8 @@ var y_offset: float = 0.0
 var items_offset: int = 0
 var items_shown: int = 0
 
+var _visible_items: Dictionary = {} # [int]bool
+
 func _ready() -> void:
 	get_tree().get_root().size_changed.connect(generate_items)
 
@@ -64,10 +66,15 @@ func update_items() -> void:
 			min_value = items[i].position.y
 			min_index = i
 	
+	var new_visible_items := {}
 	for i in items.size():
 		var j := items_offset + posmod(i - min_index, items.size())
 		if j >= 0 and j < total_items:
-			update_item.call(items[i], j)
+			if not _visible_items.has(j):
+				update_item.call(items[i], j)
+			new_visible_items[j] = true
+			
+	_visible_items = new_visible_items
 	
 func update_y_offset() -> void:
 	var view_count := (total_items - items_shown + 1)

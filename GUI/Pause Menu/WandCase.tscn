@@ -41,7 +41,7 @@ focus_neighbor_top = NodePath("../WandIndex")
 focus_neighbor_right = NodePath("../panel/ListView")
 focus_next = NodePath("../name")
 focus_previous = NodePath("../WandIndex")
-text = "Create"
+text = "Create New Wand"
 
 [node name="delete" type="Button" parent="."]
 layout_mode = 1
@@ -72,6 +72,10 @@ grow_vertical = 2
 
 [node name="ListView" parent="panel" instance=ExtResource("2_ib5uu")]
 layout_mode = 1
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
 focus_neighbor_left = NodePath("../../WandIndex")
 focus_neighbor_top = NodePath("../../name")
 focus_next = NodePath("../../delete")
