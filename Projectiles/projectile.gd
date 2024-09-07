@@ -88,8 +88,7 @@ func impulse() -> Vector3:
 			return velocity * (amp)
 		Spell.Element.AIR:
 			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
-			return velocity * (amp * clampf(spell.elemental_application, 0.01, 1.0) * 100)
-			
+			return velocity * (amp + clampf(spell.elemental_application, 0.0, 1.0)) * 20
 		Spell.Element.FIRE:
 			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
 			return velocity * (amp * 4)
@@ -209,7 +208,8 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 			var body := _body as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 10000.0, 0.0, 1.0))
 			body.invunerable = INVUNERABLE_DURATION
-			body.play_animation("on_hit")
+			if dmg["dmg"] > 0:
+				body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 			body.emit_vitals_update()
 		if is_enemy and spell.element != Spell.Element.VOID:
@@ -220,7 +220,8 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				body.die()
 			else:
 				body.invunerable = INVUNERABLE_DURATION
-				body.play_animation("on_hit")
+				if dmg["dmg"] > 0:
+					body.play_animation("on_hit")
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	var _body := area.get_parent_node_3d() as CollisionObject3D
@@ -264,7 +265,6 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 					explode_after(self, _body, 0.0166667 * 2, false)
 					pass
 			elif is_water and not invunerable:
-				print("damage")
 				var body := area.get_parent_node_3d() as CharacterBody
 				CharacterCollision.handle(body, self)
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.damage(caster_vitals), spell.elemental_application)
@@ -291,7 +291,8 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 			var body := area.get_parent_node_3d() as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 10000.0, 0.0, 1.0))
 			body.invunerable = INVUNERABLE_DURATION
-			body.play_animation("on_hit")
+			if dmg["dmg"] > 0:
+				body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
 			body.emit_vitals_update()
 		if is_enemy and spell.element != Spell.Element.VOID:
@@ -302,7 +303,8 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 				body.die()
 			else:
 				body.invunerable = INVUNERABLE_DURATION
-				body.play_animation("on_hit")
+				if dmg["dmg"] > 0:
+					body.play_animation("on_hit")
 
 func update_shape(r: Vector3, ignore_time: bool) -> void:
 	if r == most_recent_radius:
@@ -318,6 +320,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
+			particles.local_coords = spell.follow
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
@@ -348,6 +351,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
+			particles.local_coords = spell.follow
 			
 		Spell.Element.AIR:
 			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = rl * 4
@@ -360,6 +364,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
+			source.local_coords = spell.follow
 			
 		Spell.Element.ICE:
 			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rl * 2
@@ -367,6 +372,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
+			source.local_coords = spell.follow
 			
 		Spell.Element.ELECTRIC:
 			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
@@ -378,6 +384,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			var body := get_node("body") as MeshInstance3D
 			(body.mesh as SphereMesh).radius = rl
 			(body.mesh as SphereMesh).height = rl * 2
+			source.local_coords = spell.follow
 			
 		Spell.Element.VOID:
 			var mesh: SphereMesh = (get_node("mesh") as MeshInstance3D).mesh

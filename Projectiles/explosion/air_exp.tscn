@@ -20,7 +20,8 @@ point_count = 3
 width = 64
 curve = SubResource("Curve_5uv6y")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_f4flv"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_up2ua"]
+resource_local_to_scene = true
 particle_flag_align_y = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 1, 0)
@@ -36,7 +37,8 @@ scale_curve = SubResource("CurveTexture_ijg8r")
 color = Color(0.501961, 1, 0.501961, 0.501961)
 color_ramp = SubResource("GradientTexture1D_nwxdy")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1w4xr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_egcea"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_cpkdh")
 shader_parameter/alpha = 1.0
@@ -47,8 +49,9 @@ shader_parameter/width = 0.1
 shader_parameter/use_vertex_color = true
 shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_asn2j"]
-material = SubResource("ShaderMaterial_1w4xr")
+[sub_resource type="SphereMesh" id="SphereMesh_7keam"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_egcea")
 radius = 1.0
 height = 2.0
 radial_segments = 16
@@ -64,8 +67,8 @@ amount = 20
 lifetime = 4.0
 one_shot = true
 explosiveness = 1.0
-process_material = SubResource("ParticleProcessMaterial_f4flv")
-draw_pass_1 = SubResource("SphereMesh_asn2j")
+process_material = SubResource("ParticleProcessMaterial_up2ua")
+draw_pass_1 = SubResource("SphereMesh_7keam")
 
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("2_vo8px")

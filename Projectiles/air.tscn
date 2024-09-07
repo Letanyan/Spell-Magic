@@ -25,7 +25,7 @@ point_count = 3
 width = 64
 curve = SubResource("Curve_acxw5")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qcqdi"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0lwgo"]
 resource_local_to_scene = true
 particle_flag_align_y = true
 emission_shape = 6
@@ -44,7 +44,8 @@ color_ramp = SubResource("GradientTexture1D_rlncl")
 hue_variation_min = -2.23517e-08
 hue_variation_max = -2.23517e-08
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cuynw"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cw5ub"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_qxk8k")
 shader_parameter/alpha = 1.0
@@ -55,8 +56,9 @@ shader_parameter/width = 0.1
 shader_parameter/use_vertex_color = true
 shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_l8axg"]
-material = SubResource("ShaderMaterial_cuynw")
+[sub_resource type="SphereMesh" id="SphereMesh_itdcf"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_cw5ub")
 radius = 1.0
 height = 2.0
 radial_segments = 16
@@ -76,8 +78,8 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 
 cast_shadow = 0
 amount = 80
 lifetime = 4.0
-process_material = SubResource("ParticleProcessMaterial_qcqdi")
-draw_pass_1 = SubResource("SphereMesh_l8axg")
+process_material = SubResource("ParticleProcessMaterial_0lwgo")
+draw_pass_1 = SubResource("SphereMesh_itdcf")
 
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("3_lq2kl")
