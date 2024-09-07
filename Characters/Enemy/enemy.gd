@@ -30,6 +30,7 @@ var index_in_population: int = -1
 signal vital_update(index_in_population: int, vitals: Vitals)
 @onready var health_bar: MeshInstance3D = $HealthBar/Bar
 @onready var level_text: Label3D = $HealthBar/Level
+@onready var effects_mesh: MeshInstance3D = $HealthBar/Effects
 
 func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
@@ -346,6 +347,10 @@ func drop_coin_items(world: Node3D) -> bool:
 	
 func update_vitals_display() -> void:
 	(health_bar.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("percentage", vitals.health.percentage())
+	var effects_shader := effects_mesh.mesh.surface_get_material(0) as ShaderMaterial
+	effects_shader.set_shader_parameter("wet_progress", vitals.wetness.percentage())
+	effects_shader.set_shader_parameter("freeze_progress", vitals.freeze.percentage())
+	effects_shader.set_shader_parameter("burning_progress", vitals.burning.percentage())
 
 func drop_artifact() -> Artifact:
 	return null
