@@ -76,7 +76,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			if wetness.value <= 0 and freeze.value <= 0:
 				burning.apply_ignoring_resistance(amount)
 			else:
-				power = power * 0.5
+				power = power * (1.0 + wetness.value * amount) * (1.0 + 1.5 * freeze.value * amount)
 			wetness.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(-amount * 1.5)
 		Spell.Element.WATER:

@@ -91,6 +91,11 @@ func update_list_and_grid() -> void:
 		g.artifact = a
 		g.highlighted = artifacts.active_options.get(v, {})
 		artifact_grid.add_grid_tile(g, v)
+	
+	var possible_moves := artifacts.highlight_all_available_cells_for_placement(temporary_grid_tile.artifact)
+	for move in possible_moves:
+		if move == artifact_grid.selected_cell_coord:
+			update_selected_artifact()
 
 func update_selected_artifact() -> void:
 	if artifacts_list.get_selected_items().is_empty():
@@ -236,7 +241,6 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 			update_list_and_grid()
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
-	#print("grid: ", event)
 	if event is InputEventKey:
 		var e := event as InputEventKey
 		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
