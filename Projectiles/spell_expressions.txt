@@ -17,8 +17,6 @@ buck-shot: fires multiple projectiles from a center point to angles defined by (
 linear: fires a projectile straight from camera
 	s ; speed
 	d ; offset
-	ax, ay, az ; offset
-	bx, by, bz ; speed
 	
 linear-arc: fires multiple projectiles in a straight line set in an arc starting point
 	R ; arc radius

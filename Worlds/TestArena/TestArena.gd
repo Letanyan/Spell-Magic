@@ -71,8 +71,8 @@ func setup(_settings: WorldSettings) -> void:
 		#artifact.right = Artifact.Option.make_random()
 		#artifacts.collection.append(artifact)
 	
-	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 20, 1000, 20)
-	#add_enemy(undead)
+	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 20, 1000, 20)
+	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, 20, 1000, -20)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -20, 1000, -20)
@@ -89,18 +89,18 @@ func setup(_settings: WorldSettings) -> void:
 	#var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
 	#fishman.level = 50
 	#add_enemy(fishman)
-	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 15, 1000, 20)
-	undead.level = 50
-	add_enemy(undead)
-	var undead2 := Population.generate_enemy(World.Enemy.UNDEAD, player, 18, 1000, 20)
-	undead2.level = 50
-	add_enemy(undead2)
-	var undead3 := Population.generate_enemy(World.Enemy.UNDEAD, player, 12, 1000, 20)
-	undead3.level = 50
-	add_enemy(undead3)
-	var undead4 := Population.generate_enemy(World.Enemy.UNDEAD, player, 9, 1000, 20)
-	undead4.level = 50
-	add_enemy(undead4)
+	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 15, 1000, 20)
+	#undead.level = 50
+	#add_enemy(undead)
+	#var undead2 := Population.generate_enemy(World.Enemy.UNDEAD, player, 18, 1000, 20)
+	#undead2.level = 50
+	#add_enemy(undead2)
+	#var undead3 := Population.generate_enemy(World.Enemy.UNDEAD, player, 12, 1000, 20)
+	#undead3.level = 50
+	#add_enemy(undead3)
+	#var undead4 := Population.generate_enemy(World.Enemy.UNDEAD, player, 9, 1000, 20)
+	#undead4.level = 50
+	#add_enemy(undead4)
 	#var fish := Population.generate_enemy(World.Enemy.FISH, player, 25, 1000, 20)
 	#fish.level = 50
 	#add_enemy(fish)
@@ -126,7 +126,7 @@ func setup(_settings: WorldSettings) -> void:
 	#target2.configure(TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 3, Vitals.Stat.new(100, 0, 100, 5), path2))
 	#
 	#var target3 := TargetShape.make()
-	#var spell := Spell.new(false, "tu*10*t", "tv*10*t", "tw*10*t", 0.5, 7, 2.0, Spell.Element.FIRE, 1, "2.5", false, 0.0)
+	#var spell := Spell.new(false, "tu", "tv", "10*t", 0.5, 7, 2.0, Spell.Element.FIRE, 1, "2.5", false, 0.0)
 	#var caster_pos := Vector3(20, 1000 + 10, -20) + Vector3.RIGHT * 10
 	#target3.configure(TargetShape.config_for_avoid_damage(Spell.Element.VOID, spawner, 3, Vitals.Stat.new(0, 0, 100, 15), path3, spell, caster_pos))
 	#

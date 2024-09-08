@@ -565,5 +565,6 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	spell_caster.cast_spell(self, null, insert, next_spell, tracking_target, fixed_vars)
 
 func free_particle() -> void:
-	spell_caster.free_particles()
+	if spell_caster != null:
+		spell_caster.free_particles()
 	queue_free()

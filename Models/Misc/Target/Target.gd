@@ -291,9 +291,12 @@ func is_blocking_puzzle() -> bool:
 	return puzzle_kind == PuzzleKind.AVOID_DAMAGE or puzzle_kind == PuzzleKind.AVOID_EA
 
 func remove_when_done() -> void:
+	if spell_caster != null:
+		spell_caster.free_particles() # FIXME: wait for particles to finish then remove and free
 	var parent := get_parent()
 	if parent:
-		parent.remove_child(self)
+		parent.call_deferred("remove_child", self)
+		queue_free()
 
 static func config_for_single_hit(el: Spell.Element, spwnr: ItemSpawner, retime: float, pth: PathStyle) -> Dictionary:
 	return {

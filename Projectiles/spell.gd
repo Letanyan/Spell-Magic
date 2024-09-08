@@ -45,6 +45,7 @@ var charge: float
 var elemental_application: float
 var crit_rate: float
 var crit_dmg: float
+var spherical_coords: bool
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
@@ -80,6 +81,8 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	crit_rate = 0.0
 	crit_dmg = 0.0
 	
+	spherical_coords = false
+	
 	is_active = true
 	
 	if not no_comp:
@@ -100,6 +103,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.name = name
 	result.crit_rate = crit_rate
 	result.crit_dmg = crit_dmg
+	result.spherical_coords = spherical_coords
 	if for_player:
 		result.limit_r = limit_r
 		result.limit_v = limit_v
@@ -119,11 +123,25 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.is_active = is_active
 	return result
 	
-func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
+func calculate_cartesian_point(vars: Dictionary) -> Vector3:
+	var sphere := Vector3.ZERO
+	sphere.x = x_expr.compute(vars) + (vars.get("_u", 0.0) as float)
+	sphere.y = y_expr.compute(vars) + (vars.get("_v", 0.0) as float)
+	sphere.z = z_expr.compute(vars)
+	
 	var result := Vector3.ZERO
-	result.x = x_expr.compute(vars)
-	result.y = y_expr.compute(vars)
-	result.z = z_expr.compute(vars)
+	if spherical_coords:
+		result.x = sphere.z * sin(sphere.y) * cos(sphere.x)
+		result.y = sphere.z * cos(sphere.y)
+		result.z = sphere.z * sin(sphere.y) * sin(sphere.x)
+	else:
+		result = sphere
+	
+	return result
+	
+	
+func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
+	var result := calculate_cartesian_point(vars)
 	
 	if vars.has("old_pos") and not only_delta:
 		var old_pos := vars["old_pos"] as Vector3
@@ -148,9 +166,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	var ftp := Vector3.ZERO
 	var temp_vars := vars.duplicate()
 	temp_vars["t"] = 0.0
-	ftp.x = x_expr.compute(temp_vars)
-	ftp.y = y_expr.compute(temp_vars)
-	ftp.z = z_expr.compute(temp_vars)
+	ftp = calculate_cartesian_point(temp_vars)
 	
 	var result := 0.0
 	var step := time / randf_range(samples - 5, samples + 5)
@@ -159,9 +175,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	# calculate distance
 	while t <= time + step:
 		temp_vars["t"] = t
-		ft.x = x_expr.compute(temp_vars)
-		ft.y = y_expr.compute(temp_vars)
-		ft.z = z_expr.compute(temp_vars)
+		ft = calculate_cartesian_point(temp_vars)
 		result += ftp.distance_to(ft)
 		t += step
 		ftp = ft
@@ -179,6 +193,7 @@ func _mass() -> float:
 		_: return 0
 	
 func build_expressions() -> void:
+	expressions.clear()
 	for k: String in expression_strings:
 		if (expression_strings[k] as String).contains(";"):
 			expressions[k] = Expr.new((expression_strings[k] as String).split(";", false, 2)[0])
@@ -403,6 +418,7 @@ func save_dict() -> Dictionary:
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
 		"expression_strings": expression_strings, "is_active": is_active, 
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
+		"spherical_coords": spherical_coords,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -421,6 +437,7 @@ func load_dict(dict: Dictionary) -> void:
 	follow = dict["is_rel"]
 	crit_rate = dict.get("crit_rate", 0.0)
 	crit_dmg = dict.get("crit_dmg", 0.0)
+	spherical_coords = dict.get("spherical_coords", false)
 	charge = 0.0
 	if dict["chain"] != {}:
 		chain = Spell.new()
@@ -505,6 +522,7 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 %s.is_active = %s
 %s.crit_rate = %s
 %s.crit_dmg = %s
+%s.spherical_coords = %s
 """ % [
 	chain_creation,
 	variable_name, repr.call(follow), repr.call(x), repr.call(y), repr.call(z),
@@ -527,6 +545,7 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 	variable_name, repr.call(is_active),
 	variable_name, repr.call(crit_rate),
 	variable_name, repr.call(crit_dmg),
+	variable_name, repr.call(spherical_coords)
 ]
 
 	if wrap_in_function:
@@ -586,7 +605,7 @@ static func real_color_from_element(el: Element) -> Color:
 		Element.VOID: return Color(0.25, 0.25, 0.25)
 		_: return Color.WHITE
 
-func bake(new_name: String) -> Spell:
+func bake(new_name: String) -> Spell: # TODO: check if all properties copied correctly
 	var bx := GDExpr.bake(x, expression_strings)
 	var by := GDExpr.bake(y, expression_strings)
 	var bz := GDExpr.bake(z, expression_strings)
@@ -601,6 +620,9 @@ func bake(new_name: String) -> Spell:
 	result.buff_v = buff_v
 	result.buff_attack = buff_attack
 	result.buff_defence = buff_defence
+	result.crit_rate = crit_rate
+	result.crit_dmg = crit_dmg
+	result.spherical_coords = spherical_coords
 	result.expression_strings = {}
 	result.build_expressions()
 	result.calculate_cooldown()

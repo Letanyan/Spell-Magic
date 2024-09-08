@@ -213,7 +213,7 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
 		return
 	
-	var new_spell := next_spell.duplicate()
+	var new_spell := next_spell.duplicate({}, true)
 	for e: Artifact.Element in spell_modifier:
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x

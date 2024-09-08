@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=16 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://b432kdsd0kipn" path="res://GUI/Images/bomb.svg" id="10_5c3hv"]
 [ext_resource type="Texture2D" uid="uid://ckh44temenbma" path="res://GUI/Images/duplicate.svg" id="10_ne1rx"]
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
+[ext_resource type="Texture2D" uid="uid://5kr3ouhyf7f6" path="res://GUI/Images/sphere.svg" id="12_g3iwv"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
 font_color = Color(1, 0, 0, 1)
@@ -389,7 +390,7 @@ focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../is_bomb")
 focus_next = NodePath("../is_bomb")
 focus_previous = NodePath("../view_chain_button")
-text = "player is origin"
+text = "Player is Origin"
 icon = ExtResource("9_dae3a")
 
 [node name="is_bomb" type="CheckButton" parent="container"]
@@ -406,7 +407,7 @@ focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../is_rel")
 focus_next = NodePath("../is_rel")
 focus_previous = NodePath("../player_is_origin")
-text = "is bomb"
+text = "Is Bomb"
 icon = ExtResource("10_5c3hv")
 
 [node name="is_rel" type="CheckButton" parent="container"]
@@ -423,8 +424,20 @@ focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../mana_edit")
 focus_next = NodePath("../mana_edit")
 focus_previous = NodePath("../is_bomb")
-text = "follow player"
+text = "Follow Player"
 icon = ExtResource("11_8d7vq")
+
+[node name="is_sphere" type="CheckButton" parent="container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.632
+anchor_right = 1.0
+offset_left = -0.0640259
+offset_top = 440.0
+offset_right = -8.0
+offset_bottom = 472.0
+text = "Use Spherical Coordinates"
+icon = ExtResource("12_g3iwv")
 
 [node name="mana" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -495,9 +508,9 @@ anchors_preset = -1
 anchor_left = 0.632
 anchor_right = 1.0
 offset_left = -0.0640259
-offset_top = 448.0
+offset_top = 480.0
 offset_right = -8.0
-offset_bottom = 480.0
+offset_bottom = 512.0
 bbcode_enabled = true
 text = "Burning: 0"
 
@@ -507,9 +520,9 @@ anchors_preset = -1
 anchor_left = 0.632
 anchor_right = 1.0
 offset_left = -0.0640259
-offset_top = 488.0
+offset_top = 512.0
 offset_right = -16.0
-offset_bottom = 520.0
+offset_bottom = 544.0
 bbcode_enabled = true
 text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: 0s[/font_size][/left]"
 
@@ -628,6 +641,7 @@ placeholder_text = "value"
 [connection signal="toggled" from="container/player_is_origin" to="." method="_on_player_is_origin_toggled"]
 [connection signal="toggled" from="container/is_bomb" to="." method="_on_is_bomb_toggled"]
 [connection signal="toggled" from="container/is_rel" to="." method="_on_is_rel_toggled"]
+[connection signal="toggled" from="container/is_sphere" to="." method="_on_is_sphere_toggled"]
 [connection signal="text_changed" from="container/mana_edit" to="." method="_on_M_text_changed"]
 [connection signal="caret_changed" from="container/expressions" to="." method="_on_expressions_caret_changed"]
 [connection signal="focus_exited" from="container/expressions" to="." method="_on_expressions_focus_exited"]

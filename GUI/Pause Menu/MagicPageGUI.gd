@@ -7,6 +7,9 @@ extends Control
 @onready var y_edit: LineEdit = $container/y_edit
 @onready var z_edit: LineEdit = $container/z_edit
 @onready var r_edit: LineEdit = $container/r_edit
+@onready var x_label: RichTextLabel = $container/x
+@onready var y_label: RichTextLabel = $container/y
+@onready var z_label: RichTextLabel = $container/z
 
 @onready var power_edit: LineEdit = $container/power_edit
 @onready var duration_edit: LineEdit = $container/duration_edit
@@ -20,6 +23,7 @@ extends Control
 @onready var chain_combo: OptionButton = $container/chain_combo
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
+@onready var is_sphere: CheckButton = $container/is_sphere
 @onready var player_is_origin: CheckButton = $container/player_is_origin
 @onready var expressions: TextEdit = $container/expressions
 
@@ -75,7 +79,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	y_edit.text = spell.y
 	z_edit.text = spell.z
 	r_edit.text = Globals.format_number_nearest_place(spell.radius)
-	
+		
 	power_edit.text = "%d" % spell.power
 	duration_edit.text = Globals.format_number_nearest_place(spell.duration)
 	delay_edit.text = spell.delay
@@ -91,6 +95,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	chain_combo.selected = spell.chain_cast_kind
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
+	is_sphere.button_pressed = spell.spherical_coords
 	player_is_origin.button_pressed = spell.player_is_origin
 	
 	expressions.text = ""
@@ -113,6 +118,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	chain_combo.disabled = not is_editable
 	is_rel.disabled = not is_editable
 	is_bomb.disabled = not is_editable
+	is_sphere.disabled = not is_editable
 	player_is_origin.disabled = not is_editable
 	expressions.editable = is_editable
 	delete_button.disabled = not is_editable
@@ -348,6 +354,12 @@ func _on_player_is_origin_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].player_is_origin = button_pressed
+	update_spells_that_chain_to_current_spell()
+	
+func _on_is_sphere_toggled(toggled_on: bool) -> void:
+	if current_index < 0:
+		return
+	book.spells[current_index].spherical_coords = toggled_on
 	update_spells_that_chain_to_current_spell()
 	
 func _on_M_text_changed(new_text: String) -> void:
