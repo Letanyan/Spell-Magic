@@ -94,32 +94,21 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			cdir = (body.global_position - (body as TargetShape).caster_position).normalized() # direction to player
 	
 	# direction to camera
-	if s.spherical_coords:
-		result[prefix + "u"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-		result[prefix + "v"] = cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-		if not prefix.is_empty():
-			result[prefix + "u"] -= (result.get("_u", 0.0) as float)
-			result[prefix + "v"] -= (result.get("_v", 0.0) as float)
-		# hidden (from player) direction to camera
-		result["_" + prefix + "u"] = result[prefix + "u"]
-		result["_" + prefix + "v"] = result[prefix + "v"]
-	else:
-		result[prefix + "u"] = cdir.x
-		result[prefix + "v"] = cdir.y
-		result[prefix + "w"] = cdir.z
-		result[prefix + "ru"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-		result[prefix + "rv"] = cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-		result[prefix + "rw"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	result[prefix + "u"] = cdir.x
+	result[prefix + "v"] = cdir.y
+	result[prefix + "w"] = cdir.z
+	result[prefix + "ru"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rv"] = cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+	result[prefix + "rw"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	
 	# direction to homing target
-	if s.spherical_coords:
-		result[prefix + "U"] = Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP) - (result.get("_u", 0.0) as float)
-		result[prefix + "V"] = track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP) - (result.get("_v", 0.0) as float)
-	else:
-		result[prefix + "U"] = track.x
-		result[prefix + "V"] = track.y
-		result[prefix + "W"] = track.z
+	result[prefix + "U"] = track.x
+	result[prefix + "V"] = track.y
+	result[prefix + "W"] = track.z
+	result[prefix + "rU"] = Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rV"] = track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+	result[prefix + "rW"] = Vector3(track.x, 0, track.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 	
 	var c := Vector3.ZERO # character facing direction
 	match entity:
@@ -132,16 +121,12 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 		Entity.TARGET:
 			c = cdir
 			
-	if s.spherical_coords:
-		result[prefix + "i"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP) - (result.get("_u", 0.0) as float)
-		result[prefix + "j"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP) - (result.get("_v", 0.0) as float)
-	else:
-		result[prefix + "i"] = c.x
-		result[prefix + "j"] = c.y
-		result[prefix + "k"] = c.z
-		result[prefix + "ri"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-		result[prefix + "rj"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-		result[prefix + "rk"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	result[prefix + "i"] = c.x
+	result[prefix + "j"] = c.y
+	result[prefix + "k"] = c.z
+	result[prefix + "ri"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+	result[prefix + "rj"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+	result[prefix + "rk"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 		
 	
 	if s.player_is_origin:
@@ -176,26 +161,19 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			
 	
 	if p != null: # direction from character to spell
-		var old_origin := Vector3.ZERO
-		if s.spherical_coords:
-			old_origin = Vector3(result.get("_" + prefix + "X", 0) as float, result.get("_" + prefix + "Y", 0) as float, result.get("_" + prefix + "Z", 0) as float)
-		else:
-			old_origin = Vector3(result.get(prefix + "X", 0) as float, result.get(prefix + "Y", 0) as float, result.get(prefix + "Z", 0) as float)
+		var old_origin := Vector3(result.get(prefix + "I", 0) as float, result.get(prefix + "J", 0) as float, result.get(prefix + "K", 0) as float)
 		var origin: Vector3
 		if entity == Entity.TARGET:
 			origin = old_origin.lerp(((_body as TargetShape).caster_position - p.position).normalized(), 0.0166667).normalized()
 		else:
 			origin = old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
-		if s.spherical_coords:
-			result["_" + prefix + "X"] = origin.x
-			result["_" + prefix + "Y"] = origin.y
-			result["_" + prefix + "Z"] = origin.z
-			result[prefix + "I"] = Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP) - (result.get("_u", 0.0) as float)
-			result[prefix + "J"] = origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP) - (result.get("_v", 0.0) as float)
-		else:
-			result[prefix + "X"] = origin.x
-			result[prefix + "Y"] = origin.y
-			result[prefix + "Z"] = origin.z
+		
+		result[prefix + "I"] = origin.x
+		result[prefix + "J"] = origin.y
+		result[prefix + "K"] = origin.z
+		result[prefix + "rI"] = Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
+		result[prefix + "rJ"] = origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
+		result[prefix + "rK"] = Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
 		
 	return result
 	

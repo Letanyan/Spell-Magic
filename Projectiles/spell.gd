@@ -125,8 +125,8 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	
 func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	var sphere := Vector3.ZERO
-	sphere.x = x_expr.compute(vars) + (vars.get("_u", 0.0) as float)
-	sphere.y = y_expr.compute(vars) + (vars.get("_v", 0.0) as float)
+	sphere.x = x_expr.compute(vars)
+	sphere.y = y_expr.compute(vars)
 	sphere.z = z_expr.compute(vars)
 	
 	var result := Vector3.ZERO
