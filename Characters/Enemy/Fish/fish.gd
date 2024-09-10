@@ -2,8 +2,8 @@ class_name Fish
 extends Enemy
 
 var none_pattern: AttackPatterns
-var default_pattern: AttackPatterns
-var sequence_pattern: AttackPatterns
+var basic_pattern: AttackPatterns
+var flopping_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_direct_path: PathStyle
@@ -43,26 +43,52 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":"4"})
-	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":"15", "d":"1"})
-	water_line.element = Spell.Element.WATER
+	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"})
+	water_para1.element = Spell.Element.WATER
+	water_para1.duration = invfl * 6 + 2
+	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"})
+	water_para2.element = Spell.Element.WATER
+	water_para2.duration = invfl * 4 + 2
+	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"})
+	water_para3.element = Spell.Element.WATER
+	water_para3.duration = invfl * 2 + 2
+	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*10", "d":"Br*2"})
+	water_line1.element = Spell.Element.WATER
+	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*15", "d":"Br*2"})
+	water_line2.element = Spell.Element.WATER
+	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2"})
+	water_line3.element = Spell.Element.WATER
 	
-	default_pattern = AttackPatterns.new(
+	var water_shower1 := GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"})
+	water_shower1.element = Spell.Element.WATER
+	water_shower1.count = clampi(int(fl * 10.0), 0, 10) + 5
+	water_shower1.duration = 20
+	
+	basic_pattern = AttackPatterns.new(
 		[
-			water_line,
-			water_para,
+			water_line1,
+			water_line2,
+			water_line3,
+			water_para1,
+			water_para2,
+			water_para3,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 7, 3 ], -1)
+		AttackPatterns.choose_from_distribution(invfl + 0.25, [ 10, 6, 4, 5, 3, 1 ], -1)
 	)
 	
-	sequence_pattern = AttackPatterns.new(
+	flopping_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.WATER, 1),
-			Spell.new(false, "u * t * 5 + u * 2", "v * t * 5 + v * 2 + 2", "w * t * 5 + w * 2", 1, 50, 5, Spell.Element.ROCK, 1),
+			water_shower1,
+			AttackPatterns.new(
+				[
+					water_para1,
+					water_para2,
+					water_para3,
+				],
+				AttackPatterns.choose_from_distribution(invfl + 0.1, [7, 4, 1], 5)
+			),
 		],
-		AttackPatterns.choose_in_sequence([ 2, 5, 3 ], -1)
+		AttackPatterns.choose_in_sequence([ 1, 30 ], -1)
 	)
 	
 	animation_map["attack"] = "Bite_Front"
@@ -73,26 +99,14 @@ func _physics_process(delta: float) -> void:
 	if current_path == attack_direct_path:
 		jump_timer += 1
 
-func __default_pattern() -> AttackPatterns:
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "speed":"4"})
-	water_para.element = Spell.Element.WATER
-	var water_line := GlobalData.magic_book.copy_spell("linear", {"speed":"15", "offset":"1"})
-	water_line.element = Spell.Element.WATER
-	
-	default_pattern.spells = [
-		water_line,
-		water_para,
-	]
-	return default_pattern
-
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path
 	if current_path == idle_path:
 		return none_pattern
-	elif vitals.health.value >= 50:
-		return __default_pattern()
+	elif vitals.health.percentage() > 0.2:
+		return flopping_pattern
 	else:
-		return default_pattern
+		return flopping_pattern
 
 func entity_info() -> EntityInfo:
 	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
@@ -104,9 +118,11 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 func update_behaviour() -> void:
 	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		current_path = attack_jump_path
-	elif current_path == attack_jump_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+		current_path = attack_direct_path
+		player.watch_enemy(self)
+	elif current_path == attack_direct_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
 		current_path = idle_path
+		player.ignore_enemy(self)
 		
 	
 	#if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:

@@ -25,10 +25,13 @@ linear-arc: fires multiple projectiles in a straight line set in an arc starting
 	
 linear-clamp:
 	
-linear-shower:
+linear-flurry: fire multiple shots from a flat circe area 
 	d ; offset
 	s ; speed
-	r ; 
+	R ; radius of area for shots fired
+	ox, oy, oz ; starting area (offset from camera) * d
+	dx, dy, dz ; direction of shots from starting area
+	px, py, pz ; area for shots fired
 	
 linear-turret:
 	d ; offset

@@ -154,8 +154,14 @@ func follow_path(pathway: Pathway) -> PathStyle:
 	path = pathway
 	return self
 	
-func transform_path(transform: Transform3D) -> PathStyle:
-	path.apply_transform(transform)
+func transform_path(transform: Variant) -> PathStyle:
+	if transform is Transform3D:
+		path.apply_transform(transform as Transform3D)
+	elif transform is Array[Transform3D]:
+		for t: Transform3D in (transform as Array):
+			path.apply_transform(t)
+	else:
+		push_error("Expected Transform3D/Array[Transform3D] for transform_path")
 	return self
 	
 func random_points_in_circle(speed: float, radius: float, height: float, count: int) -> PathStyle:

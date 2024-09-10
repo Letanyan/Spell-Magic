@@ -116,7 +116,8 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 		result.expression_strings.merge(override_expr, true)
 	# use build_expressions() if override_expr adds new vars. But we do this copy 
 	# for performance reasons
-	result.expressions = expressions 
+	result.build_expressions()
+	#result.expressions = expressions 
 	result.elemental_application = elemental_application
 	result.cooldown = cooldown
 	result.charge = charge

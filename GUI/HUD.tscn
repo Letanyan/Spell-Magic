@@ -1,25 +1,13 @@
 [gd_scene load_steps=12 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
+[ext_resource type="StyleBox" uid="uid://ckmaf8r6l05na" path="res://GUI/HealthBarBG.tres" id="2_ss7w7"]
 [ext_resource type="PackedScene" uid="uid://cqoqd11ks5vm4" path="res://GUI/Pause Menu/StatsView.tscn" id="3_3d5vo"]
 [ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="4_g3pbk"]
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="4_qngfd"]
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="5_i3p67"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_yr21e"]
 [ext_resource type="StyleBox" uid="uid://ci70pm0jx6gvs" path="res://GUI/ThemeUI/RichTextHolder.tres" id="8_qt3l3"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4cg6x"]
-bg_color = Color(0.701961, 1, 0.701961, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0.466667, 0, 1)
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dlq3c"]
 bg_color = Color(0, 0.666667, 0, 1)
@@ -77,10 +65,10 @@ anchor_top = 1.0
 anchor_right = 0.503
 anchor_bottom = 1.0
 offset_left = -123.456
-offset_top = -32.0
+offset_top = -36.0
 offset_right = 124.544
 offset_bottom = -24.0
-theme_override_styles/background = SubResource("StyleBoxFlat_4cg6x")
+theme_override_styles/background = ExtResource("2_ss7w7")
 theme_override_styles/fill = SubResource("StyleBoxFlat_dlq3c")
 value = 50.0
 show_percentage = false
@@ -93,9 +81,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -120.0
-offset_top = -16.0
+offset_top = -20.0
 offset_right = 128.0
-offset_bottom = -7.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/background = SubResource("StyleBoxFlat_uuvfg")
@@ -221,9 +209,9 @@ anchor_top = 0.284
 anchor_right = 1.0
 anchor_bottom = 0.284
 offset_left = 744.0
-offset_top = -120.032
+offset_top = -112.032
 offset_right = -8.0
-offset_bottom = 31.968
+offset_bottom = 39.968
 grow_horizontal = 0
 bbcode_enabled = true
 scroll_active = false

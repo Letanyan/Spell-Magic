@@ -86,12 +86,32 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			if p != null:
 				var hit_on := (body.position - p.position).normalized()
 				track = get_direction_to_tracking(body, p, hit_on)
-			# TODO: define Bx, By, Bz, Br for projectile using spell size i.e. (r)
+			if s.element == Spell.Element.ROCK:
+				result["Bx"] = body.most_recent_radius.x
+				result["By"] = body.most_recent_radius.y
+				result["Bz"] = body.most_recent_radius.z
+				result["Br"] = maxf(body.most_recent_radius.x, maxf(body.most_recent_radius.y, body.most_recent_radius.z))
+			elif s.element == Spell.Element.ICE:
+				var rl := body.most_recent_radius.length()
+				result["Bx"] = rl
+				result["By"] = 0.2
+				result["Bz"] = rl
+				result["Br"] = maxf(rl, 0.2)
+			else:
+				var rl := body.most_recent_radius.length()
+				result["Bx"] = rl
+				result["By"] = rl
+				result["Bz"] = rl
+				result["Br"] = rl
 				
 		Entity.TARGET:
 			var body := _body as TargetShape
-			result[prefix + "C"] = (body as TargetShape).caster_position.distance_to(body.global_position)
-			cdir = (body.global_position - (body as TargetShape).caster_position).normalized() # direction to player
+			result[prefix + "C"] = body.caster_position.distance_to(body.global_position)
+			cdir = (body.global_position - body.caster_position).normalized() # direction to player
+			result["Bx"] = body.bounds.x
+			result["By"] = body.bounds.y
+			result["Bz"] = body.bounds.z
+			result["Br"] = maxf(body.bounds.x, maxf(body.bounds.y, body.bounds.z))
 	
 	# direction to camera
 	result[prefix + "u"] = cdir.x

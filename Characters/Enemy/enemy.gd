@@ -16,6 +16,12 @@ var current_path: PathStyle
 var still_path: PathStyle
 var current_attack: AttackPatterns
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
+var fl: float:
+	get:
+		return level / 100.0
+var invfl: float:
+	get:
+		return 1.0 - level / 100.0
 var is_dead: bool = false
 var kind: World.Enemy = World.Enemy.NONE
 
@@ -72,9 +78,9 @@ func setup(seedling: int) -> void:
 	pass
 	
 func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
-	var p := clampf(Vector2(x, y).length() / 1000.0, 0.0, 100.0)
+	var p := clampf(Vector2(x, y).length() / 10000.0, 0.0, 100.0)
 	var base := 45.0 * (log(p + 1.0) / log(10.0))
-	var offset_max_range := (p * p) / 1000.0 + 2 * sin(p * PI / 10.0)
+	var offset_max_range := (p * p) / 10000.0 + 2 * sin(p * PI / 10.0)
 	var random_offset := 0.0
 	if rng == null:
 		random_offset = randf_range(0.0, absf(offset_max_range))
