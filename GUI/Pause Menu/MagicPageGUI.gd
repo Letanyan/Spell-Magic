@@ -468,7 +468,10 @@ func _on_expressions_text_changed() -> void:
 	for def: String in definitions:
 		var atoms := def.split("=", false)
 		if atoms.size() == 2:
-			result[atoms[0].strip_edges()] = atoms[1].strip_edges()
+			var n := atoms[0].strip_edges()
+			while n.begins_with("~"):
+				n = n.substr(1)
+			result[n] = atoms[1].strip_edges()
 	
 	if selected_variables_origin_line > -1 and selected_variables_origin_line < result.size() and not selected_variables.is_empty():
 		var new_word := result.keys()[selected_variables_origin_line] as String

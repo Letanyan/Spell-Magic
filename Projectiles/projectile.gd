@@ -396,9 +396,9 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
-	var next_pos : Vector3 = p - (vars["rel_pos"] if spell.follow else vars["abs_pos"])
+	var next_pos : Vector3 = p - (vars["~rel_pos"] if spell.follow else vars["~abs_pos"])
 	if started:
-		velocity = (next_pos - old_pos) * vars.get("__frame_time", 0.0166667)
+		velocity = (next_pos - old_pos) * vars.get("~~frame_time", 0.0166667)
 		velocity = velocity.normalized()
 	old_pos = next_pos
 	started = true
@@ -434,7 +434,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var rot_axis := Vector3.UP.cross(velocity).normalized()
 			var rot_ang := Vector3.UP.angle_to(velocity)
 			if rot_axis:
-				rotate(rot_axis, rot_ang * vars.get("__frame_time", 0.0166667) as float)
+				rotate(rot_axis, rot_ang * vars.get("~~frame_time", 0.0166667) as float)
 			
 				
 		Spell.Element.WATER:
@@ -481,7 +481,7 @@ func update_spell(t: float, delta: float, vars: Dictionary) -> void:
 		return
 	t = t - pause_time
 	fixed_vars["t"] = clampf(t - time_start, 0.0, 100000.0)
-	vars["__frame_time"] = delta
+	vars["~~frame_time"] = delta
 	var p := spell.calculate_location(vars)
 	update_movement(p, false, vars)
 

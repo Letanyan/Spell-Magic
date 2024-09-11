@@ -144,21 +144,21 @@ func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 	var result := calculate_cartesian_point(vars)
 	
-	if vars.has("old_pos") and not only_delta:
-		var old_pos := vars["old_pos"] as Vector3
-		var frame_time := vars.get("__frame_time", 0.0166667) as float
+	if vars.has("~old_pos") and not only_delta:
+		var old_pos := vars["~old_pos"] as Vector3
+		var frame_time := vars.get("~~frame_time", 0.0166667) as float
 		var velocity := (result - old_pos)
 		if not velocity.is_zero_approx():
 			var temp := old_pos + velocity.normalized() * clampf(velocity.length(), 0, (limit_v + buff_v) * frame_time)
 			result = temp
 		else:
 			result = old_pos
-		vars["old_pos"] = result
+		vars["~old_pos"] = result
 	else:
-		vars["old_pos"] = result
+		vars["~old_pos"] = result
 	
 	if not only_delta:
-		result += (vars["rel_pos"] if follow else vars["abs_pos"])
+		result += (vars["~rel_pos"] if follow else vars["~abs_pos"])
 	
 	return result
 	
@@ -215,14 +215,14 @@ func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrid
 			fvars[k] = overrides[k]
 			temp[k] = fvars[k]
 		elif e.contains_variable(k):
-			if fvars.has("*" + k):
-				temp[k] = fvars["*" + k]
+			if fvars.has("~" + k):
+				temp[k] = fvars["~" + k]
 				fvars[k] = e.compute(temp)
 				temp[k] = fvars[k]
 			else:
 				fvars[k] = e.compute(temp)
 				temp[k] = fvars[k]
-				temp["*" + k] = fvars[k]
+				temp["~" + k] = fvars[k]
 		else:
 			fvars[k] = e.compute(temp)
 			temp[k] = fvars[k]
@@ -340,7 +340,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
 	if element == Element.ROCK:
-		var origin: Vector3 = fixed_vars.get("abs_pos", Vector3.ZERO)
+		var origin: Vector3 = fixed_vars.get("~abs_pos", Vector3.ZERO)
 		var dir: Vector3 = origin.direction_to(p.position)
 		var rot_axis := dir.cross(Vector3.BACK).normalized()
 		var rot_angle := dir.angle_to(Vector3.BACK)
