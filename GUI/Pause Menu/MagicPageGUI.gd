@@ -91,6 +91,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	
 	element_combo.selected = spell.element
 	chain_edit.text = spell.chain.name if spell.chain else ""
+	chain_edit.editable = book.settings.upgrade_settings.has_chain_method != 0
 	old_chain_text = chain_edit.text
 	chain_combo.selected = spell.chain_cast_kind
 	is_rel.button_pressed = spell.follow

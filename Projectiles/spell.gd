@@ -205,13 +205,16 @@ func overwrite_expressions(mappings: Dictionary) -> void:
 	for k: String in mappings:
 		expressions[k] = Expr.new(mappings[k] as String)
 	
-func compute_expressions(fvars: Dictionary, additional: Dictionary = {}) -> void:
+func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrides: Dictionary = {}) -> void:
 	var temp := {}
 	temp.merge(fvars)
 	temp.merge(additional)
 	for k: String in expressions:
 		var e := expressions[k] as Expr
-		if e.contains_variable(k):
+		if overrides.has(k):
+			fvars[k] = overrides[k]
+			temp[k] = fvars[k]
+		elif e.contains_variable(k):
 			fvars[k] = 0.0
 		else:
 			fvars[k] = e.compute(temp)
@@ -281,7 +284,7 @@ const _void = preload("res://Projectiles/void.tscn")
 const turret = preload("res://Projectiles/turret/turret.tscn")
 const turret_mat = preload("res://Projectiles/turret/turret.tres")
 	
-func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
+func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dictionary) -> SpellBody:
 	var fixed_vars := {}
 	fixed_vars["rn0"] = randf()
 	fixed_vars["rn1"] = randf()
@@ -298,7 +301,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	fixed_vars["n"] = float(n)
 	fixed_vars["r"] = radius
 	fixed_vars.merge(fvars, true)
-	compute_expressions(fixed_vars)
+	compute_expressions(fixed_vars, {}, overrides)
 	fixed_vars["D"] = d_expr.compute(fixed_vars)
 	
 	
@@ -316,7 +319,8 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	p.fixed_vars = fixed_vars
 	p.expression_vars = {}
 	p.expression_vars.merge(exvars, true)
-	compute_expressions(p.expression_vars, fixed_vars)
+	p.override_vars = overrides
+	compute_expressions(p.expression_vars, fixed_vars, p.override_vars)
 	p.spell = self
 	p.position = calculate_location(fixed_vars)
 	if element == Element.ROCK and is_zero_approx(radius):
@@ -338,7 +342,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary) -> SpellBody:
 	
 	return p
 		
-func get_particles(fvars: Dictionary, exvars: Dictionary) -> Array[SpellBody]:
+func get_particles(fvars: Dictionary, exvars: Dictionary, overrides: Dictionary) -> Array[SpellBody]:
 	var result: Array[SpellBody] = []
 	var fixed_vars := {}
 	fixed_vars["r0"] = randf()
@@ -359,13 +363,13 @@ func get_particles(fvars: Dictionary, exvars: Dictionary) -> Array[SpellBody]:
 	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	for i in range(count):
-		var p := get_particle(i, fixed_vars, exvars)
+		var p := get_particle(i, fixed_vars, exvars, overrides)
 		p.n = i
 		p.spell = self
 		result.append(p)
 	return result
 	
-func get_turret(n: int, fvars: Dictionary) -> Node3D:
+func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
 	var fixed_vars := {}
 	fixed_vars["rn0"] = randf()
 	fixed_vars["rn1"] = randf()
@@ -381,7 +385,7 @@ func get_turret(n: int, fvars: Dictionary) -> Node3D:
 	fixed_vars["P"] = power
 	fixed_vars["n"] = float(n)
 	fixed_vars.merge(fvars, true)
-	compute_expressions(fixed_vars)
+	compute_expressions(fixed_vars, {}, overrides)
 	fixed_vars["D"] = d_expr.compute(fixed_vars)
 	
 	

@@ -254,16 +254,24 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	# since by default camera direction equals target direction at start
 	var vars := all_spell_variables(body, null, spell)
 	var exvars := {}
+	var override_vars := {}
 	if inherited_vars.has("l"): # copy enemy level vars
 		vars["l"] = inherited_vars["l"]
 		vars["fl"] = inherited_vars["fl"]
 		vars["C"] = inherited_vars["C"]
 		
 	if body is SpellBody:
-		exvars.merge((body as SpellBody).expression_vars, true)
+		var spell_body := body as SpellBody
+		exvars.merge(spell_body.expression_vars, true)
 		vars.merge(exvars, true)
+		for id: String in spell_body.override_vars:
+			override_vars[id] = spell_body.override_vars[id]
+		
+	for id: String in inherited_vars:
+		if id.begins_with("^"):
+			override_vars[id.substr(1)] = inherited_vars[id]
 			
-	var ps := spell.get_particles(vars, exvars)
+	var ps := spell.get_particles(vars, exvars, override_vars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p: SpellBody in ps:
 		p.name += str(randi())
@@ -294,7 +302,7 @@ func get_spell_tracking_offset(spell: Spell, vars: Dictionary) -> Vector3:
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) -> void:
 	var q: Node3D = null
 	if delay > 0 and p.spell.is_bomb:
-		q = p.spell.get_turret(p.n, p.fixed_vars)
+		q = p.spell.get_turret(p.n, p.fixed_vars, p.override_vars)
 		insert.call(q)
 	await body.get_tree().create_timer(delay, false, true).timeout
 	p.time_start = Time.get_unix_time_from_system()
@@ -302,8 +310,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
 	else:
 		spell_variables(p.fixed_vars, body, SpellVariableKind.FIXED, p, p.spell)
-		
-	p.spell.compute_expressions(p.fixed_vars)
+	p.spell.compute_expressions(p.fixed_vars, {}, p.override_vars)
 	insert.call(p)
 	if q and q.get_parent():
 		q.get_parent().remove_child(q)

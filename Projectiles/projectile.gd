@@ -18,6 +18,7 @@ var on_hit_casts := {}
 
 var fixed_vars: Dictionary
 var expression_vars: Dictionary
+var override_vars: Dictionary
 
 var to_remove := false
 var origin_node: Node3D = null
@@ -480,7 +481,7 @@ func update_spell(t: float, delta: float, vars: Dictionary) -> void:
 		return
 	t = t - pause_time
 	fixed_vars["t"] = clampf(t - time_start, 0.0, 100000.0)
-	vars["__frame_time"] = delta 
+	vars["__frame_time"] = delta
 	var p := spell.calculate_location(vars)
 	update_movement(p, false, vars)
 

@@ -59,10 +59,12 @@ func setup(seedling: int) -> void:
 	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2"})
 	water_line3.element = Spell.Element.WATER
 	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"})
+	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2"})
 	water_shower1.element = Spell.Element.WATER
-	water_shower1.count = clampi(int(fl * 10.0), 0, 10) + 5
-	water_shower1.duration = 20
+	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"})
+	water_shower1.chain.element = Spell.Element.WATER
+	water_shower1.chain.count = clampi(int(fl * 10.0), 0, 10) + 5
+	water_shower1.chain.duration = 20
 	
 	basic_pattern = AttackPatterns.new(
 		[
@@ -104,7 +106,7 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.percentage() > 0.2:
-		return flopping_pattern
+		return none_pattern
 	else:
 		return flopping_pattern
 
