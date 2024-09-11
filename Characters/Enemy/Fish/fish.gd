@@ -54,13 +54,17 @@ func setup(seedling: int) -> void:
 	water_para3.duration = invfl * 2 + 2
 	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*10", "d":"Br*2"})
 	water_line1.element = Spell.Element.WATER
+	water_line1.duration = 2.0 + fl * 6
 	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*15", "d":"Br*2"})
 	water_line2.element = Spell.Element.WATER
+	water_line2.duration = 4.0 + fl * 6
 	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2"})
 	water_line3.element = Spell.Element.WATER
+	water_line3.duration = 6.0 + fl * 6
 	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2"})
+	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2", "rv": "rv+pi/8"})
 	water_shower1.element = Spell.Element.WATER
+	water_shower1.duration = 5.0
 	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"})
 	water_shower1.chain.element = Spell.Element.WATER
 	water_shower1.chain.count = clampi(int(fl * 10.0), 0, 10) + 5
@@ -106,7 +110,7 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.percentage() > 0.2:
-		return none_pattern
+		return flopping_pattern
 	else:
 		return flopping_pattern
 

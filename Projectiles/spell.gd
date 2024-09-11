@@ -215,7 +215,14 @@ func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrid
 			fvars[k] = overrides[k]
 			temp[k] = fvars[k]
 		elif e.contains_variable(k):
-			fvars[k] = 0.0
+			if fvars.has("*" + k):
+				temp[k] = fvars["*" + k]
+				fvars[k] = e.compute(temp)
+				temp[k] = fvars[k]
+			else:
+				fvars[k] = e.compute(temp)
+				temp[k] = fvars[k]
+				temp["*" + k] = fvars[k]
 		else:
 			fvars[k] = e.compute(temp)
 			temp[k] = fvars[k]

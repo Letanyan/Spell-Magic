@@ -492,14 +492,14 @@ func _on_expressions_text_changed() -> void:
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
 	
-	for k: String in book.spells[current_index].expressions:
-		var e: Expr = book.spells[current_index].expressions[k]
-		if e.contains_variable(k):
-			e.error = "Recursive variable definition"
-		if e.error.length() > 0:
-			errors_list["constant " + k] = e.error
-		else:
-			errors_list.erase("constant " + k)
+	#for k: String in book.spells[current_index].expressions:
+		#var e: Expr = book.spells[current_index].expressions[k]
+		#if e.contains_variable(k):
+			#e.error = "Recursive variable definition"
+		#if e.error.length() > 0:
+			#errors_list["constant " + k] = e.error
+		#else:
+			#errors_list.erase("constant " + k)
 	
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
@@ -573,14 +573,14 @@ func check_all_errors() -> void:
 		if not found:
 			errors_list["chain"] = "'%s' does not exists" % text
 			
-	for k: String in book.spells[current_index].expressions:
-		var expr: Expr = book.spells[current_index].expressions[k]
-		if expr.contains_variable(k):
-			expr.error = "Recursive variable definition"
-		if expr.error.length() > 0:
-			errors_list["constant " + k] = expr.error
-		else:
-			errors_list.erase("constant " + k)
+	#for k: String in book.spells[current_index].expressions:
+		#var expr: Expr = book.spells[current_index].expressions[k]
+		#if expr.contains_variable(k):
+			#expr.error = "Recursive variable definition"
+		#if expr.error.length() > 0:
+			#errors_list["constant " + k] = expr.error
+		#else:
+			#errors_list.erase("constant " + k)
 			
 	if not errors_list.is_empty():
 		var last_error : String = errors_list.values()[errors_list.size() - 1]
