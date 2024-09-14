@@ -52,13 +52,13 @@ func setup(seedling: int) -> void:
 	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"})
 	water_para3.element = Spell.Element.WATER
 	water_para3.duration = invfl * 2 + 2
-	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*10", "d":"Br*2"})
+	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*8+2", "d":"Br*2"})
 	water_line1.element = Spell.Element.WATER
 	water_line1.duration = 2.0 + fl * 6
-	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*15", "d":"Br*2"})
+	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*12+3", "d":"Br*2"})
 	water_line2.element = Spell.Element.WATER
 	water_line2.duration = 4.0 + fl * 6
-	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2"})
+	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*16+4", "d":"Br*2"})
 	water_line3.element = Spell.Element.WATER
 	water_line3.duration = 6.0 + fl * 6
 	
@@ -79,7 +79,7 @@ func setup(seedling: int) -> void:
 			water_para2,
 			water_para3,
 		],
-		AttackPatterns.choose_from_distribution(invfl + 0.25, [ 10, 6, 4, 5, 3, 1 ], -1)
+		AttackPatterns.choose_from_distribution(invfl * 10 + 0.5, [ 10, 6, 4, 5, 3, 1 ], -1)
 	)
 	
 	flopping_pattern = AttackPatterns.new(
@@ -91,10 +91,10 @@ func setup(seedling: int) -> void:
 					water_para2,
 					water_para3,
 				],
-				AttackPatterns.choose_from_distribution(invfl + 0.1, [7, 4, 1], 5)
+				AttackPatterns.choose_from_distribution(invfl * 10 + 0.1, [7, 4, 1], 5)
 			),
 		],
-		AttackPatterns.choose_in_sequence([ 1, 30 ], -1)
+		AttackPatterns.choose_in_sequence([ 1, 5 ], -1)
 	)
 	
 	animation_map["attack"] = "Bite_Front"
@@ -110,7 +110,7 @@ func attack_state() -> AttackPatterns:
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.percentage() > 0.2:
-		return flopping_pattern
+		return basic_pattern
 	else:
 		return flopping_pattern
 

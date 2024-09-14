@@ -2,8 +2,7 @@
 
 [sub_resource type="Gradient" id="Gradient_obhf2"]
 interpolation_color_space = 2
-colors = PackedColorArray(0, 0.533333, 0.8, 1, 0, 0.8, 0.8, 1)
+colors = PackedColorArray(0, 0.533333, 0.8, 0.501961, 0, 0.8, 0.8, 1)
 
 [resource]
 gradient = SubResource("Gradient_obhf2")
-width = 16

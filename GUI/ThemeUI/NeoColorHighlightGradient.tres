@@ -7,3 +7,4 @@ colors = PackedColorArray(0, 0.533333, 0.8, 1, 0, 0.8, 0.8, 0)
 
 [resource]
 gradient = SubResource("Gradient_3dqpy")
+width = 128

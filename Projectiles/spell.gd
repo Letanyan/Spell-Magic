@@ -169,19 +169,29 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	temp_vars["t"] = 0.0
 	ftp = calculate_cartesian_point(temp_vars)
 	
-	var result := 0.0
+	var fixed_step_result := 0.0
+	var frame_step_result := 0.0
 	var step := time / randf_range(samples - 5, samples + 5)
 	var t := step
 	
-	# calculate distance
+	# calculate distance 
 	while t <= time + step:
 		temp_vars["t"] = t
 		ft = calculate_cartesian_point(temp_vars)
-		result += ftp.distance_to(ft)
+		fixed_step_result += ftp.distance_to(ft)
+		t += step
+		ftp = ft
+		
+	t = 0.0
+	step = time / 60.0 * randf_range(samples - 5, samples + 5)
+	while t <= time + step:
+		temp_vars["t"] = t
+		ft = calculate_cartesian_point(temp_vars)
+		frame_step_result += ftp.distance_to(ft)
 		t += step
 		ftp = ft
 	
-	return result
+	return (fixed_step_result + frame_step_result) / 2.0
 
 	
 func calculate_delay(vars: Dictionary) -> float:
@@ -331,7 +341,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.spell = self
 	p.position = calculate_location(fixed_vars)
 	if element == Element.ROCK and is_zero_approx(radius):
-		var nr := Vector3(fixed_vars.get("rx", 0.1) as float, fixed_vars.get("ry", 0.1) as float, fixed_vars.get("rz", 0.1) as float)
+		var nr := Vector3(fixed_vars.get("rx", 0.1) as float, fixed_vars.get("ry", 0.1) as float, fixed_vars.get("rz", 0.1) as float).normalized()
 		p.update_shape(nr, true)
 	else:
 		p.update_shape(Vector3(1, 1, 1).normalized() * radius, true)

@@ -8,9 +8,14 @@ var expired: bool = false
 var started: bool = false
 var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
+var old_velocity: Vector3 = Vector3.ZERO
 var lifetime_velocity: float = 0.0 
 var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: Vector3 = Vector3.ZERO
+
+var complexity_samples_total := 0
+var complexity_angular_total := 0.0
+var complexity := 0.0
 
 var caster_vitals: Vitals
 var spell_caster: SpellCaster
@@ -398,9 +403,23 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 	var next_pos : Vector3 = p - (vars["~rel_pos"] if spell.follow else vars["~abs_pos"])
 	if started:
-		velocity = (next_pos - old_pos) * vars.get("~~frame_time", 0.0166667)
+		complexity_samples_total += 1
+		var fr := vars.get("~~frame_time", 0.0166667) as float
+		velocity = (next_pos - old_pos) * fr
 		velocity = velocity.normalized()
+		
+		#var C := complexity_angle.length() / 2.0
+		if randf() < 0.25:
+			var C := velocity.angle_to(old_velocity) / PI
+			if is_nan(C) or is_inf(C):
+				C = 0.0
+			complexity_angular_total += C
+			
+			complexity = 1.0 - pow(1.0 - complexity_angular_total / complexity_samples_total, 3)
+			old_velocity = velocity
+			
 	old_pos = next_pos
+	
 	started = true
 
 	var shape_cast: ShapeCast3D = get_node("shape_cast")
@@ -440,7 +459,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.WATER:
 			position = p
 			var particles: GPUParticles3D = get_node("source")
-			(particles.process_material as ParticleProcessMaterial).direction = -velocity.normalized()
+			(particles.process_material as ParticleProcessMaterial).direction = (-velocity + Vector3.DOWN).normalized()
 			
 		Spell.Element.AIR:
 			position = p

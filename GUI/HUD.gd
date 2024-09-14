@@ -2,7 +2,9 @@ class_name HUD
 extends Control
 
 @onready var health_bar: ProgressBar = $HealthBar
+@onready var health_bar_label: Label = $HealthBar/Label
 @onready var mana_bar: ProgressBar = $ManaBar
+@onready var mana_bar_label: Label = $ManaBar/Label
 @onready var burning_bar: TextureProgressBar = $BurningBar
 @onready var freeze_bar: TextureProgressBar = $FreezeBar
 @onready var wet_bar: TextureProgressBar = $WetBar
@@ -67,8 +69,10 @@ func set_wand(value: Wand) -> void:
 func update_hud_with_vitals(vitals: Vitals) -> void:
 	health_bar.value = vitals.health.value
 	health_bar.max_value = vitals.health.max_value
+	health_bar_label.text = "%d/%d" % [vitals.health.value, vitals.health.max_value]
 	mana_bar.value = vitals.mana.value
 	mana_bar.max_value = vitals.mana.max_value
+	mana_bar_label.text = "%d/%d" % [vitals.mana.value, vitals.mana.max_value]
 	burning_bar.value = vitals.burning.value
 	burning_bar.max_value = vitals.burning.max_value
 	freeze_bar.value = vitals.freeze.value

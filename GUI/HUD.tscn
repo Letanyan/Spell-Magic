@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=15 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="StyleBox" uid="uid://ckmaf8r6l05na" path="res://GUI/HealthBarBG.tres" id="2_ss7w7"]
 [ext_resource type="PackedScene" uid="uid://cqoqd11ks5vm4" path="res://GUI/Pause Menu/StatsView.tscn" id="3_3d5vo"]
+[ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="3_uufso"]
 [ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="4_g3pbk"]
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="4_qngfd"]
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="5_i3p67"]
@@ -21,6 +22,11 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_ny5ey"]
+font = ExtResource("3_uufso")
+font_size = 9
+font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uuvfg"]
 bg_color = Color(1, 0.701961, 1, 1)
@@ -48,6 +54,11 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="LabelSettings" id="LabelSettings_vi2vj"]
+font = ExtResource("3_uufso")
+font_size = 9
+font_color = Color(0, 0, 0, 1)
+
 [node name="HUD" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -73,6 +84,17 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_dlq3c")
 value = 50.0
 show_percentage = false
 
+[node name="Label" type="Label" parent="HealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "100/100"
+label_settings = SubResource("LabelSettings_ny5ey")
+horizontal_alignment = 1
+
 [node name="ManaBar" type="ProgressBar" parent="."]
 layout_mode = 1
 anchors_preset = 7
@@ -90,6 +112,17 @@ theme_override_styles/background = SubResource("StyleBoxFlat_uuvfg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_0onlu")
 value = 50.0
 show_percentage = false
+
+[node name="Label" type="Label" parent="ManaBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "100/100"
+label_settings = SubResource("LabelSettings_vi2vj")
+horizontal_alignment = 1
 
 [node name="BurningBar" type="TextureProgressBar" parent="."]
 layout_mode = 1
