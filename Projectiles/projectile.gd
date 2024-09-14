@@ -8,10 +8,11 @@ var expired: bool = false
 var started: bool = false
 var in_control: bool = true
 var velocity: Vector3 = Vector3.ZERO
-var old_velocity: Vector3 = Vector3.ZERO
+var old_velocity: Array[Vector3] = []
 var lifetime_velocity: float = 0.0 
 var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: Vector3 = Vector3.ZERO
+var rng: RandomNumberGenerator
 
 var complexity_samples_total := 0
 var complexity_angular_total := 0.0
@@ -38,6 +39,8 @@ func _ready() -> void:
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PROJECTILE)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
 		cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
+	rng = RandomNumberGenerator.new()
+	rng.seed = hash(spell.name)
 
 func _physics_process(delta: float) -> void:
 	spell_caster.update(self, delta)
@@ -403,20 +406,25 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 	var next_pos : Vector3 = p - (vars["~rel_pos"] if spell.follow else vars["~abs_pos"])
 	if started:
-		complexity_samples_total += 1
 		var fr := vars.get("~~frame_time", 0.0166667) as float
+		if old_velocity.size() < 6:
+			old_velocity.append(velocity)
+		else:
+			old_velocity[rng.randi_range(0, old_velocity.size() - 1)] = velocity
 		velocity = (next_pos - old_pos) * fr
 		velocity = velocity.normalized()
 		
-		#var C := complexity_angle.length() / 2.0
-		if randf() < 0.25:
-			var C := velocity.angle_to(old_velocity) / PI
+		complexity_samples_total += 1
+		
+		for v in old_velocity:
+			var M := PI / 2
+			# parabola with max-y at x=PI/2 falling off with x=0 and x=PI equal 0
+			var C := -pow(velocity.angle_to(v) - M, 2.0) / (M * M) + 1 
 			if is_nan(C) or is_inf(C):
 				C = 0.0
-			complexity_angular_total += C
-			
-			complexity = 1.0 - pow(1.0 - complexity_angular_total / complexity_samples_total, 3)
-			old_velocity = velocity
+			complexity_angular_total += C / (float(old_velocity.size()))
+		
+		complexity = 1.0 - pow(1.0 - complexity_angular_total / complexity_samples_total, 3)
 			
 	old_pos = next_pos
 	
