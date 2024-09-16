@@ -43,32 +43,16 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"})
-	water_para1.element = Spell.Element.WATER
-	water_para1.duration = invfl * 6 + 2
-	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"})
-	water_para2.element = Spell.Element.WATER
-	water_para2.duration = invfl * 4 + 2
-	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"})
-	water_para3.element = Spell.Element.WATER
-	water_para3.duration = invfl * 2 + 2
-	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*8+2", "d":"Br*2"})
-	water_line1.element = Spell.Element.WATER
-	water_line1.duration = 2.0 + fl * 6
-	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*12+3", "d":"Br*2"})
-	water_line2.element = Spell.Element.WATER
-	water_line2.duration = 4.0 + fl * 6
-	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*16+4", "d":"Br*2"})
-	water_line3.element = Spell.Element.WATER
-	water_line3.duration = 6.0 + fl * 6
+	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"}, Spell.Element.WATER, invfl * 6 + 2)
+	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"}, Spell.Element.WATER, invfl * 4 + 2)
+	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"}, Spell.Element.WATER, invfl * 2 + 2)
+	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*8+2", "d":"Br*2"}, Spell.Element.WATER, fl * 6 + 2)
+	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*12+3", "d":"Br*2"}, Spell.Element.WATER, fl * 6 + 4)
+	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*16+4", "d":"Br*2"}, Spell.Element.WATER, fl * 6 + 6)
 	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2", "rv": "rv+pi/8"})
-	water_shower1.element = Spell.Element.WATER
-	water_shower1.duration = 5.0
-	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"})
-	water_shower1.chain.element = Spell.Element.WATER
+	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5)
+	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20)
 	water_shower1.chain.count = clampi(int(fl * 10.0), 0, 10) + 5
-	water_shower1.chain.duration = 20
 	
 	basic_pattern = AttackPatterns.new(
 		[

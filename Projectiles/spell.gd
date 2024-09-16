@@ -281,14 +281,16 @@ func actual_mana_cost() -> float:
 	
 func damage(vitals: Vitals) -> float:
 	var crit := (1.0 + crit_dmg / 100.0) if (crit_rate / 100.0) >= randf() else 1.0
+	var atk := vitals.attack.value + buff_attack
+	var p := power / UpgradeSettings.LIMIT_P
 	match element:
-		Element.FIRE: return (power / UpgradeSettings.LIMIT_P) * (vitals.attack.value + buff_attack) * crit
-		Element.WATER: return (power / UpgradeSettings.LIMIT_P * 0.1) * vitals.health.value * crit
-		Element.AIR: return power * crit
-		Element.ROCK: return (power / UpgradeSettings.LIMIT_P) * (vitals.defence.value + buff_defence) * crit
-		Element.ICE: return (power / UpgradeSettings.LIMIT_P) * (vitals.health.value * 0.0005 + (vitals.attack.value + buff_attack) * 0.005) * crit
-		Element.ELECTRIC: return power * crit
-		Element.VOID: return 0.0
+		Element.FIRE    : return p * (      atk                                               ) * crit
+		Element.WATER   : return p * (0.5 * atk + 0.05 * vitals.health.value                  ) * crit
+		Element.AIR     : return p * (0.5 * atk + 0.05 * vitals.mana.max_value                ) * crit
+		Element.ROCK    : return p * (0.5 * atk + 0.5  * (vitals.defence.value + buff_defence)) * crit
+		Element.ICE     : return p * (0.5 * atk + 0.05 * vitals.health.max_value              ) * crit
+		Element.ELECTRIC: return p * (0.5 * atk + 0.05 * vitals.mana.value                    ) * crit
+		Element.VOID    : return 0.0
 	return 0.0
 	
 const fire = preload("res://Projectiles/fire.tscn")

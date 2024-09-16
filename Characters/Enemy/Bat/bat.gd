@@ -51,28 +51,13 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
-	elec1.element = Spell.Element.ELECTRIC
-	elec1.duration = 10.0
-	elec1.power = 1
-	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"})
-	elec2.element = Spell.Element.FIRE
-	elec2.duration = 8.0
-	elec2.power = 1
-	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"})
-	elec3.element = Spell.Element.ROCK
-	elec3.duration = 6.0
-	elec3.power = 1
+	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 10, 1)
+	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.FIRE, 8, 1)
+	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ROCK, 6, 1)
 	
-	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"})
-	elec_arc1.element = Spell.Element.ELECTRIC
-	elec_arc1.duration = 10.0
-	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"})
-	elec_arc2.element = Spell.Element.ELECTRIC
-	elec_arc2.duration = 8.0
-	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"})
-	elec_arc3.element = Spell.Element.ELECTRIC
-	elec_arc3.duration = 6.0
+	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"}, Spell.Element.ELECTRIC, 10)
+	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ELECTRIC, 8)
+	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ELECTRIC, 6)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -134,5 +119,5 @@ func drop_artifact() -> Artifact:
 	
 func drop_spell() -> Spell:
 	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"}).bake(new_name)
+	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"}, Spell.Element.ELECTRIC).bake(new_name)
 	return spell

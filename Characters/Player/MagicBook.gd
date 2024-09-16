@@ -170,11 +170,26 @@ func spell_exists(n: String) -> bool:
 func find_spell(n: String) -> Spell:
 	return spell_index.get(n, null) as Spell
 	
-func copy_spell(n: String, constants: Dictionary = {}, for_player: bool = false) -> Spell:
+func copy_spell(n: String, constants: Dictionary, element: Spell.Element, duration: float = NAN, power: float = NAN, radius: float = NAN, count: int = 0, crit_rate: float = NAN, crit_dmg: float = NAN, mana: float = NAN) -> Spell:
 	var s := spell_index.get(n, null) as Spell
 	if s == null:
 		return null
-	var result := s.duplicate({}, for_player)
+	var result := s.duplicate({}, false)
+	result.element = element
+	if not is_nan(radius):
+		result.radius = radius
+	if not is_nan(power):
+		result.power = power
+	if not is_nan(duration):
+		result.duration = duration
+	if count != 0:
+		result.count = count
+	if not is_nan(crit_rate):
+		result.crit_rate = crit_rate
+	if not is_nan(crit_dmg):
+		result.crit_dmg = crit_dmg
+	if not is_nan(mana):
+		result.mana_cost = mana
 	result.overwrite_expressions(constants)
 	return result
 
