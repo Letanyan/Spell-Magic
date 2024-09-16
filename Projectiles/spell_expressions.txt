@@ -3,6 +3,17 @@ arc:  fires multiple projectilesin an arc
 	s ; speed
 	d ; offset
 	
+arc-spiral: fires multiple independent oscillating projectiles in an arc
+	d ; offset
+	s ; speed
+	R ; arc radius
+	hwave ; projectile horizontal oscillation arc
+	vwave ; projectile vertical oscillation arc
+	hoff ; projectile horizontal oscillation offset 
+	voff ; projectiel vertical oscillation offset
+	hmul ; projectile horizontal oscillation rate
+	vmul ; projectile vertical oscillation rate
+	
 bomb: places a projectile some distance `d` away multiplied by `C` 
 	d ; offset
 	
@@ -22,6 +33,19 @@ linear-arc: fires multiple projectiles in a straight line set in an arc starting
 	R ; arc radius
 	d ; offset
 	s ; speed
+	voff ; vertical offset in radians
+	hoff ; horizontal offset in radians
+	
+linear-arc-spiral: fires multiple independent oscillating projectiles in an straight line set in an arc starting point
+	d ; offset
+	s ; speed
+	R ; arc radius
+	hwave ; projectile horizontal oscillation arc
+	vwave ; projectile vertical oscillation arc
+	hoff ; projectile horizontal oscillation offset 
+	voff ; projectiel vertical oscillation offset
+	hmul ; projectile horizontal oscillation rate
+	vmul ; projectile vertical oscillation rate
 	
 linear-clamp:
 	
