@@ -10,8 +10,7 @@ var water_path: PathStyle
 var water_source: Vector3
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 10
+	vitals = Vitals.enemy(1000*fl, 1000*fl, 10*fl, 10, 70*fl, 30*fl)
 	
 	idle_path = PathStyle.new(seedling, position).random_points_in_circle(2, 10, 0, 10).align_y_to_ground().use_absolute()
 	attack_path = PathStyle.new().towards_player(3, 3, 5).use_physics()

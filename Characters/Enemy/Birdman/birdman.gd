@@ -16,10 +16,7 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 35
-	vitals.attack.value = randf_range(level * 2, (level + 10) * 2)
-	vitals.defence.value = randf_range(level, level + 5)
+	vitals = Vitals.enemy(fl*1000, fl*1000, fl*10, 35, 15+fl*85, 5*fl*50)
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, -4, 0)) \

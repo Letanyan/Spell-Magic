@@ -346,9 +346,9 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	compute_expressions(p.expression_vars, fixed_vars, p.override_vars)
 	p.spell = self
 	p.position = calculate_location(fixed_vars)
-	if element == Element.ROCK and is_zero_approx(radius):
+	if element == Element.ROCK:
 		var nr := Vector3(fixed_vars.get("rx", 0.1) as float, fixed_vars.get("ry", 0.1) as float, fixed_vars.get("rz", 0.1) as float).normalized()
-		p.update_shape(nr, true)
+		p.update_shape(nr * radius, true)
 	else:
 		p.update_shape(Vector3(1, 1, 1).normalized() * radius, true)
 	

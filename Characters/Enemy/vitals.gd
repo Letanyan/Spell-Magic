@@ -42,7 +42,6 @@ class Stat:
 
 var health: Stat
 var mana: Stat
-var aggression: Stat
 var attack: Stat
 var defence: Stat
 
@@ -66,8 +65,19 @@ func _init(_health: Stat, _mana: Stat) -> void:
 	attack = Stat.new(10, 0, 100)
 	defence = Stat.new(10, 0, 100)
 	perception = Stat.new(50, 0, 100)
-	aggression = Stat.new(0, 0, 1)
 	damage_resistance = {}
+	
+static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: float, atk: float, def: float, res: Dictionary = {}) -> Vitals:
+	var result := Vitals.new(Stat.new(health_max, 0, health_max, 0), Stat.new(mana_max, 0, mana_max, mana_rate))
+	result.burning = Stat.new(0, 0, 1, -0.05)
+	result.wetness = Stat.new(0, 0, 1, -0.001)
+	result.freeze = Stat.new(0, 0, 1, -0.01)
+	result.stun = Stat.new(0, 0, 1, -0.25)
+	result.attack = Stat.new(atk)
+	result.defence = Stat.new(def)
+	result.perception = Stat.new(percep)
+	result.damage_resistance = res
+	return result
 
 func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
 	match kind:

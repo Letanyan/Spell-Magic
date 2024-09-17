@@ -14,6 +14,7 @@ var jump_timer: int = 0
 func setup(seedling: int) -> void:
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
 	vitals.perception.value = 20
+	vitals = Vitals.enemy(1000*fl, 1000*fl, 15*fl, 20, fl*50, fl*20, {Artifact.Element.WATER: Vector2(0.5*fl, 0)})
 	
 	const idle_r := 10.0
 	var a := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)

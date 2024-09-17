@@ -9,8 +9,7 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 10
+	vitals = Vitals.enemy(500*fl, 100*fl, 10*fl, 10, 40*fl, 10*fl, {Artifact.Element.ROCK: Vector2(0.1*fl, 5+20*fl)})
 	
 	idle_path = PathStyle.new(seedling).random_points_in_circle(2, 20, bounds.y / 2.0, 10).set_origin(position + Vector3(0, bounds.y / 2.0, 0)).align_y_to_ground()
 	attack_path = PathStyle.new(0, position + Vector3(0, bounds.y / 2.0, 0)).towards_player(2, 1, 2).use_absolute().look_at_player_xz() #.use_physics()

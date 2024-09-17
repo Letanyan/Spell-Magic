@@ -12,8 +12,7 @@ var attack_path: PathStyle
 var ice_wall_timer: int = 0
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 25
+	vitals = Vitals.enemy(1000*fl, 1000*fl, 20*fl, 25, 70*fl, 50*fl, {Artifact.Element.WATER: Vector2(0.25*fl, 0), Artifact.Element.ICE: Vector2(0.75*fl, 0), Artifact.Element.FIRE: Vector2(1.25*fl, fl*20)})
 	
 	idle_path = PathStyle.new().random_points_in_circle(2, 10, bounds.y / 2.0, 10).set_origin(position).align_y_to_ground()
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(2, 0, 10).use_physics().look_at_player()

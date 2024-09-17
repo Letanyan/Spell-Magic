@@ -9,8 +9,7 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.new(Vitals.Stat.new(10 * level, 0, 10 * level), Vitals.Stat.new(500, 0, 500, 10))
-	vitals.perception.value = 0
+	vitals = Vitals.enemy(1000 * fl, 1000 * fl, 50 * fl, 0, fl*25, fl*25)
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, 5, 0)) \

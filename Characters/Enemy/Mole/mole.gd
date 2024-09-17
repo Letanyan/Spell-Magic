@@ -12,8 +12,7 @@ var hide_and_attack: AttackSequence
 	
 func setup(seedling: int) -> void:
 	kind = World.Enemy.NONE # set to zero while we setup stuff
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 25
+	vitals = Vitals.enemy(fl*1000, fl*1000, fl*50, 25, fl*65, fl*55, {Artifact.Element.ROCK: Vector2(0.2*fl, 0), Artifact.Element.ELECTRIC: Vector2(0.2*fl, 0)})
 	
 	current_path = PathStyle.new(0, position).circle(7, 5, bounds.y / 2.0).use_absolute().align_y_to_ground()
 	idle_path = current_path
@@ -57,21 +56,25 @@ func setup(seedling: int) -> void:
 		[PathStyle.Easing.linear]
 	)
 	
+	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "15", "d": "5"}, Spell.Element.ELECTRIC, 1+fl*5, 5+fl*45, 0.1+fl*0.25, 1, 25, 50, 0)
+	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "5"}, Spell.Element.ELECTRIC, 3+fl*5, 15+fl*45, 0.2+fl*0.25, 1, 25, 50, 0)
+	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "5"}, Spell.Element.ELECTRIC, 5+fl*5, 25+fl*45, 0.3+fl*0.25, 1, 25, 50, 0)
+	
 	
 	random_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", 1, 0.1, 1, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5 + u * 5", "v * t * 5 + v * 5", "w * t * 5 + w * 5", 1, 0.1, 2, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 15 + u * 5", "v * t * 15 + v * 5", "w * t * 15 + w * 5", 1, 0.1, 3, Spell.Element.ELECTRIC, 1),
+			elec1,
+			elec2,
+			elec3,
 		],
 		AttackPatterns.choose_from_distribution(1.0, [ 5, 3, 2 ], 1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", 1, 0.1, 5, Spell.Element.ELECTRIC, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", 1, 0.1, 5, Spell.Element.FIRE, 1),
-			Spell.new(false, "u * t * 5", "v * t * 5 + 4", "w * t * 5", 1, 0.1, 5, Spell.Element.ELECTRIC, 1),
+			elec1,
+			elec2,
+			elec3,
 		],
 		AttackPatterns.choose_in_sequence([ 1, 2, 1 ], -1)
 	)
