@@ -18,20 +18,13 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var rock_attack_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "5"}, Spell.Element.ROCK)
-	var rock_attack_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "3", "h": "Br/2+0.5"}, Spell.Element.ROCK)
-	rock_attack_medium.radius = 1
-	var rock_attack_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "1", "h": "Br/2+1.0"}, Spell.Element.ROCK)
-	rock_attack_large.radius = 2
+	var rock_attack_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "5"}, Spell.Element.ROCK, 2+fl*6, fl*25, 0.1+fl*0.4, 1, 0, 0, 0)
+	var rock_attack_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "3", "h": "Br/2+0.5"}, Spell.Element.ROCK, 2+fl*6, fl*25, 0.2+fl*0.8, 1, 0, 0, 0)
+	var rock_attack_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "1", "h": "Br/2+1.0"}, Spell.Element.ROCK, 2+fl*6, fl*25, 0.5+fl, 1, 0, 0, 0)
 	
-	var water_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.WATER)
-	water_attack.radius = 1
-	
-	var fire_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.FIRE)
-	fire_attack.radius = 1
-	
-	var electric_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.ELECTRIC)
-	electric_attack.radius = 1
+	#var water_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.WATER, 2+fl*8, fl*50, 0.2+fl*0.8, 1, 0, 0, 30)
+	#var fire_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.FIRE, 2+fl*8, fl*50, 0.2+fl*0.8, 1, 0, 0, 30)
+	#var electric_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.ELECTRIC, 2+fl*8, fl*50, 0.2+fl*0.8, 1, 0, 0, 30)
 	
 	random_pattern = AttackPatterns.new(
 		[

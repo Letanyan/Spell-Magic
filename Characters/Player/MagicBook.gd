@@ -170,7 +170,7 @@ func spell_exists(n: String) -> bool:
 func find_spell(n: String) -> Spell:
 	return spell_index.get(n, null) as Spell
 	
-func copy_spell(n: String, constants: Dictionary, element: Spell.Element, duration: float = NAN, power: float = NAN, radius: float = NAN, count: int = 0, crit_rate: float = NAN, crit_dmg: float = NAN, mana: float = NAN) -> Spell:
+func copy_spell(n: String, constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float) -> Spell:
 	var s := spell_index.get(n, null) as Spell
 	if s == null:
 		return null
@@ -190,6 +190,7 @@ func copy_spell(n: String, constants: Dictionary, element: Spell.Element, durati
 		result.crit_dmg = crit_dmg
 	if not is_nan(mana):
 		result.mana_cost = mana
+		result.ignore_cooldown_when_calculating_elemental_application = true
 	result.overwrite_expressions(constants)
 	return result
 

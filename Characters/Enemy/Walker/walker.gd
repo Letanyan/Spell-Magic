@@ -19,24 +19,16 @@ func setup(seedling: int) -> void:
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(2, 0, 10).use_physics().look_at_player()
 	current_path = idle_path
 	
-	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"}, Spell.Element.WATER)
-	water_small.radius = 0.2
-	var water_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"}, Spell.Element.WATER)
-	water_medium.radius = 0.8
-	var water_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"}, Spell.Element.WATER)
-	water_large.radius = 1.2
+	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"}, Spell.Element.WATER, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
+	var water_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"}, Spell.Element.WATER, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
+	var water_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"}, Spell.Element.WATER, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
 	
-	var ice_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"}, Spell.Element.ICE)
-	ice_small.radius = 0.8
-	var ice_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"}, Spell.Element.ICE)
-	ice_medium.radius = 1.6
-	var ice_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"}, Spell.Element.ICE)
-	ice_large.radius = 3.2
+	var ice_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"}, Spell.Element.ICE, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
+	var ice_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"}, Spell.Element.ICE, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
+	var ice_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"}, Spell.Element.ICE, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
 	
-	var ice_wall := GlobalData.magic_book.copy_spell("wall", {}, Spell.Element.ICE)
-	ice_wall.radius = 3 * 2
+	var ice_wall := GlobalData.magic_book.copy_spell("wall", {}, Spell.Element.ICE, 10, 0, 6, 4, 0, 0, 0)
 	ice_wall.follow = true
-	ice_wall.duration = 10.0
 	
 	
 	none_pattern = AttackPatterns.none()

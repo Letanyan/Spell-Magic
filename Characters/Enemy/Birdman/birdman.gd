@@ -46,9 +46,9 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.WATER, 5)
+	var water_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.WATER, 5, 5+fl*70, 0.1+fl*0.9, 1, 25, 150, 0)
 	
-	var water_fast := water_spell.duplicate({"s":str((level + 10.0) / 110.0 * 50.0), "d":"Br*2+r"})
+	var water_fast := water_spell.duplicate({"s":str(fl * 50.0), "d":"Br*2+r"})
 	water_fast.power = clamp(randf_range(level, level * 2), 0, UpgradeSettings.LIMIT_P)
 	var water_small_fast := water_fast.duplicate()
 	water_small_fast.radius = 1
@@ -160,5 +160,5 @@ func drop_artifact() -> Artifact:
 
 func drop_spell() -> Spell:
 	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "speed":"4"}, Spell.Element.AIR).bake(new_name)
+	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "speed":"4"}, Spell.Element.AIR, 3, 5, 0.1, 1, 0, 0, 0).bake(new_name)
 	return water_para

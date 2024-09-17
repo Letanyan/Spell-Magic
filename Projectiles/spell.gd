@@ -46,6 +46,7 @@ var elemental_application: float
 var crit_rate: float
 var crit_dmg: float
 var spherical_coords: bool
+var ignore_cooldown_when_calculating_elemental_application: bool = false
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
@@ -265,7 +266,10 @@ func calculate_cooldown() -> float:
 		chain_cost = chain.calculate_cooldown() * count
 		
 	elemental_application = clampf(power / UpgradeSettings.LIMIT_P * 0.25, 0.0, 0.25)
-	elemental_application += clampf((mana_cost - (basic_cost + chain_cost)) / 100, 0.0, 0.75)
+	if ignore_cooldown_when_calculating_elemental_application:
+		elemental_application += clampf(mana_cost / 100.0, 0.0, 0.75)
+	else:
+		elemental_application += clampf((mana_cost - (basic_cost + chain_cost)) / 100, 0.0, 0.75)
 	elemental_application = clampf(elemental_application, 0.0, 1.0)
 		
 	cooldown = basic_cost + chain_cost - mana_cost

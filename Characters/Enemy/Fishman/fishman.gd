@@ -18,9 +18,9 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":str(4+level*0.1), "CC": "C"}, Spell.Element.WATER)
+	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "s":str(4+level*0.1), "CC": "C"}, Spell.Element.WATER, 5, 2+fl*48, 0.1+fl*0.4, 1, 50, 100, 50)
 	water_para.count = 1
-	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":str(5+level*0.1), "d":"2"}, Spell.Element.WATER, 5)
+	var water_line := GlobalData.magic_book.copy_spell("linear", {"s":str(5+level*0.1), "d":"2"}, Spell.Element.WATER, 5, 2+fl*48, 0.1+fl*0.4, 1, 50, 100, 50)
 	
 	default_pattern = AttackPatterns.new(
 		[

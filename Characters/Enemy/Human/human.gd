@@ -19,11 +19,11 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var fire_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"}, Spell.Element.FIRE)
-	var water_blast := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"1"}, Spell.Element.WATER)
-	var rock_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"}, Spell.Element.ROCK)
-	var ice_blast := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"1"}, Spell.Element.ICE)
-	var electric_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"}, Spell.Element.ELECTRIC)
+	var fire_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"}, Spell.Element.FIRE, 1+fl*9, 2+fl*98, 0.5+fl*1, 1, 25, 75, 25)
+	var water_blast := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"1"}, Spell.Element.WATER, 1+fl*9, 2+fl*98, 0.5+fl*1, 1, 25, 75, 25)
+	var rock_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"}, Spell.Element.ROCK, 1+fl*9, 2+fl*98, 0.5+fl*1, 1, 25, 75, 25)
+	var ice_blast := GlobalData.magic_book.copy_spell("linear", {"s":"5", "d":"1"}, Spell.Element.ICE, 1+fl*9, 2+fl*98, 0.5+fl*1, 1, 25, 75, 25)
+	var electric_blast := GlobalData.magic_book.copy_spell("linear", {"d":"1", "s":"4"}, Spell.Element.ELECTRIC, 1+fl*9, 2+fl*98, 0.5+fl*1, 1, 25, 75, 25)
 	
 	default_pattern = AttackPatterns.new(
 		[
