@@ -15,9 +15,11 @@ var lookat: LookAt = LookAt.VELOCITY
 var stored_loops: int = 0
 var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
-var time: float = 0.0
+var time: float = NAN
 var old_position: Vector4 = Vector4.ZERO
 var is_on_path: bool = false
+
+var use_initial_position_as_start_position: bool = false
 
 var me_start_position: Variant = null # used to store entity position (Vec3) at start of movement
 
@@ -68,6 +70,10 @@ func use_physics() -> PathStyle:
 	
 func use_absolute() -> PathStyle:
 	mover = Mover.ABSOLUTE
+	return self
+	
+func set_use_initial_position_as_start_position(b: bool = true) -> PathStyle:
+	use_initial_position_as_start_position = b
 	return self
 
 func set_use_absolute_origin(o: Vector3) -> PathStyle:
@@ -191,7 +197,10 @@ func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int)
 	
 # xyz = position, w = speed
 func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref = null) -> Vector4:
-	time += delta
+	if is_nan(time):
+		time = 0.0
+	else:
+		time += delta
 	if is_done:
 		is_done.data = false
 	if me_start_position == null:
@@ -224,7 +233,8 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 		
 	# don't use positions to determine completion as we might get stuck if time near total_duration
 	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
-		me_start_position = null
+		if not use_initial_position_as_start_position:
+			me_start_position = null
 		time = time - path.total_duration
 		if is_done:
 			is_done.data = true
@@ -239,15 +249,16 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 	var index := Globals.Ref.new(0)
 	var v := path.position_at_time_with_rotation(duration, -player_start_vision_rotation, index) + temp_origin
 	if previous_path_index != index.data or is_zero_approx(time) or (player is Player and player.position != player_start_position) or (player is Vector3 and player != player_start_position):
-		if origin_kind == OriginKind.VISION:
+		if not use_initial_position_as_start_position:
+			if origin_kind == OriginKind.VISION:
+				if player is Player:
+					player_start_vision_rotation = ((player as Player).get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
+				else:
+					player_start_vision_rotation = 0.0
 			if player is Player:
-				player_start_vision_rotation = ((player as Player).get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
-			else:
-				player_start_vision_rotation = 0.0
-		if player is Player:
-			player_start_position = (player as Player).position
-		elif player is Vector3:
-			player_start_position = player
+				player_start_position = (player as Player).position
+			elif player is Vector3:
+				player_start_position = player
 		previous_path_index = index.data
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))

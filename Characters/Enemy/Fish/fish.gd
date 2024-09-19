@@ -12,8 +12,6 @@ var attack_jump_path: PathStyle
 var jump_timer: int = 0
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 5, 1))
-	vitals.perception.value = 20
 	vitals = Vitals.enemy(1000*fl, 1000*fl, 15*fl, 20, fl*50, fl*20, {Artifact.Element.WATER: Vector2(0.5*fl, 0)})
 	
 	const idle_r := 10.0
@@ -35,12 +33,28 @@ func setup(seedling: int) -> void:
 	attack_direct_path = PathStyle.new().towards_player(2, 4, 6).use_physics()
 	current_path = idle_path
 	
-	var jump_path: PathStyle.Pathway = PathStyle.Pathway.new() \
-		.move_to(Vector3(0, 0, 10)) \
-		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
-		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
+	#var jump_path: PathStyle.Pathway = PathStyle.Pathway.new() \
+		#.move_to(Vector3(0, 0, 10)) \
+		#.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
+		#.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
 		
-	attack_jump_path = PathStyle.new().follow_path(jump_path).align_y_to_ground_and_air().set_player_body_vision_as_origin(0, 1)
+	var jump_point_1 := Vector3(0, 0, 10).rotated(Vector3.UP, PI * 2 * randf())
+	var jump_point_2 := jump_point_1.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
+	var jump_point_3 := jump_point_2.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
+	var jump_point_4 := jump_point_3.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
+	var jump_point_5 := jump_point_4.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
+	var jump_path: PathStyle.Pathway = PathStyle.Pathway.new() \
+		.move_to(jump_point_1) \
+		.quad_to(jump_point_2, Globals.vec3_y(jump_point_1.lerp(jump_point_2, 0.5), 20), 3, PathStyle.Easing.out_expo) \
+		.quad_to(jump_point_3, Globals.vec3_y(jump_point_2.lerp(jump_point_3, 0.5), 20), 3, PathStyle.Easing.out_expo) \
+		.quad_to(jump_point_4, Globals.vec3_y(jump_point_3.lerp(jump_point_4, 0.5), 20), 3, PathStyle.Easing.out_expo) \
+		.quad_to(jump_point_5, Globals.vec3_y(jump_point_4.lerp(jump_point_5, 0.5), 20), 3, PathStyle.Easing.out_expo) \
+		.quad_to(jump_point_1, Globals.vec3_y(jump_point_5.lerp(jump_point_1, 0.5), 20), 3, PathStyle.Easing.out_expo)
+		
+		
+	attack_jump_path = PathStyle.new().follow_path(jump_path).align_y_to_ground_and_air() \
+		.set_player_body_vision_as_origin(0, 1).set_use_initial_position_as_start_position() \
+		.look_at_player_xz()
 	
 	none_pattern = AttackPatterns.none()
 	
@@ -108,10 +122,13 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 
 func update_behaviour() -> void:
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		current_path = attack_direct_path
+	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.min_value:
+		if vitals.health.percentage() < 0.25:
+			current_path = attack_jump_path
+		else:
+			current_path = attack_jump_path
 		player.watch_enemy(self)
-	elif current_path == attack_direct_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+	elif current_path == attack_jump_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.max_value:
 		current_path = idle_path
 		player.ignore_enemy(self)
 		

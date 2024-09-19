@@ -66,7 +66,9 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		is_done.data = true
 	elif current_action is PathStyle:
 		if DEBUG: print(index, " PathStyle")
-		last_path = current_action
+		if last_path != current_action:
+			last_path = current_action
+			last_path.time = NAN
 		var next_movement := last_path.next_position(delta, me, player, is_done)
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)

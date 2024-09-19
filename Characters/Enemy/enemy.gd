@@ -12,7 +12,11 @@ var spell_caster: SpellCaster
 var attack_sequence: AttackSequence = null
 
 var player: Player
-var current_path: PathStyle
+var current_path: PathStyle:
+	set(value):
+		if value != current_path:
+			current_path = value
+			current_path.time = NAN
 var still_path: PathStyle
 var current_attack: AttackPatterns
 var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.

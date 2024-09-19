@@ -75,7 +75,7 @@ static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: 
 	result.stun = Stat.new(0, 0, 1, -0.25)
 	result.attack = Stat.new(atk)
 	result.defence = Stat.new(def)
-	result.perception = Stat.new(percep)
+	result.perception = Stat.new(percep, percep, percep * 2)
 	result.damage_resistance = res
 	return result
 
