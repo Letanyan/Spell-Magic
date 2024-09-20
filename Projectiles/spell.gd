@@ -287,6 +287,7 @@ func damage(vitals: Vitals) -> float:
 	var crit := (1.0 + crit_dmg / 100.0) if (crit_rate / 100.0) >= randf() else 1.0
 	var atk := vitals.attack.value + buff_attack
 	var p := power / UpgradeSettings.LIMIT_P
+	p = pow(1 - (p - 1) * (p - 1), 0.6913)
 	match element:
 		Element.FIRE    : return p * (      atk                                               ) * crit
 		Element.WATER   : return p * (0.5 * atk + 0.05 * vitals.health.value                  ) * crit

@@ -6,13 +6,13 @@ var basic_pattern: AttackPatterns
 var flopping_pattern: AttackPatterns
 
 var idle_path: PathStyle
-var attack_direct_path: PathStyle
-var attack_jump_path: PathStyle
+var attack_jump_over_path: PathStyle
+var attack_jump_circle_path: PathStyle
 
 var jump_timer: int = 0
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(1000*fl, 1000*fl, 15*fl, 20, fl*50, fl*20, {Artifact.Element.WATER: Vector2(0.5*fl, 0)})
+	vitals = Vitals.enemy(hp(15), hp(10), mana_regen(10), 20, atk(5), def(7), {Artifact.Element.WATER: res(10, 0)})
 	
 	const idle_r := 10.0
 	var a := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
@@ -30,43 +30,43 @@ func setup(seedling: int) -> void:
 		.quad_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), 2, PathStyle.Easing.linear)
 	
 	idle_path = PathStyle.new().follow_path(idle_pathway).align_y_to_ground().set_origin(position).use_absolute()
-	attack_direct_path = PathStyle.new().towards_player(2, 4, 6).use_physics()
 	current_path = idle_path
 	
-	#var jump_path: PathStyle.Pathway = PathStyle.Pathway.new() \
-		#.move_to(Vector3(0, 0, 10)) \
-		#.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
-		#.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
+	var jump_over_path: PathStyle.Pathway = PathStyle.Pathway.new() \
+		.move_to(Vector3(0, 0, 10)) \
+		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
+		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
+	attack_jump_over_path = PathStyle.new().follow_path(jump_over_path).align_y_to_ground_and_air() \
+		.set_player_body_vision_as_origin(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND) \
+		.look_at_player_xz()
 		
 	var jump_point_1 := Vector3(0, 0, 10).rotated(Vector3.UP, PI * 2 * randf())
 	var jump_point_2 := jump_point_1.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
 	var jump_point_3 := jump_point_2.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
 	var jump_point_4 := jump_point_3.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
 	var jump_point_5 := jump_point_4.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
-	var jump_path: PathStyle.Pathway = PathStyle.Pathway.new() \
+	var jump_circle_path: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(jump_point_1) \
 		.quad_to(jump_point_2, Globals.vec3_y(jump_point_1.lerp(jump_point_2, 0.5), 20), 3, PathStyle.Easing.out_expo) \
 		.quad_to(jump_point_3, Globals.vec3_y(jump_point_2.lerp(jump_point_3, 0.5), 20), 3, PathStyle.Easing.out_expo) \
 		.quad_to(jump_point_4, Globals.vec3_y(jump_point_3.lerp(jump_point_4, 0.5), 20), 3, PathStyle.Easing.out_expo) \
 		.quad_to(jump_point_5, Globals.vec3_y(jump_point_4.lerp(jump_point_5, 0.5), 20), 3, PathStyle.Easing.out_expo) \
 		.quad_to(jump_point_1, Globals.vec3_y(jump_point_5.lerp(jump_point_1, 0.5), 20), 3, PathStyle.Easing.out_expo)
-		
-		
-	attack_jump_path = PathStyle.new().follow_path(jump_path).align_y_to_ground_and_air() \
-		.set_player_body_vision_as_origin(0, 1).set_use_initial_position_as_start_position() \
+	attack_jump_circle_path = PathStyle.new().follow_path(jump_circle_path).align_y_to_ground_and_air() \
+		.set_player_body_vision_as_origin(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.NEVER) \
 		.look_at_player_xz()
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"}, Spell.Element.WATER, invfl*6+2, 5+fl*70, 0.1+fl*0.4, 1, 50, 100, 25)
-	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"}, Spell.Element.WATER, invfl*4+2, 5+fl*70, 0.1+fl*0.9, 1, 50, 100, 50)
-	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"}, Spell.Element.WATER, invfl*2+2, 5+fl*70, 0.2+fl*1.8, 1, 50, 100, 75)
-	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*8+2", "d":"Br*2"}, Spell.Element.WATER, 2+fl*6, 1+fl*49, 0.2, 1, 10, 200, 50)
-	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*12+3", "d":"Br*2"}, Spell.Element.WATER, 4+fl*6, 1+fl*49, 0.2, 1, 10, 200, 50)
-	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*16+4", "d":"Br*2"}, Spell.Element.WATER, 6+fl*6, 1+fl*49, 0.2, 1, 10, 200, 50)
+	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"}, Spell.Element.WATER, invfit(2, 8), power(15), radius(2), 1, 50, 100, 25)
+	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"}, Spell.Element.WATER, invfit(2, 6), power(14), radius(3), 1, 50, 100, 50)
+	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"}, Spell.Element.WATER, invfit(2, 4), power(13), radius(4), 1, 50, 100, 75)
+	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*8+2", "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*12+3", "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*16+4", "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
 	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, 5+fl*20, 0.2+fl*1.8, 1, 60.0, 80.0, 0.0)
-	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, 5+fl*35, 0.1+fl*0.1, 5+roundi(fl*15), 30.0, 50.0, 60.0)
+	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0)
+	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	water_shower1.chain.count = clampi(int(fl * 10.0), 0, 10) + 5
 	
 	basic_pattern = AttackPatterns.new(
@@ -99,10 +99,6 @@ func setup(seedling: int) -> void:
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.FISH
 	
-func _physics_process(delta: float) -> void:
-	super._physics_process(delta)
-	if current_path == attack_direct_path:
-		jump_timer += 1
 
 func attack_state() -> AttackPatterns:
 	health_bar.visible = not current_path == idle_path
@@ -122,36 +118,27 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 
 func update_behaviour() -> void:
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.min_value:
-		if vitals.health.percentage() < 0.25:
-			current_path = attack_jump_path
-		else:
-			current_path = attack_jump_path
-		player.watch_enemy(self)
-	elif current_path == attack_jump_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.max_value:
-		current_path = idle_path
-		player.ignore_enemy(self)
+	match current_path:
+		idle_path:
+			if player.position.distance_to(position) < vitals.perception.min_value:
+				if vitals.health.percentage() < 0.25:
+					current_path = attack_jump_over_path
+				else:
+					current_path = attack_jump_circle_path
 		
-	
-	#if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		#sequence_pattern.reset()
-		#default_pattern.reset()
-		#current_path = attack_direct_path
-	#elif current_path == attack_direct_path:
-		#if sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-			#current_path = idle_path
-		#elif jump_timer > 60 * 5 and attack_direct_path.stored_loops > 0:
-			##create_attack_jump_path()
-			#attack_direct_path.stored_loops = 0
-			#sequence_pattern.reset()
-			#default_pattern.reset()
-			#current_path = attack_jump_path
-	#elif current_path == attack_jump_path and attack_jump_path.stored_loops > 0:
-		#attack_jump_path.stored_loops = 0
-		#jump_timer = 0
-		#sequence_pattern.reset()
-		#default_pattern.reset()
-		#current_path = attack_direct_path
+		attack_jump_over_path, attack_jump_circle_path:
+			if player.position.distance_to(position) < vitals.perception.min_value:
+				if vitals.health.percentage() < 0.25:
+					current_path = attack_jump_over_path
+				else:
+					current_path = attack_jump_circle_path
+			elif player.position.distance_to(position) > vitals.perception.max_value:
+				current_path = idle_path
+				
+	if current_path == idle_path:
+		player.ignore_enemy(self)
+	else:
+		player.watch_enemy(self)
 			
 
 func create_attack_jump_path() -> void:
@@ -163,7 +150,7 @@ func create_attack_jump_path() -> void:
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
-	attack_jump_path = PathStyle.new().follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_origin().look_at_player()
+	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_origin().look_at_player()
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

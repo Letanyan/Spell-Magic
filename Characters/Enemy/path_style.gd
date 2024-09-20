@@ -5,6 +5,18 @@ enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER, PLAYER_XZ }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
 
+enum InitialPositionCanUpdate {
+	ON_GROUND = 1 << 0,
+	UNDERGROUND = 1 << 1,
+	IN_AIR = 1 << 2,
+	
+	ON_GROUND_AND_UNDER = 0b011,
+	ON_GROUND_AND_AIR = 0b101,
+	UNDERGROUND_AND_AIR = 0b110,
+	ALWAYS = 0b111,
+	NEVER = 0b0
+}
+
 var origin := Vector3.ZERO
 var path: Pathway = null
 var origin_kind: OriginKind
@@ -19,13 +31,14 @@ var time: float = NAN
 var old_position: Vector4 = Vector4.ZERO
 var is_on_path: bool = false
 
-var use_initial_position_as_start_position: bool = false
+var when_initial_position_can_update: int = InitialPositionCanUpdate.ALWAYS
+var can_update_initial_position_now: bool = true
 
 var me_start_position: Variant = null # used to store entity position (Vec3) at start of movement
 
 var previous_path_index: int = -1 # previous path index used to update `player_start_position`
 var player_start_position: Variant = null # used to store entity position (Vec3) at start of movement for each path
-var player_start_vision_rotation := 0.0 # used to store entity rotation (float) at start of movement for each path
+var player_start_vision_rotation: Variant = null # used to store entity rotation (float) at start of movement for each path
 
 # (theta, radius, min_margin, max_margin) pair to describe offset from player. +theta is ccw from 
 # straight of player view. -theta is cw from player view. radius is distance away
@@ -72,8 +85,8 @@ func use_absolute() -> PathStyle:
 	mover = Mover.ABSOLUTE
 	return self
 	
-func set_use_initial_position_as_start_position(b: bool = true) -> PathStyle:
-	use_initial_position_as_start_position = b
+func set_initial_position_can_update(can_update: InitialPositionCanUpdate = InitialPositionCanUpdate.ALWAYS) -> PathStyle:
+	when_initial_position_can_update = can_update
 	return self
 
 func set_use_absolute_origin(o: Vector3) -> PathStyle:
@@ -222,7 +235,7 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 		temp_origin += me_start_position
 	
 	if origin_kind == OriginKind.VISION:
-		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation + player_vision_offset.x)
+		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation as float + player_vision_offset.x)
 		var rel_off := off + (player_start_position as Vector3)
 		var dist := me.position.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
@@ -233,7 +246,7 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 		
 	# don't use positions to determine completion as we might get stuck if time near total_duration
 	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
-		if not use_initial_position_as_start_position:
+		if can_update_initial_position_now:
 			me_start_position = null
 		time = time - path.total_duration
 		if is_done:
@@ -247,20 +260,14 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 	
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
-	var v := path.position_at_time_with_rotation(duration, -player_start_vision_rotation, index) + temp_origin
-	if previous_path_index != index.data or is_zero_approx(time) or (player is Player and player.position != player_start_position) or (player is Vector3 and player != player_start_position):
-		if not use_initial_position_as_start_position:
-			if origin_kind == OriginKind.VISION:
-				if player is Player:
-					player_start_vision_rotation = ((player as Player).get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
-				else:
-					player_start_vision_rotation = 0.0
-			if player is Player:
-				player_start_position = (player as Player).position
-			elif player is Vector3:
-				player_start_position = player
-		previous_path_index = index.data
+	var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
+	var v := path.position_at_time_with_rotation(duration, -psvr, index) + temp_origin
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	if previous_path_index != index.data or is_zero_approx(time) or (player is Player and player.position != player_start_position) or (player is Vector3 and player != player_start_position):
+		if can_update_initial_position_now:
+			player_start_vision_rotation = null
+			player_start_position = null
+		previous_path_index = index.data
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
 		
 	return old_position
@@ -270,23 +277,39 @@ func next_y_position(me: Node3D, x: float, y: float, z: float) -> float:
 	if me is Enemy:
 		me_y = (me as Enemy).bounds.y
 	elif me is TargetShape:
-		me_y = (me as TargetShape).bounds.y		
+		me_y = (me as TargetShape).bounds.y
+		
+	var result := 0.0
+	var actual_y := y
 	match coord_y:
-		CoordY.GROUND: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+		CoordY.GROUND:
+			result = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			actual_y = 0.0
 		CoordY.GROUND_AND_DIRT: 
 			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y > 0:
-				return g
+				result = 0.0
+				actual_y = 0.0
 			else:
-				return g + y
+				result = g + y
 		CoordY.GROUND_AND_AIR: 
 			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y < 0:
-				return g
+				result = g
+				actual_y = 0.0
 			else:
-				return g + y
-		CoordY.ORIGIN: return Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me_y / 2.0
-		_: return 0
+				result = g + y
+		CoordY.ORIGIN: 
+			result = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me_y / 2.0
+			
+	if actual_y > 0.001:
+		can_update_initial_position_now = when_initial_position_can_update & InitialPositionCanUpdate.IN_AIR != 0
+	elif actual_y < -0.001:
+		can_update_initial_position_now = when_initial_position_can_update & InitialPositionCanUpdate.UNDERGROUND != 0
+	else:
+		can_update_initial_position_now = when_initial_position_can_update & InitialPositionCanUpdate.ON_GROUND != 0
+		
+	return result
 
 class Pathway:
 	var segments: Array[Segment]

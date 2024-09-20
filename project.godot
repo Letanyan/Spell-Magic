@@ -47,6 +47,10 @@ project/assembly_name="Spell Magic"
 
 version_control/autoload_on_startup=true
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/repl/plugin.cfg")
+
 [file_customization]
 
 folder_colors={

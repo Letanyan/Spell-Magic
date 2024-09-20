@@ -395,3 +395,37 @@ func world_enemy_enum() -> World.Enemy:
 
 func play_walking_audio(stream: String) -> void:
 	pass
+
+# returns the actual value if the enemy with a class (1-20) where 1 is low 
+func fit(mn: float, mx: float) -> float:
+	return lerpf(mn, mx, fl)
+	
+func fiti(mn: int, mx: int) -> int:
+	return roundi(lerpf(mn, mx, fl))
+	
+func invfit(mn: float, mx: float) -> float:
+	return lerpf(mn, mx, invfl)
+
+func atk(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+
+func def(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+	
+func hp(cls: int) -> float:
+	return fit(50.0, cls * 50.0)
+	
+func mana(cls: int) -> float:
+	return fit(50.0, cls * 50.0)
+	
+func mana_regen(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+
+func power(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+	
+func radius(cls: int) -> float:
+	return fit(0.1, minf(cls * cls / 80.0 + 0.875, 5.0))
+
+func res(per_cls: int, flat_cls: int) -> Vector2:
+	return Vector2(fit(0.0, per_cls / 20.0), fit(0.0, flat_cls * 5.0))
