@@ -9,15 +9,10 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(1000 * fl, 1000 * fl, 50 * fl, 0, fl*25, fl*25)
+	vitals = Vitals.enemy(hp(5), mana(8), mana_regen(20), 30, atk(8), def(5), {Artifact.Element.ELECTRIC: res(5, 1)})
+	vitals.perception.max_value = 40
 	
-	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
-		.move_to(Vector3(0, 5, 0)) \
-		.line_to(Vector3(0, 5, 50), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.in_quint) \
-		.line_to(Vector3(0, 5, 0), snappedf(5.0, Globals.behaviour_tick()), PathStyle.Easing.out_quint)
-	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).use_absolute().align_y_to_ground_and_air()
-	
-	#idle_path = PathStyle.new(randf()).circle(position, clampf(level * 1.1, 1, 14), 10, 5).use_absolute().align_y_to_origin()
+	idle_path = PathStyle.new(0, position + Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7).align_y_to_air()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
@@ -34,29 +29,19 @@ func setup(seedling: int) -> void:
 		[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear]
 	)
 	
-	#attack_path = PathStyle.new(randf()).follow_path(rotate_path).align_y_to_origin().set_use_player_as_origin().use_absolute().look_at_player()
-	
-	attack_path = PathStyle.new().follow_path(PathStyle.Pathway.new() \
-	.move_to(Vector3(0, 5, 0)) \
-	.line_to(Vector3(-10, 5, 0), 5, PathStyle.Easing.linear) \
-	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
-	.line_to(Vector3(10, 5, 0), 5, PathStyle.Easing.linear) \
-	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
-	).align_y_to_origin().set_player_camera_as_vision_angle(PI, 10).use_absolute().look_at_player()
-	
-	#attack_path = PathStyle.new(0.0).towards_player(5.0, 15.0, 20.0).align_y_to_ground().set_use_player_as_origin().use_absolute().look_at_player()
+	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 10.0, 5+fl*25, 0.2+fl*0.8, 1, 50, 50, 0)
-	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 8.0, 5+fl*35, 0.3+fl*0.7, 1, 50, 50, 0)
-	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ELECTRIC, 6.0, 5+fl*45, 0.4+fl*0.6, 1, 50, 50, 0)
+	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 10.0, power(10), radius(2), 1, 50, 50, 0)
+	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 8.0, power(12), radius(2), 1, 50, 50, 0)
+	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ELECTRIC, 6.0, power(8), radius(2), 1, 50, 50, 0)
 	
-	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"}, Spell.Element.ELECTRIC, 10.0, 2+fl*18, 0.1+fl*0.9, 1+roundi(fl*7), 75, 25, 0)
-	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ELECTRIC, 8.0, 2+fl*28, 0.1+fl*0.9, 1+roundi(fl*5), 75, 50, 0)
-	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ELECTRIC, 6.0, 3+fl*37, 0.1+fl*0.9, 1+roundi(fl*3), 75, 75, 0)
+	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"}, Spell.Element.ELECTRIC, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 0)
+	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ELECTRIC, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 0)
+	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ELECTRIC, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 0)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -64,7 +49,7 @@ func setup(seedling: int) -> void:
 			elec2,
 			elec3,
 		],
-		AttackPatterns.choose_from_distribution(0.55, [10, 3, 2], -1)
+		AttackPatterns.choose_from_distribution(5.0, [10, 3, 2], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -83,13 +68,10 @@ func setup(seedling: int) -> void:
 	kind = World.Enemy.BAT
 
 func attack_state() -> AttackPatterns:
-	health_bar.visible = not current_path == idle_path
-	if current_path == idle_path:
+	if is_idle:
 		return none_pattern
-	elif vitals.health.value >= 20:
-		return none_pattern
-		#return random_pattern
-		#return sequence_pattern
+	elif vitals.health.percentage() >= 0.1:
+		return random_pattern
 	else:
 		return sequence_pattern
 
@@ -100,14 +82,12 @@ func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
 	return true
 
-
 func update_behaviour() -> void:
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		sequence_pattern.reset()
-		random_pattern.reset()
-		current_path = attack_path
-	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
+	super.update_behaviour()
+	if is_idle:
 		current_path = idle_path
+	else:
+		current_path = attack_path
 
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random()

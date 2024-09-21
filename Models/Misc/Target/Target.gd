@@ -92,12 +92,12 @@ func _physics_process(delta: float) -> void:
 		target_position = Vector3(next.x, next.y, next.z)
 		movement_tick = 0.5
 		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-		if feet_position() <= g:
+		if feet_position() < g:
 			if path.coord_y == PathStyle.CoordY.GROUND or path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 				set_feet_position(g)
 				if target_position.y < position.y:
 					target_position.y = position.y
-		elif feet_position() >= g:
+		elif feet_position() > g:
 			if path.coord_y == PathStyle.CoordY.GROUND or path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 				set_feet_position(g)
 				if target_position.y > position.y:

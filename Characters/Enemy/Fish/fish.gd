@@ -56,20 +56,17 @@ func setup(seedling: int) -> void:
 		.set_player_body_rotation_as_vision_angle(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.NEVER) \
 		.look_at_player_xz()
 	
-	attack_jump_circle_path = attack_jump_over_path
-	
 	none_pattern = AttackPatterns.none()
 	
 	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"}, Spell.Element.WATER, invfit(2, 8), power(15), radius(2), 1, 50, 100, 25)
 	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"}, Spell.Element.WATER, invfit(2, 6), power(14), radius(3), 1, 50, 100, 50)
 	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"}, Spell.Element.WATER, invfit(2, 4), power(13), radius(4), 1, 50, 100, 75)
-	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*8+2", "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*12+3", "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*16+4", "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":fits(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":fits(3,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":fits(4,20), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
 	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":"fl*20", "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0)
-	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":"fl*8+2", "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
-	water_shower1.chain.count = clampi(int(fl * 10.0), 0, 10) + 5
+	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0)
+	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	basic_pattern = AttackPatterns.new(
 		[
@@ -80,7 +77,7 @@ func setup(seedling: int) -> void:
 			water_para2,
 			water_para3,
 		],
-		AttackPatterns.choose_from_distribution(invfl * 10 + 0.5, [ 10, 6, 4, 5, 3, 1 ], -1)
+		AttackPatterns.choose_from_distribution(6, [ 10, 6, 4, 5, 3, 1 ], -1)
 	)
 	
 	flopping_pattern = AttackPatterns.new(
@@ -92,7 +89,7 @@ func setup(seedling: int) -> void:
 					water_para2,
 					water_para3,
 				],
-				AttackPatterns.choose_from_distribution(invfl * 10 + 0.1, [7, 4, 1], 5)
+				AttackPatterns.choose_from_distribution(4, [7, 4, 1], 5)
 			),
 		],
 		AttackPatterns.choose_in_sequence([ 1, 5 ], -1)
@@ -103,8 +100,7 @@ func setup(seedling: int) -> void:
 	
 
 func attack_state() -> AttackPatterns:
-	health_bar.visible = not current_path == idle_path
-	if current_path == idle_path:
+	if is_idle:
 		return none_pattern
 	elif vitals.health.percentage() > 0.2:
 		return basic_pattern
@@ -118,33 +114,14 @@ func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
 	return true
 
-
 func update_behaviour() -> void:
-	match current_path:
-		idle_path:
-			if player.position.distance_to(position) < vitals.perception.min_value:
-				if vitals.health.percentage() < 0.25:
-					current_path = attack_jump_over_path
-				else:
-					current_path = attack_jump_circle_path
-		
-		attack_jump_over_path:
-			if player.position.distance_to(position) > vitals.perception.max_value:
-				current_path = idle_path
-			elif vitals.health.percentage() >= 0.25:
-				current_path = attack_jump_circle_path
-				
-		attack_jump_circle_path:
-			if player.position.distance_to(position) > vitals.perception.max_value:
-				current_path = idle_path
-			elif vitals.health.percentage() < 0.25:
-				current_path = attack_jump_over_path
-				
-				
-	if current_path == idle_path:
-		player.ignore_enemy(self)
+	super.update_behaviour()
+	if is_idle:
+		current_path = idle_path
+	elif vitals.health.percentage() >= 0.25:
+		current_path = attack_jump_circle_path
 	else:
-		player.watch_enemy(self)
+		current_path = attack_jump_over_path
 			
 
 func create_attack_jump_path() -> void:

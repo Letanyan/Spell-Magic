@@ -19,13 +19,13 @@ func _ready() -> void:
 	mat.shader = load("res://General/standard.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
+	mat.shader = load("res://General/standard_solid.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
 	mat.shader = load("res://Characters/Enemy/Health Bar/health_bar.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
 	mat.shader = load("res://Characters/Enemy/Health Bar/status_effects.gdshader")
-	await get_tree().create_timer(WAIT_TIME).timeout
-	
-	mat.shader = load("res://Characters/Enemy/Fish/fish.tscn::ShaderMaterial_ljn5y")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
 	SceneHandler.load_new_scene("res://Worlds/TestArena/TestArena.tscn", "blink_to", func(content: Node3D) -> void: print("loading test arena"))

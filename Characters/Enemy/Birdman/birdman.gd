@@ -16,101 +16,96 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(fl*1000, fl*1000, fl*10, 35, 15+fl*85, 5*fl*50)
+	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(10), 35, atk(17), def(8))
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, -4, 0)) \
 		.line_to(Vector3(0, 20, 0), 5, PathStyle.Easing.out_quart) \
 		.line_to(Vector3(0, -4, 0), 2, PathStyle.Easing.out_quart)
-	idle_path = PathStyle.new().follow_path(idle_pathway).align_y_to_ground_and_air().set_origin(position).use_absolute()
+	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
-	var attack_pathway := PathStyle.Pathway.new()
-	attack_pathway.append(
-		[
-			PathStyle.Segment.linear(Vector3(0, -4, 0), Vector3(0, 20, 0)),
-			PathStyle.Segment.linear(Vector3(0, 20, 0), Vector3(0, -4, 0)),
-		],
-		[5, 2],
-		[PathStyle.Easing.out_quart, PathStyle.Easing.out_quart]
-	)
+	var attack_pathway := PathStyle.Pathway.new() \
+		.move_to(Vector3(10, 0, 0)) \
+		.line_to(Vector3(10, 20, 0), 5, PathStyle.Easing.out_quart) \
+		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart)
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
-	.align_y_to_ground_and_air()\
-	.set_use_player_as_origin()\
-	.set_player_body_rotation_as_vision_angle(0, 0, 10.0 + randf_range(10.0, 20.0) + (level / 10.0) )\
-	.look_at_player()
+		.align_y_to_ground_and_air()\
+		.set_use_player_as_origin()\
+		.set_player_body_rotation_as_vision_angle(0, 0, 10.0)\
+		.look_at_player_xz()
 	
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.WATER, 5, 5+fl*70, 0.1+fl*0.9, 1, 25, 150, 0)
+	var air_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.AIR, 5, power(19), radius(8), 1, 25, 150, 50)
 	
-	var water_fast := water_spell.duplicate({"s":str(fl * 50.0), "d":"Br*2+r"})
-	water_fast.power = clamp(randf_range(level, level * 2), 0, UpgradeSettings.LIMIT_P)
-	var water_small_fast := water_fast.duplicate()
-	water_small_fast.radius = 1
-	var water_med_fast := water_fast.duplicate()
-	water_med_fast.radius = 2
-	var water_large_fast := water_fast.duplicate()
-	water_large_fast.radius = 5
+	var air_fast := air_spell.duplicate({"s":fits(5,25), "d":"Br*2+r"})
+	air_fast.power = power(14)
+	var air_small_fast := air_fast.duplicate()
+	air_small_fast.radius = 1
+	var air_med_fast := air_fast.duplicate()
+	air_med_fast.radius = 2
+	var air_large_fast := air_fast.duplicate()
+	air_large_fast.radius = 5
 	
-	var water_med := water_spell.duplicate({"s":str((level + 25.0) / 125.0 * 25.0), "d":"Br*2+r"})
-	water_med.power = clamp(randf_range(level, level * 4), 0, UpgradeSettings.LIMIT_P)
-	var water_small_med := water_med.duplicate()
-	water_small_med.radius = 1
-	var water_med_med := water_med.duplicate()
-	water_med_med.radius = 2
-	var water_large_med := water_med.duplicate()
-	water_large_med.radius = 5
+	var air_med := air_spell.duplicate({"s":fits(3,15), "d":"Br*2+r"})
+	air_med.power = power(17)
+	var air_small_med := air_med.duplicate()
+	air_small_med.radius = 1
+	var air_med_med := air_med.duplicate()
+	air_med_med.radius = 2
+	var air_large_med := air_med.duplicate()
+	air_large_med.radius = 5
 	
-	var water_slow := water_spell.duplicate({"s":str((level + 50.0) / 150.0 * 15.0), "d":"Br*2+r"})
-	water_slow.power = clamp(randf_range(level, level * 8), 0, UpgradeSettings.LIMIT_P)
-	var water_small_slow := water_slow.duplicate()
-	water_small_slow.radius = 1
-	var water_med_slow := water_slow.duplicate()
-	water_med_slow.radius = 2
-	var water_large_slow := water_slow.duplicate()
-	water_large_slow.radius = 5
+	var air_slow := air_spell.duplicate({"s":fits(2,10), "d":"Br*2+r"})
+	air_slow.power = power(20)
+	var air_small_slow := air_slow.duplicate()
+	air_small_slow.radius = 1
+	var air_med_slow := air_slow.duplicate()
+	air_med_slow.radius = 2
+	var air_large_slow := air_slow.duplicate()
+	air_large_slow.radius = 5
 	
 	
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
-			water_small_fast,
-			water_small_med,
-			water_small_slow,
+			air_small_fast,
+			air_small_med,
+			air_small_slow,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 5, 5, 7 ], -1)
+		AttackPatterns.choose_from_distribution(10.0, [ 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern2 = AttackPatterns.new(
 		[
-			water_small_fast,
-			water_small_med,
-			water_small_slow,
-			water_med_fast,
-			water_med_med,
-			water_med_slow,
+			air_small_fast,
+			air_small_med,
+			air_small_slow,
+			air_med_fast,
+			air_med_med,
+			air_med_slow,
 		],
-		AttackPatterns.choose_from_distribution(0.33, [ 2, 2, 3, 5, 5, 7 ], -1)
+		AttackPatterns.choose_from_distribution(7.0, [ 2, 2, 3, 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
 		[
 			AttackPatterns.new(
-				[water_small_slow, water_small_fast],
+				[air_small_slow, air_small_fast],
 				AttackPatterns.choose_in_sequence([ 2, 1 ], 1)
 			),
 			AttackPatterns.new(
-				[water_med_slow, water_med_fast],
+				[air_med_slow, air_med_fast],
 				AttackPatterns.choose_in_sequence([ 3, 3], 1)
 			),
 			AttackPatterns.new(
-				[water_large_slow, water_large_fast],
+				[air_large_slow, air_large_fast],
 				AttackPatterns.choose_in_sequence([ 5, 5 ], 1)
 			),
 		],
-		AttackPatterns.choose_from_distribution(0.5, [ 2, 3, 5 ], -1)
+		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)
 	)
 	
 	animation_map["attack"] = "Weapon"

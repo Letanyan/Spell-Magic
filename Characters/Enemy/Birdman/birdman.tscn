@@ -1,235 +1,67 @@
-[gd_scene load_steps=73 format=4 uid="uid://lrmy8bcsd7oh"]
+[gd_scene load_steps=69 format=4 uid="uid://lrmy8bcsd7oh"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Birdman/birdman.gd" id="1_e7t1t"]
+[ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_k68ln"]
 [ext_resource type="PackedScene" uid="uid://bll3cb50t55u6" path="res://Characters/Enemy/Animations/large_enemy_animation_tree.tscn" id="2_p2fbr"]
 [ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/Health Bar/health_bar.tscn" id="4_d2ovr"]
-
-[sub_resource type="Shader" id="Shader_7gd1l"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-//render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
-	//NORMAL = mix(NORMAL, vec3(0.0), 0.1);
-}
-"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1ij1d"]
 resource_name = "Birb_Main"
 render_priority = 0
-shader = SubResource("Shader_7gd1l")
-shader_parameter/albedo = Color(0.207843, 0.352941, 0.588235, 1)
+shader = ExtResource("2_k68ln")
+shader_parameter/albedo = Color(0.2065, 0.353508, 0.59, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.5
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-
-[sub_resource type="Shader" id="Shader_6whne"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
-}
-"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6i4wm"]
 resource_name = "Birb_Secondary"
 render_priority = 0
-shader = SubResource("Shader_6whne")
-shader_parameter/albedo = Color(0.593323, 0.583465, 0.575633, 1)
+shader = ExtResource("2_k68ln")
+shader_parameter/albedo = Color(0.59, 0.580265, 0.5723, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.5
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-
-[sub_resource type="Shader" id="Shader_raleu"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
-}
-"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5gevs"]
 resource_name = "Birb_Beak"
 render_priority = 0
-shader = SubResource("Shader_raleu")
-shader_parameter/albedo = Color(0.586656, 0.129702, 0.0923154, 1)
+shader = ExtResource("2_k68ln")
+shader_parameter/albedo = Color(0.59, 0.1357, 0.0944, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.5
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-
-[sub_resource type="Shader" id="Shader_4jbvk"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
-}
-"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a3ht8"]
 resource_name = "Eye_White"
 render_priority = 0
-shader = SubResource("Shader_4jbvk")
-shader_parameter/albedo = Color(0.561453, 0.572008, 0.626657, 1)
+shader = ExtResource("2_k68ln")
+shader_parameter/albedo = Color(0.531, 0.540833, 0.59, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.5
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = 7.6e-07
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
@@ -237,57 +69,15 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="Shader" id="Shader_ukghr"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	NORMAL = -normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
-}
-"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qxkv6"]
 resource_name = "Eye_Black"
 render_priority = 0
-shader = SubResource("Shader_ukghr")
-shader_parameter/albedo = Color(0.119451, 0.121692, 0.133322, 1)
+shader = ExtResource("2_k68ln")
+shader_parameter/albedo = Color(0.117, 0.119167, 0.13, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.5
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)

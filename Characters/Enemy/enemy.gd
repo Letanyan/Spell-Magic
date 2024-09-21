@@ -28,6 +28,7 @@ var invfl: float:
 		return 1.0 - level / 100.0
 var is_dead: bool = false
 var kind: World.Enemy = World.Enemy.NONE
+var is_idle := true
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
@@ -149,17 +150,16 @@ func _physics_process(delta: float) -> void:
 				v = movement["absolute"]
 				t = movement["target"]
 				var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-				if feet_position() <= g:
+				if feet_position() < g:
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				elif feet_position() >= g:
+				elif feet_position() > g:
 					if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				#print(feet_position(), " - ", g, " | ", position.y, " - ", bounds.y / 2.0)
 				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.1 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z) + group_positioning_adjustment * delta * speed_for_current_behaviour_tick
@@ -275,7 +275,20 @@ func update_entity_info(info: EntityInfo) -> bool:
 	return true
 
 func update_behaviour() -> void:
-	pass
+	if is_idle:
+		if player.position.distance_to(position) < vitals.perception.min_value:
+			is_idle = false
+	else:
+		if player.position.distance_to(position) > vitals.perception.max_value:
+			is_idle = true
+						
+	if is_idle:
+		player.ignore_enemy(self)
+		health_bar.visible = false
+	else:
+		player.watch_enemy(self)
+		health_bar.visible = true
+		
 
 func handle_damage() -> void:
 	pass
@@ -403,6 +416,9 @@ func fit(mn: float, mx: float) -> float:
 	
 func fiti(mn: int, mx: int) -> int:
 	return roundi(lerpf(mn, mx, fl))
+	
+func fits(mn: float, mx: float) -> String:
+	return Globals.format_number_nearest_place(lerpf(mn, mx, fl))
 	
 func invfit(mn: float, mx: float) -> float:
 	return lerpf(mn, mx, invfl)

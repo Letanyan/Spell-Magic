@@ -211,12 +211,21 @@ func random_points_in_circle(speed: float, radius: float, height: float, count: 
 	
 func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int) -> PathStyle:
 	path = Pathway.new()
-	var p := Vector3(rng.randf_range(min_r, max_r) * cos(rng.randf_range(-PI, PI)), 0, rng.randf_range(min_r, max_r) * sin(rng.randf_range(-PI, PI)))
+	var p := Vector3(rng.randf(), 0, rng.randf()) * rng.randf_range(min_r, max_r)
 	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
 	for i in range(count - 1):
-		var q := Vector3(rng.randf_range(min_r, max_r) * cos(rng.randf_range(-PI, PI)), 0, rng.randf_range(min_r, max_r) * sin(rng.randf_range(-PI, PI)))
-#		var m := (p + q) / 2.0
-#		path.add(Segment.quad(p, q, m))
+		var q := Vector3(rng.randf(), 0, rng.randf()) * rng.randf_range(min_r, max_r)
+		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
+		p = q
+	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
+	return self
+	
+func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: int) -> PathStyle:
+	path = Pathway.new()
+	var p := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r)
+	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
+	for i in range(count - 1):
+		var q := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r)
 		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
 		p = q
 	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)

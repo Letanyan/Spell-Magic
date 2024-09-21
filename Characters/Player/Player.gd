@@ -585,6 +585,7 @@ func update_projectile_indicators(should_hide: bool) -> void:
 		for spell: SpellBody in spell_caster.particles:
 			updated_spell_bodies[spell] = update_projectile(pivot, spell)
 		
+	# FIXME: use spellbody after free 
 	for spell: SpellBody in projectile_indicators:
 		if not updated_spell_bodies.get(spell, false) as bool:
 			var mi := projectile_indicators[spell] as Node3D
