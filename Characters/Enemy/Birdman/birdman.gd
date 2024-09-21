@@ -36,7 +36,7 @@ func setup(seedling: int) -> void:
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 	.align_y_to_ground_and_air()\
 	.set_use_player_as_origin()\
-	.set_player_body_vision_as_origin(0, 0, 10.0 + randf_range(10.0, 20.0) + (level / 10.0) )\
+	.set_player_body_rotation_as_vision_angle(0, 0, 10.0 + randf_range(10.0, 20.0) + (level / 10.0) )\
 	.look_at_player()
 	
 	current_path = idle_path

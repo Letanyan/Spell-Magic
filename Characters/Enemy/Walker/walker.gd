@@ -15,7 +15,7 @@ func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(1000*fl, 1000*fl, 20*fl, 25, 70*fl, 50*fl, {Artifact.Element.WATER: Vector2(0.25*fl, 0), Artifact.Element.ICE: Vector2(0.75*fl, 0), Artifact.Element.FIRE: Vector2(1.25*fl, fl*20)})
 	
 	idle_path = PathStyle.new().random_points_in_circle(2, 10, bounds.y / 2.0, 10).set_origin(position).align_y_to_ground()
-	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_vision_as_origin(2, 0, 10).use_physics().look_at_player()
+	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_rotation_as_vision_angle(2, 0, 10).use_physics().look_at_player()
 	current_path = idle_path
 	
 	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"}, Spell.Element.WATER, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)

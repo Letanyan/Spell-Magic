@@ -36,8 +36,8 @@ func setup(seedling: int) -> void:
 		.move_to(Vector3(0, 0, 10)) \
 		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
 		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
-	attack_jump_over_path = PathStyle.new().follow_path(jump_over_path).align_y_to_ground_and_air() \
-		.set_player_body_vision_as_origin(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND) \
+	attack_jump_over_path = PathStyle.new().follow_path(jump_over_path).align_y_to_ground_and_jump() \
+		.set_player_body_rotation_as_vision_angle(0, 0).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND) \
 		.look_at_player_xz()
 		
 	var jump_point_1 := Vector3(0, 0, 10).rotated(Vector3.UP, PI * 2 * randf())
@@ -53,8 +53,10 @@ func setup(seedling: int) -> void:
 		.quad_to(jump_point_5, Globals.vec3_y(jump_point_4.lerp(jump_point_5, 0.5), 20), 3, PathStyle.Easing.out_expo) \
 		.quad_to(jump_point_1, Globals.vec3_y(jump_point_5.lerp(jump_point_1, 0.5), 20), 3, PathStyle.Easing.out_expo)
 	attack_jump_circle_path = PathStyle.new().follow_path(jump_circle_path).align_y_to_ground_and_air() \
-		.set_player_body_vision_as_origin(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.NEVER) \
+		.set_player_body_rotation_as_vision_angle(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.NEVER) \
 		.look_at_player_xz()
+	
+	attack_jump_circle_path = attack_jump_over_path
 	
 	none_pattern = AttackPatterns.none()
 	
@@ -126,14 +128,18 @@ func update_behaviour() -> void:
 				else:
 					current_path = attack_jump_circle_path
 		
-		attack_jump_over_path, attack_jump_circle_path:
-			if player.position.distance_to(position) < vitals.perception.min_value:
-				if vitals.health.percentage() < 0.25:
-					current_path = attack_jump_over_path
-				else:
-					current_path = attack_jump_circle_path
-			elif player.position.distance_to(position) > vitals.perception.max_value:
+		attack_jump_over_path:
+			if player.position.distance_to(position) > vitals.perception.max_value:
 				current_path = idle_path
+			elif vitals.health.percentage() >= 0.25:
+				current_path = attack_jump_circle_path
+				
+		attack_jump_circle_path:
+			if player.position.distance_to(position) > vitals.perception.max_value:
+				current_path = idle_path
+			elif vitals.health.percentage() < 0.25:
+				current_path = attack_jump_over_path
+				
 				
 	if current_path == idle_path:
 		player.ignore_enemy(self)

@@ -159,7 +159,8 @@ func _physics_process(delta: float) -> void:
 						set_feet_position(g)
 						t.y = 0
 						v.y = 0
-				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.05 else 2
+				#print(feet_position(), " - ", g, " | ", position.y, " - ", bounds.y / 2.0)
+				is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.1 else 2
 				velocity = Vector3(v.x, v.y + t.y, v.z)
 				position += Vector3(v.x, v.y + t.y, v.z) + group_positioning_adjustment * delta * speed_for_current_behaviour_tick
 				
@@ -205,7 +206,7 @@ func _physics_process(delta: float) -> void:
 			var options: int = 0
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT or current_path.coord_y == PathStyle.CoordY.ORIGIN:
 				options |= Navigator.MovementOptions.UNDERGROUND
-			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN:
+			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN or current_path.coord_y == PathStyle.CoordY.AIR:
 				options |= Navigator.MovementOptions.CAN_FLY
 			var obj := get_node(".") as CharacterBody
 			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, 0.5)

@@ -42,7 +42,7 @@ func setup(seedling: int) -> void:
 	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
 	.line_to(Vector3(10, 5, 0), 5, PathStyle.Easing.linear) \
 	.line_to(Vector3(0, 5, 0), 5, PathStyle.Easing.linear) \
-	).align_y_to_origin().set_player_cam_vision_as_origin(PI, 10).use_absolute().look_at_player()
+	).align_y_to_origin().set_player_camera_as_vision_angle(PI, 10).use_absolute().look_at_player()
 	
 	#attack_path = PathStyle.new(0.0).towards_player(5.0, 15.0, 20.0).align_y_to_ground().set_use_player_as_origin().use_absolute().look_at_player()
 	

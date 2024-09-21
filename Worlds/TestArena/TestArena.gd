@@ -101,7 +101,7 @@ func setup(_settings: WorldSettings) -> void:
 	#var undead4 := Population.generate_enemy(World.Enemy.UNDEAD, player, 9, 1000, 20)
 	#undead4.level = 50
 	#add_enemy(undead4)
-	var fish := Population.generate_enemy(World.Enemy.FISH, player, 25, 1000, 20)
+	var fish := Population.generate_enemy(World.Enemy.FISH, player, -15, 1000, 20)
 	fish.level = 1
 	add_enemy(fish)
 	#var fishman2 := Population.generate_enemy(World.Enemy.FISHMAN, player, 15, 1000, 20)

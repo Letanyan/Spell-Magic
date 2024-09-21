@@ -1,19 +1,22 @@
 class_name PathStyle
 
-enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT }
+enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT, AIR, GROUND_AND_JUMP }
 enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER, PLAYER_XZ }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
+enum PlayerVisionAngle { CAMERA, BODY_ROTATION }
 
 enum InitialPositionCanUpdate {
 	ON_GROUND = 1 << 0,
 	UNDERGROUND = 1 << 1,
 	IN_AIR = 1 << 2,
+	AT_INTERCHANGE = 1 << 3,
+	WHEN_LOOP = 1 << 4,
 	
 	ON_GROUND_AND_UNDER = 0b011,
 	ON_GROUND_AND_AIR = 0b101,
 	UNDERGROUND_AND_AIR = 0b110,
-	ALWAYS = 0b111,
+	ALWAYS = 0b1111,
 	NEVER = 0b0
 }
 
@@ -29,6 +32,7 @@ var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
 var time: float = NAN
 var old_position: Vector4 = Vector4.ZERO
+var old_origin: Vector3 = Vector3.ZERO
 var is_on_path: bool = false
 
 var when_initial_position_can_update: int = InitialPositionCanUpdate.ALWAYS
@@ -44,7 +48,7 @@ var player_start_vision_rotation: Variant = null # used to store entity rotation
 # straight of player view. -theta is cw from player view. radius is distance away
 # from player. (min|max)_margin are the radi of disc with center (theta, radius)
 var player_vision_offset: Vector4 = Vector4.ZERO
-var use_player_camera_as_vision: bool = false # if false use player body orientation else camera
+var player_vision_angle: PlayerVisionAngle = PlayerVisionAngle.BODY_ROTATION
 
 func _init(_seed: int = randi(), _origin: Vector3 = Vector3.ZERO) -> void:
 	origin = _origin
@@ -106,15 +110,15 @@ func set_use_me_as_origin(o: bool = true) -> PathStyle:
 		origin = Vector3.ZERO
 	return self
 	
-func set_player_body_vision_as_origin(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
-	use_player_camera_as_vision = false
+func set_player_body_rotation_as_vision_angle(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
+	player_vision_angle = PlayerVisionAngle.BODY_ROTATION
 	player_vision_offset = Vector4(a, r, min_m, max_m)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
 	return self
 	
-func set_player_cam_vision_as_origin(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
-	use_player_camera_as_vision = true
+func set_player_camera_as_vision_angle(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
+	player_vision_angle = PlayerVisionAngle.CAMERA
 	player_vision_offset = Vector4(a, r, min_m, max_m)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
@@ -144,6 +148,16 @@ func align_y_to_ground_and_dirt() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_DIRT
 	return self
 	
+## movement is allowed above ground (flying)
+func align_y_to_air() -> PathStyle:
+	coord_y = CoordY.AIR
+	return self
+	
+## movement is allowed above ground (flying)
+func align_y_to_ground_and_jump() -> PathStyle:
+	coord_y = CoordY.GROUND_AND_JUMP
+	return self
+	
 func circle(speed: float, radius: float, h: float) -> PathStyle:
 	path = Pathway.new()
 	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
@@ -162,7 +176,7 @@ func circle_player(speed: float, radius: float, h: float) -> PathStyle:
 	return self
 	
 func towards_player(speed: float, mn: float, mx: float) -> PathStyle:
-	use_player_camera_as_vision = false
+	player_vision_angle = PlayerVisionAngle.BODY_ROTATION
 	player_vision_offset = Vector4(0.0, 0.0, mn, mx)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
@@ -218,14 +232,20 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 		is_done.data = false
 	if me_start_position == null:
 		me_start_position = me.position
+		if me is Enemy:
+			me_start_position.y -= (me as Enemy).bounds.y / 2.0
 	if player_start_position == null:
 		if player is Player:
 			player_start_position = (player as Player).position
+			player_start_position.y -= (player as Player).bounds.y / 2.0
 		elif player is Vector3:
 			player_start_position = player
 	if origin_kind == OriginKind.VISION and player_start_vision_rotation == null:
 		if player is Player:
-			player_start_vision_rotation = ((player as Player).get_node("CamPivot" if use_player_camera_as_vision else "Pivot") as Node3D).rotation.y
+			if player_vision_angle == PlayerVisionAngle.CAMERA:
+				player_start_vision_rotation = ((player as Player).get_node("CamPivot") as Node3D).rotation.y
+			elif player_vision_angle == PlayerVisionAngle.BODY_ROTATION:
+				player_start_vision_rotation = ((player as Player).get_node("Pivot") as Node3D).rotation.y
 		else:
 			player_start_vision_rotation = 0.0
 	var temp_origin := origin
@@ -244,32 +264,36 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player_start_position
 		temp_origin += off
 		
+	var time_was_up := false
 	# don't use positions to determine completion as we might get stuck if time near total_duration
 	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
-		if can_update_initial_position_now:
+		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0):
 			me_start_position = null
+		time_was_up = true
 		time = time - path.total_duration
 		if is_done:
 			is_done.data = true
 		stored_loops += 1
-	
-	if Vector3(old_position.x, old_position.y, old_position.z).is_equal_approx(me.position):
-		is_on_path = true
-	else:
-		is_on_path = false
 	
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
 	var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
 	var v := path.position_at_time_with_rotation(duration, -psvr, index) + temp_origin
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	#print(y, " = ", v.y, " - ", temp_origin.y)
+	if time_was_up and (when_initial_position_can_update & InitialPositionCanUpdate.WHEN_LOOP != 0):
+		player_start_vision_rotation = null
+		player_start_position = null
 	if previous_path_index != index.data or is_zero_approx(time) or (player is Player and player.position != player_start_position) or (player is Vector3 and player != player_start_position):
-		if can_update_initial_position_now:
+		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0):
 			player_start_vision_rotation = null
 			player_start_position = null
 		previous_path_index = index.data
-	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time - delta, delta, is_on_path))
 		
+	is_on_path = Vector3(old_position.x, old_position.y, old_position.z).is_equal_approx(me.position) and old_origin.distance_to(temp_origin) < 0.1
+	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
+	old_origin = temp_origin
+	
 	return old_position
 
 func next_y_position(me: Node3D, x: float, y: float, z: float) -> float:
@@ -281,27 +305,32 @@ func next_y_position(me: Node3D, x: float, y: float, z: float) -> float:
 		
 	var result := 0.0
 	var actual_y := y
+	var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 	match coord_y:
 		CoordY.GROUND:
-			result = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			result = g
 			actual_y = 0.0
-		CoordY.GROUND_AND_DIRT: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+		CoordY.GROUND_AND_DIRT:
 			if y > 0:
-				result = 0.0
+				result = g
 				actual_y = 0.0
 			else:
 				result = g + y
-		CoordY.GROUND_AND_AIR: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+		CoordY.GROUND_AND_AIR, CoordY.GROUND_AND_JUMP:
 			if y < 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y
 		CoordY.ORIGIN: 
-			result = Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + y + me_y / 2.0
-			
+			result = g + y 
+		CoordY.AIR:
+			if y <= me_y / 2.0:
+				result = g + me_y / 2.0
+				actual_y = me_y / 2.0
+			else:
+				result = g + y
+
 	if actual_y > 0.001:
 		can_update_initial_position_now = when_initial_position_can_update & InitialPositionCanUpdate.IN_AIR != 0
 	elif actual_y < -0.001:
@@ -451,7 +480,7 @@ class Pathway:
 		if index:
 			index.data = segment
 			
-		if use_relative_speed:
+		if use_relative_speed and delta > 0:
 			var change_in_t := delta / durations[segment]
 			var ratio := t / durations[segment]
 			var modifier := path_modifiers[segment]

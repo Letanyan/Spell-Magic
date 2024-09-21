@@ -12,7 +12,7 @@ func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(1000*fl, 1000*fl, 10*fl, 20, 70*fl, 30*fl, {Artifact.Element.WATER: Vector2(0.5*fl, 0)})
 	
 	idle_path = PathStyle.new(seedling).random_points_in_circle(10, 10, 0, 10).align_y_to_ground().set_origin(position).use_absolute()
-	attack_direct_path = PathStyle.new(0, position).towards_player(2, 4, 6).set_player_body_vision_as_origin(0, 20, 2, 3).align_y_to_ground().use_absolute().look_at_player_xz()
+	attack_direct_path = PathStyle.new(0, position).towards_player(2, 4, 6).set_player_body_rotation_as_vision_angle(0, 20, 2, 3).align_y_to_ground().use_absolute().look_at_player_xz()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
