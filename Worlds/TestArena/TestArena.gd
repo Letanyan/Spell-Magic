@@ -86,9 +86,9 @@ func setup(_settings: WorldSettings) -> void:
 	#var birdman := Population.generate_enemy(World.Enemy.BIRDMAN, player, 20, 1000, 20)
 	#add_enemy(birdman)
 	
-	var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
+	#var fishman := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 20)
 	#fishman.level = 50
-	add_enemy(fishman)
+	#add_enemy(fishman)
 	#var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, 15, 1000, 20)
 	#undead.level = 50
 	#add_enemy(undead)
@@ -110,6 +110,14 @@ func setup(_settings: WorldSettings) -> void:
 	#var fishman3 := Population.generate_enemy(World.Enemy.FISHMAN, player, 20, 1000, 15)
 	#fishman3.level = 50
 	#add_enemy(fishman3)
+	#var a := Population.generate_enemy(World.Enemy.DRAGON, player, -20, 1000, -20)
+	#add_enemy(a)
+	#var b := Population.generate_enemy(World.Enemy.DRAGOON, player, 20, 1000, -20)
+	#add_enemy(b)
+	var c := Population.generate_enemy(World.Enemy.GHOST, player, -20, 1000, 20)
+	add_enemy(c)
+	#var d := Population.generate_enemy(World.Enemy.GHOSTLY, player, 20, 1000, 20)
+	#add_enemy(d)
 	
 	var rng := RandomNumberGenerator.new()
 	spawner = ItemSpawner.key_spawner(rng, null, Vector3(20, 1000, 20), 16)
@@ -149,9 +157,6 @@ func setup(_settings: WorldSettings) -> void:
 	#target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
 	#target4.focus_point = Vector3.UP * 3e10
 	#add_child(target4)
-	
-	#var human := Population.generate_enemy(World.Enemy.HUMAN, player, 10, 1000, 10)
-	#add_enemy(human)
 	
 
 func add_enemy(enemy: Enemy) -> void:

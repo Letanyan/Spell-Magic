@@ -59,14 +59,19 @@ func _ready() -> void:
 	
 static func make(_kind: World.Enemy) -> Enemy:
 	var result: Enemy
-	const undead = preload("res://Characters/Enemy/Undead/undead.tscn") as PackedScene
-	const bat = preload("res://Characters/Enemy/Bat/bat.tscn") as PackedScene
-	const mole = preload("res://Characters/Enemy/Mole/mole.tscn") as PackedScene
-	const human = preload("res://Characters/Enemy/Human/human.tscn") as PackedScene
-	const walker = preload("res://Characters/Enemy/Walker/walker.tscn") as PackedScene
-	const fish = preload("res://Characters/Enemy/Fish/fish.tscn") as PackedScene
-	const birdman = preload("res://Characters/Enemy/Birdman/birdman.tscn") as PackedScene
-	const fishman = preload("res://Characters/Enemy/Fishman/fishman.tscn") as PackedScene
+	const fish = preload("res://Characters/Enemy/Blob/Fish/fish.tscn") as PackedScene
+	
+	const undead = preload("res://Characters/Enemy/Tall/Undead/undead.tscn") as PackedScene
+	const mole = preload("res://Characters/Enemy/Tall/Mole/mole.tscn") as PackedScene
+	const walker = preload("res://Characters/Enemy/Tall/Walker/walker.tscn") as PackedScene
+	const birdman = preload("res://Characters/Enemy/Tall/Birdman/birdman.tscn") as PackedScene
+	const fishman = preload("res://Characters/Enemy/Tall/Fishman/fishman.tscn") as PackedScene
+	
+	const bat = preload("res://Characters/Enemy/Flying/Bat/bat.tscn") as PackedScene
+	const dragon = preload("res://Characters/Enemy/Flying/Dragon/Dragon.tscn") as PackedScene
+	const dragoon = preload("res://Characters/Enemy/Flying/Dragoon/Dragoon.tscn") as PackedScene
+	const ghost = preload("res://Characters/Enemy/Flying/Ghost/Ghost.tscn") as PackedScene
+	const ghostly = preload("res://Characters/Enemy/Flying/Ghostly/Ghostly.tscn") as PackedScene
 	match _kind:
 		World.Enemy.UNDEAD: result = undead.instantiate()
 		World.Enemy.MOLE: result = mole.instantiate()
@@ -74,8 +79,11 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.BAT: result = bat.instantiate()
 		World.Enemy.BIRDMAN: result = birdman.instantiate()
 		World.Enemy.FISH: result = fish.instantiate()
-		World.Enemy.HUMAN: result = human.instantiate()
 		World.Enemy.FISHMAN: result = fishman.instantiate()
+		World.Enemy.DRAGON: result = dragon.instantiate()
+		World.Enemy.DRAGOON: result = dragoon.instantiate()
+		World.Enemy.GHOST: result = ghost.instantiate()
+		World.Enemy.GHOSTLY: result = ghostly.instantiate()
 		_: push_error("Missing enemy")
 	return result
 	

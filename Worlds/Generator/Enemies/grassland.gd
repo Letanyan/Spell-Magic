@@ -105,22 +105,14 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var j := candidates[i]
 					var pos := area[j] as Vector2
 					var p: Node3D
-					var house_size := 0
 					if rng.randf() < 0.7:
 						p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
-						house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.4, 2: 0.05})
 					else:
 						p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
-						house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.3, 3: 0.1, 4: 0.05})
 					if p != null:
 						max_limit -= 1
 						exclusion[j] = true
 						result.append(p)
-						for k in house_size:
-							var n: Human = pop.spawn_enemy(World.Enemy.HUMAN, state, pos.x, pos.y, spacing)
-							if n != null:
-								n.velocity_movement.current_biome = World.Biome.GRASSLAND
-								result.append(n)
 					if max_limit <= 0:
 						break
 						

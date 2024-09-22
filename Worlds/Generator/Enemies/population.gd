@@ -129,22 +129,17 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 	var result: Enemy = null
 	var pos := Vector3(x, 0, y)
 	match enemy:
-		World.Enemy.UNDEAD:
-			result = entity_manager.get_enemy(World.Enemy.UNDEAD)
-		World.Enemy.BAT:
-			result = entity_manager.get_enemy(World.Enemy.BAT)
-		World.Enemy.MOLE:
-			result = entity_manager.get_enemy(World.Enemy.MOLE)
-		World.Enemy.HUMAN:
-			result = entity_manager.get_enemy(World.Enemy.HUMAN)
-		World.Enemy.WALKER:
-			result = entity_manager.get_enemy(World.Enemy.WALKER)
-		World.Enemy.FISH:
-			result = entity_manager.get_enemy(World.Enemy.FISH)
-		World.Enemy.BIRDMAN:
-			result = entity_manager.get_enemy(World.Enemy.BIRDMAN)
-		World.Enemy.FISHMAN:
-			result = entity_manager.get_enemy(World.Enemy.FISHMAN)
+		World.Enemy.UNDEAD: result = entity_manager.get_enemy(World.Enemy.UNDEAD)
+		World.Enemy.BAT: result = entity_manager.get_enemy(World.Enemy.BAT)
+		World.Enemy.MOLE: result = entity_manager.get_enemy(World.Enemy.MOLE)
+		World.Enemy.WALKER: result = entity_manager.get_enemy(World.Enemy.WALKER)
+		World.Enemy.FISH: result = entity_manager.get_enemy(World.Enemy.FISH)
+		World.Enemy.BIRDMAN: result = entity_manager.get_enemy(World.Enemy.BIRDMAN)
+		World.Enemy.FISHMAN: result = entity_manager.get_enemy(World.Enemy.FISHMAN)
+		World.Enemy.DRAGON: result = entity_manager.get_enemy(World.Enemy.DRAGON)
+		World.Enemy.DRAGOON: result = entity_manager.get_enemy(World.Enemy.DRAGOON)
+		World.Enemy.GHOST: result = entity_manager.get_enemy(World.Enemy.GHOST)
+		World.Enemy.GHOSTLY: result = entity_manager.get_enemy(World.Enemy.GHOSTLY)
 			
 	result.set_level_relative_to_location(rng, x, y)
 	for conn: Dictionary in result.vital_update.get_connections():
@@ -155,30 +150,18 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
 	var result: Enemy = null
 	match enemy:
-		World.Enemy.UNDEAD:
-			result = Enemy.make(World.Enemy.UNDEAD)
-			result.name = "Undead" + str(randi())
-		World.Enemy.BAT:
-			result = Enemy.make(World.Enemy.BAT)
-			result.name = "Bat" + str(randi())
-		World.Enemy.MOLE:
-			result = Enemy.make(World.Enemy.MOLE)
-			result.name = "Mole" + str(randi())
-		World.Enemy.HUMAN:
-			result = Enemy.make(World.Enemy.HUMAN)
-			result.name = "Human" + str(randi())
-		World.Enemy.WALKER:
-			result = Enemy.make(World.Enemy.WALKER)
-			result.name = "Walker" + str(randi())
-		World.Enemy.FISH:
-			result = Enemy.make(World.Enemy.FISH)
-			result.name = "Fish" + str(randi())
-		World.Enemy.BIRDMAN:
-			result = Enemy.make(World.Enemy.BIRDMAN)
-			result.name = "Birdman" + str(randi())
-		World.Enemy.FISHMAN:
-			result = Enemy.make(World.Enemy.FISHMAN)
-			result.name = "Fishman" + str(randi())
+		World.Enemy.UNDEAD: result = Enemy.make(World.Enemy.UNDEAD)
+		World.Enemy.BAT: result = Enemy.make(World.Enemy.BAT)
+		World.Enemy.MOLE: result = Enemy.make(World.Enemy.MOLE)
+		World.Enemy.WALKER: result = Enemy.make(World.Enemy.WALKER)
+		World.Enemy.FISH: result = Enemy.make(World.Enemy.FISH)
+		World.Enemy.BIRDMAN: result = Enemy.make(World.Enemy.BIRDMAN)
+		World.Enemy.FISHMAN: result = Enemy.make(World.Enemy.FISHMAN)
+		World.Enemy.DRAGON: result = Enemy.make(World.Enemy.DRAGON)
+		World.Enemy.DRAGOON: result = Enemy.make(World.Enemy.DRAGOON)
+		World.Enemy.GHOST: result = Enemy.make(World.Enemy.GHOST)
+		World.Enemy.GHOSTLY: result = Enemy.make(World.Enemy.GHOSTLY)
+	result.name = World.Enemy.keys()[enemy] + str(randi())
 			
 	result.set_level_relative_to_location(null, x, y)
 	result.player = _player

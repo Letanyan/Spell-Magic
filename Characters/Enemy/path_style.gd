@@ -619,8 +619,8 @@ class Segment:
 		var q2 := q1 + a.x * b.x + a.z * b.z
 		var k2 := (4.0 / 3.0) * (sqrt(2 * q1 * q2) - q2) / (a.x * b.z - a.z * b.x)
 
-		var c := Vector3(a.x - k2 * a.z, 0, a.z + k2 * a.x)
-		var d := Vector3(b.x + k2 * b.z, 0, b.z - k2 * b.x)
+		var c := Vector3(a.x - k2 * a.z, lerpf(a.y, b.y, 0.33), a.z + k2 * a.x)
+		var d := Vector3(b.x + k2 * b.z, lerpf(a.y, b.y, 0.66), b.z - k2 * b.x)
 		
 		return Segment.new(a, b, c, d, BezierKind.CUBIC)
 		

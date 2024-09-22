@@ -8,8 +8,11 @@ enum Biome {
 
 enum Enemy {
 	# !! WARNING: When adding new cases ensure `world_enemy_enum` method on `Enemy` 
-	# is updated to reflect new case added here. As well as, in population.gd
-	NONE, UNDEAD, BAT, MOLE, HUMAN, WALKER, FISH, BIRDMAN, FISHMAN
+	# is updated to reflect new case added here. 
+	# As well as `generate_enemy` and `spawn_enemy`, in population.gd
+	NONE, UNDEAD, MOLE, WALKER, BIRDMAN, FISHMAN,
+	BAT, DRAGON, DRAGOON, GHOST, GHOSTLY,
+	FISH,
 }
 
 enum Foliage {
