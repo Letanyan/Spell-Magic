@@ -4621,11 +4621,11 @@ _data = {
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7karu"]
 radius = 1.0
-height = 3.0
+height = 2.6
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3hskq"]
 radius = 1.0
-height = 3.0
+height = 2.6
 
 [node name="walker" type="CharacterBody3D"]
 collision_layer = 4

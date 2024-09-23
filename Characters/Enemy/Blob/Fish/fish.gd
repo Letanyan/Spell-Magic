@@ -12,7 +12,7 @@ var attack_jump_circle_path: PathStyle
 var jump_timer: int = 0
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(15), hp(10), mana_regen(10), 20, atk(5), def(7), {Artifact.Element.WATER: res(10, 0)})
+	vitals = Vitals.enemy(hp(15), mana(10), mana_regen(10), 20, atk(5), def(7), {Artifact.Element.WATER: res(10, 0)})
 	
 	const idle_r := 10.0
 	var a := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)

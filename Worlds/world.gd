@@ -12,7 +12,7 @@ enum Enemy {
 	# As well as `generate_enemy` and `spawn_enemy`, in population.gd
 	NONE, UNDEAD, MOLE, WALKER, BIRDMAN, FISHMAN,
 	BAT, DRAGON, DRAGOON, GHOST, GHOSTLY,
-	FISH,
+	FISH, BIRD, FUNGI, HOT_BLOB, MUSHROOM
 }
 
 enum Foliage {

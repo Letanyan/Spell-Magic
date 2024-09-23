@@ -2,7 +2,7 @@ shader_type spatial;
 render_mode unshaded;
 
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture;
-uniform vec4 outline_color : source_color;
+uniform vec3 outline_color : source_color;
 uniform float outline_width = 2.0;
 uniform bool constant_width = true;
 
@@ -20,5 +20,4 @@ void fragment() {
 			ALPHA = 1.0;
 		}
 	}
-	
 }

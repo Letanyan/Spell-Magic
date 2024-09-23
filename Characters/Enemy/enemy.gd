@@ -60,6 +60,10 @@ func _ready() -> void:
 static func make(_kind: World.Enemy) -> Enemy:
 	var result: Enemy
 	const fish = preload("res://Characters/Enemy/Blob/Fish/fish.tscn") as PackedScene
+	const bird = preload("res://Characters/Enemy/Blob/Bird/Bird.tscn") as PackedScene
+	const fungi = preload("res://Characters/Enemy/Blob/Fungi/Fungi.tscn") as PackedScene
+	const hot_blob = preload("res://Characters/Enemy/Blob/HotBlob/HotBlob.tscn") as PackedScene
+	const mushroom = preload("res://Characters/Enemy/Blob/Mushroom/Mushroom.tscn") as PackedScene
 	
 	const undead = preload("res://Characters/Enemy/Tall/Undead/undead.tscn") as PackedScene
 	const mole = preload("res://Characters/Enemy/Tall/Mole/mole.tscn") as PackedScene
@@ -84,6 +88,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.DRAGOON: result = dragoon.instantiate()
 		World.Enemy.GHOST: result = ghost.instantiate()
 		World.Enemy.GHOSTLY: result = ghostly.instantiate()
+		World.Enemy.BIRD: result = bird.instantiate() 
+		World.Enemy.FUNGI: result = fungi.instantiate()
+		World.Enemy.HOT_BLOB: result = hot_blob.instantiate() 
+		World.Enemy.MUSHROOM: result = mushroom.instantiate()
 		_: push_error("Missing enemy")
 	return result
 	
@@ -190,6 +198,7 @@ func _physics_process(delta: float) -> void:
 	if behavior_ticked_over or not velocity_movement.has_navigation_target:
 		if behavior_ticked_over:
 			update_behaviour()
+			behavior_tick = 0
 		if not velocity_movement.has_navigation_target:
 			var is_done := Globals.Ref.new(false)
 			var next_pos: Vector3
@@ -223,10 +232,8 @@ func _physics_process(delta: float) -> void:
 			#DebugDraw3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
 			#for p in velocity_movement.target_path:
 				#DebugDraw3D.draw_sphere(p, 0.1, clr, 0.2)
-		if reset_spell_tick:
-			behavior_tick = Globals.behaviour_tick()
-		else:
-			behavior_tick = 0
+			if reset_spell_tick:
+				behavior_tick = Globals.behaviour_tick()
 
 	if reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0):
 		var spell: Spell = null
@@ -412,6 +419,14 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.BIRDMAN
 	elif n is Fishman:
 		return World.Enemy.FISHMAN
+	elif n is Bird:
+		return World.Enemy.BIRD
+	elif n is Fungi:
+		return World.Enemy.FUNGI
+	elif n is HotBlob:
+		return World.Enemy.HOT_BLOB
+	elif n is Mushroom:
+		return World.Enemy.MUSHROOM
 	
 	return World.Enemy.NONE
 

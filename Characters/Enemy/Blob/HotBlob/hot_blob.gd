@@ -1,4 +1,4 @@
-class_name Dragon
+class_name HotBlob
 extends Enemy
 
 var none_pattern: AttackPatterns
@@ -9,23 +9,11 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(15), mana(18), mana_regen(20), 30, atk(15), def(15), {Artifact.Element.FIRE: res(10, 5)})
+	vitals = Vitals.enemy(hp(10), mana(18), mana_regen(20), 30, atk(12), def(12), {Artifact.Element.FIRE: res(15, 5)})
 	
-	idle_path = PathStyle.new(0, position + Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7).align_y_to_air()
+	idle_path = PathStyle.new(0, position).random_points_in_circle(1, 2, 0, 3).align_y_to_ground()
 	
-	const x_size = 10
-	const y_size = 10
-	const z_size = 10
-	var cube_path := PathStyle.Pathway.new() \
-		.move_to(Vector3(0, 0, 0)) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 3, PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 2, PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 1, PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 2, PathStyle.Easing.in_out_sine) \
-		.line_to(Vector3(0, 0, 0), 3, PathStyle.Easing.in_out_sine)
-	
-	attack_path = PathStyle.new(randi()).follow_path(cube_path).align_y_to_air().look_at_player() \
-		.set_player_body_rotation_as_vision_angle(0, 10, 3, 6)
+	attack_path = PathStyle.new(randi(), position).towards_player(1, 1, 2).set_use_player_as_origin().align_y_to_ground().look_at_player()
 	
 	current_path = idle_path
 	
@@ -45,41 +33,45 @@ func setup(seedling: int) -> void:
 	
 	random_pattern = AttackPatterns.new(
 		[
-			fire1,
-			fire2,
-			fire3,
-			fire_down1,
-			fire_down2,
-			fire_down3,
+			fire_mine1,
+			fire_mine2,
+			fire_mine3,
 		],
-		AttackPatterns.choose_from_distribution(5.0, [20, 15, 10, 3, 2, 1], -1)
+		AttackPatterns.choose_from_distribution(5.0, [ 10, 5, 2 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			fire_mine1,
+			fire1,
+			fire2,
+			fire3,
 			fire_down1,
-			fire_mine2,
+			fire3,
+			fire2,
+			fire1,
 			fire_down2,
-			fire_mine3,	
+			fire2,
+			fire1,
+			fire3,
 			fire_down3,
 		],
-		AttackPatterns.choose_in_sequence([ 1, 5, 3, 6, 2, 7 ], -1)
+		AttackPatterns.choose_in_sequence([ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ], -1)
 	)
 	
-	animation_map["attack"] = "Headbutt"
-	kind = World.Enemy.DRAGON
+	animation_map["attack"] = "Bite_Front"
+	kind = World.Enemy.HOT_BLOB
+	
 
 func attack_state() -> AttackPatterns:
 	if is_idle:
 		return none_pattern
-	elif vitals.health.percentage() >= 0.1:
-		return random_pattern
-	else:
+	elif vitals.health.percentage() > 0.5:
 		return sequence_pattern
+	else:
+		return random_pattern
 
 func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.BAT, position)
+	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
 
 func update_entity_info(info: EntityInfo) -> bool:
 	info.position = position
@@ -92,14 +84,12 @@ func update_behaviour() -> void:
 	else:
 		current_path = attack_path
 
+func death_box() -> Vector3:
+	return Vector3(0.7, 1.9, 0.3)
+
 func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random()
-	var l := Artifact.Option.make_random()
-	var b := Artifact.Option.make_random()
-	var r := Artifact.Option.make_random()
-	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
-	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"}, Spell.Element.ELECTRIC, 1, 5, 0.2, 4, 50, 50, NAN).bake(new_name)
-	return spell
+	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
+	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
+	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
+	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
+	return Artifact.new(Time.get_datetime_string_from_system(), t, r, b, l)

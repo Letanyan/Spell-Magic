@@ -9,7 +9,7 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(1), mana(8), mana_regen(20), 20, atk(10), def(5), {Artifact.Element.ELECTRIC: res(5, 1)})
+	vitals = Vitals.enemy(hp(1), mana(8), mana_regen(20), 20, atk(10), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(7, 3)})
 	vitals.perception.max_value = 40
 	
 	idle_path = PathStyle.new(0, position + Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7).align_y_to_air()
@@ -31,41 +31,41 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 10.0, power(10), radius(2), 1, 50, 50, 10)
-	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, 8.0, power(12), radius(2), 1, 50, 50, 20)
-	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ELECTRIC, 6.0, power(8), radius(2), 1, 50, 50, 30)
+	var ice1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ICE, 10.0, power(10), radius(2), 1, 50, 50, 10)
+	var ice2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ICE, 8.0, power(12), radius(2), 1, 50, 50, 20)
+	var ice3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ICE, 6.0, power(8), radius(2), 1, 50, 50, 30)
 	
-	var elec_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"}, Spell.Element.ELECTRIC, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 20)
-	var elec_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ELECTRIC, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
-	var elec_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ELECTRIC, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
+	var ice_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 20)
+	var ice_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
+	var ice_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ICE, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
 	
-	var elec_scatter1 := GlobalData.magic_book.copy_spell("scatter shot", {"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ELECTRIC, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
-	var elec_scatter2 := GlobalData.magic_book.copy_spell("scatter shot", {"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ELECTRIC, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
-	var elec_scatter3 := GlobalData.magic_book.copy_spell("scatter shot", {"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ELECTRIC, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
+	var ice_scatter1 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
+	var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
+	var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
-			elec1,
-			elec2,
-			elec3,
+			ice1,
+			ice2,
+			ice3,
 		],
 		AttackPatterns.choose_from_distribution(5.0, [10, 3, 2], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			elec_scatter1,
-			elec_arc1,
-			elec_scatter2,
-			elec_arc2,
-			elec_scatter3,
-			elec_arc3,
+			ice_scatter1,
+			ice_arc1,
+			ice_scatter2,
+			ice_arc2,
+			ice_scatter3,
+			ice_arc3,
 		],
 		AttackPatterns.choose_in_sequence([ 1, 1, 3, 1, 5, 1 ], -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"
-	kind = World.Enemy.BAT
+	kind = World.Enemy.GHOST
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

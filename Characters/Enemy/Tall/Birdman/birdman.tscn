@@ -4730,11 +4730,11 @@ graph_offset = Vector2(-79, 28)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_utjc4"]
 radius = 1.0
-height = 4.0
+height = 3.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7atj7"]
 radius = 1.0
-height = 4.0
+height = 3.0
 
 [node name="birdman" type="CharacterBody3D"]
 collision_layer = 4

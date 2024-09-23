@@ -39,6 +39,10 @@ func setup(seedling: int) -> void:
 	var fire_down2 := GlobalData.magic_book.copy_spell("top-down", {"H": "20"}, Spell.Element.FIRE, 8.0, power(12), radius(4), 1, 75, 50, 70)
 	var fire_down3 := GlobalData.magic_book.copy_spell("top-down", {"H": "30"}, Spell.Element.FIRE, 6.0, power(14), radius(4), 1, 75, 75, 75)
 	
+	var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter", {"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, 5.0, power(7), radius(7), fiti(4, 15), 33, 66, 25)
+	var fire_mine2 := GlobalData.magic_book.copy_spell("bomb", {"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, 7.0, power(11), radius(9), fiti(2, 8), 75, 120, 50)
+	var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear", {"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, 5.0, power(17), radius(5), fiti(5, 10), 70, 180, 60)
+	
 	random_pattern = AttackPatterns.new(
 		[
 			fire1,
@@ -48,23 +52,23 @@ func setup(seedling: int) -> void:
 			fire_down2,
 			fire_down3,
 		],
-		AttackPatterns.choose_from_distribution(5.0, [20, 15, 10, 3, 2, 1], -1)
+		AttackPatterns.choose_from_distribution(3.0, [14, 10, 8, 6, 4, 2], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
+			fire_mine1,
 			fire_down1,
+			fire_mine2,
 			fire_down2,
+			fire_mine3,	
 			fire_down3,
-			fire_down3,
-			fire_down2,
-			fire_down1,
 		],
-		AttackPatterns.choose_in_sequence([ 1, 2, 3, 1, 2, 3 ], -1)
+		AttackPatterns.choose_in_sequence([ 2, 5, 2, 5, 2, 5 ], -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"
-	kind = World.Enemy.BAT
+	kind = World.Enemy.DRAGOON
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

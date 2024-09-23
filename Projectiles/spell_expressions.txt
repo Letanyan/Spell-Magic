@@ -14,8 +14,39 @@ arc-spiral: fires multiple independent oscillating projectiles in an arc
 	hmul ; projectile horizontal oscillation rate
 	vmul ; projectile vertical oscillation rate
 	
-bomb: places a projectile some distance `d` away multiplied by `C` 
-	d ; offset
+bomb: places N projectiles some distance `d*C` away set off after S time in s interval.  
+	d ; offset multiplied by C
+	S ; minimum wait time
+	s ; interval between bombs
+
+bomb-circle: places N projectiles on circle perimeter with radius R in center `d*C`. set off after S time in s interval.  
+	d ; offset multiplied by C
+	R ; radius of bombs placed
+	arc ; arc of the circle
+	S ; minimum wait time
+	s ; interval between bombs
+	
+bomb-disc-scatter: places N projectiles in circle with radius R in center `d*C`. set off after S time in s interval.  
+	d ; offset multiplied by C
+	Rmin ; min radius of bombs placed
+	Rmax ; max radius of bombs placed
+	arc ; arc of disc
+	S ; minimum wait time
+	s ; interval between bombs
+	
+bomb-linear: places N projectiles in line at start `d*C-R` to end `d*C+R`. set off after S time in s interval.  
+	d ; offset multiplied by C
+	R ; line width of bombs placed
+	S ; minimum wait time
+	s ; interval between bombs
+
+bomb-sphere-scatter: places N projectiles in sphere with radius R in center `d*C`. set off after S time in s interval.  
+	d ; offset multiplied by C
+	Rmin ; min radius of bombs placed
+	Rmax ; max radius of bombs placed
+	arc ; arc of disc
+	S ; minimum wait time
+	s ; interval between bombs
 	
 buck-shot: fires multiple projectiles from a center point to angles defined by (x/y/z)range
 	s ; speed

@@ -1,9 +1,16 @@
 class_name AttackSequence
 	
-enum ASOptions { RESET_PATH, RESET_ATTACK, PERSIST_PATH, PERSIST_ATTACK, AUTO_RESET_PATH, AUTO_RESET_ATTACK }
+enum ASOptions { 
+	RESET_PATH, # immediatly null Path 
+	RESET_ATTACK, # immediatly null Attack
+	PERSIST_PATH, # ignore Path is_done and keep going with Path
+	PERSIST_ATTACK, # ignore Attack is_done and keep going with Attack
+	AUTO_RESET_PATH, # null Path when is_done
+	AUTO_RESET_ATTACK # null Attack when is_done
+}
 enum Persist { PATH = 1 << 0, ATTACK = 1 << 1 }
 
-var actions: Array # [](Options, PathStyle, AttackPatterns, ASLabel, ASCondition)
+var actions: Array # [](ASOptions, PathStyle, AttackPatterns, ASLabel, ASCondition)
 var index: int
 var should_loop: bool
 var persist: int = 0 #Persist.ATTACK
@@ -73,16 +80,18 @@ func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bo
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)
 		if is_done.data:
-			# we can set stored_loops to -x to have last_path repeat x times
+			# we can set loop_count_start to -x to have last_path repeat x times
 			if last_path.stored_loops >= 0:
 				did_update_index = true
 				index += 1
 				if (persist & Persist.PATH) == 0:
+					last_path.reset()
 					last_path = null
 	elif current_action is AttackPatterns:
 		if DEBUG: print(index, " AttackPatterns")
 		last_attack = current_action
 		if last_attack.is_complete:
+			last_attack.reset()
 			last_attack.is_complete = false
 			did_update_index = true
 			index += 1

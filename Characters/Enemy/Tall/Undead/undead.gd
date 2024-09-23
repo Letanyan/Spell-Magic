@@ -70,10 +70,9 @@ func setup(seedling: int) -> void:
 	kind = World.Enemy.UNDEAD
 
 func attack_state() -> AttackPatterns:
-	health_bar.visible = not current_path == idle_path
-	if current_path == idle_path:
+	if is_idle:
 		return none_pattern
-	elif vitals.health.value >= 50:
+	elif vitals.health.percentage() >= 0.5:
 		return sequence_pattern
 	else:
 		return random_pattern
@@ -87,14 +86,13 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 
 func update_behaviour() -> void:
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
+	super.update_behaviour()
+	if is_idle:
 		sequence_pattern.reset()
 		random_pattern.reset()
-		player.watch_enemy(self)
-		current_path = attack_path
-	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-		player.ignore_enemy(self)
 		current_path = idle_path
+	else:
+		current_path = attack_path
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

@@ -42,9 +42,9 @@ func setup(seedling: int) -> void:
 	var ice_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
 	var ice_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ICE, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
 	
-	var ice_scatter1 := GlobalData.magic_book.copy_spell("scatter shot", {"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
-	var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter shot", {"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
-	var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter shot", {"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
+	var ice_scatter1 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
+	var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
+	var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -68,7 +68,7 @@ func setup(seedling: int) -> void:
 	)
 	
 	animation_map["attack"] = "Headbutt"
-	kind = World.Enemy.BAT
+	kind = World.Enemy.GHOSTLY
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

@@ -50,6 +50,10 @@ var buffer_christmas_trees: EntityBuffer
 var buffer_safari_trees: EntityBuffer
 
 var buffer_fish: EntityBuffer
+var buffer_bird: EntityBuffer
+var buffer_fungi: EntityBuffer
+var buffer_hot_blob: EntityBuffer
+var buffer_mushroom: EntityBuffer
 
 var buffer_undead: EntityBuffer
 var buffer_mole: EntityBuffer
@@ -103,6 +107,10 @@ func _init() -> void:
 	buffer_safari_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_SAFARI), deinit_tree, "safari")
 	
 	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "fish")
+	buffer_bird = EntityBuffer.new(10, func() -> Bird: return Enemy.make(World.Enemy.BIRD), deinit_enemy, "bird")
+	buffer_fungi = EntityBuffer.new(10, func() -> Fungi: return Enemy.make(World.Enemy.FUNGI), deinit_enemy, "fungi")
+	buffer_hot_blob = EntityBuffer.new(10, func() -> HotBlob: return Enemy.make(World.Enemy.HOT_BLOB), deinit_enemy, "hot_blob")
+	buffer_mushroom = EntityBuffer.new(10, func() -> Mushroom: return Enemy.make(World.Enemy.MUSHROOM), deinit_enemy, "mushroom")
 	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy, "undead")
 	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy, "mole")
 	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy, "walker")
@@ -154,6 +162,10 @@ func get_enemy(kind: World.Enemy) -> Enemy:
 		World.Enemy.DRAGOON: return buffer_dragoon.get_entity()
 		World.Enemy.GHOST: return buffer_ghost.get_entity()
 		World.Enemy.GHOSTLY: return buffer_ghostly.get_entity()
+		World.Enemy.BIRD: return buffer_bird.get_entity()
+		World.Enemy.FUNGI: return buffer_fungi.get_entity()
+		World.Enemy.HOT_BLOB: return buffer_hot_blob.get_entity()
+		World.Enemy.MUSHROOM: return buffer_mushroom.get_entity()
 	return buffer_undead.get_entity()
 
 func free_enemy(enemy: Enemy) -> void:
@@ -169,6 +181,10 @@ func free_enemy(enemy: Enemy) -> void:
 		World.Enemy.DRAGOON: buffer_dragoon.free_entity(enemy)
 		World.Enemy.GHOST: buffer_ghost.free_entity(enemy)
 		World.Enemy.GHOSTLY: buffer_ghostly.free_entity(enemy)
+		World.Enemy.BIRD: buffer_bird.free_entity(enemy)
+		World.Enemy.FUNGI: buffer_fungi.free_entity(enemy)
+		World.Enemy.HOT_BLOB: buffer_hot_blob.free_entity(enemy)
+		World.Enemy.MUSHROOM: buffer_mushroom.free_entity(enemy)
 		
 func get_building(kind: World.Building) -> Buildings:
 	match kind:

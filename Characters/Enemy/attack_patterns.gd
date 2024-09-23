@@ -74,6 +74,7 @@ static func choose_from_distribution(interval: float, weights: Array[int], repea
 		if repeat_count.data == 0:
 			is_done.data = true
 		if repeat_count.data <= 0:
+			repeat_count.data = repeat_count.storage
 			should_reset.data = true
 		var range_end := 0.0
 		var p := randf()
@@ -102,12 +103,14 @@ static func choose_in_sequence(intervals: Array[float], repeat: int = 1) -> Call
 		var end_index := starting_points.size() - 1
 		if t >= starting_points[end_index] and not completed[end_index]:
 			if repeat_count.data == 0:
+				repeat_count.data = repeat_count.storage
 				is_done.data = true
 			else:
 				repeat_count.data -= 1
 				for i in completed.size():
 					completed[i] = false
 			if repeat_count.data <= 0:
+				repeat_count.data = repeat_count.storage
 				should_reset.data = true
 			return end_index
 			

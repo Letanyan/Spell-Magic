@@ -12,7 +12,7 @@ var hide_and_attack: AttackSequence
 	
 func setup(seedling: int) -> void:
 	kind = World.Enemy.NONE # set to zero while we setup stuff
-	vitals = Vitals.enemy(fl*1000, fl*1000, fl*50, 25, fl*65, fl*55, {Artifact.Element.ROCK: Vector2(0.2*fl, 0), Artifact.Element.ELECTRIC: Vector2(0.2*fl, 0)})
+	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), 25, atk(15), def(15), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	current_path = PathStyle.new(0, position).circle(7, 5, bounds.y / 2.0).use_absolute().align_y_to_ground()
 	idle_path = current_path
@@ -120,7 +120,6 @@ func setup(seedling: int) -> void:
 	kind = World.Enemy.MOLE
 
 func attack_state() -> AttackPatterns:
-	health_bar.visible = not current_path == idle_path
 	if current_path == idle_path:
 		return none_pattern
 	elif vitals.health.value >= 50:
@@ -137,11 +136,11 @@ func update_entity_info(info: EntityInfo) -> bool:
 
 
 func update_behaviour() -> void:
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		#current_path = attack_path
+	super.update_behaviour()
+	if is_idle:
+		current_path = idle_path
+		attack_sequence = null
+	else:
 		random_pattern.reset()
 		sequence_pattern.reset()
 		attack_sequence = hide_and_attack
-	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-		current_path = idle_path
-		attack_sequence = null

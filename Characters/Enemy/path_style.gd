@@ -28,6 +28,7 @@ var mover: Mover = Mover.ABSOLUTE
 var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var stored_loops: int = 0
+var loop_count_start: int = 0
 var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
 var time: float = NAN
@@ -56,6 +57,14 @@ func _init(_seed: int = randi(), _origin: Vector3 = Vector3.ZERO) -> void:
 	rng.seed = _seed
 	origin_kind = OriginKind.ABSOLUTE
 	path = Pathway.empty()
+	
+func reset() -> void:
+	time = NAN
+	previous_path_index = -1
+	player_start_position = null
+	player_start_vision_rotation = null
+	me_start_position = null
+	stored_loops = loop_count_start
 		
 static func still_path() -> PathStyle:
 	var result := PathStyle.new()
@@ -521,6 +530,10 @@ class Pathway:
 		
 	func move_to(start: Vector3) -> Pathway:
 		cursor = start
+		return self
+		
+	func wait(d: float) -> Pathway:
+		add(Segment.point(cursor, d), d, Easing.linear)
 		return self
 		
 	func line_to(end: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:

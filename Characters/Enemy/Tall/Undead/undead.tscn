@@ -4590,11 +4590,11 @@ _data = {
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_78xe8"]
 radius = 1.0
-height = 4.0
+height = 3.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qdxeb"]
 radius = 1.0
-height = 4.0
+height = 3.0
 
 [node name="undead" type="CharacterBody3D"]
 collision_layer = 4

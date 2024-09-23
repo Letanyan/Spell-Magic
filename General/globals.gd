@@ -113,10 +113,12 @@ func get_date_time_string(timestamp: int) -> String:
 	return "%d %s %d (%02d:%02d)" % [dict.day, month, dict.year, dict.hour, dict.minute]
 
 class Ref extends RefCounted:
+	var storage: Variant = null
 	var data: Variant
 	
 	func _init(value: Variant) -> void:
 		data = value
+		storage = value
 
 static func particle_system_lifetime(p: GPUParticles3D) -> float:
 	return p.lifetime * (1.0 + 1.0 - p.explosiveness) + 0.1

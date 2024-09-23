@@ -1,6 +1,7 @@
 // NOTE: Shader automatically converted from Godot Engine 4.0.3.stable's StandardMaterial3D.
 
 shader_type spatial;
+#include "basic.gdshaderinc"
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,vertex_lighting;
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
@@ -26,7 +27,13 @@ void vertex() {
 
 
 
+float snapf(float x, float amount) {
+	return roundEven(x / amount) * amount;
+}
 
+vec3 snap(vec3 v, vec3 amount) {
+	return vec3(snapf(v.x, amount.x), snapf(v.y, amount.y), snapf(v.z, amount.z));
+}
 
 
 void fragment() {

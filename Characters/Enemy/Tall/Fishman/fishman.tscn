@@ -4621,11 +4621,11 @@ _data = {
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dgy5i"]
 radius = 1.0
-height = 4.0
+height = 3.6
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hgsdb"]
 radius = 1.0
-height = 4.0
+height = 3.6
 
 [node name="fishman" type="CharacterBody3D"]
 collision_layer = 4
