@@ -16,23 +16,23 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(10), 35, atk(17), def(8), {Artifact.Element.AIR: res(5, 2)})
+	vitals = Vitals.enemy(hp(12), mana(10), mana_regen(8), 15, atk(12), def(12), {Artifact.Element.AIR: res(5, 2)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
-		.move_to(Vector3(0, -4, 0)) \
-		.line_to(Vector3(0, 20, 0), 5, PathStyle.Easing.out_quart) \
-		.line_to(Vector3(0, -4, 0), 2, PathStyle.Easing.out_quart)
-	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
+		.move_to(Vector3(0, 0, 0)) \
+		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), 2, PathStyle.Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), 2, PathStyle.Easing.out_quart) \
+		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), 2, PathStyle.Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), 2, PathStyle.Easing.out_quart)
+	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_jump() \
+		.set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND)
 	
-	var attack_pathway := PathStyle.Pathway.new() \
-		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, 20, 0), 5, PathStyle.Easing.out_quart) \
-		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart)
-	attack_path = PathStyle.new().follow_path(attack_pathway)\
-		.align_y_to_ground_and_air()\
-		.set_use_player_as_origin()\
+	attack_path = PathStyle.new().follow_path(idle_pathway)\
+		.align_y_to_ground_and_jump()\
+		.set_use_player_as_origin() \
 		.set_player_body_rotation_as_vision_angle(0, 0, 10.0)\
-		.look_at_player_xz()
+		.look_at_player_xz() \
+		.set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND)
 	
 	current_path = idle_path
 	
@@ -129,16 +129,10 @@ func attack_state() -> AttackPatterns:
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		attack_pattern1.reset()
-		attack_pattern2.reset()
-		attack_pattern3.reset()
 		current_path = idle_path
 	else:
 		current_path = attack_path
 			
-
-func death_box() -> Vector3:
-	return Vector3(0.7, 1.9, 0.3)
 
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

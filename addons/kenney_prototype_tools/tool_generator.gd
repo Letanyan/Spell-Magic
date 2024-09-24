@@ -1,7 +1,8 @@
+@tool
+
 # Editor script to generate the materials and cube scenes using the Kenney textures in the textures folder
 extends Node
 
-@tool
 
 # Functions as a button to regenerate the materials and scenes
 @export var generate := false
@@ -10,7 +11,7 @@ const textures_path := "res://addons/kenney_prototype_tools/textures"
 const materials_path := "res://addons/kenney_prototype_tools/materials/"
 const scenes_path := "res://addons/kenney_prototype_tools/scenes/"
 
-const cube_scene = preload("res://addons/tools/cube.tscn")
+const cube_scene = preload("res://addons/kenney_prototype_tools/cube.tscn")
 
 # Generates the material and the scene corresponding to this color and texture
 func generate_tex(col: String, tex_name: String):

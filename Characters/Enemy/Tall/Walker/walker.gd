@@ -94,6 +94,3 @@ func update_behaviour() -> void:
 		current_path = idle_path
 	else:
 		current_path = attack_path
-
-func death_box() -> Vector3:
-	return Vector3(0.7, 1.9, 0.3)

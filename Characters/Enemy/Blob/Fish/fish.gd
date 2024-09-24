@@ -129,8 +129,6 @@ func create_attack_jump_path() -> void:
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
 	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_origin().look_at_player()
 
-func death_box() -> Vector3:
-	return Vector3(0.7, 1.9, 0.3)
 
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

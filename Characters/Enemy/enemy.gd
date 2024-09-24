@@ -310,14 +310,11 @@ func update_behaviour() -> void:
 func handle_damage() -> void:
 	pass
 	
-func death_box() -> Vector3:
-	return Vector3(1, 1, 1)
-	
 func die() -> void:
 	is_dead = true
 	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
 	var source := explosion.get_node("source") as GPUParticles3D
-	(source.process_material as ParticleProcessMaterial).emission_box_extents = death_box()
+	(source.process_material as ParticleProcessMaterial).emission_box_extents = bounds
 		
 	play_animation("death")
 	
