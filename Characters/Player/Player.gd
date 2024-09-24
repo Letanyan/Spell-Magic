@@ -233,12 +233,6 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 func _on_wet_area_body_entered(body: Node3D) -> void:
 	print(body)
 	
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.PLAYER, position)
-
-func update_entity_info(info: EntityInfo) -> bool:
-	info.position = position
-	return true
 
 func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: float, p: SpellBody) -> void:
 	if not origin is Player:

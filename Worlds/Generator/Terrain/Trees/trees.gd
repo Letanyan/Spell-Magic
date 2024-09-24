@@ -44,8 +44,3 @@ func setup(rng: RandomNumberGenerator) -> void:
 	(box.shape as CylinderShape3D).radius = base_size[kind].x * s
 	box.position.y = (base_size[kind].y * s) / 4.0
 				
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.TREE, position)
-	
-func update_entity_info(info: EntityInfo) -> bool:
-	return false

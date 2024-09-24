@@ -70,6 +70,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const walker = preload("res://Characters/Enemy/Tall/Walker/walker.tscn") as PackedScene
 	const birdman = preload("res://Characters/Enemy/Tall/Birdman/birdman.tscn") as PackedScene
 	const fishman = preload("res://Characters/Enemy/Tall/Fishman/fishman.tscn") as PackedScene
+	const bluemon = preload("res://Characters/Enemy/Tall/Bluemon/bluemon.tscn") as PackedScene
+	const frog = preload("res://Characters/Enemy/Tall/Frog/frog.tscn") as PackedScene
+	const mushking = preload("res://Characters/Enemy/Tall/MushKing/mushking.tscn") as PackedScene
+	const rabbit = preload("res://Characters/Enemy/Tall/Rabbit/rabbit.tscn") as PackedScene
 	
 	const bat = preload("res://Characters/Enemy/Flying/Bat/bat.tscn") as PackedScene
 	const dragon = preload("res://Characters/Enemy/Flying/Dragon/Dragon.tscn") as PackedScene
@@ -92,6 +96,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.FUNGI: result = fungi.instantiate()
 		World.Enemy.HOT_BLOB: result = hot_blob.instantiate() 
 		World.Enemy.MUSHROOM: result = mushroom.instantiate()
+		World.Enemy.BLUEMON: result = bluemon.instantiate()
+		World.Enemy.FROG: result = frog.instantiate()
+		World.Enemy.MUSHKING: result = mushking.instantiate()
+		World.Enemy.RABBIT: result = rabbit.instantiate()
 		_: push_error("Missing enemy")
 	return result
 	
@@ -282,12 +290,6 @@ func _physics_process(delta: float) -> void:
 func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellReason:
 	return spell_caster.cast_spell(self, vitals, insert, next_spell)
 
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.ENEMY, position)
-
-func update_entity_info(info: EntityInfo) -> bool:
-	info.position = position
-	return true
 
 func update_behaviour() -> void:
 	if is_idle:
@@ -427,6 +429,14 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.HOT_BLOB
 	elif n is Mushroom:
 		return World.Enemy.MUSHROOM
+	elif n is Bluemon:
+		return World.Enemy.BLUEMON
+	elif n is Frog:
+		return World.Enemy.FROG
+	elif n is Mushking:
+		return World.Enemy.MUSHKING
+	elif n is Rabbit:
+		return World.Enemy.RABBIT
 	
 	return World.Enemy.NONE
 

@@ -144,6 +144,10 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.FUNGI: result = entity_manager.get_enemy(World.Enemy.FUNGI)
 		World.Enemy.HOT_BLOB: result = entity_manager.get_enemy(World.Enemy.HOT_BLOB)
 		World.Enemy.MUSHROOM: result = entity_manager.get_enemy(World.Enemy.MUSHROOM)
+		World.Enemy.BLUEMON: result = entity_manager.get_enemy(World.Enemy.BLUEMON)
+		World.Enemy.FROG: result = entity_manager.get_enemy(World.Enemy.FROG)
+		World.Enemy.MUSHKING: result = entity_manager.get_enemy(World.Enemy.MUSHKING)
+		World.Enemy.RABBIT: result = entity_manager.get_enemy(World.Enemy.RABBIT)
 			
 	result.set_level_relative_to_location(rng, x, y)
 	for conn: Dictionary in result.vital_update.get_connections():
@@ -169,6 +173,11 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 		World.Enemy.FUNGI: result = Enemy.make(World.Enemy.FUNGI)
 		World.Enemy.HOT_BLOB: result = Enemy.make(World.Enemy.HOT_BLOB)
 		World.Enemy.MUSHROOM: result = Enemy.make(World.Enemy.MUSHROOM)
+		World.Enemy.BLUEMON: result = Enemy.make(World.Enemy.BLUEMON) 
+		World.Enemy.FROG: result = Enemy.make(World.Enemy.FROG) 
+		World.Enemy.MUSHKING: result = Enemy.make(World.Enemy.MUSHKING) 
+		World.Enemy.RABBIT: result = Enemy.make(World.Enemy.RABBIT)
+		
 	result.name = World.Enemy.keys()[enemy] + str(randi())
 			
 	result.set_level_relative_to_location(null, x, y)

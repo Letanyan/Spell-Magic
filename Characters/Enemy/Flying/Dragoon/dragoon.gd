@@ -78,12 +78,6 @@ func attack_state() -> AttackPatterns:
 	else:
 		return sequence_pattern
 
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.BAT, position)
-
-func update_entity_info(info: EntityInfo) -> bool:
-	info.position = position
-	return true
 
 func update_behaviour() -> void:
 	super.update_behaviour()

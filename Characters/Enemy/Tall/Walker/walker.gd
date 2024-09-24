@@ -19,12 +19,12 @@ func setup(seedling: int) -> void:
 	current_path = idle_path
 	
 	var water_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"}, Spell.Element.WATER, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
-	var water_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.4"}, Spell.Element.WATER, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
-	var water_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+0.6"}, Spell.Element.WATER, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
+	var water_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4"}, Spell.Element.WATER, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
+	var water_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2"}, Spell.Element.WATER, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
 	
-	var ice_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8", "h": "Br/2+0.4"}, Spell.Element.ICE, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
-	var ice_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4", "h": "Br/2+0.8"}, Spell.Element.ICE, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
-	var ice_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2", "h": "Br/2+1.6"}, Spell.Element.ICE, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
+	var ice_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "8"}, Spell.Element.ICE, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
+	var ice_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "4"}, Spell.Element.ICE, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
+	var ice_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*3", "s": "2"}, Spell.Element.ICE, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
 	
 	var ice_wall := GlobalData.magic_book.copy_spell("wall", {}, Spell.Element.ICE, 10, 0, 6, 4, 0, 0, 0)
 	ice_wall.follow = true
@@ -41,7 +41,7 @@ func setup(seedling: int) -> void:
 			ice_medium,
 			ice_large,
 		],
-		AttackPatterns.choose_from_distribution(0.5, [ 10, 4, 2, 10, 4, 2 ], -1)
+		AttackPatterns.choose_from_distribution(fit(5,2), [ 10, 4, 2, 10, 4, 2 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -76,38 +76,24 @@ func _physics_process(delta: float) -> void:
 		ice_wall_timer += 1
 
 func attack_state() -> AttackPatterns:
-	health_bar.visible = not current_path == idle_path
-	if current_path == idle_path:
+	if is_idle:
 		return none_pattern
 	else:
 		if ice_wall_timer == 0 or ice_wall_timer > 60 * 10:
 			ice_wall_timer = 1
 			return defence_pattern
-		elif vitals.health.value >= 50:
+		elif vitals.health.percentage() >= 0.5:
 			return default_pattern
 		else:
 			return sequence_pattern
 
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
-
-func update_entity_info(info: EntityInfo) -> bool:
-	info.position = position
-	return true
-
 
 func update_behaviour() -> void:
-	if current_path == idle_path and sqrt(player.position.distance_squared_to(position)) < vitals.perception.value:
-		player.watch_enemy(get_node(".") as Enemy)
-		health_bar.visible = true
-		default_pattern.reset()
-		defence_pattern.reset()
-		sequence_pattern.reset()
-		current_path = attack_path
-	elif current_path == attack_path and sqrt(player.position.distance_squared_to(position)) > vitals.perception.value * 2:
-		player.ignore_enemy(get_node(".") as Enemy)
-		health_bar.visible = false
+	super.update_behaviour()
+	if is_idle:
 		current_path = idle_path
+	else:
+		current_path = attack_path
 
 func death_box() -> Vector3:
 	return Vector3(0.7, 1.9, 0.3)

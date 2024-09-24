@@ -61,7 +61,7 @@ func setup(seedling: int) -> void:
 	)
 	
 	var Z := Vector3.ZERO
-	const U = -5
+	var U := -bounds.y * 2.5
 	var up_pathway := PathStyle.Pathway.new() \
 		.move_to(Vector3(0, U, 0)).line_to(Z, 3, PathStyle.Easing.linear)
 	var down_pathway := PathStyle.Pathway.new() \
@@ -84,12 +84,6 @@ func attack_state() -> AttackPatterns:
 	else:
 		return none_pattern
 
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
-
-func update_entity_info(info: EntityInfo) -> bool:
-	info.position = position
-	return true
 
 func update_behaviour() -> void:
 	super.update_behaviour()

@@ -53,7 +53,7 @@ vec4 biome_color(vec4 V, vec2 uv) {
 	vec4 color = vec4(1);
 
 	// use alpha channel to store cliff side gray color
-	vec4 colors[9] = { 
+	vec4 colors[9] = {
 		vec4(0.23, 0.83, 0.23, 0.15), // grassland
 		vec4(0, 1, 1, 0.1),           // taiga
 		vec4(0.55, 0.28, 0.0, 0.08),  // forest

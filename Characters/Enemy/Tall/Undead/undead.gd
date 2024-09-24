@@ -9,21 +9,17 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(500*fl, 100*fl, 10*fl, 10, 40*fl, 10*fl, {Artifact.Element.ROCK: Vector2(0.1*fl, 5+20*fl)})
+	vitals = Vitals.enemy(hp(8), mana(1), mana_regen(1), 10, atk(7), def(3), {Artifact.Element.ROCK: res(1, 0)})
 	
-	idle_path = PathStyle.new(seedling).random_points_in_circle(2, 20, bounds.y / 2.0, 10).set_origin(position + Vector3(0, bounds.y / 2.0, 0)).align_y_to_ground()
-	attack_path = PathStyle.new(0, position + Vector3(0, bounds.y / 2.0, 0)).towards_player(2, 1, 2).use_absolute().look_at_player_xz() #.use_physics()
+	idle_path = PathStyle.new(seedling, position).random_points_in_circle(2, 20, 0, 10).align_y_to_ground()
+	attack_path = PathStyle.new(0, position).towards_player(2, 1, 2).look_at_player_xz().align_y_to_ground()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	var rock_attack_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "5"}, Spell.Element.ROCK, 2+fl*6, fl*25, 0.1+fl*0.4, 1, 0, 0, 0)
-	var rock_attack_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "3", "h": "Br/2+0.5"}, Spell.Element.ROCK, 2+fl*6, fl*25, 0.2+fl*0.8, 1, 0, 0, 0)
-	var rock_attack_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "1", "h": "Br/2+1.0"}, Spell.Element.ROCK, 2+fl*6, fl*25, 0.5+fl, 1, 0, 0, 0)
-	
-	#var water_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.WATER, 2+fl*8, fl*50, 0.2+fl*0.8, 1, 0, 0, 30)
-	#var fire_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.FIRE, 2+fl*8, fl*50, 0.2+fl*0.8, 1, 0, 0, 30)
-	#var electric_attack := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "3", "h": "Br/2+1.0"}, Spell.Element.ELECTRIC, 2+fl*8, fl*50, 0.2+fl*0.8, 1, 0, 0, 30)
+	var rock_attack_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "5"}, Spell.Element.ROCK, fit(2,3), power(5), radius(2), 1, 0, 0, 0)
+	var rock_attack_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "3"}, Spell.Element.ROCK, fit(2,4), power(6), radius(2), 1, 0, 0, 0)
+	var rock_attack_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "1"}, Spell.Element.ROCK, fit(2,5), power(7), radius(2), 1, 0, 0, 0)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -31,7 +27,7 @@ func setup(seedling: int) -> void:
 			rock_attack_medium,
 			rock_attack_large,
 		],
-		AttackPatterns.choose_from_distribution(0.25, [ 10, 3, 1 ], -1)
+		AttackPatterns.choose_from_distribution(fit(5,3), [ 10, 3, 1 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -45,27 +41,6 @@ func setup(seedling: int) -> void:
 		AttackPatterns.choose_in_sequence([ 2, 5, 2, 4, 2 ], -1)
 	)
 	
-	#sequence_pattern = AttackPatterns.new(
-		#[
-			#AttackPatterns.new(
-				#[
-					#rock_attack_large,
-					#water_attack,
-				#],
-				#[2, 2],
-			#),
-			#AttackPatterns.new(
-				#[
-					#fire_attack,
-					#electric_attack,
-				#],
-				#[2, 2],
-			#),
-		#],
-		#[3, 3],
-		#0.5
-	#)
-	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.UNDEAD
 
@@ -73,24 +48,17 @@ func attack_state() -> AttackPatterns:
 	if is_idle:
 		return none_pattern
 	elif vitals.health.percentage() >= 0.5:
-		return sequence_pattern
-	else:
 		return random_pattern
-
-func entity_info() -> EntityInfo:
-	return EntityInfo.new(EntityInfo.Kind.UNDEAD, position)
-
-func update_entity_info(info: EntityInfo) -> bool:
-	info.position = position
-	return true
+	else:
+		return sequence_pattern
 
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		sequence_pattern.reset()
-		random_pattern.reset()
 		current_path = idle_path
+	elif vitals.health.percentage() >= 0.5:
+		current_path = attack_path
 	else:
 		current_path = attack_path
 

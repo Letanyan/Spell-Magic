@@ -7,7 +7,6 @@ const fantasy_well = preload("res://Models/FantasyValley/fantasy_well.tscn")
 
 static var base_size := PackedVector3Array([])
 var entity_kind: World.Building
-var _entity_info: EntityInfo
 
 static func make(kind: World.Building) -> Buildings:
 	var result: Buildings
@@ -36,21 +35,3 @@ func setup(rng: RandomNumberGenerator) -> void:
 			box.rotate(Vector3.UP, r)
 		World.Building.FANTASY_VALLEY_DOUBLE:
 			box.rotate(Vector3.UP, r)
-	
-	match entity_kind:
-		World.Building.FANTASY_WELL:
-			_entity_info = EntityInfo.new(EntityInfo.Kind.BUILDING, position, EntityInfo.Liquid.WATER, 0.5)
-			_entity_info.bounds = box
-		World.Building.FANTASY_VALLEY_SINGLE, World.Building.FANTASY_VALLEY_DOUBLE:
-			_entity_info = EntityInfo.new(EntityInfo.Kind.BUILDING, position)
-			_entity_info.bounds = box
-	
-func _ready() -> void:
-	_entity_info.position = position
-	
-				
-func entity_info() -> EntityInfo:
-	return _entity_info
-	
-func update_entity_info(info: EntityInfo) -> bool:
-	return false

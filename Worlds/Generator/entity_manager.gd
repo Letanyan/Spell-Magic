@@ -54,6 +54,10 @@ var buffer_bird: EntityBuffer
 var buffer_fungi: EntityBuffer
 var buffer_hot_blob: EntityBuffer
 var buffer_mushroom: EntityBuffer
+var buffer_bluemon: EntityBuffer
+var buffer_frog: EntityBuffer
+var buffer_mushking: EntityBuffer
+var buffer_rabbit: EntityBuffer
 
 var buffer_undead: EntityBuffer
 var buffer_mole: EntityBuffer
@@ -116,6 +120,10 @@ func _init() -> void:
 	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy, "walker")
 	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy, "birdman")
 	buffer_fishman = EntityBuffer.new(10, func() -> Fishman: return Enemy.make(World.Enemy.FISHMAN), deinit_enemy, "fishman")
+	buffer_bluemon = EntityBuffer.new(10, func() -> Bluemon: return Enemy.make(World.Enemy.BLUEMON), deinit_enemy, "bluemon")
+	buffer_frog = EntityBuffer.new(10, func() -> Frog: return Enemy.make(World.Enemy.FROG), deinit_enemy, "frog")
+	buffer_mushking = EntityBuffer.new(10, func() -> Mushking: return Enemy.make(World.Enemy.MUSHKING), deinit_enemy, "mushking")
+	buffer_rabbit = EntityBuffer.new(10, func() -> Rabbit: return Enemy.make(World.Enemy.RABBIT), deinit_enemy, "rabbit")
 	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy, "bat")
 	buffer_dragon = EntityBuffer.new(10, func() -> Dragon: return Enemy.make(World.Enemy.DRAGON), deinit_enemy, "dragon")
 	buffer_dragoon = EntityBuffer.new(10, func() -> Dragoon: return Enemy.make(World.Enemy.DRAGOON), deinit_enemy, "dragoon")
@@ -157,6 +165,10 @@ func get_enemy(kind: World.Enemy) -> Enemy:
 		World.Enemy.WALKER: return buffer_walker.get_entity()
 		World.Enemy.BIRDMAN: return buffer_birdman.get_entity()
 		World.Enemy.FISHMAN: return buffer_fishman.get_entity()
+		World.Enemy.BLUEMON: return buffer_bluemon.get_entity()
+		World.Enemy.FROG: return buffer_frog.get_entity()
+		World.Enemy.MUSHKING: return buffer_mushking.get_entity()
+		World.Enemy.RABBIT: return buffer_rabbit.get_entity()
 		World.Enemy.BAT: return buffer_bat.get_entity()
 		World.Enemy.DRAGON: return buffer_dragon.get_entity()
 		World.Enemy.DRAGOON: return buffer_dragoon.get_entity()
@@ -176,6 +188,10 @@ func free_enemy(enemy: Enemy) -> void:
 		World.Enemy.WALKER: buffer_walker.free_entity(enemy)
 		World.Enemy.BIRDMAN: buffer_birdman.free_entity(enemy)
 		World.Enemy.FISHMAN: buffer_fishman.free_entity(enemy)
+		World.Enemy.BLUEMON: buffer_bluemon.free_entity(enemy)
+		World.Enemy.FROG: buffer_frog.free_entity(enemy)
+		World.Enemy.MUSHKING: buffer_mushking.free_entity(enemy)
+		World.Enemy.RABBIT: buffer_rabbit.free_entity(enemy)
 		World.Enemy.BAT: buffer_bat.free_entity(enemy)
 		World.Enemy.DRAGON: buffer_dragon.free_entity(enemy)
 		World.Enemy.DRAGOON: buffer_dragoon.free_entity(enemy)

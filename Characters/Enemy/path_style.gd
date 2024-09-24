@@ -29,7 +29,6 @@ var coord_y: CoordY = CoordY.GROUND
 var lookat: LookAt = LookAt.VELOCITY
 var stored_loops: int = 0
 var loop_count_start: int = 0
-var is_done_uses_path_segements: bool = false
 var last_path_segment_index: int = 0
 var time: float = NAN
 var old_position: Vector4 = Vector4.ZERO
@@ -131,10 +130,6 @@ func set_player_camera_as_vision_angle(a: float, r: float, min_m: float = 0.0, m
 	player_vision_offset = Vector4(a, r, min_m, max_m)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
-	return self
-	
-func set_is_done_uses_path_segments(d: bool = true) -> PathStyle:
-	is_done_uses_path_segements = d
 	return self
 	
 ## movement is allowed above and below ground

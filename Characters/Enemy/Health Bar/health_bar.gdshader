@@ -37,15 +37,15 @@ void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	vec4 color_at_percentage = texture(color_transitions, vec2(clamp(percentage, 0.01, 0.99), 0.0));
-	
+
 	float x = UV.x;
 	float y = UV.y;
-	
+
 	vec2 top_left = vec2(corner_radius.x, corner_radius.y);
 	vec2 top_right = vec2(1.0 - corner_radius.x, corner_radius.y);
 	vec2 bottom_left = vec2(corner_radius.x, 1.0 - corner_radius.y);
 	vec2 bottom_right = vec2(1.0 - corner_radius.x, 1.0 - corner_radius.y);
-	
+
 	float hide_corner = 1.0;
 	bool should_outline_corner = false;
 	float distance_to_corner = 0.0;
@@ -67,8 +67,8 @@ void fragment() {
 		hide_corner = distance_to_corner <= 1.0 ? 1.0 : 0.0;
 		should_outline_corner = distance_to_corner <= 1.0 && distance_to_outline_corner >= 1.0;
 	}
-	
-	
+
+
 	if (should_outline_corner || x < outline_size.x || x > 1.0 - outline_size.x || y < outline_size.y || y > 1.0 - outline_size.y) {
 		ALBEDO = outline_color.rgb;
 		ALPHA = outline_color.a * hide_corner;
