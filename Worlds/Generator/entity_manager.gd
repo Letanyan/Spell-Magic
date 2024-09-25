@@ -70,6 +70,10 @@ var buffer_dragon: EntityBuffer
 var buffer_dragoon: EntityBuffer
 var buffer_ghost: EntityBuffer
 var buffer_ghostly: EntityBuffer
+var buffer_batty: EntityBuffer
+var buffer_bee: EntityBuffer
+var buffer_bumble_bee: EntityBuffer
+var buffer_undead_head: EntityBuffer
 
 var buffer_house_single: EntityBuffer
 var buffer_house_double: EntityBuffer
@@ -129,10 +133,14 @@ func _init() -> void:
 	buffer_dragoon = EntityBuffer.new(10, func() -> Dragoon: return Enemy.make(World.Enemy.DRAGOON), deinit_enemy, "dragoon")
 	buffer_ghost = EntityBuffer.new(10, func() -> Ghost: return Enemy.make(World.Enemy.GHOST), deinit_enemy, "ghost")
 	buffer_ghostly = EntityBuffer.new(10, func() -> Ghostly: return Enemy.make(World.Enemy.GHOSTLY), deinit_enemy, "ghostly")
+	buffer_batty = EntityBuffer.new(10, func() -> Batty: return Enemy.make(World.Enemy.BATTY), deinit_enemy, "batty")
+	buffer_bee = EntityBuffer.new(10, func() -> Bee: return Enemy.make(World.Enemy.BEE), deinit_enemy, "bee")
+	buffer_bumble_bee = EntityBuffer.new(10, func() -> BumbleBee: return Enemy.make(World.Enemy.BUMBLE_BEE), deinit_enemy, "bumble_bee")
+	buffer_undead_head = EntityBuffer.new(10, func() -> UndeadHead: return Enemy.make(World.Enemy.UNDEAD_HEAD), deinit_enemy, "undead_head")
 	
 	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building, "single")
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
-	buffer_well= EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
+	buffer_well = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
 	
 	buffer_target = EntityBuffer.new(10, func() -> WorldItem: return TargetShape.make(), deinit_world_item, "target")
 	buffer_artifact = EntityBuffer.new(0, func() -> WorldItem: return ArtifactCube.make(), deinit_world_item, "artifact")
@@ -178,6 +186,10 @@ func get_enemy(kind: World.Enemy) -> Enemy:
 		World.Enemy.FUNGI: return buffer_fungi.get_entity()
 		World.Enemy.HOT_BLOB: return buffer_hot_blob.get_entity()
 		World.Enemy.MUSHROOM: return buffer_mushroom.get_entity()
+		World.Enemy.BATTY: return buffer_batty.get_entity()
+		World.Enemy.BEE: return buffer_bee.get_entity()
+		World.Enemy.BUMBLE_BEE: return buffer_bumble_bee.get_entity()
+		World.Enemy.UNDEAD_HEAD: return buffer_undead_head.get_entity()
 	return buffer_undead.get_entity()
 
 func free_enemy(enemy: Enemy) -> void:
@@ -201,6 +213,10 @@ func free_enemy(enemy: Enemy) -> void:
 		World.Enemy.FUNGI: buffer_fungi.free_entity(enemy)
 		World.Enemy.HOT_BLOB: buffer_hot_blob.free_entity(enemy)
 		World.Enemy.MUSHROOM: buffer_mushroom.free_entity(enemy)
+		World.Enemy.BATTY: buffer_batty.free_entity(enemy)
+		World.Enemy.BEE: buffer_bee.free_entity(enemy)
+		World.Enemy.BUMBLE_BEE: buffer_bumble_bee.free_entity(enemy)
+		World.Enemy.UNDEAD_HEAD: buffer_undead_head.free_entity(enemy)
 		
 func get_building(kind: World.Building) -> Buildings:
 	match kind:

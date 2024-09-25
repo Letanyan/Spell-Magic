@@ -30,7 +30,6 @@ func setup(seedling: int) -> void:
 	attack_path = PathStyle.new().follow_path(idle_pathway)\
 		.align_y_to_ground_and_jump()\
 		.set_use_player_as_origin() \
-		.set_player_body_rotation_as_vision_angle(0, 0, 10.0)\
 		.look_at_player_xz() \
 		.set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND)
 	
@@ -38,13 +37,14 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var air_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.AIR, 5, power(19), radius(8), 1, 25, 150, 50)
-	var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter", {"d":"1", "Rmin":"4", "Rmax":"8", "arc":"2*pi", "S":"0", "s":"0"}, Spell.Element.AIR, fit(5,15), power(5), radius(3), fiti(5,25), 5, 300, fit(25, 75))
+	var air_spell := GlobalData.magic_book.copy_spell("swipe", {"Rx":fits(PI/8,PI/2)+"*if(eq(mod(n,2)),-1,1)", "Ry":fits(PI/8,PI/2), "Dn":fits(10,2), "dz":fits(1,2), "d":"Br*2+C-dz*N/2"}, Spell.Element.AIR, fit(10,2), power(14), radius(8), fiti(1,10), 25, 100, 50)
+	var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter", {"d":"1", "Rmin":"4", "Rmax":"8", "arc":"2*pi", "S":"0", "s":"0.00001"}, Spell.Element.AIR, fit(5,15), power(5), radius(3), fiti(5,25), 5, 300, fit(25, 75))
 	air_mine.y = air_mine.y + " + t*0.0001"
 	air_mine.y_expr = Expr.new(air_mine.y)
 	
-	var air_fast := air_spell.duplicate({"s":fits(5,25), "d":"Br*2+r"})
+	var air_fast := air_spell.duplicate()
 	air_fast.power = power(14)
+	air_fast.duration = fit(10,2)
 	var air_small_fast := air_fast.duplicate()
 	air_small_fast.radius = 1
 	var air_med_fast := air_fast.duplicate()
@@ -52,8 +52,9 @@ func setup(seedling: int) -> void:
 	var air_large_fast := air_fast.duplicate()
 	air_large_fast.radius = 5
 	
-	var air_med := air_spell.duplicate({"s":fits(3,15), "d":"Br*2+r"})
+	var air_med := air_spell.duplicate()
 	air_med.power = power(17)
+	air_fast.duration = fit(15,4)
 	var air_small_med := air_med.duplicate()
 	air_small_med.radius = 1
 	var air_med_med := air_med.duplicate()
@@ -61,8 +62,9 @@ func setup(seedling: int) -> void:
 	var air_large_med := air_med.duplicate()
 	air_large_med.radius = 5
 	
-	var air_slow := air_spell.duplicate({"s":fits(2,10), "d":"Br*2+r"})
+	var air_slow := air_spell.duplicate()
 	air_slow.power = power(20)
+	air_fast.duration = fit(20,6)
 	var air_small_slow := air_slow.duplicate()
 	air_small_slow.radius = 1
 	var air_med_slow := air_slow.duplicate()

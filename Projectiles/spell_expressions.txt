@@ -126,6 +126,16 @@ sphere-linear: fires multiple projectiles from center in multiple directions
 	r ; radius
 	dx, dy, dz ; direction
 	
+swipe: fires projectiles moving along a sphere wall
+	d ; base offset
+	dz ; z-axis offset for each n-th projectile
+	dx ; x-axis angle offset
+	dy ; y-axis angle offset
+	Dn ; delay for each n-th projectile
+	Rx ; x angle to move along
+	Ry ; y angle to move along
+	 
+ 	
 top-down: fires projectile from top down
 	H ; height to start at Top and to travel to Bottom
 	Top ; starting height

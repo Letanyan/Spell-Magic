@@ -148,6 +148,10 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.FROG: result = entity_manager.get_enemy(World.Enemy.FROG)
 		World.Enemy.MUSHKING: result = entity_manager.get_enemy(World.Enemy.MUSHKING)
 		World.Enemy.RABBIT: result = entity_manager.get_enemy(World.Enemy.RABBIT)
+		World.Enemy.BATTY: result = entity_manager.get_enemy(World.Enemy.BATTY)
+		World.Enemy.BEE: result = entity_manager.get_enemy(World.Enemy.BEE)
+		World.Enemy.BUMBLE_BEE: result = entity_manager.get_enemy(World.Enemy.BUMBLE_BEE)
+		World.Enemy.UNDEAD_HEAD: result = entity_manager.get_enemy(World.Enemy.UNDEAD_HEAD)
 			
 	result.set_level_relative_to_location(rng, x, y)
 	for conn: Dictionary in result.vital_update.get_connections():
@@ -177,6 +181,10 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 		World.Enemy.FROG: result = Enemy.make(World.Enemy.FROG) 
 		World.Enemy.MUSHKING: result = Enemy.make(World.Enemy.MUSHKING) 
 		World.Enemy.RABBIT: result = Enemy.make(World.Enemy.RABBIT)
+		World.Enemy.BATTY: result = Enemy.make(World.Enemy.BATTY)
+		World.Enemy.BEE: result = Enemy.make(World.Enemy.BEE)
+		World.Enemy.BUMBLE_BEE: result = Enemy.make(World.Enemy.BUMBLE_BEE)
+		World.Enemy.UNDEAD_HEAD: result = Enemy.make(World.Enemy.UNDEAD_HEAD)
 		
 	result.name = World.Enemy.keys()[enemy] + str(randi())
 			

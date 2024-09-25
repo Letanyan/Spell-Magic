@@ -63,6 +63,7 @@ func setup(seedling: int) -> void:
 			water_flurry2,
 			water_flurry3,
 			water_attack1,
+			water_attack3,
 		],
 		AttackPatterns.choose_from_distribution(fit(5,2), [ 5, 4, 3, 1 ], -1)
 	)

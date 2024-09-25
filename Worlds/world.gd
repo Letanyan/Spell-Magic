@@ -7,11 +7,11 @@ enum Biome {
 }
 
 enum Enemy {
-	# !! WARNING: When adding new cases ensure `world_enemy_enum` method on `Enemy` 
+	# !! WARNING: When adding new cases ensure `world_enemy_enum` and `make` method on `Enemy` 
 	# is updated to reflect new case added here. 
 	# As well as `generate_enemy` and `spawn_enemy`, in population.gd
 	NONE, UNDEAD, MOLE, WALKER, BIRDMAN, FISHMAN, BLUEMON, FROG, MUSHKING, RABBIT,
-	BAT, DRAGON, DRAGOON, GHOST, GHOSTLY,
+	BAT, DRAGON, DRAGOON, GHOST, GHOSTLY, BATTY, BEE, BUMBLE_BEE, UNDEAD_HEAD,
 	FISH, BIRD, FUNGI, HOT_BLOB, MUSHROOM,
 }
 

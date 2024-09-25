@@ -80,6 +80,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const dragoon = preload("res://Characters/Enemy/Flying/Dragoon/Dragoon.tscn") as PackedScene
 	const ghost = preload("res://Characters/Enemy/Flying/Ghost/Ghost.tscn") as PackedScene
 	const ghostly = preload("res://Characters/Enemy/Flying/Ghostly/Ghostly.tscn") as PackedScene
+	const batty = preload("res://Characters/Enemy/Flying/Batty/batty.tscn") as PackedScene
+	const bee = preload("res://Characters/Enemy/Flying/Bee/bee.tscn") as PackedScene
+	const bumble_bee = preload("res://Characters/Enemy/Flying/BumbleBee/bumble_bee.tscn") as PackedScene
+	const undead_head = preload("res://Characters/Enemy/Flying/UndeadHead/undead_head.tscn") as PackedScene
 	match _kind:
 		World.Enemy.UNDEAD: result = undead.instantiate()
 		World.Enemy.MOLE: result = mole.instantiate()
@@ -100,6 +104,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.FROG: result = frog.instantiate()
 		World.Enemy.MUSHKING: result = mushking.instantiate()
 		World.Enemy.RABBIT: result = rabbit.instantiate()
+		World.Enemy.BATTY: result = batty.instantiate()
+		World.Enemy.BEE: result = bee.instantiate() 
+		World.Enemy.BUMBLE_BEE: result = bumble_bee.instantiate()
+		World.Enemy.UNDEAD_HEAD: result = undead_head.instantiate()
 		_: push_error("Missing enemy")
 	return result
 	
@@ -434,6 +442,14 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.MUSHKING
 	elif n is Rabbit:
 		return World.Enemy.RABBIT
+	elif n is Batty:
+		return World.Enemy.BATTY
+	elif n is Bee:
+		return World.Enemy.BEE
+	elif n is BumbleBee:
+		return World.Enemy.BUMBLE_BEE
+	elif n is UndeadHead:
+		return World.Enemy.UNDEAD_HEAD
 	
 	return World.Enemy.NONE
 
@@ -450,8 +466,14 @@ func fiti(mn: int, mx: int) -> int:
 func fits(mn: float, mx: float) -> String:
 	return Globals.format_number_nearest_place(lerpf(mn, mx, fl))
 	
-func invfit(mn: float, mx: float) -> float:
-	return lerpf(mn, mx, invfl)
+func fita(mn: Array[float], mx: Array[float]) -> Array[float]:
+	var result: Array[float] = []
+	if mn.size() != mx.size():
+		push_error("mn and mx not same size")
+		return mn
+	for i in mn.size():
+		result.append(fit(mn[i], mx[i]))	
+	return result
 
 func atk(cls: int) -> float:
 	return fit(5.0, cls * 5.0)
@@ -476,3 +498,13 @@ func radius(cls: int) -> float:
 
 func res(per_cls: int, flat_cls: int) -> Vector2:
 	return Vector2(fit(0.0, per_cls / 20.0), fit(0.0, flat_cls * 5.0))
+
+func timing(cls: int, value: float) -> float:
+	var ratio := 1.0 - float(cls) / 20.0
+	return fit(value, value * (1.0 + ratio))
+
+func timings(cls: int, array: Array[float]) -> Array[float]:
+	var ratio := 1.0 - float(cls) / 20.0
+	for i in array.size():
+		array[i] = fit(array[i], array[i] * (1.0 + ratio))
+	return array

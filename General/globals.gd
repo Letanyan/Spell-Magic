@@ -36,6 +36,15 @@ static func rand_v3_abs(x: float, y: float, z: float) -> Vector3:
 static func rand_point_in_circle(r: float, h: float) -> Vector3:
 	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
 	return p 
+	
+static func rand_point_in_sphere(r: float) -> Vector3:
+	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
+	return p 
+	
+static func project_point_onto_sphere(point: Vector3, radius: float, center: Vector3 = Vector3.ZERO) -> Vector3:
+	var P := point - center
+	var Q := radius / P.length() * P
+	return Q + center
 
 static func form_arc_in_circle(s: Vector3, e: Vector3, h: float) -> PathStyle.Segment:
 	var a := s.x
