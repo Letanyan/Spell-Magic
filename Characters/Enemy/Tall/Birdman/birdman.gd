@@ -9,6 +9,18 @@ var attack_pattern3: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
+var air_small_fast := GlobalData.magic_book.copy_spell("linear")
+var air_med_fast := GlobalData.magic_book.copy_spell("linear")
+var air_large_fast := GlobalData.magic_book.copy_spell("linear")
+var air_small_med := GlobalData.magic_book.copy_spell("linear")
+var air_med_med := GlobalData.magic_book.copy_spell("linear")
+var air_large_med := GlobalData.magic_book.copy_spell("linear")
+var air_small_slow := GlobalData.magic_book.copy_spell("linear")
+var air_med_slow := GlobalData.magic_book.copy_spell("linear")
+var air_large_slow := GlobalData.magic_book.copy_spell("linear")
+
+var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter")
+
 
 func _ready() -> void:
 	super._ready()
@@ -38,39 +50,19 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var air_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.AIR, 5, power(19), radius(8), 1, 25, 150, 50)
-	var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter", {"d":"1", "Rmin":"4", "Rmax":"8", "arc":"2*pi", "S":"0", "s":"0"}, Spell.Element.AIR, fit(5,15), power(5), radius(3), fiti(5,25), 5, 300, fit(25, 75))
+	air_mine.configure({"d":"1", "Rmin":"4", "Rmax":"8", "arc":"2*pi", "S":"0", "s":"0"}, Spell.Element.AIR, fit(5,15), power(5), radius(3), fiti(5,25), 5, 300, fit(25, 75))
 	air_mine.y = air_mine.y + " + t*0.0001"
 	air_mine.y_expr = Expr.new(air_mine.y)
 	
-	var air_fast := air_spell.duplicate({"s":fits(5,25), "d":"Br*2+r"})
-	air_fast.power = power(14)
-	var air_small_fast := air_fast.duplicate()
-	air_small_fast.radius = 1
-	var air_med_fast := air_fast.duplicate()
-	air_med_fast.radius = 2
-	var air_large_fast := air_fast.duplicate()
-	air_large_fast.radius = 5
-	
-	var air_med := air_spell.duplicate({"s":fits(3,15), "d":"Br*2+r"})
-	air_med.power = power(17)
-	var air_small_med := air_med.duplicate()
-	air_small_med.radius = 1
-	var air_med_med := air_med.duplicate()
-	air_med_med.radius = 2
-	var air_large_med := air_med.duplicate()
-	air_large_med.radius = 5
-	
-	var air_slow := air_spell.duplicate({"s":fits(2,10), "d":"Br*2+r"})
-	air_slow.power = power(20)
-	var air_small_slow := air_slow.duplicate()
-	air_small_slow.radius = 1
-	var air_med_slow := air_slow.duplicate()
-	air_med_slow.radius = 2
-	var air_large_slow := air_slow.duplicate()
-	air_large_slow.radius = 5
-	
-	
+	air_small_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(14), radius(1), 1, 25, 100, 50)
+	air_med_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(14), radius(2), 1, 25, 100, 50)
+	air_large_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(14), radius(5), 1, 25, 100, 50)
+	air_small_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(17), radius(1), 1, 25, 100, 50)
+	air_med_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(17), radius(2), 1, 25, 100, 50)
+	air_large_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(17), radius(5), 1, 25, 100, 50)
+	air_small_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(20), radius(1), 1, 25, 100, 50)
+	air_med_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(20), radius(2), 1, 25, 100, 50)
+	air_large_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(20), radius(5), 1, 25, 100, 50)
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -147,5 +139,5 @@ func drop_artifact() -> Artifact:
 
 func drop_spell() -> Spell:
 	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "speed":"4"}, Spell.Element.AIR, 3, 5, 0.1, 1, 0, 0, 0).bake(new_name)
+	var water_para := air_large_med.duplicate().bake(new_name)
 	return water_para

@@ -7,6 +7,10 @@ var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
+
+var rock_attack_small := GlobalData.magic_book.copy_spell("linear")
+var rock_attack_medium := GlobalData.magic_book.copy_spell("linear")
+var rock_attack_large := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(8), mana(1), mana_regen(1), 10, atk(7), def(3), {Artifact.Element.ROCK: res(1, 0)})
@@ -17,9 +21,9 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var rock_attack_small := GlobalData.magic_book.copy_spell("linear", {"d": "Br", "s": "5"}, Spell.Element.ROCK, fit(2,3), power(5), radius(2), 1, 0, 0, 0)
-	var rock_attack_medium := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2", "s": "3"}, Spell.Element.ROCK, fit(2,4), power(6), radius(2), 1, 0, 0, 0)
-	var rock_attack_large := GlobalData.magic_book.copy_spell("linear", {"d": "Br*2.5", "s": "1"}, Spell.Element.ROCK, fit(2,5), power(7), radius(2), 1, 0, 0, 0)
+	rock_attack_small.configure({"d": "Br", "s": "5"}, Spell.Element.ROCK, fit(2,3), power(5), radius(2), 1, 0, 0, 0)
+	rock_attack_medium.configure({"d": "Br*2", "s": "3"}, Spell.Element.ROCK, fit(2,4), power(6), radius(2), 1, 0, 0, 0)
+	rock_attack_large.configure({"d": "Br*2.5", "s": "1"}, Spell.Element.ROCK, fit(2,5), power(7), radius(2), 1, 0, 0, 0)
 	
 	random_pattern = AttackPatterns.new(
 		[

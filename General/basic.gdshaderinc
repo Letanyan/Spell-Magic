@@ -36,3 +36,11 @@ vec3 hsv2rgb(vec3 c) {
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
+
+float snapf(float x, float amount) {
+	return ceil(x / amount) * amount;
+}
+
+vec3 snap(vec3 v, vec3 amount) {
+	return vec3(snapf(v.x, amount.x), snapf(v.y, amount.y), snapf(v.z, amount.z));
+}

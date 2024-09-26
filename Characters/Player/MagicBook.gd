@@ -170,28 +170,19 @@ func spell_exists(n: String) -> bool:
 func find_spell(n: String) -> Spell:
 	return spell_index.get(n, null) as Spell
 	
-func copy_spell(n: String, constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float) -> Spell:
+func copy_spell(n: String) -> Spell:
 	var s := spell_index.get(n, null) as Spell
 	if s == null:
 		return null
 	var result := s.duplicate({}, false)
-	result.element = element
-	if not is_nan(radius):
-		result.radius = radius
-	if not is_nan(power):
-		result.power = power
-	if not is_nan(duration):
-		result.duration = duration
-	if count != 0:
-		result.count = count
-	if not is_nan(crit_rate):
-		result.crit_rate = crit_rate
-	if not is_nan(crit_dmg):
-		result.crit_dmg = crit_dmg
-	if not is_nan(mana):
-		result.mana_cost = mana
-		result.ignore_cooldown_when_calculating_elemental_application = true
-	result.overwrite_expressions(constants)
+	return result
+	
+func copy_and_configure_spell(n: String, constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float) -> Spell:
+	var s := spell_index.get(n, null) as Spell
+	if s == null:
+		return null
+	var result := s.duplicate({}, false)
+	result.configure(constants, element, duration, power, radius, count, crit_rate, crit_dmg, mana)
 	return result
 
 func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, ignore_recursive_chains: Spell = null) -> String:

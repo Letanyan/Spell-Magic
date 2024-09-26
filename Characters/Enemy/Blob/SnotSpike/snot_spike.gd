@@ -1,4 +1,4 @@
-class_name HotBlob
+class_name SnotSpike
 extends Enemy
 
 var none_pattern: AttackPatterns
@@ -14,12 +14,12 @@ var fire3 := GlobalData.magic_book.copy_spell("linear")
 var fire_down1 := GlobalData.magic_book.copy_spell("top-down")
 var fire_down2 := GlobalData.magic_book.copy_spell("top-down")
 var fire_down3 := GlobalData.magic_book.copy_spell("top-down")
-var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
-var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
-var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
+var water_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
+var water_mine2 := GlobalData.magic_book.copy_spell("bomb")
+var water_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(10), mana(18), mana_regen(20), 30, atk(12), def(12), {Artifact.Element.FIRE: res(15, 5)})
+	vitals = Vitals.enemy(hp(18), mana(10), mana_regen(10), 20, atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
 	
 	idle_path = PathStyle.new(0, position).random_points_in_circle(1, 2, 0, 3).align_y_to_ground()
 	
@@ -35,15 +35,15 @@ func setup(seedling: int) -> void:
 	fire_down1.configure({"H": "10"}, Spell.Element.FIRE, 10.0, power(8), radius(3), 1, 75, 25, 55)
 	fire_down2.configure({"H": "20"}, Spell.Element.FIRE, 8.0, power(10), radius(3), 1, 75, 50, 65)
 	fire_down3.configure({"H": "30"}, Spell.Element.FIRE, 6.0, power(12), radius(3), 1, 75, 75, 75)
-	fire_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, 5.0, power(5), radius(5), fiti(4, 15), 33, 66, 25)
-	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, 7.0, power(9), radius(7), fiti(2, 8), 75, 120, 50)
-	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, 5.0, power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	water_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.WATER, 5.0, power(5), radius(5), fiti(4, 15), 33, 66, 25)
+	water_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.WATER, 7.0, power(9), radius(7), fiti(2, 8), 75, 120, 50)
+	water_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.WATER, 5.0, power(15), radius(3), fiti(5, 10), 70, 180, 60)
 	
 	random_pattern = AttackPatterns.new(
 		[
-			fire_mine1,
-			fire_mine2,
-			fire_mine3,
+			water_mine1,
+			water_mine2,
+			water_mine3,
 		],
 		AttackPatterns.choose_from_distribution(5.0, [ 10, 5, 2 ], -1)
 	)

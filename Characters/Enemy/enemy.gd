@@ -64,6 +64,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const fungi = preload("res://Characters/Enemy/Blob/Fungi/Fungi.tscn") as PackedScene
 	const hot_blob = preload("res://Characters/Enemy/Blob/HotBlob/HotBlob.tscn") as PackedScene
 	const mushroom = preload("res://Characters/Enemy/Blob/Mushroom/Mushroom.tscn") as PackedScene
+	const snot_blob = preload("res://Characters/Enemy/Blob/SnotBlob/snot_blob.tscn") as PackedScene
+	const snot_spike = preload("res://Characters/Enemy/Blob/SnotSpike/snot_spike.tscn") as PackedScene
+	const walker_head = preload("res://Characters/Enemy/Blob/WalkerHead/walker_head.tscn") as PackedScene
+	const wizard = preload("res://Characters/Enemy/Blob/Wizard/wizard.tscn") as PackedScene
 	
 	const undead = preload("res://Characters/Enemy/Tall/Undead/undead.tscn") as PackedScene
 	const mole = preload("res://Characters/Enemy/Tall/Mole/mole.tscn") as PackedScene
@@ -108,6 +112,10 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.BEE: result = bee.instantiate() 
 		World.Enemy.BUMBLE_BEE: result = bumble_bee.instantiate()
 		World.Enemy.UNDEAD_HEAD: result = undead_head.instantiate()
+		World.Enemy.SNOT_BLOB: result = snot_blob.instantiate()
+		World.Enemy.SNOT_SPIKE: result = snot_spike.instantiate()
+		World.Enemy.WALKER_HEAD: result = walker_head.instantiate()
+		World.Enemy.WIZARD: result = wizard.instantiate()
 		_: push_error("Missing enemy")
 	return result
 	
@@ -450,6 +458,14 @@ func world_enemy_enum() -> World.Enemy:
 		return World.Enemy.BUMBLE_BEE
 	elif n is UndeadHead:
 		return World.Enemy.UNDEAD_HEAD
+	elif n is SnotBlob:
+		return World.Enemy.SNOT_BLOB 
+	elif n is SnotSpike:
+		return World.Enemy.SNOT_SPIKE 
+	elif n is WalkerHead:
+		return World.Enemy.WALKER_HEAD 
+	elif n is Wizard:
+		return World.Enemy.WIZARD
 	
 	return World.Enemy.NONE
 

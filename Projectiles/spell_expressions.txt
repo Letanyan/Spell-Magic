@@ -25,6 +25,10 @@ bomb-circle: places N projectiles on circle perimeter with radius R in center `d
 	arc ; arc of the circle
 	S ; minimum wait time
 	s ; interval between bombs
+	V ; vertical movement distance
+	Vs ; veritcal movement speed
+	RR ; local movement around circle with radius
+	RRs ; local movement speed around circle
 	
 bomb-disc-scatter: places N projectiles in circle with radius R in center `d*C`. set off after S time in s interval.  
 	d ; offset multiplied by C
@@ -33,6 +37,10 @@ bomb-disc-scatter: places N projectiles in circle with radius R in center `d*C`.
 	arc ; arc of disc
 	S ; minimum wait time
 	s ; interval between bombs
+	V ; vertical movement distance
+	Vs ; veritcal movement speed
+	RR ; local movement around circle with radius
+	RRs ; local movement speed around circle
 	
 bomb-linear: places N projectiles in line at start `d*C-R` to end `d*C+R`. set off after S time in s interval.  
 	d ; offset multiplied by C
@@ -47,6 +55,10 @@ bomb-sphere-scatter: places N projectiles in sphere with radius R in center `d*C
 	arc ; arc of disc
 	S ; minimum wait time
 	s ; interval between bombs
+	V ; vertical movement distance
+	Vs ; veritcal movement speed
+	RR ; local movement around circle with radius
+	RRs ; local movement speed around circle
 	
 buck-shot: fires multiple projectiles from a center point to angles defined by (x/y/z)range
 	s ; speed

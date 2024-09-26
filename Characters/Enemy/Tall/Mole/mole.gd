@@ -8,6 +8,10 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 
 var hide_and_attack: AttackSequence
+
+var elec1 := GlobalData.magic_book.copy_spell("linear")
+var elec2 := GlobalData.magic_book.copy_spell("linear")
+var elec3 := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
 	kind = World.Enemy.NONE # set to zero while we setup stuff
@@ -52,9 +56,9 @@ func setup(seedling: int) -> void:
 		[PathStyle.Easing.linear]
 	)
 	
-	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "15", "d": "5"}, Spell.Element.ELECTRIC, fit(7,14), power(7), radius(3), 1, 25, 150, 30)
-	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(10), radius(4), 1, 25, 150, 40)
-	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "5"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 25, 150, 50)
+	elec1.configure({"s": "15", "d": "5"}, Spell.Element.ELECTRIC, fit(7,14), power(7), radius(3), 1, 25, 150, 30)
+	elec2.configure({"s": "10", "d": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(10), radius(4), 1, 25, 150, 40)
+	elec3.configure({"s": "5", "d": "5"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 25, 150, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -62,7 +66,7 @@ func setup(seedling: int) -> void:
 			elec2,
 			elec3,
 		],
-		AttackPatterns.choose_from_distribution(1.0, [ 5, 3, 2 ], 1)
+		AttackPatterns.choose_from_distribution(1.0, [ 5, 3, 2 ], -1)
 	)
 	
 	hide_and_attack = AttackSequence.new(true, [

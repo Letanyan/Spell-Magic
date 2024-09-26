@@ -8,6 +8,16 @@ var attack_pattern3: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
+
+var air_small_fast := GlobalData.magic_book.copy_spell("linear")
+var air_med_fast := GlobalData.magic_book.copy_spell("linear")
+var air_large_fast := GlobalData.magic_book.copy_spell("linear")
+var air_small_med := GlobalData.magic_book.copy_spell("linear")
+var air_med_med := GlobalData.magic_book.copy_spell("linear")
+var air_large_med := GlobalData.magic_book.copy_spell("linear")
+var air_small_slow := GlobalData.magic_book.copy_spell("linear")
+var air_med_slow := GlobalData.magic_book.copy_spell("linear")
+var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), 25, atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
@@ -34,36 +44,15 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var air_spell := GlobalData.magic_book.copy_spell("linear", {}, Spell.Element.AIR, 5, power(9), radius(4), 1, 25, 100, 50)
-	
-	var air_fast := air_spell.duplicate({"s":fits(5,25), "d":"Br*2+r"})
-	air_fast.power = power(4)
-	var air_small_fast := air_fast.duplicate()
-	air_small_fast.radius = radius(2)
-	var air_med_fast := air_fast.duplicate()
-	air_med_fast.radius = radius(3)
-	var air_large_fast := air_fast.duplicate()
-	air_large_fast.radius = radius(4)
-	
-	var air_med := air_spell.duplicate({"s":fits(3,15), "d":"Br*2+r"})
-	air_med.power = power(7)
-	var air_small_med := air_med.duplicate()
-	air_small_med.radius = radius(2)
-	var air_med_med := air_med.duplicate()
-	air_med_med.radius = radius(3)
-	var air_large_med := air_med.duplicate()
-	air_large_med.radius = radius(4)
-	
-	var air_slow := air_spell.duplicate({"s":fits(2,10), "d":"Br*2+r"})
-	air_slow.power = power(10)
-	var air_small_slow := air_slow.duplicate()
-	air_small_slow.radius = radius(2)
-	var air_med_slow := air_slow.duplicate()
-	air_med_slow.radius = radius(3)
-	var air_large_slow := air_slow.duplicate()
-	air_large_slow.radius = radius(4)
-	
-	
+	air_small_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(2), 1, 25, 100, 50)
+	air_med_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(3), 1, 25, 100, 50)
+	air_large_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(4), 1, 25, 100, 50)
+	air_small_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(2), 1, 25, 100, 50)
+	air_med_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, 50)
+	air_large_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(4), 1, 25, 100, 50)
+	air_small_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(2), 1, 25, 100, 50)
+	air_med_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(3), 1, 25, 100, 50)
+	air_large_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, 50)
 	
 	attack_pattern1 = AttackPatterns.new(
 		[

@@ -7,6 +7,18 @@ var basic_pattern: AttackPatterns
 var idle_path: PathStyle
 var basic_path: PathStyle
 var angry_sequence: AttackSequence
+
+var water_para1 := GlobalData.magic_book.copy_spell("loop-shot")
+var water_para2 := GlobalData.magic_book.copy_spell("loop-shot")
+var water_para3 := GlobalData.magic_book.copy_spell("loop-shot")
+var water_line1 := GlobalData.magic_book.copy_spell("linear")
+var water_line2 := GlobalData.magic_book.copy_spell("linear")
+var water_line3 := GlobalData.magic_book.copy_spell("linear")
+var water_down1 := GlobalData.magic_book.copy_spell("top-down")
+var water_down2 := GlobalData.magic_book.copy_spell("top-down")
+var water_down3 := GlobalData.magic_book.copy_spell("top-down")
+var water_shower1 := GlobalData.magic_book.copy_spell("linear")
+var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(13), mana(13), mana_regen(13), 20, atk(8), def(4), {Artifact.Element.WATER: res(12, 0)})
@@ -17,18 +29,18 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"}, Spell.Element.WATER, fit(8, 2), power(15), radius(2), 1, 50, 100, 25)
-	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"}, Spell.Element.WATER, fit(6, 2), power(14), radius(3), 1, 50, 100, 50)
-	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"}, Spell.Element.WATER, fit(4, 2), power(13), radius(4), 1, 50, 100, 75)
-	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":fits(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":fits(3,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":fits(4,20), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_down1 := GlobalData.magic_book.copy_spell("top-down", {"H": "10"}, Spell.Element.WATER, 10.0, power(8), radius(3), 1, 75, 25, 55)
-	var water_down2 := GlobalData.magic_book.copy_spell("top-down", {"H": "20"}, Spell.Element.WATER, 8.0, power(10), radius(3), 1, 75, 50, 65)
-	var water_down3 := GlobalData.magic_book.copy_spell("top-down", {"H": "30"}, Spell.Element.WATER, 6.0, power(12), radius(3), 1, 75, 75, 75)
-	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0)
-	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
+	water_para1.configure({"H":"5"}, Spell.Element.WATER, fit(8, 2), power(15), radius(2), 1, 50, 100, 25)
+	water_para2.configure({"H":"7.5"}, Spell.Element.WATER, fit(6, 2), power(14), radius(3), 1, 50, 100, 50)
+	water_para3.configure({"H":"10"}, Spell.Element.WATER, fit(4, 2), power(13), radius(4), 1, 50, 100, 75)
+	water_line1.configure({"s":fits(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_line2.configure({"s":fits(3,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_line3.configure({"s":fits(4,20), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_down1.configure({"H": "10"}, Spell.Element.WATER, 10.0, power(8), radius(3), 1, 75, 25, 55)
+	water_down2.configure({"H": "20"}, Spell.Element.WATER, 8.0, power(10), radius(3), 1, 75, 50, 65)
+	water_down3.configure({"H": "30"}, Spell.Element.WATER, 6.0, power(12), radius(3), 1, 75, 75, 75)
+	water_shower1.configure({"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
+	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
+		
 	
 	basic_pattern = AttackPatterns.new(
 		[

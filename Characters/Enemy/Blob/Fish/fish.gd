@@ -10,6 +10,15 @@ var attack_jump_over_path: PathStyle
 var attack_jump_circle_path: PathStyle
 
 var jump_timer: int = 0
+
+var water_para1 := GlobalData.magic_book.copy_spell("loop-shot")
+var water_para2 := GlobalData.magic_book.copy_spell("loop-shot")
+var water_para3 := GlobalData.magic_book.copy_spell("loop-shot")
+var water_line1 := GlobalData.magic_book.copy_spell("linear")
+var water_line2 := GlobalData.magic_book.copy_spell("linear")
+var water_line3 := GlobalData.magic_book.copy_spell("linear")
+var water_shower1 := GlobalData.magic_book.copy_spell("linear")
+var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(15), mana(10), mana_regen(10), 20, atk(5), def(7), {Artifact.Element.WATER: res(10, 0)})
@@ -58,15 +67,14 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_para1 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"5"}, Spell.Element.WATER, fit(8, 2), power(15), radius(2), 1, 50, 100, 25)
-	var water_para2 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"7.5"}, Spell.Element.WATER, fit(6, 2), power(14), radius(3), 1, 50, 100, 50)
-	var water_para3 := GlobalData.magic_book.copy_spell("loop-shot", {"H":"10"}, Spell.Element.WATER, fit(4, 2), power(13), radius(4), 1, 50, 100, 75)
-	var water_line1 := GlobalData.magic_book.copy_spell("linear", {"s":fits(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_line2 := GlobalData.magic_book.copy_spell("linear", {"s":fits(3,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	var water_line3 := GlobalData.magic_book.copy_spell("linear", {"s":fits(4,20), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	
-	var water_shower1 := GlobalData.magic_book.copy_spell("linear", {"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0)
-	water_shower1.chain = GlobalData.magic_book.copy_spell("linear-flurry", {"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
+	water_para1.configure({"H":"5"}, Spell.Element.WATER, fit(8, 2), power(15), radius(2), 1, 50, 100, 25)
+	water_para2.configure({"H":"7.5"}, Spell.Element.WATER, fit(6, 2), power(14), radius(3), 1, 50, 100, 50)
+	water_para3.configure({"H":"10"}, Spell.Element.WATER, fit(4, 2), power(13), radius(4), 1, 50, 100, 75)
+	water_line1.configure({"s":fits(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_line2.configure({"s":fits(3,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_line3.configure({"s":fits(4,20), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_shower1.configure({"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
+	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	basic_pattern = AttackPatterns.new(
 		[

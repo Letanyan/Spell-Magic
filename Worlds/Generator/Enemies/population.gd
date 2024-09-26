@@ -125,6 +125,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 				world_items.append(entity)
 	return entity
 	
+# FIXME: don't spawn enemy if this `enemy: World.Enemy` at this position `x`,`y` has been killed
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
 	var result: Enemy = null
 	var pos := Vector3(x, 0, y)
@@ -152,6 +153,10 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.BEE: result = entity_manager.get_enemy(World.Enemy.BEE)
 		World.Enemy.BUMBLE_BEE: result = entity_manager.get_enemy(World.Enemy.BUMBLE_BEE)
 		World.Enemy.UNDEAD_HEAD: result = entity_manager.get_enemy(World.Enemy.UNDEAD_HEAD)
+		World.Enemy.SNOT_BLOB: result = entity_manager.get_enemy(World.Enemy.SNOT_BLOB)
+		World.Enemy.SNOT_SPIKE: result = entity_manager.get_enemy(World.Enemy.SNOT_SPIKE)
+		World.Enemy.WALKER_HEAD: result = entity_manager.get_enemy(World.Enemy.WALKER_HEAD)
+		World.Enemy.WIZARD: result = entity_manager.get_enemy(World.Enemy.WIZARD)
 			
 	result.set_level_relative_to_location(rng, x, y)
 	for conn: Dictionary in result.vital_update.get_connections():
@@ -185,6 +190,10 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 		World.Enemy.BEE: result = Enemy.make(World.Enemy.BEE)
 		World.Enemy.BUMBLE_BEE: result = Enemy.make(World.Enemy.BUMBLE_BEE)
 		World.Enemy.UNDEAD_HEAD: result = Enemy.make(World.Enemy.UNDEAD_HEAD)
+		World.Enemy.SNOT_BLOB: result = Enemy.make(World.Enemy.SNOT_BLOB)
+		World.Enemy.SNOT_SPIKE: result = Enemy.make(World.Enemy.SNOT_SPIKE)
+		World.Enemy.WALKER_HEAD: result = Enemy.make(World.Enemy.WALKER_HEAD)
+		World.Enemy.WIZARD: result = Enemy.make(World.Enemy.WIZARD)
 		
 	result.name = World.Enemy.keys()[enemy] + str(randi())
 			
@@ -194,7 +203,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	result.setup(0)
 	return result
 
-	
+
 func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(x, 0, y)

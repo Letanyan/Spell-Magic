@@ -7,6 +7,13 @@ var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
+
+var elec1 := GlobalData.magic_book.copy_spell("linear")
+var elec2 := GlobalData.magic_book.copy_spell("linear")
+var elec3 := GlobalData.magic_book.copy_spell("linear")
+var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
+var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
+var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(13), mana(10), mana_regen(15), 20, atk(10), def(9), {Artifact.Element.ELECTRIC: res(8, 2), Artifact.Element.FIRE: res(8, 2)})
@@ -15,7 +22,6 @@ func setup(seedling: int) -> void:
 	idle_path = PathStyle.new(0, position + Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7).align_y_to_air()
 	
 	const idle_r := 20.0
-	const idle_h := 10.0
 		
 	var a: Vector3 = Globals.rand_point_in_sphere(idle_r)
 	var b: Vector3 = Globals.rand_point_in_sphere(idle_r)
@@ -35,13 +41,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var elec1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 50, 50, 10)
-	var elec2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ELECTRIC, fit(6,12), power(16), radius(6), 1, 50, 50, 20)
-	var elec3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ELECTRIC, fit(7,14), power(11), radius(7), 1, 50, 50, 30)
-	
-	var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter", {"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, 5.0, power(5), radius(5), fiti(4, 15), 33, 66, 25)
-	var fire_mine2 := GlobalData.magic_book.copy_spell("bomb", {"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, 7.0, power(9), radius(7), fiti(2, 8), 75, 120, 50)
-	var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear", {"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, 5.0, power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	elec1.configure({"s": "5", "d": "2"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 50, 50, 10)
+	elec2.configure({"s": "5", "d": "2"}, Spell.Element.ELECTRIC, fit(6,12), power(16), radius(6), 1, 50, 50, 20)
+	elec3.configure({"s": "10", "d": "2"}, Spell.Element.ELECTRIC, fit(7,14), power(11), radius(7), 1, 50, 50, 30)
+	fire_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, 5.0, power(5), radius(5), fiti(4, 15), 33, 66, 25)
+	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, 7.0, power(9), radius(7), fiti(2, 8), 75, 120, 50)
+	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, 5.0, power(15), radius(3), fiti(5, 10), 70, 180, 60)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -95,5 +100,5 @@ func drop_artifact() -> Artifact:
 	
 func drop_spell() -> Spell:
 	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"}, Spell.Element.ELECTRIC, 1, 5, 0.2, 4, 50, 50, NAN).bake(new_name)
+	var spell := elec1.duplicate().bake(new_name)
 	return spell

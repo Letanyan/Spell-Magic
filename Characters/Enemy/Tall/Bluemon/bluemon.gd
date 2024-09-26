@@ -9,6 +9,13 @@ var attack_pattern3: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
+var water_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
+var water_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
+var water_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
+var fire_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
+var fire_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
+var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
+
 
 func _ready() -> void:
 	super._ready()
@@ -25,13 +32,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var water_attack1 := GlobalData.magic_book.copy_spell("linear-arc", {"R":"pi*0.5", "s":fits(2,15)}, Spell.Element.WATER, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
-	var water_attack2 := GlobalData.magic_book.copy_spell("linear-arc", {"R":"pi*0.75", "s":fits(3,20)}, Spell.Element.WATER, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
-	var water_attack3 := GlobalData.magic_book.copy_spell("linear-arc", {"R":"pi", "s":fits(4,25)}, Spell.Element.WATER, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
-	
-	var fire_attack1 := GlobalData.magic_book.copy_spell("linear-arc", {"R":"pi*0.5", "s":fits(2,15)}, Spell.Element.FIRE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
-	var fire_attack2 := GlobalData.magic_book.copy_spell("linear-arc", {"R":"pi*0.75", "s":fits(3,20)}, Spell.Element.FIRE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
-	var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc", {"R":"pi", "s":fits(4,25)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
+	water_attack1.configure({"R":"pi*0.5", "s":fits(2,15)}, Spell.Element.WATER, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
+	water_attack2.configure({"R":"pi*0.75", "s":fits(3,20)}, Spell.Element.WATER, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
+	water_attack3.configure({"R":"pi", "s":fits(4,25)}, Spell.Element.WATER, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
+	fire_attack1.configure({"R":"pi*0.5", "s":fits(2,15)}, Spell.Element.FIRE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
+	fire_attack2.configure({"R":"pi*0.75", "s":fits(3,20)}, Spell.Element.FIRE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
+	fire_attack3.configure({"R":"pi", "s":fits(4,25)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -95,5 +101,5 @@ func drop_artifact() -> Artifact:
 
 func drop_spell() -> Spell:
 	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := GlobalData.magic_book.copy_spell("loop-shot", {"H":"4", "speed":"4"}, Spell.Element.AIR, 3, 5, 0.1, 1, 0, 0, 0).bake(new_name)
+	var water_para := water_attack1.duplicate().bake(new_name)
 	return water_para

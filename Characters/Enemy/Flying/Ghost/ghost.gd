@@ -7,6 +7,16 @@ var sequence_pattern: AttackPatterns
 
 var idle_path: PathStyle
 var attack_path: PathStyle
+
+var ice1 := GlobalData.magic_book.copy_spell("linear")
+var ice2 := GlobalData.magic_book.copy_spell("linear")
+var ice3 := GlobalData.magic_book.copy_spell("linear")
+var ice_arc1 := GlobalData.magic_book.copy_spell("arc")
+var ice_arc2 := GlobalData.magic_book.copy_spell("arc")
+var ice_arc3 := GlobalData.magic_book.copy_spell("arc")
+var ice_scatter1 := GlobalData.magic_book.copy_spell("scatter-shot")
+var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter-shot")
+var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter-shot")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(1), mana(8), mana_regen(20), 20, atk(10), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(7, 3)})
@@ -31,17 +41,15 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	var ice1 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ICE, 10.0, power(10), radius(2), 1, 50, 50, 10)
-	var ice2 := GlobalData.magic_book.copy_spell("linear", {"s": "5", "d": "2"}, Spell.Element.ICE, 8.0, power(12), radius(2), 1, 50, 50, 20)
-	var ice3 := GlobalData.magic_book.copy_spell("linear", {"s": "10", "d": "2"}, Spell.Element.ICE, 6.0, power(8), radius(2), 1, 50, 50, 30)
-	
-	var ice_arc1 := GlobalData.magic_book.copy_spell("arc", {"R": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 20)
-	var ice_arc2 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
-	var ice_arc3 := GlobalData.magic_book.copy_spell("arc", {"R": "pi/4", "s": "10"}, Spell.Element.ICE, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
-	
-	var ice_scatter1 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
-	var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
-	var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter-shot", {"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
+	ice1.configure({"s": "5", "d": "2"}, Spell.Element.ICE, 10.0, power(10), radius(2), 1, 50, 50, 10)
+	ice2.configure({"s": "5", "d": "2"}, Spell.Element.ICE, 8.0, power(12), radius(2), 1, 50, 50, 20)
+	ice3.configure({"s": "10", "d": "2"}, Spell.Element.ICE, 6.0, power(8), radius(2), 1, 50, 50, 30)
+	ice_arc1.configure({"R": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 20)
+	ice_arc2.configure({"R": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
+	ice_arc3.configure({"R": "pi/4", "s": "10"}, Spell.Element.ICE, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
+	ice_scatter1.configure({"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
+	ice_scatter2.configure({"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
+	ice_scatter3.configure({"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -92,5 +100,5 @@ func drop_artifact() -> Artifact:
 	
 func drop_spell() -> Spell:
 	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := GlobalData.magic_book.copy_spell("arc", {"s": "5"}, Spell.Element.ELECTRIC, 1, 5, 0.2, 4, 50, 50, NAN).bake(new_name)
+	var spell := ice1.duplicate().bake(new_name)
 	return spell

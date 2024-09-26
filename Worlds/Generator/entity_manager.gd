@@ -54,16 +54,21 @@ var buffer_bird: EntityBuffer
 var buffer_fungi: EntityBuffer
 var buffer_hot_blob: EntityBuffer
 var buffer_mushroom: EntityBuffer
-var buffer_bluemon: EntityBuffer
-var buffer_frog: EntityBuffer
-var buffer_mushking: EntityBuffer
-var buffer_rabbit: EntityBuffer
+var buffer_snot_blob: EntityBuffer
+var buffer_snot_spike: EntityBuffer
+var buffer_walker_head: EntityBuffer
+var buffer_wizard: EntityBuffer
 
 var buffer_undead: EntityBuffer
 var buffer_mole: EntityBuffer
 var buffer_walker: EntityBuffer
 var buffer_birdman: EntityBuffer
 var buffer_fishman: EntityBuffer
+var buffer_bluemon: EntityBuffer
+var buffer_frog: EntityBuffer
+var buffer_mushking: EntityBuffer
+var buffer_rabbit: EntityBuffer
+
 
 var buffer_bat: EntityBuffer
 var buffer_dragon: EntityBuffer
@@ -137,6 +142,10 @@ func _init() -> void:
 	buffer_bee = EntityBuffer.new(10, func() -> Bee: return Enemy.make(World.Enemy.BEE), deinit_enemy, "bee")
 	buffer_bumble_bee = EntityBuffer.new(10, func() -> BumbleBee: return Enemy.make(World.Enemy.BUMBLE_BEE), deinit_enemy, "bumble_bee")
 	buffer_undead_head = EntityBuffer.new(10, func() -> UndeadHead: return Enemy.make(World.Enemy.UNDEAD_HEAD), deinit_enemy, "undead_head")
+	buffer_snot_blob = EntityBuffer.new(10, func() -> SnotBlob: return Enemy.make(World.Enemy.SNOT_BLOB), deinit_enemy, "snot_blob")
+	buffer_snot_spike = EntityBuffer.new(10, func() -> SnotSpike: return Enemy.make(World.Enemy.SNOT_SPIKE), deinit_enemy, "snot_spike")
+	buffer_walker_head = EntityBuffer.new(10, func() -> WalkerHead: return Enemy.make(World.Enemy.WALKER_HEAD), deinit_enemy, "walker_head")
+	buffer_wizard = EntityBuffer.new(10, func() -> Wizard: return Enemy.make(World.Enemy.WIZARD), deinit_enemy, "wizard")
 	
 	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building, "single")
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
@@ -190,6 +199,10 @@ func get_enemy(kind: World.Enemy) -> Enemy:
 		World.Enemy.BEE: return buffer_bee.get_entity()
 		World.Enemy.BUMBLE_BEE: return buffer_bumble_bee.get_entity()
 		World.Enemy.UNDEAD_HEAD: return buffer_undead_head.get_entity()
+		World.Enemy.SNOT_BLOB: return buffer_snot_blob.get_entity()
+		World.Enemy.SNOT_SPIKE: return buffer_snot_spike.get_entity()
+		World.Enemy.WALKER_HEAD: return buffer_walker_head.get_entity()
+		World.Enemy.WIZARD: return buffer_wizard.get_entity()
 	return buffer_undead.get_entity()
 
 func free_enemy(enemy: Enemy) -> void:
@@ -217,6 +230,10 @@ func free_enemy(enemy: Enemy) -> void:
 		World.Enemy.BEE: buffer_bee.free_entity(enemy)
 		World.Enemy.BUMBLE_BEE: buffer_bumble_bee.free_entity(enemy)
 		World.Enemy.UNDEAD_HEAD: buffer_undead_head.free_entity(enemy)
+		World.Enemy.SNOT_BLOB: buffer_snot_blob.free_entity(enemy)
+		World.Enemy.SNOT_SPIKE: buffer_snot_spike.free_entity(enemy)
+		World.Enemy.WALKER_HEAD: buffer_walker_head.free_entity(enemy)
+		World.Enemy.WIZARD: buffer_wizard.free_entity(enemy)
 		
 func get_building(kind: World.Building) -> Buildings:
 	match kind:

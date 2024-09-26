@@ -88,6 +88,10 @@ vec4 biome_color(vec4 V, vec2 uv) {
 		}
 	}
 
+	color.rgb = rgb2hsv(color.rgb);
+	color.b = 1.0 - pow(1.0 - color.b, 2.0);
+	color.rgb = hsv2rgb(color.rgb);
+
 	return color;
 }
 

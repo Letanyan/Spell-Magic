@@ -125,6 +125,29 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.is_active = is_active
 	return result
 	
+@warning_ignore("shadowed_variable")
+func configure(constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float, _chain: Spell = null) -> void:
+	element = element
+	if not is_nan(radius):
+		radius = radius
+	if not is_nan(power):
+		power = power
+	if not is_nan(duration):
+		duration = duration
+	if count != 0:
+		count = count
+	if not is_nan(crit_rate):
+		crit_rate = crit_rate
+	if not is_nan(crit_dmg):
+		crit_dmg = crit_dmg
+	if not is_nan(mana):
+		mana_cost = mana
+		ignore_cooldown_when_calculating_elemental_application = true
+	if _chain != null:
+		chain = _chain
+	overwrite_expressions(constants)
+	
+	
 func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	var sphere := Vector3.ZERO
 	sphere.x = x_expr.compute(vars)
