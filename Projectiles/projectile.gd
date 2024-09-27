@@ -239,10 +239,10 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	var is_enemy  : int = area.collision_layer & 0b0100 != 0
 	
 	var is_world_object := area.collision_layer & (1 << 9) != 0
-	var is_fire  : int = area.collision_layer & 0b0_0000_1000 != 0
-	var is_rock  : int = area.collision_layer & 0b1_0000 != 0
-	var is_water : int = area.collision_layer & 0b10_0000 != 0
-	var is_ice   : int = area.collision_layer & 0b0_1000_0000 != 0
+	var is_fire  : int = area.collision_layer   & 0b0_0000_1000 != 0
+	var is_rock  : int = area.collision_layer   & 0b0_0001_0000 != 0
+	var is_water : int = area.collision_layer   & 0b0_0010_0000 != 0
+	var is_ice   : int = area.collision_layer   & 0b0_1000_0000 != 0
 	var is_electric: int = area.collision_layer & 0b1_0000_0000 != 0
 	var dmg := {}
 	var invunerable: bool = (is_player or is_enemy) and (_body as CharacterBody).invunerable > 0.0

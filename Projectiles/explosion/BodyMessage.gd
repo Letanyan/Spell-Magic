@@ -26,10 +26,15 @@ func set_rise_modulate(initial: Color, final: Color) -> void:
 	var animation := get_rise_animation()
 	var idx := animation.find_track("label:modulate", Animation.TYPE_VALUE)
 	animation.track_insert_key(idx, 0.0, initial)
-	animation.track_insert_key(idx, 1.0, final)
+	animation.track_insert_key(idx, 0.5, final)
 	
 func set_rise_outline_modulate(initial: Color, final: Color) -> void:
 	var animation := get_rise_animation()
 	var idx := animation.find_track("label:outline_modulate", Animation.TYPE_VALUE)
 	animation.track_insert_key(idx, 0.0, initial)
-	animation.track_insert_key(idx, 1.0, final)
+	animation.track_insert_key(idx, 0.5, final)
+	
+func set_rise_position_change(final: Vector3) -> void:
+	var animation := get_rise_animation()
+	var idx := animation.find_track("label:position", Animation.TYPE_VALUE)
+	animation.track_insert_key(idx, 0.5, final)

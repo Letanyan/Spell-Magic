@@ -17,7 +17,8 @@ func setup(seedling: int) -> void:
 	kind = World.Enemy.NONE # set to zero while we setup stuff
 	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), 25, atk(15), def(15), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
 	
-	current_path = PathStyle.new(0, position).circle(7, 5, bounds.y / 2.0).use_absolute().align_y_to_ground()
+	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(5, 0, 7)
+	current_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
 	idle_path = current_path
 	
 	var R := 25.0

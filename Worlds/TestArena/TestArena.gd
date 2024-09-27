@@ -149,9 +149,10 @@ func setup(_settings: WorldSettings) -> void:
 	
 	#var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
 	#var RT := Transform3D.IDENTITY.rotated(Vector3.UP, 2 * PI / 3)
-	#var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).circle(1, 4, 2).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
-	#var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).circle(1, 4, 2).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, T])
-	#var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).circle(1, 4, 2).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, RT, T])
+	#var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(4, 2, 1)
+	#var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
+	#var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, T])
+	#var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, RT, T])
 	#var target1 := TargetShape.make()
 	#target1.configure(TargetShape.config_for_gauge(Spell.Element.WATER, spawner, 3, Vitals.Stat.new(0, 0, 1, -0.1), path1))
 	#var target2 := TargetShape.make()

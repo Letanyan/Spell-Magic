@@ -19,7 +19,8 @@ func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(15), mana(15), mana_regen(20), 20, atk(15), def(14), {Artifact.Element.ELECTRIC: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	vitals.perception.max_value = 50
 	
-	idle_path = PathStyle.new(0, position + Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7).align_y_to_air()
+	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
+	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
 	
 	const idle_r := 15.0
 		

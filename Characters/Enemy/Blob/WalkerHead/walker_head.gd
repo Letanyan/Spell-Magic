@@ -22,7 +22,8 @@ var ice_wall := GlobalData.magic_book.copy_spell("wall")
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(14), mana(12), mana_regen(10), 15, atk(11), def(9), {Artifact.Element.WATER: res(5, 1), Artifact.Element.ICE: res(7, 2)})
 	
-	idle_path = PathStyle.new().random_points_in_circle(2, 10, bounds.y / 2.0, 10).set_origin(position).align_y_to_ground()
+	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
+	idle_path = PathStyle.new().follow_path(circle_path).set_origin(position).align_y_to_ground()
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_rotation_as_vision_angle(2, 0, 10).use_physics().look_at_player()
 	current_path = idle_path
 	

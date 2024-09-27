@@ -162,23 +162,6 @@ func align_y_to_ground_and_jump() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_JUMP
 	return self
 	
-func circle(speed: float, radius: float, h: float) -> PathStyle:
-	path = Pathway.new()
-	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
-	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
-	path.append_with_speed([a, b], [speed, speed], [Easing.linear, Easing.linear])
-	origin_kind = OriginKind.ABSOLUTE
-	return self
-	
-func circle_player(speed: float, radius: float, h: float) -> PathStyle:
-	origin_kind = OriginKind.PLAYER
-	origin = Vector3.ZERO
-	path = Pathway.new()
-	var a := Segment.cubic(Vector3(0, h, radius), Vector3(0, h, -radius), Vector3(radius * 1.5, h, radius), Vector3(radius * 1.5, h, -radius))
-	var b := Segment.cubic(Vector3(0, h, -radius), Vector3(0, h, radius), Vector3(radius * -1.5, h, -radius), Vector3(radius * -1.5, h, radius))
-	path.append_with_speed([a, b], [speed, speed], [Easing.linear, Easing.linear])
-	return self
-	
 func towards_player(speed: float, mn: float, mx: float) -> PathStyle:
 	player_vision_angle = PlayerVisionAngle.BODY_ROTATION
 	player_vision_offset = Vector4(0.0, 0.0, mn, mx)
@@ -199,40 +182,6 @@ func transform_path(transform: Variant) -> PathStyle:
 			path.apply_transform(t)
 	else:
 		push_error("Expected Transform3D/Array[Transform3D] for transform_path")
-	return self
-	
-func random_points_in_circle(speed: float, radius: float, height: float, count: int) -> PathStyle:
-	path = Pathway.new()
-	var start := Vector3(rng.randf() * 2 - 1, 0, rng.randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0) 
-	var p := Vector3(rng.randf() * 2 - 1, 0, rng.randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
-	path.add_with_speed(Segment.linear(start, p), speed, Easing.linear)
-	for i in range(count - 1):
-		var q := Vector3(rng.randf() * 2 - 1, 0, rng.randf() * 2 - 1).normalized() * radius + Vector3(0, height, 0)
-		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
-		p = q
-	path.add_with_speed(Segment.linear(p, start), speed, Easing.linear)
-	return self
-	
-func random_points_in_disc(speed: float, min_r: float, max_r: float, count: int) -> PathStyle:
-	path = Pathway.new()
-	var p := Vector3(rng.randf(), 0, rng.randf()) * rng.randf_range(min_r, max_r)
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
-	for i in range(count - 1):
-		var q := Vector3(rng.randf(), 0, rng.randf()) * rng.randf_range(min_r, max_r)
-		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
-		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
-	return self
-	
-func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: int) -> PathStyle:
-	path = Pathway.new()
-	var p := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r)
-	path.add_with_speed(Segment.linear(Vector3.ZERO, p), speed, Easing.linear)
-	for i in range(count - 1):
-		var q := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r)
-		path.add_with_speed(Segment.linear(p, q), speed, Easing.linear)
-		p = q
-	path.add_with_speed(Segment.linear(p, Vector3.ZERO), speed, Easing.linear)
 	return self
 	
 # xyz = position, w = speed
@@ -569,6 +518,46 @@ class Pathway:
 	func arc_with_speed_to(end: Vector3, clockwise: bool, s: float, m: Segment = Easing.linear) -> Pathway:
 		add_with_speed(Segment.arc_between_of_points(cursor, end), s, m)
 		cursor = end
+		return self
+		
+	func circle(radius: float, h: float, dur: float, m: Segment = Easing.linear) -> Pathway:
+		var a := Segment.cubic(Vector3(0, h, radius)+cursor, Vector3(0, h, -radius)+cursor, Vector3(radius * 1.5, h, radius)+cursor, Vector3(radius * 1.5, h, -radius)+cursor)
+		var b := Segment.cubic(Vector3(0, h, -radius)+cursor, Vector3(0, h, radius)+cursor, Vector3(radius * -1.5, h, -radius)+cursor, Vector3(radius * -1.5, h, radius)+cursor)
+		add(a, dur / 2.0, m)
+		add(b, dur / 2.0, m)
+		return self
+		
+	func circle_with_speed(radius: float, h: float, s: float, m: Segment = Easing.linear) -> Pathway:
+		var a := Segment.cubic(Vector3(0, h, radius)+cursor, Vector3(0, h, -radius)+cursor, Vector3(radius * 1.5, h, radius)+cursor, Vector3(radius * 1.5, h, -radius)+cursor)
+		var b := Segment.cubic(Vector3(0, h, -radius)+cursor, Vector3(0, h, radius)+cursor, Vector3(radius * -1.5, h, -radius)+cursor, Vector3(radius * -1.5, h, radius)+cursor)
+		add_with_speed(a, s, m)
+		add_with_speed(b, s, m)
+		return self
+		
+	func random_points_in_disc(speed: float, min_r: float, max_r: float, h: float, count: int, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
+		if rng == null:
+			rng = RandomNumberGenerator.new()
+			rng.seed = Time.get_ticks_usec()
+		var p := Vector3(rng.randf() * 2.0 - 1.0, h, rng.randf() * 2.0 - 1.0) * rng.randf_range(min_r, max_r) + Vector3(0, h, 0)
+		add_with_speed(Segment.linear(cursor, p), speed, m)
+		for i in range(count - 1):
+			var q := Vector3(rng.randf() * 2.0 - 1.0, 0, rng.randf() * 2.0 - 1.0).normalized() * rng.randf_range(min_r, max_r) + Vector3(0, h, 0)
+			add_with_speed(Segment.linear(p, q), speed, m)
+			p = q
+		add_with_speed(Segment.linear(p, cursor), speed, m)
+		return self
+		
+	func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: int, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
+		if rng == null:
+			rng = RandomNumberGenerator.new()
+			rng.seed = Time.get_ticks_usec()
+		var p := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r)
+		add_with_speed(Segment.linear(cursor, p), speed, m)
+		for i in range(count - 1):
+			var q := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r)
+			add_with_speed(Segment.linear(p, q), speed, m)
+			p = q
+		add_with_speed(Segment.linear(p, cursor), speed, m)
 		return self
 		
 

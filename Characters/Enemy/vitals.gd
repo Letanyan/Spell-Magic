@@ -202,6 +202,7 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 		var clr := Spell.color_from_element(element)
 		lbl.set_rise_modulate(clr, clr.lerp(Color.TRANSPARENT, 1.0))
 		lbl.set_rise_outline_modulate(clr.darkened(0.2), clr.lerp(Color.TRANSPARENT, 1.0))
+		lbl.set_rise_position_change(Globals.rand_point_in_sphere(1))
 	
 	if show_exp:
 		for location in locations:

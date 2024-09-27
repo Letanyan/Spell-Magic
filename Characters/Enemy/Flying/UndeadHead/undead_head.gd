@@ -15,7 +15,8 @@ var rock_attack_large := GlobalData.magic_book.copy_spell("linear")
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(4), mana(1), mana_regen(1), 5, atk(4), def(2), {Artifact.Element.ROCK: res(0, 1)})
 	
-	idle_path = PathStyle.new(seedling, position).random_points_in_circle(2, 20, 0, 10).align_y_to_ground()
+	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
+	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
 	attack_path = PathStyle.new(0, position).towards_player(2, 1, 2).look_at_player_xz().align_y_to_ground()
 	current_path = idle_path
 	

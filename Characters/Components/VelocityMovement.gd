@@ -209,5 +209,5 @@ static func get_input_strength(negative_x: String, positive_x: String, negative_
 	if back < deadzone:
 		back = 0
 	
-	return Vector2(right - left, back - forward)
+	return Vector2(right - left, back - forward).normalized()
 	

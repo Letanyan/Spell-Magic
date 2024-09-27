@@ -9,7 +9,8 @@ extends Control
 @onready var hide_cooldown_timings := $Tabs/HUD/HideCooldownTimings as CheckButton
 @onready var hide_stats_view := $Tabs/HUD/HideStatsView as CheckButton
 @onready var hide_reticule: CheckButton = $Tabs/HUD/HideReticule as CheckButton
-@onready var hide_projectile_indicator: CheckButton = $Tabs/HUD/HideProjectileIndicator as CheckButton
+@onready var projectile_indicator_size: HSlider = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSize
+@onready var projectile_indicator_size_display: Label = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay
 
 @onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
@@ -53,6 +54,7 @@ signal exit_game
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	user_functions.text = GlobalData.game_settings.user_functions_text
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -67,7 +69,8 @@ func update_controls() -> void:
 	hide_cooldown_timings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
 	hide_stats_view.button_pressed = world_settings.hud_settings.hide_stats_view
 	hide_reticule.button_pressed = world_settings.hud_settings.hide_reticule
-	hide_projectile_indicator.button_pressed = world_settings.hud_settings.hide_projectile_indicator
+	projectile_indicator_size.value = world_settings.hud_settings.projectile_indicator_size
+	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
 	
 	fov_slider.value = int(world_settings.camera_settings.fov)
 	fov_value.text = str(int(world_settings.camera_settings.fov))
@@ -139,8 +142,9 @@ func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_reticule = button_pressed
 	settings_changed.emit(world_settings)
 	
-func _on_hide_projectile_indicator_toggled(toggled_on: bool) -> void:
-	world_settings.hud_settings.hide_projectile_indicator = toggled_on
+func _on_projectile_indicator_size_value_changed(value: float) -> void:
+	world_settings.hud_settings.projectile_indicator_size = value
+	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
 	settings_changed.emit(world_settings)
 
 func _on_fov_slider_value_changed(value: float) -> void:

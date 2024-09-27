@@ -205,7 +205,7 @@ func _physics_process(delta: float) -> void:
 				
 	spell_caster.update(self, delta)
 	
-	update_projectile_indicators(world_settings.hud_settings.hide_projectile_indicator)
+	update_projectile_indicators(world_settings.hud_settings.projectile_indicator_size)
 	
 	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
@@ -547,7 +547,7 @@ static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, d
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)
 
-func update_projectile(pivot: Node3D, spell: SpellBody) -> bool:
+func update_projectile(pivot: Node3D, pi_size: float, spell: SpellBody) -> bool:
 	if not spell.is_inside_tree():
 		return false
 	if cam.is_position_in_frustum(spell.global_position):
@@ -555,12 +555,14 @@ func update_projectile(pivot: Node3D, spell: SpellBody) -> bool:
 		
 	if projectile_indicators.has(spell):
 		var mi := projectile_indicators[spell] as Node3D
+		mi.scale = Vector3(pi_size, pi_size, pi_size)
 		if spell.position != mi.position:
 			if not Vector3.UP.cross(spell.position - mi.global_position).is_zero_approx():
 				mi.look_at(spell.position)
 	else:
 		var mi := projectile_indicator.instantiate() as ProjectileIndicator
 		mi.position = Vector3(0, 2, 0)
+		mi.scale = Vector3(pi_size, pi_size, pi_size)
 		projectile_indicators[spell] = mi
 		pivot.add_child(mi)
 		var mat := mi.mesh_instance.mesh.surface_get_material(0) as ShaderMaterial
@@ -569,15 +571,15 @@ func update_projectile(pivot: Node3D, spell: SpellBody) -> bool:
 	return true
 	
 
-func update_projectile_indicators(should_hide: bool) -> void:
+func update_projectile_indicators(pi_size: float) -> void:
 	var pivot := $Pivot as Node3D
 	var updated_spell_bodies := {} # [SpellBody]bool
-	if not should_hide:
+	if pi_size > 0:
 		for enemy: Enemy in enemies_in_range:
 			for spell: SpellBody in enemy.spell_caster.particles:
-				updated_spell_bodies[spell] = update_projectile(pivot, spell)
+				updated_spell_bodies[spell] = update_projectile(pivot, pi_size, spell)
 		for spell: SpellBody in spell_caster.particles:
-			updated_spell_bodies[spell] = update_projectile(pivot, spell)
+			updated_spell_bodies[spell] = update_projectile(pivot, pi_size, spell)
 		
 	# FIXME: use spellbody after free 
 	for spell: SpellBody in projectile_indicators:

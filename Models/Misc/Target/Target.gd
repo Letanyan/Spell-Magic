@@ -44,6 +44,8 @@ var invunerable: int = 0
 
 var focus_point := Vector3.ZERO
 
+var should_be_removed := false
+
 static func make() -> TargetShape:
 	var result := (preload("res://Models/Misc/Target/Target.tscn") as PackedScene).instantiate() as TargetShape
 	result.kind = World.Item.TARGET
@@ -64,6 +66,16 @@ func set_feet_position(y: float) -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	if not is_active or GlobalData.magic_book.settings.is_paused:
+		return
+		
+	if should_be_removed:
+		if spell_caster.particles.is_empty():
+			if spell_caster != null:
+				spell_caster.free_particles()
+			var parent := get_parent()
+			if parent:
+				parent.call_deferred("remove_child", self)
+				queue_free()
 		return
 	
 	invunerable -= 1
@@ -149,7 +161,7 @@ func _physics_process(delta: float) -> void:
 			elif puzzle_kind == PuzzleKind.AVOID_EA and gauge.value <= gauge.min_value:
 				set_is_down()
 			
-
+			
 func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area: Area3D, contact_points: Array[Vector3]) -> void:
 	if invunerable > 0 or is_down:
 		return
@@ -291,12 +303,7 @@ func is_blocking_puzzle() -> bool:
 	return puzzle_kind == PuzzleKind.AVOID_DAMAGE or puzzle_kind == PuzzleKind.AVOID_EA
 
 func remove_when_done() -> void:
-	if spell_caster != null:
-		spell_caster.free_particles() # FIXME: wait for particles to finish then remove and free
-	var parent := get_parent()
-	if parent:
-		parent.call_deferred("remove_child", self)
-		queue_free()
+	should_be_removed = true
 
 static func config_for_single_hit(el: Spell.Element, spwnr: ItemSpawner, retime: float, pth: PathStyle) -> Dictionary:
 	return {

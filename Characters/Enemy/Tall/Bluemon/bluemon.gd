@@ -25,8 +25,9 @@ func _ready() -> void:
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), 25, atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	
-	idle_path = PathStyle.new(0, position).circle(1, 10, 0).align_y_to_ground()
-	attack_path = PathStyle.new().circle_player(1, 10, 0).align_y_to_ground().look_at_player_xz()
+	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(10, 0, 1)
+	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
+	attack_path = PathStyle.new(0, Vector3.ZERO).follow_path(circle_path).align_y_to_ground().look_at_player_xz().set_use_player_as_origin()
 	
 	current_path = idle_path
 	

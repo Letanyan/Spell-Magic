@@ -71,8 +71,9 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
 				
 				for i in 3:
-					var path := PathStyle.new(rng.randi(), pos3).random_points_in_circle(2, 2, 2, 8).align_y_to_ground_and_air()
-					var config := {"element": Spell.Element.FIRE, "respawn_time": 5, "path": path, "spawner": spawner}
+					var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 2, 2, 8)
+					var path := PathStyle.new(rng.randi(), pos3).follow_path(circle_path).align_y_to_ground_and_air()
+					var config := TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 5, Vitals.Stat.new(100), path)
 					var p := pop.spawn_world_item(World.Item.TARGET, state, pos.x, pos.y, spacing, config)
 					pos3 = p.position
 					path.origin = pos3
