@@ -657,9 +657,6 @@ static func real_color_from_element(el: Element) -> Color:
 		Element.VOID: return Color(0.25, 0.25, 0.25)
 		_: return Color.WHITE
 
-# TODO: check if all properties copied correctly
-# TODO: use shunting algo for baking. Create RPN, evaluate sequence, replace operator computation if constant evaluable. 
-#       Remake RPN back into infix using recursion. while operator is same or less precedence push op to front of expression else wrap expression in parens then prepend.
 func bake(new_name: String) -> Spell: 
 	var bx := GDExpr.bake(x, expression_strings)
 	var by := GDExpr.bake(y, expression_strings)

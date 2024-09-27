@@ -38,7 +38,7 @@ void fragment() {
 	if (underwater > 0.0) {
 		vec2 offset = texture(noise_texture, UV + sin(TIME / 10.0) / 1.0).rg * 0.05;
 		vec2 base_uv = UV + offset;
-		
+
 		vec4 col = texture(tex, base_uv) * 0.16;
 	    col += texture(tex, base_uv + vec2(0.0, SCREEN_PIXEL_SIZE.y)) * 0.15;
 	    col += texture(tex, base_uv + vec2(0.0, -SCREEN_PIXEL_SIZE.y)) * 0.15;
@@ -48,12 +48,12 @@ void fragment() {
 	    col += texture(tex, base_uv + vec2(0.0, 3.0 * -SCREEN_PIXEL_SIZE.y)) * 0.09;
 	    col += texture(tex, base_uv + vec2(0.0, 4.0 * SCREEN_PIXEL_SIZE.y)) * 0.05;
 	    col += texture(tex, base_uv + vec2(0.0, 4.0 * -SCREEN_PIXEL_SIZE.y)) * 0.05;
-		
+
 	    COLOR = mix(col, vec4(0, 0.1, 0.2, 1.0), underwater);
 	} else {
 		COLOR = texture(tex, UV);
 	}
-	
+
 	//vec3 hsv = rgb2hsv(COLOR.rgb);
 	//hsv.x = snapped(hsv.x, 1.0 / 16.0);
 	//hsv.y = snapped(hsv.y, 0.25);
