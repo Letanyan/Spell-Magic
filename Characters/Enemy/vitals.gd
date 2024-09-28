@@ -26,6 +26,12 @@ class Stat:
 	func apply(p: float) -> void:
 		apply_ignoring_resistance(amount_of_change(p))
 		
+	func apply_by_percentage_on_max(p: float) -> void:
+		apply_ignoring_resistance(amount_of_change(p * max_value))
+		
+	func apply_by_percentage_on_value(p: float) -> void:
+		apply_ignoring_resistance(amount_of_change(p * value))
+		
 	func update_per_tick() -> float:
 		apply_ignoring_resistance(change_per_tick)
 		return change_per_tick

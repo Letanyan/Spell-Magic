@@ -336,6 +336,7 @@ func die() -> void:
 	
 	var world := get_parent_node_3d()
 	await world.get_tree().create_timer(animator.get_animation("Death").length + 0.1).timeout
+	var time_to_kill := Time.get_unix_time_from_system() - (player.enemies_in_range.get(self, 0.0) as float)
 	player.ignore_enemy(get_node(".") as Enemy)
 	explosion.position = position
 	explosion.global_transform = global_transform
@@ -348,6 +349,7 @@ func die() -> void:
 		if not drop_artifact_item(world):
 			drop_spell_item(world)
 	drop_coin_items(world)
+	drop_health_item(world, time_to_kill)
 	
 	SignalBus.enemy_death.emit(get_node("."))
 	world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout.connect(func() -> void: world.remove_child(explosion))
@@ -399,6 +401,18 @@ func drop_coin_items(world: Node3D) -> bool:
 		return true
 	return false
 	
+func drop_health_item(world: Node3D, time_to_kill: float) -> bool:
+	var t := 1.0 - clampf(time_to_kill / 100.0, 0.0, 1.0)
+	var h := drop_health() * (t * t)
+	if h > 0.0:
+		var item := (preload("res://Models/Misc/RedCross/RedCross.tscn") as PackedScene).instantiate() as RedCross
+		item.position = position
+		item.global_transform = global_transform.translated(Globals.rand_point_in_circle(3, 0))
+		item.health = h
+		world.add_child(item)
+		return true
+	return false
+	
 func update_vitals_display() -> void:
 	(health_bar.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("percentage", vitals.health.percentage())
 	var effects_shader := effects_mesh.mesh.surface_get_material(0) as ShaderMaterial
@@ -417,6 +431,9 @@ func drop_key() -> int:
 	
 func drop_coins() -> Array[int]: # values must be in range [1, 10]
 	return []
+	
+func drop_health() -> float:
+	return 0.0
 
 func world_enemy_enum() -> World.Enemy:
 	var n := get_node(".")
@@ -524,3 +541,6 @@ func timings(cls: int, array: Array[float]) -> Array[float]:
 	for i in array.size():
 		array[i] = fit(array[i], array[i] * (1.0 + ratio))
 	return array
+
+func health_drop(cls: int) -> float:
+	return float(cls) / 20.0

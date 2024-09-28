@@ -28,8 +28,8 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		tween.play()
 
 func update_mesh_with_color(color: Color) -> void:
-	var mat := ($Key as MeshInstance3D).get_surface_override_material(0) as StandardMaterial3D
-	mat.albedo_color = color
+	var mat := ($Key as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
+	mat.set_shader_parameter("albedo", color)
 	
 func update_mesh_color() -> void:
 	match key:

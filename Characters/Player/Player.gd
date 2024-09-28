@@ -67,6 +67,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_spell.connect(on_pick_up_spell)
 	SignalBus.pick_up_world_item_key.connect(on_pick_up_key)
 	SignalBus.pick_up_world_item_coin.connect(on_pick_up_coin)
+	SignalBus.pick_up_world_item_red_cross.connect(on_pick_up_red_cross)
 	animation_tree.active = true
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
@@ -249,12 +250,13 @@ func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: f
 		update_artifact_effects(Artifact.Event.DEAL, spell)
 	
 func watch_enemy(enemy: Enemy) -> void:
-	enemies_in_range[enemy] = true
+	enemies_in_range[enemy] = Time.get_unix_time_from_system()
 	enemies_normalised_separations[enemy] = Vector3.ZERO
 	
 func ignore_enemy(enemy: Enemy) -> void:
 	enemies_in_range.erase(enemy)
 	enemies_normalised_separations.erase(enemy)
+	enemy.vitals.health.value = enemy.vitals.health.max_value
 	
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
@@ -533,6 +535,10 @@ func on_pick_up_key(key: int, message: String) -> void:
 	world_settings.save()
 	
 func on_pick_up_coin(coin: int, message: String) -> void:
+	world_settings.save()
+	
+func on_pick_up_red_cross(health: float, message: String) -> void:
+	vitals.health.apply_by_percentage_on_max(health)
 	world_settings.save()
 	
 static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, duration: float) -> Tween:
