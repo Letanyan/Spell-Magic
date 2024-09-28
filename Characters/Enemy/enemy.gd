@@ -507,6 +507,12 @@ func fita(mn: Array[float], mx: Array[float]) -> Array[float]:
 	for i in mn.size():
 		result.append(fit(mn[i], mx[i]))	
 	return result
+	
+func fitas(mult: float, arr: Array[float]) -> Array[float]:
+	var result: Array[float] = []
+	for i in arr.size():
+		result.append(fit(arr[i], arr[i] * mult))	
+	return result
 
 func atk(cls: int) -> float:
 	return fit(5.0, cls * 5.0)
@@ -531,6 +537,16 @@ func radius(cls: int) -> float:
 
 func res(per_cls: int, flat_cls: int) -> Vector2:
 	return Vector2(fit(0.0, per_cls / 20.0), fit(0.0, flat_cls * 5.0))
+	
+func percep(mncls: int, mxcls: int) -> Vector2:
+	var mn := pow(float(mncls) / 20.0, 0.5) * 100
+	var mx := pow(float(mxcls) / 20.0, 0.5) * 100
+	return Vector2(mn, mx)
+	
+func atks(mncls: int, mxcls: int) -> String:
+	var mn := pow(float(mncls) / 20.0, 1.5) * UpgradeSettings.LIMIT_v
+	var mx := pow(float(mxcls) / 20.0, 1.5) * UpgradeSettings.LIMIT_v
+	return fits(mn, mx)
 
 func timing(cls: int, value: float) -> float:
 	var ratio := 1.0 - float(cls) / 20.0

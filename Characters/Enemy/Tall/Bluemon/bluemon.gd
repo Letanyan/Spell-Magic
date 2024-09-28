@@ -23,7 +23,7 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), 25, atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
+	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	
 	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(10, 0, 1)
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
@@ -33,12 +33,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	water_attack1.configure({"R":"pi*0.5", "s":fits(2,15)}, Spell.Element.WATER, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
-	water_attack2.configure({"R":"pi*0.75", "s":fits(3,20)}, Spell.Element.WATER, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
-	water_attack3.configure({"R":"pi", "s":fits(4,25)}, Spell.Element.WATER, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
-	fire_attack1.configure({"R":"pi*0.5", "s":fits(2,15)}, Spell.Element.FIRE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
-	fire_attack2.configure({"R":"pi*0.75", "s":fits(3,20)}, Spell.Element.FIRE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
-	fire_attack3.configure({"R":"pi", "s":fits(4,25)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
+	water_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.WATER, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
+	water_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.WATER, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
+	water_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.WATER, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
+	fire_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.FIRE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
+	fire_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.FIRE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
+	fire_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -67,7 +67,7 @@ func setup(seedling: int) -> void:
 			water_attack2,
 			water_attack3,
 		],
-		AttackPatterns.choose_from_distribution(fit(7,3), [ 15, 10, 5, 15, 10, 5 ], -1)
+		AttackPatterns.choose_from_distribution(fit(8,2), [ 15, 10, 5, 15, 10, 5 ], -1)
 	)
 	
 	

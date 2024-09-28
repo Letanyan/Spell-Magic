@@ -15,7 +15,7 @@ var elec3 := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
 	kind = World.Enemy.NONE # set to zero while we setup stuff
-	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), 25, atk(15), def(15), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
+	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), percep(2,4), atk(15), def(15), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(5, 0, 7)
 	current_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
@@ -57,9 +57,9 @@ func setup(seedling: int) -> void:
 		[PathStyle.Easing.linear]
 	)
 	
-	elec1.configure({"s": "15", "d": "5"}, Spell.Element.ELECTRIC, fit(7,14), power(7), radius(3), 1, 25, 150, 30)
-	elec2.configure({"s": "10", "d": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(10), radius(4), 1, 25, 150, 40)
-	elec3.configure({"s": "5", "d": "5"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 25, 150, 50)
+	elec1.configure({"s": atks(3,15), "d": "5"}, Spell.Element.ELECTRIC, fit(7,14), power(7), radius(3), 1, 25, 150, 30)
+	elec2.configure({"s": atks(2,10), "d": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(10), radius(4), 1, 25, 150, 40)
+	elec3.configure({"s": atks(1,5), "d": "5"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 25, 150, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -67,7 +67,7 @@ func setup(seedling: int) -> void:
 			elec2,
 			elec3,
 		],
-		AttackPatterns.choose_from_distribution(1.0, [ 5, 3, 2 ], -1)
+		AttackPatterns.choose_from_distribution(fit(2.0, 0.5), [ 5, 3, 2 ], -1)
 	)
 	
 	hide_and_attack = AttackSequence.new(true, [

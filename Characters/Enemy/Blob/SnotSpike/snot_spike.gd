@@ -19,7 +19,7 @@ var water_mine2 := GlobalData.magic_book.copy_spell("bomb")
 var water_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(18), mana(10), mana_regen(10), 20, atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
+	vitals = Vitals.enemy(hp(18), mana(10), mana_regen(10), percep(1,4), atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
@@ -30,15 +30,15 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	fire1.configure({"s": "5", "d": "2"}, Spell.Element.FIRE, 10.0, power(10), radius(2), 1, 50, 50, 55)
-	fire2.configure({"s": "5", "d": "2"}, Spell.Element.FIRE, 8.0, power(12), radius(2), 1, 50, 50, 65)
-	fire3.configure({"s": "10", "d": "2"}, Spell.Element.FIRE, 6.0, power(18), radius(2), 1, 50, 50, 75)
-	fire_down1.configure({"H": "10"}, Spell.Element.FIRE, 10.0, power(8), radius(3), 1, 75, 25, 55)
-	fire_down2.configure({"H": "20"}, Spell.Element.FIRE, 8.0, power(10), radius(3), 1, 75, 50, 65)
-	fire_down3.configure({"H": "30"}, Spell.Element.FIRE, 6.0, power(12), radius(3), 1, 75, 75, 75)
-	water_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.WATER, 5.0, power(5), radius(5), fiti(4, 15), 33, 66, 25)
-	water_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.WATER, 7.0, power(9), radius(7), fiti(2, 8), 75, 120, 50)
-	water_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.WATER, 5.0, power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	fire1.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 10.0, power(10), radius(2), 1, 50, 50, 55)
+	fire2.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 8.0, power(12), radius(2), 1, 50, 50, 65)
+	fire3.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 6.0, power(18), radius(2), 1, 50, 50, 75)
+	fire_down1.configure({"H": "10"}, Spell.Element.FIRE, fit(10,2), power(8), radius(3), 1, 75, 25, 55)
+	fire_down2.configure({"H": "20"}, Spell.Element.FIRE, fit(10,4), power(10), radius(3), 1, 75, 50, 65)
+	fire_down3.configure({"H": "30"}, Spell.Element.FIRE, fit(10,5), power(12), radius(3), 1, 75, 75, 75)
+	water_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.WATER, fit(5, 20), power(5), radius(5), fiti(4, 15), 33, 66, 25)
+	water_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.WATER, fit(5, 15), power(9), radius(7), fiti(2, 8), 75, 120, 50)
+	water_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.WATER, fit(10, 20), power(15), radius(3), fiti(5, 10), 70, 180, 60)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -46,7 +46,7 @@ func setup(seedling: int) -> void:
 			water_mine2,
 			water_mine3,
 		],
-		AttackPatterns.choose_from_distribution(5.0, [ 10, 5, 2 ], -1)
+		AttackPatterns.choose_from_distribution(fit(5, 1), [ 10, 5, 2 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -64,7 +64,7 @@ func setup(seedling: int) -> void:
 			fire3,
 			fire_down3,
 		],
-		AttackPatterns.choose_in_sequence([ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ], -1)
+		AttackPatterns.choose_in_sequence(fitas(0.3, [ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ]), -1)
 	)
 	
 	animation_map["attack"] = "Bite_Front"

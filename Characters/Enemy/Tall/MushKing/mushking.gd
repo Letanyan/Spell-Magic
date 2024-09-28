@@ -27,7 +27,7 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), 40, atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})
+	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), percep(4,8), atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})
 	
 	idle_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1))
 	basic_path = PathStyle.new(0, position).towards_player(1, 3, 4).look_at_player_xz().align_y_to_ground()
@@ -38,13 +38,14 @@ func setup(seedling: int) -> void:
 	water_para1.configure({"H":"5"}, Spell.Element.WATER, fit(8, 2), power(15), radius(2), 1, 50, 100, 25)
 	water_para2.configure({"H":"7.5"}, Spell.Element.WATER, fit(6, 2), power(14), radius(3), 1, 50, 100, 50)
 	water_para3.configure({"H":"10"}, Spell.Element.WATER, fit(4, 2), power(13), radius(4), 1, 50, 100, 75)
-	water_line1.configure({"s":fits(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	water_line2.configure({"s":fits(3,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	water_line3.configure({"s":fits(4,20), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	water_flurry1.configure({"s":fits(3,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(7), radius(4), fiti(3,20), 10, 100, fit(50,75))
-	water_flurry2.configure({"s":fits(6,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(4), radius(3), fiti(3,15), 10, 200, fit(50,75))
-	water_flurry3.configure({"s":fits(9,15), "R":fits(PI*0.1, PI*0.2)}, Spell.Element.WATER, fit(5,10), power(2), radius(2), fiti(3,10), 10, 300, fit(50,75))
-	water_shower1.configure({"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
+	water_line1.configure({"s":atks(2,7), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_line2.configure({"s":atks(3,8), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_line3.configure({"s":atks(4,9), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
+	water_flurry1.configure({"s":atks(1,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(7), radius(4), fiti(3,20), 10, 100, fit(50,75))
+	water_flurry2.configure({"s":atks(2,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(4), radius(3), fiti(3,15), 10, 200, fit(50,75))
+	water_flurry3.configure({"s":atks(3,15), "R":fits(PI*0.1, PI*0.2)}, Spell.Element.WATER, fit(5,10), power(2), radius(2), fiti(3,10), 10, 300, fit(50,75))
+	# FIXME: [1]
+	water_shower1.configure({"s":atks(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
 	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	basic_pattern = AttackPatterns.new(
@@ -59,7 +60,7 @@ func setup(seedling: int) -> void:
 			water_flurry2,
 			water_flurry3,
 		],
-		AttackPatterns.choose_from_distribution(6, [ 20, 18, 16,  14, 12, 10,  8, 6, 4 ], -1)
+		AttackPatterns.choose_from_distribution(fit(6,1), [ 20, 18, 16,  14, 12, 10,  8, 6, 4 ], -1)
 	)
 	
 	var basic_pattern_sequence := AttackPatterns.new(
@@ -74,7 +75,7 @@ func setup(seedling: int) -> void:
 			water_flurry2,
 			water_flurry3,
 		],
-		AttackPatterns.choose_from_distribution(3, [ 20, 18, 16,  14, 12, 10,  8, 6, 4 ], 2)
+		AttackPatterns.choose_from_distribution(fit(3,0.5), [ 20, 18, 16,  14, 12, 10,  8, 6, 4 ], 2)
 	)
 	
 	var Z := Vector3.ZERO

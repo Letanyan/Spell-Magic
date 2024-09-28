@@ -19,8 +19,7 @@ var elec_swipe2 := GlobalData.magic_book.copy_spell("swipe")
 var elec_swipe3 := GlobalData.magic_book.copy_spell("swipe")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(10), mana(15), mana_regen(20), 40, atk(12), def(3), {Artifact.Element.ELECTRIC: res(7, 1)})
-	vitals.perception.max_value = 50
+	vitals = Vitals.enemy(hp(10), mana(15), mana_regen(20), percep(4,6), atk(12), def(3), {Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
@@ -45,12 +44,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	elec1.configure({"s": "5", "d": "2"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 50, 50, 10)
-	elec2.configure({"s": "5", "d": "2"}, Spell.Element.ELECTRIC, fit(6,12), power(16), radius(6), 1, 50, 50, 20)
-	elec3.configure({"s": "10", "d": "2"}, Spell.Element.ELECTRIC, fit(7,14), power(11), radius(7), 1, 50, 50, 30)
-	elec_arc1.configure({"R": "pi", "s": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(8), radius(6), fiti(1, 8), 75, 25, 20)
-	elec_arc2.configure({"R": "pi/2", "s": "5"}, Spell.Element.ELECTRIC, fit(5,10), power(10), radius(7), fiti(1, 6), 75, 50, 30)
-	elec_arc3.configure({"R": "pi/4", "s": "10"}, Spell.Element.ELECTRIC, fit(4,8), power(12), radius(8), fiti(1, 4), 75, 75, 40)
+	elec1.configure({"s": atks(2,10), "d": "2"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 50, 50, 10)
+	elec2.configure({"s": atks(3,12), "d": "2"}, Spell.Element.ELECTRIC, fit(6,12), power(16), radius(6), 1, 50, 50, 20)
+	elec3.configure({"s": atks(4,14), "d": "2"}, Spell.Element.ELECTRIC, fit(7,14), power(11), radius(7), 1, 50, 50, 30)
+	elec_arc1.configure({"R": "pi", "s": atks(2,10)}, Spell.Element.ELECTRIC, fit(6,12), power(8), radius(6), fiti(1, 8), 75, 25, 20)
+	elec_arc2.configure({"R": "pi/2", "s": atks(3,12)}, Spell.Element.ELECTRIC, fit(5,10), power(10), radius(7), fiti(1, 6), 75, 50, 30)
+	elec_arc3.configure({"R": "pi/4", "s": atks(4,14)}, Spell.Element.ELECTRIC, fit(4,8), power(12), radius(8), fiti(1, 4), 75, 75, 40)
 	elec_swipe1.configure({"Rx":fits(PI/8,PI/2), "Ry":"0", "Dn":fits(8,1), "dz":fits(2,4), "d":"Br*2+C-dz*N/2"}, Spell.Element.ELECTRIC, fit(8,2), power(12), radius(5), fiti(1,10), 25, 100, 10)
 	elec_swipe2.configure({"Rx":fits(PI/8,PI/2), "Ry":"0", "Dn":fits(8,1), "dz":fits(2,4), "d":"Br*2+C-dz*N/2"}, Spell.Element.ELECTRIC, fit(12,4), power(12), radius(5), fiti(1,10), 50, 150, 20)
 	elec_swipe3.configure({"Rx":fits(PI/8,PI/2), "Ry":"0", "Dn":fits(8,1), "dz":fits(2,4), "d":"Br*2+C-dz*N/2"}, Spell.Element.ELECTRIC, fit(16,6), power(12), radius(5), fiti(1,10), 75, 200, 30)
@@ -64,7 +63,7 @@ func setup(seedling: int) -> void:
 			elec_swipe2,
 			elec_swipe3,
 		],
-		AttackPatterns.choose_from_distribution(5.0, [20, 15, 10, 3, 2, 1], -1)
+		AttackPatterns.choose_from_distribution(fit(5,3), [20, 15, 10, 3, 2, 1], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -79,7 +78,7 @@ func setup(seedling: int) -> void:
 			elec_arc3,
 			elec_swipe3,
 		],
-		AttackPatterns.choose_in_sequence([ 1, 2, 3, 1, 2, 3, 1, 2, 3 ], -1)
+		AttackPatterns.choose_in_sequence(fitas(0.5, [ 1, 2, 3, 1, 2, 3, 1, 2, 3 ]), -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"

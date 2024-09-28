@@ -13,7 +13,7 @@ var elec1 := GlobalData.magic_book.copy_spell("linear")
 var ice1 := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(15), mana(10), mana_regen(10), 20, atk(10), def(10), {Artifact.Element.FIRE: res(-10, 0), Artifact.Element.WATER: res(10, 0)})
+	vitals = Vitals.enemy(hp(15), mana(10), mana_regen(10), percep(1,4), atk(10), def(10), {Artifact.Element.FIRE: res(-10, 0), Artifact.Element.WATER: res(10, 0)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
@@ -24,10 +24,10 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	fire1.configure({"s": "5", "d": "2"}, Spell.Element.FIRE, 10.0, power(18), radius(5), 1, 50, 150, 75)
-	water1.configure({"s": "5", "d": "2"}, Spell.Element.WATER, 8.0, power(18), radius(5), 1, 50, 150, 75)
-	elec1.configure({"s": "10", "d": "2"}, Spell.Element.ELECTRIC, 6.0, power(18), radius(5), 1, 50, 150, 75)
-	ice1.configure({"s": "10", "d": "2"}, Spell.Element.ICE, 6.0, power(18), radius(5), 1, 50, 150, 75)
+	fire1.configure({"s": atks(1,20), "d": "2"}, Spell.Element.FIRE, 10.0, power(18), radius(5), 1, 50, 150, 75)
+	water1.configure({"s": atks(1,20), "d": "2"}, Spell.Element.WATER, 8.0, power(18), radius(5), 1, 50, 150, 75)
+	elec1.configure({"s": atks(1,20), "d": "2"}, Spell.Element.ELECTRIC, 6.0, power(18), radius(5), 1, 50, 150, 75)
+	ice1.configure({"s": atks(1,20), "d": "2"}, Spell.Element.ICE, 6.0, power(18), radius(5), 1, 50, 150, 75)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -36,7 +36,7 @@ func setup(seedling: int) -> void:
 			elec1,
 			ice1,
 		],
-		AttackPatterns.choose_from_distribution(5.0, [ 5, 5, 5, 5 ], -1)
+		AttackPatterns.choose_from_distribution(fit(5, 0.5), [ 5, 5, 5, 5 ], -1)
 	)
 	
 	animation_map["attack"] = "Bite_Front"

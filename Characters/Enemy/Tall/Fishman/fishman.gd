@@ -14,7 +14,7 @@ var water_shower := GlobalData.magic_book.copy_spell("linear")
 var water_shower_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(18), mana(18), mana_regen(18), 20, atk(10), def(12), {Artifact.Element.WATER: res(8, 3)})
+	vitals = Vitals.enemy(hp(18), mana(18), mana_regen(18), percep(1,4), atk(10), def(12), {Artifact.Element.WATER: res(8, 3)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(10, 0, 10, 0, 10)
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
@@ -23,11 +23,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	water_para.configure({"H":"4", "s":fits(3,6), "CC": "C", "spread":"pi/2"}, Spell.Element.WATER, 5, power(12), radius(4), fiti(1, 7), 50, 100, 50)
-	water_line.configure({"s":fits(5,10), "d":"2"}, Spell.Element.WATER, 5, power(8), radius(3), 1, 50, 100, 50)
-	water_arc.configure({"s":fits(6,14), "d":"Br", "R":"pi/4"}, Spell.Element.WATER, 5, power(9), radius(3), fiti(3, 15), 50, 100, 50)
+	water_para.configure({"H":"4", "s":atks(3,6), "CC": "C", "spread":"pi/2"}, Spell.Element.WATER, 5, power(12), radius(4), fiti(1, 7), 50, 100, 50)
+	water_line.configure({"s":atks(2,8), "d":"2"}, Spell.Element.WATER, 5, power(8), radius(3), 1, 50, 100, 50)
+	water_arc.configure({"s":atks(2,10), "d":"Br", "R":"pi/4"}, Spell.Element.WATER, 5, power(9), radius(3), fiti(3, 15), 50, 100, 50)
+	# FIXME: [1]
 	water_shower.configure({"s":fits(4,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower_chain)
-	water_shower_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
+	water_shower_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": fits(4,10)}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	default_pattern = AttackPatterns.new(
 		[
@@ -37,7 +38,7 @@ func setup(seedling: int) -> void:
 					water_line,
 					water_arc
 				],
-				AttackPatterns.choose_from_distribution(4, [ 4, 10, 1 ], 9)
+				AttackPatterns.choose_from_distribution(fit(4,1), [ 4, 10, 1 ], 9)
 			),
 			AttackPatterns.new(
 				[
@@ -45,7 +46,7 @@ func setup(seedling: int) -> void:
 					water_shower,
 					water_arc
 				],
-				AttackPatterns.choose_in_sequence([ 2, 4, 10 ])
+				AttackPatterns.choose_in_sequence(fitas(0.25, [ 2, 4, 10 ]))
 			)
 		],
 		AttackPatterns.choose_from_distribution(3.5, [ 10, 3 ], -1)

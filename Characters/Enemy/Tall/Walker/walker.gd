@@ -20,19 +20,19 @@ var ice_large := GlobalData.magic_book.copy_spell("linear")
 var ice_wall := GlobalData.magic_book.copy_spell("wall")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(12), 20, atk(13), def(11), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
+	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(12), percep(1,4), atk(13), def(11), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
 	idle_path = PathStyle.new().follow_path(circle_path).set_origin(position).align_y_to_ground()
 	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_rotation_as_vision_angle(2, 0, 10).use_physics().look_at_player()
 	current_path = idle_path
 	
-	water_small.configure({"d": "Br", "s": "8"}, Spell.Element.WATER, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
-	water_medium.configure({"d": "Br*2", "s": "4"}, Spell.Element.WATER, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
-	water_large.configure({"d": "Br*3", "s": "2"}, Spell.Element.WATER, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
-	ice_small.configure({"d": "Br", "s": "8"}, Spell.Element.ICE, 2+fl*8, 5+fl*70, 0.1+fl*0.4, 1, 80, 80, fl*50)
-	ice_medium.configure({"d": "Br*2", "s": "4"}, Spell.Element.ICE, 5+fl*10, 5+fl*80, 0.2+fl*0.8, 1, 80, 80, fl*60)
-	ice_large.configure({"d": "Br*3", "s": "2"}, Spell.Element.ICE, 10+fl*10, 5+fl*90, 0.5+fl, 1, 80, 80, fl*75)
+	water_small.configure({"d": "Br", "s": atks(4,18)}, Spell.Element.WATER, fit(2,10), power(15), radius(2), 1, 80, 80, fl*50)
+	water_medium.configure({"d": "Br*2", "s": atks(3,14)}, Spell.Element.WATER, fit(5,15), power(12), radius(4), 1, 80, 80, fl*60)
+	water_large.configure({"d": "Br*3", "s": atks(2,14)}, Spell.Element.WATER, fit(10,20), power(10), radius(6), 1, 80, 80, fl*75)
+	ice_small.configure({"d": "Br", "s": atks(4,18)}, Spell.Element.ICE, fit(2,10), power(15), radius(2), 1, 80, 80, fl*50)
+	ice_medium.configure({"d": "Br*2", "s": atks(3,14)}, Spell.Element.ICE, fit(5,15), power(12), radius(4), 1, 80, 80, fl*60)
+	ice_large.configure({"d": "Br*3", "s": atks(2,14)}, Spell.Element.ICE, fit(10,20), power(10), radius(6), 1, 80, 80, fl*75)
 	ice_wall.configure({}, Spell.Element.ICE, 10, 0, 6, 4, 0, 0, 0)
 	ice_wall.follow = true
 	
@@ -65,7 +65,7 @@ func setup(seedling: int) -> void:
 			water_medium,
 			ice_medium,
 		],
-		AttackPatterns.choose_in_sequence([ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4 ], -1)
+		AttackPatterns.choose_in_sequence(fitas(0.5, [ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4 ]), -1)
 	)
 	
 	defence_pattern = AttackPatterns.new(

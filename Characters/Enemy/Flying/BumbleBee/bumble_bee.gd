@@ -16,7 +16,7 @@ var elec_mine2 := GlobalData.magic_book.copy_spell("bomb")
 var elec_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(15), mana(15), mana_regen(20), 20, atk(15), def(14), {Artifact.Element.ELECTRIC: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
+	vitals = Vitals.enemy(hp(15), mana(15), mana_regen(20), percep(1,5), atk(15), def(14), {Artifact.Element.ELECTRIC: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	vitals.perception.max_value = 50
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
@@ -42,12 +42,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	fire1.configure({"s": "5", "d": "2"}, Spell.Element.FIRE, fit(5,10), power(15), radius(6), 1, 50, 150, 20)
-	fire2.configure({"s": "5", "d": "2"}, Spell.Element.FIRE, fit(6,12), power(17), radius(7), 1, 50, 150, 30)
-	fire3.configure({"s": "10", "d": "2"}, Spell.Element.FIRE, fit(7,14), power(13), radius(8), 1, 50, 150, 40)
-	elec_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.ELECTRIC, fit(5,10), power(10), radius(5), fiti(4, 15), 33, 66, 50)
-	elec_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.ELECTRIC, fit(7,14), power(14), radius(7), fiti(2, 8), 75, 120, 50)
-	elec_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.ELECTRIC, fit(5,10), power(15), radius(3), fiti(5, 10), 70, 180, 50)
+	fire1.configure({"s": atks(3,10), "d": "2"}, Spell.Element.FIRE, fit(5,10), power(15), radius(6), 1, 50, 150, 20)
+	fire2.configure({"s": atks(4,12), "d": "2"}, Spell.Element.FIRE, fit(6,12), power(17), radius(7), 1, 50, 150, 30)
+	fire3.configure({"s": atks(5,14), "d": "2"}, Spell.Element.FIRE, fit(7,14), power(13), radius(8), 1, 50, 150, 40)
+	elec_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.ELECTRIC, fit(10,5), power(10), radius(5), fiti(4, 15), 33, 66, 50)
+	elec_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.ELECTRIC, fit(14,7), power(14), radius(7), fiti(2, 8), 75, 120, 50)
+	elec_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":fit(2,0.1)}, Spell.Element.ELECTRIC, fit(10,5), power(15), radius(3), fiti(5, 10), 70, 180, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -70,7 +70,7 @@ func setup(seedling: int) -> void:
 			elec_mine3,
 			fire3,
 		],
-		AttackPatterns.choose_in_sequence([ 4, 1, 4, 1, 4, 1 ], -1)
+		AttackPatterns.choose_in_sequence(fitas(0.5, [ 4, 1, 4, 1, 4, 1 ]), -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"

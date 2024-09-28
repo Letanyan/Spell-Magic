@@ -145,6 +145,7 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 		ignore_cooldown_when_calculating_elemental_application = true
 	if _chain != null:
 		chain = _chain
+	calculate_cooldown()
 	overwrite_expressions(constants)
 	
 	

@@ -19,7 +19,7 @@ var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter-shot")
 var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter-shot")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(1), mana(8), mana_regen(20), 20, atk(10), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(7, 3)})
+	vitals = Vitals.enemy(hp(1), mana(8), mana_regen(20), percep(4,5), atk(10), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(7, 3)})
 	vitals.perception.max_value = 40
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
@@ -42,15 +42,15 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	ice1.configure({"s": "5", "d": "2"}, Spell.Element.ICE, 10.0, power(10), radius(2), 1, 50, 50, 10)
-	ice2.configure({"s": "5", "d": "2"}, Spell.Element.ICE, 8.0, power(12), radius(2), 1, 50, 50, 20)
-	ice3.configure({"s": "10", "d": "2"}, Spell.Element.ICE, 6.0, power(8), radius(2), 1, 50, 50, 30)
-	ice_arc1.configure({"R": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 20)
-	ice_arc2.configure({"R": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
-	ice_arc3.configure({"R": "pi/4", "s": "10"}, Spell.Element.ICE, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
-	ice_scatter1.configure({"harc": "pi", "varc": "pi", "s": "5"}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
-	ice_scatter2.configure({"harc": "pi/2", "varc": "pi/2", "s": "5"}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
-	ice_scatter3.configure({"harc": "pi/4", "varc": "pi/4", "s": "5"}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
+	ice1.configure({"s": atks(3,17), "d": "2"}, Spell.Element.ICE, 10.0, power(10), radius(2), 1, 50, 50, 10)
+	ice2.configure({"s": atks(3,15), "d": "2"}, Spell.Element.ICE, 8.0, power(12), radius(2), 1, 50, 50, 20)
+	ice3.configure({"s": atks(3,10), "d": "2"}, Spell.Element.ICE, 6.0, power(8), radius(2), 1, 50, 50, 30)
+	ice_arc1.configure({"R": "pi", "s": atks(3,17)}, Spell.Element.ICE, 10.0, power(8), radius(3), fiti(1, 8), 75, 25, 20)
+	ice_arc2.configure({"R": "pi/2", "s": atks(3,15)}, Spell.Element.ICE, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 30)
+	ice_arc3.configure({"R": "pi/4", "s": atks(3,10)}, Spell.Element.ICE, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 40)
+	ice_scatter1.configure({"harc": "pi", "varc": "pi", "s": atks(2,6)}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
+	ice_scatter2.configure({"harc": "pi/2", "varc": "pi/2", "s": atks(2,6)}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
+	ice_scatter3.configure({"harc": "pi/4", "varc": "pi/4", "s": atks(2,6)}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -58,7 +58,7 @@ func setup(seedling: int) -> void:
 			ice2,
 			ice3,
 		],
-		AttackPatterns.choose_from_distribution(5.0, [10, 3, 2], -1)
+		AttackPatterns.choose_from_distribution(fit(5,2), [10, 3, 2], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
@@ -70,7 +70,7 @@ func setup(seedling: int) -> void:
 			ice_scatter3,
 			ice_arc3,
 		],
-		AttackPatterns.choose_in_sequence([ 1, 1, 3, 1, 5, 1 ], -1)
+		AttackPatterns.choose_in_sequence(fitas(0.3, [ 1, 1, 3, 1, 5, 1 ]), -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"

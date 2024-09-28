@@ -22,7 +22,7 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(8), 15, atk(7), def(6), {Artifact.Element.WATER: res(15, 5)})
+	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(8), percep(1,2), atk(7), def(6), {Artifact.Element.WATER: res(15, 5)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
@@ -45,12 +45,12 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	water_flurry1.configure({"s":fits(3,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(7), radius(4), fiti(3,20), 10, 100, fit(50,75))
-	water_flurry2.configure({"s":fits(6,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(4), radius(3), fiti(3,15), 10, 200, fit(50,75))
-	water_flurry3.configure({"s":fits(9,15), "R":fits(PI*0.1, PI*0.2)}, Spell.Element.WATER, fit(5,10), power(2), radius(2), fiti(3,10), 10, 300, fit(50,75))
-	water_attack1.configure({"s":fits(3,15)}, Spell.Element.WATER, fit(3,15), power(7), radius(4), 1, 10, 100, fit(50,75))
-	water_attack2.configure({"s":fits(6,15)}, Spell.Element.WATER, fit(3,15), power(4), radius(3), 1, 10, 200, fit(50,75))
-	water_attack3.configure({"s":fits(9,15)}, Spell.Element.WATER, fit(3,15), power(2), radius(2), 1, 10, 300, fit(50,75))
+	water_flurry1.configure({"s":atks(1,10), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(7), radius(4), fiti(3,20), 10, 100, fit(50,75))
+	water_flurry2.configure({"s":atks(2,10), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(4), radius(3), fiti(3,15), 10, 200, fit(50,75))
+	water_flurry3.configure({"s":atks(3,10), "R":fits(PI*0.1, PI*0.2)}, Spell.Element.WATER, fit(5,10), power(2), radius(2), fiti(3,10), 10, 300, fit(50,75))
+	water_attack1.configure({"s":atks(1,10)}, Spell.Element.WATER, fit(3,15), power(7), radius(4), 1, 10, 100, fit(50,75))
+	water_attack2.configure({"s":atks(2,10)}, Spell.Element.WATER, fit(3,15), power(4), radius(3), 1, 10, 200, fit(50,75))
+	water_attack3.configure({"s":atks(3,10)}, Spell.Element.WATER, fit(3,15), power(2), radius(2), 1, 10, 300, fit(50,75))
 	
 	attack_pattern1 = AttackPatterns.new(
 		[

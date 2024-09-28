@@ -73,7 +73,7 @@ func _init(_health: Stat, _mana: Stat) -> void:
 	perception = Stat.new(50, 0, 100)
 	damage_resistance = {}
 	
-static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: float, atk: float, def: float, res: Dictionary = {}) -> Vitals:
+static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: Vector2, atk: float, def: float, res: Dictionary = {}) -> Vitals:
 	var result := Vitals.new(Stat.new(health_max, 0, health_max, 0), Stat.new(mana_max, 0, mana_max, mana_rate))
 	result.burning = Stat.new(0, 0, 1, -0.05)
 	result.wetness = Stat.new(0, 0, 1, -0.001)
@@ -81,7 +81,7 @@ static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: 
 	result.stun = Stat.new(0, 0, 1, -0.25)
 	result.attack = Stat.new(atk)
 	result.defence = Stat.new(def)
-	result.perception = Stat.new(percep, percep, percep * 2)
+	result.perception = Stat.new(percep.x, percep.x, percep.y)
 	result.damage_resistance = res
 	return result
 

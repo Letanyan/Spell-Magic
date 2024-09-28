@@ -20,7 +20,7 @@ var air_med_slow := GlobalData.magic_book.copy_spell("linear")
 var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), 25, atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
+	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
@@ -44,15 +44,15 @@ func setup(seedling: int) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	air_small_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(2), 1, 25, 100, 50)
-	air_med_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(3), 1, 25, 100, 50)
-	air_large_fast.configure({"s":fits(5,25), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(4), 1, 25, 100, 50)
-	air_small_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(2), 1, 25, 100, 50)
-	air_med_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, 50)
-	air_large_med.configure({"s":fits(3,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(4), 1, 25, 100, 50)
-	air_small_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(2), 1, 25, 100, 50)
-	air_med_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(3), 1, 25, 100, 50)
-	air_large_slow.configure({"s":fits(2,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, 50)
+	air_small_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(2), 1, 25, 100, 50)
+	air_med_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(3), 1, 25, 100, 50)
+	air_large_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(4), 1, 25, 100, 50)
+	air_small_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(2), 1, 25, 100, 50)
+	air_med_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, 50)
+	air_large_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(4), 1, 25, 100, 50)
+	air_small_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(2), 1, 25, 100, 50)
+	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(3), 1, 25, 100, 50)
+	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, 50)
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -60,7 +60,7 @@ func setup(seedling: int) -> void:
 			air_small_med,
 			air_small_slow,
 		],
-		AttackPatterns.choose_from_distribution(10.0, [ 5, 5, 7 ], -1)
+		AttackPatterns.choose_from_distribution(fit(10, 3), [ 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern2 = AttackPatterns.new(
@@ -72,22 +72,22 @@ func setup(seedling: int) -> void:
 			air_med_med,
 			air_med_slow,
 		],
-		AttackPatterns.choose_from_distribution(7.0, [ 2, 2, 3, 5, 5, 7 ], -1)
+		AttackPatterns.choose_from_distribution(fit(7, 2), [ 2, 2, 3, 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
 		[
 			AttackPatterns.new(
 				[air_small_slow, air_small_fast],
-				AttackPatterns.choose_in_sequence([ 2, 1 ], 1)
+				AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 1 ]), 1)
 			),
 			AttackPatterns.new(
 				[air_med_slow, air_med_fast],
-				AttackPatterns.choose_in_sequence([ 3, 3], 1)
+				AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3]), 1)
 			),
 			AttackPatterns.new(
 				[air_large_slow, air_large_fast],
-				AttackPatterns.choose_in_sequence([ 5, 5 ], 1)
+				AttackPatterns.choose_in_sequence(fitas(0.25, [ 5, 5 ]), 1)
 			),
 		],
 		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)

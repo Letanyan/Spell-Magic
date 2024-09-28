@@ -28,7 +28,7 @@ func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(12), mana(10), mana_regen(8), 15, atk(12), def(12), {Artifact.Element.AIR: res(5, 2)})
+	vitals = Vitals.enemy(hp(12), mana(10), mana_regen(8), percep(1,3), atk(12), def(12), {Artifact.Element.AIR: res(5, 2)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
@@ -69,7 +69,7 @@ func setup(seedling: int) -> void:
 			air_small_med,
 			air_small_slow,
 		],
-		AttackPatterns.choose_from_distribution(10.0, [ 5, 5, 7 ], -1)
+		AttackPatterns.choose_from_distribution(fit(10, 2), [ 5, 5, 7 ], -1)
 	)
 	
 	attack_pattern2 = AttackPatterns.new(
@@ -82,22 +82,22 @@ func setup(seedling: int) -> void:
 			air_med_slow,
 			air_mine,
 		],
-		AttackPatterns.choose_from_distribution(7.0, [ 8, 8, 12, 20, 20, 28, 1 ], -1)
+		AttackPatterns.choose_from_distribution(fit(7, 1), [ 8, 8, 12, 20, 20, 28, 1 ], -1)
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
 		[
 			AttackPatterns.new(
 				[air_small_slow, air_small_fast, air_mine],
-				AttackPatterns.choose_in_sequence([ 2, 1, 1 ], 1)
+				AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 1, 1 ]), 1)
 			),
 			AttackPatterns.new(
 				[air_med_slow, air_med_fast, air_mine],
-				AttackPatterns.choose_in_sequence([ 3, 3, 1 ], 1)
+				AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3, 1 ]), 1)
 			),
 			AttackPatterns.new(
 				[air_large_slow, air_large_fast, air_mine],
-				AttackPatterns.choose_in_sequence([ 5, 5, 1 ], 1)
+				AttackPatterns.choose_in_sequence(fitas(0.25, [ 5, 5, 1 ]), 1)
 			),
 		],
 		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)
