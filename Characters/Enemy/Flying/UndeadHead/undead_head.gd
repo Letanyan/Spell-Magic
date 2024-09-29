@@ -17,7 +17,7 @@ func setup(seedling: int) -> void:
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
-	attack_path = PathStyle.new(0, position).towards_player(2, 1, 2).look_at_player_xz().align_y_to_ground()
+	attack_path = PathStyle.new(0, position).towards_player(fit(2,4), 1, 2).look_at_player_xz().align_y_to_ground()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()

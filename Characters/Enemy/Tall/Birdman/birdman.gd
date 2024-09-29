@@ -38,8 +38,10 @@ func setup(seedling: int) -> void:
 	
 	var attack_pathway := PathStyle.Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, 20, 0), 5, PathStyle.Easing.out_quart) \
-		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart)
+		.line_to(Vector3(10, fit(15,25), 0), fit(5,15), PathStyle.Easing.out_quart) \
+		.wait(fit(10,5)) \
+		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart) \
+		.wait(fit(4,8))
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\
 		.set_use_player_as_origin()\

@@ -27,13 +27,14 @@ func setup(seedling: int) -> void:
 	const x_size = 10
 	const y_size = 10
 	const z_size = 10
+	var start_point := Globals.rand_v3_abs(x_size, y_size, z_size)
 	var cube_path := PathStyle.Pathway.new() \
-		.move_to(Vector3(0, 0, 0)) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 3, PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 2, PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 1, PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), 2, PathStyle.Easing.in_out_sine) \
-		.line_to(Vector3(0, 0, 0), 3, PathStyle.Easing.in_out_sine)
+		.move_to(start_point) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(6,3), PathStyle.Easing.in_out_sine) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(4,2), PathStyle.Easing.in_out_sine) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(2,1), PathStyle.Easing.in_out_sine) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(4,2), PathStyle.Easing.in_out_sine) \
+		.line_to(start_point, 3, PathStyle.Easing.in_out_sine)
 	
 	attack_path = PathStyle.new(randi()).follow_path(cube_path).align_y_to_air().look_at_player() \
 		.set_player_body_rotation_as_vision_angle(0, 10, 3, 6)

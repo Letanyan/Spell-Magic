@@ -81,9 +81,13 @@ func setup(seedling: int) -> void:
 	var Z := Vector3.ZERO
 	var U := -bounds.y * 2.5
 	var up_pathway := PathStyle.Pathway.new() \
-		.move_to(Vector3(0, U, 0)).line_to(Z, 3, PathStyle.Easing.linear)
+		.move_to(Vector3(0, U, 0)) \
+		.line_to(Z, 3, PathStyle.Easing.linear) \
+		.wait(fit(8,2))
 	var down_pathway := PathStyle.Pathway.new() \
-		.move_to(Z).line_to(Vector3(0, U, 0), 3, PathStyle.Easing.linear).wait(6)
+		.move_to(Z) \
+		.line_to(Vector3(0, U, 0), 3, PathStyle.Easing.linear) \
+		.wait(fit(2,8))
 	angry_sequence = AttackSequence.new(true, [
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player_xz().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(PathStyle.Pathway.empty(5)).set_player_body_rotation_as_vision_angle(0, 2, 1, 1).align_y_to_origin(),

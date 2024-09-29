@@ -19,7 +19,7 @@ func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(15), mana(15), mana_regen(20), percep(1,5), atk(15), def(14), {Artifact.Element.ELECTRIC: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	vitals.perception.max_value = 50
 	
-	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
+	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(fit(2,7), 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
 	
 	const idle_r := 15.0
@@ -31,10 +31,10 @@ func setup(seedling: int) -> void:
 	
 	var rotate_path := PathStyle.Pathway.new() \
 		.move_to(a) \
-		.quad_to(b, Globals.project_point_onto_sphere(a.lerp(b, 0.5), idle_r), 3) \
-		.quad_to(c, Globals.project_point_onto_sphere(b.lerp(c, 0.5), idle_r), 3) \
-		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), 3) \
-		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), 3)
+		.quad_to(b, Globals.project_point_onto_sphere(a.lerp(b, 0.5), idle_r), fit(5,2)) \
+		.quad_to(c, Globals.project_point_onto_sphere(b.lerp(c, 0.5), idle_r), fit(5,2)) \
+		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), fit(5,2)) \
+		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), fit(5,2))
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

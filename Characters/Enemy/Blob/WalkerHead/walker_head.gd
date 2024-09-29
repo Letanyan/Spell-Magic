@@ -24,7 +24,7 @@ func setup(seedling: int) -> void:
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
 	idle_path = PathStyle.new().follow_path(circle_path).set_origin(position).align_y_to_ground()
-	attack_path = PathStyle.new().set_use_player_as_origin().set_player_body_rotation_as_vision_angle(2, 0, 10).use_physics().look_at_player()
+	attack_path = PathStyle.new().follow_path(PathStyle.Pathway.empty(fit(3,8))).set_player_body_rotation_as_vision_angle(2, 0, 10).look_at_player().align_y_to_ground()
 	current_path = idle_path
 	
 	water_small.configure({"d": "Br", "s": atks(4,15)}, Spell.Element.WATER, fit(2,10), power(12), radius(2), 1, 80, 80, fl*50)

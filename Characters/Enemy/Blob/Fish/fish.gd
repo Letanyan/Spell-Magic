@@ -43,8 +43,8 @@ func setup(seedling: int) -> void:
 	
 	var jump_over_path: PathStyle.Pathway = PathStyle.Pathway.new() \
 		.move_to(Vector3(0, 0, 10)) \
-		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo) \
-		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), 3, PathStyle.Easing.out_expo)
+		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), fit(6,2), PathStyle.Easing.out_expo) \
+		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), fit(6,2), PathStyle.Easing.out_expo)
 	attack_jump_over_path = PathStyle.new().follow_path(jump_over_path).align_y_to_ground_and_jump() \
 		.set_player_body_rotation_as_vision_angle(0, 0).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND) \
 		.look_at_player_xz()

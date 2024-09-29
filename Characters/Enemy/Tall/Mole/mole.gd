@@ -46,16 +46,13 @@ func setup(seedling: int) -> void:
 	none_pattern = AttackPatterns.none()
 	
 	var Z := Vector3.ZERO
-	var up_pathway := PathStyle.Pathway.new(
-		[PathStyle.Segment.linear(Vector3(0, U, 0), Z), PathStyle.Segment.point(Z, 1)],
-		[3, 3],
-		[PathStyle.Easing.linear, PathStyle.Easing.linear]
-	)
-	var down_pathway := PathStyle.Pathway.new(
-		[PathStyle.Segment.linear(Z, Vector3(0, U, 0))],
-		[1],
-		[PathStyle.Easing.linear]
-	)
+	var up_pathway := PathStyle.Pathway.new() \
+		.move_to(Vector3(0, U, 0)) \
+		.line_to(Z, 3, PathStyle.Easing.linear) \
+		.wait(fit(10,2))
+	var down_pathway := PathStyle.Pathway.new() \
+		.move_to(Z) \
+		.line_to(Vector3(0, U, 0), 1, PathStyle.Easing.linear)
 	
 	elec1.configure({"s": atks(3,15), "d": "5"}, Spell.Element.ELECTRIC, fit(7,14), power(7), radius(3), 1, 25, 150, 30)
 	elec2.configure({"s": atks(2,10), "d": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(10), radius(4), 1, 25, 150, 40)

@@ -24,17 +24,17 @@ func setup(seedling: int) -> void:
 	const idle_r := 20.0
 	const idle_h := 10.0
 		
-	var rotate_path := PathStyle.Pathway.new()
 	var a: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	var b: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	var c: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	var d: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	
-	rotate_path.append_with_speed(
-		[Globals.form_arc_in_circle(a, b, idle_h), Globals.form_arc_in_circle(b, c, idle_h), Globals.form_arc_in_circle(c, d, idle_h), Globals.form_arc_in_circle(d, a, idle_h)],
-		[2, 2, 2, 2],
-		[PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear, PathStyle.Easing.linear]
-	)
+	var rotate_path := PathStyle.Pathway.new() \
+		.move_to(a) \
+		.arc_with_speed_to(b, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
+		.arc_with_speed_to(c, true, fit(3,1), PathStyle.Easing.in_out_cubic) \
+		.arc_with_speed_to(d, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
+		.arc_with_speed_to(a, true, fit(3,1), PathStyle.Easing.in_out_cubic)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

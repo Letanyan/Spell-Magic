@@ -31,10 +31,10 @@ func setup(seedling: int) -> void:
 	var a: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	var rotate_path := PathStyle.Pathway.new() \
 		.move_to(a) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2), true, 1, PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI), true, 1, PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3), true, 1, PathStyle.Easing.linear) \
-		.arc_to(a, true, 1, PathStyle.Easing.linear)
+		.arc_to(a.rotated(Vector3.UP, PI / 2), true, fit(4,1), PathStyle.Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI), true, fit(4,1), PathStyle.Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3), true, fit(4,1), PathStyle.Easing.linear) \
+		.arc_to(a, true, fit(4,1), PathStyle.Easing.linear)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	
