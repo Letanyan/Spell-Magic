@@ -133,6 +133,9 @@ func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: flo
 		random_offset = rng.randf_range(0.0, absf(offset_max_range))
 	level = maxf(base + random_offset, 1.0)
 	
+func separation_multiplier() -> float:
+	return 1.05
+	
 func add_shake(amount: float) -> void:
 	player.add_shake(amount)
 	
@@ -513,6 +516,12 @@ func fitas(mult: float, arr: Array[float]) -> Array[float]:
 	for i in arr.size():
 		result.append(fit(arr[i], arr[i] * mult))	
 	return result
+	
+func fitase(mult: float, exponent: float, arr: Array[float]) -> Array[float]:
+	var result: Array[float] = []
+	for i in arr.size():
+		result.append(fit(arr[i], arr[i] - arr[i] * (1 - pow(1 - mult, exponent))))	
+	return result
 
 func atk(cls: int) -> float:
 	return fit(5.0, cls * 5.0)
@@ -544,8 +553,8 @@ func percep(mncls: int, mxcls: int) -> Vector2:
 	return Vector2(mn, mx)
 	
 func atks(mncls: int, mxcls: int) -> String:
-	var mn := pow(float(mncls) / 20.0, 1.5) * UpgradeSettings.LIMIT_v
-	var mx := pow(float(mxcls) / 20.0, 1.5) * UpgradeSettings.LIMIT_v
+	var mn := 1.0 + pow(float(mncls) / 20.0, 1.5) * 31.0
+	var mx := 1.0 + pow(float(mxcls) / 20.0, 1.5) * 31.0
 	return fits(mn, mx)
 
 func timing(cls: int, value: float) -> float:

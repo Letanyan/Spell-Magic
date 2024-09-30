@@ -89,6 +89,7 @@ var buffer_artifact: EntityBuffer
 var buffer_coin: EntityBuffer
 var buffer_spell: EntityBuffer
 var buffer_key: EntityBuffer
+var buffer_health: EntityBuffer
 
 func _init() -> void:
 	var deinit_tree := func(node: Trees) -> void:
@@ -156,6 +157,7 @@ func _init() -> void:
 	buffer_coin = EntityBuffer.new(0, func() -> WorldItem: return CoinDisc.make(), deinit_world_item, "coin")
 	buffer_key = EntityBuffer.new(0, func() -> WorldItem: return KeyPrism.make(), deinit_world_item, "key")
 	buffer_spell = EntityBuffer.new(0, func() -> WorldItem: return SpellPaper.make(), deinit_world_item, "spell")
+	buffer_health = EntityBuffer.new(0, func() -> WorldItem: return RedCross.make(), deinit_world_item, "health_pack")
 
 func get_tree(kind: World.Foliage) -> Trees:
 	match kind:
@@ -255,6 +257,7 @@ func get_world_item(kind: World.Item) -> WorldItem:
 		World.Item.KEY: buffer_key.get_entity()
 		World.Item.COIN: buffer_coin.get_entity()
 		World.Item.SPELL: buffer_spell.get_entity()
+		World.Item.HEALTH: buffer_health.get_entity()
 	return buffer_target.get_entity()
 
 func free_world_item(node: WorldItem) -> void:
@@ -264,3 +267,4 @@ func free_world_item(node: WorldItem) -> void:
 		World.Item.KEY: buffer_key.free_entity(node)
 		World.Item.COIN: buffer_coin.free_entity(node)
 		World.Item.SPELL: buffer_spell.free_entity(node)
+		World.Item.HEALTH: buffer_health.free_entity(node)

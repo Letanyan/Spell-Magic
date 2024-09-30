@@ -173,16 +173,18 @@ func purchase_P() -> PurchaseError:
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
+# max spell velocity should be some multiple of player running speed. 
+# Since max player speed is 8 we arbitrarily decide to limit spell speed to [8]*4=32
 var level_v := 1:
 	set(value):
 		level_v = clampi(value, 1, level_max_v)
 		max_velocity_updated.emit(max_v())
 const level_max_v := 25
-func max_v(x: int = level_v) -> float: return x * 4.0
+func max_v(x: int = level_v) -> float: return 4 + x + floorf(x/25.0*3.0)
 func upgrade_v() -> float: return max_v(level_v + 1) - max_v(level_v)
 func cost_v() -> int: return level_v * 175
 var buff_v := 0.0
-const LIMIT_v := 100.0
+const LIMIT_v := 32.0
 func purchase_v() -> PurchaseError:
 	if currency < cost_v():
 		return PurchaseError.NOT_ENOUGH_CURRENCY

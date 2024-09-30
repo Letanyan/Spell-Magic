@@ -319,7 +319,7 @@ func despawn_all_from_world(world: Node3D) -> void:
 			entity_manager.free_building(f as Buildings)
 	for item in world_items:
 		entity_manager.free_world_item(item)
-	other_objects.clear()		
+	other_objects.clear()
 	inhabitants.clear()
 	garden.clear()
 	world_items.clear()

@@ -6,7 +6,7 @@ var eaten: bool = false
 
 static func make() -> RedCross:
 	var result := (preload("res://Models/Misc/RedCross/RedCross.tscn") as PackedScene).instantiate() as RedCross
-	result.kind = World.Item.SPELL
+	result.kind = World.Item.HEALTH
 	return result
 
 # Called when the node enters the scene tree for the first time.

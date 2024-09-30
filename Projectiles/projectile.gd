@@ -338,19 +338,19 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			
-			(p_shape.shape as BoxShape3D).size.x = r.x
-			(p_shape.shape as BoxShape3D).size.y = r.y
-			(p_shape.shape as BoxShape3D).size.z = r.z
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = r.x
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = r.y
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = r.z
+			(p_shape.shape as BoxShape3D).size.x = r.x * 2
+			(p_shape.shape as BoxShape3D).size.y = r.y * 2
+			(p_shape.shape as BoxShape3D).size.z = r.z * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = r.x * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = r.y * 2
+			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = r.z * 2
 			var mesh: MeshInstance3D = get_node("body/mesh")
-			(mesh.mesh as BoxMesh).size.x = r.x
-			(mesh.mesh as BoxMesh).size.y = r.y
-			(mesh.mesh as BoxMesh).size.z = r.z
+			(mesh.mesh as BoxMesh).size.x = r.x * 2
+			(mesh.mesh as BoxMesh).size.y = r.y * 2
+			(mesh.mesh as BoxMesh).size.z = r.z * 2
 			
 			var body: RigidBody3D = get_node("body")
-			body.mass = (r.x + r.y + r.z) / 3.0
+			body.mass = (r.x + r.y + r.z) / 3.0 * 2.0
 			scale = Vector3(1, 1, 1)
 			
 		Spell.Element.WATER:

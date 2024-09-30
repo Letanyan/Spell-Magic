@@ -287,7 +287,7 @@ func update_watched_enemies_positions(delta: float) -> void:
 	for enemy: Enemy in enemies_in_range:
 		var movement := Vector3.ZERO
 		
-		var enemy_seperation := maxf(enemy.bounds.x, maxf(enemy.bounds.y, enemy.bounds.z)) * 1.05
+		var enemy_seperation := maxf(enemy.bounds.x, maxf(enemy.bounds.y, enemy.bounds.z)) * enemy.separation_multiplier()
 		for other: Enemy in enemies_in_range:
 			if enemy == other:
 				continue
@@ -583,9 +583,11 @@ func update_projectile_indicators(pi_size: float) -> void:
 	if pi_size > 0:
 		for enemy: Enemy in enemies_in_range:
 			for spell: SpellBody in enemy.spell_caster.particles:
-				updated_spell_bodies[spell] = update_projectile(pivot, pi_size, spell)
+				var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
+				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell)
 		for spell: SpellBody in spell_caster.particles:
-			updated_spell_bodies[spell] = update_projectile(pivot, pi_size, spell)
+			var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
+			updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell)
 		
 	# FIXME: use spellbody after free 
 	for spell: SpellBody in projectile_indicators:
