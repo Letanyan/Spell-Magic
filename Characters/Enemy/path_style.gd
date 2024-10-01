@@ -181,7 +181,7 @@ func transform_path(transform: Variant) -> PathStyle:
 		for t: Transform3D in (transform as Array):
 			path.apply_transform(t)
 	else:
-		push_error("Expected Transform3D/Array[Transform3D] for transform_path")
+		push_error("Expected Transform3D/Array[Transform3D] for transform")
 	return self
 	
 # xyz = position, w = speed

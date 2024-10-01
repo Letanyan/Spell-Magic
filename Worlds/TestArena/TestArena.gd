@@ -73,7 +73,9 @@ func setup(_settings: WorldSettings) -> void:
 	
 	const pX = 10
 	const pY = 10
+	const LVL = 10
 	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, pX, 1000, pY)
+	undead.level = LVL
 	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
@@ -113,6 +115,7 @@ func setup(_settings: WorldSettings) -> void:
 	#fishman3.level = 50
 	#add_enemy(fishman3)
 	var dragon := Population.generate_enemy(World.Enemy.DRAGON, player, -pX, 1000, -pY)
+	dragon.level = LVL
 	add_enemy(dragon)
 	#var dragoon := Population.generate_enemy(World.Enemy.DRAGOON, player, pX, 1000, -pY)
 	#add_enemy(dragoon)
@@ -127,12 +130,14 @@ func setup(_settings: WorldSettings) -> void:
 	#var bird := Population.generate_enemy(World.Enemy.BIRD, player, -pX, 1000, pY)
 	#add_enemy(bird)
 	var hot_blob := Population.generate_enemy(World.Enemy.HOT_BLOB, player, pX, 1000, -pY)
+	hot_blob.level = LVL
 	add_enemy(hot_blob)
 	#var bluemon := Population.generate_enemy(World.Enemy.BLUEMON, player, -pX, 1000, -pY)
 	#add_enemy(bluemon)
 	#var frog := Population.generate_enemy(World.Enemy.FROG, player, pX, 1000, -pY)
 	#add_enemy(frog)
 	var mushking := Population.generate_enemy(World.Enemy.MUSHKING, player, -pX, 1000, pY)
+	mushking.level = LVL
 	add_enemy(mushking)
 	#var rabbit := Population.generate_enemy(World.Enemy.RABBIT, player, pX, 1000, pY)
 	#add_enemy(rabbit)

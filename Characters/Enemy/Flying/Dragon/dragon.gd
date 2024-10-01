@@ -49,7 +49,7 @@ func setup(seedling: int) -> void:
 	fire_down1.configure({"H": "10"}, Spell.Element.FIRE, fit(10, 5), power(8), radius(3), 1, 75, 25, 55)
 	fire_down2.configure({"H": "20"}, Spell.Element.FIRE, fit(8, 4), power(10), radius(3), 1, 75, 50, 65)
 	fire_down3.configure({"H": "30"}, Spell.Element.FIRE, fit(6, 3), power(12), radius(3), 1, 75, 75, 75)
-	fire_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, fit(8, 4), power(5), radius(5), fiti(4, 15), 33, 66, 25)
+	fire_mine1.configure({"d": "1", "Rmin": "2", "Rmax": "4", "S":"1", "s":"0"}, Spell.Element.FIRE, fit(8, 4), power(5), radius(5), fiti(4, 15), 33, 66, 25)
 	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, fit(7, 3), power(9), radius(7), fiti(2, 8), 75, 120, 50)
 	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, fit(10, 5), power(15), radius(3), fiti(5, 10), 70, 180, 60)
 	

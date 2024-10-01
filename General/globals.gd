@@ -37,6 +37,10 @@ static func rand_point_in_circle(r: float, h: float) -> Vector3:
 	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
 	return p 
 	
+static func rand_point_in_circle_2d(r: float) -> Vector2:
+	var p : Vector2 = Vector2(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
+	return p
+	
 static func rand_point_in_sphere(r: float) -> Vector3:
 	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
 	return p 

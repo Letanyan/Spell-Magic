@@ -30,7 +30,7 @@ func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), percep(4,8), atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})
 	
 	idle_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1))
-	basic_path = PathStyle.new(0, position).towards_player(1, 3, 4).look_at_player_xz().align_y_to_ground()
+	basic_path = PathStyle.new(0, position).towards_player(1, 3, 4).set_player_camera_as_vision_angle(PI, 0, 2, 3).look_at_player_xz().align_y_to_ground()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()

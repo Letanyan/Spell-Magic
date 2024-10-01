@@ -41,6 +41,7 @@ class Option:
 	static func empty() -> Option:
 		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0, Pattern.CIRCLE)
 		
+	# tier between 1-10
 	static func make_event(ev: Event, el: Element, tier: int, pt: Pattern) -> Option:
 		return Option.new(Effect.NONE, ev, el, event_amount_at_tier(absi(tier), ev, el), pt)
 		

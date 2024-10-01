@@ -69,6 +69,8 @@ static func random_entity_from_non_relative_distribution(r: float, probs: Dictio
 		if base <= r and r < next_base:
 			return i
 		base = next_base
+	if base != 1.0:
+		push_error("sum of probs must equal 1.0")
 	
 	return default
 	
@@ -126,9 +128,9 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 	return entity
 	
 # FIXME: don't spawn enemy if this `enemy: World.Enemy` at this position `x`,`y` has been killed
-func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Enemy:
+func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
 	var result: Enemy = null
-	var pos := Vector3(x, 0, y)
+	var pos := Vector3(p.x, 0, p.y)
 	match enemy:
 		World.Enemy.UNDEAD: result = entity_manager.get_enemy(World.Enemy.UNDEAD)
 		World.Enemy.BAT: result = entity_manager.get_enemy(World.Enemy.BAT)
@@ -158,7 +160,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, x: float,
 		World.Enemy.WALKER_HEAD: result = entity_manager.get_enemy(World.Enemy.WALKER_HEAD)
 		World.Enemy.WIZARD: result = entity_manager.get_enemy(World.Enemy.WIZARD)
 			
-	result.set_level_relative_to_location(rng, x, y)
+	result.set_level_relative_to_location(rng, p.x, p.y)
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
@@ -204,9 +206,9 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	return result
 
 
-func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
+func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
 	var result: Node3D = null
-	var pos := Vector3(x, 0, y)
+	var pos := Vector3(p.x, 0, p.y)
 	match foliage:
 		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI:
 			result = entity_manager.get_tree(foliage) as Trees
@@ -214,9 +216,9 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, x: 
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 	return prepare_entity(state, result, pos, false, on_flat_surface(PI / 8))
 	
-func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float) -> Node3D:
+func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
 	var result: Node3D = null
-	var pos := Vector3(x, 0, y)
+	var pos := Vector3(p.x, 0, p.y)
 	var ground_angle := 0.0
 	match building:
 		World.Building.FANTASY_VALLEY_SINGLE, World.Building.FANTASY_VALLEY_DOUBLE:

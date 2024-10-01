@@ -33,7 +33,7 @@ class EntityBuffer:
 			i += 1
 		
 		if index == -1:
-			push_error("free node that does not exist")
+			push_error(tag + ": free node that does not exist: ", str(node.get_instance_id()))
 			return
 		
 		high_watermark -= 1

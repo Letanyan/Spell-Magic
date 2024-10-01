@@ -66,7 +66,18 @@ buck-shot: fires multiple projectiles from a center point to angles defined by (
 	E ; ending distance
 	yrange ; 
 	xrange ;
-	zrange ; 
+	zrange ;
+	
+circle: fires a projectile that rotates around a vector
+	cx, cy, xz ; center of circle
+	ux, uy, uz ; vector around which projectile rotates
+	rots ; number of rotations to complete
+	R ; radius of circle
+	a ; starting angle offset of circle 
+	
+line: fires a projectile that goes from a start point to an end point
+	sx, sy, sz ; starting position
+	ex, ey, ez ; ending position
 	
 linear: fires a projectile straight from camera
 	s ; speed

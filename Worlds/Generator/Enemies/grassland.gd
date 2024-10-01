@@ -8,16 +8,18 @@ enum GRASSLAND_STRUCTURES_KIND {
 	UNDEAD, MOLE,
 	ABANDONED_VILLAGE,
 	TARGET_PUZZLE,
+	HIVE, SLIMY, FLOCK
 }
 
 const GRASSLAND_STRUCTURE = {
-	GRASSLAND_STRUCTURES_KIND.NONE: 0.8,
-	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 0.035,
-	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.015,
-	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.001,
-	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.0005,
-	GRASSLAND_STRUCTURES_KIND.UNDEAD: 0.01,
-	GRASSLAND_STRUCTURES_KIND.MOLE: 0.005,
+	GRASSLAND_STRUCTURES_KIND.NONE: 80,
+	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 5,
+	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 2.5,
+	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.5,
+	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.05,
+	GRASSLAND_STRUCTURES_KIND.HIVE: 1,
+	GRASSLAND_STRUCTURES_KIND.SLIMY: 1,
+	GRASSLAND_STRUCTURES_KIND.FLOCK: 2,
 	#GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE: 0.01
 }
 
@@ -39,26 +41,48 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 			GRASSLAND_STRUCTURES_KIND.TREE_ROUND:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_ROUND, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_foliage(World.Foliage.TREE_ROUND, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing)
 				if p != null:
 					result.append(p)
+			GRASSLAND_STRUCTURES_KIND.HIVE:
+				index += 1
+				var pos := area[index]
+				var r := Population.random_entity_from_distribution(rng.randf(), {0.05: 10, 0.15: 5, 0.8: 1}) as float
+				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
+				var bumble_count := rng.randi_range(roundi(r * 1), roundi(r * 2))
+				var art := Artifact.new("", Artifact.Option.make_effect(Artifact.Effect.BOOST_PERCENTAGE, Artifact.Element.FIRE, 2, Artifact.Pattern.TRIANGLE))
+				var spawner := ItemSpawner.artifact_spawner(rng, pop, Vector3.ZERO, art)
+				for i in bee_count:
+					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Globals.rand_point_in_circle_2d(spacing / 2.0), spacing)
+					if p != null:
+						result.append(p)
+						spawner.nodes_to_be_cleared[p] = true
+						spawner.position = p.position
+				for i in bumble_count:
+					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Globals.rand_point_in_circle_2d(spacing / 2.0), spacing)
+					if p != null:
+						result.append(p)
+						spawner.nodes_to_be_cleared[p] = true
+						spawner.position = p.position
+				
+				
 			GRASSLAND_STRUCTURES_KIND.UNDEAD:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos, spacing)
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.MOLE:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos, spacing)
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
@@ -83,95 +107,95 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 				spawner.position = pos3
 					
-			GRASSLAND_STRUCTURES_KIND.VILLAGE:
-				if area.size() - index < 100:
-					index += 1
-					continue
-				index += 1
-				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
-				
-				var w: Buildings
-				for i in range(0, candidates.size()):
-					var j := candidates[i]
-					var pos := area[j] as Vector2
-					w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
-					if w != null:
-						exclusion[j] = true
-						result.append(w)
-						candidates.remove_at(i)
-						break
-				
-				var max_limit := rng.randi_range(1, 10)
-				for i in range(0, candidates.size()):
-					var j := candidates[i]
-					var pos := area[j] as Vector2
-					var p: Node3D
-					if rng.randf() < 0.7:
-						p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
-					else:
-						p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
-					if p != null:
-						max_limit -= 1
-						exclusion[j] = true
-						result.append(p)
-					if max_limit <= 0:
-						break
-						
-			GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE:
-				if area.size() - index < 100:
-					index += 1
-					continue
-				index += 1
-				var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
-				
-				var w: Buildings
-				for i in range(0, candidates.size()):
-					var j := candidates[i]
-					var pos := area[j] as Vector2
-					w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
-					if w != null:
-						exclusion[j] = true
-						result.append(w)
-						candidates.remove_at(i)
-						break
-				
-				var max_limit := rng.randi_range(1, 10)
-				for i in range(0, candidates.size()):
-					var j := candidates[i]
-					var pos := area[j] as Vector2
-					var p: Node3D
-					var house_size := 0
-					if rng.randf() < 0.7:
-						p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
-						house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.4, 2: 0.05})
-					else:
-						p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
-						house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.3, 3: 0.1, 4: 0.05})
-					if p != null:
-						max_limit -= 1
-						exclusion[j] = true
-						result.append(p)
-						var spawner := ItemSpawner.key_spawner(rng, pop, p.position, 2)
-						var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
-						if can_add_spawner:
-							SignalBus.enemy_death.connect(spawner.remove_node)
-						for k in house_size:
-							if rng.randf() < 0.2:
-								var n: Bat = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
-								if n != null:
-									n.velocity_movement.current_biome = World.Biome.GRASSLAND
-									result.append(n)
-									if can_add_spawner:
-										spawner.nodes_to_be_cleared[n] = true
-							else:
-								var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
-								if n != null:
-									n.velocity_movement.current_biome = World.Biome.GRASSLAND
-									result.append(n)
-									if can_add_spawner:
-										spawner.nodes_to_be_cleared[n] = true
-					if max_limit <= 0:
-						break
+			#GRASSLAND_STRUCTURES_KIND.VILLAGE:
+				#if area.size() - index < 100:
+					#index += 1
+					#continue
+				#index += 1
+				#var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
+				#
+				#var w: Buildings
+				#for i in range(0, candidates.size()):
+					#var j := candidates[i]
+					#var pos := area[j] as Vector2
+					#w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
+					#if w != null:
+						#exclusion[j] = true
+						#result.append(w)
+						#candidates.remove_at(i)
+						#break
+				#
+				#var max_limit := rng.randi_range(1, 10)
+				#for i in range(0, candidates.size()):
+					#var j := candidates[i]
+					#var pos := area[j] as Vector2
+					#var p: Node3D
+					#if rng.randf() < 0.7:
+						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
+					#else:
+						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
+					#if p != null:
+						#max_limit -= 1
+						#exclusion[j] = true
+						#result.append(p)
+					#if max_limit <= 0:
+						#break
+						#
+			#GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE:
+				#if area.size() - index < 100:
+					#index += 1
+					#continue
+				#index += 1
+				#var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
+				#
+				#var w: Buildings
+				#for i in range(0, candidates.size()):
+					#var j := candidates[i]
+					#var pos := area[j] as Vector2
+					#w = pop.spawn_building(World.Building.FANTASY_WELL, state, pos.x, pos.y, spacing)
+					#if w != null:
+						#exclusion[j] = true
+						#result.append(w)
+						#candidates.remove_at(i)
+						#break
+				#
+				#var max_limit := rng.randi_range(1, 10)
+				#for i in range(0, candidates.size()):
+					#var j := candidates[i]
+					#var pos := area[j] as Vector2
+					#var p: Node3D
+					#var house_size := 0
+					#if rng.randf() < 0.7:
+						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
+						#house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.4, 2: 0.05})
+					#else:
+						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
+						#house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.3, 3: 0.1, 4: 0.05})
+					#if p != null:
+						#max_limit -= 1
+						#exclusion[j] = true
+						#result.append(p)
+						#var spawner := ItemSpawner.key_spawner(rng, pop, p.position, 2)
+						#var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
+						#if can_add_spawner:
+							#SignalBus.enemy_death.connect(spawner.remove_node)
+						#for k in house_size:
+							#if rng.randf() < 0.2:
+								#var n: Bat = pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
+								#if n != null:
+									#n.velocity_movement.current_biome = World.Biome.GRASSLAND
+									#result.append(n)
+									#if can_add_spawner:
+										#spawner.nodes_to_be_cleared[n] = true
+							#else:
+								#var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
+								#if n != null:
+									#n.velocity_movement.current_biome = World.Biome.GRASSLAND
+									#result.append(n)
+									#if can_add_spawner:
+										#spawner.nodes_to_be_cleared[n] = true
+					#if max_limit <= 0:
+						#break
 					
 	return result
 					

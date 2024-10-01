@@ -38,7 +38,7 @@ func setup(seedling: int) -> void:
 	
 	var attack_pathway := PathStyle.Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, fit(15,25), 0), fit(5,15), PathStyle.Easing.out_quart) \
+		.line_to(Vector3(10, fit(15,450), 0), fit(5,15), PathStyle.Easing.out_quart) \
 		.wait(fit(10,5)) \
 		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart) \
 		.wait(fit(4,8))

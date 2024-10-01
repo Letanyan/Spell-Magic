@@ -39,25 +39,25 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.BAT:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_enemy(World.Enemy.BAT, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_enemy(World.Enemy.BAT, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.MOLE:
 				index += 1
 				var pos := area[index] as Vector2
-				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos.x, pos.y, spacing)
+				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos, spacing)
 				if p != null:
 					result.append(p)		
 			FOREST_STRUCTURES_KIND.HORDE:
@@ -66,41 +66,31 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					continue
 				var count := pop.rng.randi_range(4, 16)
 				index += 1
-				var origin := area[index]
-				var x := origin.x
-				var y := origin.y
-				var v := Vector2(1, 0)
+				var pos := area[index]
 				for i in range(count):
-					x += v.x * spacing / 4.0
-					y += v.y * spacing / 4.0
-					var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)
+					var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos + Globals.rand_point_in_circle_2d(spacing / 4.0), spacing)
 					if p != null:
 						result.append(p)
-					v = v.rotated(float(i) / float(count) * 2.0 * PI)
 					
 			FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD:
 				if area.size() - index < 100:
 					index += 1
 					continue
 				var count_tree := pop.rng.randi_range(20, 30)
-				var origin := area[index]
-				var x := origin.x
-				var y := origin.y
-				var v := Vector2(1, 0)
+				var pos := area[index]
+				var offset := Vector2(1, 0)
 				for i in range(count_tree):
 					index += 1
 					var count := pop.rng.randi_range(5, 10)
 					for j in range(count):
-						x += v.x * spacing
-						y += v.y * spacing
 						var p: Node3D
 						if pop.rng.randf_range(0, 1.0) < 0.95:
-							p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, x, y, spacing)
+							p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos + offset, spacing)
 						else:
-							p = pop.spawn_enemy(World.Enemy.UNDEAD, state, x, y, spacing)
+							p = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos + offset, spacing)
 						if p != null:
 							result.append(p)
-						v = v.rotated(float(i) / float(count) * 2.0 * PI)
+						offset = offset.rotated(float(i) / float(count) * 2.0 * PI)
 				
 			
 	return result

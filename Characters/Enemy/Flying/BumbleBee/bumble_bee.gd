@@ -47,7 +47,7 @@ func setup(seedling: int) -> void:
 	fire3.configure({"s": atks(5,14), "d": "2"}, Spell.Element.FIRE, fit(7,14), power(13), radius(8), 1, 50, 150, 40)
 	elec_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.ELECTRIC, fit(10,5), power(10), radius(5), fiti(4, 15), 33, 66, 50)
 	elec_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.ELECTRIC, fit(14,7), power(14), radius(7), fiti(2, 8), 75, 120, 50)
-	elec_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":fit(2,0.1)}, Spell.Element.ELECTRIC, fit(10,5), power(15), radius(3), fiti(5, 10), 70, 180, 50)
+	elec_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":fits(2,0.1)}, Spell.Element.ELECTRIC, fit(10,5), power(15), radius(3), fiti(5, 10), 70, 180, 50)
 	
 	random_pattern = AttackPatterns.new(
 		[
@@ -74,7 +74,7 @@ func setup(seedling: int) -> void:
 	)
 	
 	animation_map["attack"] = "Headbutt"
-	kind = World.Enemy.BEE
+	kind = World.Enemy.BUMBLE_BEE
 
 func attack_state() -> AttackPatterns:
 	if is_idle:
