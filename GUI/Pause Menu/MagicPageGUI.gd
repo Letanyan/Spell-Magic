@@ -167,6 +167,7 @@ func _on_chain_combo_selected(index: int) -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].chain_cast_kind = index as Spell.ChainCastKind
+	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
 func _on_x_text_changed(new_text: String) -> void:

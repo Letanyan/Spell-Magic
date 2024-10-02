@@ -296,7 +296,10 @@ func calculate_cooldown() -> float:
 		elemental_application += clampf((mana_cost - (basic_cost + chain_cost)) / 100, 0.0, 0.75)
 	elemental_application = clampf(elemental_application, 0.0, 1.0)
 		
-	cooldown = basic_cost + chain_cost - mana_cost
+	if chain_cast_kind == ChainCastKind.HIT:
+		cooldown = basic_cost * chain_cost - mana_cost
+	else:
+		cooldown = basic_cost + chain_cost - mana_cost
 	if cooldown < 0.0:
 		cooldown = 0.0
 	return cooldown
