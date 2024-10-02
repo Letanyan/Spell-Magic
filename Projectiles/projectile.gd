@@ -424,7 +424,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 				C = 0.0
 			complexity_angular_total += C / (float(old_velocity.size()))
 		
-		complexity = 1.0 - pow(1.0 - complexity_angular_total / complexity_samples_total, 3)
+		complexity = pow(complexity_angular_total / complexity_samples_total, 2.0)
 			
 	old_pos = next_pos
 	

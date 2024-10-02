@@ -91,39 +91,57 @@ func generate(max_word_length: int, word_count: int = 1, max_length: int = (max_
 	var s := Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
 	var result := s
 	var current_word_length := s.length()
+	var terminate := false
+	var goto_next_word := false
 	while word_count > 0:
 		if result.length() >= max_length:
-			word_count -= 1
-			result += " "
-			break
-		if current_word_length >= max_word_length:
-			word_count -= 1
-			result += " "
-			s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
-			current_word_length = 0
-			continue
-		if not transitions.has(s):
-			word_count -= 1
-			result += " "
-			s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
-			current_word_length = 0
-			continue
-		var next := Population.random_entity_from_non_relative_distribution(randf(), transitions[s] as Dictionary, "") as String
-		if next.length() <= 0:
-			word_count -= 1
-			result += " "
-			s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
-			current_word_length = 0
-			continue
-		s = next
-		var last_char := next[next.length() - 1]
-		if last_char == ".":
-			word_count -= 1
-			result += " "
-			s = Population.random_entity_from_distribution(randf(), initial, "") as String
-			current_word_length = 0
-			continue
+			terminate = true
+		if not terminate and current_word_length >= max_word_length:
+			goto_next_word = true
+		if not terminate and not transitions.has(s):
+			goto_next_word = true
+		
+		var next := ""
+		if terminate or goto_next_word:
+			var terminal_transitions := {}
+			for key: String in (transitions[s] as Dictionary):
+				if key[key.length() - 1] == ".":
+					terminal_transitions[key] = transitions[s][key]
+			next = Population.random_entity_from_distribution(randf(), terminal_transitions, "") as String
+		else:
+			next = Population.random_entity_from_non_relative_distribution(randf(), transitions[s] as Dictionary, "") as String
 			
+		var last_char := ""
+		if next.length() <= 0:
+			if current_word_length <= 0:
+				terminate = false
+				s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+				continue
+			else:
+				goto_next_word = true
+		else:
+			s = next
+			last_char = next[next.length() - 1]
+			if last_char == ".":
+				if current_word_length <= 0:
+					terminate = false
+					s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+					continue
+				else:
+					goto_next_word = true
+			
+		if terminate:
+			word_count -= 1
+			break
+		if goto_next_word:
+			goto_next_word = false
+			terminate = false
+			word_count -= 1
+			result += " "
+			s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+			current_word_length = 0
+			continue
+		
 		current_word_length += 1
 		result += last_char
 		

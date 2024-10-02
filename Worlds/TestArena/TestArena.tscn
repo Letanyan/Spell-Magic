@@ -190,7 +190,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1105.99, -668.555)
 mesh = SubResource("SphereMesh_xr5cq")
 
 [node name="rigid_block" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1100, -8.501)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.648, 1000, -8.501)
 collision_layer = 528
 collision_mask = 0
 mass = 0.01
