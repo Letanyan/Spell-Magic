@@ -36,7 +36,7 @@ const INVUNERABLE_DURATION: float = 0.5
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PROJECTILE)
+	spell_caster = SpellCaster.new(origin_node, SpellCaster.Entity.PROJECTILE)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
 		cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
 	rng = RandomNumberGenerator.new()
@@ -133,6 +133,9 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	var is_world  : int = _body.collision_layer & 0b0001 != 0
 	var is_player : int = _body.collision_layer & 0b0010 != 0
 	var is_enemy  : int = _body.collision_layer & 0b0100 != 0
+	
+	if is_enemy and origin_node is Enemy:
+		return
 	
 	var is_world_object : int = _body.collision_layer & (1 << 9) != 0
 	var is_fire    : int = _body.collision_layer & 0b0_0000_1000 != 0
@@ -237,6 +240,9 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	var is_world  : int = area.collision_layer & 0b0001 != 0
 	var is_player : int = area.collision_layer & 0b0010 != 0
 	var is_enemy  : int = area.collision_layer & 0b0100 != 0
+	
+	if is_enemy and origin_node is Enemy:
+		return
 	
 	var is_world_object := area.collision_layer & (1 << 9) != 0
 	var is_fire  : int = area.collision_layer   & 0b0_0000_1000 != 0

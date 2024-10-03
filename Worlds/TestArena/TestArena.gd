@@ -71,8 +71,8 @@ func setup(_settings: WorldSettings) -> void:
 		#artifact.right = Artifact.Option.make_random()
 		#artifacts.collection.append(artifact)
 	
-	const pX = 10
-	const pY = 10
+	const pX = 100
+	const pY = 100
 	const LVL = 10
 	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, pX, 1000, pY)
 	undead.level = LVL
