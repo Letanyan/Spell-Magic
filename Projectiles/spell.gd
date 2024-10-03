@@ -50,8 +50,8 @@ var ignore_cooldown_when_calculating_elemental_application: bool = false
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
+var time_dependent_vars: Array[String] = []
 		
-
 var id: int = -1
 
 var limit_r: float = UpgradeSettings.LIMIT_r
@@ -231,20 +231,41 @@ func _mass() -> float:
 func build_expressions() -> void:
 	expressions.clear()
 	for k: String in expression_strings:
+		var expr: Expr
 		if (expression_strings[k] as String).contains(";"):
-			expressions[k] = Expr.new((expression_strings[k] as String).split(";", false, 2)[0])
+			expr = Expr.new((expression_strings[k] as String).split(";", false, 2)[0])
 		else:
-			expressions[k] = Expr.new(expression_strings[k] as String)
+			expr = Expr.new(expression_strings[k] as String)
+		expressions[k] = expr
+		if expr.contains_variable("t"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("tu") or expr.contains_variable("tv") or expr.contains_variable("tw"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("tru") or expr.contains_variable("trv") or expr.contains_variable("trw"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("tU") or expr.contains_variable("tV") or expr.contains_variable("tW"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("trU") or expr.contains_variable("trV") or expr.contains_variable("trW"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("ti") or expr.contains_variable("tj") or expr.contains_variable("tk"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("tri") or expr.contains_variable("trj") or expr.contains_variable("trk"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("tI") or expr.contains_variable("tJ") or expr.contains_variable("tK"):
+			time_dependent_vars.append(k)
+		elif expr.contains_variable("trI") or expr.contains_variable("trJ") or expr.contains_variable("trK"):
+			time_dependent_vars.append(k)
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	for k: String in mappings:
 		expressions[k] = Expr.new(mappings[k] as String)
 	
-func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrides: Dictionary = {}) -> void:
+func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrides: Dictionary = {}, only_time_dependent: bool = false) -> void:
 	var temp := {}
 	temp.merge(fvars)
 	temp.merge(additional)
-	for k: String in expressions:
+	
+	for k: String in (time_dependent_vars if only_time_dependent else expressions.keys()):
 		var e := expressions[k] as Expr
 		if overrides.has(k):
 			fvars[k] = overrides[k]

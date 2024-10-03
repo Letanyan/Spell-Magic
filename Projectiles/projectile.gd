@@ -515,6 +515,7 @@ func update_spell(t: float, delta: float, vars: Dictionary) -> void:
 	t = t - pause_time
 	fixed_vars["t"] = clampf(t - time_start, 0.0, 100000.0)
 	vars["~~frame_time"] = delta
+	spell.compute_expressions(vars, expression_vars, override_vars, true)
 	var p := spell.calculate_location(vars)
 	update_movement(p, false, vars)
 
