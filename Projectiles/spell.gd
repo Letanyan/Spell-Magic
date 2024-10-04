@@ -148,6 +148,21 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 	calculate_cooldown()
 	overwrite_expressions(constants)
 	
+func set_delay(d: String) -> void:
+	delay = d
+	d_expr = Expr.new(delay)
+	
+func set_x(x_: String) -> void:
+	x = x_
+	x_expr = Expr.new(x)
+	
+func set_y(y_: String) -> void:
+	y = y_
+	y_expr = Expr.new(y)
+	
+func set_z(z_: String) -> void:
+	z = z_
+	z_expr = Expr.new(z)
 	
 func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	var sphere := Vector3.ZERO

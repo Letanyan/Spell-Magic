@@ -106,7 +106,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			(entity as Enemy).is_dead = false
 			(entity as Enemy).setup(rng.randi())
 			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
-			var is_marked := entity_name_is_marked(entity.name)
+			var is_marked := entity_name_is_marked(entity.name) # has this enemy already been killed
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)
 				return null
@@ -127,7 +127,6 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 				world_items.append(entity)
 	return entity
 	
-# FIXME: don't spawn enemy if this `enemy: World.Enemy` at this position `x`,`y` has been killed
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
 	var result: Enemy = null
 	var pos := Vector3(p.x, 0, p.y)
@@ -206,7 +205,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	return result
 
 
-func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
+func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
 	match foliage:
@@ -214,7 +213,7 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: 
 			result = entity_manager.get_tree(foliage) as Trees
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
-	return prepare_entity(state, result, pos, false, on_flat_surface(PI / 8))
+	return prepare_entity(state, result, pos, false, user_info)
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
 	var result: Node3D = null

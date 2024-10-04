@@ -21,7 +21,7 @@ var water_shower1 := GlobalData.magic_book.copy_spell("linear")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(13), mana(13), mana_regen(13), percep(1,4), atk(8), def(4), {Artifact.Element.WATER: res(12, 0)})
+	vitals = Vitals.enemy(hp(13), mana(13), mana_regen(13), percep(1,4), atk(4), def(14), {Artifact.Element.WATER: res(12, 0)})
 	
 	idle_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1))
 	basic_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1)).look_at_player_xz()

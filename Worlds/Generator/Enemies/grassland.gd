@@ -17,9 +17,9 @@ const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 2.5,
 	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.5,
 	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.05,
-	GRASSLAND_STRUCTURES_KIND.HIVE: 1,
-	GRASSLAND_STRUCTURES_KIND.SLIMY: 1,
-	GRASSLAND_STRUCTURES_KIND.FLOCK: 2,
+	GRASSLAND_STRUCTURES_KIND.HIVE: 0.1,
+	GRASSLAND_STRUCTURES_KIND.SLIMY: 0.1,
+	GRASSLAND_STRUCTURES_KIND.FLOCK: 0.1,
 	#GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE: 0.01
 }
 
@@ -51,26 +51,57 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.HIVE:
+				print("HIVE")
 				index += 1
 				var pos := area[index]
 				var r := Population.random_entity_from_distribution(rng.randf(), {0.05: 10, 0.15: 5, 0.8: 1}) as float
 				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
 				var bumble_count := rng.randi_range(roundi(r * 1), roundi(r * 2))
 				var art := Artifact.new("", Artifact.Option.make_effect(Artifact.Effect.BOOST_PERCENTAGE, Artifact.Element.FIRE, 2, Artifact.Pattern.TRIANGLE))
-				var spawner := ItemSpawner.artifact_spawner(rng, pop, Vector3.ZERO, art)
+				if bee_count <= 0 and bumble_count <= 0:
+					continue
+					
+				var tree := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos, spacing, pop.always_valid)
+				var spawner := ItemSpawner.artifact_spawner(rng, pop, tree.position + Vector3(5, 0, 0).rotated(Vector3.UP, randf() * 2 * PI), art)
 				for i in bee_count:
-					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Globals.rand_point_in_circle_2d(spacing / 2.0), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0), spacing)
 					if p != null:
 						result.append(p)
 						spawner.nodes_to_be_cleared[p] = true
-						spawner.position = p.position
 				for i in bumble_count:
-					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Globals.rand_point_in_circle_2d(spacing / 2.0), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0), spacing)
 					if p != null:
 						result.append(p)
 						spawner.nodes_to_be_cleared[p] = true
-						spawner.position = p.position
 				
+			GRASSLAND_STRUCTURES_KIND.SLIMY:
+				index += 1
+				var pos := area[index]
+				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 2: 0.8}) as int
+				var spike_count := rng.randi_range(1, r)
+				for si in spike_count:
+					var spike_pos := pos + Globals.rand_point_in_circle_2d(spacing / 2.0)
+					var p := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, state, spike_pos, spacing)
+					if p != null:
+						result.append(p)
+						for ssi in rng.randi_range(2,3):
+							var q := pop.spawn_enemy(World.Enemy.SNOT_BLOB, state, spike_pos + Globals.rand_point_in_circle_2d(spacing / 2.0), spacing)
+							if q != null:
+								result.append(q)
+								
+			GRASSLAND_STRUCTURES_KIND.FLOCK:
+				index += 1
+				var pos := area[index]
+				var r := Population.random_entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
+				var mini_count := rng.randi_range(1, r)
+				var boss := pop.spawn_enemy(World.Enemy.BIRDMAN, state, pos, spacing)
+				if boss != null:
+					result.append(boss)
+				for i in mini_count:
+					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(spacing * 4), spacing)
+					if p != null:
+						result.append(p)
+						 
 				
 			GRASSLAND_STRUCTURES_KIND.UNDEAD:
 				index += 1

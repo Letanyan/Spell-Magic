@@ -20,7 +20,7 @@ var ice_large := GlobalData.magic_book.copy_spell("linear")
 var ice_wall := GlobalData.magic_book.copy_spell("wall")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(12), percep(1,4), atk(13), def(11), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
+	vitals = Vitals.enemy(hp(16), mana(4), mana_regen(12), percep(1,4), atk(8), def(18), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
 	idle_path = PathStyle.new().follow_path(circle_path).set_origin(position).align_y_to_ground()

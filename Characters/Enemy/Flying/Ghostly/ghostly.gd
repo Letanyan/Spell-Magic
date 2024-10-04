@@ -17,6 +17,9 @@ var ice_arc3 := GlobalData.magic_book.copy_spell("arc")
 var ice_scatter1 := GlobalData.magic_book.copy_spell("scatter-shot")
 var ice_scatter2 := GlobalData.magic_book.copy_spell("scatter-shot")
 var ice_scatter3 := GlobalData.magic_book.copy_spell("scatter-shot")
+var ice_back1 := GlobalData.magic_book.copy_spell("line")
+var ice_back2 := GlobalData.magic_book.copy_spell("line")
+var ice_back3 := GlobalData.magic_book.copy_spell("line")
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(3), mana(8), mana_regen(20), percep(4,6), atk(12), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(5, 1)})
@@ -54,6 +57,9 @@ func setup(seedling: int) -> void:
 	ice_scatter1.configure({"harc": "pi", "varc": "pi", "s": atks(3,15)}, Spell.Element.ICE, 10.0, power(11), radius(3), fiti(4, 16), 75, 25, 30)
 	ice_scatter2.configure({"harc": "pi/2", "varc": "pi/2", "s": atks(3,12)}, Spell.Element.ICE, 8.0, power(14), radius(3), fiti(5, 15), 75, 50, 40)
 	ice_scatter3.configure({"harc": "pi/4", "varc": "pi/4", "s": atks(3,10)}, Spell.Element.ICE, 6.0, power(17), radius(3), fiti(6, 18), 75, 75, 50)
+	ice_back1.configure({"sx":"C*u*3", "sy":"C*v*3", "sz":"C*w*3", "ex":"-C*u*3", "ey":"-C*v*3", "ez":"-C*w*3"}, Spell.Element.ICE, fit(8, 3), power(14), radius(5), 1, 50, 100, 30)
+	ice_back2.configure({"sx":"C*u*4", "sy":"C*v*4", "sz":"C*w*4", "ex":"-C*u*4", "ey":"-C*v*4", "ez":"-C*w*4"}, Spell.Element.ICE, fit(7, 2.5), power(12), radius(5), 1, 50, 100, 50)
+	ice_back3.configure({"sx":"C*u*5", "sy":"C*v*5", "sz":"C*w*5", "ex":"-C*u*5", "ey":"-C*v*5", "ez":"-C*w*5"}, Spell.Element.ICE, fit(6, 2), power(10), radius(5), 1, 50, 100, 70)
 	
 	random_pattern = AttackPatterns.new(
 		[

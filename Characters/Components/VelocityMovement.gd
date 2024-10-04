@@ -177,7 +177,11 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 #			wet_area.rotation.y = pivot.rotation.y
 	else:
 		if navigation_velocity != Vector3.ZERO:
-			body.rotation.y = lerp_angle(body.rotation.y, atan2(-navigation_velocity.x, -navigation_velocity.z), 0.3)
+			var goal_angle := atan2(-navigation_velocity.x, -navigation_velocity.z)
+			if is_zero_approx(navigation_velocity.x) and is_zero_approx(navigation_velocity.z):
+				body.rotation.y = lerp_angle(body.rotation.y, sin(navigation_velocity.y) * 2 * PI, 0.05)
+			else:
+				body.rotation.y = lerp_angle(body.rotation.y, goal_angle, 0.3)
 		
 	return result
 
@@ -185,14 +189,11 @@ func rotate_character(body: Player, direction: Vector3, is_underwater: bool) -> 
 	if direction != Vector3.ZERO:
 		var cam_pivot := body.get_node("CamPivot") as Marker3D
 		var pivot := body.get_node("Pivot") as Node3D
-		if is_underwater:
+		if is_underwater or body.enemies_in_range.is_empty():
 			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
 		else:
 			pivot.rotation.y = lerp_angle(pivot.rotation.y, cam_pivot.rotation.y, 0.3)
-		var collision: Node3D = body.get_node("Collision")
-		collision.rotation.y = pivot.rotation.y
-		var wet_area: Node3D = body.get_node("WetArea")
-		wet_area.rotation.y = pivot.rotation.y
+		
 
 static func get_input_strength(negative_x: String, positive_x: String, negative_y: String, positive_y: String, deadzone: float = 0.05) -> Vector2:
 	var left := Input.get_action_raw_strength(negative_x)

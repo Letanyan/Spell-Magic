@@ -19,7 +19,7 @@ var elec_swipe2 := GlobalData.magic_book.copy_spell("swipe")
 var elec_swipe3 := GlobalData.magic_book.copy_spell("swipe")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(10), mana(15), mana_regen(20), percep(4,6), atk(12), def(3), {Artifact.Element.ELECTRIC: res(7, 1)})
+	vitals = Vitals.enemy(hp(8), mana(15), mana_regen(20), percep(4,6), atk(12), def(3), {Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()

@@ -168,6 +168,11 @@ func delete_spell_at_index(index: int) -> void:
 func add_spell(spell: Spell) -> void:
 	spell.id = book.spells.size()
 	book.add(spell)
+	var chain_spell := spell.chain
+	while chain_spell != null:
+		chain_spell.id = book.spells.size()
+		book.add(chain_spell)
+		chain_spell = chain_spell.chain
 	reload_list()
 	var k_index := -1
 	for k: int in spells_index_map:

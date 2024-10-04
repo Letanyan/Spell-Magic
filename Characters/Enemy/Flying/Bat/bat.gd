@@ -31,10 +31,10 @@ func setup(seedling: int) -> void:
 	
 	var rotate_path := PathStyle.Pathway.new() \
 		.move_to(a) \
-		.arc_with_speed_to(b, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
-		.arc_with_speed_to(c, true, fit(3,1), PathStyle.Easing.in_out_cubic) \
-		.arc_with_speed_to(d, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
-		.arc_with_speed_to(a, true, fit(3,1), PathStyle.Easing.in_out_cubic)
+		.arc_to(b, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
+		.arc_to(c, true, fit(3,1), PathStyle.Easing.in_out_cubic) \
+		.arc_to(d, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
+		.arc_to(a, true, fit(3,1), PathStyle.Easing.in_out_cubic)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

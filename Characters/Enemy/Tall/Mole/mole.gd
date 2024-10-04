@@ -14,7 +14,7 @@ var elec2 := GlobalData.magic_book.copy_spell("linear")
 var elec3 := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int) -> void:
-	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), percep(2,4), atk(15), def(15), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
+	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), percep(2,4), atk(8), def(12), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(5, 0, 7)
 	current_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
