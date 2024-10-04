@@ -6,13 +6,15 @@ var last_world: String
 var default_world_settings: WorldSettings
 var user_functions: Dictionary
 var user_functions_text: String
+var unlocked_notes: Dictionary
 
 func save() -> void:
 	var file := FileAccess.open("user://settings.json", FileAccess.WRITE)
 	
 	file.store_var({
 		"last_world": last_world, "user_functions_text": user_functions_text,
-		"default_world_settings": default_world_settings.save_dict()
+		"default_world_settings": default_world_settings.save_dict(),
+		"unlocked_notes": unlocked_notes,
 	})
 
 func read() -> void:
@@ -26,6 +28,8 @@ func read() -> void:
 	
 	default_world_settings = WorldSettings.new(null)
 	default_world_settings.load_dict(data.get("default_world_settings", {}) as Dictionary)
+	
+	unlocked_notes = data.get("unlocked_notes", {}) as Dictionary
 	
 	build_user_functions(data.get("user_functions_text", "") as String)
 	
@@ -80,3 +84,65 @@ static func get_world_names() -> Array:
 		
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
 	return times
+
+static var notes := {
+	"func rot_x, rot_y, rot_z": "[t]rot_*[/t] can be used to rotate a point around a vector. The parameters of the functions are as follows, [t]rot_*(a, vx, vy, vz, px, py, pz)[/t], where [t]a[/t] defines the angle around the vector [t](vx, vy, vz)[/t] which the point [t](px, py, pz)[/t] is rotated.",
+	"func lerp": "[t]lerp[/t] which is short for interpolate moves between 2 values. [t]lerp(t, A, B)[/t] is defined as [t]A+t*(B-A)[/t].",
+	"func segment2, segment3, segment4, segment5": "",
+	"func unit_x, unit_y, unit_z": "",
+	"func dot2, dot3": "",
+	"func cross_x, cross_y, cross_z": "",
+	"func proj_x, proj_y, proj_z": "",
+	"func quad": "",
+	"func cubic": "",
+	"func clamp": "",
+	"func if": "",
+	"func cube": "",
+	"func cbrt": "",
+	"func sqr": "",
+	"func sqrt": "",
+	"func abs": "",
+	"func logN": "",
+	"func log10": "",
+	"func pow": "",
+	"func min": "",
+	"func max": "",
+	"func not": "",
+	"func eq": "",
+	"func neq": "",
+	"func lt": "",
+	"func lte": "",
+	"func gt": "",
+	"func gte": "",
+	"func ceil": "",
+	"func round": "",
+	"func floor": "",
+	"func div": "",
+	"func mod": "",
+	"func inv": "",
+	"func sin": "",
+	"func cos": "",
+	"func tan": "",
+	"func asin": "",
+	"func acos": "",
+	"func atan": "",
+	"func sinh": "",
+	"func cosh": "",
+	"func tanh": "",
+	"func atan2": "",
+	
+	"artifact pattern": "",
+	"artifact event": "",
+	"artifact effect": "",
+	"artifact element": "",
+	"artifact connections": "",
+	
+	"spell x, y, z": "",
+	"spell D": "",
+	"spell T": "",
+	
+	"variable u, v, w": "",
+	"variable U, V, W": "",
+	"variable ru, rv, rw": "",
+	"variable rU, rV, rW": "",
+}

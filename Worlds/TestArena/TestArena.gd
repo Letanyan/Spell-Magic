@@ -73,8 +73,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	const pX = 100
 	const pY = 100
-	const LVL = 10
-	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, pX, 1000, pY)
+	const LVL = 1
+	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, pX / 10.0, 1000, pY / 10.0)
 	undead.level = LVL
 	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)

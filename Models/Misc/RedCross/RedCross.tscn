@@ -102,6 +102,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_8aj3a")
 [node name="Area3D" type="Area3D" parent="."]
 collision_layer = 1024
 collision_mask = 2
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_f0tnv")

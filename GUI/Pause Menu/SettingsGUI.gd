@@ -39,6 +39,9 @@ extends Control
 
 @onready var user_functions: TextEdit = $Tabs/Tools/user_functions
 
+@onready var note_content: RichTextLabel = $Tabs/Notes/Content
+
+
 var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
@@ -271,6 +274,39 @@ func update_info() -> void:
 	world_settings.day_of_the_year, time
 ]
 
+func update_notes() -> void:
+	var content := "[font_size=40][b]Notes[/b][/font_size]\n\n"
+	
+	var highlight := func(note: String) -> String:
+		if note.begins_with("func"):
+			return note.replace("func", "[color=#F70]func[/color]")
+		elif note.begins_with("variable"):
+			return note.replace("variable", "[color=#7F0]variable[/color]")
+		elif note.begins_with("spell"):
+			return note.replace("spell", "[color=#0F7]spell[/color]")
+		elif note.begins_with("artifact"):
+			return note.replace("artifact", "[color=#F07]artifact[/color]")
+		return note
+		
+	var regex_tag_t := RegEx.new()
+	regex_tag_t.compile(r"\[t\](.+?)\[\/t\]")
+	var tag_t := func(note: String) -> String:
+		var m := regex_tag_t.search(note)
+		while m != null and m.get_start() > -1:
+			var internal := m.get_string(1)
+			var prefix := note.left(m.get_start())
+			var suffix := note.right(note.length() - m.get_end())
+			note = prefix + "[b][i]" + internal + "[/i][/b]" + suffix
+			m = regex_tag_t.search(note)
+		return note
+			
+	
+	for note: String in GlobalData.game_settings.notes:
+		content += "[font_size=16][b][u]" + highlight.call(note) + "[/u][/b][/font_size]\n"
+		content += tag_t.call(GlobalData.game_settings.notes[note]) + "\n\n"
+	
+	note_content.text = content
+
 
 func hide_game_tab(should_hide: bool) -> void:
 	($Tabs as TabContainer).set_tab_hidden(4, should_hide)
@@ -286,10 +322,11 @@ func _on_main_menu_pressed() -> void:
 func _on_exit_game_pressed() -> void:
 	exit_game.emit()
 
-
 func _on_tabs_tab_selected(tab: int) -> void:
 	if tab == 4:
 		update_info()
+	if tab == 6:
+		update_notes()
 
 func _on_user_functions_focus_exited() -> void:
 	GlobalData.game_settings.build_user_functions(user_functions.text)

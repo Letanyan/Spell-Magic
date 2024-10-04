@@ -353,6 +353,7 @@ func die() -> void:
 			drop_spell_item(world)
 	drop_coin_items(world)
 	drop_health_item(world, time_to_kill)
+	drop_scroll_note(world)
 	
 	SignalBus.enemy_death.emit(get_node("."))
 	world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout.connect(func() -> void: world.remove_child(explosion))
@@ -361,7 +362,7 @@ func die() -> void:
 func drop_artifact_item(world: Node3D) -> bool:
 	var artifact: Artifact = drop_artifact()
 	if artifact:
-		var item := (preload("res://Models/Misc/Artifact/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
+		var item := ArtifactCube.make()
 		item.position = position
 		item.global_transform = global_transform
 		item.artifact = artifact
@@ -373,7 +374,7 @@ func drop_artifact_item(world: Node3D) -> bool:
 func drop_spell_item(world: Node3D) -> bool:
 	var spell: Spell = drop_spell()
 	if spell:
-		var item := (preload("res://Models/Misc/Spell/Paper.tscn") as PackedScene).instantiate() as SpellPaper
+		var item := SpellPaper.make()
 		item.position = position
 		item.global_transform = global_transform
 		item.spell = spell
@@ -384,7 +385,7 @@ func drop_spell_item(world: Node3D) -> bool:
 func drop_key_item(world: Node3D) -> bool:
 	var key: int = drop_key()
 	if key != 0:
-		var item := (preload("res://Models/Misc/Key/Key.tscn") as PackedScene).instantiate() as KeyPrism
+		var item := KeyPrism.make()
 		item.position = position
 		item.global_transform = global_transform
 		item.key = key
@@ -396,7 +397,7 @@ func drop_coin_items(world: Node3D) -> bool:
 	var coins := drop_coins()
 	if not coins.is_empty():
 		for coin in coins:
-			var item := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
+			var item := CoinDisc.make()
 			item.position = position
 			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(1.0 + log(coins.size()), 0))
 			item.amount = ceili(coin * maxf(level / 10.0, 1.0))
@@ -408,10 +409,21 @@ func drop_health_item(world: Node3D, time_to_kill: float) -> bool:
 	var t := 1.0 - clampf(time_to_kill / 100.0, 0.0, 1.0)
 	var h := drop_health() * (t * t)
 	if h > 0.0:
-		var item := (preload("res://Models/Misc/RedCross/RedCross.tscn") as PackedScene).instantiate() as RedCross
+		var item := RedCross.make()
 		item.position = position
 		item.global_transform = global_transform.translated(Globals.rand_point_in_circle(3, 0))
 		item.health = h
+		world.add_child(item)
+		return true
+	return false
+	
+func drop_scroll_note(world: Node3D) -> bool:
+	var note_id := drop_note()
+	if note_id != "":
+		var item := ScrollNote.make()
+		item.position = position
+		item.global_transform = global_transform.translated(Globals.rand_point_in_circle(3, 0))
+		item.note_id = note_id
 		world.add_child(item)
 		return true
 	return false
@@ -437,6 +449,15 @@ func drop_coins() -> Array[int]: # values must be in range [1, 10]
 	
 func drop_health() -> float:
 	return 0.0
+	
+func drop_note() -> String:
+	var key_samples := GlobalData.game_settings.notes.keys()
+	key_samples.shuffle()
+	for key: String in key_samples:
+		if not GlobalData.game_settings.unlocked_notes.has(key):
+			return key
+	return ""
+	
 
 func world_enemy_enum() -> World.Enemy:
 	var n := get_node(".")

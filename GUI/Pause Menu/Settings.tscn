@@ -632,6 +632,24 @@ offset_right = 123.0
 offset_bottom = 34.0
 text = "User Functions"
 
+[node name="Notes" type="Panel" parent="Tabs"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6
+
+[node name="Content" type="RichTextLabel" parent="Tabs/Notes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -1.0
+offset_right = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[font_size=40][b]Notes[/b][/font_size]"
+
 [connection signal="tab_selected" from="Tabs" to="." method="_on_tabs_tab_selected"]
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]

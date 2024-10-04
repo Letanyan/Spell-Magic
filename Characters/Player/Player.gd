@@ -68,6 +68,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_key.connect(on_pick_up_key)
 	SignalBus.pick_up_world_item_coin.connect(on_pick_up_coin)
 	SignalBus.pick_up_world_item_red_cross.connect(on_pick_up_red_cross)
+	SignalBus.pick_up_world_item_scroll_note.connect(on_pick_up_scroll_note)
 	animation_tree.active = true
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
@@ -540,6 +541,11 @@ func on_pick_up_coin(coin: int, message: String) -> void:
 func on_pick_up_red_cross(health: float, message: String) -> void:
 	vitals.health.apply_by_percentage_on_max(health)
 	world_settings.save()
+	
+func on_pick_up_scroll_note(note_id: String, message: String) -> void:
+	if not GlobalData.game_settings.unlocked_notes.has(note_id):
+		GlobalData.game_settings.unlocked_notes[note_id] = true
+		GlobalData.game_settings.save()
 	
 static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, duration: float) -> Tween:
 	var tween := item.create_tween().set_parallel()
