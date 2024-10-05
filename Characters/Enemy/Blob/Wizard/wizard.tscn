@@ -260,6 +260,7 @@ tracks/5/keys = PackedFloat32Array(0, 1, 0, 3.54715e-10, -0.00264005, 0.999997, 
 [sub_resource type="Animation" id="Animation_s2muu"]
 resource_name = "Dance"
 length = 0.666667
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -398,6 +399,7 @@ tracks/5/keys = PackedFloat32Array(0, 1, 0, 3.54715e-10, -0.00264005, 0.999997, 
 [sub_resource type="Animation" id="Animation_ukhc1"]
 resource_name = "Idle"
 length = 2.0
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -535,6 +537,7 @@ tracks/5/keys = PackedFloat32Array(0, 1, 0.00881165, 0.0207974, 0.052963, 0.9983
 [sub_resource type="Animation" id="Animation_u24rl"]
 resource_name = "Walk"
 length = 0.433333
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -637,7 +640,7 @@ _data = {
 "Yes": SubResource("Animation_m0h3u")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ggn4t"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2l3fo"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -653,7 +656,7 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_huvwl"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rxpda"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
@@ -722,8 +725,10 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5wpp8"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d4khk"]
+xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4mx0o"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_38b45"]
 xfade_time = 0.25
@@ -773,20 +778,20 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_uhte2"]
 xfade_time = 0.1
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gg11e"]
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_166a1"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_ggn4t")
+states/attack/node = SubResource("AnimationNodeAnimation_2l3fo")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
 states/fall/node = SubResource("AnimationNodeAnimation_oll1a")
-states/fall/position = Vector2(540, 384)
+states/fall/position = Vector2(464, 403)
 states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
-states/land/position = Vector2(666, 175)
-states/on_hit/node = SubResource("AnimationNodeAnimation_huvwl")
+states/land/position = Vector2(618, 202)
+states/on_hit/node = SubResource("AnimationNodeAnimation_rxpda")
 states/on_hit/position = Vector2(464, 282)
 states/run/node = SubResource("AnimationNodeBlendTree_8uqqi")
 states/run/position = Vector2(283, 403)
@@ -838,7 +843,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, 1.65436e-24, -2.06795e-25, -1.65436e-24, 1, 0, 2.06795e-25, 0, 1, -1.65436e-24, 0.390075, -7.45058e-09)
 bones/3/enabled = true
 bones/3/position = Vector3(-1.65436e-24, 0.390075, -7.45058e-09)
-bones/3/rotation = Quaternion(4.52382e-36, 3.54715e-10, -0.00264005, 0.999997)
+bones/3/rotation = Quaternion(4.52368e-36, 3.54715e-10, -0.00264005, 0.999997)
 bones/3/scale = Vector3(1, 1, 1)
 
 [node name="Wizard_Blob" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
@@ -855,7 +860,7 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_fpw6s")]
-tree_root = SubResource("AnimationNodeStateMachine_gg11e")
+tree_root = SubResource("AnimationNodeStateMachine_166a1")
 
 [node name="HealthBar" parent="." instance=ExtResource("3_u3fmt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.00026, 0)

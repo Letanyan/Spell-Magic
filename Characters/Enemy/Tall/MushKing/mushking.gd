@@ -20,11 +20,6 @@ var water_flurry3 := GlobalData.magic_book.copy_spell("linear-flurry")
 
 var water_shower1 := GlobalData.magic_book.copy_spell("linear")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
-
-func _ready() -> void:
-	super._ready()
-	
-	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), percep(4,8), atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})

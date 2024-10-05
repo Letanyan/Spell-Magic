@@ -48,6 +48,11 @@ var buffer_branched_trees: EntityBuffer
 var buffer_pyramid_trees: EntityBuffer
 var buffer_christmas_trees: EntityBuffer
 var buffer_safari_trees: EntityBuffer
+var buffer_egg_rocks: EntityBuffer
+var buffer_flattop_rocks: EntityBuffer
+var buffer_overhang_rocks: EntityBuffer
+var buffer_squashed_rocks: EntityBuffer
+var buffer_tall_rocks: EntityBuffer
 
 var buffer_fish: EntityBuffer
 var buffer_bird: EntityBuffer
@@ -92,7 +97,7 @@ var buffer_key: EntityBuffer
 var buffer_health: EntityBuffer
 
 func _init() -> void:
-	var deinit_tree := func(node: Trees) -> void:
+	var deinit_foliage := func(node: Foliage) -> void:
 		node.position.y = -1000
 		var s: CollisionShape3D = node.get_node("./static/shape")
 		if s != null:
@@ -114,11 +119,16 @@ func _init() -> void:
 		node.position.y = -1000
 		node.is_active = false
 	
-	buffer_round_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_ROUND), deinit_tree, "round")
-	buffer_branched_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_BRANCHED), deinit_tree, "branched")
-	buffer_pyramid_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_PYRAMID), deinit_tree, "pyramid")
-	buffer_christmas_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_CHRISTMAS), deinit_tree, "christmas")
-	buffer_safari_trees = EntityBuffer.new(10, func() -> Trees: return Trees.make(World.Foliage.TREE_SAFARI), deinit_tree, "safari")
+	buffer_round_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_ROUND), deinit_foliage, "round")
+	buffer_branched_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_BRANCHED), deinit_foliage, "branched")
+	buffer_pyramid_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_PYRAMID), deinit_foliage, "pyramid")
+	buffer_christmas_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_CHRISTMAS), deinit_foliage, "christmas")
+	buffer_safari_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_SAFARI), deinit_foliage, "safari")
+	buffer_egg_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_EGG), deinit_foliage, "egg")
+	buffer_flattop_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_FLATTOP), deinit_foliage, "flattop")
+	buffer_overhang_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_OVERHANG), deinit_foliage, "overhang")
+	buffer_squashed_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_SQUASHED), deinit_foliage, "squashed")
+	buffer_tall_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_TALL), deinit_foliage, "tall")
 	
 	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "fish")
 	buffer_bird = EntityBuffer.new(10, func() -> Bird: return Enemy.make(World.Enemy.BIRD), deinit_enemy, "bird")
@@ -159,22 +169,32 @@ func _init() -> void:
 	buffer_spell = EntityBuffer.new(0, func() -> WorldItem: return SpellPaper.make(), deinit_world_item, "spell")
 	buffer_health = EntityBuffer.new(0, func() -> WorldItem: return RedCross.make(), deinit_world_item, "health_pack")
 
-func get_tree(kind: World.Foliage) -> Trees:
+func get_foliage(kind: World.Foliage) -> Foliage:
 	match kind:
 		World.Foliage.TREE_ROUND: return buffer_round_trees.get_entity()
 		World.Foliage.TREE_BRANCHED: return buffer_branched_trees.get_entity()
 		World.Foliage.TREE_PYRAMID: return buffer_pyramid_trees.get_entity()
 		World.Foliage.TREE_CHRISTMAS: return buffer_christmas_trees.get_entity()
 		World.Foliage.TREE_SAFARI: return buffer_safari_trees.get_entity()
+		World.Foliage.ROCK_EGG: return buffer_egg_rocks.get_entity()
+		World.Foliage.ROCK_FLATTOP: return buffer_flattop_rocks.get_entity()
+		World.Foliage.ROCK_OVERHANG: return buffer_overhang_rocks.get_entity()
+		World.Foliage.ROCK_SQUASHED: return buffer_squashed_rocks.get_entity()
+		World.Foliage.ROCK_TALL: return buffer_tall_rocks.get_entity()
 	return buffer_round_trees.get_entity()
 
-func free_tree(tree: Trees) -> void:
-	match tree.kind:
-		World.Foliage.TREE_ROUND: buffer_round_trees.free_entity(tree)
-		World.Foliage.TREE_BRANCHED: buffer_branched_trees.free_entity(tree)
-		World.Foliage.TREE_PYRAMID: buffer_pyramid_trees.free_entity(tree)
-		World.Foliage.TREE_CHRISTMAS: buffer_christmas_trees.free_entity(tree)
-		World.Foliage.TREE_SAFARI: buffer_safari_trees.free_entity(tree)
+func free_foliage(foliage: Foliage) -> void:
+	match foliage.kind:
+		World.Foliage.TREE_ROUND: buffer_round_trees.free_entity(foliage)
+		World.Foliage.TREE_BRANCHED: buffer_branched_trees.free_entity(foliage)
+		World.Foliage.TREE_PYRAMID: buffer_pyramid_trees.free_entity(foliage)
+		World.Foliage.TREE_CHRISTMAS: buffer_christmas_trees.free_entity(foliage)
+		World.Foliage.TREE_SAFARI: buffer_safari_trees.free_entity(foliage)
+		World.Foliage.ROCK_EGG: return buffer_egg_rocks.free_entity(foliage)
+		World.Foliage.ROCK_FLATTOP: return buffer_flattop_rocks.free_entity(foliage)
+		World.Foliage.ROCK_OVERHANG: return buffer_overhang_rocks.free_entity(foliage)
+		World.Foliage.ROCK_SQUASHED: return buffer_squashed_rocks.free_entity(foliage)
+		World.Foliage.ROCK_TALL: return buffer_tall_rocks.free_entity(foliage)
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
 	match kind:

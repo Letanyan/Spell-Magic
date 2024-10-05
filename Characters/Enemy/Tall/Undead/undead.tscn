@@ -1,8 +1,7 @@
-[gd_scene load_steps=29 format=4 uid="uid://dgustf1h6mv8g"]
+[gd_scene load_steps=28 format=4 uid="uid://dgustf1h6mv8g"]
 
 [ext_resource type="Script" path="res://Characters/Enemy/Tall/Undead/undead.gd" id="1_mdj1x"]
 [ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_4yxkg"]
-[ext_resource type="PackedScene" uid="uid://bll3cb50t55u6" path="res://Characters/Enemy/Animations/large_enemy_animation_tree.tscn" id="2_7waog"]
 [ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/Health Bar/health_bar.tscn" id="3_xxcli"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b1t8a"]
@@ -4915,9 +4914,6 @@ skin = SubResource("Skin_ie31s")
 libraries = {
 "": SubResource("AnimationLibrary_k58j6")
 }
-
-[node name="AnimationTree" parent="." instance=ExtResource("2_7waog")]
-active = false
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_78xe8")

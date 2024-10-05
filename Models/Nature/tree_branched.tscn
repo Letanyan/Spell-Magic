@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=4 uid="uid://b2j6k20r0f7b8"]
 
-[ext_resource type="Script" path="res://Worlds/Generator/Terrain/Trees/trees.gd" id="1_fx3fu"]
+[ext_resource type="Script" path="res://Worlds/Generator/Terrain/foliage.gd" id="1_fx3fu"]
 [ext_resource type="Material" uid="uid://bea4dl4060sxo" path="res://Models/Nature/Nature_Mat_01.tres" id="2_1y5ob"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_rqj6d"]
@@ -51,8 +51,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 shape = SubResource("CylinderShape3D_rqj6d")
 disabled = true
 
-[node name="RootNode" type="Node3D" parent="."]
+[node name="MeshNode" type="Node3D" parent="."]
 
-[node name="Tree_01_LOD0" type="MeshInstance3D" parent="RootNode"]
+[node name="mesh" type="MeshInstance3D" parent="MeshNode"]
 mesh = SubResource("ArrayMesh_vs05e")
 skeleton = NodePath("")

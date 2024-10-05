@@ -124,7 +124,7 @@ func _physics_process(delta: float) -> void:
 		
 	update_watched_enemies_positions(delta)
 	velocity_movement.update_player_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed)
-	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self)
+	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false)
 	emit_vitals_update()
 	
 	velocity = movement["velocity"]

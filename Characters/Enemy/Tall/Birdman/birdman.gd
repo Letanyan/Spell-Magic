@@ -20,12 +20,6 @@ var air_med_slow := GlobalData.magic_book.copy_spell("linear")
 var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 
 var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter")
-
-
-func _ready() -> void:
-	super._ready()
-	
-	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(10), percep(4,6), atk(17), def(8), {Artifact.Element.AIR: res(5, 2)})

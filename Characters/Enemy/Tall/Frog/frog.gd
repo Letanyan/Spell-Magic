@@ -14,12 +14,6 @@ var water_flurry3 := GlobalData.magic_book.copy_spell("linear-flurry")
 var water_attack1 := GlobalData.magic_book.copy_spell("linear")
 var water_attack2 := GlobalData.magic_book.copy_spell("linear")
 var water_attack3 := GlobalData.magic_book.copy_spell("linear")
-
-
-func _ready() -> void:
-	super._ready()
-	
-	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(8), percep(1,2), atk(7), def(6), {Artifact.Element.WATER: res(15, 5)})

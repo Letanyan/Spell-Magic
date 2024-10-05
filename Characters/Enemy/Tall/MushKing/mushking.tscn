@@ -4611,14 +4611,14 @@ bones/19/parent = 18
 bones/19/rest = Transform3D(0.975531, 0.206053, -0.0766944, -0.0828783, 0.667727, 0.739778, 0.203644, -0.71532, 0.668466, -1.04068e-07, 0.095403, 8.05117e-08)
 bones/19/enabled = true
 bones/19/position = Vector3(-1.04068e-07, 0.095403, 8.05117e-08)
-bones/19/rotation = Quaternion(-0.399793, -0.077024, -0.0793848, 0.909907)
+bones/19/rotation = Quaternion(-0.399793, -0.077024, -0.0793849, 0.909907)
 bones/19/scale = Vector3(1, 1, 1)
 bones/20/name = "Thumb1.L"
 bones/20/parent = 10
 bones/20/rest = Transform3D(-0.181474, 0.974513, 0.13188, -0.865008, -0.221978, 0.449986, 0.467792, -0.0324167, 0.883244, -5.62252e-08, 0.534054, 9.76635e-08)
 bones/20/enabled = true
 bones/20/position = Vector3(-5.62252e-08, 0.534054, 9.76635e-08)
-bones/20/rotation = Quaternion(-0.19828, -0.138068, -0.756091, 0.608233)
+bones/20/rotation = Quaternion(-0.19828, -0.138068, -0.756092, 0.608233)
 bones/20/scale = Vector3(1, 1, 1)
 bones/21/name = "Thumb2.L"
 bones/21/parent = 20
@@ -4723,7 +4723,7 @@ bones/35/parent = 34
 bones/35/rest = Transform3D(0.909936, 0.414749, 3.21306e-06, -0.414631, 0.909678, 0.0237961, 0.00986648, -0.0216543, 0.999717, -1.21237e-07, 0.279948, -1.57455e-07)
 bones/35/enabled = true
 bones/35/position = Vector3(-1.21237e-07, 0.279948, -1.57455e-07)
-bones/35/rotation = Quaternion(-0.0116282, -0.00252346, -0.212192, 0.977155)
+bones/35/rotation = Quaternion(-0.0116282, -0.00252346, -0.212192, 0.977156)
 bones/35/scale = Vector3(1, 1, 1)
 bones/36/name = "UpperLeg.L"
 bones/36/parent = 2
@@ -4737,7 +4737,7 @@ bones/37/parent = 36
 bones/37/rest = Transform3D(0.999783, -0.00802615, 0.0196139, 0.0210958, 0.465261, -0.884935, -0.00202286, 0.88519, 0.465304, -4.75002e-08, 0.422691, 7.13589e-09)
 bones/37/enabled = true
 bones/37/position = Vector3(-4.75002e-08, 0.422691, 7.13589e-09)
-bones/37/rotation = Quaternion(0.517019, 0.00631986, 0.00850617, 0.855909)
+bones/37/rotation = Quaternion(0.517019, 0.00631986, 0.00850616, 0.855909)
 bones/37/scale = Vector3(1.00001, 1.00005, 1)
 bones/38/name = "UpperLeg.R"
 bones/38/parent = 2
@@ -4789,7 +4789,6 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_vju4k")]
-active = false
 
 [node name="HealthBar" parent="." instance=ExtResource("3_ue8v4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05426, 0)

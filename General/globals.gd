@@ -15,6 +15,12 @@ static func behaviour_tick() -> float:
 static func knowledge_tick() -> float:
 	return 1.0
 	
+static func move_tick() -> float:
+	return 0.0166667
+	
+static func enemy_update_radius() -> float:
+	return 150.0
+	
 static func format_number_nearest_place(x: float, max_places: int = 2) -> String:
 	if float(floori(x)) == x:
 		return "%.0f" % x

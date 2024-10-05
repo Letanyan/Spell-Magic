@@ -2397,8 +2397,10 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7pbn2"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ss1gd"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m46nt"]
+xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pqaqk"]
 xfade_time = 0.1
@@ -2447,7 +2449,7 @@ xfade_time = 0.2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0trdp"]
 xfade_time = 0.25
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_nl4vp"]
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_vwuvu"]
 resource_local_to_scene = true
 states/End/position = Vector2(1115, 96)
 states/Start/position = Vector2(54, 49)
@@ -2456,7 +2458,7 @@ states/attack/position = Vector2(160, 284)
 states/death/node = SubResource("AnimationNodeAnimation_p73c5")
 states/death/position = Vector2(355, 36)
 states/fall/node = SubResource("AnimationNodeAnimation_55bvg")
-states/fall/position = Vector2(717, 324)
+states/fall/position = Vector2(535, 414)
 states/idle/node = SubResource("AnimationNodeAnimation_q788f")
 states/idle/position = Vector2(160, 143)
 states/land/node = SubResource("AnimationNodeAnimation_kb00o")
@@ -2681,7 +2683,7 @@ bones/27/parent = 26
 bones/27/rest = Transform3D(0.992776, -0.117685, 0.0233623, 0.106262, 0.952844, 0.284247, -0.0557122, -0.279711, 0.958466, -1.74709e-08, 0.288658, -1.1772e-07)
 bones/27/enabled = true
 bones/27/position = Vector3(-1.74709e-08, 0.288658, -1.1772e-07)
-bones/27/rotation = Quaternion(-0.142711, 0.02001, 0.0566703, 0.987938)
+bones/27/rotation = Quaternion(-0.142711, 0.02001, 0.0566704, 0.987938)
 bones/27/scale = Vector3(1, 1, 1)
 bones/28/name = "Middle3.R"
 bones/28/parent = 27
@@ -2758,7 +2760,7 @@ bones/38/parent = 1
 bones/38/rest = Transform3D(0.32891, -0.745534, -0.579652, 0.898191, 0.0573905, 0.435844, -0.29167, -0.663992, 0.688508, -0.381465, 0.547308, -0.219302)
 bones/38/enabled = true
 bones/38/position = Vector3(-0.381465, 0.547308, -0.219302)
-bones/38/rotation = Quaternion(-0.381776, -0.0999649, 0.570571, 0.72021)
+bones/38/rotation = Quaternion(-0.381776, -0.0999649, 0.570572, 0.72021)
 bones/38/scale = Vector3(1, 1, 1)
 bones/39/name = "Wing2.R"
 bones/39/parent = 38
@@ -2807,7 +2809,7 @@ bones/45/parent = 44
 bones/45/rest = Transform3D(-0.980025, -0.190132, -0.0583105, 0.0375709, 0.110917, -0.993119, 0.195292, -0.975473, -0.101558, 1.30658e-08, 0.396308, 9.0856e-08)
 bones/45/enabled = true
 bones/45/position = Vector3(1.30658e-08, 0.396308, 9.0856e-08)
-bones/45/rotation = Quaternion(-0.0515163, 0.740355, -0.664746, -0.0856354)
+bones/45/rotation = Quaternion(-0.0515163, 0.740355, -0.664746, -0.0856353)
 bones/45/scale = Vector3(1, 1, 1)
 
 [node name="Dragon" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
@@ -2820,8 +2822,7 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_2jvu2")]
-active = false
-tree_root = SubResource("AnimationNodeStateMachine_nl4vp")
+tree_root = SubResource("AnimationNodeStateMachine_vwuvu")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)

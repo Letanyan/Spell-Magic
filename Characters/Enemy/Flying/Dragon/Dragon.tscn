@@ -1010,8 +1010,10 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7pbn2"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ss1gd"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m46nt"]
+xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pqaqk"]
 xfade_time = 0.1
@@ -1060,7 +1062,7 @@ xfade_time = 0.2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0trdp"]
 xfade_time = 0.25
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_3jdp6"]
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ig13n"]
 resource_local_to_scene = true
 states/End/position = Vector2(1115, 96)
 states/Start/position = Vector2(54, 49)
@@ -1069,7 +1071,7 @@ states/attack/position = Vector2(160, 284)
 states/death/node = SubResource("AnimationNodeAnimation_p73c5")
 states/death/position = Vector2(355, 36)
 states/fall/node = SubResource("AnimationNodeAnimation_55bvg")
-states/fall/position = Vector2(717, 324)
+states/fall/position = Vector2(535, 414)
 states/idle/node = SubResource("AnimationNodeAnimation_q788f")
 states/idle/position = Vector2(160, 143)
 states/land/node = SubResource("AnimationNodeAnimation_kb00o")
@@ -1202,8 +1204,7 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_35b0v")]
-active = false
-tree_root = SubResource("AnimationNodeStateMachine_3jdp6")
+tree_root = SubResource("AnimationNodeStateMachine_ig13n")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)

@@ -1065,8 +1065,10 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7pbn2"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ss1gd"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m46nt"]
+xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pqaqk"]
 xfade_time = 0.1
@@ -1115,7 +1117,7 @@ xfade_time = 0.2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0trdp"]
 xfade_time = 0.25
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_kuo7j"]
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_o2o7y"]
 resource_local_to_scene = true
 states/End/position = Vector2(1115, 96)
 states/Start/position = Vector2(54, 49)
@@ -1124,7 +1126,7 @@ states/attack/position = Vector2(160, 284)
 states/death/node = SubResource("AnimationNodeAnimation_p73c5")
 states/death/position = Vector2(355, 36)
 states/fall/node = SubResource("AnimationNodeAnimation_55bvg")
-states/fall/position = Vector2(717, 324)
+states/fall/position = Vector2(535, 414)
 states/idle/node = SubResource("AnimationNodeAnimation_q788f")
 states/idle/position = Vector2(160, 143)
 states/land/node = SubResource("AnimationNodeAnimation_kb00o")
@@ -1216,7 +1218,7 @@ bones/8/parent = 1
 bones/8/rest = Transform3D(0.329902, -0.745396, -0.579267, 0.944011, 0.262439, 0.199926, 0.00299797, -0.61279, 0.79024, -0.381322, 0.558601, -0.174042)
 bones/8/enabled = true
 bones/8/position = Vector3(-0.381322, 0.558601, -0.174042)
-bones/8/rotation = Quaternion(-0.26326, -0.188611, 0.547243, 0.771781)
+bones/8/rotation = Quaternion(-0.26326, -0.188611, 0.547243, 0.77178)
 bones/8/scale = Vector3(1, 1, 1)
 bones/9/name = "Wing2.R"
 bones/9/parent = 8
@@ -1257,8 +1259,7 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_w5vmk")]
-active = false
-tree_root = SubResource("AnimationNodeStateMachine_kuo7j")
+tree_root = SubResource("AnimationNodeStateMachine_o2o7y")
 
 [node name="HealthBar" parent="." instance=ExtResource("3_o53bj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.41363, 0)

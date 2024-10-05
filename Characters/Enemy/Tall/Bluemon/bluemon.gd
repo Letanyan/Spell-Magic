@@ -15,12 +15,6 @@ var water_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
-
-
-func _ready() -> void:
-	super._ready()
-	
-	velocity_movement = VelocityMovement.new()
 	
 func setup(seedling: int) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})

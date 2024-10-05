@@ -57,7 +57,7 @@ func increment_ticks(delta: float) -> void:
 # result["target"] = target_velocity * delta
 # result["impulse"] = impulse
 # result["direction"] = direction
-func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody) -> Dictionary:
+func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
 		
@@ -166,22 +166,12 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	result["impulse"] = impulse
 	result["here"] = target_position
 	
-	if body.has_node("CamPivot"):
-		pass
-#		if direction != Vector3.ZERO:
-#			var pivot: Node3D = body.get_node("Pivot")
-#			pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(-direction.x, -direction.z), 0.3)
-#			var collision: Node3D = body.get_node("Collision")
-#			collision.rotation.y = pivot.rotation.y
-#			var wet_area: Node3D = body.get_node("WetArea")
-#			wet_area.rotation.y = pivot.rotation.y
-	else:
-		if navigation_velocity != Vector3.ZERO:
-			var goal_angle := atan2(-navigation_velocity.x, -navigation_velocity.z)
-			if is_zero_approx(navigation_velocity.x) and is_zero_approx(navigation_velocity.z):
-				body.rotation.y = lerp_angle(body.rotation.y, sin(navigation_velocity.y) * 2 * PI, 0.05)
-			else:
-				body.rotation.y = lerp_angle(body.rotation.y, goal_angle, 0.3)
+	if should_rotate_character and navigation_velocity != Vector3.ZERO and not body.has_node("CamPivot"):
+		var goal_angle := atan2(-navigation_velocity.x, -navigation_velocity.z)
+		if is_zero_approx(navigation_velocity.x) and is_zero_approx(navigation_velocity.z):
+			body.rotation.y = lerp_angle(body.rotation.y, sin(navigation_velocity.y) * 2 * PI, 0.05)
+		else:
+			body.rotation.y = lerp_angle(body.rotation.y, goal_angle, 0.3)
 		
 	return result
 

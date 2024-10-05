@@ -610,7 +610,7 @@ _data = {
 "Yes": SubResource("Animation_hi2e3")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dr5mh"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_84nij"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -626,7 +626,7 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v856w"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2l7b1"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
@@ -695,8 +695,10 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5wpp8"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d4khk"]
+xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4mx0o"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_38b45"]
 xfade_time = 0.25
@@ -746,20 +748,20 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_uhte2"]
 xfade_time = 0.1
 
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_kvshs"]
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_vdxr1"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_dr5mh")
+states/attack/node = SubResource("AnimationNodeAnimation_84nij")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
 states/fall/node = SubResource("AnimationNodeAnimation_oll1a")
-states/fall/position = Vector2(540, 384)
+states/fall/position = Vector2(464, 403)
 states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
-states/land/position = Vector2(666, 175)
-states/on_hit/node = SubResource("AnimationNodeAnimation_v856w")
+states/land/position = Vector2(618, 202)
+states/on_hit/node = SubResource("AnimationNodeAnimation_2l7b1")
 states/on_hit/position = Vector2(464, 282)
 states/run/node = SubResource("AnimationNodeBlendTree_8uqqi")
 states/run/position = Vector2(283, 403)
@@ -768,7 +770,7 @@ states/walk/position = Vector2(464, 100)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_iuxla"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_dopwh"), "on_hit", "idle", SubResource("AnimationNodeStateMachineTransition_50vu2"), "idle", "on_hit", SubResource("AnimationNodeStateMachineTransition_w52kw"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_0piw5"), "attack", "on_hit", SubResource("AnimationNodeStateMachineTransition_jvjse"), "on_hit", "attack", SubResource("AnimationNodeStateMachineTransition_px5ok"), "idle", "death", SubResource("AnimationNodeStateMachineTransition_1ryxj"), "attack", "death", SubResource("AnimationNodeStateMachineTransition_h506w"), "on_hit", "death", SubResource("AnimationNodeStateMachineTransition_utcge"), "on_hit", "fall", SubResource("AnimationNodeStateMachineTransition_yqwc1"), "attack", "fall", SubResource("AnimationNodeStateMachineTransition_x8o8c"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_5wpp8"), "land", "idle", SubResource("AnimationNodeStateMachineTransition_d4khk"), "fall", "land", SubResource("AnimationNodeStateMachineTransition_4mx0o"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_38b45"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_y2qgs"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_p85pn"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_7i3ke"), "run", "death", SubResource("AnimationNodeStateMachineTransition_7xcjq"), "run", "on_hit", SubResource("AnimationNodeStateMachineTransition_eo0v6"), "on_hit", "run", SubResource("AnimationNodeStateMachineTransition_5gnr2"), "walk", "death", SubResource("AnimationNodeStateMachineTransition_q2a8b"), "idle", "walk", SubResource("AnimationNodeStateMachineTransition_iobf0"), "walk", "idle", SubResource("AnimationNodeStateMachineTransition_tshpy"), "walk", "attack", SubResource("AnimationNodeStateMachineTransition_fv0pm"), "attack", "walk", SubResource("AnimationNodeStateMachineTransition_jgo3u"), "walk", "on_hit", SubResource("AnimationNodeStateMachineTransition_5q1o6"), "on_hit", "walk", SubResource("AnimationNodeStateMachineTransition_hpjum"), "walk", "run", SubResource("AnimationNodeStateMachineTransition_i6k5o"), "run", "walk", SubResource("AnimationNodeStateMachineTransition_uhte2")]
 graph_offset = Vector2(-152, 37)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_cni0j"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_1jao0"]
 size = Vector3(3, 2.6, 3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x3mcy"]
@@ -809,7 +811,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, 1.65436e-24, -2.06795e-25, -1.65436e-24, 1, 0, 2.06795e-25, 0, 1, -1.65436e-24, 0.390075, -7.45058e-09)
 bones/3/enabled = true
 bones/3/position = Vector3(-1.65436e-24, 0.390075, -7.45058e-09)
-bones/3/rotation = Quaternion(4.52382e-36, 3.54715e-10, -0.00264005, 0.999997)
+bones/3/rotation = Quaternion(4.52368e-36, 3.54715e-10, -0.00264005, 0.999997)
 bones/3/scale = Vector3(1, 1, 1)
 
 [node name="Birb_Blob" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
@@ -822,14 +824,13 @@ libraries = {
 }
 
 [node name="AnimationTree" parent="." instance=ExtResource("2_spn4s")]
-active = false
-tree_root = SubResource("AnimationNodeStateMachine_kvshs")
+tree_root = SubResource("AnimationNodeStateMachine_vdxr1")
 
 [node name="HealthBar" parent="." instance=ExtResource("3_3n1yn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.76, 0)
 
 [node name="Collision" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_cni0j")
+shape = SubResource("BoxShape3D_1jao0")
 
 [node name="WetArea" type="Area3D" parent="."]
 collision_layer = 36

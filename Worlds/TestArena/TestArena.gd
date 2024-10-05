@@ -74,7 +74,7 @@ func setup(_settings: WorldSettings) -> void:
 	const pX = 100
 	const pY = 100
 	const LVL = 1
-	var undead := Population.generate_enemy(World.Enemy.UNDEAD, player, pX / 1.0, 1000, pY / 1.0)
+	var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0)
 	undead.level = LVL
 	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
@@ -114,9 +114,9 @@ func setup(_settings: WorldSettings) -> void:
 	#var fishman3 := Population.generate_enemy(World.Enemy.FISHMAN, player, pX, 1000, pY)
 	#fishman3.level = 50
 	#add_enemy(fishman3)
-	var dragon := Population.generate_enemy(World.Enemy.DRAGON, player, -pX, 1000, -pY)
-	dragon.level = LVL
-	add_enemy(dragon)
+	#var dragon := Population.generate_enemy(World.Enemy.DRAGON, player, -pX, 1000, -pY)
+	#dragon.level = LVL
+	#add_enemy(dragon)
 	#var dragoon := Population.generate_enemy(World.Enemy.DRAGOON, player, pX, 1000, -pY)
 	#add_enemy(dragoon)
 	#var ghost := Population.generate_enemy(World.Enemy.GHOST, player, -pX, 1000, pY)
@@ -129,16 +129,16 @@ func setup(_settings: WorldSettings) -> void:
 	#add_enemy(mushroom)
 	#var bird := Population.generate_enemy(World.Enemy.BIRD, player, -pX, 1000, pY)
 	#add_enemy(bird)
-	var hot_blob := Population.generate_enemy(World.Enemy.HOT_BLOB, player, pX, 1000, -pY)
-	hot_blob.level = LVL
-	add_enemy(hot_blob)
+	#var hot_blob := Population.generate_enemy(World.Enemy.HOT_BLOB, player, pX, 1000, -pY)
+	#hot_blob.level = LVL
+	#add_enemy(hot_blob)
 	#var bluemon := Population.generate_enemy(World.Enemy.BLUEMON, player, -pX, 1000, -pY)
 	#add_enemy(bluemon)
 	#var frog := Population.generate_enemy(World.Enemy.FROG, player, pX, 1000, -pY)
 	#add_enemy(frog)
-	var mushking := Population.generate_enemy(World.Enemy.MUSHKING, player, -pX, 1000, pY)
-	mushking.level = LVL
-	add_enemy(mushking)
+	#var mushking := Population.generate_enemy(World.Enemy.MUSHKING, player, -pX, 1000, pY)
+	#mushking.level = LVL
+	#add_enemy(mushking)
 	#var rabbit := Population.generate_enemy(World.Enemy.RABBIT, player, pX, 1000, pY)
 	#add_enemy(rabbit)
 	#var batty := Population.generate_enemy(World.Enemy.BATTY, player, -pX, 1000, -pY)

@@ -81,6 +81,13 @@ func on_flat_surface(distance: float) -> Callable:
 	return func(normal: Dictionary) -> Dictionary:
 		return {"valid": (normal.get("normal", Vector3.ZERO) as Vector3).angle_to(Vector3.UP) < distance, "y_offset": distance * -2}
 	
+func set_world_ground(state: PhysicsDirectSpaceState3D, pos: Vector2) -> Vector3:
+	var result := Vector3(pos.x, 0, pos.y)
+	var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
+	var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
+	result.y = wh
+	return result
+	
 func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable = always_valid) -> Node3D:
 	if entity != null:
 		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
@@ -90,8 +97,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
 			else:
-				if entity is Trees:
-					entity_manager.free_tree(entity as Trees)
+				if entity is Foliage:
+					entity_manager.free_foliage(entity as Foliage)
 				elif entity is Buildings:
 					entity_manager.free_building(entity as Buildings)
 				elif entity is WorldItem:
@@ -113,9 +120,9 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			else:
 				inhabitants[inhabitants.size()] = entity
 		else:
-			if entity is Trees:
-				(entity as Trees).setup(rng)
-				entity.name = World.Foliage.keys()[(entity as Trees).kind] + " " + str(rng.randi())
+			if entity is Foliage:
+				(entity as Foliage).setup(rng)
+				entity.name = World.Foliage.keys()[(entity as Foliage).kind] + " " + str(rng.randi())
 				garden.append(entity)
 			elif entity is Buildings:
 				(entity as Buildings).setup(rng)
@@ -209,8 +216,9 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: 
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
 	match foliage:
-		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI:
-			result = entity_manager.get_tree(foliage) as Trees
+		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI, \
+		World.Foliage.ROCK_EGG, World.Foliage.ROCK_FLATTOP, World.Foliage.ROCK_OVERHANG, World.Foliage.ROCK_SQUASHED, World.Foliage.ROCK_TALL:
+			result = entity_manager.get_foliage(foliage) as Foliage
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
 	return prepare_entity(state, result, pos, false, user_info)
@@ -314,8 +322,8 @@ func despawn_all_from_world(world: Node3D) -> void:
 		habitant.spell_caster.free_particles()
 		entity_manager.free_enemy(habitant)
 	for f in garden:
-		if f is Trees:
-			entity_manager.free_tree(f as Trees)
+		if f is Foliage:
+			entity_manager.free_foliage(f as Foliage)
 		elif f is Buildings:
 			entity_manager.free_building(f as Buildings)
 	for item in world_items:
