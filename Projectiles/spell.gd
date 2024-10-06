@@ -333,7 +333,7 @@ func calculate_cooldown() -> float:
 	elemental_application = clampf(elemental_application, 0.0, 1.0)
 		
 	if chain_cast_kind == ChainCastKind.HIT:
-		cooldown = basic_cost * chain_cost - mana_cost
+		cooldown = (basic_cost if element != Element.VOID else maxf(1.0, count * 0.98)) * chain_cost - mana_cost
 	else:
 		cooldown = basic_cost + chain_cost - mana_cost
 	if cooldown < 0.0:

@@ -49,15 +49,22 @@ func setup(rng: RandomNumberGenerator) -> void:
 	var s := rng.randf_range(2, 5)
 	(get_node("MeshNode") as Node3D).scale = Vector3(s, s, s)
 	var r := rng.randf_range(0, 2 * PI)
-	(get_node("MeshNode") as Node3D).rotate(Vector3.UP, r)
+	(get_node("MeshNode") as Node3D).rotation.y = r
 	
 	var box := get_node("./static/shape") as CollisionShape3D
 	if box.shape is CylinderShape3D:
 		(box.shape as CylinderShape3D).height = base_size[kind].y * s
-		(box.shape as CylinderShape3D).radius = base_size[kind].x * s
-		box.position.y = (base_size[kind].y * s) / 4.0
+		(box.shape as CylinderShape3D).radius = base_size[kind].x * s / 2.0
+		box.position.y = base_position[kind].y * s
+		box.rotation.y = r
 	elif box.shape is BoxShape3D:
 		(box.shape as BoxShape3D).size = base_size[kind] * s
 		box.position.y = base_position[kind].y * s
+		box.rotation.y = r
+	elif box.shape is CapsuleShape3D:
+		(box.shape as CapsuleShape3D).height = base_size[kind].y * s
+		(box.shape as CapsuleShape3D).radius = base_size[kind].x * s / 2.0
+		box.position.y = base_position[kind].y * s
+		box.rotation.y = r
 		
 				

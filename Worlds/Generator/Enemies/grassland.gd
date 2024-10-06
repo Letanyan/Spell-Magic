@@ -68,12 +68,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 				var spawner := ItemSpawner.artifact_spawner(rng, pop, pop.set_world_ground(state, pos), art)
 				for i in bee_count:
-					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
 					if p != null:
 						result.append(p)
 						spawner.nodes_to_be_cleared[p] = true
 				for i in bumble_count:
-					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
 					if p != null:
 						result.append(p)
 						spawner.nodes_to_be_cleared[p] = true
@@ -81,45 +81,42 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 			GRASSLAND_STRUCTURES_KIND.SLIMY:
 				index += 1
 				var pos := area[index]
-				
 				for i in rng.randi_range(5, 15):
-					var rock := pop.spawn_foliage(World.Foliage.ROCK_EGG, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0), spacing)
+					var rock := pop.spawn_foliage(World.Foliage.ROCK_EGG, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
 					if rock != null:
 						result.append(rock)
 				
 				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 2: 0.8}) as int
 				var spike_count := rng.randi_range(1, r)
 				for si in spike_count:
-					var spike_pos := pos + Globals.rand_point_in_circle_2d(spacing / 2.0)
+					var spike_pos := pos + Globals.rand_point_in_circle_2d(spacing / 2.0, rng)
 					var p := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, state, spike_pos, spacing)
 					if p != null:
 						result.append(p)
 						for ssi in rng.randi_range(2,3):
-							var q := pop.spawn_enemy(World.Enemy.SNOT_BLOB, state, spike_pos + Globals.rand_point_in_circle_2d(spacing), spacing)
+							var q := pop.spawn_enemy(World.Enemy.SNOT_BLOB, state, spike_pos + Globals.rand_point_in_circle_2d(spacing, rng), spacing)
 							if q != null:
 								result.append(q)
 								
 			GRASSLAND_STRUCTURES_KIND.FLOCK:
 				index += 1
 				var pos := area[index]
-				
 				var r := Population.random_entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
-				
-				for a in r * 2:
-					var angle := (PI * 2) * (float(a) / (r * 2))
-					var p := pos + Vector2(r * 5, 0).rotated(angle)
+				const circle_points = 3
+				for a in r * circle_points:
+					var angle := (PI * 2) * (float(a) / float(r * circle_points))
+					var p := pos + Vector2(r * 8, 0).rotated(angle)
 					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_PYRAMID: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
 					if entity != null:
 						result.append(entity)
 					
-				
 				var mini_count := rng.randi_range(1, r)
 				var boss := pop.spawn_enemy(World.Enemy.BIRDMAN, state, pos, spacing)
 				if boss != null:
 					result.append(boss)
 				for i in mini_count:
-					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(spacing * 4), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
 					if p != null:
 						result.append(p)
 						 

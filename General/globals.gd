@@ -36,19 +36,34 @@ static func invf(v: float) -> float:
 	else:
 		return 1.0 / v
 		
-static func rand_v3_abs(x: float, y: float, z: float) -> Vector3:
-	return Vector3(x * randf(), y * randf(), z * randf())
+static func rand_v3_abs(x: float, y: float, z: float, rng: RandomNumberGenerator = null) -> Vector3:
+	if rng == null:
+		return Vector3(x * randf(), y * randf(), z * randf())
+	else:
+		return Vector3(x * rng.randf(), y * rng.randf(), z * rng.randf())
 	
-static func rand_point_in_circle(r: float, h: float) -> Vector3:
-	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
+static func rand_point_in_circle(r: float, h: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	if rng == null:
+		p = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
+	else:
+		p = Vector3(rng.randf() * 2.0 - 1.0, 0, rng.randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
 	return p 
 	
-static func rand_point_in_circle_2d(r: float) -> Vector2:
-	var p : Vector2 = Vector2(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
+static func rand_point_in_circle_2d(r: float, rng: RandomNumberGenerator = null) -> Vector2:
+	var p: Vector2
+	if rng == null:
+		p = Vector2(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
+	else:
+		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
 	return p
 	
-static func rand_point_in_sphere(r: float) -> Vector3:
-	var p : Vector3 = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
+static func rand_point_in_sphere(r: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	if rng == null:
+		p = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
+	else:
+		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
 	return p 
 	
 static func project_point_onto_sphere(point: Vector3, radius: float, center: Vector3 = Vector3.ZERO) -> Vector3:
@@ -56,7 +71,7 @@ static func project_point_onto_sphere(point: Vector3, radius: float, center: Vec
 	var Q := radius / P.length() * P
 	return Q + center
 
-static func form_arc_in_circle(s: Vector3, e: Vector3, h: float) -> PathStyle.Segment:
+static func form_arc_in_circle(s: Vector3, e: Vector3, h: float, rng: RandomNumberGenerator = null) -> PathStyle.Segment:
 	var a := s.x
 	var b := s.z
 	var c := e.x
@@ -65,10 +80,10 @@ static func form_arc_in_circle(s: Vector3, e: Vector3, h: float) -> PathStyle.Se
 	var p := Vector3(0.5*(c+a) + sqrt(3.0)/2.0 * (d-b), h, 0.5*(d+b) - sqrt(3.0)/2.0 * (c-a))
 	var q := Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), h, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
 	var m: Vector3
-	if randf() < 0.5:
-		m = p
+	if rng == null:
+		m = p if randf() < 0.5 else q
 	else:
-		m = q
+		m = p if rng.randf() < 0.5 else q
 		
 	return PathStyle.Segment.quad(s, e, m)
 

@@ -3,9 +3,10 @@
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/foliage.gd" id="1_4rkbx"]
 [ext_resource type="Material" uid="uid://bea4dl4060sxo" path="res://Models/Nature/Nature_Mat_01.tres" id="1_ja37t"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_xtj57"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_d26sv"]
 resource_local_to_scene = true
-size = Vector3(3, 2, 2.2)
+radius = 1.2
+height = 3.2
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_dw8vf"]
 _surfaces = [{
@@ -48,8 +49,8 @@ script = ExtResource("1_4rkbx")
 collision_layer = 512
 
 [node name="shape" type="CollisionShape3D" parent="static"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.889, 0.079)
-shape = SubResource("BoxShape3D_xtj57")
+transform = Transform3D(0.214735, -0.976672, 0, 0.976672, 0.214735, 0, 0, 0, 1, 0.07, 0.691429, 0.079)
+shape = SubResource("CapsuleShape3D_d26sv")
 
 [node name="MeshNode" type="Node3D" parent="."]
 
