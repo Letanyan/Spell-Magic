@@ -56,7 +56,7 @@ func _ready() -> void:
 	player_rotation_direction = (randf() * 2 - 1) * PI / 16
 		
 	blender = NoiseBlender.new(settings.sed)
-	chunker = Terrain.new(blender, 256, 2, 0.0625, 16)
+	chunker = Terrain.new(blender, 256, 128, 2, 0.0625, 16)
 	#chunker.ignore_physics = true
 	build_terrain()
 	

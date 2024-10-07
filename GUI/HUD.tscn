@@ -227,10 +227,15 @@ shortcut_keys_enabled = false
 
 [node name="StatsView" parent="." instance=ExtResource("3_3d5vo")]
 layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 0.0
 offset_left = 8.0
-offset_top = 344.0
-offset_right = -872.0
+offset_top = -304.0
+offset_right = 280.0
 offset_bottom = -7.0
+grow_horizontal = 1
+grow_vertical = 0
 
 [node name="SpellCooldownTimer" type="Timer" parent="."]
 autostart = true

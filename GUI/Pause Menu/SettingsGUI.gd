@@ -27,6 +27,9 @@ extends Control
 @onready var taa_check: CheckButton = $Tabs/Graphics/TAA/Check
 @onready var fps_options: OptionButton = $Tabs/Graphics/FPS/Options
 @onready var vsync_options: OptionButton = $Tabs/Graphics/VSYNC/Options
+@onready var grass_size_slider: HSlider = $"Tabs/Graphics/Grass Size/Slider"
+@onready var grass_size_value: Label = $"Tabs/Graphics/Grass Size/Value"
+
 
 @onready var master_slider: HSlider = $Tabs/Sound/Master/Slider
 @onready var master_value: Label = $Tabs/Sound/Master/Value
@@ -90,6 +93,8 @@ func update_controls() -> void:
 	msaa_options.selected = world_settings.graphics_settings.msaa
 	ssaa_options.selected = world_settings.graphics_settings.ssaa
 	taa_check.button_pressed = world_settings.graphics_settings.taa
+	grass_size_slider.value = world_settings.graphics_settings.grass_size * 100
+	grass_size_value.text = "%.0f%%" % [world_settings.graphics_settings.grass_size * 100]
 	
 	for i in range(fps_options.item_count):
 		if fps_options.get_item_text(i) == "Max" and world_settings.graphics_settings.max_fps == 0:
@@ -221,7 +226,14 @@ func _on_max_fps_options_item_selected(index: int) -> void:
 func _on_vsync_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_vsync(index == 0)
 	settings_changed.emit(world_settings)
+	
+func _on_grass_size_slider_value_changed(value: float) -> void:
+	grass_size_value.text = "%.0f%%" % [value]	
 
+func _on_grass_size_slider_drag_ended(value_changed: bool) -> void:
+	if value_changed:
+		world_settings.graphics_settings.grass_size = grass_size_slider.value / 100.0
+		settings_changed.emit(world_settings)
 
 func _on_master_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_master(value)
@@ -251,7 +263,6 @@ func update_info() -> void:
 		
 	var hour := floori(world_settings.time_of_day)
 	var time := "%d:%d" % [hour, clampi(int(world_settings.time_of_day - hour) * 60, 0, 59)]
-	print(world_settings.player_keys)
 	info_label.text = """
 [center]
 [b]World Name:[/b] %s

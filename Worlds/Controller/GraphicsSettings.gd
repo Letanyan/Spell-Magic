@@ -15,6 +15,8 @@ var ssaa: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
 var max_fps: int = 60
 var vsync: bool = true
 
+var grass_size: float = 1.0
+
 var viewport: Viewport
 
 func _init(vp: Viewport, should_update: bool = false) -> void:
@@ -38,6 +40,7 @@ func save_dict() -> Dictionary:
 		"scaling_mode": scaling_mode, "scaling": scaling, "sharpness": sharpness,
 		"display_style": display_style, "display_size": display_size,
 		"msaa": msaa, "taa": taa, "ssaa": ssaa, "max_fps": max_fps, "vsync": vsync,
+		"grass_size": grass_size,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -52,6 +55,7 @@ func load_dict(dict: Dictionary) -> void:
 		update_ssaa(dict.get("ssaa", Viewport.SCREEN_SPACE_AA_DISABLED) as Viewport.ScreenSpaceAA)
 	update_max_fps(dict.get("max_fps", 60) as int)
 	update_vsync(dict.get("vsync", true) as bool)
+	grass_size = dict.get("grass_size", 1.0) as float
 
 func update_sharpness(s: float) -> void:
 	sharpness = s
