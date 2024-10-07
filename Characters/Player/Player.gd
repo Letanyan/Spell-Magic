@@ -27,7 +27,7 @@ var keys: int
 
 var enemies_in_range: Dictionary = {} # [Enemy]bool
 var enemies_normalised_separations: Dictionary = {} # [Enemy]Vector3
-var projectile_indicators: Dictionary = {} # [SpellBody]MeshInstance
+var projectile_indicators: Dictionary = {} # [Node3D]MeshInstance
 var max_watched_enemies_distance := 0.0
 var indicator_update_tick := 0.0
 const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
@@ -147,11 +147,12 @@ func _physics_process(delta: float) -> void:
 					left_right = -(1.0 - absf((direction_angle + PI / 2) / (PI / 2)))
 				if direction_angle > 0.0:
 					left_right = 1.0 - absf((direction_angle - PI / 2) / (PI / 2))
+					
 				if enemies_in_range.is_empty():
 					play_animation("run", {
 						"parameters/run/Backward/blend_amount": 0, 
-						"parameters/run/Forward/blend_amount": 1, 
-						"parameters/run/Movement/blend_amount": 0.0,
+						"parameters/run/Forward/blend_amount": 0, 
+						"parameters/run/Movement/blend_amount": 1,
 						"parameters/run/Speed/scale": velocity_movement.player_movement_speed_animation_scale()
 					})
 				else:
@@ -197,7 +198,8 @@ func _physics_process(delta: float) -> void:
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
 	max_watched_enemies_distance = lerp(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate)
-	cam_arm.spring_length = 1.0 + minf(max_watched_enemies_distance / 5.0, 10.0)
+	var spring_extension := minf(max_watched_enemies_distance / 5.0, 10.0)
+	cam_arm.spring_length = 1.0 + spring_extension
 	
 	if shake_intensity > 0.0:
 		var intensity := clampf(shake_intensity, 0, 1) ** 2
@@ -215,7 +217,7 @@ func _physics_process(delta: float) -> void:
 				
 	spell_caster.update(self, delta)
 	
-	update_projectile_indicators(world_settings.hud_settings.projectile_indicator_size)
+	update_projectile_indicators(1.0 + (spring_extension / 10.0) * 2.0)
 	
 	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
@@ -567,45 +569,48 @@ static func create_tween_for_world_item_pick_up(item: Node3D, target: Vector3, d
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)
 
-func update_projectile(pivot: Node3D, pi_size: float, spell: SpellBody) -> bool:
-	if not spell.is_inside_tree():
+func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color) -> bool:
+	if not body.is_inside_tree():
 		return false
-	if cam.is_position_in_frustum(spell.global_position):
+	if cam.is_position_in_frustum(body.global_position):
 		return false
 		
-	if projectile_indicators.has(spell):
-		var mi := projectile_indicators[spell] as Node3D
+	if projectile_indicators.has(body):
+		var mi := projectile_indicators[body] as Node3D
 		mi.scale = Vector3(pi_size, pi_size, pi_size)
-		if spell.position != mi.position:
-			if not Vector3.UP.cross(spell.position - mi.global_position).is_zero_approx():
-				mi.look_at(spell.position)
+		if body.position != mi.position:
+			if not Vector3.UP.cross(body.position - mi.global_position).is_zero_approx():
+				mi.look_at(body.position)
 	else:
 		var mi := projectile_indicator.instantiate() as ProjectileIndicator
 		mi.position = Vector3(0, 2, 0)
 		mi.scale = Vector3(pi_size, pi_size, pi_size)
-		projectile_indicators[spell] = mi
+		projectile_indicators[body] = mi
 		pivot.add_child(mi)
 		var mat := mi.mesh_instance.mesh.surface_get_material(0) as ShaderMaterial
-		mat.set_shader_parameter("albedo", Spell.color_from_element(spell.spell.element))
+		mat.set_shader_parameter("albedo", color)
 		
 	return true
 	
 
-func update_projectile_indicators(pi_size: float) -> void:
+func update_projectile_indicators(pi_scale: float) -> void:
 	var pivot := $Pivot as Node3D
 	var updated_spell_bodies := {} # [SpellBody]bool
+	var pi_size := world_settings.hud_settings.projectile_indicator_size * pi_scale
 	if pi_size > 0:
 		for enemy: Enemy in enemies_in_range:
+			var enemy_dist := clampf(1.0 - enemy.position.distance_to(position) / 20.0, 0.0, 1.0)
+			updated_spell_bodies[enemy] = update_projectile(pivot, pi_size * (1.0 + enemy_dist * enemy_dist), enemy, Color.BLACK)
 			for spell: SpellBody in enemy.spell_caster.particles:
 				var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
-				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell)
+				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
 		for spell: SpellBody in spell_caster.particles:
 			var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
-			updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell)
+			updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
 		
 	# FIXME: use spellbody after free 
-	for spell: SpellBody in projectile_indicators:
-		if not updated_spell_bodies.get(spell, false) as bool:
-			var mi := projectile_indicators[spell] as Node3D
+	for body: Node3D in projectile_indicators:
+		if not updated_spell_bodies.get(body, false) as bool:
+			var mi := projectile_indicators[body] as Node3D
 			pivot.remove_child(mi)
-			projectile_indicators.erase(spell)
+			projectile_indicators.erase(body)
