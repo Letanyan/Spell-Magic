@@ -120,10 +120,8 @@ func _gui_input(_event: InputEvent) -> void:
 						double_click_timer[event.button_index] = true
 					if event.button_index == MOUSE_BUTTON_LEFT:
 						if m_pos == selected_cell_coord:
-							pass
-							# uncomment to support deselect cell by clicking cell
-							#selected_cell_coord = null
-							#on_cell_unselected.emit(m_pos)
+							selected_cell_coord = null
+							on_cell_unselected.emit(m_pos)
 						else:
 							var old_pos: Vector2
 							if selected_cell_coord != null:

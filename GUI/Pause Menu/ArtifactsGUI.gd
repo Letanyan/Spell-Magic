@@ -117,21 +117,20 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 
 func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		attempt_remove_artifact(coord)
-	elif mouse_button_index == MOUSE_BUTTON_LEFT:
-		var should_reset := true
-		if temporary_grid_tile.artifact != null and not artifact_grid.highlighted_cells.is_empty():
-			var possible_moves := artifacts.highlight_all_available_cells_for_placement(temporary_grid_tile.artifact)
-			for move in possible_moves:
-				if move == coord:
-					should_reset = false
-					
-		if should_reset:
-			temporary_grid_tile.artifact = null
+		if not attempt_remove_artifact(coord):
+			if temporary_grid_tile.artifact != null:
+				temporary_grid_tile.artifact = null
+				artifact_preview.artifact = null
+				artifacts_list.deselect(artifacts_list.get_selected_items()[0])
+			else:
+				artifact_grid.selected_cell_coord = null
 			update_temporary_grid_tile()
 			update_list_and_grid()
-			update_selected_artifact()
-			highlight_all_available_cells_for_placement()
+	elif mouse_button_index == MOUSE_BUTTON_LEFT:
+		if not artifacts_list.get_selected_items().is_empty():
+			var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
+			temporary_grid_tile.artifact = artifact
+			attempt_place_artifact(artifact, coord, false)
 			
 func _on_artifact_grid_on_cell_selected(coord: Vector2, old_coord: Vector2) -> void:
 	update_list_and_grid()
@@ -215,6 +214,11 @@ func attempt_remove_artifact(coord: Vector2) -> bool:
 
 func _on_artifacts_list_item_selected(index: int) -> void:
 	update_selected_artifact()
+	
+func _on_artifact_grid_on_cell_unselected(coord: Vector2) -> void:
+	artifact_grid.selected_cell_coord = null
+	temporary_grid_tile.artifact = null
+	update_list_and_grid()
 
 func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey:
@@ -227,6 +231,8 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 				temporary_grid_tile.artifact = artifact
 				if artifact_grid.selected_cell_coord != null:
 					attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
+					artifact_grid.selected_cell_coord = null
+					update_list_and_grid()
 				elif not artifact_grid.highlighted_cells.is_empty():
 					artifact_grid.selected_cell_coord = artifact_grid.highlighted_cells[0]
 					update_temporary_grid_tile()
@@ -306,11 +312,6 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 				update_temporary_grid_tile()
 				artifact_grid.center_grid_on_cell(possible_moves[best_index])
 				artifact_grid.accept_event()
-	elif event is InputEventMouseButton:
-		if not ((event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT and not artifact_grid.highlighted_cells.is_empty()):
-			temporary_grid_tile.artifact = null
-			update_list()
-			update_temporary_grid_tile()
 			
 
 func attempt_delete_artifact() -> void:

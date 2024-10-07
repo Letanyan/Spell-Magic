@@ -20,19 +20,6 @@ grow_vertical = 2
 focus_neighbor_bottom = NodePath("artifacts_list")
 script = ExtResource("1_lsxrb")
 
-[node name="artifacts_list" type="ItemList" parent="."]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 96.0
-offset_right = 184.0
-offset_bottom = -232.0
-grow_vertical = 2
-focus_neighbor_top = NodePath("../Left")
-focus_neighbor_right = NodePath("../artifact_grid")
-focus_neighbor_bottom = NodePath("../Destroy")
-
 [node name="artifact_grid" type="Container" parent="."]
 clip_contents = true
 layout_mode = 1
@@ -80,6 +67,19 @@ grow_vertical = 0
 focus_neighbor_top = NodePath("../artifacts_list")
 focus_neighbor_right = NodePath("../artifact_grid")
 text = "Destroy"
+
+[node name="artifacts_list" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 96.0
+offset_right = 184.0
+offset_bottom = -232.0
+grow_vertical = 2
+focus_neighbor_top = NodePath("../Left")
+focus_neighbor_right = NodePath("../artifact_grid")
+focus_neighbor_bottom = NodePath("../Destroy")
 
 [node name="Top" type="MenuButton" parent="."]
 layout_mode = 0
@@ -180,10 +180,11 @@ popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
 
-[connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
-[connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
-[connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
 [connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
 [connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]
+[connection signal="on_cell_unselected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_unselected"]
 [connection signal="pressed" from="Destroy" to="." method="_on_destroy_pressed"]
+[connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
+[connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
+[connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
