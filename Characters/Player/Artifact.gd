@@ -41,12 +41,13 @@ class Option:
 	static func empty() -> Option:
 		return Option.new(Effect.NONE, Event.NONE, Element.ANY, 0, Pattern.CIRCLE)
 		
-	# tier between 1-10
+	# tier between [1,10]
 	static func make_event(ev: Event, el: Element, tier: int, pt: Pattern) -> Option:
 		return Option.new(Effect.NONE, ev, el, event_amount_at_tier(absi(tier), ev, el), pt)
 		
+	# tier between [1,10] and [-1,-10]
 	static func make_effect(ef: Effect, el: Element, tier: int, pt: Pattern) -> Option:
-		return Option.new(ef, Event.NONE, el, effect_amount_at_tier(absi(tier), ef, el) * signi(tier), pt)
+		return Option.new(ef, Event.NONE, el, effect_amount_at_tier(tier, ef, el), pt)
 		
 	static func make_random(
 		is_ef: float = 0.5, 
@@ -77,10 +78,11 @@ class Option:
 		if not flip: # is event
 			am = event_amount_at_tier(absi(tier), ev, el)
 		else:
-			am = effect_amount_at_tier(absi(tier), ef, el) * signi(tier)
+			am = effect_amount_at_tier(tier, ef, el)
 		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
 	
+	# tier between [1,10]
 	static func event_amount_at_tier(tier: int, ev: Event, el: Element) -> int:
 		match ev:
 			Event.NONE: return 0
@@ -90,43 +92,46 @@ class Option:
 						return roundi(tier * (tier + 1.0) / 2.0)
 		return 0
 		
+	# tier between [1,10] and [-1,-10]
 	static func effect_amount_at_tier(tier: int, ef: Effect, el: Element) -> int:
+		var mult := signi(tier)
+		tier = absi(tier)
 		match ef:
 			Effect.NONE: return 0
 			Effect.BOOST_PERCENTAGE, Effect.RESISTANCE_PERCENTAGE:
-				return tier * tier
+				return tier * tier * mult
 			Effect.BOOST_FLAT, Effect.RESISTANCE_FLAT:
 				match el:
 					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE: 
-						return tier * tier
+						return tier * tier * mult
 					Element.HEALTH: 
-						return tier * tier * tier
+						return tier * tier * tier * mult
 					Element.MANA: 
-						return tier * tier * tier
+						return tier * tier * tier * mult
 					Element.ATTACK: 
-						return tier * tier
+						return tier * tier * mult
 					Element.DEFENCE: 
-						return tier * tier
+						return tier * tier * mult
 					Element.CRIT_RATE:
-						return roundi(tier * tier / 4.0)
+						return roundi(tier * tier / 4.0) * mult
 					Element.CRIT_DMG:
-						return tier * tier
+						return tier * tier * mult
 					Element.SPELL_VELOCITY:
-						return tier * tier
+						return tier * tier * mult
 					Element.DURATION:
-						return roundi(tier * tier / 4.0)
+						return roundi(tier * tier / 4.0) * mult
 					Element.RUNNING_SPEED:
-						return tier
+						return tier * mult
 					Element.SPELL_RADIUS:
-						return roundi(tier * tier / 20.0)
+						return roundi(tier * tier / 20.0) * mult
 					Element.COUNT:
-						return roundi(tier * tier / 4.0)
+						return roundi(tier * tier / 4.0) * mult
 					Element.POWER:
-						return tier * tier
+						return tier * tier * mult
 					Element.HEALTH_BUMP:
-						return tier * tier * tier
+						return tier * tier * tier * mult
 					Element.MANA_BUMP:
-						return tier * tier * tier
+						return tier * tier * tier * mult
 		return 0
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:

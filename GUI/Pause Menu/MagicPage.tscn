@@ -495,7 +495,7 @@ focus_neighbor_top = NodePath("../chain_combo")
 focus_neighbor_bottom = NodePath("../Duplicate")
 focus_next = NodePath("../Duplicate")
 focus_previous = NodePath("../mana_edit")
-placeholder_text = "Constants
+placeholder_text = "Variables
 Examples:
 speed=5
 angle=sin(pi)*n"

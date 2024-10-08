@@ -21,14 +21,15 @@ static func move_tick() -> float:
 static func enemy_update_radius() -> float:
 	return 150.0
 	
-static func format_number_nearest_place(x: float, max_places: int = 2) -> String:
+static func format_number_nearest_place(x: float, max_places: int = 2, show_sign: bool = false) -> String:
+	var s := "+" if show_sign else ""
 	if float(floori(x)) == x:
-		return "%.0f" % x
+		return ("%%%s.0f" % s) % x
 	else:
 		var i := 0
 		while snappedf(x, 0.1 ** i) != x and i < max_places:
 			i += 1
-		return ("%%.%df" % i) % x
+		return ("%%.%s%df" % [s, i]) % x
 
 static func invf(v: float) -> float:
 	if is_zero_approx(v):

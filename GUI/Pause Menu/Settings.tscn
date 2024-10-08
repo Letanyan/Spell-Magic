@@ -617,16 +617,17 @@ grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
 
-[node name="SettingsLabel" type="Label" parent="Tabs/Notes"]
+[node name="ShowNotesLabel" type="Label" parent="Tabs/Notes"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -288.0
+offset_left = -392.0
 offset_top = -1.0
-offset_right = -168.0
+offset_right = -344.0
 offset_bottom = 55.0
-text = "Unlock Settings: "
+grow_horizontal = 0
+text = "Show:"
 vertical_alignment = 1
 
 [node name="Heading" type="RichTextLabel" parent="Tabs/Notes"]
@@ -638,22 +639,44 @@ offset_bottom = 54.0
 bbcode_enabled = true
 text = "[font_size=40][b]Notes[/b][/font_size]"
 
-[node name="Options" type="OptionButton" parent="Tabs/Notes"]
+[node name="ShowNotes" type="OptionButton" parent="Tabs/Notes"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -168.0
+offset_left = -344.0
 offset_top = 15.0
-offset_right = -16.0
+offset_right = -192.0
 offset_bottom = 40.0
+grow_horizontal = 0
 selected = 0
 item_count = 3
-popup/item_0/text = "Unlocked in Game"
-popup/item_1/text = "Show All"
+popup/item_0/text = "Found in Game"
+popup/item_1/text = "All"
 popup/item_1/id = 1
-popup/item_2/text = "Hide All"
+popup/item_2/text = "None"
 popup/item_2/id = 2
+
+[node name="SortNotesLabel" type="Label" parent="Tabs/Notes"]
+layout_mode = 0
+offset_left = 952.0
+offset_top = -1.0
+offset_right = 992.0
+offset_bottom = 55.0
+text = "Sort: "
+vertical_alignment = 1
+
+[node name="SortNotes" type="OptionButton" parent="Tabs/Notes"]
+layout_mode = 0
+offset_left = 992.0
+offset_top = 15.0
+offset_right = 1116.0
+offset_bottom = 40.0
+selected = 0
+item_count = 2
+popup/item_0/text = "Chronological"
+popup/item_1/text = "Alphabetical"
+popup/item_1/id = 1
 
 [node name="Game" type="Panel" parent="Tabs"]
 visible = false
@@ -743,7 +766,8 @@ bbcode_enabled = true
 [connection signal="value_changed" from="Tabs/Sound/Music/Slider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/SFX/Slider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="focus_exited" from="Tabs/Tools/user_functions" to="." method="_on_user_functions_focus_exited"]
-[connection signal="item_selected" from="Tabs/Notes/Options" to="." method="_on_notes_unlock_options_item_selected"]
+[connection signal="item_selected" from="Tabs/Notes/ShowNotes" to="." method="_on_show_notes_item_selected"]
+[connection signal="item_selected" from="Tabs/Notes/SortNotes" to="." method="_on_sort_notes_item_selected"]
 [connection signal="pressed" from="Tabs/Game/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Tabs/Game/Main Menu" to="." method="_on_main_menu_pressed"]
 [connection signal="pressed" from="Tabs/Game/Exit Game" to="." method="_on_exit_game_pressed"]

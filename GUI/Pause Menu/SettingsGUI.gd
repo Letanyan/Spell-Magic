@@ -43,7 +43,8 @@ extends Control
 @onready var user_functions: TextEdit = $Tabs/Tools/user_functions
 
 @onready var note_content: RichTextLabel = $Tabs/Notes/Content
-@onready var note_options: OptionButton = $Tabs/Notes/Options
+@onready var show_notes: OptionButton = $Tabs/Notes/ShowNotes
+@onready var sort_notes: OptionButton = $Tabs/Notes/SortNotes
 
 
 var world_settings: WorldSettings:
@@ -112,7 +113,8 @@ func update_controls() -> void:
 	
 	user_functions.text = GlobalData.game_settings.user_functions_text
 	
-	note_options.selected = GlobalData.game_settings.notes_unlock_settings
+	show_notes.selected = GlobalData.game_settings.notes_unlock_settings
+	sort_notes.selected = GlobalData.game_settings.notes_sort_settings
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -307,10 +309,14 @@ func update_notes() -> void:
 			return note.replace("spell", "[color=#0F7]spell[/color]")
 		elif note.begins_with("artifact"):
 			return note.replace("artifact", "[color=#F07]artifact[/color]")
+		elif note.begins_with("wand"):
+			return note.replace("wand", "[color=#70F]wand[/color]")
+		elif note.begins_with("upgrades"):
+			return note.replace("upgrades", "[color=#07F]upgrades[/color]")
 		return note
 		
 	var regex_tag_t := RegEx.new()
-	regex_tag_t.compile(r"\[t\](.+?)\[\/t\]")
+	regex_tag_t.compile(r"\{(.+?)\}")
 	var tag_t := func(note: String) -> String:
 		var m := regex_tag_t.search(note)
 		while m != null and m.get_start() > -1:
@@ -321,21 +327,30 @@ func update_notes() -> void:
 			m = regex_tag_t.search(note)
 		return note
 			
+	var notes_keys := GlobalData.game_settings.notes.keys() if GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.SHOW_ALL else GlobalData.game_settings.unlocked_notes.keys()
 	
-	for note: String in (GlobalData.game_settings.notes if GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.SHOW_ALL else GlobalData.game_settings.unlocked_notes):
+	if GlobalData.game_settings.notes_sort_settings == GameSettings.NotesSortSettings.ALPHABETICAL:
+		notes_keys.sort_custom(func(a: String, b: String) -> bool: return a < b)
+	
+	for note: String in notes_keys:
 		content += "[font_size=16][b][u]" + highlight.call(note) + "[/u][/b][/font_size]\n"
 		content += tag_t.call(GlobalData.game_settings.notes[note]) + "\n\n"
 	
 	note_content.text = content
 
-func _on_notes_unlock_options_item_selected(index: int) -> void:
+func _on_show_notes_item_selected(index: int) -> void:
 	GlobalData.game_settings.notes_unlock_settings = index as GameSettings.NotesUnlockSettings
 	update_notes()
+	GlobalData.game_settings.save()
+	
+func _on_sort_notes_item_selected(index: int) -> void:
+	GlobalData.game_settings.notes_sort_settings = index as GameSettings.NotesSortSettings
+	update_notes()
+	GlobalData.game_settings.save()
 
 func hide_game_tab(should_hide: bool) -> void:
 	var tab_container := $Tabs as TabContainer
 	tab_container.set_tab_hidden(tab_container.get_tab_count() - 1, should_hide)
-	#tab_container.current_tab = 0 if should_hide else tab_container.get_tab_count() - 1
 
 func _on_save_pressed() -> void:
 	save_game.emit()
@@ -357,4 +372,5 @@ func _on_tabs_tab_selected(tab: int) -> void:
 
 func _on_user_functions_focus_exited() -> void:
 	GlobalData.game_settings.build_user_functions(user_functions.text)
+	print("save functions")
 	GlobalData.game_settings.save()

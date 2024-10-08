@@ -319,36 +319,37 @@ func update_settings(settings: WorldSettings) -> void:
 	update_stats_view()
 	update_wand_mappings()
 
+
 func update_stats_view() -> void:
 	if not stats_view.visible or world_settings == null:
 		return
 	
 	var ws := world_settings.upgrade_settings
 	var sv := stats_view
-	sv.health.text = "%d+%d" % [ws.max_health(), ws.buff_health]
-	sv.velocity.text = "%.1f+%.1f" % [ws.max_v(), ws.buff_v]
-	sv.mana.text = "%d+%d" % [ws.max_mana(), ws.buff_mana]
-	sv.attack.text = "%d+%d" % [ws.max_attack(), ws.buff_attack]
-	sv.defence.text = "%d+%d" % [ws.max_defence(), ws.buff_defence]
-	sv.crit_rate.text = "%s+%%%s" % [Globals.format_number_nearest_place(player.buff_crit_rate.x), Globals.format_number_nearest_place(player.buff_crit_rate.y)]
-	sv.crit_dmg.text = "%s+%%%s" % [Globals.format_number_nearest_place(player.buff_crit_dmg.x), Globals.format_number_nearest_place(player.buff_crit_dmg.y)]
-	sv.r.text = "%.1f+%.1f" % [ws.max_r(), ws.buff_r]
-	sv.T.text = "%d+%d" % [ws.max_T(), ws.buff_T]
-	sv.N.text = "%d+%d" % [ws.max_N(), ws.buff_N]
-	sv.P.text = "%d+%d" % [ws.max_P(), ws.buff_P]
-	sv.S.text = "%.1f+%.1f" % [ws.max_running_speed(), ws.buff_running_speed]
+	sv.health.text = "%d%+d" % [ws.max_health(), ws.buff_health]
+	sv.velocity.text = "%s%s" % [Globals.format_number_nearest_place(ws.max_v(), 1), Globals.format_number_nearest_place(ws.buff_v, 1, true)]
+	sv.mana.text = "%d%+d" % [ws.max_mana(), ws.buff_mana]
+	sv.attack.text = "%d%+d" % [ws.max_attack(), ws.buff_attack]
+	sv.defence.text = "%d%+d" % [ws.max_defence(), ws.buff_defence]
+	sv.crit_rate.text = "%s%%%s" % [Globals.format_number_nearest_place(player.buff_crit_rate.x, 1), Globals.format_number_nearest_place(player.buff_crit_rate.y, 1, true)]
+	sv.crit_dmg.text = "%s%s" % [Globals.format_number_nearest_place(player.buff_crit_dmg.x, 1), Globals.format_number_nearest_place(player.buff_crit_dmg.y, 1, true)]
+	sv.r.text = "%s%s" % [Globals.format_number_nearest_place(ws.max_r(), 1), Globals.format_number_nearest_place(ws.buff_r, 1, true)]
+	sv.T.text = "%d%+d" % [ws.max_T(), ws.buff_T]
+	sv.N.text = "%d%+d" % [ws.max_N(), ws.buff_N]
+	sv.P.text = "%d%+d" % [ws.max_P(), ws.buff_P]
+	sv.S.text = "%s%s" % [ws.max_running_speed(), ws.buff_running_speed]
 	
 	var v: Vector2 = Vector2.ZERO
-	sv.fireDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]
-	sv.fireRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.FIRE, v).y, player.damage_resistance.get(Spell.Element.FIRE, v).x]
-	sv.waterDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.WATER, v).y, player.spell_modifier.get(Spell.Element.WATER, v).x]
-	sv.waterRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.WATER, v).y, player.damage_resistance.get(Spell.Element.WATER, v).x]
-	sv.rockDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.ROCK, v).y, player.spell_modifier.get(Spell.Element.ROCK, v).x]
-	sv.rockRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.ROCK, v).y, player.damage_resistance.get(Spell.Element.ROCK, v).x]
-	sv.airDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.AIR, v).y, player.spell_modifier.get(Spell.Element.AIR, v).x]
-	sv.airRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.AIR, v).y, player.damage_resistance.get(Spell.Element.AIR, v).x]
-	sv.iceDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.ICE, v).y, player.spell_modifier.get(Spell.Element.ICE, v).x]
-	sv.iceRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.ICE, v).y, player.damage_resistance.get(Spell.Element.ICE, v).x]
-	sv.electricDMG.text = "%d%%+%d" % [player.spell_modifier.get(Spell.Element.ELECTRIC, v).y, player.spell_modifier.get(Spell.Element.ELECTRIC, v).x]
-	sv.electricRES.text = "%d%%+%d" % [player.damage_resistance.get(Spell.Element.ELECTRIC, v).y, player.damage_resistance.get(Spell.Element.ELECTRIC, v).x]
+	sv.fireDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]
+	sv.fireRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.FIRE, v).y, player.damage_resistance.get(Spell.Element.FIRE, v).x]
+	sv.waterDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.WATER, v).y, player.spell_modifier.get(Spell.Element.WATER, v).x]
+	sv.waterRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.WATER, v).y, player.damage_resistance.get(Spell.Element.WATER, v).x]
+	sv.rockDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.ROCK, v).y, player.spell_modifier.get(Spell.Element.ROCK, v).x]
+	sv.rockRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ROCK, v).y, player.damage_resistance.get(Spell.Element.ROCK, v).x]
+	sv.airDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.AIR, v).y, player.spell_modifier.get(Spell.Element.AIR, v).x]
+	sv.airRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.AIR, v).y, player.damage_resistance.get(Spell.Element.AIR, v).x]
+	sv.iceDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.ICE, v).y, player.spell_modifier.get(Spell.Element.ICE, v).x]
+	sv.iceRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ICE, v).y, player.damage_resistance.get(Spell.Element.ICE, v).x]
+	sv.electricDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.ELECTRIC, v).y, player.spell_modifier.get(Spell.Element.ELECTRIC, v).x]
+	sv.electricRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ELECTRIC, v).y, player.damage_resistance.get(Spell.Element.ELECTRIC, v).x]
 	
