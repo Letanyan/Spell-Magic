@@ -43,6 +43,7 @@ extends Control
 @onready var user_functions: TextEdit = $Tabs/Tools/user_functions
 
 @onready var note_content: RichTextLabel = $Tabs/Notes/Content
+@onready var note_options: OptionButton = $Tabs/Notes/Options
 
 
 var world_settings: WorldSettings:
@@ -110,6 +111,8 @@ func update_controls() -> void:
 	sfx_slider.value = world_settings.audio_settings.sfx
 	
 	user_functions.text = GlobalData.game_settings.user_functions_text
+	
+	note_options.selected = GlobalData.game_settings.notes_unlock_settings
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
@@ -286,7 +289,14 @@ func update_info() -> void:
 ]
 
 func update_notes() -> void:
-	var content := "[font_size=40][b]Notes[/b][/font_size]\n\n"
+	if note_content == null:
+		return
+	
+	var content := ""
+	
+	if GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.HIDE_ALL:
+		note_content.text = "[center]\n\n Notes are hidden. Change the unlock settings if you want to enable notes.[/center]"
+		return
 	
 	var highlight := func(note: String) -> String:
 		if note.begins_with("func"):
@@ -312,15 +322,20 @@ func update_notes() -> void:
 		return note
 			
 	
-	for note: String in GlobalData.game_settings.notes:
+	for note: String in (GlobalData.game_settings.notes if GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.SHOW_ALL else GlobalData.game_settings.unlocked_notes):
 		content += "[font_size=16][b][u]" + highlight.call(note) + "[/u][/b][/font_size]\n"
 		content += tag_t.call(GlobalData.game_settings.notes[note]) + "\n\n"
 	
 	note_content.text = content
 
+func _on_notes_unlock_options_item_selected(index: int) -> void:
+	GlobalData.game_settings.notes_unlock_settings = index as GameSettings.NotesUnlockSettings
+	update_notes()
 
 func hide_game_tab(should_hide: bool) -> void:
-	($Tabs as TabContainer).set_tab_hidden(4, should_hide)
+	var tab_container := $Tabs as TabContainer
+	tab_container.set_tab_hidden(tab_container.get_tab_count() - 1, should_hide)
+	#tab_container.current_tab = 0 if should_hide else tab_container.get_tab_count() - 1
 
 func _on_save_pressed() -> void:
 	save_game.emit()
@@ -334,9 +349,10 @@ func _on_exit_game_pressed() -> void:
 	exit_game.emit()
 
 func _on_tabs_tab_selected(tab: int) -> void:
-	if tab == 4:
+	var tab_container := $Tabs as TabContainer
+	if tab_container.get_current_tab_control().name == "Game":
 		update_info()
-	if tab == 6:
+	if tab_container.get_current_tab_control().name == "Notes":
 		update_notes()
 
 func _on_user_functions_focus_exited() -> void:

@@ -1,12 +1,14 @@
 class_name GameSettings
 
 enum ReadyState { NOT, IN, IS }
+enum NotesUnlockSettings { IN_GAME, SHOW_ALL, HIDE_ALL }
 
 var last_world: String
 var default_world_settings: WorldSettings
 var user_functions: Dictionary
 var user_functions_text: String
 var unlocked_notes: Dictionary
+var notes_unlock_settings: NotesUnlockSettings
 
 func save() -> void:
 	var file := FileAccess.open("user://settings.json", FileAccess.WRITE)
@@ -14,7 +16,7 @@ func save() -> void:
 	file.store_var({
 		"last_world": last_world, "user_functions_text": user_functions_text,
 		"default_world_settings": default_world_settings.save_dict(),
-		"unlocked_notes": unlocked_notes,
+		"unlocked_notes": unlocked_notes, "notes_unlock_settings": notes_unlock_settings,
 	})
 
 func read() -> void:
@@ -30,6 +32,7 @@ func read() -> void:
 	default_world_settings.load_dict(data.get("default_world_settings", {}) as Dictionary)
 	
 	unlocked_notes = data.get("unlocked_notes", {}) as Dictionary
+	notes_unlock_settings = data.get("notes_unlock_settings", NotesUnlockSettings.IN_GAME) as NotesUnlockSettings
 	
 	build_user_functions(data.get("user_functions_text", "") as String)
 	

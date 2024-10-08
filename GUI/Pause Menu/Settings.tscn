@@ -572,10 +572,93 @@ offset_right = 432.0
 offset_bottom = 21.0
 text = "100%"
 
-[node name="Game" type="Panel" parent="Tabs"]
+[node name="Tools" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 4
+
+[node name="user_functions" type="TextEdit" parent="Tabs/Tools"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.075
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 5.775
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+placeholder_text = "function_name    argument argument argument  ... = expression"
+
+[node name="Label" type="Label" parent="Tabs/Tools"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 13.0
+offset_right = 123.0
+offset_bottom = 34.0
+text = "User Functions"
+
+[node name="Notes" type="Panel" parent="Tabs"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="Content" type="RichTextLabel" parent="Tabs/Notes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 55.0
+offset_right = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+
+[node name="SettingsLabel" type="Label" parent="Tabs/Notes"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -288.0
+offset_top = -1.0
+offset_right = -168.0
+offset_bottom = 55.0
+text = "Unlock Settings: "
+vertical_alignment = 1
+
+[node name="Heading" type="RichTextLabel" parent="Tabs/Notes"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = -1.0
+offset_right = 368.0
+offset_bottom = 54.0
+bbcode_enabled = true
+text = "[font_size=40][b]Notes[/b][/font_size]"
+
+[node name="Options" type="OptionButton" parent="Tabs/Notes"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -168.0
+offset_top = 15.0
+offset_right = -16.0
+offset_bottom = 40.0
+selected = 0
+item_count = 3
+popup/item_0/text = "Unlocked in Game"
+popup/item_1/text = "Show All"
+popup/item_1/id = 1
+popup/item_2/text = "Hide All"
+popup/item_2/id = 2
+
+[node name="Game" type="Panel" parent="Tabs"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6
 
 [node name="Save" type="Button" parent="Tabs/Game"]
 layout_mode = 1
@@ -631,52 +714,6 @@ offset_right = -256.408
 offset_bottom = -150.0
 bbcode_enabled = true
 
-[node name="Tools" type="Panel" parent="Tabs"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 5
-
-[node name="user_functions" type="TextEdit" parent="Tabs/Tools"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.075
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 5.775
-offset_right = -8.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 18
-placeholder_text = "function_name    argument argument argument  ... = expression"
-
-[node name="Label" type="Label" parent="Tabs/Tools"]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 13.0
-offset_right = 123.0
-offset_bottom = 34.0
-text = "User Functions"
-
-[node name="Notes" type="Panel" parent="Tabs"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 6
-
-[node name="Content" type="RichTextLabel" parent="Tabs/Notes"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -1.0
-offset_right = -16.0
-grow_horizontal = 2
-grow_vertical = 2
-bbcode_enabled = true
-text = "[font_size=40][b]Notes[/b][/font_size]"
-
 [connection signal="tab_selected" from="Tabs" to="." method="_on_tabs_tab_selected"]
 [connection signal="toggled" from="Tabs/HUD/HideWandMappings" to="." method="_on_hide_wand_mappings_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideWandModifierHints" to="." method="_on_hide_wand_modifier_hints_toggled"]
@@ -705,7 +742,8 @@ text = "[font_size=40][b]Notes[/b][/font_size]"
 [connection signal="value_changed" from="Tabs/Sound/Master/Slider" to="." method="_on_master_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/Music/Slider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/SFX/Slider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="focus_exited" from="Tabs/Tools/user_functions" to="." method="_on_user_functions_focus_exited"]
+[connection signal="item_selected" from="Tabs/Notes/Options" to="." method="_on_notes_unlock_options_item_selected"]
 [connection signal="pressed" from="Tabs/Game/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Tabs/Game/Main Menu" to="." method="_on_main_menu_pressed"]
 [connection signal="pressed" from="Tabs/Game/Exit Game" to="." method="_on_exit_game_pressed"]
-[connection signal="focus_exited" from="Tabs/Tools/user_functions" to="." method="_on_user_functions_focus_exited"]
