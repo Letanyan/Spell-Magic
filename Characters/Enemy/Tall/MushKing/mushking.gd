@@ -92,6 +92,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.MUSHKING
+	super.setup(seedling)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

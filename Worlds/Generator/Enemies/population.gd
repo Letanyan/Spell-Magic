@@ -111,6 +111,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			(entity as Enemy).player = player
 			(entity as Enemy).index_in_population = inhabitants.size()
 			(entity as Enemy).is_dead = false
+			# unfortunately the order of setup enemy must come before name generation as we must maintain
+			# the rng state across generations.
 			(entity as Enemy).setup(rng.randi())
 			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
 			var is_marked := entity_name_is_marked(entity.name) # has this enemy already been killed
@@ -135,6 +137,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
+	#return null
 	var result: Enemy = null
 	var pos := Vector3(p.x, 0, p.y)
 	match enemy:

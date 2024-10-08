@@ -75,6 +75,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.WALKER_HEAD
+	super.setup(seedling)
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)

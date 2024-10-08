@@ -87,6 +87,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.FUNGI
+	super.setup(seedling)
 	
 
 func attack_state() -> AttackPatterns:

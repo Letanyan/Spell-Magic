@@ -57,6 +57,7 @@ func _ready() -> void:
 		#(get_node("Collision") as CollisionShape3D).disabled = true
 		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
 	setup(0)
+	health_bar.visible = not is_idle
 	
 static func make(_kind: World.Enemy) -> Enemy:
 	var result: Enemy
@@ -121,7 +122,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 	return result
 	
 func setup(seedling: int) -> void:
-	pass
+	update_behaviour()
 	
 func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
 	var p := clampf(Vector2(x, y).length() / 10000.0, 0.0, 100.0)
@@ -327,10 +328,11 @@ func update_behaviour() -> void:
 						
 	if is_idle:
 		player.ignore_enemy(self)
-		health_bar.visible = false
 	else:
 		player.watch_enemy(self)
-		health_bar.visible = true
+		
+	if health_bar != null:
+		health_bar.visible = not is_idle
 		
 
 func handle_damage() -> void:

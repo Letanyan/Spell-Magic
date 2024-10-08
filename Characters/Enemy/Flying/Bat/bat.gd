@@ -73,6 +73,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.BAT
+	super.setup(seedling)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

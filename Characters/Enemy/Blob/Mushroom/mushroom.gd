@@ -56,6 +56,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.MUSHROOM
+	super.setup(seedling)
 	
 
 func attack_state() -> AttackPatterns:
