@@ -28,7 +28,7 @@ func setup() -> void:
 	spell.text = ", ".join(store_spell)
 	_on_spell_text_changed(", ".join(store_spell))
 	cast_combo.selected = store_action
-	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.RAPID_SELECT
+	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.FIRE_PICKED_RAPID
 	if store_key.size() > 1:
 		cast_combo.set_item_disabled(8, true)
 	else:
@@ -38,7 +38,7 @@ func _on_cast_combo_selected(id: int) -> void:
 	if id > -1:
 		action_changed.call(get_node(".") as WandCaseShelfItem, store_action as Wand.Kind, id as Wand.Kind)
 		spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, true)
-		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.RAPID_SELECT and id != Wand.Kind.FIRE_PICKED_HOLD
+		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text: String) -> void:
 	var updated_text: String = autocomplete.call(old_text, spell, true)

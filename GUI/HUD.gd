@@ -18,6 +18,8 @@ var notifications: Dictionary = {} # [String(Message)]int(seconds until expirati
 
 @onready var stats_view: StatsView = $StatsView
 
+@onready var selection_wheel: SelectionWheel = $SelectionWheel
+
 var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
@@ -49,9 +51,11 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_scroll_note.connect(func(c: String, m: String) -> void: show_notification(bbcode_new_item(m), 5))
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:
+		wand.selection_wheel = null
 		wand.spell_disallowed.disconnect(spell_was_disallowed)
 		wand.action_updated.disconnect(update_wand_mappings)
 		wand.spell_updated.disconnect(update_wand_mappings)
@@ -59,6 +63,7 @@ func set_wand(value: Wand) -> void:
 		wand.key_up.disconnect(update_wand_mappings)
 		wand.key_down.disconnect(update_wand_mappings)
 	wand = value
+	wand.selection_wheel = selection_wheel
 	wand.spell_disallowed.connect(spell_was_disallowed)
 	wand.action_updated.connect(update_wand_mappings)
 	wand.spell_updated.connect(update_wand_mappings)
@@ -222,6 +227,33 @@ func update_wand_mappings() -> void:
 			modifier_keys += GlobalData.controller.key_images([m]) + " "
 		rich_text += " Modifiers: " + modifier_keys + "\n"
 		
+	var color_spell := func(spell: String) -> String:
+		var reason := book.can_use_spell_with_name(spell)
+		if reason == MagicBook.DisallowSpellReason.NONE:
+			var s := book.find_spell(spell)
+			if player.vitals.mana.value < s.actual_mana_cost():
+				reason = MagicBook.DisallowSpellReason.MANA
+		match reason:
+			MagicBook.DisallowSpellReason.NONE:
+				return spell
+			MagicBook.DisallowSpellReason.COOLDOWN:
+				return "[color=#F05]" + spell + "[/color]"
+			MagicBook.DisallowSpellReason.MANA:
+				return "[color=#A0A]" + spell + "[/color]"
+			MagicBook.DisallowSpellReason.ACTIVE:
+				return "[color=#777]" + spell + "[/color]"
+			MagicBook.DisallowSpellReason.COUNT:
+				return "[color=#F700FF]" + spell + "[/color]"
+			MagicBook.DisallowSpellReason.POWER:
+				return "[color=#0008FF]" + spell + "[/color]"
+			MagicBook.DisallowSpellReason.DURATION:
+				return "[color=#00FF08]" + spell + "[/color]"
+			MagicBook.DisallowSpellReason.RADIUS:
+				return "[color=#7700FF]" + spell + "[/color]"
+			_:
+				return "[color=#F50]" + spell + "[/color]"
+		
+		
 	var build_desc := func(kd: String, title: String, spell: String) -> String:
 		var reason := book.can_use_spell_with_name(spell)
 		if reason == MagicBook.DisallowSpellReason.NONE:
@@ -230,23 +262,23 @@ func update_wand_mappings() -> void:
 				reason = MagicBook.DisallowSpellReason.MANA
 		match reason:
 			MagicBook.DisallowSpellReason.NONE:
-				return kd + " [b]" + title +  "[/b]: " + spell + "\n"
+				return kd + " [b]" + title +  "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.COOLDOWN:
-				return kd + " [b]" + title + "[/b]: [color=#F05]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.MANA:
-				return kd + " [b]" + title + "[/b]: [color=#A0A]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.ACTIVE:
-				return kd + " [b]" + title + "[/b]: [color=#222]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.COUNT:
-				return kd + " [b]" + title + "[/b]: [color=#F700FF]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.POWER:
-				return kd + " [b]" + title + "[/b]: [color=#0008FF]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.DURATION:
-				return kd + " [b]" + title + "[/b]: [color=#00FF08]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.RADIUS:
-				return kd + " [b]" + title + "[/b]: [color=#7700FF]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			_:
-				return kd + " [b]" + title + "[/b]: [color=#F50]" + spell + "[/color]\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 		
 	for k: PackedStringArray in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
@@ -264,16 +296,16 @@ func update_wand_mappings() -> void:
 				
 			Wand.Kind.PICK:
 				if not s.spell.is_empty(): 
-					rich_text += kd + " [b]Choose[/b]: " + s.display_rotated_spells_list(book) + "\n"
+					rich_text += kd + " [b]Choose[/b]: " + s.display_rotated_spells_list(color_spell) + "\n"
 			Wand.Kind.FIRE_PICKED:
 				if not wand.picked.is_empty():
-					rich_text += build_desc.call(kd, "Cast", "[i]" + wand.picked + "[/i]")
+					rich_text += build_desc.call(kd, "[i]Cast[/i]", wand.picked)
 			Wand.Kind.FIRE_PICKED_HOLD:
 				if not wand.picked.is_empty():
-					rich_text += build_desc.call(kd, "Charge", "[i]" + wand.picked + "[/i]")
-			Wand.Kind.RAPID_SELECT:
+					rich_text += build_desc.call(kd, "[i]Charge[/i]", wand.picked)
+			Wand.Kind.FIRE_PICKED_RAPID:
 				if not wand.picked.is_empty():
-					rich_text += build_desc.call(kd, "Rapid", "[i]" + wand.picked + "[/i]")
+					rich_text += build_desc.call(kd, "[i]Rapid[/i]", wand.picked)
 	
 	rich_text += "[/font_size]"
 	wand_mapping.text = ""
@@ -352,4 +384,14 @@ func update_stats_view() -> void:
 	sv.iceRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ICE, v).y, player.damage_resistance.get(Spell.Element.ICE, v).x]
 	sv.electricDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.ELECTRIC, v).y, player.spell_modifier.get(Spell.Element.ELECTRIC, v).x]
 	sv.electricRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ELECTRIC, v).y, player.damage_resistance.get(Spell.Element.ELECTRIC, v).x]
+	
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("menu"):
+		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			
+		
+	
 	

@@ -1,6 +1,6 @@
 class_name Wand
 
-enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, RAPID_SELECT, MOD  }
+enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD  }
 
 class Option:
 	var kind: Kind
@@ -35,7 +35,7 @@ class Option:
 			spell_index = 0
 		return spell[spell_index]
 		
-	func display_rotated_spells_list(book: MagicBook = null) -> String:
+	func display_rotated_spells_list(color_spell: Callable) -> String:
 		if spell.size() == 0:
 			return ""
 		var result := ""
@@ -43,11 +43,7 @@ class Option:
 		if i >= spell.size():
 			i = 0
 		while true:
-			if book == null and not book.can_use_spell_with_name(spell[i] as String):
-				result += spell[i] + ", "
-			else:
-				result += "[color=#F05]" + spell[i] + "[/color], "
-				
+			result += color_spell.call(spell[i] as String) + ", "	
 			if i == spell_index:
 				break
 			i += 1
@@ -83,6 +79,7 @@ var keys: Dictionary # [PackedStringArray]Option
 var picked: String
 
 var current_actions: Dictionary # [String]bool
+var selection_wheel: SelectionWheel
 
 signal spell_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason)
 signal spell_updated
@@ -164,7 +161,7 @@ func add_mod(mod: String) -> void:
 	
 func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 	var opt: Option = keys[key]
-	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.RAPID_SELECT or opt.kind == Kind.FIRE_PICKED_HOLD:
+	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD:
 		for s in book.spells:
 			if s.name == picked:
 				return s
@@ -199,16 +196,24 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 				
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
-		is_rapid_fire.data = true if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT else false
-		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
-			keys[best_candidate].start_hold = Time.get_unix_time_from_system()
-		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.PICK or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
+		is_rapid_fire.data = true if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.FIRE_PICKED_RAPID else false
+		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD or opt.kind == Kind.PICK:
+			opt.start_hold = Time.get_unix_time_from_system()
+			if opt.kind == Kind.PICK and selection_wheel != null:
+				selection_wheel.segments = opt.spell
+				selection_wheel.get_tree().create_timer(0.123).timeout.connect(func() -> void:
+					var charge := Time.get_unix_time_from_system() - opt.start_hold
+					if charge > 0.075:
+						Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+						selection_wheel.show()
+				)
+		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.FIRE_PICKED_RAPID:
 			var s := find_spell(best_candidate, book)
 			if s == null:
 				key_down.emit()
 				return null
 				
-			if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.RAPID_SELECT:
+			if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.FIRE_PICKED_RAPID:
 				var start_time: float = keys[best_candidate].start_hold
 				var now := Time.get_unix_time_from_system()
 				if start_time == 0.0 or now - start_time >= s.cooldown:
@@ -246,9 +251,27 @@ func action_up(action: String, book: MagicBook) -> Spell:
 		if found and key.size() > best_candidate.size() and key.find(action) != -1:
 			best_candidate = key
 			
+	current_actions.erase(action)
+			
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
-		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
+		if opt.kind == Kind.PICK:
+			var charge := Time.get_unix_time_from_system() - opt.start_hold
+			opt.start_hold = Time.get_unix_time_from_system() + 500
+			selection_wheel.hide()
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			if charge < 0.123:
+				find_spell(best_candidate, book)
+				key_up.emit()
+				return null
+			elif selection_wheel != null:
+				var index := selection_wheel.last_selected_segment_index
+				if index != -1:
+					opt.spell_index = index - 1 if index != 0 else opt.spell.size() - 1
+					find_spell(best_candidate, book)
+					key_up.emit()
+					return null
+		elif opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
 			var s := find_spell(best_candidate, book)
 			if s == null:
 				key_up.emit()
@@ -258,19 +281,17 @@ func action_up(action: String, book: MagicBook) -> Spell:
 			match can_use:
 				MagicBook.DisallowSpellReason.NONE:
 					book.use_spell(s)
-					current_actions.erase(action)
 					s.charge = Time.get_unix_time_from_system() - opt.start_hold
 					key_up.emit()
 					return s
 				_:
 					spell_disallowed.emit(s, can_use)
-					current_actions.erase(action)
 					key_up.emit()
 					return null
 				
-	current_actions.erase(action)
 	key_up.emit()
 	return null
+	
 
 func save_dict() -> Dictionary:
 	var result := {

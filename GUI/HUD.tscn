@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=16 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="StyleBox" uid="uid://ckmaf8r6l05na" path="res://GUI/HealthBarBG.tres" id="2_ss7w7"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="5_i3p67"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_yr21e"]
 [ext_resource type="StyleBox" uid="uid://ci70pm0jx6gvs" path="res://GUI/ThemeUI/RichTextHolder.tres" id="8_qt3l3"]
+[ext_resource type="Script" path="res://GUI/SelectionWheel.gd" id="10_rpd6m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dlq3c"]
 bg_color = Color(0, 0.666667, 0, 1)
@@ -253,5 +254,20 @@ offset_bottom = 39.968
 grow_horizontal = 0
 bbcode_enabled = true
 scroll_active = false
+
+[node name="SelectionWheel" type="Container" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 320.0
+offset_top = 64.0
+offset_right = -320.0
+offset_bottom = -72.0
+mouse_filter = 0
+script = ExtResource("10_rpd6m")
+line_width = 4.0
+line_color = Color(0, 0.8, 0.8, 0.501961)
 
 [connection signal="timeout" from="SpellCooldownTimer" to="." method="update_spell_cooldowns"]
