@@ -49,7 +49,7 @@ func warn(index: Direction, level: Level, clr: Color, interval: float, count: in
 		
 	
 func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -> void:
-	const FONT_SIZE := 11
+	var font_size := 11
 	var f := resolved_theme.default_font
 	var center := size / 2
 	var mask := offset.sign() * 0.5
@@ -69,11 +69,12 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -
 	elif option.event != Artifact.Event.NONE:
 		amount = option.duration_description()
 		
-	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE) + Vector2(0, 8)
+	font_size = ceili(font_size * maxf(size.x / 176.0, 0.181818))
+	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + Vector2(0, 8)
 
-	var v := Vector2(32, 16)
+	var v := Vector2(32, 16) * (size / 176.0)
 	var u := Vector2(maxf(w.x, v.x) + 4, (w.y + v.y) + 4)
-	draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, label_color_top)
+	draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, label_color_top)
 	
 	var dir_pos: Vector2 = center - Vector2(v.x / 2, w.y / 2) + offset - mask * u
 	var dir_tex := option.direction_texture()
@@ -86,21 +87,21 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -
 		draw_texture_rect(dir_tex, Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 		
-	
+	var line_width := minf(size.x / 176.0, 1.0)
 	if option.pattern == Artifact.Pattern.TRIANGLE:
 		var a: Vector2 = center + offset + (-size / 2.5) * inv_mask
 		var b: Vector2 = center + size / 4 * mask
 		var c: Vector2 = center + offset + (size / 2.5) * inv_mask
-		draw_line(a, b, pattern_color, 1, true)
-		draw_line(b, c, pattern_color, 1, true)
+		draw_line(a, b, pattern_color, line_width, true)
+		draw_line(b, c, pattern_color, line_width, true)
 	elif option.pattern == Artifact.Pattern.SQUARE:
 		var a: Vector2 = center + offset + (-size / 4) * inv_mask
 		var b: Vector2 = center + offset + (-size / 4) * inv_mask + -size / 1.5 * mask
 		var c: Vector2 = center + offset + (size / 4) * inv_mask + -size / 1.5 * mask
 		var d: Vector2 = center + offset + (size / 4) * inv_mask
-		draw_line(a, b, pattern_color, 1, true)
-		draw_line(b, c, pattern_color, 1, true)
-		draw_line(c, d, pattern_color, 1, true)
+		draw_line(a, b, pattern_color, line_width, true)
+		draw_line(b, c, pattern_color, line_width, true)
+		draw_line(c, d, pattern_color, line_width, true)
 	elif option.pattern == Artifact.Pattern.CIRCLE:
 		var a: Vector2 = center + offset
 		var s := 0.0
@@ -117,7 +118,7 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -
 		elif mask.y > 0:
 			s = PI * 2.0
 			e = PI * 1.0
-		draw_arc(a, size.x * 0.33, s, e, 32, pattern_color, 1, true)
+		draw_arc(a, size.x * 0.33, s, e, 32, pattern_color, line_width, true)
 
 func get_label_color(index: int) -> Dictionary:
 	var BASE := {0: Color.WHITE, 1: Color.WHITE, 2: Color.WHITE}

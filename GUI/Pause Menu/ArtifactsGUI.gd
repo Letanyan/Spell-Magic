@@ -4,6 +4,7 @@ extends Control
 @onready var artifacts_list: ItemList = $artifacts_list
 @onready var artifact_grid: InfinityGrid = $artifact_grid
 @onready var artifact_preview: GridTile = $artifact_preview
+@onready var destroy_artifact: Button = $Destroy
 
 @onready var filter_top: MenuButton = $Top
 @onready var filter_left: MenuButton = $Left
@@ -48,11 +49,19 @@ func update_temporary_grid_tile() -> void:
 	temporary_grid_tile.queue_redraw()
 		
 func update_artifact_list_height() -> void:
-	if artifact_preview.artifact == null:
+	var unconnect_artifact := false
+	if artifact_grid.selected_cell_coord != null:
+		var grid_artifact := artifacts.get_artifact_at_coord(artifact_grid.selected_cell_coord as Vector2)
+		unconnect_artifact = grid_artifact != null
+	if artifact_preview.artifact == null and not unconnect_artifact:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, size.y - artifacts_list.position.y - 8))
+	elif unconnect_artifact:
+		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, destroy_artifact.position.y - artifacts_list.position.y - 8))
 	else:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, artifact_preview.position.y - artifacts_list.position.y - 8))
-	($Destroy as Button).visible = artifact_preview.artifact != null
+	destroy_artifact.text = "Destroy" if artifact_preview.artifact != null else "Unconnect"
+	destroy_artifact.visible = artifact_preview.artifact != null or unconnect_artifact
+	
 	
 func update_list() -> void:
 	artifacts_list.clear()
@@ -329,7 +338,18 @@ func attempt_delete_artifact() -> void:
 	get_tree().root.add_child(popup)
 	
 func _on_destroy_pressed() -> void:
-	attempt_delete_artifact()
+	if destroy_artifact.text == "Destroy":
+		attempt_delete_artifact()
+	else:
+		if artifact_grid.selected_cell_coord != null and not attempt_remove_artifact(artifact_grid.selected_cell_coord as Vector2):
+			if temporary_grid_tile.artifact != null:
+				temporary_grid_tile.artifact = null
+				artifact_preview.artifact = null
+				artifacts_list.deselect(artifacts_list.get_selected_items()[0])
+			else:
+				artifact_grid.selected_cell_coord = null
+			update_temporary_grid_tile()
+			update_list_and_grid()
 	
 func highlight_all_available_cells_for_placement() -> void:
 	artifact_grid.highlighted_cells = artifacts.highlight_all_available_cells_for_placement(artifact_preview.artifact)

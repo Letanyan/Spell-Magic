@@ -71,23 +71,22 @@ func _notification(what: int) -> void:
 
 func _draw() -> void:
 	draw_style_box(panel_style, Rect2(Vector2.ZERO, size))
-	var font := load("res://GUI/ThemeUI/ChakraPetch-Regular.ttf") as Font
+	#var font := load("res://GUI/ThemeUI/ChakraPetch-Regular.ttf") as Font
 	
 	var csize := cell_size * cell_scale
 	var off_x := fmod(offset.x + current_offset.x, csize.x)
 	var off_y := fmod(offset.y + current_offset.y, csize.y)
-	# FIXME: when zooming, zoom into cursor position. We can then remove off_i and the draw_string methods for debugging
-	var off_i := (offset + current_offset)
+	#var off_i := (offset + current_offset)
 	for x in range(0, size.x + csize.x, csize.x):
 		if x + off_x <= 0 or x + off_x > size.x:
 			continue
 		draw_line(Vector2(x + off_x, 0), Vector2(x + off_x, size.y), line_color, line_width, true)
-		draw_string(font, Vector2(x + off_x, 10), str(floori((off_i.x - x) / csize.x)))
+		#draw_string(font, Vector2(x + off_x, 10), str(floori((off_i.x - x) / csize.x)))
 	for y in range(0, size.y + csize.y, csize.y):
 		if y + off_y <= 0 or y + off_y > size.y:
 			continue
 		draw_line(Vector2(0, y + off_y), Vector2(size.x, y + off_y), line_color, line_width, true)
-		draw_string(font, Vector2(10, y + off_y), str(floori((off_i.y - y) / csize.y)))
+		#draw_string(font, Vector2(10, y + off_y), str(floori((off_i.y - y) / csize.y)))
 		
 	draw_line(Vector2(0, 0), Vector2(0, size.y), line_color, line_width, true)
 	draw_line(Vector2(0, 0), Vector2(size.x, 0), line_color, line_width, true)
@@ -104,7 +103,7 @@ func _draw() -> void:
 func _gui_input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
-		
+	
 	var csize := cell_size * cell_scale
 	if _event is InputEventMouseButton:
 		var event := _event as InputEventMouseButton
@@ -114,15 +113,23 @@ func _gui_input(_event: InputEvent) -> void:
 			queue_redraw()
 			queue_sort()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			var new_scale := minf(cell_scale + 0.1, 2.0)
-			cell_scale = new_scale
-			queue_redraw()
-			queue_sort()
+			var new_scale := minf(cell_scale * 1.1, 2.0)
+			if not is_equal_approx(new_scale, cell_scale):
+				var vsize := (size / csize).floor() * cell_size * (new_scale - cell_scale)
+				var rm_pos := (m_pos / size) * vsize
+				offset = (offset / cell_scale) * new_scale - rm_pos
+				cell_scale = new_scale
+				queue_redraw()
+				queue_sort()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			var new_scale := maxf(cell_scale - 0.1, 0.2)
-			cell_scale = new_scale
-			queue_redraw()
-			queue_sort()
+			var new_scale := maxf(cell_scale * 0.9, 0.2)
+			if not is_equal_approx(new_scale, cell_scale):
+				var vsize := (size / csize).floor() * cell_size * (new_scale - cell_scale)
+				var rm_pos := (m_pos / size) * vsize
+				offset = (offset / cell_scale) * new_scale - rm_pos
+				cell_scale = new_scale
+				queue_redraw()
+				queue_sort()
 		elif mouse_down == null and event.pressed:
 			if not (m_pos.x < 0 or m_pos.y < 0 or m_pos.x > size.x or m_pos.y > size.y):
 				mouse_down = event.position
