@@ -416,14 +416,10 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					)
 				elif effect_el == Artifact.Element.ATTACK:
 					var value := 0.0
-					if effect_kind == Artifact.Effect.BOOST_FLAT:
+					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = amount.x
-					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_attack() * amount.x / 100.0
-					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
-						value = -amount.x
-					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
-						value = -magic_book.settings.upgrade_settings.max_attack() * amount.x / 100.0
 					magic_book.settings.upgrade_settings.buff_attack += value
 					attack_was_buffed.emit(magic_book.settings.upgrade_settings.buff_attack)
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
@@ -433,14 +429,10 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					)
 				elif effect_el == Artifact.Element.DEFENCE:
 					var value := 0.0
-					if effect_kind == Artifact.Effect.BOOST_FLAT:
+					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = amount.x
-					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_defence() * amount.x / 100.0
-					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
-						value = -amount.x
-					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
-						value = -magic_book.settings.upgrade_settings.max_defence() * amount.x / 100.0
 					magic_book.settings.upgrade_settings.buff_defence += value
 					defence_was_buffed.emit(magic_book.settings.upgrade_settings.buff_defence)
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 
@@ -450,14 +442,10 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					)
 				elif effect_el == Artifact.Element.RUNNING_SPEED:
 					var value := 0.0
-					if effect_kind == Artifact.Effect.BOOST_FLAT:
+					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						value = amount.x
-					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE:
+					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_running_speed() * amount.x / 100.0
-					elif effect_kind == Artifact.Effect.RESISTANCE_FLAT:
-						value = -amount.x
-					elif effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
-						value = -magic_book.settings.upgrade_settings.max_running_speed() * amount.x / 100.0
 					magic_book.settings.upgrade_settings.buff_running_speed += value
 					speed_was_buffed.emit(magic_book.settings.upgrade_settings.buff_running_speed)
 					get_tree().create_timer(duration).timeout.connect(func() -> void: 

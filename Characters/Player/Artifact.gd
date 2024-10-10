@@ -26,6 +26,7 @@ enum Element {
 	SPELL_RADIUS, COUNT, POWER, 
 	HEALTH_BUMP, MANA_BUMP,
 }
+const SpellElements: Array[Element] = [Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE]
 
 enum Pattern {
 	CIRCLE, SQUARE, TRIANGLE

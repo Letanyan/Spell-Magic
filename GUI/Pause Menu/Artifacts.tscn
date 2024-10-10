@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c0eqpohrkp1r7"]
+[gd_scene load_steps=11 format=3 uid="uid://c0eqpohrkp1r7"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/ArtifactsGUI.gd" id="1_lsxrb"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/InfinityGrid.gd" id="2_reg1r"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://dvvyohoxrittn" path="res://GUI/Images/effect.svg" id="6_b7gc4"]
 [ext_resource type="Texture2D" uid="uid://c4ahek33r0tva" path="res://GUI/Images/right.svg" id="6_j6i0q"]
 [ext_resource type="Texture2D" uid="uid://bql6w7l7jeygc" path="res://GUI/Images/bottom.svg" id="7_s27d8"]
+[ext_resource type="Texture2D" uid="uid://xncojprr0p71" path="res://GUI/Images/top bottom left right.svg" id="10_qgfxf"]
 
 [node name="Artifacts" type="Control"]
 layout_mode = 3
@@ -84,10 +85,10 @@ focus_neighbor_bottom = NodePath("../Destroy")
 
 [node name="Top" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 56.0
-offset_right = 88.0
-offset_bottom = 88.0
+offset_left = 80.0
+offset_top = 57.0
+offset_right = 112.0
+offset_bottom = 89.0
 tooltip_text = "Filter Top Property"
 focus_neighbor_left = NodePath("../Left")
 focus_neighbor_right = NodePath("../Bottom")
@@ -109,10 +110,10 @@ popup/item_2/id = 2
 
 [node name="Left" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 8.0
+offset_left = 44.0
 offset_top = 57.0
-offset_right = 40.0
-offset_bottom = 89.0
+offset_right = 76.0
+offset_bottom = 88.0
 tooltip_text = "Filter Left Property"
 focus_neighbor_right = NodePath("../Top")
 focus_neighbor_bottom = NodePath("../artifacts_list")
@@ -158,9 +159,9 @@ popup/item_2/id = 2
 
 [node name="Bottom" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 116.0
 offset_top = 57.0
-offset_right = 136.0
+offset_right = 148.0
 offset_bottom = 89.0
 tooltip_text = "Filter Bottom Property"
 focus_neighbor_left = NodePath("../Top")
@@ -168,6 +169,26 @@ focus_neighbor_right = NodePath("../Right")
 focus_neighbor_bottom = NodePath("../artifacts_list")
 focus_mode = 2
 icon = ExtResource("7_s27d8")
+flat = false
+item_count = 3
+popup/item_0/text = "Any"
+popup/item_0/checkable = 2
+popup/item_1/text = "Event"
+popup/item_1/icon = ExtResource("5_trjpe")
+popup/item_1/checkable = 2
+popup/item_1/id = 1
+popup/item_2/text = "Effect"
+popup/item_2/icon = ExtResource("6_b7gc4")
+popup/item_2/checkable = 2
+popup/item_2/id = 2
+
+[node name="FilterAll" type="MenuButton" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 56.0
+offset_right = 40.0
+offset_bottom = 89.0
+icon = ExtResource("10_qgfxf")
 flat = false
 item_count = 3
 popup/item_0/text = "Any"

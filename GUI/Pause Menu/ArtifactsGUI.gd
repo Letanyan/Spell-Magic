@@ -10,11 +10,13 @@ extends Control
 @onready var filter_left: MenuButton = $Left
 @onready var filter_right: MenuButton = $Right
 @onready var filter_bottom: MenuButton = $Bottom
+@onready var filter_all: MenuButton = $FilterAll
 
 var filter_top_options := FilterOptions.new()
 var filter_left_options := FilterOptions.new()
 var filter_right_options := FilterOptions.new()
 var filter_bottom_options := FilterOptions.new()
+var filter_all_options := FilterOptions.new()
 
 var temporary_grid_tile: GridTile
 
@@ -35,6 +37,7 @@ func _ready() -> void:
 	filter_left.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_left, id, filter_left_options))
 	filter_right.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_right, id, filter_right_options))
 	filter_bottom.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_bottom, id, filter_bottom_options))
+	filter_all.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_all, id, filter_all_options))
 	
 func update_temporary_grid_tile() -> void:
 	temporary_grid_tile.is_hidden = false
@@ -49,18 +52,18 @@ func update_temporary_grid_tile() -> void:
 	temporary_grid_tile.queue_redraw()
 		
 func update_artifact_list_height() -> void:
-	var unconnect_artifact := false
+	var should_disconnect_artifact := false
 	if artifact_grid.selected_cell_coord != null:
 		var grid_artifact := artifacts.get_artifact_at_coord(artifact_grid.selected_cell_coord as Vector2)
-		unconnect_artifact = grid_artifact != null
-	if artifact_preview.artifact == null and not unconnect_artifact:
+		should_disconnect_artifact = grid_artifact != null
+	if artifact_preview.artifact == null and not should_disconnect_artifact:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, size.y - artifacts_list.position.y - 8))
-	elif unconnect_artifact:
+	elif should_disconnect_artifact:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, destroy_artifact.position.y - artifacts_list.position.y - 8))
 	else:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, artifact_preview.position.y - artifacts_list.position.y - 8))
-	destroy_artifact.text = "Destroy" if artifact_preview.artifact != null else "Unconnect"
-	destroy_artifact.visible = artifact_preview.artifact != null or unconnect_artifact
+	destroy_artifact.text = "Destroy" if artifact_preview.artifact != null else "Disconnect"
+	destroy_artifact.visible = artifact_preview.artifact != null or should_disconnect_artifact
 	
 	
 func update_list() -> void:
@@ -126,15 +129,7 @@ func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_but
 
 func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		if not attempt_remove_artifact(coord):
-			if temporary_grid_tile.artifact != null:
-				temporary_grid_tile.artifact = null
-				artifact_preview.artifact = null
-				artifacts_list.deselect(artifacts_list.get_selected_items()[0])
-			else:
-				artifact_grid.selected_cell_coord = null
-			update_temporary_grid_tile()
-			update_list_and_grid()
+		disconnect_artifact(coord)
 	elif mouse_button_index == MOUSE_BUTTON_LEFT:
 		if not artifacts_list.get_selected_items().is_empty():
 			var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
@@ -232,9 +227,7 @@ func _on_artifact_grid_on_cell_unselected(coord: Vector2) -> void:
 func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var e := event as InputEventKey
-		if e.is_action_pressed("W"):
-			attempt_delete_artifact()
-		elif e.is_action_pressed("ui_accept"):
+		if e.is_action_pressed("ui_accept"):
 			if not artifacts_list.get_selected_items().is_empty():
 				var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
 				temporary_grid_tile.artifact = artifact
@@ -245,27 +238,17 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 				elif not artifact_grid.highlighted_cells.is_empty():
 					artifact_grid.selected_cell_coord = artifact_grid.highlighted_cells[0]
 					update_temporary_grid_tile()
-					
 				artifact_grid.grab_focus()
 		elif e.is_action_pressed("E"):
-			artifact_grid.selected_cell_coord = null
-			temporary_grid_tile.artifact = null
-			if artifacts_list.item_count > 0:
-				artifacts_list.select(0)
-				_on_artifacts_list_item_selected(0)
-			update_list_and_grid()
+			deselect_all()
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var e := event as InputEventKey
 		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
 			if e.is_action_pressed("E"):
+				deselect_all()
 				artifact_grid.selected_cell_coord = null
-				temporary_grid_tile.artifact = null
-				if artifacts_list.item_count > 0:
-					artifacts_list.select(0)
-					_on_artifacts_list_item_selected(0)
-				update_list_and_grid()
 			elif e.is_action_pressed("ui_accept"):
 				if artifact_preview.artifact == null and artifacts_list.item_count > 0:
 					artifacts_list.select(0)
@@ -340,16 +323,27 @@ func attempt_delete_artifact() -> void:
 func _on_destroy_pressed() -> void:
 	if destroy_artifact.text == "Destroy":
 		attempt_delete_artifact()
-	else:
-		if artifact_grid.selected_cell_coord != null and not attempt_remove_artifact(artifact_grid.selected_cell_coord as Vector2):
-			if temporary_grid_tile.artifact != null:
-				temporary_grid_tile.artifact = null
-				artifact_preview.artifact = null
-				artifacts_list.deselect(artifacts_list.get_selected_items()[0])
-			else:
-				artifact_grid.selected_cell_coord = null
-			update_temporary_grid_tile()
-			update_list_and_grid()
+	elif artifact_grid.selected_cell_coord != null:
+		disconnect_artifact(artifact_grid.selected_cell_coord as Vector2)
+			
+func disconnect_artifact(coord: Vector2) -> void:
+	if not attempt_remove_artifact(coord):
+		if temporary_grid_tile.artifact != null:
+			temporary_grid_tile.artifact = null
+			artifact_preview.artifact = null
+			artifacts_list.deselect(artifacts_list.get_selected_items()[0])
+		else:
+			artifact_grid.selected_cell_coord = null
+		update_temporary_grid_tile()
+		update_list_and_grid()
+		
+func deselect_all() -> void:
+	artifact_grid.selected_cell_coord = null
+	temporary_grid_tile.artifact = null
+	if artifacts_list.item_count > 0:
+		artifacts_list.select(0)
+		_on_artifacts_list_item_selected(0)
+	update_list_and_grid()
 	
 func highlight_all_available_cells_for_placement() -> void:
 	artifact_grid.highlighted_cells = artifacts.highlight_all_available_cells_for_placement(artifact_preview.artifact)
@@ -388,14 +382,14 @@ func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void
 				data.effects.erase(key)
 			else:
 				data.effects[key] = true
-		elif id < 11:
+		elif id < 13:
 			var key := id - 8
 			if data.patterns.has(key):
 				data.patterns.erase(key)
 			else:
 				data.patterns[key] = true
 		else:
-			var key := id - 11
+			var key := id - 13
 			if data.elements.has(key):
 				data.elements.erase(key)
 			else:
@@ -440,7 +434,7 @@ func filter_update_popup_menu_items(menu: PopupMenu, option: int) -> void:
 		menu.add_icon_check_item(preload("res://GUI/Images/square.png") as Texture2D, "Square", Artifact.Pattern.SQUARE + 8)
 		menu.add_icon_check_item(preload("res://GUI/Images/circle.png") as Texture2D, "Circle", Artifact.Pattern.CIRCLE + 8)
 		menu.add_separator()
-		menu.add_check_item("Any", Artifact.Element.ANY + 11)
+		menu.add_check_item("Any", Artifact.Element.ANY + 13)
 		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 13)
 		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 13)
 		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 13)
@@ -501,7 +495,7 @@ func filter_artifact_option_matches(option: Artifact.Option, filter: FilterOptio
 		if not filter.events.is_empty() and not filter.events.has(option.event):
 			return false
 	elif filter.main_option == 2:
-		if not filter.effects.is_empty() and not filter.effects.has(option.effect):
+		if not filter.effects.is_empty() and not (filter.effects.has(option.effect) and Artifact.SpellElements.has(option.element)):
 			return false
 			
 	if not filter.elements.is_empty() and not filter.elements.has(option.element):
@@ -510,6 +504,10 @@ func filter_artifact_option_matches(option: Artifact.Option, filter: FilterOptio
 	return true
 	
 func filter_artifact_matches(artifact: Artifact) -> bool:
+	if not (filter_artifact_option_matches(artifact.top, filter_all_options) or filter_artifact_option_matches(artifact.left, filter_all_options) or \
+	filter_artifact_option_matches(artifact.right, filter_all_options) or  filter_artifact_option_matches(artifact.bottom, filter_all_options)):
+		return false
+	
 	if not filter_artifact_option_matches(artifact.top, filter_top_options):
 		return false
 	if not filter_artifact_option_matches(artifact.left, filter_left_options):
