@@ -38,7 +38,6 @@ focus_mode = 2
 mouse_filter = 0
 script = ExtResource("2_reg1r")
 cell_size = Vector2(176, 176)
-cell_scale = null
 line_color = Color(1, 1, 1, 0.0941176)
 background_color = Color(0.101961, 0.101961, 0.101961, 1)
 

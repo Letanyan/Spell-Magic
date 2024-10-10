@@ -203,8 +203,8 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 				selection_wheel.segments = opt.spell
 				selection_wheel.get_tree().create_timer(0.123).timeout.connect(func() -> void:
 					var charge := Time.get_unix_time_from_system() - opt.start_hold
-					if charge > 0.075:
-						Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+					if charge > 0.075 and not selection_wheel.segments.is_empty():
+						Input.mouse_mode = Input.MOUSE_MODE_CONFINED_HIDDEN
 						selection_wheel.show()
 				)
 		elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.FIRE_PICKED_RAPID:

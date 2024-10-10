@@ -51,7 +51,6 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_scroll_note.connect(func(c: String, m: String) -> void: show_notification(bbcode_new_item(m), 5))
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:

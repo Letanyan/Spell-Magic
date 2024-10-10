@@ -7,6 +7,7 @@ extends Container
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.9)
 @export var inner_circle_fraction: float = 0.75
 @export var segments: Array[String] = []
+@export var radius_range := Vector2(256, 512)
 var resolved_theme: Theme
 var panel_style: StyleBox
 var hover_style: StyleBox
@@ -15,7 +16,8 @@ var highlight_style: StyleBox
 var last_selected_segment_index: int = -1
 var selected_segment_index: int = -1
 
-var mouse_down: Variant = null
+var mouse_down: Variant = null # Vector2?
+var mouse_angle: Variant = null # float?
 
 signal on_segment_hover(index: int)
 signal on_segment_unhover(index: int)
@@ -34,19 +36,11 @@ func _ready() -> void:
 		hover_style = theme.get_stylebox("pressed", "Button")
 		highlight_style = theme.get_stylebox("focus", "CheckButton")
 	visibility_changed.connect(visiblity_did_change)
-	
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_SORT_CHILDREN:
-		pass
-		# TODO: update positions and size?
-		#for coord: Vector2 in child_grid:
-			#var node := child_grid[coord] as Control
-			#node.position = coord * cell_size + offset + current_offset + Vector2(line_width, line_width)
-			#node.size = cell_size - Vector2(line_width * 2, line_width * 2)
+	mouse_down = size / 2
 
 
 func _draw() -> void:
-	var radius := minf(size.x, size.y) / 2.0
+	var radius := clampf(minf(size.x, size.y) / 2.0, radius_range.x, radius_range.y)
 	var inner_radius := radius * inner_circle_fraction
 	var text_radius := radius * (inner_circle_fraction + (1.0 - inner_circle_fraction) * 0.5) 
 	var font := resolved_theme.default_font
@@ -61,8 +55,8 @@ func _draw() -> void:
 	draw_circle(size / 2.0, text_radius + line_width * 1.5, line_color, false, line_width * 0.25, true)
 	draw_circle(size / 2.0, text_radius - line_width * 1.5, line_color, false, line_width * 0.25, true)
 	
-	if mouse_down != null:
-		draw_circle(mouse_down as Vector2, 16, Color.RED)
+	#if mouse_down != null:
+		#draw_circle(mouse_down as Vector2, 16, Color.RED)
 	
 	var angle_delta := (2.0 * PI) / float(segments.size())
 	var current_angle := PI * 3.0 / 2.0 - angle_delta * 0.5
@@ -71,13 +65,17 @@ func _draw() -> void:
 	const w_off_off = Vector2(w_off.x * -0.5, w_off.y * 0.25)
 	var max_w := Vector2.ZERO
 	for title in segments:
-		#draw_line(center + Vector2(inner_radius, 0).rotated(current_angle), center + Vector2(radius, 0).rotated(current_angle), line_color, line_width, true)
+		draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(current_angle), center + Vector2(text_radius + line_width * 1.5, 0).rotated(current_angle), line_color, line_width, true)
 		var w := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
 		if w.x > max_w.x:
 			max_w.x = w.x
 		if w.y > max_w.y:
 			max_w.y = w.y
 		current_angle += angle_delta
+		
+	if mouse_angle != null:
+		var ma := (mouse_angle as float) #- PI / 2 - PI / 9
+		draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(ma), center + Vector2(text_radius + line_width * 1.5, 0).rotated(ma), line_color, line_width, true)
 	
 	var i := 0
 	current_angle = PI * 3.0 / 2.0 - angle_delta * 0.5
@@ -106,17 +104,18 @@ func _gui_input(_event: InputEvent) -> void:
 			var index := -1
 			if md.distance_to(event.position) > 16.0:
 				var angle_delta := (2.0 * PI) / float(segments.size())
-				# Why is this the offset? I don't know! Why do we swap both x and y for `angle`? I don't know!
-				var angle_offset := PI * 0.5 + angle_delta * 0.166667 
-				var angle := (Vector2(size.x - md.x, size.y - md.y) - Vector2(size.x - event.position.x, size.y - event.position.y)).angle() + angle_offset
-				angle = fposmod(angle, PI * 2.0)
-				index = floori(angle / (PI * 2.0) * segments.size())
+				var ma := (Vector2(size.x - md.x, size.y - md.y) - Vector2(size.x - event.position.x, size.y - event.position.y)).angle()
+				var maa := fposmod(ma + PI * 0.5 + angle_delta * 0.5, PI * 2.0)
+				index = floori(maa / (PI * 2.0) * segments.size())
+				mouse_angle = ma
+			else:
+				mouse_angle = null
 			if index != selected_segment_index:
 				if selected_segment_index != -1:
 					on_segment_unhover.emit(selected_segment_index)
 				on_segment_hover.emit(index)
 				selected_segment_index = index
-				queue_redraw()
+			queue_redraw()
 
 func visiblity_did_change() -> void:
 	if not visible:
