@@ -173,8 +173,9 @@ func _exit_tree() -> void:
 	pass
 	
 func _process(delta: float) -> void:
-	var b := blender.biome
-	fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	if OS.is_debug_build():
+		var b := blender.biome
+		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
 func _physics_process(delta: float) -> void:
 	if player.magic_book.settings.is_paused:
@@ -205,12 +206,14 @@ func _physics_process(delta: float) -> void:
 		
 	blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := blender.biome
-	fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	if last_biome != b:
 		player.set_current_biome(b)
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
 		transition_to_biome(b)
 		last_biome = b
+		
+	if OS.is_debug_build():
+		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 			
 	if not menu.is_showing:
 		const SPEED = 12.0

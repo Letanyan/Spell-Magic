@@ -152,6 +152,16 @@ class Option:
 		amount = dict["amount"]
 		pattern = dict.get("pattern", 0)
 		
+	func save_int() -> int:
+		return (effect << 55) | (event << 47) | (element << 39) | (pattern << 31) | (amount & 0xEFFF_FFFF)
+		
+	func load_int(dict: int) -> void:
+		effect = ((dict >> 55) & 0xFF) as Effect
+		event  = ((dict >> 47) & 0xFF) as Event
+		element = ((dict >> 39) & 0xFF) as Element
+		pattern = ((dict >> 31) & 0xFF) as Pattern
+		amount = dict & 0xEFFF_FFFF
+		
 	func amount_as_tuple() -> Vector2:
 		match effect:
 			Effect.BOOST_PERCENTAGE, Effect.RESISTANCE_PERCENTAGE:
@@ -277,67 +287,48 @@ class Option:
 	func description() -> String:
 		if effect == Effect.NONE and event == Event.NONE:
 			return ""
-		
+			
+		var element_text := ""
+		match element:
+			Element.ANY: element_text = "Any"
+			Element.FIRE: element_text = "Fire"
+			Element.WATER: element_text = "Water"
+			Element.AIR: element_text = "Wind"
+			Element.ROCK: element_text = "Rock"
+			Element.ELECTRIC: element_text = "Electric"
+			Element.ICE: element_text = "Ice"
+			Element.HEALTH: element_text = "Health"
+			Element.MANA: element_text = "Mana"
+			Element.ATTACK: element_text = "Attack"
+			Element.DEFENCE: element_text = "Defence"
+			Element.CRIT_RATE: element_text = "Crit Rate"
+			Element.CRIT_DMG: element_text = "Crit Damage"
+			Element.POWER: element_text = "P"
+			Element.DURATION: element_text = "T"
+			Element.COUNT: element_text = "N"
+			Element.MANA_BUMP: element_text = "Max Mana"
+			Element.HEALTH_BUMP: element_text = "Max Health"
+			Element.SPELL_VELOCITY: element_text = "v"
+			Element.SPELL_RADIUS: element_text = "r"
+			Element.RUNNING_SPEED: element_text = "S"
+			
 		var result := ""
 		if effect != Effect.NONE:
-			result = ("DMG" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "RES") + ("%d " % amount)
-			match effect:
-				Effect.BOOST_PERCENTAGE:
-					result += "%"
-				Effect.RESISTANCE_PERCENTAGE:
-					result += "%"
-			result += " "
+			var direction := "Increase" if amount > 0 else "Decrease"
+			var am := absi(amount)
+			var buff := ("Damage" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "Resistance")
+			var perc := ("%" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.RESISTANCE_PERCENTAGE else "")
+			if SpellElements.has(element):
+				return "%s %s %s by %d%s" % [direction, element_text, buff, am, perc]
+			else:
+				return "%s %s by %d%s" % [direction, element_text, am, perc]
 		elif event != Event.NONE:
 			match event:
 				Event.RECEIVE:
-					result = "<= "
+					result = "Receive " + element_text + " Damage"
 				Event.DEAL:
-					result = "=> "
+					result = "Deal " + element_text + " Damage"
 		
-		match element:
-			Element.ANY:
-				result += "A"
-			Element.FIRE:
-				result += "F"
-			Element.WATER:
-				result += "W"
-			Element.AIR:
-				result += "A"
-			Element.ROCK:
-				result += "R"
-			Element.ELECTRIC:
-				result += "E"
-			Element.ICE:
-				result += "I"
-			Element.HEALTH:
-				result += "H"
-			Element.MANA:
-				result += "M"
-			Element.ATTACK:
-				result += "AT"
-			Element.DEFENCE:
-				result += "DF"
-			Element.CRIT_RATE:
-				result += "CR"
-			Element.CRIT_DMG:
-				result += "CD"
-			Element.POWER:
-				result += "P"
-			Element.DURATION:
-				result += "T"
-			Element.COUNT:
-				result += "N"
-			Element.MANA_BUMP:
-				result += "M+"
-			Element.HEALTH_BUMP:
-				result += "M+"
-			Element.SPELL_VELOCITY:
-				result += "v"
-			Element.SPELL_RADIUS:
-				result += "r"
-			Element.RUNNING_SPEED:
-				result += "S"
-				
 		return result
 	
 	func matching_effect_to_event(other: Option) -> bool:

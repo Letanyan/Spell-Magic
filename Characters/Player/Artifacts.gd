@@ -2,7 +2,7 @@ class_name Artifacts
 
 var collection: Array[Artifact] = []
 var connected: Dictionary = {} # [Artifact]Vector2
-var active_options: Dictionary = {} # [Vector2][int]bool
+var active_options: Dictionary = {} # [Vector2][int]Artifacts.Option
 
 var effects: Dictionary = {} # [Vector2i(duration, Artifact.Event | Artifact.Element)][int(Artifact.Effect | Artifact.Element)]Vector2(flat: int, ratio: float)
 
@@ -85,13 +85,13 @@ func update_active_options(artifact: Artifact, coord: Vector2) -> void:
 						effects[artifact.top.element_event()][other.bottom.element_effect()] += other.bottom.amount_as_tuple()
 				
 				if not active_options.has(coord):
-					active_options[coord] = {TOP: true}
+					active_options[coord] = {TOP: other.bottom}
 				else:
-					active_options[coord][TOP] = true
+					active_options[coord][TOP] = other.bottom
 				if not active_options.has(other_coord):
-					active_options[other_coord] = {BOTTOM: true}
+					active_options[other_coord] = {BOTTOM: artifact.top}
 				else:
-					active_options[other_coord][BOTTOM] = true
+					active_options[other_coord][BOTTOM] = artifact.top
 					
 	if true:
 		var other_coord := coord + Vector2(1, 0) 
@@ -107,13 +107,13 @@ func update_active_options(artifact: Artifact, coord: Vector2) -> void:
 						effects[artifact.right.element_event()][other.left.element_effect()] += other.left.amount_as_tuple()
 				
 				if not active_options.has(coord):
-					active_options[coord] = {RIGHT: true}
+					active_options[coord] = {RIGHT: other.left}
 				else:
-					active_options[coord][RIGHT] = true
+					active_options[coord][RIGHT] = other.left
 				if not active_options.has(other_coord):
-					active_options[other_coord] = {LEFT: true}
+					active_options[other_coord] = {LEFT: artifact.right}
 				else:
-					active_options[other_coord][LEFT] = true
+					active_options[other_coord][LEFT] = artifact.right
 					
 	if true:
 		var other_coord := coord + Vector2(0, 1) 
@@ -129,13 +129,13 @@ func update_active_options(artifact: Artifact, coord: Vector2) -> void:
 						effects[artifact.bottom.element_event()][other.top.element_effect()] += other.top.amount_as_tuple()
 				
 				if not active_options.has(coord):
-					active_options[coord] = {BOTTOM: true}
+					active_options[coord] = {BOTTOM: other.top}
 				else:
-					active_options[coord][BOTTOM] = true
+					active_options[coord][BOTTOM] = other.top
 				if not active_options.has(other_coord):
-					active_options[other_coord] = {TOP: true}
+					active_options[other_coord] = {TOP: artifact.bottom}
 				else:
-					active_options[other_coord][TOP] = true
+					active_options[other_coord][TOP] = artifact.bottom
 					
 	if true:
 		var other_coord := coord + Vector2(-1, 0) 
@@ -151,13 +151,13 @@ func update_active_options(artifact: Artifact, coord: Vector2) -> void:
 						effects[artifact.left.element_event()][other.right.element_effect()] += other.right.amount_as_tuple()
 				
 				if not active_options.has(coord):
-					active_options[coord] = {LEFT: true}
+					active_options[coord] = {LEFT: other.right}
 				else:
-					active_options[coord][LEFT] = true
+					active_options[coord][LEFT] = other.right
 				if not active_options.has(other_coord):
-					active_options[other_coord] = {RIGHT: true}
+					active_options[other_coord] = {RIGHT: artifact.left}
 				else:
-					active_options[other_coord][RIGHT] = true
+					active_options[other_coord][RIGHT] = artifact.left
 
 func can_place_artifact(artifact: Artifact, coord: Vector2) -> Array[Vector4]:
 	if artifact == null:
@@ -295,7 +295,12 @@ func save(world_name: String) -> void:
 	var connections := {}
 	for c: Artifact in connected:
 		connections[c.save_dict()] = connected[c]
-	file.store_var({"artifacts": data, "connected": connections, "active_options": active_options, "effects": effects})
+	var act_options := {}
+	for c: Vector2 in active_options:
+		act_options[c] = {}
+		for i: int in active_options[c]:
+			act_options[c][i] = (active_options[c][i] as Artifact.Option).save_int()
+	file.store_var({"artifacts": data, "connected": connections, "active_options": act_options, "effects": effects})
 	
 func read(world_name: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.READ)
@@ -312,7 +317,13 @@ func read(world_name: String) -> void:
 		active_options = {}
 		effects = {}
 		return
-	active_options = data.get("active_options", {}) as Dictionary
+	active_options = {}
+	for c: Vector2 in data["active_options"]:
+		active_options[c] = {}
+		for i: int in data["active_options"][c]:
+			var opt := Artifact.Option.empty()
+			opt.load_int(data["active_options"][c][i] as int)
+			active_options[c][i] = opt
 	effects = data.get("effects", {}) as Dictionary
 	for d: Dictionary in data["artifacts"]:
 		var w := Artifact.new("")

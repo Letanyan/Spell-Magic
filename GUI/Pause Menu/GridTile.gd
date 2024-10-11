@@ -4,11 +4,11 @@ extends Control
 enum Direction { TOP=0, RIGHT, BOTTOM, LEFT }
 enum Level { TOP=0, BOTTOM, PATTERN }
 
-@export var mouse_filter_override: Control.MouseFilter = Control.MOUSE_FILTER_IGNORE
+@export var mouse_filter_override: Control.MouseFilter = Control.MOUSE_FILTER_PASS
 
 @export var color: Color = Color(0.15, 0.15, 0.15, 1.0)
 var artifact: Artifact
-var highlighted: Dictionary # [int]bool
+var highlighted: Dictionary # [int]Artifact.Option
 var warning: Dictionary # [int][int]Color
 var normal_style: StyleBox
 var disabled_style: StyleBox
@@ -48,7 +48,7 @@ func warn(index: Direction, level: Level, clr: Color, interval: float, count: in
 		queue_redraw()
 		
 	
-func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -> void:
+func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary, connection: Artifact.Option) -> void:
 	var font_size := 11
 	var f := resolved_theme.default_font
 	var center := size / 2
@@ -67,16 +67,19 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -
 	if option.effect != Artifact.Effect.NONE:
 		amount = option.amount_description()
 	elif option.event != Artifact.Event.NONE:
-		amount = option.duration_description()
+		if connection != null and (connection.element == Artifact.Element.HEALTH or connection.element == Artifact.Element.MANA):
+			amount = ""
+		else:
+			amount = option.duration_description()
 		
 	font_size = ceili(font_size * maxf(size.x / 176.0, 0.181818))
-	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + Vector2(0, 8)
+	var w := f.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 
 	var v := Vector2(32, 16) * (size / 176.0)
-	var u := Vector2(maxf(w.x, v.x) + 4, (w.y + v.y) + 4)
-	draw_string(f, center - Vector2(w.x / 2, -w.y / 2) + offset - mask * u, amount, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, label_color_top)
+	var u := Vector2(maxf(w.x, v.x) + 12, (w.y + v.y) + 12)
 	
 	var dir_pos: Vector2 = center - Vector2(v.x / 2, w.y / 2) + offset - mask * u
+	draw_string(f, dir_pos + Vector2(v.x / 2.0 - w.x / 2, v.y / 2.0 + w.y / 2.0 + f.get_descent(font_size)), amount, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, label_color_top)
 	var dir_tex := option.direction_texture()
 	if dir_tex == null:
 		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/4, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
@@ -86,6 +89,11 @@ func draw_option(offset: Vector2, option: Artifact.Option, colors: Dictionary) -
 	else:
 		draw_texture_rect(dir_tex, Rect2(dir_pos + Vector2(0, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
 		draw_texture_rect(option.element_texture(), Rect2(dir_pos + Vector2(v.x/2, -v.y/2), Vector2(v.x/2, v.y)), false, label_color_bottom)
+		
+	if connection != null and option.event != Artifact.Event.NONE:
+		var ind_size := size * 0.03
+		var ind_center := center + offset - ind_size * mask * 2
+		draw_colored_polygon(PackedVector2Array([ind_center + inv_mask * ind_size, ind_center + mask * ind_size * 2, ind_center + inv_mask * -ind_size]), pattern_color)
 		
 	var line_width := minf(size.x / 176.0, 1.0)
 	if option.pattern == Artifact.Pattern.TRIANGLE:
@@ -130,7 +138,7 @@ func get_label_color(index: int) -> Dictionary:
 		3: high_color = artifact.left.color()
 	var HIGH := {0: high_color, 1: high_color, 2: high_color}
 	
-	var result : Dictionary = HIGH if highlighted.get(index, false) else BASE
+	var result : Dictionary = HIGH if highlighted.get(index, null) != null else BASE
 	
 	if warning.has(index):
 		#result.merge(warning[index], true)
@@ -161,7 +169,27 @@ func _draw() -> void:
 	else:
 		draw_style_box(normal_style, Rect2(Vector2.ZERO, size))
 	
-	draw_option(Vector2(0, -size.y / 2), artifact.top, get_label_color(0))
-	draw_option(Vector2(0, size.y / 2), artifact.bottom, get_label_color(2))
-	draw_option(Vector2(-size.x / 2, 0), artifact.left, get_label_color(3))
-	draw_option(Vector2(size.x / 2, 0), artifact.right, get_label_color(1))
+	draw_option(Vector2(0, -size.y / 2), artifact.top, get_label_color(0), highlighted.get(0, null) as Artifact.Option)
+	draw_option(Vector2(0, size.y / 2), artifact.bottom, get_label_color(2), highlighted.get(2, null) as Artifact.Option)
+	draw_option(Vector2(-size.x / 2, 0), artifact.left, get_label_color(3), highlighted.get(3, null) as Artifact.Option)
+	draw_option(Vector2(size.x / 2, 0), artifact.right, get_label_color(1), highlighted.get(1, null) as Artifact.Option)
+	
+	tooltip_text = artifact.top.description()
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		var ev := event as InputEventMouseMotion
+		var pos := ev.global_position - global_position
+		if not (pos.x < 0 or pos.y < 0 or pos.x > size.x or pos.y > size.y):
+			pos = (size - pos) - size / 2.0
+			if (pos / (size * 0.5)).length() < 0.4:
+				tooltip_text = ""
+			else: 
+				var angle := pos.angle()
+				var maa := fposmod(angle + PI * 2 - PI / 2 + PI / 8, PI * 2.0)
+				var index := floori(maa / (PI * 2.0) * 8)
+				if index == 0: tooltip_text = artifact.top.description()
+				elif index == 2: tooltip_text = artifact.right.description()
+				elif index == 4: tooltip_text = artifact.bottom.description()
+				elif index == 6: tooltip_text = artifact.left.description()
+				else: tooltip_text = ""
