@@ -286,6 +286,41 @@ func highlight_all_available_cells_for_placement(artifact: Artifact) -> PackedVe
 				
 	return result
 	
+func all_effects_description() -> String:
+	var result := ""
+	
+	var groups := {} # [Option][int]Option ([EventOption][int]EffectOption)
+	for c: Vector2 in active_options:
+		var a := get_artifact_at_coord(c)
+		for i: int in active_options[c]:
+			var o := active_options[c][i] as Artifact.Option
+			var e: Artifact.Option = null
+			match i:
+				0: e = a.top
+				1: e = a.right
+				2: e = a.bottom
+				3: e = a.left
+			if e != null and e.event != Artifact.Event.NONE:
+				if not groups.has(e):
+					groups[e] = {}
+				if o.element == Artifact.Element.MANA or o.element == Artifact.Element.HEALTH:
+					groups[e][99999999] = o
+				else:
+					groups[e][e.amount] = o
+					
+	for event: Artifact.Option in groups:
+		result += event.description() + ": \n"
+		for duration: int in groups[event]:
+			var effect := groups[event][duration] as Artifact.Option
+			if duration != 99999999:
+				result += "  - " + effect.description() + " For " + event.duration_description() + "\n"
+			else:
+				result += "  - " + effect.description() + "\n"
+				
+	if result == "":
+		result = "Connect Artifacts on the Grid to Gain Buffs and Debuffs"
+				
+	return result
 	
 func save(world_name: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)

@@ -177,6 +177,9 @@ func _draw() -> void:
 	tooltip_text = artifact.top.description()
 
 func _input(event: InputEvent) -> void:
+	if artifact == null:
+		return
+		
 	if event is InputEventMouseMotion:
 		var ev := event as InputEventMouseMotion
 		var pos := ev.global_position - global_position

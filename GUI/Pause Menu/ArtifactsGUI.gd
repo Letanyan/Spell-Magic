@@ -5,6 +5,7 @@ extends Control
 @onready var artifact_grid: InfinityGrid = $artifact_grid
 @onready var artifact_preview: GridTile = $artifact_preview
 @onready var destroy_artifact: Button = $Destroy
+@onready var effects_list: Label = $effects_list
 
 @onready var filter_top: MenuButton = $Top
 @onready var filter_left: MenuButton = $Left
@@ -108,6 +109,8 @@ func update_list_and_grid() -> void:
 	for move in possible_moves:
 		if move == artifact_grid.selected_cell_coord:
 			update_selected_artifact()
+			
+	update_effects_list_tooltip()
 
 func update_selected_artifact() -> void:
 	if artifacts_list.get_selected_items().is_empty():
@@ -348,6 +351,9 @@ func deselect_all() -> void:
 func highlight_all_available_cells_for_placement() -> void:
 	artifact_grid.highlighted_cells = artifacts.highlight_all_available_cells_for_placement(artifact_preview.artifact)
 	artifact_grid.queue_redraw()
+	
+func update_effects_list_tooltip() -> void:
+	effects_list.tooltip_text = artifacts.all_effects_description()
 
 func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void:
 	var menu := button.get_popup() as PopupMenu

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c0eqpohrkp1r7"]
+[gd_scene load_steps=12 format=3 uid="uid://c0eqpohrkp1r7"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/ArtifactsGUI.gd" id="1_lsxrb"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/InfinityGrid.gd" id="2_reg1r"]
@@ -10,6 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://c4ahek33r0tva" path="res://GUI/Images/right.svg" id="6_j6i0q"]
 [ext_resource type="Texture2D" uid="uid://bql6w7l7jeygc" path="res://GUI/Images/bottom.svg" id="7_s27d8"]
 [ext_resource type="Texture2D" uid="uid://xncojprr0p71" path="res://GUI/Images/top bottom left right.svg" id="10_qgfxf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_goeow"]
+font_size = 20
 
 [node name="Artifacts" type="Control"]
 layout_mode = 3
@@ -201,6 +204,18 @@ popup/item_2/text = "Effect"
 popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
+
+[node name="effects_list" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1112.0
+offset_top = 608.0
+offset_right = 1144.0
+offset_bottom = 640.0
+mouse_filter = 0
+text = "?"
+label_settings = SubResource("LabelSettings_goeow")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]

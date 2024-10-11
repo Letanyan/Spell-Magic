@@ -153,14 +153,18 @@ class Option:
 		pattern = dict.get("pattern", 0)
 		
 	func save_int() -> int:
-		return (effect << 55) | (event << 47) | (element << 39) | (pattern << 31) | (amount & 0xEFFF_FFFF)
+		var mag := absi(amount) & 0x7FFF_FFFF
+		var smag := (0x8000_0000 if amount < 0 else 0) | mag
+		return (effect << 55) | (event << 47) | (element << 39) | (pattern << 31) | smag
 		
 	func load_int(dict: int) -> void:
 		effect = ((dict >> 55) & 0xFF) as Effect
 		event  = ((dict >> 47) & 0xFF) as Event
 		element = ((dict >> 39) & 0xFF) as Element
 		pattern = ((dict >> 31) & 0xFF) as Pattern
-		amount = dict & 0xEFFF_FFFF
+		amount = dict & 0x7FFF_FFFF
+		if (dict & 0x8000_0000) != 0:
+			amount *= -1
 		
 	func amount_as_tuple() -> Vector2:
 		match effect:
