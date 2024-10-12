@@ -302,20 +302,20 @@ func all_effects_description() -> String:
 				3: e = a.left
 			if e != null and e.event != Artifact.Event.NONE:
 				if not groups.has(e):
-					groups[e] = {}
+					groups[e.description()] = {}
 				if o.element == Artifact.Element.MANA or o.element == Artifact.Element.HEALTH:
-					groups[e][99999999] = o
+					groups[e.description()][""] = o.description()
 				else:
-					groups[e][e.amount] = o
+					groups[e.description()][e.duration_description()] = o.description()
 					
-	for event: Artifact.Option in groups:
-		result += event.description() + ": \n"
-		for duration: int in groups[event]:
-			var effect := groups[event][duration] as Artifact.Option
-			if duration != 99999999:
-				result += "  - " + effect.description() + " For " + event.duration_description() + "\n"
+	for event: String in groups:
+		result += event + ": \n"
+		for duration: String in groups[event]:
+			var effect := groups[event][duration] as String
+			if duration != "":
+				result += "  - " + effect + " For " + duration + "\n"
 			else:
-				result += "  - " + effect.description() + "\n"
+				result += "  - " + effect + "\n"
 				
 	if result == "":
 		result = "Connect Artifacts on the Grid to Gain Buffs and Debuffs"

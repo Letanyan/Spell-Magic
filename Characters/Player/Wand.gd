@@ -87,6 +87,7 @@ signal action_updated
 signal picked_spell_changed
 signal key_down
 signal key_up
+signal will_show_selection_wheel
 
 func _init() -> void:
 	name = "Wand"
@@ -201,6 +202,7 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref) ->
 			opt.start_hold = Time.get_unix_time_from_system()
 			if opt.kind == Kind.PICK and selection_wheel != null:
 				selection_wheel.segments = opt.spell
+				will_show_selection_wheel.emit()
 				selection_wheel.get_tree().create_timer(0.123).timeout.connect(func() -> void:
 					var charge := Time.get_unix_time_from_system() - opt.start_hold
 					if charge > 0.075 and not selection_wheel.segments.is_empty():

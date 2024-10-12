@@ -61,6 +61,7 @@ func set_wand(value: Wand) -> void:
 		wand.picked_spell_changed.disconnect(update_wand_mappings)
 		wand.key_up.disconnect(update_wand_mappings)
 		wand.key_down.disconnect(update_wand_mappings)
+		wand.will_show_selection_wheel.disconnect(update_selection_wheel_spells)
 	wand = value
 	wand.selection_wheel = selection_wheel
 	wand.spell_disallowed.connect(spell_was_disallowed)
@@ -69,6 +70,7 @@ func set_wand(value: Wand) -> void:
 	wand.picked_spell_changed.connect(update_wand_mappings)
 	wand.key_up.connect(update_wand_mappings)
 	wand.key_down.connect(update_wand_mappings)
+	wand.will_show_selection_wheel.connect(update_selection_wheel_spells)
 	update_wand_mappings()
 	update_spell_cooldowns()
 
@@ -382,15 +384,19 @@ func update_stats_view() -> void:
 	sv.iceDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.ICE, v).y, player.spell_modifier.get(Spell.Element.ICE, v).x]
 	sv.iceRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ICE, v).y, player.damage_resistance.get(Spell.Element.ICE, v).x]
 	sv.electricDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.ELECTRIC, v).y, player.spell_modifier.get(Spell.Element.ELECTRIC, v).x]
-	sv.electricRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ELECTRIC, v).y, player.damage_resistance.get(Spell.Element.ELECTRIC, v).x]
+	sv.electricRES.text = "%d%%%+d" % [player.damage_resistance.get(Spell.Element.ELECTRIC, v).y, player.damage_resistance.get(Spell.Element.ELECTRIC, v).x]	
 	
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("menu"):
-		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func update_selection_wheel_spells() -> void:
+	#selection_wheel.image_segments.clear()
+	# FIXME: make spell images look better
+	# FIXME: update canvas drawing only when texture is ready
+	for spell_text in selection_wheel.segments:
+		var spell := book.find_spell(spell_text)
+		if spell == null:
+			var img := Image.create_empty(64, 64, false, Image.Format.FORMAT_RGBA8)
+			selection_wheel.image_segments[""] = ImageTexture.create_from_image(img)
 		else:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			
+			var img := spell.generate_image_preview(Vector2(64, 64), player.spell_caster, player, 20)
+			selection_wheel.image_segments[spell_text] = ImageTexture.create_from_image(img)
 		
-	
-	

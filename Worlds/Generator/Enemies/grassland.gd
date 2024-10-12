@@ -8,18 +8,19 @@ enum GRASSLAND_STRUCTURES_KIND {
 	UNDEAD, MOLE,
 	ABANDONED_VILLAGE,
 	TARGET_PUZZLE,
-	HIVE, SLIMY, FLOCK
+	HIVE, SLIMY, FLOCK, PETS
 }
 
 const GRASSLAND_STRUCTURE = {
-	GRASSLAND_STRUCTURES_KIND.NONE: 80,
+	GRASSLAND_STRUCTURES_KIND.NONE: 160,
 	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 5,
 	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 2.5,
 	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.5,
 	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.05,
 	GRASSLAND_STRUCTURES_KIND.HIVE: 0.1,
-	GRASSLAND_STRUCTURES_KIND.SLIMY: 0.1,
+	GRASSLAND_STRUCTURES_KIND.SLIMY: 0.05,
 	GRASSLAND_STRUCTURES_KIND.FLOCK: 0.1,
+	GRASSLAND_STRUCTURES_KIND.PETS: 0.05,
 	#GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE: 0.01
 }
 
@@ -60,8 +61,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if bee_count <= 0 and bumble_count <= 0:
 					continue
 					
+				var radius := rng.randf_range(15.0, 30.0) 
+				var angle_offset := rng.randf_range(0.0, 2 * PI)
 				for i in 6:
-					var p := pos + Vector2(15, 0).rotated(PI * 2 * (float(i) / 6.0))
+					var p := pos + Vector2(radius, 0).rotated(PI * 2 * (float(i) / 6.0) + angle_offset)
 					var tree := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, p, 0.0, pop.always_valid)
 					if tree != null:
 						result.append(tree)
@@ -103,9 +106,11 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var pos := area[index]
 				var r := Population.random_entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
 				const circle_points = 3
+				var angle_offset := rng.randf_range(0, 2 * PI)
+				var radius_offset := rng.randf_range(0, float(r))
 				for a in r * circle_points:
 					var angle := (PI * 2) * (float(a) / float(r * circle_points))
-					var p := pos + Vector2(r * 8, 0).rotated(angle)
+					var p := pos + Vector2(r * 8 + radius_offset, 0).rotated(angle + angle_offset)
 					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_PYRAMID: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
 					if entity != null:
@@ -116,6 +121,30 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if boss != null:
 					result.append(boss)
 				for i in mini_count:
+					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
+					if p != null:
+						result.append(p)
+						
+			GRASSLAND_STRUCTURES_KIND.PETS:
+				index += 1
+				var pos := area[index]
+				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 1: 0.8}) as int
+				const circle_points = 3
+				var angle_offset := rng.randf_range(0, 2 * PI)
+				var radius_offset := rng.randf_range(0, float(r))
+				for a in r * circle_points:
+					var angle := (PI * 2) * (float(a) / float(r * circle_points))
+					var p := pos + Vector2(r * 8 + radius_offset, 0).rotated(angle + angle_offset)
+					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_PYRAMID: 10}) as World.Foliage
+					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
+					if entity != null:
+						result.append(entity)
+					
+				var mini_count := rng.randi_range(1, r)
+				for i in mini_count:
+					var boss := pop.spawn_enemy(World.Enemy.RABBIT, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
+					if boss != null:
+						result.append(boss)
 					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
 					if p != null:
 						result.append(p)

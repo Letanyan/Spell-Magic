@@ -153,6 +153,7 @@ static var notes := {
 	"spell Elemental Application": "Certain elements have additional effects. Namely {Fire} applies {Burn}, {Water} applies {Wet}, {Ice} applies {Freeze}, {Electric} applies {Stun} and {Wind} applies {Feather}.",
 	"spell Cooldown": "The time before the spell can be cast again.",
 	"spell Variables": "A list of your variables which can be used in the x, y, z and D expressions. You can use these variables to simplify your other expressions.",
+	"spell chain ^": "If you use ^ at the start of a variable name, all chained spells following will inherit and/or override their same named variables.",
 	
 	"variable u, v, w": "A unit vector {(u,v,w)} describing the direction from the player to the camera aim.",
 	"variable U, V, W": "A unit vector {(U,V,W)} decsribing the direction from the player to an enemy that was in line with the players aim when the spell was cast.",

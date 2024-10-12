@@ -7,6 +7,7 @@ extends Container
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.9)
 @export var inner_circle_fraction: float = 0.75
 @export var segments: Array[String] = []
+@export var image_segments := {} # [String]Texture2D
 @export var radius_range := Vector2(256, 512)
 var resolved_theme: Theme
 var panel_style: StyleBox
@@ -80,13 +81,21 @@ func _draw() -> void:
 	var i := 0
 	current_angle = PI * 3.0 / 2.0 - angle_delta * 0.5
 	for title in segments:
+		var im_size := Vector2.ZERO
+		var img: Texture2D = null
+		if image_segments.has(title):
+			img = image_segments[title] as Texture2D
+			im_size = img.get_size()
+			
 		var w := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
 		var text_center := center + Vector2(inner_radius + (radius - inner_radius) * 0.5, 0).rotated(current_angle + angle_delta * 0.5)
 		if i == selected_segment_index:
-			draw_style_box(hover_style, Rect2(text_center - max_w * 0.5 + w_off_off, max_w))
+			draw_style_box(hover_style, Rect2(text_center - max_w * 0.5 + w_off_off - im_size * 0.5, max_w + Vector2(im_size.x, im_size.y)))
 		else:
-			draw_style_box(panel_style, Rect2(text_center - max_w * 0.5 + w_off_off, max_w))
-		draw_string(font, text_center - Vector2(w.x * 0.5, w.y * -0.25), title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
+			draw_style_box(panel_style, Rect2(text_center - max_w * 0.5 + w_off_off - im_size * 0.5, max_w + Vector2(im_size.x, im_size.y)))
+		draw_string(font, text_center - Vector2(w.x * 0.5, w.y * -0.25) - Vector2(0, im_size.y * 0.5), title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
+		if img != null:
+			draw_texture_rect(img, Rect2(text_center - im_size / 2.0 + w_off_off + Vector2(0, max_w.y * 0.33), im_size), false)
 		i += 1
 		current_angle += angle_delta
 		

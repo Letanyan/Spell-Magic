@@ -39,7 +39,6 @@ extends Control
 @onready var duplicate_button: Button = $container/Duplicate
 @onready var delete_button: Button = $container/Delete
 
-
 var errors_list := {}
 
 var book: MagicBook

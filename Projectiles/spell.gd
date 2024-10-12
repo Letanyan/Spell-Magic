@@ -721,3 +721,52 @@ func bake(new_name: String) -> Spell:
 	result.charge = charge
 	result.is_active = is_active
 	return result
+
+func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, samples: int) -> Image:
+	var img := Image.create_empty(floori(size.x), floori(size.y), false, Image.Format.FORMAT_RGBA8)
+	
+	var vars := caster.all_spell_variables(player, null, self)
+	var ft := Vector3.ZERO
+	var step := duration / samples
+	
+	var ps := get_particles(vars, {}, {})
+	for p in ps:
+		var t := 0.0
+		var minv := Vector3(INF, INF, INF)
+		var maxv := Vector3(-INF, -INF, -INF)
+		var coords := PackedVector3Array([])
+		var temp_vars := p.fixed_vars.duplicate()
+		temp_vars["C"] = 5.0
+		while t <= duration + step:
+			temp_vars["t"] = t
+			compute_expressions(temp_vars, {}, {}, true)
+			ft = calculate_cartesian_point(temp_vars)
+			t += step
+			coords.append(ft)
+			minv = minv.min(ft)
+			maxv = maxv.max(ft)
+		
+		var rangev := maxv - minv
+		rangev = Vector3(maxf(rangev.x, rangev.z), rangev.y, maxf(rangev.x, rangev.z))
+		for i in coords.size():
+			var c := coords[i]
+			c = (c - Vector3(0, minv.y, 0)) / rangev 
+			if is_nan(c.x) or is_inf(c.x): c.x = 0.0
+			if is_nan(c.y) or is_inf(c.y): c.y = 0.0
+			if is_nan(c.z) or is_inf(c.z): c.z = 0.0
+			c = c * Vector3(size.x, 0.05, size.y) * 0.5 + Vector3(size.x, 0.05, size.y) * 0.5
+			coords[i] = c
+		
+		print(coords)
+		var clr := color_from_element(element)
+		for i in coords.size():
+			var c := coords[i]
+			var a := 0.25 + i / float(coords.size()) * 0.75
+			var hs := size * c.y
+			clr.a = a
+			img.fill_rect(Rect2i(roundi(c.x - hs.x * 0.5), roundi(c.z - hs.y * 0.5), roundi(hs.x), roundi(hs.y)), Color.BLACK.blend(clr))
+		
+	return img
+	
+	
+	
