@@ -9,6 +9,8 @@ extends Container
 @export var segments: Array[String] = []
 @export var image_segments := {} # [String]Texture2D
 @export var radius_range := Vector2(256, 512)
+@export var dead_zone := 16.0
+@export var sensitivity := 32.0
 var resolved_theme: Theme
 var panel_style: StyleBox
 var hover_style: StyleBox
@@ -62,7 +64,7 @@ func _draw() -> void:
 	#draw_circle(size / 2.0, text_radius - line_width * 1.5, line_color, false, line_width * 0.25, true)
 	
 	#if mouse_down != null:
-		#draw_circle(mouse_down as Vector2, 16, Color.RED)
+		#draw_circle(mouse_down as Vector2, dead_zone, Color.RED)
 	
 	var angle_delta := (2.0 * PI) / float(segments.size())
 	var current_angle := PI * 3.0 / 2.0 - angle_delta * 0.5
@@ -149,7 +151,34 @@ func _gui_input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	
-	if _event is InputEventMouseMotion:
+	if _event is InputEventJoypadMotion:
+		if mouse_down == null:
+			mouse_down = Vector2.ZERO
+		var event := _event as InputEventJoypadMotion
+		
+		if event.axis == JOY_AXIS_RIGHT_X:
+			mouse_down.x = event.axis_value
+		if event.axis == JOY_AXIS_RIGHT_Y:
+			mouse_down.y = event.axis_value
+		
+		var md := mouse_down as Vector2
+		var index := -1
+		if md.length() > (dead_zone / radius_range.x):
+			var angle_delta := (2.0 * PI) / float(segments.size())
+			var ma := Vector2(size.x - md.x, size.y - md.y).angle()
+			var maa := fposmod(ma + PI * 0.5 + angle_delta * 0.5, PI * 2.0)
+			index = floori(maa / (PI * 2.0) * segments.size())
+			mouse_angle = ma
+		else:
+			mouse_angle = null
+		if index != selected_segment_index:
+			if selected_segment_index != -1:
+				on_segment_unhover.emit(selected_segment_index)
+			on_segment_hover.emit(index)
+			selected_segment_index = index
+		queue_redraw()
+			
+	elif _event is InputEventMouseMotion:
 		var event := _event as InputEventMouseMotion
 		
 		if mouse_down == null:
@@ -158,7 +187,7 @@ func _gui_input(_event: InputEvent) -> void:
 		else:
 			var md := mouse_down as Vector2
 			var index := -1
-			if md.distance_to(event.position) > 16.0:
+			if md.distance_to(event.position) > dead_zone:
 				var angle_delta := (2.0 * PI) / float(segments.size())
 				var ma := (Vector2(size.x - md.x, size.y - md.y) - Vector2(size.x - event.position.x, size.y - event.position.y)).angle()
 				var maa := fposmod(ma + PI * 0.5 + angle_delta * 0.5, PI * 2.0)
@@ -175,10 +204,9 @@ func _gui_input(_event: InputEvent) -> void:
 			
 		if Input.mouse_mode == Input.MouseMode.MOUSE_MODE_CONFINED_HIDDEN and mouse_down != null:
 			var center := mouse_down as Vector2
-			var radius := clampf(minf(size.x, size.y) / 2.0, radius_range.x, radius_range.y)
-			if center.distance_to(event.position) > radius:
+			if center.distance_to(event.position) > sensitivity:
 				var V := event.position - center
-				Input.warp_mouse(center + V / V.length() * radius)
+				Input.warp_mouse(center + V / V.length() * sensitivity)
 
 func visiblity_did_change() -> void:
 	if not visible:
