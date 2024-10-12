@@ -14,11 +14,12 @@ extends Control
 @onready var wand_mapping: RichTextLabel = $WandMappingPanel/WandMapping
 
 @onready var notification_label: RichTextLabel = $NotificationLabel
-var notifications: Dictionary = {} # [String(Message)]int(seconds until expiration)
+var notifications: Dictionary = {} ## [String(Message)]int(seconds until expiration)
 
 @onready var stats_view: StatsView = $StatsView
 
 @onready var selection_wheel: SelectionWheel = $SelectionWheel
+var image_preview_raws := {} ## [String]Texture2D
 
 var cooldown_map: Dictionary
 var cooldown_alert: Dictionary
@@ -388,15 +389,16 @@ func update_stats_view() -> void:
 	
 
 func update_selection_wheel_spells() -> void:
-	#selection_wheel.image_segments.clear()
-	# FIXME: make spell images look better
+	selection_wheel.image_segments.clear()
 	# FIXME: update canvas drawing only when texture is ready
 	for spell_text in selection_wheel.segments:
 		var spell := book.find_spell(spell_text)
-		if spell == null:
-			var img := Image.create_empty(64, 64, false, Image.Format.FORMAT_RGBA8)
-			selection_wheel.image_segments[""] = ImageTexture.create_from_image(img)
-		else:
-			var img := spell.generate_image_preview(Vector2(64, 64), player.spell_caster, player, 20)
-			selection_wheel.image_segments[spell_text] = ImageTexture.create_from_image(img)
+		if spell != null:
+			if not image_preview_raws.has(spell.preview_image):
+				var tex := load("res://GUI/Images/Spell Preview/[large] %s.svg" % spell.preview_images[spell.preview_image])
+				image_preview_raws[spell.preview_image] = tex
+			var tinted := TintedTexture.new()
+			tinted.texture = image_preview_raws[spell.preview_image]
+			tinted.tint = Spell.color_from_element(spell.element)
+			selection_wheel.image_segments[spell_text] = tinted
 		

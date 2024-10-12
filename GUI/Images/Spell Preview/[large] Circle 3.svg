@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <symbol
+       id="Projectile"
+       style="display:inline">
+      <circle
+         style="display:inline"
+         id="path1"
+         cx="94.263702"
+         cy="417.48904"
+         r="92" />
+      <path
+         style="display:inline"
+         d="M 473.94513,19.879394 C 220.87694,260.05232 22.463136,364.69534 22.463136,364.69534 L 159.38947,473.56352 c 0,0 74.6149,-213.57476 314.55566,-453.684126 z"
+         id="path2" />
+    </symbol>
+  </defs>
+  <g
+     id="layer17"
+     style="display:inline;fill:#ffffff">
+    <use
+       xlink:href="#Projectile"
+       id="use1-0"
+       transform="matrix(0.36008338,0,0,0.36008338,81.395327,95.022303)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <use
+       xlink:href="#Projectile"
+       id="use303"
+       transform="matrix(-0.13540243,-0.33365585,0.33365585,-0.13540243,195.8729,482.72534)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <use
+       xlink:href="#Projectile"
+       id="use304"
+       transform="matrix(-0.12493779,0.33771377,-0.33771377,-0.12493779,476.56821,155.97269)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:0;stroke:#ffffff;stroke-width:0"
+       id="rect4"
+       width="512"
+       height="512"
+       x="9.4299548e-07"
+       y="1.0001069e-06" />
+  </g>
+</svg>

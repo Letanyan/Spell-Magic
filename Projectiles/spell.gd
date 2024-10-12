@@ -2,9 +2,15 @@ class_name Spell
 
 enum Element { VOID, FIRE, ROCK, ELECTRIC, WATER, AIR, ICE }
 enum ChainCastKind { START, END, HIT }
+const preview_images: Array[String] = [
+	"Single", "Double", "Triple", "Quadruple", "Pentuple", "Sextuple", 
+	"Bomb 1", "Bomb 2", "Bomb 3", "Bomb 4", "Bomb 5", "Bomb 6",
+	"Circle 1", "Circle 2", "Circle 3", "Circle 4", "Circle 5", "Circle 6",
+]
 
 var element: Element
 var name: String
+var preview_image: int = 0
 var x: String
 var y: String
 var z: String
@@ -102,6 +108,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
+	result.preview_image = preview_image
 	result.crit_rate = crit_rate
 	result.crit_dmg = crit_dmg
 	result.spherical_coords = spherical_coords
@@ -510,14 +517,15 @@ func save_dict() -> Dictionary:
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
 		"expression_strings": expression_strings, "is_active": is_active, 
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
-		"spherical_coords": spherical_coords,
+		"spherical_coords": spherical_coords, "preview_image": preview_image,
 	}
 
 func load_dict(dict: Dictionary) -> void:
-	name = dict.get("name", "")
-	x = dict["x"]
-	y = dict["y"]
-	z = dict["z"]
+	name = dict.get("name", "") as String
+	preview_image = dict.get("preview_image", 0) as int
+	x = dict["x"] as String
+	y = dict["y"] as String
+	z = dict["z"] as String
 	var temp_r: Variant = dict["r"]
 	radius = temp_r if temp_r is float else (temp_r as String).to_float()
 	power = dict["power"]

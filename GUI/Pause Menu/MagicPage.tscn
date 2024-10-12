@@ -1,8 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=19 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="2_5wkxc"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
 [ext_resource type="Texture2D" uid="uid://b44g28n50yfr1" path="res://GUI/Images/void.svg" id="2_lmkyc"]
+[ext_resource type="Texture2D" uid="uid://cpii2gd8wmf8c" path="res://GUI/Images/Spell Preview/[small] Single.svg" id="3_el3cg"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="3_ym6f5"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="4_t4gxd"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="5_r15t1"]
@@ -14,6 +16,17 @@
 [ext_resource type="Texture2D" uid="uid://ckh44temenbma" path="res://GUI/Images/duplicate.svg" id="10_ne1rx"]
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
 [ext_resource type="Texture2D" uid="uid://5kr3ouhyf7f6" path="res://GUI/Images/sphere.svg" id="12_g3iwv"]
+
+[sub_resource type="Texture2D" id="Texture2D_t5rec"]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("2_5wkxc")
+texture = ExtResource("3_el3cg")
+tint = Color(1, 1, 1, 1)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/[small] Single.svg-2b7a9b8e8637fc07066a9b8e8d1408a2.ctex"
+script = ExtResource("2_5wkxc")
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
 font_color = Color(1, 0, 0, 1)
@@ -35,19 +48,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 focus_neighbor_right = NodePath("name_edit")
 
-[node name="name" type="RichTextLabel" parent="container"]
+[node name="preview_image" type="Button" parent="container"]
 layout_mode = 0
-offset_left = 16.0
+offset_left = 8.0
 offset_top = 8.0
-offset_right = 88.0
+offset_right = 40.0
 offset_bottom = 40.0
-bbcode_enabled = true
-text = "[left][font_size=16][img=l,24x24]res://GUI/Images/quill.svg[/img] Name[/font_size][/left]"
+toggle_mode = true
+icon = SubResource("Texture2D_t5rec")
 
 [node name="name_edit" type="LineEdit" parent="container"]
 layout_mode = 2
 anchor_right = 1.0
-offset_left = 96.0
+offset_left = 48.0
 offset_top = 8.0
 offset_right = -328.0
 offset_bottom = 40.0
@@ -98,10 +111,9 @@ popup/item_6/id = 6
 [node name="x" type="RichTextLabel" parent="container"]
 layout_mode = 2
 offset_left = 8.0
-offset_top = 58.0
-offset_right = 56.0
-offset_bottom = 90.0
-rotation = -0.00125103
+offset_top = 56.0
+offset_right = 40.0
+offset_bottom = 88.0
 bbcode_enabled = true
 text = "[center][font_size=16]x[/font_size][/center]"
 
@@ -109,9 +121,9 @@ text = "[center][font_size=16]x[/font_size][/center]"
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.618
-offset_left = 56.0
+offset_left = 48.0
 offset_top = 58.0
-offset_right = 0.0639648
+offset_right = 0.0640259
 offset_bottom = 90.0
 focus_neighbor_top = NodePath("../name_edit")
 focus_neighbor_right = NodePath("../duration_edit")
@@ -124,7 +136,7 @@ placeholder_text = "expression"
 layout_mode = 2
 offset_left = 8.0
 offset_top = 104.0
-offset_right = 56.0
+offset_right = 40.0
 offset_bottom = 136.0
 bbcode_enabled = true
 text = "[center][font_size=16]y[/font_size][/center]
@@ -134,9 +146,9 @@ text = "[center][font_size=16]y[/font_size][/center]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.618
-offset_left = 56.0
+offset_left = 48.0
 offset_top = 104.0
-offset_right = 0.0639648
+offset_right = 0.0640259
 offset_bottom = 136.0
 focus_neighbor_top = NodePath("../x_edit")
 focus_neighbor_right = NodePath("../delay_edit")
@@ -149,7 +161,7 @@ placeholder_text = "expression"
 layout_mode = 0
 offset_left = 8.0
 offset_top = 152.0
-offset_right = 56.0
+offset_right = 40.0
 offset_bottom = 184.0
 bbcode_enabled = true
 text = "[center][font_size=16]z[/font_size][/center]"
@@ -158,9 +170,9 @@ text = "[center][font_size=16]z[/font_size][/center]"
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.618
-offset_left = 56.0
+offset_left = 48.0
 offset_top = 152.0
-offset_right = 0.0639648
+offset_right = 0.0640259
 offset_bottom = 184.0
 grow_horizontal = 0
 focus_neighbor_top = NodePath("../y_edit")
@@ -174,7 +186,7 @@ placeholder_text = "expression"
 layout_mode = 0
 offset_left = 8.0
 offset_top = 200.0
-offset_right = 56.0
+offset_right = 40.0
 offset_bottom = 232.0
 bbcode_enabled = true
 text = "[center][font_size=16]r[/font_size][/center]"
@@ -183,9 +195,9 @@ text = "[center][font_size=16]r[/font_size][/center]"
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.618
-offset_left = 56.0
+offset_left = 48.0
 offset_top = 200.0
-offset_right = 0.0639648
+offset_right = 0.0640259
 offset_bottom = 232.0
 grow_horizontal = 0
 focus_neighbor_top = NodePath("../z_edit")
@@ -230,7 +242,7 @@ layout_mode = 1
 anchors_preset = -1
 offset_left = 8.0
 offset_top = 248.0
-offset_right = 55.9999
+offset_right = 40.0
 offset_bottom = 280.0
 bbcode_enabled = true
 text = "[center][font_size=16]D[/font_size][/center]"
@@ -239,9 +251,9 @@ text = "[center][font_size=16]D[/font_size][/center]"
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.618
-offset_left = 56.0
+offset_left = 48.0
 offset_top = 248.0
-offset_right = 0.0639648
+offset_right = 0.0640259
 offset_bottom = 280.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../y_edit")
@@ -625,6 +637,7 @@ offset_bottom = 280.0
 grow_horizontal = 2
 placeholder_text = "value"
 
+[connection signal="pressed" from="container/preview_image" to="." method="_on_preview_image_pressed"]
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
 [connection signal="item_selected" from="container/element_combo" to="." method="_on_element_combo_selected"]
 [connection signal="text_changed" from="container/x_edit" to="." method="_on_x_text_changed"]

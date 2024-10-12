@@ -1,7 +1,13 @@
 class_name MagicPage
 extends Control
 
+@onready var main_container: Panel = $container
+
 @onready var name_edit: LineEdit = $container/name_edit
+@onready var preview_image: Button = $container/preview_image
+var preview_selector: Panel
+var preview_selector_buttons: Array[Button] = []
+var preview_images: Array[Texture2D] = []
 
 @onready var x_edit: LineEdit = $container/x_edit
 @onready var y_edit: LineEdit = $container/y_edit
@@ -57,7 +63,8 @@ signal return_focus
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	if preview_selector == null:
+		make_preview_selector()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -73,6 +80,16 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 		chain_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i] as Spell.ChainCastKind))
 	
 	name_edit.text = spell.name
+	var tint_color := Spell.color_from_element(spell.element)
+	(preview_image.icon as TintedTexture).texture = preview_images[spell.preview_image]
+	(preview_image.icon as TintedTexture).tint = tint_color
+	for btn: Button in preview_selector_buttons:
+		btn.set_pressed_no_signal(false)
+		(btn.icon as TintedTexture).tint = tint_color
+	preview_selector_buttons[spell.preview_image].set_pressed_no_signal(true)
+	preview_image.set_pressed_no_signal(false)
+	preview_selector.hide()
+	preview_image.queue_redraw()
 	
 	x_edit.text = spell.x
 	y_edit.text = spell.y
@@ -103,6 +120,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 		expressions.text += "%s = %s\n" % [n, spell.expression_strings[n]]
 		
 	var is_editable := index >= 0 and not book.settings.game_mode_settings.has_flag(GameModeSettings.DISALLOW_SPELL_EDITING)
+	preview_image.disabled = not is_editable
 	name_edit.editable = is_editable
 	x_edit.editable = is_editable
 	y_edit.editable = is_editable
@@ -140,6 +158,9 @@ func update_cooldown() -> void:
 		mana_cost.text = "Total (Inc. chain): " + Globals.format_number_nearest_place(book.spells[current_index].actual_mana_cost())
 	else:
 		mana_cost.text = ""
+	
+func _on_preview_image_pressed() -> void:
+	preview_selector.visible = preview_image.button_pressed
 	
 func _on_name_edit_text_changed(new_text: String) -> void:
 	if current_index < 0:
@@ -612,3 +633,45 @@ func _on_duplicate_pressed() -> void:
 	if current_index < 0:
 		return
 	duplicate_spell.emit(current_index)
+
+func make_preview_selector() -> void:
+	const S = 32
+	
+	preview_selector = Panel.new()
+	preview_selector.size = Vector2(S * 6 + 8 * 7, S * 3 + 8 * 4)
+	preview_selector.position = preview_image.position + Vector2(0, preview_image.size.y + 8)
+	main_container.add_child(preview_selector)
+	
+	var c := 0
+	var r := 0
+	var i := 0
+	for img in Spell.preview_images:
+		var btn := Button.new()
+		btn.size = Vector2(S, S)
+		btn.position = Vector2(c * S + 8 * (c + 1), r * S + 8 * (r + 1))
+		var tex := TintedTexture.new()
+		var raw_tex := load("res://GUI/Images/Spell Preview/[small] %s.svg" % img) as CompressedTexture2D
+		tex.texture = raw_tex
+		preview_images.append(raw_tex)
+		preview_selector_buttons.append(btn)
+		btn.icon = tex
+		btn.toggle_mode = true
+		btn.pressed.connect(func() -> void:
+			if current_index < 0:
+				return
+			book.spells[current_index].preview_image = i
+			for ibtn: Button in preview_selector_buttons:
+				ibtn.set_pressed_no_signal(false)
+			btn.set_pressed_no_signal(true)
+			(preview_image.icon as TintedTexture).texture = raw_tex
+			preview_image.button_pressed = false
+			preview_selector.hide()
+		)
+		preview_selector.add_child(btn)
+		i += 1
+		c += 1
+		if c >= 6:
+			c = 0
+			r += 1
+			
+	preview_selector.hide()
