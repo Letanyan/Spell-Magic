@@ -5,7 +5,7 @@ extends Container
 @export var line_width: float = 1.0
 @export var line_color: Color = Color(1, 1, 1, 0.1)
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.9)
-@export var inner_circle_fraction: float = 0.75
+@export var inner_circle_fraction: float = 0.6
 @export var segments: Array[String] = []
 @export var image_segments := {} # [String]Texture2D
 @export var radius_range := Vector2(256, 512)
@@ -23,6 +23,9 @@ var mouse_angle: Variant = null # float?
 signal on_segment_hover(index: int)
 signal on_segment_unhover(index: int)
 signal on_segment_selected(index: int)
+
+const base_texture = preload("res://GUI/ThemeUI/NeoBaseGradient.tres")
+const high_texture = preload("res://GUI/ThemeUI/NeoColorSaturatedGradient.tres")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -46,15 +49,17 @@ func _draw() -> void:
 	var text_radius := radius * (inner_circle_fraction + (1.0 - inner_circle_fraction) * 0.5) 
 	var font := resolved_theme.default_font
 	var font_size := 16
+	var bounding_box := Vector2(radius * 2, radius * 2)
 	
 	#draw_circle(size / 2.0, radius, background_color, true, -1.0, true)
 	#draw_circle(size / 2.0, radius + line_width, line_color, false, line_width, true)
 	#draw_circle(size / 2.0, inner_radius, line_color, false, line_width, true)
 	#draw_circle(size / 2.0, text_radius * 1.025, line_color, false, line_width, true)
 	#draw_circle(size / 2.0, text_radius * 0.975, line_color, false, line_width, true)
-	draw_circle(size / 2.0, text_radius * 1.0, line_color, false, line_width, true)
-	draw_circle(size / 2.0, text_radius + line_width * 1.5, line_color, false, line_width * 0.25, true)
-	draw_circle(size / 2.0, text_radius - line_width * 1.5, line_color, false, line_width * 0.25, true)
+	
+	#draw_circle(size / 2.0, text_radius * 1.0, line_color, false, line_width, true)
+	#draw_circle(size / 2.0, text_radius + line_width * 1.5, line_color, false, line_width * 0.25, true)
+	#draw_circle(size / 2.0, text_radius - line_width * 1.5, line_color, false, line_width * 0.25, true)
 	
 	#if mouse_down != null:
 		#draw_circle(mouse_down as Vector2, 16, Color.RED)
@@ -66,8 +71,9 @@ func _draw() -> void:
 	const w_off_off = Vector2(w_off.x * -0.5, w_off.y * 0.25)
 	var max_w := Vector2.ZERO
 	for title in segments:
+		var display_title := title.substr(0, mini(title.length(), 10))
 		draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(current_angle), center + Vector2(text_radius + line_width * 1.5, 0).rotated(current_angle), line_color, line_width, true)
-		var w := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
+		var w := font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
 		if w.x > max_w.x:
 			max_w.x = w.x
 		if w.y > max_w.y:
@@ -75,27 +81,66 @@ func _draw() -> void:
 		current_angle += angle_delta
 		
 	if mouse_angle != null:
-		var ma := (mouse_angle as float) #- PI / 2 - PI / 9
+		var ma := (mouse_angle as float)
 		draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(ma), center + Vector2(text_radius + line_width * 1.5, 0).rotated(ma), line_color, line_width, true)
 	
 	var i := 0
 	current_angle = PI * 3.0 / 2.0 - angle_delta * 0.5
+	@warning_ignore("integer_division")
+	var arc_detail := 64 / segments.size()
 	for title in segments:
+		var display_title := title.substr(0, mini(title.length(), 10))
 		var im_size := Vector2.ZERO
 		var img: Texture2D = null
 		if image_segments.has(title):
 			img = image_segments[title] as Texture2D
 			im_size = img.get_size()
 			
-		var w := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
+		var w := font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
 		var text_center := center + Vector2(inner_radius + (radius - inner_radius) * 0.5, 0).rotated(current_angle + angle_delta * 0.5)
+		
+		var tex: Texture2D
 		if i == selected_segment_index:
-			draw_style_box(hover_style, Rect2(text_center - max_w * 0.5 + w_off_off - im_size * 0.5, max_w + Vector2(im_size.x, im_size.y)))
+			tex = high_texture
 		else:
-			draw_style_box(panel_style, Rect2(text_center - max_w * 0.5 + w_off_off - im_size * 0.5, max_w + Vector2(im_size.x, im_size.y)))
-		draw_string(font, text_center - Vector2(w.x * 0.5, w.y * -0.25) - Vector2(0, im_size.y * 0.5), title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
+			tex = base_texture
+			
+		var vertices := PackedVector2Array([])
+		var uvs := PackedVector2Array([])
+		
+		var ca := current_angle + PI / 512.0
+		var ad := angle_delta - PI / 256.0
+		var coord := Vector2(cos(ca) * inner_radius, sin(ca) * inner_radius)
+		vertices.append(center + coord)
+		uvs.append((coord + coord * 0.5) / bounding_box)
+		coord = Vector2(cos(ca) * radius, sin(ca) * radius)
+		vertices.append(center + coord)
+		uvs.append((coord + coord * 0.5) / bounding_box)
+		var angle_step := ad / float(arc_detail)
+		for samples in arc_detail:
+			coord = Vector2(cos(ca + angle_step * samples) * radius, sin(ca + angle_step * samples) * radius)
+			vertices.append(center + coord)
+			uvs.append((coord + coord * 0.5) / bounding_box)
+			
+		coord = Vector2(cos(ca + ad) * radius, sin(ca + ad) * radius)
+		vertices.append(center + coord)
+		uvs.append((coord + coord * 0.5) / bounding_box)
+		coord = Vector2(cos(ca + ad) * inner_radius, sin(ca + ad) * inner_radius)
+		vertices.append(center + coord)
+		uvs.append((coord + coord * 0.5) / bounding_box)
+		for samples in arc_detail:
+			coord = Vector2(cos(ca + angle_step * (arc_detail - 1 - samples)) * inner_radius, sin(ca + angle_step * (arc_detail - 1 - samples)) * inner_radius)
+			vertices.append(center + coord)
+			uvs.append((coord + coord * 0.5) / bounding_box)
+		
+		if not Geometry2D.triangulate_polygon(vertices).is_empty():
+			draw_polygon(vertices, PackedColorArray([]), uvs, tex)
+		else:
+			draw_arc(center, radius, ca, ca + ad, 8, Color.BLACK, radius - inner_radius, true)
+			
+		draw_string(font, text_center - Vector2(w.x * 0.5, w.y * -0.25) - Vector2(0, im_size.y * 0.5) - w_off_off, display_title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
 		if img != null:
-			draw_texture_rect(img, Rect2(text_center - im_size / 2.0 + w_off_off + Vector2(0, max_w.y * 0.33), im_size), false)
+			draw_texture_rect(img, Rect2(text_center - im_size / 2.0 + Vector2(0, max_w.y * 0.33), im_size), false)
 		i += 1
 		current_angle += angle_delta
 		
@@ -106,8 +151,10 @@ func _gui_input(_event: InputEvent) -> void:
 	
 	if _event is InputEventMouseMotion:
 		var event := _event as InputEventMouseMotion
+		
 		if mouse_down == null:
-			mouse_down = event.position
+			#mouse_down = event.position
+			mouse_down = global_position + size / 2.0
 		else:
 			var md := mouse_down as Vector2
 			var index := -1
@@ -125,6 +172,13 @@ func _gui_input(_event: InputEvent) -> void:
 				on_segment_hover.emit(index)
 				selected_segment_index = index
 			queue_redraw()
+			
+		if Input.mouse_mode == Input.MouseMode.MOUSE_MODE_CONFINED_HIDDEN and mouse_down != null:
+			var center := mouse_down as Vector2
+			var radius := clampf(minf(size.x, size.y) / 2.0, radius_range.x, radius_range.y)
+			if center.distance_to(event.position) > radius:
+				var V := event.position - center
+				Input.warp_mouse(center + V / V.length() * radius)
 
 func visiblity_did_change() -> void:
 	if not visible:
