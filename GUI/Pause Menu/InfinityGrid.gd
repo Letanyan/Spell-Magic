@@ -109,9 +109,7 @@ func _gui_input(_event: InputEvent) -> void:
 		var event := _event as InputEventMouseButton
 		var m_pos: Vector2 = event.global_position - global_position
 		if event.button_index == MOUSE_BUTTON_MIDDLE:
-			offset = Vector2.ZERO
-			queue_redraw()
-			queue_sort()
+			center_grid_on_first_cell()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			var new_scale := minf(cell_scale * 1.1, 2.0)
 			if not is_equal_approx(new_scale, cell_scale):
@@ -211,3 +209,9 @@ func center_grid_on_cell(coord: Vector2) -> void:
 	offset.y = -coord.y * csize.y - csize.y / 2 + size.y / 2
 	queue_redraw()
 	queue_sort()
+
+func center_grid_on_first_cell() -> void:
+	if not child_grid.is_empty():
+		center_grid_on_cell(child_grid.keys()[0] as Vector2)
+	else:
+		center_grid_on_cell(Vector2.ZERO)

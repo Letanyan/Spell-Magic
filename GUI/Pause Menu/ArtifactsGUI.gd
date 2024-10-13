@@ -30,6 +30,8 @@ var artifacts: Artifacts:
 
 var list_mouse_down := false
 
+var is_first_view: bool = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	temporary_grid_tile = GridTile.new()
@@ -113,6 +115,10 @@ func update_list_and_grid() -> void:
 			update_selected_artifact()
 			
 	update_effects_list_tooltip()
+	
+	if is_first_view:
+		is_first_view = false
+		artifact_grid.center_grid_on_first_cell()
 
 func update_selected_artifact() -> void:
 	if artifacts_list.get_selected_items().is_empty():
@@ -130,12 +136,13 @@ func update_selected_artifact() -> void:
 	highlight_all_available_cells_for_placement()
 
 func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
-	update_selected_artifact()
-	if double_click_timer.get(mouse_button_index, false):
-		confirm_place_artifact_from_list()
-	else:
-		get_tree().create_timer(0.3).timeout.connect(func() -> void: double_click_timer[mouse_button_index] = false)
-		double_click_timer[mouse_button_index] = true
+	if mouse_button_index == MOUSE_BUTTON_LEFT:
+		update_selected_artifact()
+		if double_click_timer.get(mouse_button_index, false):
+			confirm_place_artifact_from_list()
+		else:
+			get_tree().create_timer(0.3).timeout.connect(func() -> void: double_click_timer[mouse_button_index] = false)
+			double_click_timer[mouse_button_index] = true
 
 func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
@@ -256,8 +263,6 @@ func confirm_place_artifact_from_list() -> void:
 		artifact_grid.grab_focus()
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
-	# FIXME: when remove tile from grid while artifacts list is selected don't auto add temporary tile preview
-	# FIXME: stop mouse scroll wheel activating some events
 	if event is InputEventKey:
 		var e := event as InputEventKey
 		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
@@ -346,11 +351,23 @@ func disconnect_artifact(coord: Vector2) -> void:
 		if temporary_grid_tile.artifact != null:
 			temporary_grid_tile.artifact = null
 			artifact_preview.artifact = null
-			artifacts_list.deselect(artifacts_list.get_selected_items()[0])
+			if not artifacts_list.get_selected_items().is_empty():
+				artifacts_list.deselect(artifacts_list.get_selected_items()[0])
 		else:
 			artifact_grid.selected_cell_coord = null
+			artifact_preview.artifact = null
+			if not artifacts_list.get_selected_items().is_empty():
+				artifacts_list.deselect(artifacts_list.get_selected_items()[0])
 		update_temporary_grid_tile()
 		update_list_and_grid()
+	else:
+		artifact_grid.selected_cell_coord = null
+		artifact_preview.artifact = null
+		if not artifacts_list.get_selected_items().is_empty():
+			artifacts_list.deselect(artifacts_list.get_selected_items()[0])
+		update_temporary_grid_tile()
+		update_list_and_grid()
+		
 		
 func deselect_all() -> void:
 	artifact_grid.selected_cell_coord = null
