@@ -28,6 +28,7 @@ signal on_segment_selected(index: int)
 
 const base_texture = preload("res://GUI/ThemeUI/NeoBaseGradient.tres")
 const high_texture = preload("res://GUI/ThemeUI/NeoColorSaturatedGradient.tres")
+const norm_texture = preload("res://GUI/ThemeUI/NeoColorGradient.tres")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -44,6 +45,41 @@ func _ready() -> void:
 	visibility_changed.connect(visiblity_did_change)
 	mouse_down = size / 2
 
+func draw_arc_tex(center: Vector2, inner_radius: float, radius: float, start_angle: float, angle_offset: float, arc_detail: int, tex: Texture2D) -> void:
+	var bounding_box := Vector2(radius * 2, radius * 2)
+	
+	var vertices := PackedVector2Array([])
+	var uvs := PackedVector2Array([])
+	
+	var ca := start_angle + PI / 512.0
+	var ad := angle_offset - PI / 256.0
+	var coord := Vector2(cos(ca) * inner_radius, sin(ca) * inner_radius)
+	vertices.append(center + coord)
+	uvs.append((coord + coord * 0.5) / bounding_box)
+	coord = Vector2(cos(ca) * radius, sin(ca) * radius)
+	vertices.append(center + coord)
+	uvs.append((coord + coord * 0.5) / bounding_box)
+	var angle_step := ad / float(arc_detail)
+	for samples in arc_detail:
+		coord = Vector2(cos(ca + angle_step * samples) * radius, sin(ca + angle_step * samples) * radius)
+		vertices.append(center + coord)
+		uvs.append((coord + coord * 0.5) / bounding_box)
+		
+	coord = Vector2(cos(ca + ad) * radius, sin(ca + ad) * radius)
+	vertices.append(center + coord)
+	uvs.append((coord + coord * 0.5) / bounding_box)
+	coord = Vector2(cos(ca + ad) * inner_radius, sin(ca + ad) * inner_radius)
+	vertices.append(center + coord)
+	uvs.append((coord + coord * 0.5) / bounding_box)
+	for samples in arc_detail:
+		coord = Vector2(cos(ca + angle_step * (arc_detail - 1 - samples)) * inner_radius, sin(ca + angle_step * (arc_detail - 1 - samples)) * inner_radius)
+		vertices.append(center + coord)
+		uvs.append((coord + coord * 0.5) / bounding_box)
+	
+	if not Geometry2D.triangulate_polygon(vertices).is_empty():
+		draw_polygon(vertices, PackedColorArray([]), uvs, tex)
+	else:
+		draw_arc(center, radius, ca, ca + ad, 8, Color.BLACK, radius - inner_radius, true)
 
 func _draw() -> void:
 	var radius := clampf(minf(size.x, size.y) / 2.0, radius_range.x, radius_range.y)
@@ -51,17 +87,6 @@ func _draw() -> void:
 	var text_radius := radius * (inner_circle_fraction + (1.0 - inner_circle_fraction) * 0.5) 
 	var font := resolved_theme.default_font
 	var font_size := 16
-	var bounding_box := Vector2(radius * 2, radius * 2)
-	
-	#draw_circle(size / 2.0, radius, background_color, true, -1.0, true)
-	#draw_circle(size / 2.0, radius + line_width, line_color, false, line_width, true)
-	#draw_circle(size / 2.0, inner_radius, line_color, false, line_width, true)
-	#draw_circle(size / 2.0, text_radius * 1.025, line_color, false, line_width, true)
-	#draw_circle(size / 2.0, text_radius * 0.975, line_color, false, line_width, true)
-	
-	#draw_circle(size / 2.0, text_radius * 1.0, line_color, false, line_width, true)
-	#draw_circle(size / 2.0, text_radius + line_width * 1.5, line_color, false, line_width * 0.25, true)
-	#draw_circle(size / 2.0, text_radius - line_width * 1.5, line_color, false, line_width * 0.25, true)
 	
 	#if mouse_down != null:
 		#draw_circle(mouse_down as Vector2, dead_zone, Color.RED)
@@ -89,7 +114,7 @@ func _draw() -> void:
 	var i := 0
 	current_angle = PI * 3.0 / 2.0 - angle_delta * 0.5
 	@warning_ignore("integer_division")
-	var arc_detail := 64 / segments.size()
+	var arc_detail := 64 / maxi(segments.size(), 1)
 	for title in segments:
 		var display_title := title.substr(0, mini(title.length(), 10))
 		var im_size := Vector2.ZERO
@@ -101,44 +126,14 @@ func _draw() -> void:
 		var w := font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
 		var text_center := center + Vector2(inner_radius + (radius - inner_radius) * 0.5, 0).rotated(current_angle + angle_delta * 0.5)
 		
+		draw_arc_tex(center, inner_radius - 2, radius + 2, current_angle, angle_delta, arc_detail, high_texture)
 		var tex: Texture2D
 		if i == selected_segment_index:
 			tex = high_texture
 		else:
 			tex = base_texture
+		draw_arc_tex(center, inner_radius, radius, current_angle + PI / 512.0, angle_delta - PI / 256.0, arc_detail, tex)
 			
-		var vertices := PackedVector2Array([])
-		var uvs := PackedVector2Array([])
-		
-		var ca := current_angle + PI / 512.0
-		var ad := angle_delta - PI / 256.0
-		var coord := Vector2(cos(ca) * inner_radius, sin(ca) * inner_radius)
-		vertices.append(center + coord)
-		uvs.append((coord + coord * 0.5) / bounding_box)
-		coord = Vector2(cos(ca) * radius, sin(ca) * radius)
-		vertices.append(center + coord)
-		uvs.append((coord + coord * 0.5) / bounding_box)
-		var angle_step := ad / float(arc_detail)
-		for samples in arc_detail:
-			coord = Vector2(cos(ca + angle_step * samples) * radius, sin(ca + angle_step * samples) * radius)
-			vertices.append(center + coord)
-			uvs.append((coord + coord * 0.5) / bounding_box)
-			
-		coord = Vector2(cos(ca + ad) * radius, sin(ca + ad) * radius)
-		vertices.append(center + coord)
-		uvs.append((coord + coord * 0.5) / bounding_box)
-		coord = Vector2(cos(ca + ad) * inner_radius, sin(ca + ad) * inner_radius)
-		vertices.append(center + coord)
-		uvs.append((coord + coord * 0.5) / bounding_box)
-		for samples in arc_detail:
-			coord = Vector2(cos(ca + angle_step * (arc_detail - 1 - samples)) * inner_radius, sin(ca + angle_step * (arc_detail - 1 - samples)) * inner_radius)
-			vertices.append(center + coord)
-			uvs.append((coord + coord * 0.5) / bounding_box)
-		
-		if not Geometry2D.triangulate_polygon(vertices).is_empty():
-			draw_polygon(vertices, PackedColorArray([]), uvs, tex)
-		else:
-			draw_arc(center, radius, ca, ca + ad, 8, Color.BLACK, radius - inner_radius, true)
 			
 		draw_string(font, text_center - Vector2(w.x * 0.5, w.y * -0.25) - Vector2(0, im_size.y * 0.5) - w_off_off, display_title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
 		if img != null:

@@ -56,11 +56,16 @@ func update_index(index: int) -> void:
 	upgrades.visible = false
 	settings.visible = false
 	match current_index:
-		0: magic_book.visible = true; spells_button.grab_focus()
-		1: wand_case.visible = true; wands_button.grab_focus()
-		2: artifacts.visible = true; artifacts_button.grab_focus()
-		3: upgrades.visible = true; upgrades_button.grab_focus()
-		4: settings.visible = true; settings_button.grab_focus()
+		0: magic_book.visible = true; # spells_button.grab_focus()
+		1: wand_case.visible = true; # wands_button.grab_focus()
+		2: artifacts.visible = true; # artifacts_button.grab_focus()
+		3: upgrades.visible = true; # upgrades_button.grab_focus()
+		4: settings.visible = true; # settings_button.grab_focus()
+	spells_button.set_pressed_no_signal(magic_book.visible)
+	wands_button.set_pressed_no_signal(wand_case.visible)
+	artifacts_button.set_pressed_no_signal(artifacts.visible)
+	upgrades_button.set_pressed_no_signal(upgrades.visible)
+	settings_button.set_pressed_no_signal(settings.visible)
 
 func _on_spells_pressed() -> void:
 	update_index(0)

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <symbol
+       id="Projectile"
+       style="display:inline">
+      <circle
+         style="display:inline"
+         id="path1"
+         cx="94.263702"
+         cy="417.48904"
+         r="92" />
+      <path
+         style="display:inline"
+         d="M 473.94513,19.879394 C 220.87694,260.05232 22.463136,364.69534 22.463136,364.69534 L 159.38947,473.56352 c 0,0 74.6149,-213.57476 314.55566,-453.684126 z"
+         id="path2" />
+    </symbol>
+  </defs>
+  <g
+     id="layer7"
+     transform="translate(-6.2362976,57.373933)"
+     style="display:inline;fill:#ffffff">
+    <use
+       xlink:href="#Projectile"
+       id="use1-1"
+       transform="matrix(0.24549015,0.32782124,-0.32782124,0.24549015,168.86363,-44.820521)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <use
+       xlink:href="#Projectile"
+       id="use9"
+       transform="matrix(0.29790819,0,0,0.29790819,92.024795,125.68837)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <use
+       xlink:href="#Projectile"
+       id="use10"
+       transform="matrix(0.27477135,-0.28608053,0.23451216,0.33519257,127.37377,253.03375)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <use
+       xlink:href="#Projectile"
+       id="use11"
+       transform="matrix(-0.20569402,0.22851437,0.22851437,0.20569402,360.01591,-18.004627)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <use
+       xlink:href="#Projectile"
+       id="use12"
+       transform="matrix(-0.29047717,-0.00750783,-0.00750783,0.29047717,415.6172,126.25733)"
+       x="0"
+       y="0"
+       style="fill:#ffffff" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:0;stroke:#ffffff;stroke-width:0"
+       id="rect14"
+       width="512"
+       height="512"
+       x="9.4299548e-07"
+       y="1.0001069e-06"
+       transform="translate(6.2362972,-57.373934)" />
+  </g>
+</svg>

@@ -271,6 +271,9 @@ func highlight_all_available_cells_for_placement(artifact: Artifact) -> PackedVe
 	if artifact == null:
 		return PackedVector2Array([])
 		
+	if connected.is_empty():
+		return PackedVector2Array([Vector2.ZERO])
+		
 	var result := PackedVector2Array([])
 	var directions := PackedVector2Array([Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)])
 	var visited_cells := {}

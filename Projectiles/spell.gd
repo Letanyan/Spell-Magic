@@ -3,9 +3,11 @@ class_name Spell
 enum Element { VOID, FIRE, ROCK, ELECTRIC, WATER, AIR, ICE }
 enum ChainCastKind { START, END, HIT }
 const preview_images: Array[String] = [
-	"Single", "Double", "Triple", "Quadruple", "Pentuple", "Sextuple", 
+	"Line 1", "Line 2", "Line 3", "Line 4", "Line 5", "Line 6", 
 	"Bomb 1", "Bomb 2", "Bomb 3", "Bomb 4", "Bomb 5", "Bomb 6",
 	"Circle 1", "Circle 2", "Circle 3", "Circle 4", "Circle 5", "Circle 6",
+	"Outward 1", "Outward 2", "Outward 3", "Outward 4", "Outward 5", "Outward 6",
+	"Inward 1", "Inward 2", "Inward 3", "Inward 4", "Inward 5", "Inward 6",
 ]
 
 var element: Element

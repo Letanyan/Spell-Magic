@@ -21,6 +21,8 @@ var filter_all_options := FilterOptions.new()
 
 var temporary_grid_tile: GridTile
 
+var double_click_timer: Dictionary = {} ## [int(MOUSE_BUTTON_INDEX)]bool(is_clicked)
+
 var artifacts: Artifacts:
 	set(value):
 		artifacts = value
@@ -129,6 +131,11 @@ func update_selected_artifact() -> void:
 
 func _on_artifacts_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	update_selected_artifact()
+	if double_click_timer.get(mouse_button_index, false):
+		confirm_place_artifact_from_list()
+	else:
+		get_tree().create_timer(0.3).timeout.connect(func() -> void: double_click_timer[mouse_button_index] = false)
+		double_click_timer[mouse_button_index] = true
 
 func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
@@ -231,19 +238,22 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var e := event as InputEventKey
 		if e.is_action_pressed("ui_accept"):
-			if not artifacts_list.get_selected_items().is_empty():
-				var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
-				temporary_grid_tile.artifact = artifact
-				if artifact_grid.selected_cell_coord != null:
-					attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
-					artifact_grid.selected_cell_coord = null
-					update_list_and_grid()
-				elif not artifact_grid.highlighted_cells.is_empty():
-					artifact_grid.selected_cell_coord = artifact_grid.highlighted_cells[0]
-					update_temporary_grid_tile()
-				artifact_grid.grab_focus()
+			confirm_place_artifact_from_list()
 		elif e.is_action_pressed("E"):
 			deselect_all()
+			
+func confirm_place_artifact_from_list() -> void:
+	if not artifacts_list.get_selected_items().is_empty():
+		var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
+		temporary_grid_tile.artifact = artifact
+		if artifact_grid.selected_cell_coord != null:
+			attempt_place_artifact(artifact, artifact_grid.selected_cell_coord as Vector2, false)
+			artifact_grid.selected_cell_coord = null
+			update_list_and_grid()
+		elif not artifact_grid.highlighted_cells.is_empty():
+			artifact_grid.selected_cell_coord = artifact_grid.highlighted_cells[0]
+			update_temporary_grid_tile()
+		artifact_grid.grab_focus()
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey:

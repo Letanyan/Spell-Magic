@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="2_5wkxc"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
 [ext_resource type="Texture2D" uid="uid://b44g28n50yfr1" path="res://GUI/Images/void.svg" id="2_lmkyc"]
-[ext_resource type="Texture2D" uid="uid://cpii2gd8wmf8c" path="res://GUI/Images/Spell Preview/[small] Single.svg" id="3_el3cg"]
+[ext_resource type="Texture2D" uid="uid://dbw3m7f6xvqdn" path="res://GUI/Images/Spell Preview/[small] Line 1.svg" id="3_t2rxd"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="3_ym6f5"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="4_t4gxd"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="5_r15t1"]
@@ -21,11 +21,11 @@
 resource_local_to_scene = false
 resource_name = ""
 script = ExtResource("2_5wkxc")
-texture = ExtResource("3_el3cg")
+texture = ExtResource("3_t2rxd")
 tint = Color(1, 1, 1, 1)
 resource_local_to_scene = false
 resource_name = ""
-load_path = "res://.godot/imported/[small] Single.svg-2b7a9b8e8637fc07066a9b8e8d1408a2.ctex"
+load_path = "res://.godot/imported/[small] Line 1.svg-793baa4ea5ec9b923c0902b493f5af60.ctex"
 script = ExtResource("2_5wkxc")
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
@@ -637,6 +637,7 @@ offset_bottom = 280.0
 grow_horizontal = 2
 placeholder_text = "value"
 
+[connection signal="focus_exited" from="container/preview_image" to="." method="hide_preview_selector"]
 [connection signal="pressed" from="container/preview_image" to="." method="_on_preview_image_pressed"]
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
 [connection signal="item_selected" from="container/element_combo" to="." method="_on_element_combo_selected"]

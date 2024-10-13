@@ -634,11 +634,17 @@ func _on_duplicate_pressed() -> void:
 		return
 	duplicate_spell.emit(current_index)
 
+func hide_preview_selector() -> void:
+	preview_selector.hide()
+	preview_image.set_pressed_no_signal(false)
+
 func make_preview_selector() -> void:
 	const S = 32
+	const ROWS = 5
+	const COLS = 6
 	
 	preview_selector = Panel.new()
-	preview_selector.size = Vector2(S * 6 + 8 * 7, S * 3 + 8 * 4)
+	preview_selector.size = Vector2(S * COLS + 8 * (COLS + 1), S * ROWS + 8 * (ROWS + 1))
 	preview_selector.position = preview_image.position + Vector2(0, preview_image.size.y + 8)
 	main_container.add_child(preview_selector)
 	
@@ -663,6 +669,7 @@ func make_preview_selector() -> void:
 			for ibtn: Button in preview_selector_buttons:
 				ibtn.set_pressed_no_signal(false)
 			btn.set_pressed_no_signal(true)
+			btn.focus_exited.connect(hide_preview_selector)
 			(preview_image.icon as TintedTexture).texture = raw_tex
 			preview_image.button_pressed = false
 			preview_selector.hide()
@@ -670,7 +677,7 @@ func make_preview_selector() -> void:
 		preview_selector.add_child(btn)
 		i += 1
 		c += 1
-		if c >= 6:
+		if c >= COLS:
 			c = 0
 			r += 1
 			

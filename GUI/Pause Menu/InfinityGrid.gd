@@ -26,7 +26,7 @@ signal on_cell_clicked(coord: Vector2, mouse_button_index: int)
 signal on_cell_double_clicked(coord: Vector2, mouse_button_index: int)
 signal on_cell_moused_over(coord: Vector2)
 
-var double_click_timer: Dictionary = {}
+var double_click_timer: Dictionary = {} ## [int(MOUSE_BUTTON_INDEX)]bool(is_clicked)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

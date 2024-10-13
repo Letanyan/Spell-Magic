@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="541.92377"
+   viewBox="0 0 512 541.92377"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <symbol
+       id="Projectile"
+       style="display:inline">
+      <circle
+         style="display:inline"
+         id="path1"
+         cx="94.263702"
+         cy="417.48904"
+         r="92" />
+      <path
+         style="display:inline"
+         d="M 473.94513,19.879394 C 220.87694,260.05232 22.463136,364.69534 22.463136,364.69534 L 159.38947,473.56352 c 0,0 74.6149,-213.57476 314.55566,-453.684126 z"
+         id="path2" />
+    </symbol>
+  </defs>
+  <g
+     id="layer2"
+     style="display:inline"
+     transform="translate(-4.4299548e-7,29.923772)">
+    <use
+       xlink:href="#Projectile"
+       style="fill:#ffffff"
+       id="use1-03"
+       transform="matrix(0.40379458,0.08891182,-0.08891182,0.40379458,322.06003,97.461626)" />
+    <use
+       xlink:href="#Projectile"
+       style="fill:#ffffff"
+       id="use27"
+       transform="matrix(-0.00234701,0.31703914,-0.31703914,-0.00234701,420.61145,320.60223)" />
+    <use
+       xlink:href="#Projectile"
+       style="fill:#ffffff"
+       id="use28"
+       transform="matrix(0.00274239,0.37044901,0.37044901,-0.00274239,44.197394,326.29674)" />
+    <use
+       xlink:href="#Projectile"
+       style="fill:#ffffff"
+       id="use29"
+       transform="matrix(0.00354448,-0.47879676,0.47879676,0.00354448,-2.336638,277.41759)" />
+    <use
+       xlink:href="#Projectile"
+       style="fill:#ffffff"
+       id="use30"
+       transform="matrix(0.30912225,-0.27458843,0.27458843,0.30912225,133.38915,94.070914)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:0;stroke:#ffffff;stroke-width:0"
+       id="rect57"
+       width="512"
+       height="512"
+       x="9.4299548e-07"
+       y="1.0001069e-06" />
+  </g>
+</svg>
