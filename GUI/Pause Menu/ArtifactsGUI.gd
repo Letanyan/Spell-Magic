@@ -256,6 +256,8 @@ func confirm_place_artifact_from_list() -> void:
 		artifact_grid.grab_focus()
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
+	# FIXME: when remove tile from grid while artifacts list is selected don't auto add temporary tile preview
+	# FIXME: stop mouse scroll wheel activating some events
 	if event is InputEventKey:
 		var e := event as InputEventKey
 		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
@@ -360,7 +362,10 @@ func deselect_all() -> void:
 	
 func highlight_all_available_cells_for_placement() -> void:
 	artifact_grid.highlighted_cells = artifacts.highlight_all_available_cells_for_placement(artifact_preview.artifact)
-	artifact_grid.queue_redraw()
+	if not artifact_grid.highlighted_cells.is_empty():
+		artifact_grid.center_grid_on_cell(artifact_grid.highlighted_cells[0])
+	else:
+		artifact_grid.queue_redraw()
 	
 func update_effects_list_tooltip() -> void:
 	effects_list.tooltip_text = artifacts.all_effects_description()

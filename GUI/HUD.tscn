@@ -267,6 +267,7 @@ mouse_filter = 0
 script = ExtResource("10_rpd6m")
 line_width = 4.0
 line_color = Color(0, 0.6, 0.6, 1)
+inner_circle_fraction = 0.5
 radius_range = Vector2(128, 256)
 
 [connection signal="timeout" from="SpellCooldownTimer" to="." method="update_spell_cooldowns"]

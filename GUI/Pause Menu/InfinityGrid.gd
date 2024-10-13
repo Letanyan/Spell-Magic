@@ -209,3 +209,5 @@ func center_grid_on_cell(coord: Vector2) -> void:
 	var csize := cell_size * cell_scale
 	offset.x = -coord.x * csize.x - csize.x / 2 + size.x / 2
 	offset.y = -coord.y * csize.y - csize.y / 2 + size.y / 2
+	queue_redraw()
+	queue_sort()

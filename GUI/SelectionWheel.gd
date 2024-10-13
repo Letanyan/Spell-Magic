@@ -84,9 +84,8 @@ func draw_arc_tex(center: Vector2, inner_radius: float, radius: float, start_ang
 func _draw() -> void:
 	var radius := clampf(minf(size.x, size.y) / 2.0, radius_range.x, radius_range.y)
 	var inner_radius := radius * inner_circle_fraction
-	var text_radius := radius * (inner_circle_fraction + (1.0 - inner_circle_fraction) * 0.5) 
+	var center_radius := inner_radius + (radius - inner_radius) * 0.5
 	var font := resolved_theme.default_font
-	var font_size := 16
 	
 	#if mouse_down != null:
 		#draw_circle(mouse_down as Vector2, dead_zone, Color.RED)
@@ -94,37 +93,47 @@ func _draw() -> void:
 	var angle_delta := (2.0 * PI) / float(segments.size())
 	var current_angle := PI * 3.0 / 2.0 - angle_delta * 0.5
 	var center := size / 2.0
-	const w_off = Vector2(16, 8)
-	const w_off_off = Vector2(w_off.x * -0.5, w_off.y * 0.25)
-	var max_w := Vector2.ZERO
-	for title in segments:
-		var display_title := title.substr(0, mini(title.length(), 10))
-		draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(current_angle), center + Vector2(text_radius + line_width * 1.5, 0).rotated(current_angle), line_color, line_width, true)
-		var w := font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
-		if w.x > max_w.x:
-			max_w.x = w.x
-		if w.y > max_w.y:
-			max_w.y = w.y
-		current_angle += angle_delta
 		
-	if mouse_angle != null:
-		var ma := (mouse_angle as float)
-		draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(ma), center + Vector2(text_radius + line_width * 1.5, 0).rotated(ma), line_color, line_width, true)
+	#if mouse_angle != null:
+		#var ma := (mouse_angle as float)
+		#draw_line(center + Vector2(text_radius - line_width * 3, 0).rotated(ma), center + Vector2(text_radius + line_width * 1.5, 0).rotated(ma), line_color, line_width, true)
 	
 	var i := 0
 	current_angle = PI * 3.0 / 2.0 - angle_delta * 0.5
 	@warning_ignore("integer_division")
 	var arc_detail := 64 / maxi(segments.size(), 1)
 	for title in segments:
-		var display_title := title.substr(0, mini(title.length(), 10))
+		var display_title := title
+		#if display_title == "": display_title = str(randi_range(10000000, 999999999))
 		var im_size := Vector2.ZERO
 		var img: Texture2D = null
 		if image_segments.has(title):
 			img = image_segments[title] as Texture2D
 			im_size = img.get_size()
+		#else:
+			#img = preload("res://GUI/Images/Spell Preview/[large] Bomb 1.svg") as Texture2D
+			#im_size = img.get_size()
+		
+		var center_point := Vector2(center_radius, 0).rotated(current_angle + angle_delta * 0.5)
+		var text_center := center_point
+		text_center.y -= im_size.y * 0.5
 			
-		var w := font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size) + w_off
-		var text_center := center + Vector2(inner_radius + (radius - inner_radius) * 0.5, 0).rotated(current_angle + angle_delta * 0.5)
+		var font_size := 32
+		var w: Vector2
+		var rel_text_center: Vector2
+		var segment_width: float
+		while true:
+			w = font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+			font_size -= 1
+			rel_text_center = center_point - Vector2(0, im_size.y * 0.5)
+			segment_width = calculate_segment_width(rel_text_center, inner_radius, radius)
+			if w.x < segment_width:
+				break
+			if font_size <= 11:
+				display_title = display_title.substr(0, mini(title.length(), 10)) + "..."
+				w = font.get_string_size(display_title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+				rel_text_center = center_point - Vector2(0, im_size.y * 0.5)
+				segment_width = calculate_segment_width(rel_text_center, inner_radius, radius)
 		
 		draw_arc_tex(center, inner_radius - 2, radius + 2, current_angle, angle_delta, arc_detail, high_texture)
 		var tex: Texture2D
@@ -134,13 +143,25 @@ func _draw() -> void:
 			tex = base_texture
 		draw_arc_tex(center, inner_radius, radius, current_angle + PI / 512.0, angle_delta - PI / 256.0, arc_detail, tex)
 			
-			
-		draw_string(font, text_center - Vector2(w.x * 0.5, w.y * -0.25) - Vector2(0, im_size.y * 0.5) - w_off_off, display_title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
+		draw_string(font, center + text_center - Vector2(w.x * 0.5 - 4, w.y * -0.25), display_title, HORIZONTAL_ALIGNMENT_FILL, -1, font_size)
 		if img != null:
-			draw_texture_rect(img, Rect2(text_center - im_size / 2.0 + Vector2(0, max_w.y * 0.33), im_size), false)
+			draw_texture_rect(img, Rect2(center + center_point - im_size * 0.5 + Vector2(0, w.y * 0.5), im_size), false)
+			#draw_rect(Rect2(center + center_point - im_size * 0.5 + Vector2(0, w.y * 0.5), im_size), Color.RED)
 		i += 1
 		current_angle += angle_delta
 		
+func calculate_segment_width(point: Vector2, inner_radius: float, radius: float) -> float:
+	var segment_width := 0.0
+	if absf(point.y) < inner_radius:
+		var ix := sqrt((inner_radius ** 2) - (point.y ** 2))
+		var ox := sqrt((radius ** 2) - (point.y ** 2))
+		segment_width = ox - ix
+	elif absf(point.y) < radius:
+		var ox := sqrt((radius ** 2) - (point.y ** 2))
+		segment_width = ox * 2
+	else:
+		segment_width = radius * 2
+	return minf(segment_width, radius - inner_radius - 16.0)
 		
 func _gui_input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():

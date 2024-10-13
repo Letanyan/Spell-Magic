@@ -193,6 +193,8 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 	var sidx := edit.caret_column
 	if sidx == text.length():
 		sidx -= 1
+	if sidx >= 0 and text[sidx] in " \n\t,":
+		sidx -= 1
 	while sidx >= 0:
 		if text[sidx] in " \n\t,":
 			break
@@ -216,6 +218,15 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 		
 	var suffix := complete.substr(eidx - sidx, complete.length() - (eidx - sidx))
 		
+	var fidx := edit.caret_column
+	if fidx == text.length():
+		fidx -= 1
+	while fidx < text.length():
+		if text[fidx] in " \n\t,":
+			break
+		fidx += 1
+	
+	edit.delete_text(edit.caret_column, fidx)
 	edit.insert_text_at_caret(suffix)
 	edit.select(eidx, eidx + suffix.length())
 	

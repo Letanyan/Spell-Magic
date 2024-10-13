@@ -74,11 +74,11 @@ const basic_keys: Array[String] = [
 ]
 
 var name: String
-var mods: Dictionary # [String]bool
-var keys: Dictionary # [PackedStringArray]Option
+var mods: Dictionary ## [String]bool
+var keys: Dictionary ## [PackedStringArray]Option
 var picked: String
 
-var current_actions: Dictionary # [String]bool
+var current_actions: Dictionary ## [String]bool
 var selection_wheel: SelectionWheel
 
 signal spell_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason)
@@ -90,7 +90,7 @@ signal key_up
 signal will_show_selection_wheel
 
 func _init() -> void:
-	name = "Wand"
+	name = "Default"
 	mods = {}
 	keys = {}
 	picked = ""
