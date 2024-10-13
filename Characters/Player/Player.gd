@@ -289,6 +289,7 @@ func set_underwater(underwater: float = 0.5) -> float:
 		return 0.0
 	
 func compute_max_watched_enemies_distance() -> float:
+	# FIXME: let mouse wheel change player camera distance
 	var result := 0.0
 	for e: Enemy in enemies_in_range:
 		result = maxf(result, position.distance_to(e.position))

@@ -94,6 +94,7 @@ func _physics_process(delta: float) -> void:
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
+	# FIXME: make grass track camera center when move and on start
 	
 	blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := blender.biome

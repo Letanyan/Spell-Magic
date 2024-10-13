@@ -386,7 +386,9 @@ func init_grass() -> void:
 	#mm.visible_instance_count = i
 
 func hide_water(y: float, force_update: bool) -> void:
-	backing.hide_water(y, force_update)
+	push_warning("hide_water does nothing. Uncomment the below line for the effect to take place.")
+	#backing.hide_water(y, force_update)
+	pass
 
 func set_player_coord_using_position(x: float, y: float, cs: float) -> void:
 	backing.set_player_coord_using_position(x, y, cs)

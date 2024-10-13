@@ -40,7 +40,7 @@ void fragment() {
 	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
 	ROUGHNESS = roughness_tex * roughness;
 	SPECULAR = specular;
-	if (normal_scale != 0.0) {
+	if (abs(normal_scale - 0.0) < 0.0001) {
 		NORMAL_MAP = texture(texture_normal,base_uv).rgb;
 		NORMAL_MAP_DEPTH = normal_scale;
 	}

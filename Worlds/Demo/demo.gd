@@ -230,7 +230,7 @@ func _physics_process(delta: float) -> void:
 		update_population_at(chunker.backing.get_loaded_chunks_location(), state)
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z) + player.bounds.y / 2.0
 		player.set_underwater()
-		chunker.hide_water(player.position.y, true)
+		#chunker.hide_water(player.position.y, true)
 		chunker.update_environment(player.position.x, player.position.z)
 
 func close_menu_for_player() -> void:
@@ -308,7 +308,7 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:
 	terrain_update_interval += delta
 	
-	chunker.hide_water(player.position.y, false)
+	#chunker.hide_water(player.position.y, false)
 	
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
