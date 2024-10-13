@@ -45,20 +45,26 @@ func setup(_settings: WorldSettings) -> void:
 func _ready() -> void:
 	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
-	_settings.sed = randi()
+	_settings.sed = 5 # randi()
 	setup(_settings)
 	
 		
-	# Forest location for world seed 0
-	player.position.x = randf_range(-10000, 10000)
-	player.position.z = randf_range(-10000, 10000)
-	player_movement_direction = Vector3(randf(), 0, randf()).normalized() * randfn(1.0, 0.1)
-	player_rotation_direction = (randf() * 2 - 1) * PI / 16
+	# FIXME: _settings.sed = 5, rng.seed = _settings.sed * 10
+	
+	var rng := RandomNumberGenerator.new()
+	rng.seed = _settings.sed * 12
+	player.position.x = rng.randf_range(-10000, 10000)
+	player.position.z = rng.randf_range(-10000, 10000)
+	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
+	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
 	blender = NoiseBlender.new(settings.sed)
 	chunker = Terrain.new(blender, 256, 128, 2, 0.0625, 16)
 	#chunker.ignore_physics = true
 	build_terrain()
+	var space := get_world_3d().space
+	var state := PhysicsServer3D.space_get_direct_state(space)
+	update_terrain(state)
 	
 	skybox = SkyBox.new(world_environment, sun, moon)
 	skybox.day_time = randf_range(0.0, 24.0)
@@ -92,9 +98,8 @@ func _physics_process(delta: float) -> void:
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		_on_player_moved(0.25, state)
 		
-	player.position += player_movement_direction * delta
+	player.position += player_movement_direction * delta * 10.0
 	player.rotate_y(player_rotation_direction * delta)
-	# FIXME: make grass track camera center when move and on start
 	
 	blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := blender.biome
