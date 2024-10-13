@@ -9,11 +9,13 @@ extends Control
 @onready var hide_cooldown_timings := $Tabs/HUD/HideCooldownTimings as CheckButton
 @onready var hide_stats_view := $Tabs/HUD/HideStatsView as CheckButton
 @onready var hide_reticule: CheckButton = $Tabs/HUD/HideReticule as CheckButton
-@onready var projectile_indicator_size: HSlider = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSize
-@onready var projectile_indicator_size_display: Label = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay
+@onready var projectile_indicator_size: HSlider = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
+@onready var projectile_indicator_size_display: Label = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
 
 @onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
+@onready var distance_slider: HSlider = $Tabs/Camera/Distance/Slider as HSlider
+@onready var distance_value: Label = $Tabs/Camera/Distance/Value as Label
 
 @onready var scaling_options: OptionButton = $"Tabs/Graphics/Scaling Mode/Options"
 @onready var scaling_slider: HSlider = $Tabs/Graphics/Scaling/Slider
@@ -81,6 +83,8 @@ func update_controls() -> void:
 	
 	fov_slider.value = int(world_settings.camera_settings.fov)
 	fov_value.text = str(int(world_settings.camera_settings.fov))
+	distance_slider.value = int(world_settings.camera_settings.distance)
+	distance_value.text = str(int(world_settings.camera_settings.distance))
 	
 	scaling_options.selected = world_settings.graphics_settings.scaling_mode
 	sharpness_slider.value = world_settings.graphics_settings.sharpness * 100
@@ -164,6 +168,14 @@ func _on_fov_slider_value_changed(value: float) -> void:
 	fov_value.text = str(int(value))
 	settings_changed.emit(world_settings)
 
+func _on_distance_slider_value_changed(value: float) -> void:
+	world_settings.camera_settings.distance = int(value)
+	distance_value.text = str(int(value))
+	settings_changed.emit(world_settings)
+	
+func _on_auto_distance_toggled(toggled_on: bool) -> void:
+	world_settings.camera_settings.auto_distance = toggled_on
+	settings_changed.emit(world_settings)
 
 func _on_scaling_mode_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_scaling_mode(index)

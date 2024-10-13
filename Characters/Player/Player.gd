@@ -197,9 +197,13 @@ func _physics_process(delta: float) -> void:
 		
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
-	max_watched_enemies_distance = lerp(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate)
-	var spring_extension := minf(max_watched_enemies_distance / 5.0, 10.0)
-	cam_arm.spring_length = 1.0 + spring_extension
+	var cam_distance_ratio := (1 + (world_settings.camera_settings.distance - 5) / 5.0)
+	var spring_extension := 0.0
+	if world_settings.camera_settings.auto_distance:
+		cam_arm.spring_length = 1.0 * cam_distance_ratio # set it to min here so `compute_max_watched_enemies_distance` is consistent
+		max_watched_enemies_distance = lerp(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate)
+		spring_extension = minf(max_watched_enemies_distance / 5.0, 10.0)
+	cam_arm.spring_length = (1.0 + spring_extension) * cam_distance_ratio
 	
 	if shake_intensity > 0.0:
 		var intensity := clampf(shake_intensity, 0, 1) ** 2
@@ -289,10 +293,10 @@ func set_underwater(underwater: float = 0.5) -> float:
 		return 0.0
 	
 func compute_max_watched_enemies_distance() -> float:
-	# FIXME: let mouse wheel change player camera distance
 	var result := 0.0
 	for e: Enemy in enemies_in_range:
-		result = maxf(result, position.distance_to(e.position))
+		if not cam.is_position_in_frustum(e.global_position):
+			result = maxf(result, position.distance_to(e.position))
 	return result
 	
 func update_watched_enemies_positions(delta: float) -> void:

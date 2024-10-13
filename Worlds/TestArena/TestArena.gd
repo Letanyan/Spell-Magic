@@ -347,6 +347,19 @@ func _input(event: InputEvent) -> void:
 			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		
 	if not menu.is_showing:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
+			if settings.camera_settings.distance > 1:
+				settings.camera_settings.distance -= 1
+				menu.settings.settings_changed.emit(settings)
+				menu.settings.update_controls()
+				settings.save()
+		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
+			if settings.camera_settings.distance < 10:
+				settings.camera_settings.distance += 1
+				menu.settings.settings_changed.emit(settings)
+				menu.settings.update_controls()
+				settings.save()
+		
 		for k: String in wand.basic_keys:
 			var s: Spell = null
 			var is_down := false

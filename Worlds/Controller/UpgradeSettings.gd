@@ -423,7 +423,6 @@ func load_dict(data: Dictionary) -> void:
 	level_D = data.get("level_D", 1)
 	level_P = data.get("level_P", 1)
 	level_v = data.get("level_v", 1)
-	level_v = 1
 	level_mana = data.get("level_mana", 1)
 	level_health = data.get("level_health", 1)
 	level_spells_in_book = data.get("level_spells_in_book", 1)
