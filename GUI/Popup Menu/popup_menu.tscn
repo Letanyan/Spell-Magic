@@ -1,9 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://buatjn5lr6b5i"]
 
 [ext_resource type="Script" path="res://GUI/Popup Menu/popup_menu.gd" id="1_wvl5y"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c1iq3"]
-bg_color = Color(0, 0, 0, 0.752941)
+[ext_resource type="StyleBox" uid="uid://22jnl8crj7cq" path="res://GUI/Popup Menu/empty_black_bg.tres" id="2_eqk5v"]
 
 [node name="PopupDialog" type="Control"]
 layout_mode = 3
@@ -21,7 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_c1iq3")
+theme_override_styles/panel = ExtResource("2_eqk5v")
 
 [node name="Panel" type="Panel" parent="confirmation"]
 layout_mode = 1

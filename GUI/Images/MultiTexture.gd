@@ -19,13 +19,13 @@ func _draw_rect_region(to_canvas_item: RID, rect: Rect2, src_rect: Rect2, modula
 func _get_height() -> int:
 	var result := 0
 	for tex in texture:
-		result = maxf(tex.get_height(), result)
+		result = maxi(tex.get_height(), result)
 	return result
 	
 func _get_width() -> int:
 	var result := 0
 	for tex in texture:
-		result = maxf(tex.get_width(), result)
+		result = maxi(tex.get_width(), result)
 	return result
 
 func _get(property: StringName) -> Variant:

@@ -12,8 +12,8 @@ const preview_images: Array[String] = [
 
 var element: Element
 var name: String
-var preview_image: int = 0
-var preview_flags: int = 0
+var preview_image: PackedInt64Array = PackedInt64Array([0])
+var preview_flags: PackedInt64Array = PackedInt64Array([0])
 enum PreviewFlags {
 	FLIP_H = 1 << 0,
 	FLIP_V = 1 << 1,
@@ -119,6 +119,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.chain_cast_kind = chain_cast_kind
 	result.name = name
 	result.preview_image = preview_image
+	result.preview_flags = preview_flags
 	result.crit_rate = crit_rate
 	result.crit_dmg = crit_dmg
 	result.spherical_coords = spherical_coords
@@ -519,6 +520,10 @@ func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
 	return p
 
 func save_dict() -> Dictionary:
+	var pimages: Array[int] = []
+	var pflags: Array[int] = []
+	pimages.assign(preview_image)
+	pflags.assign(preview_flags)
 	return {
 		"x": x, "y": y, "z": z, "r": radius,
 		"power": power, "duration": duration, "count": count, "delay": delay,
@@ -527,13 +532,16 @@ func save_dict() -> Dictionary:
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
 		"expression_strings": expression_strings, "is_active": is_active, 
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
-		"spherical_coords": spherical_coords, "preview_image": preview_image, "preview_flags": preview_flags,
+		"spherical_coords": spherical_coords, "preview_image": pimages, "preview_flags": pflags,
 	}
 
 func load_dict(dict: Dictionary) -> void:
 	name = dict.get("name", "") as String
-	preview_image = dict.get("preview_image", 0) as int
-	preview_flags = dict.get("preview_flags", 0) as int
+	preview_image = PackedInt64Array(dict.get("preview_image", [0]) as Array[int])
+	preview_flags = PackedInt64Array(dict.get("preview_flags", [0]) as Array[int])
+	if preview_image.size() != preview_flags.size():
+		while preview_image.size() < preview_flags.size(): preview_image.append(0)
+		while preview_image.size() > preview_flags.size(): preview_flags.append(0)
 	x = dict["x"] as String
 	y = dict["y"] as String
 	z = dict["z"] as String
@@ -787,57 +795,57 @@ func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, 
 		
 	return img
 	
-func preview_is_horizontal_flip() -> bool:
-	return (preview_flags & PreviewFlags.FLIP_H) != 0
+func preview_is_horizontal_flip(idx: int) -> bool:
+	return (preview_flags[idx] & PreviewFlags.FLIP_H) != 0
 	
-func set_preview_is_horizontal_flip(is_set: bool) -> void:
+func set_preview_is_horizontal_flip(idx: int, is_set: bool) -> void:
 	if is_set:
-		preview_flags = preview_flags | PreviewFlags.FLIP_H
+		preview_flags[idx] = preview_flags[idx] | PreviewFlags.FLIP_H
 	else:
-		preview_flags = preview_flags & ~PreviewFlags.FLIP_H
+		preview_flags[idx] = preview_flags[idx] & ~PreviewFlags.FLIP_H
 	
-func preview_is_vertical_flip() -> bool:
-	return (preview_flags & PreviewFlags.FLIP_V) != 0
+func preview_is_vertical_flip(idx: int) -> bool:
+	return (preview_flags[idx] & PreviewFlags.FLIP_V) != 0
 	
-func set_preview_is_vertical_flip(is_set: bool) -> void:
+func set_preview_is_vertical_flip(idx: int, is_set: bool) -> void:
 	if is_set:
-		preview_flags = preview_flags | PreviewFlags.FLIP_V
+		preview_flags[idx] = preview_flags[idx] | PreviewFlags.FLIP_V
 	else:
-		preview_flags = preview_flags & ~PreviewFlags.FLIP_V
+		preview_flags[idx] = preview_flags[idx] & ~PreviewFlags.FLIP_V
 	
-func preview_rotation_tag() -> int:
-	return (preview_flags & PreviewFlags.ROTATE) >> 2
+func preview_rotation_tag(idx: int) -> int:
+	return (preview_flags[idx] & PreviewFlags.ROTATE) >> 2
 	
-func set_preview_rotation_tag(tag: int) -> void:
-	preview_flags = preview_flags & ~PreviewFlags.ROTATE
-	preview_flags = preview_flags | ((tag & 0b111) << 2)
+func set_preview_rotation_tag(idx: int, tag: int) -> void:
+	preview_flags[idx] = preview_flags[idx] & ~PreviewFlags.ROTATE
+	preview_flags[idx] = preview_flags[idx] | ((tag & 0b111) << 2)
 	
-func preview_rotation() -> float:
-	return (preview_rotation_tag() / 8.0) * 2.0 * PI
+func preview_rotation(idx: int) -> float:
+	return (preview_rotation_tag(idx) / 8.0) * 2.0 * PI
 
-func preview_scale_tag() -> int:
-	return (preview_flags & PreviewFlags.SCALE) >> 5
+func preview_scale_tag(idx: int) -> int:
+	return (preview_flags[idx] & PreviewFlags.SCALE) >> 5
 	
-func set_preview_scale_tag(tag: int) -> void:
-	preview_flags = preview_flags & ~PreviewFlags.SCALE
-	preview_flags = preview_flags | ((tag & 0b111) << 5)
+func set_preview_scale_tag(idx: int, tag: int) -> void:
+	preview_flags[idx] = preview_flags[idx] & ~PreviewFlags.SCALE
+	preview_flags[idx] = preview_flags[idx] | ((tag & 0b111) << 5)
 	
-func preview_scale() -> Vector2:
-	var s := preview_scale_tag() + 8
+func preview_scale(idx: int) -> Vector2:
+	var s := preview_scale_tag(idx) + 8
 	if s > 8:
 		s -= 8
 	var result := s / 8.0
 	return Vector2(result, result)
 	
-func preview_offset_tag() -> int:
-	return (preview_flags & PreviewFlags.OFFSET) >> 8
+func preview_offset_tag(idx: int) -> int:
+	return (preview_flags[idx] & PreviewFlags.OFFSET) >> 8
 	
-func set_preview_offset_tag(tag: int) -> void:
-	preview_flags = preview_flags & ~PreviewFlags.OFFSET
-	preview_flags = preview_flags | ((tag & 0b1111) << 8)
+func set_preview_offset_tag(idx: int, tag: int) -> void:
+	preview_flags[idx] = preview_flags[idx] & ~PreviewFlags.OFFSET
+	preview_flags[idx] = preview_flags[idx] | ((tag & 0b1111) << 8)
 	
-func preview_offset() -> Vector2:
-	var tag := preview_offset_tag()
+func preview_offset(idx: int) -> Vector2:
+	var tag := preview_offset_tag(idx)
 	var p33 := (1.0 / 3.0) - (1.0 / 9.0)
 	var p66 := (2.0 / 3.0) + (1.0 / 9.0)
 	match tag:
@@ -860,3 +868,23 @@ func preview_offset() -> Vector2:
 		12: return Vector2(p66, p66) # 3x3 bottom right
 		
 	return Vector2(0.5, 0.5)
+
+func create_thumbnail(is_small: bool, cache: Dictionary) -> Texture2D:
+	var size := "small" if is_small else "large"
+	var result := MultiTexture.new()
+	for i in preview_image.size():
+		if not cache.has(preview_image[i]):
+			var tex := load("res://GUI/Images/Spell Preview/[%s] %s.svg" % [size, preview_images[preview_image[i]]])
+			cache[preview_image[i]] = tex
+		var tinted := TintedTexture.new()
+		tinted.stretch_mode = TextureRect.StretchMode.STRETCH_TILE
+		tinted.texture = cache[preview_image[i]]
+		tinted.tint = Spell.color_from_element(element)
+		tinted.flip_horizontal = preview_is_horizontal_flip(i)
+		tinted.flip_vertical = preview_is_vertical_flip(i)
+		tinted.rotation = preview_rotation(i)
+		tinted.scale = preview_scale(i)
+		tinted.offset = preview_offset(i)
+		result.texture.append(tinted)
+		
+	return result
