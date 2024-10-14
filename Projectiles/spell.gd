@@ -13,6 +13,12 @@ const preview_images: Array[String] = [
 var element: Element
 var name: String
 var preview_image: int = 0
+var preview_flags: int = 0
+enum PreviewFlags {
+	FLIP_H = 1 << 0,
+	FLIP_V = 1 << 1,
+	ROTATE = 0b111 << 2
+}
 var x: String
 var y: String
 var z: String
@@ -519,12 +525,13 @@ func save_dict() -> Dictionary:
 		"name": name, "id": id, "mana": mana_cost, "player_is_origin": player_is_origin,
 		"expression_strings": expression_strings, "is_active": is_active, 
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
-		"spherical_coords": spherical_coords, "preview_image": preview_image,
+		"spherical_coords": spherical_coords, "preview_image": preview_image, "preview_flags": preview_flags,
 	}
 
 func load_dict(dict: Dictionary) -> void:
 	name = dict.get("name", "") as String
 	preview_image = dict.get("preview_image", 0) as int
+	preview_flags = dict.get("preview_flags", 0) as int
 	x = dict["x"] as String
 	y = dict["y"] as String
 	z = dict["z"] as String
@@ -778,5 +785,30 @@ func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, 
 		
 	return img
 	
+func preview_is_horizontal_flip() -> bool:
+	return (preview_flags & PreviewFlags.FLIP_H) != 0
 	
+func set_preview_is_horizontal_flip(is_set: bool) -> void:
+	if is_set:
+		preview_flags = preview_flags | PreviewFlags.FLIP_H
+	else:
+		preview_flags = preview_flags & ~PreviewFlags.FLIP_H
 	
+func preview_is_vertical_flip() -> bool:
+	return (preview_flags & PreviewFlags.FLIP_V) != 0
+	
+func set_preview_is_vertical_flip(is_set: bool) -> void:
+	if is_set:
+		preview_flags = preview_flags | PreviewFlags.FLIP_V
+	else:
+		preview_flags = preview_flags & ~PreviewFlags.FLIP_V
+	
+func preview_rotation_tag() -> int:
+	return (preview_flags & PreviewFlags.ROTATE) >> 2
+	
+func set_preview_is_rotation_tag(tag: int) -> void:
+	preview_flags = preview_flags & ~PreviewFlags.ROTATE
+	preview_flags = preview_flags | ((tag & 0b111) << 2)
+	
+func preview_rotation() -> float:
+	return (preview_rotation_tag() / 8.0) * 2.0 * PI

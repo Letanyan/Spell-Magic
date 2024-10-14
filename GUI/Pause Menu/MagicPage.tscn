@@ -1,7 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=19 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="2_hw5aw"]
 [ext_resource type="Texture2D" uid="uid://b44g28n50yfr1" path="res://GUI/Images/void.svg" id="2_lmkyc"]
 [ext_resource type="Texture2D" uid="uid://dbw3m7f6xvqdn" path="res://GUI/Images/Spell Preview/[small] Line 1.svg" id="3_t2rxd"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="3_ym6f5"]
@@ -16,16 +17,20 @@
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
 [ext_resource type="Texture2D" uid="uid://5kr3ouhyf7f6" path="res://GUI/Images/sphere.svg" id="12_g3iwv"]
 
-[sub_resource type="Texture2D" id="Texture2D_t5rec"]
-resource_local_to_scene = 0
-resource_name = 0
+[sub_resource type="Texture2D" id="Texture2D_ra0s1"]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("2_hw5aw")
 texture = ExtResource("3_t2rxd")
 tint = Color(1, 1, 1, 1)
-resource_local_to_scene = 0
-resource_name = 0
-load_path = 0
-texture = ExtResource("3_t2rxd")
-tint = Color(1, 1, 1, 1)
+flip_vertical = false
+flip_horizontal = false
+rotation = 0.0
+stretch_mode = 0
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/[small] Line 1.svg-793baa4ea5ec9b923c0902b493f5af60.ctex"
+script = ExtResource("2_hw5aw")
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
 font_color = Color(1, 0, 0, 1)
@@ -54,7 +59,7 @@ offset_top = 8.0
 offset_right = 40.0
 offset_bottom = 40.0
 toggle_mode = true
-icon = SubResource("Texture2D_t5rec")
+icon = SubResource("Texture2D_ra0s1")
 
 [node name="name_edit" type="LineEdit" parent="container"]
 layout_mode = 2
@@ -636,7 +641,6 @@ offset_bottom = 280.0
 grow_horizontal = 2
 placeholder_text = "value"
 
-[connection signal="focus_exited" from="container/preview_image" to="." method="hide_preview_selector"]
 [connection signal="pressed" from="container/preview_image" to="." method="_on_preview_image_pressed"]
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
 [connection signal="item_selected" from="container/element_combo" to="." method="_on_element_combo_selected"]
