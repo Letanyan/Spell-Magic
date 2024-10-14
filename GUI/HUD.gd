@@ -398,10 +398,13 @@ func update_selection_wheel_spells() -> void:
 				var tex := load("res://GUI/Images/Spell Preview/[large] %s.svg" % spell.preview_images[spell.preview_image])
 				image_preview_raws[spell.preview_image] = tex
 			var tinted := TintedTexture.new()
+			tinted.stretch_mode = TextureRect.StretchMode.STRETCH_TILE
 			tinted.texture = image_preview_raws[spell.preview_image]
 			tinted.tint = Spell.color_from_element(spell.element)
 			tinted.flip_horizontal = spell.preview_is_horizontal_flip()
 			tinted.flip_vertical = spell.preview_is_vertical_flip()
 			tinted.rotation = spell.preview_rotation()
+			tinted.scale = spell.preview_scale()
+			tinted.offset = spell.preview_offset()
 			selection_wheel.image_segments[spell_text] = tinted
 		

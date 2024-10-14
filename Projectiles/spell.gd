@@ -17,7 +17,9 @@ var preview_flags: int = 0
 enum PreviewFlags {
 	FLIP_H = 1 << 0,
 	FLIP_V = 1 << 1,
-	ROTATE = 0b111 << 2
+	ROTATE = 0b111 << 2,
+	SCALE = 0b111 << 5,
+	OFFSET = 0b1111 << 8,
 }
 var x: String
 var y: String
@@ -806,9 +808,55 @@ func set_preview_is_vertical_flip(is_set: bool) -> void:
 func preview_rotation_tag() -> int:
 	return (preview_flags & PreviewFlags.ROTATE) >> 2
 	
-func set_preview_is_rotation_tag(tag: int) -> void:
+func set_preview_rotation_tag(tag: int) -> void:
 	preview_flags = preview_flags & ~PreviewFlags.ROTATE
 	preview_flags = preview_flags | ((tag & 0b111) << 2)
 	
 func preview_rotation() -> float:
 	return (preview_rotation_tag() / 8.0) * 2.0 * PI
+
+func preview_scale_tag() -> int:
+	return (preview_flags & PreviewFlags.SCALE) >> 5
+	
+func set_preview_scale_tag(tag: int) -> void:
+	preview_flags = preview_flags & ~PreviewFlags.SCALE
+	preview_flags = preview_flags | ((tag & 0b111) << 5)
+	
+func preview_scale() -> Vector2:
+	var s := preview_scale_tag() + 8
+	if s > 8:
+		s -= 8
+	var result := s / 8.0
+	return Vector2(result, result)
+	
+func preview_offset_tag() -> int:
+	return (preview_flags & PreviewFlags.OFFSET) >> 8
+	
+func set_preview_offset_tag(tag: int) -> void:
+	preview_flags = preview_flags & ~PreviewFlags.OFFSET
+	preview_flags = preview_flags | ((tag & 0b1111) << 8)
+	
+func preview_offset() -> Vector2:
+	var tag := preview_offset_tag()
+	var p33 := (1.0 / 3.0) - (1.0 / 9.0)
+	var p66 := (2.0 / 3.0) + (1.0 / 9.0)
+	match tag:
+		0: return Vector2(0.5, 0.5)   # center
+		
+		1: return Vector2(0.25, 0.25) # 2x2 top left
+		2: return Vector2(0.75, 0.25) # 2x2 top right
+		3: return Vector2(0.25, 0.75) # 2x2 bottom left
+		4: return Vector2(0.75, 0.75) # 2x2 bottom right
+		
+		5: return Vector2(p33, p33) # 3x3 top left
+		6: return Vector2(0.5, p33) # 3x3 top center
+		7: return Vector2(p66, p33) # 3x3 top right
+		
+		8: return Vector2(p33, 0.5) # 3x3 center left
+		9: return Vector2(p66, 0.5) # 3x3 center right
+		
+		10: return Vector2(p33, p66) # 3x3 bottom left
+		11: return Vector2(0.5, p66) # 3x3 bottom center
+		12: return Vector2(p66, p66) # 3x3 bottom right
+		
+	return Vector2(0.5, 0.5)

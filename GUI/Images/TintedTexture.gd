@@ -8,6 +8,8 @@ extends Texture2D
 @export var flip_horizontal: bool = false
 @export_range(0, 2 * PI, PI / 4) var rotation: float = 0.0
 @export var stretch_mode: TextureRect.StretchMode = TextureRect.StretchMode.STRETCH_KEEP_ASPECT_CENTERED
+@export var scale: Vector2 = Vector2(1, 1)
+@export var offset: Vector2 = Vector2(0, 0)
 
 func mix_tint(modulate: Color) -> Color:
 	return Color(tint, modulate.a)
@@ -72,25 +74,37 @@ func draw_with_parameters(rid: RID, rect: Rect2, src_rect: Rect2, modulate: Colo
 		var v := vertices[i]
 		match stretch_mode:
 			TextureRect.StretchMode.STRETCH_SCALE:
-				vertices[i] = (v - minv) / rangev * rect.size + rect.position
+				var s := rect.size * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s + rect.position + o
 			TextureRect.StretchMode.STRETCH_KEEP:
-				vertices[i] = (v - minv) / rangev * texture.get_size() + rect.position
+				var s := texture.get_size() * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s + rect.position + o
 			TextureRect.StretchMode.STRETCH_KEEP_ASPECT:
 				var r := rect.size / texture.get_size()
-				var s := texture.get_size() * minf(r.x, r.y)
-				vertices[i] = (v - minv) / rangev * s + rect.position
+				var s := texture.get_size() * minf(r.x, r.y) * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s + rect.position + o
 			TextureRect.StretchMode.STRETCH_KEEP_ASPECT_CENTERED:
 				var r := rect.size / texture.get_size()
-				var s := texture.get_size() * minf(r.x, r.y)
-				vertices[i] = (v - minv) / rangev * s + rect.size * 0.5 - s * 0.5 + rect.position
+				var s := texture.get_size() * minf(r.x, r.y) * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s + rect.size * 0.5 - s * 0.5 + rect.position + o
 			TextureRect.StretchMode.STRETCH_KEEP_ASPECT_COVERED:
 				var r := rect.size / texture.get_size()
-				var s := texture.get_size() * maxf(r.x, r.y)
-				vertices[i] = (v - minv) / rangev * s + rect.size * 0.5 - s * 0.5 + rect.position
+				var s := texture.get_size() * maxf(r.x, r.y) * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s + rect.size * 0.5 - s * 0.5 + rect.position + o
 			TextureRect.StretchMode.STRETCH_KEEP_CENTERED:
-				vertices[i] = (v - minv) / rangev * texture.get_size() + rect.size * 0.5 - texture.get_size() * 0.5 + rect.position
+				var s := texture.get_size() * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s + rect.size * 0.5 - s * 0.5 + rect.position + o
 			TextureRect.StretchMode.STRETCH_TILE:
-				vertices[i] = (v - minv) / rangev * rect.size + rect.position
+				var r := rect.size / texture.get_size()
+				var s := texture.get_size() * minf(r.x, r.y) * scale
+				var o := rect.size * offset
+				vertices[i] = (v - minv) / rangev * s - s * 0.5 + rect.position + o
 	
 	#RenderingServer.canvas_item_add_polygon(rid, vertices, PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW]), uvs)
 	RenderingServer.canvas_item_add_polygon(rid, vertices, colors, uvs, texture.get_rid())
