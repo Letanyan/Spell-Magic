@@ -60,6 +60,7 @@ func _init() -> void:
 	
 func reset_by_deleting_all_spells() -> void:
 	spells = []
+	spell_index.clear()
 	last_use = {}
 	
 func add(spell: Spell) -> void:

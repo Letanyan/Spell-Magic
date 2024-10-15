@@ -537,8 +537,14 @@ func save_dict() -> Dictionary:
 
 func load_dict(dict: Dictionary) -> void:
 	name = dict.get("name", "") as String
-	preview_image = PackedInt64Array(dict.get("preview_image", [0]) as Array[int])
-	preview_flags = PackedInt64Array(dict.get("preview_flags", [0]) as Array[int])
+	if dict.get("preview_image", 0) is int:
+		preview_image = PackedInt64Array([0])
+	else:
+		preview_image = PackedInt64Array(dict.get("preview_image", [0]) as Array[int])
+	if dict.get("preview_flags", 0) is int:
+		preview_flags = PackedInt64Array([0])
+	else:
+		preview_flags = PackedInt64Array(dict.get("preview_flags", [0]) as Array[int])
 	if preview_image.size() != preview_flags.size():
 		while preview_image.size() < preview_flags.size(): preview_image.append(0)
 		while preview_image.size() > preview_flags.size(): preview_flags.append(0)

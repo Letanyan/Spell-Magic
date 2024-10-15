@@ -136,7 +136,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		body.set_feet_position(Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z))
 	elif body is Player:
 		if current_biome == World.Biome.HFIL:
-			target_velocity.y -= 10.0
+			target_velocity.y -= 2.0
 		elif Globals.sea_level() - 1.5 < body.feet_position() and body.feet_position() < Globals.sea_level() - 1.45:
 			target_velocity.y = 0 
 		elif body.feet_position() < Globals.sea_level() - 1.5:

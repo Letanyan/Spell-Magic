@@ -8,7 +8,7 @@ enum GRASSLAND_STRUCTURES_KIND {
 	UNDEAD, MOLE,
 	ABANDONED_VILLAGE,
 	TARGET_PUZZLE,
-	HIVE, SLIMY, FLOCK, PETS
+	HIVE, SLIMY, FLOCK, PETS, FISH
 }
 
 const GRASSLAND_STRUCTURE = {
@@ -21,6 +21,7 @@ const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.SLIMY: 0.05,
 	GRASSLAND_STRUCTURES_KIND.FLOCK: 0.1,
 	GRASSLAND_STRUCTURES_KIND.PETS: 0.05,
+	GRASSLAND_STRUCTURES_KIND.FISH: 0.1,
 	#GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE: 0.01
 }
 
@@ -51,6 +52,19 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing)
 				if p != null:
 					result.append(p)
+					
+			GRASSLAND_STRUCTURES_KIND.FISH:
+				index += 1
+				var pos := area[index]
+				
+				if rng.randf() < 0.8:
+					var p := pop.spawn_enemy(World.Enemy.FISH, state, pos, spacing)
+					if p != null: result.append(p)
+				else:
+					var p := pop.spawn_enemy(World.Enemy.FISHMAN, state, pos, spacing)
+					if p != null: result.append(p)
+				
+					
 			GRASSLAND_STRUCTURES_KIND.HIVE:
 				index += 1
 				var pos := area[index]

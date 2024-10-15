@@ -14,6 +14,7 @@ var inhabitants: Dictionary = {}
 var garden: Array[Node3D] = []
 var other_objects: Array = []
 var world_items: Array[WorldItem] = []
+var current_biome_during_generation: World.Biome = World.Biome.WATER
 
 func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
 	rng = RandomNumberGenerator.new()
@@ -93,7 +94,10 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		var info: Dictionary = user_info.call(world_normal)
-		if not info.get("valid", true):
+		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < Globals.sea_level()
+		var not_hfil := current_biome_during_generation != World.Biome.HFIL
+		var is_fish := is_enemy and (entity is Fish or entity is Fishman)
+		if not info.get("valid", true) or (below_sea_level and not_hfil and not is_fish):
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
 			else:
@@ -313,6 +317,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	
 	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
+		current_biome_during_generation = biomes[i]
 		match biomes[i]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
 			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))

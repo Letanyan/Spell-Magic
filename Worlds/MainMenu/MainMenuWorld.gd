@@ -98,7 +98,7 @@ func _physics_process(delta: float) -> void:
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		_on_player_moved(0.25, state)
 		
-	player.position += player_movement_direction * delta * 10.0
+	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
 	
 	blender.compute_biome_distances(player.position.x, player.position.z)

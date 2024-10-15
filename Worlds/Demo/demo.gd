@@ -380,7 +380,9 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 		GameModeSettings.GameMode.RESPAWN:
 			if vitals.health.value > 0:
 				return
-				
+			# FIXME: make it more obvious you have respawned. Notify player about lost spells, artifacts, upgrades if any.
+			# Show some death and respawn animation.
+			# FIXME: save deleted items immedietly.
 			vitals.health.value = vitals.health.max_value
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
 				artifacts.reset_by_deleting_all_artifacts()
