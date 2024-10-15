@@ -13,6 +13,7 @@ var is_paused: bool
 var day_of_the_year: int
 var time_of_day: float
 var is_test_arena: bool = false
+var world_generation_version: int
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
@@ -44,6 +45,7 @@ func save_dict() -> Dictionary:
 		"seed": sed,
 		"enemies_killed": enemies_killed, "marked_entities": marked_entities, "day_of_the_year": day_of_the_year,
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
+		"world_generation_version": world_generation_version,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
@@ -77,6 +79,7 @@ func load_dict(data: Dictionary) -> void:
 	day_of_the_year = data.get("day_of_the_year", 1)
 	time_of_day = data.get("time_of_day", 12.0)
 	is_test_arena = data.get("is_test_arena", false)
+	world_generation_version = data.get("world_generation_version", -1) 
 	
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.load_dict(data.get("upgrade_settings", {}) as Dictionary)

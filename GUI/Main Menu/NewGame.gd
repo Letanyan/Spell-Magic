@@ -8,6 +8,7 @@ extends Control
 @onready var use_hardcore: Button = $UseHardcore
 @onready var seed_edit: TextEdit = $Seed
 @onready var worlds_list: ItemList = $WorldsList
+@onready var generator_version: OptionButton = $WorldGenerationVersion/GeneratorVersion
 
 @onready var permadeath: Button = $Permadeath
 @onready var respawn: Button = $Respawn
@@ -57,9 +58,7 @@ extends Control
 @onready var starting_upgrades: Button = $StartingUpgrades
 @onready var starting_upgrades_panel: Panel = $StartingUpgradesPanel
 
-@onready var save_name_missing: Label = $SaveNameMissing
-
-
+@onready var game_mode_description: Label = $GameModeDescription
 
 
 var game_mode: GameModeSettings.GameMode = GameModeSettings.GameMode.RESPAWN
@@ -144,6 +143,7 @@ func _on_worlds_list_item_activated(index: int) -> void:
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(selected_world_name)
 	settings.world_name = save_name.text
+	settings.world_generation_version = generator_version.selected + 1
 	settings.save()
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
 
@@ -157,6 +157,7 @@ func _on_create_pressed() -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
+		settings.world_generation_version = generator_version.selected + 1
 		if seed_edit.text.is_valid_int():
 			settings.sed = seed_edit.text.to_int()
 		else:
@@ -183,6 +184,7 @@ func _on_create_pressed() -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
+		settings.world_generation_version = generator_version.selected + 1
 		settings.sed = randi()
 		settings.game_mode_settings = GameModeSettings.normal_mode()
 		var temp_upgrades := UpgradeSettings.new()
@@ -194,6 +196,7 @@ func _on_create_pressed() -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
+		settings.world_generation_version = generator_version.selected + 1
 		settings.sed = randi()
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
 		upgrades.reset_all_stats_to_default_values()
@@ -384,7 +387,7 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	respawn.position.x += pos_delta
 	sandbox.position.x += pos_delta
 	respawn_options.position.x += pos_delta
-	save_name_missing.position.x += pos_delta
+	game_mode_description.position.x += pos_delta
 	game_options.position.x += pos_delta
 	worlds_list.position.x += pos_delta
 
@@ -392,17 +395,6 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 func _on_S_value_changed(value: float) -> void:
 	upgrades.level_running_speed = ceili(value)
 	S_value.text = "%.2f" % upgrades.max_running_speed()
-
-
-func _on_seed_text_changed() -> void:
-	if use_save_file.button_pressed:
-		save_name_missing.visible = false
-		for world_item: Array in world_data:
-			if world_item[0] == seed_edit.text:
-				world_name_exists = true
-				return
-		world_name_exists = false
-		save_name_missing.visible = true
 
 
 func _on_use_seed_toggled(toggled_on: bool) -> void:
@@ -419,6 +411,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		respawn_options.visible = true
 		game_options.visible = true
 		starting_upgrades.visible = true
+		game_mode_description.visible = false
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
@@ -437,6 +430,7 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		starting_upgrades.visible = false
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
+		game_mode_description.visible = false
 
 func _on_use_normal_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -453,6 +447,8 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
 		worlds_list.visible = false
+		game_mode_description.visible = true
+		game_mode_description.text = "When you die you will respawn with all your progressed saved."
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -469,3 +465,5 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
 		worlds_list.visible = false
+		game_mode_description.visible = true
+		game_mode_description.text = "When you die the game is over. You will also not be allowed to edit or create your own new spells."

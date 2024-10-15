@@ -45,7 +45,7 @@ func setup(_settings: WorldSettings) -> void:
 func _ready() -> void:
 	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
-	_settings.sed = 5 # randi()
+	_settings.sed = randi()
 	setup(_settings)
 	
 		
@@ -58,7 +58,7 @@ func _ready() -> void:
 	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
 	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
-	blender = NoiseBlender.new(settings.sed)
+	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
 	chunker = Terrain.new(blender, 256, 128, 2, 0.0625, 16)
 	#chunker.ignore_physics = true
 	build_terrain()

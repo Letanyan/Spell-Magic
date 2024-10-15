@@ -851,17 +851,19 @@ focus_previous = NodePath("../ChainAtEnd")
 toggle_mode = true
 text = "On Hit"
 
-[node name="SaveNameMissing" type="Label" parent="."]
+[node name="GameModeDescription" type="Label" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.472
 anchor_right = 0.472
-offset_left = 104.256
+offset_left = -159.744
 offset_top = 176.0
-offset_right = 240.256
-offset_bottom = 197.0
-text = "No such save exists"
+offset_right = 224.256
+offset_bottom = 344.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="WorldsList" type="ItemList" parent="."]
 visible = false
@@ -871,17 +873,34 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -184.0
-offset_top = 96.0
+offset_top = 176.0
 offset_right = 184.0
 offset_bottom = -96.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="WorldGenerationVersion" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 200.0
+offset_bottom = 29.0
+text = "World Generation Version:"
+
+[node name="GeneratorVersion" type="OptionButton" parent="WorldGenerationVersion"]
+layout_mode = 0
+offset_top = 24.0
+offset_right = 192.0
+offset_bottom = 49.0
+selected = 0
+item_count = 1
+popup/item_0/text = "Version 1"
+
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]
 [connection signal="toggled" from="UseNormal" to="." method="_on_use_normal_toggled"]
 [connection signal="toggled" from="UseHardcore" to="." method="_on_use_hardcore_toggled"]
-[connection signal="text_changed" from="Seed" to="." method="_on_seed_text_changed"]
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
 [connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]
