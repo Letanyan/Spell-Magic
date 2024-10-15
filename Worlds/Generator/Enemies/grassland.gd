@@ -14,7 +14,7 @@ enum GRASSLAND_STRUCTURES_KIND {
 const GRASSLAND_STRUCTURE = {
 	GRASSLAND_STRUCTURES_KIND.NONE: 160,
 	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 5,
-	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 2.5,
+	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.5,
 	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.5,
 	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.05,
 	GRASSLAND_STRUCTURES_KIND.HIVE: 0.1,
@@ -79,7 +79,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var angle_offset := rng.randf_range(0.0, 2 * PI)
 				for i in 6:
 					var p := pos + Vector2(radius, 0).rotated(PI * 2 * (float(i) / 6.0) + angle_offset)
-					var tree := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, p, 0.0, pop.always_valid)
+					var tree := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, p, 0.0, pop.do_nothing, pop.always_valid)
 					if tree != null:
 						result.append(tree)
 					
@@ -125,8 +125,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				for a in r * circle_points:
 					var angle := (PI * 2) * (float(a) / float(r * circle_points))
 					var p := pos + Vector2(r * 8 + radius_offset, 0).rotated(angle + angle_offset)
-					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_PYRAMID: 10}) as World.Foliage
-					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
+					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
+					var entity := pop.spawn_foliage(kind, state, p, 0, pop.do_nothing, pop.always_valid)
 					if entity != null:
 						result.append(entity)
 					
@@ -149,8 +149,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				for a in r * circle_points:
 					var angle := (PI * 2) * (float(a) / float(r * circle_points))
 					var p := pos + Vector2(r * 8 + radius_offset, 0).rotated(angle + angle_offset)
-					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_PYRAMID: 10}) as World.Foliage
-					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
+					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
+					var entity := pop.spawn_foliage(kind, state, p, 0, pop.do_nothing, pop.always_valid)
 					if entity != null:
 						result.append(entity)
 					

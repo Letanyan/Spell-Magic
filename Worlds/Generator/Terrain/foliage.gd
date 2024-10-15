@@ -46,7 +46,7 @@ static func make(_kind: World.Foliage) -> Foliage:
 	return result
 	
 func setup(rng: RandomNumberGenerator) -> void:
-	var s := rng.randf_range(2, 5)
+	var s := rng.randf_range(2, 5) * scale_store
 	(get_node("MeshNode") as Node3D).scale = Vector3(s, s, s)
 	var r := rng.randf_range(0, 2 * PI)
 	(get_node("MeshNode") as Node3D).rotation.y = r
@@ -66,5 +66,8 @@ func setup(rng: RandomNumberGenerator) -> void:
 		(box.shape as CapsuleShape3D).radius = base_size[kind].x * s / 2.0
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
+		
+	# Reset all stored properties once setup is done
+	scale_store = 1.0
 		
 				

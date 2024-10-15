@@ -125,6 +125,28 @@ static func make(version: int, s: int) -> NoiseBlender:
 		
 	return NoiseBlender.version1(s) # FIXME: This should always be the latest version
 	
+static func version0(s: int) -> NoiseBlender:
+	var result := NoiseBlender.new()
+	
+	result.back = GDNoiseBlender.new()
+	
+	var biome_locations := result.shuffle_biome_locations(s)
+	
+	result.back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
+	result.back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
+	result.back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
+	result.back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
+	result.back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
+	result.back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
+	result.back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
+	result.back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
+	result.back.add_biome("DQACAAAACtevQRMAbxIDPBMACtcjPAgAAQIA4XrUPwAAAIA/", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
+	
+	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
+	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
+	
+	return result
+	
 static func version1(s: int) -> NoiseBlender:
 	var result := NoiseBlender.new()
 	
@@ -149,37 +171,6 @@ static func version1(s: int) -> NoiseBlender:
 	
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)
-	#var result := NoiseTexture2D.new()
-	#result.noise = noise.duplicate(true)
-	#(result.noise as FastNoiseLite).frequency *= scale
-	#(result.noise as FastNoiseLite).offset.x = x - w / 2.0
-	#(result.noise as FastNoiseLite).offset.y = y - h / 2.0
-	#result.width = int(w + 2)
-	#result.height = int(h + 2)
-	#result.normalize = false
-	#return result
-
-#func height(x: float, y: float) -> float:
-	#return Globals.sea_level() + 100.0
-	#return back.height(x, y)
-	#var result := 0.0
-#
-	#compute_biome_distances(x, y)
-#
-	#var X := snappedf(x, 0.0001)
-	#var Y := snappedf(y, 0.0001)
-#
-	#result += hfil_curve.sample(hfil_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[0] / total_size)
-	#result += otherworld_curve.sample(otherworld_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[1] / total_size)
-	#result += tundra_curve.sample(tundra_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[2] / total_size)
-	#result += savannah_curve.sample(savannah_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[3] / total_size)
-	#result += jungle_curve.sample(jungle_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[4] / total_size)
-	#result += desert_curve.sample(desert_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[5] / total_size)
-	#result += forest_curve.sample(forest_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[6] / total_size)
-	#result += grassland_curve.sample(grassland_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[7] / total_size)
-	#result += taiga_curve.sample(taiga_noise.get_noise_2d(X, Y) / 2.0 + 0.5) * (1.0 - distances[8] / total_size)
-#
-	#return result
 
 func compute_biome_distances(x: float, y: float) -> void:
 	back.compute_biome_stats(x, y)
@@ -187,58 +178,10 @@ func compute_biome_distances(x: float, y: float) -> void:
 	color = back.get_color()
 	distances = back.get_distances()
 	total_size = back.get_total_distance()
-	#var d := dryness.get_noise_2d(x, y) / 2.0 + 0.5
-	#var t := temperature.get_noise_2d(x, y) / 2.0 + 0.5
-	#
-	#var p := Vector2(d, t)
-	#var min_distance := INF
-	#var pos := 0
-	#total_size = 0.0
-	#var clr := Vector3(1, 1, 1)
-	#var dist := 0.0
-	#var c := Vector3.ZERO
-	#for i in range(biome_locations.size()):
-		#dist = p.distance_to(biome_locations[i])
-		#distances[i] = dist * dist
-		#total_size += dist
-		#c = lerp(biome_colors[i], Vector3(1, 1, 1), dist)
-		#if dist <= 1.0:
-			#clr = clr * c
-		#if dist < min_distance:
-			#min_distance = dist
-			#pos = i
-#
-	#biome = biome_list[pos]
-	#color = Color(clr.x, clr.y, clr.z)
-	
-#func compute_biome(x: float, y: float) -> World.Biome:
-	#back.compute_biome_stats(x, y)
-	#return biome_list[back.get_biome()]
-	#var d := dryness.get_noise_2d(x, y) / 2.0 + 0.5
-	#var t := temperature.get_noise_2d(x, y) / 2.0 + 0.5
-	#
-	#var p := Vector2(d, t)
-	#var min_distance := INF
-	#var pos := 0
-	#var dist := 0.0
-	#for i in range(biome_locations.size()):
-		#dist = p.distance_to(biome_locations[i])
-		#if dist < min_distance:
-			#min_distance = dist
-			#pos = i
-#
-	#return biome_list[pos]
 	
 
 func grass_height(b: World.Biome, x: float, y: float) -> float:
 	return back.grass_height(b, x, y)
-	#var n := noise_list[b].get_noise_2d(x, y) / 2.0 + 0.5
-	#var e := curve_list[b].sample(n) / curve_list[b].max_value
-	#var s := smoothstep(0.25, 1.0, e)
-	#if s == 0:
-		#return snapped(e * 4, 0.1)
-	#else:
-		#return 0.5 + s
 		
 func shuffle_biome_locations(s: int) -> PackedVector2Array:
 	var result := PackedVector2Array([])
@@ -325,7 +268,7 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.831, 0.831, 0.941))
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
-			env.environment.ambient_light_color = Color(0, 0.5, 0)
+			env.environment.ambient_light_color = Color(0, 0.75, 0)
 		World.Biome.TAIGA:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.659, 0.847, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.8, 0.933, 1))
@@ -343,7 +286,7 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.831, 0.831, 0.941))
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
-			env.environment.ambient_light_color = Color(0, 0.5, 0)
+			env.environment.ambient_light_color = Color(0, 0.75, 0.5)
 		_:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.594, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.3, 0.557))
@@ -361,4 +304,19 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.831, 0.831, 0.941))
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
-			env.environment.ambient_light_color = Color.BLACK
+			env.environment.ambient_light_color = Color(0.75, 0.75, 0.75)
+
+func count_biomes(positions: Array[Vector2]) -> void:
+	var summary := {}
+	for pos in positions:
+		back.compute_biome_map_stats(pos.x * 256, pos.y * 256, 16, 16, 16)
+		var dict := back.get_biomes_map()
+		for p in dict:
+			if summary.has(p):
+				summary[p] += 1
+			else:
+				summary[p] = 0
+				
+	print("-----------------------------------------")
+	for b: int in summary:
+		print(World.Biome.keys()[b + 1], ": ", summary[b])

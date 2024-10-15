@@ -37,9 +37,6 @@ var settings: WorldSettings
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
-	
-	#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -48,7 +45,6 @@ func _ready() -> void:
 	_settings.sed = randi()
 	setup(_settings)
 	
-		
 	# FIXME: _settings.sed = 5, rng.seed = _settings.sed * 10
 	
 	var rng := RandomNumberGenerator.new()
@@ -59,8 +55,23 @@ func _ready() -> void:
 	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
+	
+	#blender.count_biomes([
+	#Vector2(0, 0), Vector2(0, 1), Vector2(1, 0), \
+	#Vector2(0, -1), Vector2(-1, 0), Vector2(1, -1), \
+	#Vector2(-1, 1), Vector2(1, 1), Vector2(-1, -1), \
+	#Vector2(0, 2), Vector2(2, 0), \
+	#Vector2(0, -2), Vector2(-2, 0), Vector2(2, -2), \
+	#Vector2(-2, 2), Vector2(2, 2), Vector2(-2, -2), \
+	#Vector2(0, 200), Vector2(200, 0), \
+	#Vector2(0, -200), Vector2(-200, 0), Vector2(200, -200), \
+	#Vector2(-200, 200), Vector2(200, 200), Vector2(-200, -200), \
+	#Vector2(0, 2000), Vector2(2000, 0), \
+	#Vector2(0, -2000), Vector2(-2000, 0), Vector2(2000, -2000), \
+	#Vector2(-2000, 2000), Vector2(2000, 2000), Vector2(-2000, -2000), \
+	#])
+	
 	chunker = Terrain.new(blender, 256, 128, 2, 0.0625, 16)
-	#chunker.ignore_physics = true
 	build_terrain()
 	var space := get_world_3d().space
 	var state := PhysicsServer3D.space_get_direct_state(space)
