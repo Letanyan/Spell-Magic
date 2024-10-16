@@ -245,6 +245,9 @@ func close_menu_for_player() -> void:
 	
 func open_menu_for_player() -> void:
 	settings.is_paused = true
+	for loc: Vector2 in population:
+		var pop := population[loc] as Population
+		pop.update_info()
 	sub_viewport_container.visible = true
 	pause_start = Time.get_unix_time_from_system()
 	settings.player_position = player.position

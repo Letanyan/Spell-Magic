@@ -39,22 +39,19 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 		var struct := Population.random_entity_from_distribution(rng.randf(), GRASSLAND_STRUCTURE) as GRASSLAND_STRUCTURES_KIND
 		match struct:
 			GRASSLAND_STRUCTURES_KIND.NONE:
-				index += 1
+				pass
 			GRASSLAND_STRUCTURES_KIND.TREE_ROUND:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_foliage(World.Foliage.TREE_ROUND, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing)
 				if p != null:
 					result.append(p)
 					
 			GRASSLAND_STRUCTURES_KIND.FISH:
-				index += 1
 				var pos := area[index]
 				
 				if rng.randf() < 0.8:
@@ -66,7 +63,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				
 					
 			GRASSLAND_STRUCTURES_KIND.HIVE:
-				index += 1
 				var pos := area[index]
 				var r := Population.random_entity_from_distribution(rng.randf(), {0.05: 10, 0.15: 5, 0.8: 1}) as float
 				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
@@ -96,7 +92,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						spawner.nodes_to_be_cleared[p] = true
 				
 			GRASSLAND_STRUCTURES_KIND.SLIMY:
-				index += 1
 				var pos := area[index]
 				for i in rng.randi_range(5, 15):
 					var rock := pop.spawn_foliage(World.Foliage.ROCK_EGG, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
@@ -116,7 +111,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 								result.append(q)
 								
 			GRASSLAND_STRUCTURES_KIND.FLOCK:
-				index += 1
 				var pos := area[index]
 				var r := Population.random_entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
 				const circle_points = 3
@@ -140,7 +134,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						result.append(p)
 						
 			GRASSLAND_STRUCTURES_KIND.PETS:
-				index += 1
 				var pos := area[index]
 				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 1: 0.8}) as int
 				const circle_points = 3
@@ -165,21 +158,18 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						 
 				
 			GRASSLAND_STRUCTURES_KIND.UNDEAD:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos, spacing)
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.MOLE:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos, spacing)
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE:
-				index += 1
 				var pos := area[index] as Vector2
 				
 				var pos3 := Vector3.ZERO
@@ -190,7 +180,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 2, 2, 8)
 					var path := PathStyle.new(rng.randi(), pos3).follow_path(circle_path).align_y_to_ground_and_air()
 					var config := TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 5, Vitals.Stat.new(100), path)
-					var p := pop.spawn_world_item(World.Item.TARGET, state, pos.x, pos.y, spacing, config)
+					var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config)
 					pos3 = p.position
 					path.origin = pos3
 					if p != null and can_add_spawner:
@@ -203,7 +193,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				#if area.size() - index < 100:
 					#index += 1
 					#continue
-				#index += 1
 				#var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
 				#
 				#var w: Buildings
@@ -237,7 +226,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				#if area.size() - index < 100:
 					#index += 1
 					#continue
-				#index += 1
 				#var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
 				#
 				#var w: Buildings
@@ -288,6 +276,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 										#spawner.nodes_to_be_cleared[n] = true
 					#if max_limit <= 0:
 						#break
+		index += 1
 					
 	return result
 					

@@ -123,6 +123,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 	
 func setup(seedling: int) -> void:
 	update_behaviour()
+	rotation.y = randf() * 2 * PI
 	
 func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
 	var p := clampf(Vector2(x, y).length() / 10000.0, 0.0, 100.0)

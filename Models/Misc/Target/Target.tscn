@@ -1,11 +1,15 @@
-[gd_scene load_steps=20 format=4 uid="uid://8w1sklpqfgkw"]
+[gd_scene load_steps=26 format=4 uid="uid://8w1sklpqfgkw"]
 
 [ext_resource type="Script" path="res://Models/Misc/Target/Target.gd" id="1_gfhpr"]
 [ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/Health Bar/health_bar.tscn" id="2_02115"]
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="3_twct3"]
 [ext_resource type="Texture2D" uid="uid://byjwancw2v7cq" path="res://Characters/Enemy/Health Bar/health_gradient.tres" id="4_ois2h"]
+[ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/status_effects.gdshader" id="5_1sj3j"]
 [ext_resource type="Material" uid="uid://cc0v6ipi3c4iu" path="res://Models/Misc/Target/coin_shader.tres" id="5_3qna6"]
 [ext_resource type="Material" uid="uid://cr4so71sw2cs3" path="res://Models/Misc/Target/platform_shader.tres" id="5_74v1s"]
+[ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="6_ue5rt"]
+[ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="7_qwwbg"]
+[ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="8_hqy6b"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7c4o0"]
 resource_local_to_scene = true
@@ -33,6 +37,29 @@ shader_parameter/color_transitions = ExtResource("4_ois2h")
 resource_local_to_scene = true
 material = SubResource("ShaderMaterial_7c4o0")
 size = Vector2(1.5, 0.15)
+orientation = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2d5ej"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("5_1sj3j")
+shader_parameter/wet_color = Color(0, 0.501961, 1, 1)
+shader_parameter/wet_progress = 0.0
+shader_parameter/freeze_color = Color(0, 1, 1, 1)
+shader_parameter/freeze_progress = 0.0
+shader_parameter/burning_color = Color(1, 0, 0, 1)
+shader_parameter/burning_progress = 0.0
+shader_parameter/wet_tex_under = ExtResource("8_hqy6b")
+shader_parameter/wet_tex_progress = ExtResource("8_hqy6b")
+shader_parameter/freeze_tex_under = ExtResource("7_qwwbg")
+shader_parameter/freeze_tex_progress = ExtResource("7_qwwbg")
+shader_parameter/burning_tex_under = ExtResource("6_ue5rt")
+shader_parameter/burning_tex_progress = ExtResource("6_ue5rt")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dfnp0"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_2d5ej")
+size = Vector2(1, 0.3)
 orientation = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tag7l"]
@@ -109,7 +136,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gj7ta")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hm6m2"]
-size = Vector3(1, 1, 0.25)
+size = Vector3(1, 0.25, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cbt3o"]
 resource_local_to_scene = true
@@ -177,6 +204,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.804705, 0)
 [node name="Bar" parent="HealthBar" index="1"]
 mesh = SubResource("PlaneMesh_1tlu7")
 
+[node name="Effects" parent="HealthBar" index="2"]
+mesh = SubResource("PlaneMesh_dfnp0")
+
 [node name="coin" type="MeshInstance3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ycjys")
@@ -184,7 +214,7 @@ skeleton = NodePath("")
 surface_material_override/0 = ExtResource("5_3qna6")
 
 [node name="platform" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, -4.37114e-09, 0.5, 0, -0.1, -2.18557e-08, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.1, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_kvffy")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("5_74v1s")

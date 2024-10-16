@@ -35,27 +35,23 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 		var struct := Population.random_entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
-				index += 1
+				pass
 			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.BAT:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.BAT, state, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.MOLE:
-				index += 1
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos, spacing)
 				if p != null:
@@ -65,7 +61,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					index += 1
 					continue
 				var count := pop.rng.randi_range(4, 16)
-				index += 1
 				var pos := area[index]
 				for i in range(count):
 					var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos + Globals.rand_point_in_circle_2d(spacing / 4.0), spacing)
@@ -91,6 +86,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						if p != null:
 							result.append(p)
 						offset = offset.rotated(float(i) / float(count) * 2.0 * PI)
+		index += 1
 				
 			
 	return result

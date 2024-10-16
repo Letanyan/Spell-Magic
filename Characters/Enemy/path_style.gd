@@ -2,7 +2,7 @@ class_name PathStyle
 
 enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT, AIR, GROUND_AND_JUMP }
 enum Mover { PHYSICS, ABSOLUTE }
-enum LookAt { VELOCITY, PLAYER, PLAYER_XZ }
+enum LookAt { VELOCITY, PLAYER, PLAYER_XZ, NOTHING }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
 enum PlayerVisionAngle { CAMERA, BODY_ROTATION }
 
@@ -87,6 +87,10 @@ func look_at_direction() -> PathStyle:
 	
 func look_at_player_xz() -> PathStyle:
 	lookat = LookAt.PLAYER_XZ
+	return self
+
+func look_at_nothing() -> PathStyle:
+	lookat = LookAt.NOTHING
 	return self
 	
 func use_physics() -> PathStyle:

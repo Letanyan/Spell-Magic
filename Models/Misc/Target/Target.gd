@@ -119,18 +119,16 @@ func _physics_process(delta: float) -> void:
 	position = lerp(start_position, target_position, (0.5 - movement_tick) / 0.5)
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:
-		var goal_position := position + velocity.normalized() * 10
-		var actual_goal := focus_point.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0))
+		var actual_goal := focus_point
 		if actual_goal != position:
 			if actual_goal.normalized().cross(Vector3.UP).is_equal_approx(Vector3.ZERO):
 				look_at(actual_goal, Vector3.BACK)
 			else:
 				look_at(actual_goal)
 	elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
-		var goal_position := position + velocity * 10
 		var player_position := focus_point
 		player_position.y = position.y
-		var target := player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)) 
+		var target := player_position
 		if target != position:
 			if target.normalized().cross(Vector3.UP).is_equal_approx(Vector3.ZERO):
 				look_at(target, Vector3.BACK)
@@ -145,7 +143,7 @@ func _physics_process(delta: float) -> void:
 		spell_caster.update(self, delta)
 		if spell != null:
 			spell_tick += delta
-			if spell_tick >= spell.calculate_delay({}):
+			if spell_tick >= spell.duration:
 				cast_spell(func(p: SpellBody) -> void: add_sibling(p))
 				spell_tick = 0.0
 			
@@ -286,14 +284,14 @@ func update_mesh_color() -> void:
 func resize_target(size: float) -> void:
 	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
 	($platform as MeshInstance3D).scale = Vector3(0.5, 0.1, 0.5) * size
-	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size, size / 4.0)
+	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size / 4.0, size)
 	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
-	bounds = Vector3(size, size, size)
+	bounds = Vector3(size, size / 4.0, size)
 	
 func rescale_target(size: Vector3) -> void:
 	($coin as MeshInstance3D).scale = size * 5
-	($platform as MeshInstance3D).scale = size * 0.5
+	($platform as MeshInstance3D).scale = Vector3(size.x * 0.5, size.y * 0.1, size.z * 0.5)
 	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = size
 	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size.y / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
@@ -352,6 +350,7 @@ func configure(config: Dictionary) -> void:
 	spell = config.get("spell", null)
 	caster_position = config.get("caster_position", Vector3.ZERO)
 	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
+	($Area3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM
 	if config.has("size"):
 		resize_target(config["size"] as float)
 	else:

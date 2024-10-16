@@ -254,9 +254,9 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			ground_angle = PI / 16
 	return prepare_entity(state, result, pos, false, presetup, on_flat_surface(ground_angle))
 	
-func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, x: float, y: float, spacing: float, config: Dictionary, presetup: Callable = do_nothing) -> Node3D:
+func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, config: Dictionary, presetup: Callable = do_nothing) -> Node3D:
 	var result: Node3D = entity_manager.get_world_item(item)
-	var pos := Vector3(x, 0, y)
+	var pos := Vector3(p.x, 0, p.y)
 	
 	match item:
 		World.Item.TARGET:
