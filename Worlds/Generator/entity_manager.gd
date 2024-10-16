@@ -43,16 +43,25 @@ class EntityBuffer:
 		deinit.call(temp)
 		
 
-var buffer_round_trees: EntityBuffer
-var buffer_branched_trees: EntityBuffer
-var buffer_pyramid_trees: EntityBuffer
-var buffer_christmas_trees: EntityBuffer
-var buffer_safari_trees: EntityBuffer
-var buffer_egg_rocks: EntityBuffer
-var buffer_flattop_rocks: EntityBuffer
-var buffer_overhang_rocks: EntityBuffer
-var buffer_squashed_rocks: EntityBuffer
-var buffer_tall_rocks: EntityBuffer
+var buffer_tree_round: EntityBuffer
+var buffer_tree_branched: EntityBuffer
+var buffer_tree_pyramid: EntityBuffer
+var buffer_tree_christmas: EntityBuffer
+var buffer_tree_safari: EntityBuffer
+var buffer_rock_egg: EntityBuffer
+var buffer_rock_flattop: EntityBuffer
+var buffer_rock_overhang: EntityBuffer
+var buffer_rock_squashed: EntityBuffer
+var buffer_rock_tall: EntityBuffer
+var buffer_bush_round: EntityBuffer
+var buffer_bush_sprout: EntityBuffer
+var buffer_bush_tall: EntityBuffer
+var buffer_flowers_sun2: EntityBuffer
+var buffer_flowers_sun3: EntityBuffer
+var buffer_grass_reed: EntityBuffer
+var buffer_grass_shrub: EntityBuffer
+var buffer_mushroom_bulb: EntityBuffer
+var buffer_mushroom_pointed: EntityBuffer
 
 var buffer_fish: EntityBuffer
 var buffer_bird: EntityBuffer
@@ -119,44 +128,53 @@ func _init() -> void:
 		node.position.y = -1000
 		node.is_active = false
 	
-	buffer_round_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_ROUND), deinit_foliage, "round")
-	buffer_branched_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_BRANCHED), deinit_foliage, "branched")
-	buffer_pyramid_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_PYRAMID), deinit_foliage, "pyramid")
-	buffer_christmas_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_CHRISTMAS), deinit_foliage, "christmas")
-	buffer_safari_trees = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_SAFARI), deinit_foliage, "safari")
-	buffer_egg_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_EGG), deinit_foliage, "egg")
-	buffer_flattop_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_FLATTOP), deinit_foliage, "flattop")
-	buffer_overhang_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_OVERHANG), deinit_foliage, "overhang")
-	buffer_squashed_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_SQUASHED), deinit_foliage, "squashed")
-	buffer_tall_rocks = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_TALL), deinit_foliage, "tall")
+	buffer_tree_round = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_ROUND), deinit_foliage, "TREE_ROUND")
+	buffer_tree_branched = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_BRANCHED), deinit_foliage, "TREE_BRANCHED")
+	buffer_tree_pyramid = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_PYRAMID), deinit_foliage, "TREE_PYRAMID")
+	buffer_tree_christmas = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_CHRISTMAS), deinit_foliage, "TREE_CHRISTMAS")
+	buffer_tree_safari = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.TREE_SAFARI), deinit_foliage, "TREE_SAFARI")
+	buffer_rock_egg = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_EGG), deinit_foliage, "ROCK_EGG")
+	buffer_rock_flattop = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_FLATTOP), deinit_foliage, "ROCK_FLATTOP")
+	buffer_rock_overhang = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_OVERHANG), deinit_foliage, "ROCK_OVERHANG")
+	buffer_rock_squashed = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_SQUASHED), deinit_foliage, "ROCK_SQUASHED")
+	buffer_rock_tall = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.ROCK_TALL), deinit_foliage, "ROCK_TALL")
+	buffer_bush_round = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.BUSH_ROUND), deinit_foliage, "BUSH_ROUND")
+	buffer_bush_sprout = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.BUSH_SPROUT), deinit_foliage, "BUSH_SPROUT")
+	buffer_bush_tall = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.BUSH_TALL), deinit_foliage, "BUSH_TALL")
+	buffer_flowers_sun2 = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.FLOWERS_SUN2), deinit_foliage, "FLOWERS_SUN2")
+	buffer_flowers_sun3 = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.FLOWERS_SUN3), deinit_foliage, "FLOWERS_SUN3")
+	buffer_grass_reed = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.GRASS_REED), deinit_foliage, "GRASS_REED")
+	buffer_grass_shrub = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.GRASS_SHRUB), deinit_foliage, "GRASS_SHRUB")
+	buffer_mushroom_bulb = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.MUSHROOM_BULB), deinit_foliage, "MUSHROOM_BULB")
+	buffer_mushroom_pointed = EntityBuffer.new(10, func() -> Foliage: return Foliage.make(World.Foliage.MUSHROOM_POINTED), deinit_foliage, "MUSHROOM_POINTED")
 	
-	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "fish")
-	buffer_bird = EntityBuffer.new(10, func() -> Bird: return Enemy.make(World.Enemy.BIRD), deinit_enemy, "bird")
-	buffer_fungi = EntityBuffer.new(10, func() -> Fungi: return Enemy.make(World.Enemy.FUNGI), deinit_enemy, "fungi")
-	buffer_hot_blob = EntityBuffer.new(10, func() -> HotBlob: return Enemy.make(World.Enemy.HOT_BLOB), deinit_enemy, "hot_blob")
-	buffer_mushroom = EntityBuffer.new(10, func() -> Mushroom: return Enemy.make(World.Enemy.MUSHROOM), deinit_enemy, "mushroom")
-	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy, "undead")
-	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy, "mole")
-	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy, "walker")
-	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy, "birdman")
-	buffer_fishman = EntityBuffer.new(10, func() -> Fishman: return Enemy.make(World.Enemy.FISHMAN), deinit_enemy, "fishman")
-	buffer_bluemon = EntityBuffer.new(10, func() -> Bluemon: return Enemy.make(World.Enemy.BLUEMON), deinit_enemy, "bluemon")
-	buffer_frog = EntityBuffer.new(10, func() -> Frog: return Enemy.make(World.Enemy.FROG), deinit_enemy, "frog")
-	buffer_mushking = EntityBuffer.new(10, func() -> Mushking: return Enemy.make(World.Enemy.MUSHKING), deinit_enemy, "mushking")
-	buffer_rabbit = EntityBuffer.new(10, func() -> Rabbit: return Enemy.make(World.Enemy.RABBIT), deinit_enemy, "rabbit")
-	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy, "bat")
-	buffer_dragon = EntityBuffer.new(10, func() -> Dragon: return Enemy.make(World.Enemy.DRAGON), deinit_enemy, "dragon")
-	buffer_dragoon = EntityBuffer.new(10, func() -> Dragoon: return Enemy.make(World.Enemy.DRAGOON), deinit_enemy, "dragoon")
-	buffer_ghost = EntityBuffer.new(10, func() -> Ghost: return Enemy.make(World.Enemy.GHOST), deinit_enemy, "ghost")
-	buffer_ghostly = EntityBuffer.new(10, func() -> Ghostly: return Enemy.make(World.Enemy.GHOSTLY), deinit_enemy, "ghostly")
-	buffer_batty = EntityBuffer.new(10, func() -> Batty: return Enemy.make(World.Enemy.BATTY), deinit_enemy, "batty")
-	buffer_bee = EntityBuffer.new(10, func() -> Bee: return Enemy.make(World.Enemy.BEE), deinit_enemy, "bee")
-	buffer_bumble_bee = EntityBuffer.new(10, func() -> BumbleBee: return Enemy.make(World.Enemy.BUMBLE_BEE), deinit_enemy, "bumble_bee")
-	buffer_undead_head = EntityBuffer.new(10, func() -> UndeadHead: return Enemy.make(World.Enemy.UNDEAD_HEAD), deinit_enemy, "undead_head")
-	buffer_snot_blob = EntityBuffer.new(10, func() -> SnotBlob: return Enemy.make(World.Enemy.SNOT_BLOB), deinit_enemy, "snot_blob")
-	buffer_snot_spike = EntityBuffer.new(10, func() -> SnotSpike: return Enemy.make(World.Enemy.SNOT_SPIKE), deinit_enemy, "snot_spike")
-	buffer_walker_head = EntityBuffer.new(10, func() -> WalkerHead: return Enemy.make(World.Enemy.WALKER_HEAD), deinit_enemy, "walker_head")
-	buffer_wizard = EntityBuffer.new(10, func() -> Wizard: return Enemy.make(World.Enemy.WIZARD), deinit_enemy, "wizard")
+	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "FISH")
+	buffer_bird = EntityBuffer.new(10, func() -> Bird: return Enemy.make(World.Enemy.BIRD), deinit_enemy, "BIRD")
+	buffer_fungi = EntityBuffer.new(10, func() -> Fungi: return Enemy.make(World.Enemy.FUNGI), deinit_enemy, "FUNGI")
+	buffer_hot_blob = EntityBuffer.new(10, func() -> HotBlob: return Enemy.make(World.Enemy.HOT_BLOB), deinit_enemy, "HOT_BLOB")
+	buffer_mushroom = EntityBuffer.new(10, func() -> Mushroom: return Enemy.make(World.Enemy.MUSHROOM), deinit_enemy, "MUSHROOM")
+	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy, "UNDEAD")
+	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy, "MOLE")
+	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy, "WALKER")
+	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy, "BIRDMAN")
+	buffer_fishman = EntityBuffer.new(10, func() -> Fishman: return Enemy.make(World.Enemy.FISHMAN), deinit_enemy, "FISHMAN")
+	buffer_bluemon = EntityBuffer.new(10, func() -> Bluemon: return Enemy.make(World.Enemy.BLUEMON), deinit_enemy, "BLUEMON")
+	buffer_frog = EntityBuffer.new(10, func() -> Frog: return Enemy.make(World.Enemy.FROG), deinit_enemy, "FROG")
+	buffer_mushking = EntityBuffer.new(10, func() -> Mushking: return Enemy.make(World.Enemy.MUSHKING), deinit_enemy, "MUSHKING")
+	buffer_rabbit = EntityBuffer.new(10, func() -> Rabbit: return Enemy.make(World.Enemy.RABBIT), deinit_enemy, "RABBIT")
+	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy, "BAT")
+	buffer_dragon = EntityBuffer.new(10, func() -> Dragon: return Enemy.make(World.Enemy.DRAGON), deinit_enemy, "DRAGON")
+	buffer_dragoon = EntityBuffer.new(10, func() -> Dragoon: return Enemy.make(World.Enemy.DRAGOON), deinit_enemy, "DRAGOON")
+	buffer_ghost = EntityBuffer.new(10, func() -> Ghost: return Enemy.make(World.Enemy.GHOST), deinit_enemy, "GHOST")
+	buffer_ghostly = EntityBuffer.new(10, func() -> Ghostly: return Enemy.make(World.Enemy.GHOSTLY), deinit_enemy, "GHOSTLY")
+	buffer_batty = EntityBuffer.new(10, func() -> Batty: return Enemy.make(World.Enemy.BATTY), deinit_enemy, "BATTY")
+	buffer_bee = EntityBuffer.new(10, func() -> Bee: return Enemy.make(World.Enemy.BEE), deinit_enemy, "BEE")
+	buffer_bumble_bee = EntityBuffer.new(10, func() -> BumbleBee: return Enemy.make(World.Enemy.BUMBLE_BEE), deinit_enemy, "BUMBLE_BEE")
+	buffer_undead_head = EntityBuffer.new(10, func() -> UndeadHead: return Enemy.make(World.Enemy.UNDEAD_HEAD), deinit_enemy, "UNDEAD_HEAD")
+	buffer_snot_blob = EntityBuffer.new(10, func() -> SnotBlob: return Enemy.make(World.Enemy.SNOT_BLOB), deinit_enemy, "SNOT_BLOB")
+	buffer_snot_spike = EntityBuffer.new(10, func() -> SnotSpike: return Enemy.make(World.Enemy.SNOT_SPIKE), deinit_enemy, "SNOT_SPIKE")
+	buffer_walker_head = EntityBuffer.new(10, func() -> WalkerHead: return Enemy.make(World.Enemy.WALKER_HEAD), deinit_enemy, "WALKER_HEAD")
+	buffer_wizard = EntityBuffer.new(10, func() -> Wizard: return Enemy.make(World.Enemy.WIZARD), deinit_enemy, "WIZARD")
 	
 	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building, "single")
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
@@ -171,30 +189,48 @@ func _init() -> void:
 
 func get_foliage(kind: World.Foliage) -> Foliage:
 	match kind:
-		World.Foliage.TREE_ROUND: return buffer_round_trees.get_entity()
-		World.Foliage.TREE_BRANCHED: return buffer_branched_trees.get_entity()
-		World.Foliage.TREE_PYRAMID: return buffer_pyramid_trees.get_entity()
-		World.Foliage.TREE_CHRISTMAS: return buffer_christmas_trees.get_entity()
-		World.Foliage.TREE_SAFARI: return buffer_safari_trees.get_entity()
-		World.Foliage.ROCK_EGG: return buffer_egg_rocks.get_entity()
-		World.Foliage.ROCK_FLATTOP: return buffer_flattop_rocks.get_entity()
-		World.Foliage.ROCK_OVERHANG: return buffer_overhang_rocks.get_entity()
-		World.Foliage.ROCK_SQUASHED: return buffer_squashed_rocks.get_entity()
-		World.Foliage.ROCK_TALL: return buffer_tall_rocks.get_entity()
-	return buffer_round_trees.get_entity()
+		World.Foliage.TREE_ROUND: return buffer_tree_round.get_entity()
+		World.Foliage.TREE_BRANCHED: return buffer_tree_branched.get_entity()
+		World.Foliage.TREE_PYRAMID: return buffer_tree_pyramid.get_entity()
+		World.Foliage.TREE_CHRISTMAS: return buffer_tree_christmas.get_entity()
+		World.Foliage.TREE_SAFARI: return buffer_tree_safari.get_entity()
+		World.Foliage.ROCK_EGG: return buffer_rock_egg.get_entity()
+		World.Foliage.ROCK_FLATTOP: return buffer_rock_flattop.get_entity()
+		World.Foliage.ROCK_OVERHANG: return buffer_rock_overhang.get_entity()
+		World.Foliage.ROCK_SQUASHED: return buffer_rock_squashed.get_entity()
+		World.Foliage.ROCK_TALL: return buffer_rock_tall.get_entity()
+		World.Foliage.BUSH_ROUND: return buffer_bush_round.get_entity()
+		World.Foliage.BUSH_SPROUT: return buffer_bush_sprout.get_entity()
+		World.Foliage.BUSH_TALL: return buffer_bush_tall.get_entity()
+		World.Foliage.FLOWERS_SUN2: return buffer_flowers_sun2.get_entity()
+		World.Foliage.FLOWERS_SUN3: return buffer_flowers_sun3.get_entity()
+		World.Foliage.GRASS_REED: return buffer_grass_reed.get_entity()
+		World.Foliage.GRASS_SHRUB: return buffer_grass_shrub.get_entity()
+		World.Foliage.MUSHROOM_BULB: return buffer_mushroom_bulb.get_entity()
+		World.Foliage.MUSHROOM_POINTED: return buffer_mushroom_pointed.get_entity()
+	return buffer_tree_round.get_entity()
 
 func free_foliage(foliage: Foliage) -> void:
 	match foliage.kind:
-		World.Foliage.TREE_ROUND: buffer_round_trees.free_entity(foliage)
-		World.Foliage.TREE_BRANCHED: buffer_branched_trees.free_entity(foliage)
-		World.Foliage.TREE_PYRAMID: buffer_pyramid_trees.free_entity(foliage)
-		World.Foliage.TREE_CHRISTMAS: buffer_christmas_trees.free_entity(foliage)
-		World.Foliage.TREE_SAFARI: buffer_safari_trees.free_entity(foliage)
-		World.Foliage.ROCK_EGG: return buffer_egg_rocks.free_entity(foliage)
-		World.Foliage.ROCK_FLATTOP: return buffer_flattop_rocks.free_entity(foliage)
-		World.Foliage.ROCK_OVERHANG: return buffer_overhang_rocks.free_entity(foliage)
-		World.Foliage.ROCK_SQUASHED: return buffer_squashed_rocks.free_entity(foliage)
-		World.Foliage.ROCK_TALL: return buffer_tall_rocks.free_entity(foliage)
+		World.Foliage.TREE_ROUND: buffer_tree_round.free_entity(foliage)
+		World.Foliage.TREE_BRANCHED: buffer_tree_branched.free_entity(foliage)
+		World.Foliage.TREE_PYRAMID: buffer_tree_pyramid.free_entity(foliage)
+		World.Foliage.TREE_CHRISTMAS: buffer_tree_christmas.free_entity(foliage)
+		World.Foliage.TREE_SAFARI: buffer_tree_safari.free_entity(foliage)
+		World.Foliage.ROCK_EGG: return buffer_rock_egg.free_entity(foliage)
+		World.Foliage.ROCK_FLATTOP: return buffer_rock_flattop.free_entity(foliage)
+		World.Foliage.ROCK_OVERHANG: return buffer_rock_overhang.free_entity(foliage)
+		World.Foliage.ROCK_SQUASHED: return buffer_rock_squashed.free_entity(foliage)
+		World.Foliage.ROCK_TALL: return buffer_rock_tall.free_entity(foliage)
+		World.Foliage.BUSH_ROUND: return buffer_bush_round.free_entity(foliage)
+		World.Foliage.BUSH_SPROUT: return buffer_bush_sprout.free_entity(foliage)
+		World.Foliage.BUSH_TALL: return buffer_bush_tall.free_entity(foliage)
+		World.Foliage.FLOWERS_SUN2: return buffer_flowers_sun2.free_entity(foliage)
+		World.Foliage.FLOWERS_SUN3: return buffer_flowers_sun3.free_entity(foliage)
+		World.Foliage.GRASS_REED: return buffer_grass_reed.free_entity(foliage)
+		World.Foliage.GRASS_SHRUB: return buffer_grass_shrub.free_entity(foliage)
+		World.Foliage.MUSHROOM_BULB: return buffer_mushroom_bulb.free_entity(foliage)
+		World.Foliage.MUSHROOM_POINTED: return buffer_mushroom_pointed.free_entity(foliage)
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
 	match kind:

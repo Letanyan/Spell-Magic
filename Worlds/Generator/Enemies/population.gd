@@ -227,7 +227,9 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: 
 	var pos := Vector3(p.x, 0, p.y)
 	match foliage:
 		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI, \
-		World.Foliage.ROCK_EGG, World.Foliage.ROCK_FLATTOP, World.Foliage.ROCK_OVERHANG, World.Foliage.ROCK_SQUASHED, World.Foliage.ROCK_TALL:
+		World.Foliage.ROCK_EGG, World.Foliage.ROCK_FLATTOP, World.Foliage.ROCK_OVERHANG, World.Foliage.ROCK_SQUASHED, World.Foliage.ROCK_TALL, \
+		World.Foliage.BUSH_ROUND, World.Foliage.BUSH_SPROUT, World.Foliage.BUSH_TALL, World.Foliage.FLOWERS_SUN2, World.Foliage.FLOWERS_SUN3, \
+		World.Foliage.GRASS_REED, World.Foliage.GRASS_SHRUB, World.Foliage.MUSHROOM_BULB, World.Foliage.MUSHROOM_POINTED:
 			result = entity_manager.get_foliage(foliage) as Foliage
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)

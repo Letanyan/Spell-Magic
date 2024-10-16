@@ -123,7 +123,7 @@ static func make(version: int, s: int) -> NoiseBlender:
 	if version == 1:
 		return NoiseBlender.version1(s)
 		
-	return NoiseBlender.version1(s) # FIXME: This should always be the latest version
+	return NoiseBlender.version1(s) # WARNING: This should always return the latest version
 	
 static func version0(s: int) -> NoiseBlender:
 	var result := NoiseBlender.new()

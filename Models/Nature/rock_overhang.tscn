@@ -48,6 +48,7 @@ collision_layer = 512
 [node name="shape" type="CollisionShape3D" parent="static"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0263453, 0.366397, 0)
 shape = SubResource("CylinderShape3D_ea53k")
+disabled = true
 
 [node name="MeshNode" type="Node3D" parent="."]
 

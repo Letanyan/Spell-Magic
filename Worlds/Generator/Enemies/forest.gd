@@ -62,8 +62,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					continue
 				var count := pop.rng.randi_range(4, 16)
 				var pos := area[index]
-				for i in range(count):
-					var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, pos + Globals.rand_point_in_circle_2d(spacing / 4.0), spacing)
+				var path := PathStyle.Pathway.new().random_points_in_disc(1, 0, spacing / 4.0, 0, count, PathStyle.Easing.linear, rng)
+				path.apply_transform(Transform3D.IDENTITY.translated(Vector3(pos.x, 0, pos.y)))
+				for ppos in path.sample_points_xz(count):
+					var p := pop.spawn_enemy(World.Enemy.UNDEAD, state, ppos, spacing)
 					if p != null:
 						result.append(p)
 					
@@ -87,7 +89,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 							result.append(p)
 						offset = offset.rotated(float(i) / float(count) * 2.0 * PI)
 		index += 1
-				
-			
+		
 	return result
 			

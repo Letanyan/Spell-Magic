@@ -16,18 +16,25 @@ enum Enemy {
 }
 
 enum Foliage {
+	# !! WARNING: When adding new cases ensure to update `spawn_foliage` in `Population` and add methods in entity_manager.gd
 	NONE,
 	TREE_PYRAMID, TREE_ROUND, TREE_CHRISTMAS, TREE_SAFARI, TREE_BRANCHED,
 	ROCK_EGG, ROCK_FLATTOP, ROCK_OVERHANG, ROCK_SQUASHED, ROCK_TALL,
+	BUSH_ROUND, BUSH_SPROUT, BUSH_TALL, 
+	FLOWERS_SUN2, FLOWERS_SUN3,
+	GRASS_REED, GRASS_SHRUB,
+	MUSHROOM_BULB, MUSHROOM_POINTED,
 }
 
 enum Building {
+	# !! WARNING: When adding new cases ensure to update `spawn_building` in `Population` and add methods in entity_manager.gd
 	NONE,
 	FANTASY_VALLEY_SINGLE, FANTASY_VALLEY_DOUBLE,
 	FANTASY_WELL
 }
 
 enum Item {
+	# !! WARNING: When adding new cases ensure to update `spawn_world_item` in `Population` and add methods in entity_manager.gd
 	NONE,
 	TARGET, KEY, ARTIFACT, COIN, SPELL, HEALTH, NOTE
 }

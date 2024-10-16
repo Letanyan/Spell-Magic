@@ -524,6 +524,26 @@ class Pathway:
 		cursor = end
 		return self
 		
+	func sample_points(count: int) -> PackedVector3Array:
+		var result := PackedVector3Array([])
+		var t := 0.0
+		var step := total_duration / float(count)
+		var index := Globals.Ref.new(0)
+		var i := 0
+		while i < count:
+			var p := position_at_time_with_rotation(t, 0.0, index)
+			result.append(p)
+			t += step
+			i += 1
+		return result
+		
+	func sample_points_xz(count: int) -> PackedVector2Array:
+		var result := PackedVector2Array([])
+		var points := sample_points(count)
+		for p in points:
+			result.append(Vector2(p.x, p.z))
+		return result
+		
 	func circle(radius: float, h: float, dur: float, m: Segment = Easing.linear) -> Pathway:
 		var a := Segment.cubic(Vector3(0, h, radius)+cursor, Vector3(0, h, -radius)+cursor, Vector3(radius * 1.5, h, radius)+cursor, Vector3(radius * 1.5, h, -radius)+cursor)
 		var b := Segment.cubic(Vector3(0, h, -radius)+cursor, Vector3(0, h, radius)+cursor, Vector3(radius * -1.5, h, -radius)+cursor, Vector3(radius * -1.5, h, radius)+cursor)
