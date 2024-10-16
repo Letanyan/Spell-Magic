@@ -37,12 +37,28 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 			JUNGLE_STRUCTURES_KIND.PLATFORM:
 				var pos := area[index]
-				var pathway := PathStyle.Pathway.new().line_to(Vector3(0, 5, 0), 2, PathStyle.Easing.in_out_quad).line_to(Vector3.ZERO, 2, PathStyle.Easing.in_out_quad)
-				var path := PathStyle.new(0, Vector3(pos.x, 0, pos.y)).follow_path(pathway).align_y_to_ground_and_air().look_at_nothing()
-				var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
-				var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config) as TargetShape
-				if p != null:
-					result.append(p)
+				var h := 0.0
+				var ah := 0.0
+				var base := 0.0
+				var d := rng.randf_range(5, 15)
+				for i in rng.randi_range(1, 5):
+					h = rng.randf_range(10, 20)
+					if i % 2 == 0:
+						ah = h
+						h = 0.0
+					else:
+						ah = 0.0
+					var pathway := Pathway.new().move_to(Vec3.y(base + ah)) \
+						.line_to(Vec3.y(base + h), d, Easing.in_out_quad) \
+						.line_to(Vec3.y(base + ah), d, Easing.in_out_quad)
+					var path := PathStyle.new(0, Vec3.xz(pos)).follow_path(pathway).align_y_to_ground_and_air().look_at_nothing()
+					var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
+					var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config) as TargetShape
+					if p != null:
+						result.append(p)
+						var direction := Population.random_entity_from_distribution(rng.randf(), {Vector2.LEFT: 0.25, Vector2.RIGHT: 0.25, Vector2.UP: 0.25, Vector2.DOWN: 0.25}) as Vector2
+						pos += direction * Vec2.xz(p.bounds)
+						base += (h + ah) * 0.95
 					
 			JUNGLE_STRUCTURES_KIND.BIRD:
 				var pos := area[index]

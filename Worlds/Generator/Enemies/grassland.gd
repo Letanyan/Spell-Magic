@@ -100,14 +100,14 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				
 				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 2: 0.8}) as int
 				var spike_count := rng.randi_range(1, r)
-				var path := PathStyle.Pathway.new().random_points_in_disc(1, 0, spacing / 2.0, 0, spike_count, PathStyle.Easing.linear, rng)
-				path.apply_transform(Transform3D.IDENTITY.translated(Vector3(pos.x, 0, pos.y)))
+				var path := Pathway.new().random_points_in_disc(1, 0, spacing / 2.0, 0, spike_count, Easing.linear, rng)
+				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)))
 				for spike_pos in path.sample_points_xz(spike_count):
 					var p := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, state, spike_pos, spacing)
 					if p != null:
 						result.append(p)
-						var subpath := PathStyle.Pathway.new().random_points_in_disc(1, 0, spacing, 0, rng.randi_range(2,3), PathStyle.Easing.linear, rng)
-						subpath.apply_transform(Transform3D.IDENTITY.translated(Vector3(spike_pos.x, 0, spike_pos.y)))
+						var subpath := Pathway.new().random_points_in_disc(1, 0, spacing, 0, rng.randi_range(2,3), Easing.linear, rng)
+						subpath.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(spike_pos)))
 						for sp in subpath.sample_points_xz(rng.randi_range(2,3)):
 							var q := pop.spawn_enemy(World.Enemy.SNOT_BLOB, state, sp, spacing)
 							if q != null:
@@ -119,8 +119,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				const circle_points = 3
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
-				var path := PathStyle.Pathway.new().circle(radius_offset + r * 8, 0, 1)
-				path.apply_transform(Transform3D.IDENTITY.translated(Vector3(pos.x, 0, pos.y)).rotated(Vector3.UP, angle_offset))
+				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
+				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
 				for p in path.sample_points_xz(r * circle_points):
 					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
@@ -142,8 +142,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				const circle_points = 3
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
-				var path := PathStyle.Pathway.new().circle(radius_offset + r * 8, 0, 1)
-				path.apply_transform(Transform3D.IDENTITY.translated(Vector3(pos.x, 0, pos.y)).rotated(Vector3.UP, angle_offset))
+				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
+				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
 				for p in path.sample_points_xz(r * circle_points):
 					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
@@ -180,7 +180,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
 				
 				for i in 3:
-					var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 2, 2, 8)
+					var circle_path := Pathway.new().random_points_in_disc(2, 0, 2, 2, 8)
 					var path := PathStyle.new(rng.randi(), pos3).follow_path(circle_path).align_y_to_ground_and_air()
 					var config := TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 5, Vitals.Stat.new(100), path)
 					var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config)

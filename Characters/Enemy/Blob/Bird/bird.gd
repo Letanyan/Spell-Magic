@@ -22,17 +22,17 @@ var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
 	
-	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
-		.line_to(Vector3(0, 20, 0), 10, PathStyle.Easing.out_quart) \
-		.line_to(Vector3(0, 0, 0), 2, PathStyle.Easing.out_quart)
+		.line_to(Vector3(0, 20, 0), 10, Easing.out_quart) \
+		.line_to(Vector3(0, 0, 0), 2, Easing.out_quart)
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
-	var attack_pathway := PathStyle.Pathway.new() \
+	var attack_pathway := Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, fit(10,20), 0), fit(5,15), PathStyle.Easing.out_quart) \
+		.line_to(Vector3(10, fit(10,20), 0), fit(5,15), Easing.out_quart) \
 		.wait(10) \
-		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart) \
+		.line_to(Vector3(10, 0, 0), 2, Easing.out_quart) \
 		.wait(4)
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\

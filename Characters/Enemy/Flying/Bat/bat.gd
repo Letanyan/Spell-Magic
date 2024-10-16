@@ -18,7 +18,7 @@ var elec_arc3 := GlobalData.magic_book.copy_spell("arc")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(5), mana(8), mana_regen(20), percep(2,5), atk(8), def(5), {Artifact.Element.ELECTRIC: res(5, 1)})
 	
-	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
+	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
 	
 	const idle_r := 20.0
@@ -29,12 +29,12 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var c: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	var d: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
 	
-	var rotate_path := PathStyle.Pathway.new() \
+	var rotate_path := Pathway.new() \
 		.move_to(a) \
-		.arc_to(b, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
-		.arc_to(c, true, fit(3,1), PathStyle.Easing.in_out_cubic) \
-		.arc_to(d, true, fit(4,2), PathStyle.Easing.in_out_cubic) \
-		.arc_to(a, true, fit(3,1), PathStyle.Easing.in_out_cubic)
+		.arc_to(b, true, fit(4,2), Easing.in_out_cubic) \
+		.arc_to(c, true, fit(3,1), Easing.in_out_cubic) \
+		.arc_to(d, true, fit(4,2), Easing.in_out_cubic) \
+		.arc_to(a, true, fit(3,1), Easing.in_out_cubic)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

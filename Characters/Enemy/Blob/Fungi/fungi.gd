@@ -23,8 +23,8 @@ var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(13), mana_regen(13), percep(1,4), atk(4), def(14), {Artifact.Element.WATER: res(12, 0)})
 	
-	idle_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1))
-	basic_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1)).look_at_player_xz()
+	idle_path = PathStyle.new(0, position).follow_path(Pathway.empty(1))
+	basic_path = PathStyle.new(0, position).follow_path(Pathway.empty(1)).look_at_player_xz()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -75,10 +75,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var Z := Vector3.ZERO
 	var U := -bounds.y * 2.5
-	var up_pathway := PathStyle.Pathway.new() \
-		.move_to(Vector3(0, U, 0)).line_to(Z, 3, PathStyle.Easing.linear)
-	var down_pathway := PathStyle.Pathway.new() \
-		.move_to(Z).line_to(Vector3(0, U, 0), 3, PathStyle.Easing.linear).wait(6)
+	var up_pathway := Pathway.new() \
+		.move_to(Vector3(0, U, 0)).line_to(Z, 3, Easing.linear)
+	var down_pathway := Pathway.new() \
+		.move_to(Z).line_to(Vector3(0, U, 0), 3, Easing.linear).wait(6)
 	angry_sequence = AttackSequence.new(true, [
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player_xz().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player_xz().align_y_to_ground_and_dirt(),

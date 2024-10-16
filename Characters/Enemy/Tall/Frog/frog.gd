@@ -18,12 +18,12 @@ var water_attack3 := GlobalData.magic_book.copy_spell("linear")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(8), percep(1,2), atk(7), def(6), {Artifact.Element.WATER: res(15, 5)})
 	
-	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
-		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), fit(5,2), PathStyle.Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), fit(5,2), PathStyle.Easing.out_quart) \
-		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), fit(5,2), PathStyle.Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), fit(5,2), PathStyle.Easing.out_quart)
+		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), fit(5,2), Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), fit(5,2), Easing.out_quart) \
+		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), fit(5,2), Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), fit(5,2), Easing.out_quart)
 		
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_jump() \
 		.set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND)

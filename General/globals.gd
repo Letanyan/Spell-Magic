@@ -72,7 +72,7 @@ static func project_point_onto_sphere(point: Vector3, radius: float, center: Vec
 	var Q := radius / P.length() * P
 	return Q + center
 
-static func form_arc_in_circle(s: Vector3, e: Vector3, h: float, rng: RandomNumberGenerator = null) -> PathStyle.Segment:
+static func form_arc_in_circle(s: Vector3, e: Vector3, h: float, rng: RandomNumberGenerator = null) -> Segment:
 	var a := s.x
 	var b := s.z
 	var c := e.x
@@ -86,7 +86,7 @@ static func form_arc_in_circle(s: Vector3, e: Vector3, h: float, rng: RandomNumb
 	else:
 		m = p if rng.randf() < 0.5 else q
 		
-	return PathStyle.Segment.quad(s, e, m)
+	return Segment.quad(s, e, m)
 
 static func midpoint_tangent1(s: Vector3, e: Vector3) -> Vector3:
 	var a := s.x

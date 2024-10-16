@@ -19,7 +19,7 @@ var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	
-	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(fit(10,15), 0, fit(3,1))
+	var circle_path := Pathway.new().move_to(Vector3.ZERO).circle_with_speed(fit(10,15), 0, fit(3,1))
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
 	attack_path = PathStyle.new(0, Vector3.ZERO).follow_path(circle_path).align_y_to_ground().look_at_player_xz().set_use_player_as_origin()
 	

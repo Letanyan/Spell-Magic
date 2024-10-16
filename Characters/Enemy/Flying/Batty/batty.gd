@@ -21,7 +21,7 @@ var elec_swipe3 := GlobalData.magic_book.copy_spell("swipe")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(8), mana(15), mana_regen(20), percep(4,6), atk(12), def(3), {Artifact.Element.ELECTRIC: res(7, 1)})
 	
-	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
+	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
 	
 	const idle_r := 20.0
@@ -31,12 +31,12 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var c: Vector3 = Globals.rand_point_in_sphere(idle_r)
 	var d: Vector3 = Globals.rand_point_in_sphere(idle_r)
 	
-	var rotate_path := PathStyle.Pathway.new() \
+	var rotate_path := Pathway.new() \
 		.move_to(a) \
-		.quad_to(b, Globals.project_point_onto_sphere(a.lerp(b, 0.5), idle_r), fit(6,2), PathStyle.Easing.in_sine) \
-		.quad_to(c, Globals.project_point_onto_sphere(b.lerp(c, 0.5), idle_r), fit(6,2), PathStyle.Easing.in_sine) \
-		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), fit(6,2), PathStyle.Easing.in_sine) \
-		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), fit(6,2), PathStyle.Easing.in_sine)
+		.quad_to(b, Globals.project_point_onto_sphere(a.lerp(b, 0.5), idle_r), fit(6,2), Easing.in_sine) \
+		.quad_to(c, Globals.project_point_onto_sphere(b.lerp(c, 0.5), idle_r), fit(6,2), Easing.in_sine) \
+		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), fit(6,2), Easing.in_sine) \
+		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), fit(6,2), Easing.in_sine)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

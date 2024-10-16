@@ -24,12 +24,12 @@ var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(12), mana(10), mana_regen(8), percep(1,3), atk(12), def(12), {Artifact.Element.AIR: res(5, 2)})
 	
-	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
-		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), fit(6,1), PathStyle.Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), fit(6,1), PathStyle.Easing.out_quart) \
-		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), fit(6,1), PathStyle.Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), fit(6,1), PathStyle.Easing.out_quart)
+		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), fit(6,1), Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), fit(6,1), Easing.out_quart) \
+		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), fit(6,1), Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), fit(6,1), Easing.out_quart)
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_jump() \
 		.set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND)
 	

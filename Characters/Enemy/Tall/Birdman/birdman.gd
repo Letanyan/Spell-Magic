@@ -24,17 +24,17 @@ var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(10), percep(4,6), atk(17), def(8), {Artifact.Element.AIR: res(5, 2)})
 	
-	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
+	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, -4, 0)) \
-		.line_to(Vector3(0, 20, 0), 5, PathStyle.Easing.out_quart) \
-		.line_to(Vector3(0, -4, 0), 2, PathStyle.Easing.out_quart)
+		.line_to(Vector3(0, 20, 0), 5, Easing.out_quart) \
+		.line_to(Vector3(0, -4, 0), 2, Easing.out_quart)
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
-	var attack_pathway := PathStyle.Pathway.new() \
+	var attack_pathway := Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, fit(15,450), 0), fit(5,30), PathStyle.Easing.out_quart) \
+		.line_to(Vector3(10, fit(15,450), 0), fit(5,30), Easing.out_quart) \
 		.wait(fit(10,60)) \
-		.line_to(Vector3(10, 0, 0), 2, PathStyle.Easing.out_quart) \
+		.line_to(Vector3(10, 0, 0), 2, Easing.out_quart) \
 		.wait(fit(4,8))
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\

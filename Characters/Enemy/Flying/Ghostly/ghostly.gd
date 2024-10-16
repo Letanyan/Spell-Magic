@@ -24,23 +24,23 @@ var ice_back3 := GlobalData.magic_book.copy_spell("line")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(3), mana(8), mana_regen(20), percep(4,6), atk(12), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(5, 1)})
 	
-	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
+	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
 		
 	var a: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
-	var rotate_path := PathStyle.Pathway.new() \
+	var rotate_path := Pathway.new() \
 		.move_to(a) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2) + Vector3(0, 10, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI) + Vector3(0, 20, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3) + Vector3(0, 30, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a  + Vector3(0, 40, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2) + Vector3(0, 30, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI) + Vector3(0, 20, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3) + Vector3(0, 10, 0), true, fit(4,1), PathStyle.Easing.linear) \
-		.arc_to(a  + Vector3(0, 40, 0), true, fit(4,1), PathStyle.Easing.linear)
+		.arc_to(a.rotated(Vector3.UP, PI / 2) + Vector3(0, 10, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI) + Vector3(0, 20, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3) + Vector3(0, 30, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a  + Vector3(0, 40, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI / 2) + Vector3(0, 30, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI) + Vector3(0, 20, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3) + Vector3(0, 10, 0), true, fit(4,1), Easing.linear) \
+		.arc_to(a  + Vector3(0, 40, 0), true, fit(4,1), Easing.linear)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

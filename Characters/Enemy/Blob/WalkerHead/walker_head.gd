@@ -22,9 +22,9 @@ var ice_wall := GlobalData.magic_book.copy_spell("wall")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(14), mana(2), mana_regen(10), percep(1,4), atk(5), def(12), {Artifact.Element.WATER: res(5, 1), Artifact.Element.ICE: res(7, 2)})
 	
-	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
+	var circle_path := Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
 	idle_path = PathStyle.new().follow_path(circle_path).set_origin(position).align_y_to_ground()
-	attack_path = PathStyle.new().follow_path(PathStyle.Pathway.empty(fit(3,8))).set_player_body_rotation_as_vision_angle(2, 0, 10).look_at_player().align_y_to_ground()
+	attack_path = PathStyle.new().follow_path(Pathway.empty(fit(3,8))).set_player_body_rotation_as_vision_angle(2, 0, 10).look_at_player().align_y_to_ground()
 	current_path = idle_path
 	
 	water_small.configure({"d": "Br", "s": atks(4,15)}, Spell.Element.WATER, fit(2,10), power(12), radius(2), 1, 80, 80, fl*50)

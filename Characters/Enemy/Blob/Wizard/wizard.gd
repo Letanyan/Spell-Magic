@@ -25,7 +25,7 @@ var ice_circle_line := GlobalData.magic_book.copy_spell("line")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(5), mana(20), mana_regen(10), percep(1,4), atk(20), def(2), {Artifact.Element.FIRE: res(-10, 0), Artifact.Element.WATER: res(10, 0)})
 	
-	var circle_path := PathStyle.Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
+	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
 	
 	attack_path = PathStyle.new(randi(), position).towards_player(fit(1,10), 1, 2).align_y_to_ground().look_at_player()

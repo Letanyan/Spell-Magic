@@ -156,7 +156,7 @@ func setup(_settings: WorldSettings) -> void:
 	
 	#var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
 	#var RT := Transform3D.IDENTITY.rotated(Vector3.UP, 2 * PI / 3)
-	#var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(4, 2, 1)
+	#var circle_path := Pathway.new().move_to(Vector3.ZERO).circle_with_speed(4, 2, 1)
 	#var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
 	#var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, T])
 	#var path3 := PathStyle.new(2, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, RT, T])
@@ -184,7 +184,7 @@ func setup(_settings: WorldSettings) -> void:
 	#SignalBus.enemy_death.connect(spawner.remove_node)
 	#
 	#
-	#var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(PathStyle.Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_player()
+	#var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_player()
 	#var target4 := TargetShape.make()
 	#target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
 	#target4.focus_point = Vector3.UP * 3e10

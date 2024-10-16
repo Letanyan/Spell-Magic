@@ -21,20 +21,20 @@ var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(15), mana(18), mana_regen(20), percep(2,6), atk(15), def(15), {Artifact.Element.FIRE: res(10, 5)})
 	
-	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
+	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
 	
 	const x_size = 10
 	const y_size = 10
 	const z_size = 10
 	var start_point := Globals.rand_v3_abs(x_size, y_size, z_size)
-	var cube_path := PathStyle.Pathway.new() \
+	var cube_path := Pathway.new() \
 		.move_to(start_point) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(8,3), PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(5,2), PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(3,1), PathStyle.Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(5,2), PathStyle.Easing.in_out_sine) \
-		.line_to(start_point, 3, PathStyle.Easing.in_out_sine)
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(8,3), Easing.in_out_sine) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(3,1), Easing.in_out_sine) \
+		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
+		.line_to(start_point, 3, Easing.in_out_sine)
 	
 	attack_path = PathStyle.new(randi()).follow_path(cube_path).align_y_to_air().look_at_player() \
 		.set_player_body_rotation_as_vision_angle(0, 10, 3, 6)
