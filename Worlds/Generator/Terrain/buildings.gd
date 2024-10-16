@@ -24,7 +24,7 @@ static func make(kind: World.Building) -> Buildings:
 	#result.base_size = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
 	return result
 	
-func setup(rng: RandomNumberGenerator) -> void:
+func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	rng.seed = hash(Vector2(position.x, position.z))
 	var r := rng.randf_range(0, 2 * PI)
 	(get_node("RootNode") as Node3D).rotate(Vector3.UP, r)

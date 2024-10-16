@@ -12,10 +12,9 @@ static func make() -> ScrollNote:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	setup()
+	setup(null, World.Biome.WATER)
 
-
-func setup() -> void:
+func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 
 func _on_area_3d_body_entered(body: Node3D) -> void:

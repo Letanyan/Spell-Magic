@@ -4,5 +4,5 @@ extends Node3D
 var is_active: bool = true
 var kind: World.Item = World.Item.NONE
 
-func setup() -> void:
+func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	pass

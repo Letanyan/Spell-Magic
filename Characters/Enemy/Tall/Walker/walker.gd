@@ -19,7 +19,7 @@ var ice_medium := GlobalData.magic_book.copy_spell("linear")
 var ice_large := GlobalData.magic_book.copy_spell("linear")
 var ice_wall := GlobalData.magic_book.copy_spell("wall")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(16), mana(4), mana_regen(12), percep(1,4), atk(8), def(18), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
@@ -75,7 +75,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.WALKER
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)

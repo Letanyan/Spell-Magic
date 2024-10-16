@@ -11,10 +11,9 @@ static func make() -> SpellPaper:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	setup()
+	setup(null, World.Biome.WATER)
 
-
-func setup() -> void:
+func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

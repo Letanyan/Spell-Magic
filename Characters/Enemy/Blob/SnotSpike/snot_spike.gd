@@ -18,7 +18,7 @@ var water_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
 var water_mine2 := GlobalData.magic_book.copy_spell("bomb")
 var water_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(18), mana(5), mana_regen(10), percep(1,4), atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
@@ -69,7 +69,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.SNOT_SPIKE
-	super.setup(seedling)
+	super.setup(seedling, biome)
 	
 
 func attack_state() -> AttackPatterns:

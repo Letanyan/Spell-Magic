@@ -51,11 +51,11 @@ static func make() -> TargetShape:
 	result.kind = World.Item.TARGET
 	return result
 	
-func setup() -> void:
+func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	update_mesh_color()
 	
 func _ready() -> void:
-	setup()
+	setup(null, World.Biome.WATER)
 
 func feet_position() -> float:
 	return position.y - bounds.y / 2.0

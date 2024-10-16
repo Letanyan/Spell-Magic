@@ -21,7 +21,7 @@ var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 
 var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(10), percep(4,6), atk(17), def(8), {Artifact.Element.AIR: res(5, 2)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
@@ -102,7 +102,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.BIRDMAN
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

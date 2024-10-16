@@ -56,7 +56,7 @@ func _ready() -> void:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 		#(get_node("Collision") as CollisionShape3D).disabled = true
 		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
-	setup(0)
+	setup(0, World.Biome.WATER)
 	health_bar.visible = not is_idle
 	
 static func make(_kind: World.Enemy) -> Enemy:
@@ -121,7 +121,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 		_: push_error("Missing enemy")
 	return result
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	update_behaviour()
 	rotation.y = randf() * 2 * PI
 	

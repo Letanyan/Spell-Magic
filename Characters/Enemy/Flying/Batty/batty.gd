@@ -18,7 +18,7 @@ var elec_swipe1 := GlobalData.magic_book.copy_spell("swipe")
 var elec_swipe2 := GlobalData.magic_book.copy_spell("swipe")
 var elec_swipe3 := GlobalData.magic_book.copy_spell("swipe")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(8), mana(15), mana_regen(20), percep(4,6), atk(12), def(3), {Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
@@ -83,7 +83,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.BATTY
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

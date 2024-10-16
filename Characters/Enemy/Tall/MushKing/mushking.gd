@@ -21,7 +21,7 @@ var water_flurry3 := GlobalData.magic_book.copy_spell("linear-flurry")
 var water_shower1 := GlobalData.magic_book.copy_spell("linear")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), percep(4,8), atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})
 	
 	idle_path = PathStyle.new(0, position).follow_path(PathStyle.Pathway.empty(1))
@@ -92,7 +92,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.MUSHKING
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

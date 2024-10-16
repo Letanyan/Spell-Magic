@@ -19,7 +19,7 @@ var water_shower1 := GlobalData.magic_book.copy_spell("linear")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(10), mana(10), mana_regen(5), percep(1,4), atk(5), def(4), {Artifact.Element.WATER: res(10, 0)})
 	
 	idle_path = PathStyle.still_path().align_y_to_ground()
@@ -56,7 +56,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.MUSHROOM
-	super.setup(seedling)
+	super.setup(seedling, biome)
 	
 
 func attack_state() -> AttackPatterns:

@@ -13,7 +13,7 @@ var elec1 := GlobalData.magic_book.copy_spell("linear")
 var elec2 := GlobalData.magic_book.copy_spell("linear")
 var elec3 := GlobalData.magic_book.copy_spell("linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(16), mana(14), mana_regen(10), percep(2,4), atk(8), def(12), {Artifact.Element.ROCK: res(8, 0), Artifact.Element.ELECTRIC: res(7, 1)})
 	
 	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(5, 0, 7)
@@ -105,7 +105,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.MOLE
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

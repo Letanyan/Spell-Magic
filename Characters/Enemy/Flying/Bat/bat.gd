@@ -15,7 +15,7 @@ var elec_arc1 := GlobalData.magic_book.copy_spell("arc")
 var elec_arc2 := GlobalData.magic_book.copy_spell("arc")
 var elec_arc3 := GlobalData.magic_book.copy_spell("arc")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(5), mana(8), mana_regen(20), percep(2,5), atk(8), def(5), {Artifact.Element.ELECTRIC: res(5, 1)})
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
@@ -73,7 +73,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.BAT
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

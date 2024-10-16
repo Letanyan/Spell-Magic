@@ -15,7 +15,7 @@ var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
 var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
 var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(10), mana_regen(15), percep(1,5), atk(10), def(9), {Artifact.Element.ELECTRIC: res(8, 2), Artifact.Element.FIRE: res(8, 2)})
 	
 	var sphere_path := PathStyle.Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
@@ -74,7 +74,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.BEE
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

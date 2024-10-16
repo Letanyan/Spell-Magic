@@ -16,7 +16,7 @@ var fire_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	
 	var circle_path := PathStyle.Pathway.new().move_to(Vector3.ZERO).circle_with_speed(fit(10,15), 0, fit(3,1))
@@ -67,7 +67,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.BLUEMON
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

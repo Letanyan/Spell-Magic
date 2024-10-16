@@ -19,7 +19,7 @@ var air_small_slow := GlobalData.magic_book.copy_spell("linear")
 var air_med_slow := GlobalData.magic_book.copy_spell("linear")
 var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
@@ -95,7 +95,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.BIRD
-	super.setup(seedling)
+	super.setup(seedling, biome)
 	
 
 func attack_state() -> AttackPatterns:

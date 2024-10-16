@@ -14,11 +14,6 @@ const JUNGLE_STRUCTURE = {
 	JUNGLE_STRUCTURES_KIND.BIRD: 0.25,
 }
 
-static func scale_entity(scale: float) -> Callable:
-	return func(entity: Node3D) -> void:
-		if entity is Foliage:
-			(entity as Foliage).scale_store = scale
-
 static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := 0
@@ -36,7 +31,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				pass
 			JUNGLE_STRUCTURES_KIND.TREE_BRANCHED:
 				var pos := area[index]
-				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing, scale_entity(10.0)) as Foliage
+				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing) as Foliage
 				if p != null:
 					result.append(p)
 					

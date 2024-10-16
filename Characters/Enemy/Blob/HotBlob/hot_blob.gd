@@ -18,7 +18,7 @@ var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
 var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
 var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(10), mana(18), mana_regen(20), percep(2,4), atk(12), def(16), {Artifact.Element.FIRE: res(15, 5)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
@@ -69,7 +69,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.HOT_BLOB
-	super.setup(seedling)
+	super.setup(seedling, biome)
 	
 
 func attack_state() -> AttackPatterns:

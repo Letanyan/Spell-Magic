@@ -75,7 +75,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var angle_offset := rng.randf_range(0.0, 2 * PI)
 				for i in 6:
 					var p := pos + Vector2(radius, 0).rotated(PI * 2 * (float(i) / 6.0) + angle_offset)
-					var tree := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, p, 0.0, pop.do_nothing, pop.always_valid)
+					var tree := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, p, 0.0, pop.always_valid)
 					if tree != null:
 						result.append(tree)
 					
@@ -120,7 +120,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var angle := (PI * 2) * (float(a) / float(r * circle_points))
 					var p := pos + Vector2(r * 8 + radius_offset, 0).rotated(angle + angle_offset)
 					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
-					var entity := pop.spawn_foliage(kind, state, p, 0, pop.do_nothing, pop.always_valid)
+					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
 					if entity != null:
 						result.append(entity)
 					
@@ -143,7 +143,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var angle := (PI * 2) * (float(a) / float(r * circle_points))
 					var p := pos + Vector2(r * 8 + radius_offset, 0).rotated(angle + angle_offset)
 					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
-					var entity := pop.spawn_foliage(kind, state, p, 0, pop.do_nothing, pop.always_valid)
+					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
 					if entity != null:
 						result.append(entity)
 					

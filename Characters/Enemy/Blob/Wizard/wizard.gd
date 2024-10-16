@@ -22,7 +22,7 @@ var elec_circle_line := GlobalData.magic_book.copy_spell("line")
 var ice_circle := GlobalData.magic_book.copy_spell("circle")
 var ice_circle_line := GlobalData.magic_book.copy_spell("line")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(5), mana(20), mana_regen(10), percep(1,4), atk(20), def(2), {Artifact.Element.FIRE: res(-10, 0), Artifact.Element.WATER: res(10, 0)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
@@ -91,7 +91,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.WIZARD
-	super.setup(seedling)
+	super.setup(seedling, biome)
 	
 
 func attack_state() -> AttackPatterns:

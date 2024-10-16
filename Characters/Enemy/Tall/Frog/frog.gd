@@ -15,7 +15,7 @@ var water_attack1 := GlobalData.magic_book.copy_spell("linear")
 var water_attack2 := GlobalData.magic_book.copy_spell("linear")
 var water_attack3 := GlobalData.magic_book.copy_spell("linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(8), percep(1,2), atk(7), def(6), {Artifact.Element.WATER: res(15, 5)})
 	
 	var idle_pathway: PathStyle.Pathway = PathStyle.Pathway.new() \
@@ -71,7 +71,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.FROG
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

@@ -13,7 +13,7 @@ var water_arc := GlobalData.magic_book.copy_spell("arc")
 var water_shower := GlobalData.magic_book.copy_spell("linear")
 var water_shower_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(18), mana(18), mana_regen(18), percep(1,4), atk(10), def(12), {Artifact.Element.WATER: res(8, 3)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(fit(6,12), 0, 10, 0, 10)
@@ -54,7 +54,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.FISHMAN
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

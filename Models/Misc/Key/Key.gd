@@ -10,9 +10,9 @@ static func make() -> KeyPrism:
 	return result
 
 func _ready() -> void:
-	setup()
+	setup(null, World.Biome.WATER)
 	
-func setup() -> void:
+func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 	update_mesh_color()
 

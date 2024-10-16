@@ -12,7 +12,7 @@ var rock_attack_small := GlobalData.magic_book.copy_spell("linear")
 var rock_attack_medium := GlobalData.magic_book.copy_spell("linear")
 var rock_attack_large := GlobalData.magic_book.copy_spell("linear")
 	
-func setup(seedling: int) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(4), mana(1), mana_regen(1), percep(1,2), atk(4), def(2), {Artifact.Element.ROCK: res(0, 1)})
 	
 	var circle_path := PathStyle.Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
@@ -48,7 +48,7 @@ func setup(seedling: int) -> void:
 	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.UNDEAD_HEAD
-	super.setup(seedling)
+	super.setup(seedling, biome)
 
 func attack_state() -> AttackPatterns:
 	if is_idle:

@@ -92,7 +92,7 @@ func set_world_ground(state: PhysicsDirectSpaceState3D, pos: Vector2) -> Vector3
 	result.y = wh
 	return result
 	
-func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, presetup: Callable, user_info: Callable) -> Node3D:
+func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
 	if entity != null:
 		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
@@ -120,8 +120,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			(entity as Enemy).is_dead = false
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
-			presetup.call(entity)
-			(entity as Enemy).setup(rng.randi())
+			(entity as Enemy).setup(rng.randi(), current_biome_during_generation)
 			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
 			var is_marked := entity_name_is_marked(entity.name) # has this enemy already been killed
 			if is_marked:
@@ -131,23 +130,20 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 				inhabitants[inhabitants.size()] = entity
 		else:
 			if entity is Foliage:
-				presetup.call(entity)
-				(entity as Foliage).setup(rng)
+				(entity as Foliage).setup(rng, current_biome_during_generation)
 				entity.name = World.Foliage.keys()[(entity as Foliage).kind] + " " + str(rng.randi())
 				garden.append(entity)
 			elif entity is Buildings:
-				presetup.call(entity)
-				(entity as Buildings).setup(rng)
+				(entity as Buildings).setup(rng, current_biome_during_generation)
 				entity.name = World.Building.keys()[(entity as Buildings).entity_kind] + " " + str(rng.randi())
 				garden.append(entity)
 			elif entity is WorldItem:
-				presetup.call(entity)
-				(entity as WorldItem).setup()
+				(entity as WorldItem).setup(rng, current_biome_during_generation)
 				entity.name = World.Item.keys()[(entity as WorldItem).kind] + " " + str(rng.randi())
 				world_items.append(entity)
 	return entity
 	
-func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, presetup: Callable = do_nothing) -> Enemy:
+func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
 	#return null
 	var result: Enemy = null
 	var pos := Vector3(p.x, 0, p.y)
@@ -184,7 +180,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
-	return prepare_entity(state, result, pos, true, presetup, always_valid)
+	return prepare_entity(state, result, pos, true, always_valid)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
 	var result: Enemy = null
@@ -222,11 +218,11 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	result.set_level_relative_to_location(null, x, y)
 	result.player = _player
 	result.position = Vector3(x, y, z)
-	result.setup(0)
+	result.setup(0, World.Biome.WATER)
 	return result
 
 
-func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, presetup: Callable = do_nothing, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
+func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
 	match foliage:
@@ -235,9 +231,9 @@ func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: 
 			result = entity_manager.get_foliage(foliage) as Foliage
 			pos.x += spacing * rng.randf_range(-0.5, 0.5)
 			pos.z += spacing * rng.randf_range(-0.5, 0.5)
-	return prepare_entity(state, result, pos, false, presetup, user_info)
+	return prepare_entity(state, result, pos, false, user_info)
 	
-func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, presetup: Callable = do_nothing) -> Node3D:
+func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
 	var ground_angle := 0.0
@@ -252,9 +248,9 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			ground_angle = PI / 16
-	return prepare_entity(state, result, pos, false, presetup, on_flat_surface(ground_angle))
+	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
 	
-func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, config: Dictionary, presetup: Callable = do_nothing) -> Node3D:
+func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
 	var result: Node3D = entity_manager.get_world_item(item)
 	var pos := Vector3(p.x, 0, p.y)
 	
@@ -263,7 +259,7 @@ func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vec
 			var temp := result as TargetShape
 			temp.configure(config)
 	
-	return prepare_entity(state, result, pos, false, presetup, always_valid)
+	return prepare_entity(state, result, pos, false, always_valid)
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
 	for p in collection:
