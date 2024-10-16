@@ -276,3 +276,27 @@ func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: in
 		p = q
 	add_with_speed(Segment.linear(p, cursor), speed, m)
 	return self
+	
+func to_and_back(duration: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:
+	var o := cursor
+	line_to(to, duration / 2.0, m)
+	line_to(o, duration / 2.0, m)
+	return self
+	
+func to_and_back_with_speed(speed: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:
+	var o := cursor
+	line_with_speed_to(to, speed, m)
+	line_with_speed_to(o, speed, m)
+	return self
+
+func from_to_and_back(duration: float, from: Vector3, to: Vector3, m: Segment = Easing.linear) -> Pathway:
+	move_to(from)
+	line_to(to, duration / 2.0, m)
+	line_to(from, duration / 2.0, m)
+	return self
+
+func from_to_and_back_with_speed(speed: float, from: Vector3, to: Vector3, m: Segment = Easing.linear) -> Pathway:
+	move_to(from)
+	line_with_speed_to(to, speed, m)
+	line_with_speed_to(from, speed, m)
+	return self
