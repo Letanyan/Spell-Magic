@@ -9,16 +9,21 @@ func change_tint_color(tint: Color) -> void:
 	var root_hover_style: StyleBoxGradientFill = get_stylebox("hover", "Button") as StyleBoxGradientFill
 	var root_pressed_style: StyleBoxGradientFill = get_stylebox("pressed", "Button") as StyleBoxGradientFill
 	
+	if tint.s < 0.25:
+		tint.s = 0.25
+		tint.h = 0.66667 + (tint.s * 4) * 0.0392157
+	
 	var base_tint := tint
 	var base_degen_tint := tint
-	base_degen_tint.h = clampf(base_degen_tint.h - 0.111111, 0.0, 1.0)
+	base_degen_tint.h = clampf(maxf(base_degen_tint.h - 0.111111, 0.0), 0.0, 1.0)
 	
 	var degen_tint := base_degen_tint
 	
-	root_base_style.set_border_gradient(tint, Color(1, 0, 0))
+	root_base_style.set_border_gradient(tint, degen_tint)
 	root_hover_style.set_border_gradient(tint, degen_tint)
 	root_hover_style.set_fill_gradient(tint, degen_tint)
 	root_pressed_style.set_border_gradient(tint, degen_tint)
+	root_pressed_style.set_fill_gradient(tint, degen_tint)
 	
 	degen_tint.a = 0.0
 	root_focus_style.set_fill_gradient(tint, degen_tint)

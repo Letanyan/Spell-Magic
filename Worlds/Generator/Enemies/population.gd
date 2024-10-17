@@ -311,7 +311,7 @@ func update_info() -> void:
 	for item in world_items:
 		if item is TargetShape:
 			if (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
-				(item.get_node("./static/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
+				(item.get_node("./static/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > maxf((item as TargetShape).bounds.length() * 1.25, 50)
 			else:
 				(item.get_node("./area/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
 		item.is_active = item.position.distance_to(player.position) < 150 and not player.world_settings.is_paused

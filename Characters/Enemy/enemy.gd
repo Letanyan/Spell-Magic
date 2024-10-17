@@ -3,7 +3,7 @@ extends CharacterBody
 
 var animator: AnimationPlayer
 var animation_tree: AnimationTree
-var animation_map: Dictionary # [String]String
+var animation_map: Dictionary ## [String]String
 
 #@onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
 #var walking_tween: Tween = null
@@ -49,7 +49,6 @@ func _ready() -> void:
 	still_path = PathStyle.still_path()
 	current_path = still_path
 	level_text.text = str(int(level))
-	animation_map = {}
 	animator = $AnimationPlayer
 	animation_tree = $AnimationTree
 	if not bounds:

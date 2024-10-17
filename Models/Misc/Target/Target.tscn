@@ -84,6 +84,7 @@ _surfaces = [{
 blend_shape_mode = 0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ycjys"]
+resource_local_to_scene = true
 resource_name = "Root Scene_coin"
 _surfaces = [{
 "aabb": AABB(-0.1, -0.1, -0.015, 0.2, 0.2, 0.03),
@@ -118,6 +119,7 @@ _surfaces = [{
 blend_shape_mode = 0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kvffy"]
+resource_local_to_scene = true
 resource_name = "platform_platform"
 _surfaces = [{
 "aabb": AABB(-1, -1, -1, 2, 2, 2),
@@ -136,6 +138,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gj7ta")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hm6m2"]
+resource_local_to_scene = true
 size = Vector3(1, 0.25, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cbt3o"]
@@ -221,7 +224,7 @@ surface_material_override/0 = ExtResource("5_74v1s")
 
 [node name="static" type="StaticBody3D" parent="."]
 collision_layer = 512
-collision_mask = 2
+collision_mask = 6
 
 [node name="shape" type="CollisionShape3D" parent="static"]
 shape = SubResource("BoxShape3D_hm6m2")

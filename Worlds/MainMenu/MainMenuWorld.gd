@@ -132,7 +132,7 @@ func _physics_process(delta: float) -> void:
 		#title.modulate = tint
 		#title.outline_modulate = tint
 		var particle_color := tint
-		particle_color.v *= 1.5
+		particle_color.v = particle_color.v * 1.5
 		(source.process_material as ParticleProcessMaterial).color = particle_color
 		(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)
 		transition_to_biome(b)

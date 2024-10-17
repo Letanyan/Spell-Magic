@@ -3,16 +3,17 @@ class_name JungleGen
 enum JUNGLE_STRUCTURES_KIND {
 	NONE,
 	TREE_BRANCHED, BUSH_SPROUT, BUSH_ROUND,
-	PLATFORM,
+	ELEVATOR, PLATFORM,
 	BIRD,
 }
 
 const JUNGLE_STRUCTURE = {
-	JUNGLE_STRUCTURES_KIND.NONE: 90,
+	JUNGLE_STRUCTURES_KIND.NONE: 60,
 	JUNGLE_STRUCTURES_KIND.TREE_BRANCHED: 5,
-	JUNGLE_STRUCTURES_KIND.BUSH_SPROUT: 10,
-	JUNGLE_STRUCTURES_KIND.BUSH_ROUND: 10,
-	JUNGLE_STRUCTURES_KIND.PLATFORM: 0.75,
+	#JUNGLE_STRUCTURES_KIND.BUSH_SPROUT: 10,
+	#JUNGLE_STRUCTURES_KIND.BUSH_ROUND: 10,
+	JUNGLE_STRUCTURES_KIND.ELEVATOR: 0.75,
+	JUNGLE_STRUCTURES_KIND.PLATFORM: 0.9,
 	JUNGLE_STRUCTURES_KIND.BIRD: 0.25,
 }
 
@@ -44,7 +45,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var p := pop.spawn_foliage(World.Foliage.BUSH_ROUND, state, pos, spacing) as Foliage
 				if p != null: result.append(p)
 					
-			JUNGLE_STRUCTURES_KIND.PLATFORM:
+			JUNGLE_STRUCTURES_KIND.ELEVATOR:
 				var pos := area[index]
 				var cursor := Vector3.ZERO
 				var direction := Vector3.UP
@@ -87,6 +88,36 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					reward.artifact = artifact
 					reward.position = Vec3.xz(pos) + cursor + Vec3.y(Navigator.get_world_height(state, pos.x, pos.y))
 					result.append(reward)
+					
+			JUNGLE_STRUCTURES_KIND.PLATFORM:
+				var pos := area[index]
+				var spacing_radius := sqrt(2 * spacing ** 2)
+				var platform_size := rng.randf_range(spacing_radius, spacing_radius * 5)
+				var points := Population.points_around(pos, platform_size, index, area, exclusion, null)
+				if points.size() > spacing:
+					var minv := Vector2(INF, INF)
+					var maxv := Vector2(-INF, -INF)
+					for p in points:
+						if area[p].x < minv.x: minv.x = area[p].x
+						if area[p].y < minv.y: minv.y = area[p].y
+						if area[p].x > maxv.x: maxv.x = area[p].x
+						if area[p].y > maxv.y: maxv.y = area[p].y
+					var center := minv.lerp(maxv, 0.5)
+					var platform_scale := sqrt(platform_size ** 2 / 2)
+					var h := Vec3.y(rng.randf_range(50, 100) + platform_scale) 
+					var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
+					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+					var config := TargetShape.config_for_platform(Spell.Element.AIR, platform_scale, path)
+					var platform := pop.spawn_world_item(World.Item.TARGET, state, center, spacing, config) as TargetShape
+					if platform != null:
+						result.append(platform)
+						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, state, center, spacing) as Birdman
+						if p != null:
+							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(h))
+							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(h))
+							p.position.y += h.y
+							result.append(p)
+						for q in points: exclusion[q] = true
 					
 			JUNGLE_STRUCTURES_KIND.BIRD:
 				var pos := area[index]
