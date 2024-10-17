@@ -55,6 +55,13 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					if p != null:
 						result.append(p)
 						var offset_dir := Population.random_entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
+						if cursor.y > 20 and rng.randf() < 0.5:
+							var op := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Vec2.xz(cursor), spacing) as Bird
+							if op != null:
+								op.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
+								op.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
+								op.position.y += cursor.y
+								result.append(op)
 						cursor += (direction * distance) * 0.95 + Vec3.xz(offset_dir) * p.bounds
 						direction = Population.random_entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
 					

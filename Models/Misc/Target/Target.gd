@@ -4,7 +4,7 @@ extends WorldItem
 enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID_EA, PLATFORM }
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var area_3d: Area3D = $Area3D
+@onready var area_3d: Area3D = $area
 @onready var health_bar: Node3D = $HealthBar
 @onready var health_bar_level: Label3D = $HealthBar/Level
 @onready var health_bar_mesh: MeshInstance3D = $HealthBar/Bar
@@ -223,16 +223,16 @@ func set_is_down() -> void:
 	respawn_ticks = 0.0
 	spawner.remove_node(self)
 	animation_player.play("set_down")
-	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = true
-	($Area3D/CollisionShape3D as CollisionShape3D).disabled = true
+	($static/shape as CollisionShape3D).disabled = true
+	($area/shape as CollisionShape3D).disabled = true
 
 func set_down() -> void:
 	hide()
 	
 func unset_down() -> void:
 	show()
-	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
-	($Area3D/CollisionShape3D as CollisionShape3D).disabled = false
+	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
+	($area/shape as CollisionShape3D).disabled = false
 
 func update_mesh_with_color(color: Color) -> void:
 	if puzzle_kind == PuzzleKind.PLATFORM:
@@ -284,16 +284,16 @@ func update_mesh_color() -> void:
 func resize_target(size: float) -> void:
 	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
 	($platform as MeshInstance3D).scale = Vector3(0.5, 0.1, 0.5) * size
-	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size / 4.0, size)
-	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
+	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size / 4.0, size)
+	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
 	bounds = Vector3(size, size / 4.0, size)
 	
 func rescale_target(size: Vector3) -> void:
 	($coin as MeshInstance3D).scale = size * 5
 	($platform as MeshInstance3D).scale = Vector3(size.x * 0.5, size.y * 0.1, size.z * 0.5)
-	(($StaticBody3D/CollisionShape3D as CollisionShape3D).shape as BoxShape3D).size = size
-	(($Area3D/CollisionShape3D as CollisionShape3D).shape as SphereShape3D).radius = size.y / 2.0
+	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = size
+	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size.y / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
 	bounds = size
 	
@@ -349,8 +349,8 @@ func configure(config: Dictionary) -> void:
 	puzzle_kind = config.get("puzzle", PuzzleKind.SINGLE_HIT)
 	spell = config.get("spell", null)
 	caster_position = config.get("caster_position", Vector3.ZERO)
-	($StaticBody3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
-	($Area3D/CollisionShape3D as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM
+	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
+	($area/shape as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM
 	if config.has("size"):
 		resize_target(config["size"] as float)
 	else:

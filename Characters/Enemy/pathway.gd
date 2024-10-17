@@ -163,11 +163,12 @@ func position_at_distance(dist: float, index: Globals.Ref = null) -> Vector3:
 		index.data = segment
 	return segments[segment].position_at_distance(dist)
 	
-func apply_transform(transform: Transform3D) -> void:
+func apply_transform(transform: Transform3D) -> Pathway:
 	for segment in segments:
 		segment.apply_transform(transform)
 	calculate_distance()
 	calculate_total_duration()
+	return self
 	
 func move_to(start: Vector3) -> Pathway:
 	cursor = start

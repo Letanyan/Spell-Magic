@@ -56,7 +56,8 @@ func _ready() -> void:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 		#(get_node("Collision") as CollisionShape3D).disabled = true
 		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
-	setup(0, World.Biome.WATER)
+	if kind == World.Enemy.NONE:
+		setup(0, World.Biome.WATER)
 	health_bar.visible = not is_idle
 	
 static func make(_kind: World.Enemy) -> Enemy:

@@ -219,19 +219,19 @@ mesh = SubResource("ArrayMesh_kvffy")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("5_74v1s")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="static" type="StaticBody3D" parent="."]
 collision_layer = 512
 collision_mask = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="shape" type="CollisionShape3D" parent="static"]
 shape = SubResource("BoxShape3D_hm6m2")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="area" type="Area3D" parent="."]
 collision_layer = 1024
 collision_mask = 504
 monitoring = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="shape" type="CollisionShape3D" parent="area"]
 shape = SubResource("SphereShape3D_cbt3o")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
