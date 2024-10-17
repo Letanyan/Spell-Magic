@@ -56,7 +56,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						result.append(p)
 						var offset_dir := Population.random_entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
 						if cursor.y > 20 and rng.randf() < 0.5:
-							var op := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Vec2.xz(cursor), spacing) as Bird
+							var op := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Vec2.xz(cursor) + Globals.rand_point_in_circle_2d(spacing, rng), spacing) as Bird
 							if op != null:
 								op.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
 								op.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
@@ -64,6 +64,20 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 								result.append(op)
 						cursor += (direction * distance) * 0.95 + Vec3.xz(offset_dir) * p.bounds
 						direction = Population.random_entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
+				var artifact := Artifact.random( \
+					pop.player.name_generator.spanish_names.generate(9), \
+					0.5,
+					{Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 5}, \
+					{Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5}, \
+					{Artifact.Element.AIR: 10, Artifact.Element.RUNNING_SPEED: 2}, \
+					Vector2i(1,5), \
+					{Artifact.Pattern.TRIANGLE: 8, Artifact.Pattern.CIRCLE: 4}
+				)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, state, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = Vec3.xz(pos) + cursor + Vec3.y(Navigator.get_world_height(state, pos.x, pos.y))
+					result.append(reward)
 					
 			JUNGLE_STRUCTURES_KIND.BIRD:
 				var pos := area[index]
@@ -72,6 +86,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					result.append(p)
 				
 				
-		index += 1	
+		index += 1
 	return result
 					

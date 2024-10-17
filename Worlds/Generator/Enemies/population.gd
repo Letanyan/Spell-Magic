@@ -121,8 +121,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
 			(entity as Enemy).setup(rng.randi(), current_biome_during_generation)
-			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + " " + str(rng.randi())
-			var is_marked := entity_name_is_marked(entity.name) # has this enemy already been killed
+			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + Globals.encode_v3(entity.position)
+			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)
 				return null
@@ -131,51 +131,21 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		else:
 			if entity is Foliage:
 				(entity as Foliage).setup(rng, current_biome_during_generation)
-				entity.name = World.Foliage.keys()[(entity as Foliage).kind] + " " + str(rng.randi())
+				entity.name = World.Foliage.keys()[(entity as Foliage).kind] + Globals.encode_v3(entity.position)
 				garden.append(entity)
 			elif entity is Buildings:
 				(entity as Buildings).setup(rng, current_biome_during_generation)
-				entity.name = World.Building.keys()[(entity as Buildings).entity_kind] + " " + str(rng.randi())
+				entity.name = World.Building.keys()[(entity as Buildings).entity_kind] + Globals.encode_v3(entity.position)
 				garden.append(entity)
 			elif entity is WorldItem:
 				(entity as WorldItem).setup(rng, current_biome_during_generation)
-				entity.name = World.Item.keys()[(entity as WorldItem).kind] + " " + str(rng.randi())
+				entity.name = World.Item.keys()[(entity as WorldItem).kind] + Globals.encode_v3(entity.position)
 				world_items.append(entity)
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
-	#return null
-	var result: Enemy = null
+	var result := entity_manager.get_enemy(enemy)
 	var pos := Vector3(p.x, 0, p.y)
-	match enemy:
-		World.Enemy.UNDEAD: result = entity_manager.get_enemy(World.Enemy.UNDEAD)
-		World.Enemy.BAT: result = entity_manager.get_enemy(World.Enemy.BAT)
-		World.Enemy.MOLE: result = entity_manager.get_enemy(World.Enemy.MOLE)
-		World.Enemy.WALKER: result = entity_manager.get_enemy(World.Enemy.WALKER)
-		World.Enemy.FISH: result = entity_manager.get_enemy(World.Enemy.FISH)
-		World.Enemy.BIRDMAN: result = entity_manager.get_enemy(World.Enemy.BIRDMAN)
-		World.Enemy.FISHMAN: result = entity_manager.get_enemy(World.Enemy.FISHMAN)
-		World.Enemy.DRAGON: result = entity_manager.get_enemy(World.Enemy.DRAGON)
-		World.Enemy.DRAGOON: result = entity_manager.get_enemy(World.Enemy.DRAGOON)
-		World.Enemy.GHOST: result = entity_manager.get_enemy(World.Enemy.GHOST)
-		World.Enemy.GHOSTLY: result = entity_manager.get_enemy(World.Enemy.GHOSTLY)
-		World.Enemy.BIRD: result = entity_manager.get_enemy(World.Enemy.BIRD)
-		World.Enemy.FUNGI: result = entity_manager.get_enemy(World.Enemy.FUNGI)
-		World.Enemy.HOT_BLOB: result = entity_manager.get_enemy(World.Enemy.HOT_BLOB)
-		World.Enemy.MUSHROOM: result = entity_manager.get_enemy(World.Enemy.MUSHROOM)
-		World.Enemy.BLUEMON: result = entity_manager.get_enemy(World.Enemy.BLUEMON)
-		World.Enemy.FROG: result = entity_manager.get_enemy(World.Enemy.FROG)
-		World.Enemy.MUSHKING: result = entity_manager.get_enemy(World.Enemy.MUSHKING)
-		World.Enemy.RABBIT: result = entity_manager.get_enemy(World.Enemy.RABBIT)
-		World.Enemy.BATTY: result = entity_manager.get_enemy(World.Enemy.BATTY)
-		World.Enemy.BEE: result = entity_manager.get_enemy(World.Enemy.BEE)
-		World.Enemy.BUMBLE_BEE: result = entity_manager.get_enemy(World.Enemy.BUMBLE_BEE)
-		World.Enemy.UNDEAD_HEAD: result = entity_manager.get_enemy(World.Enemy.UNDEAD_HEAD)
-		World.Enemy.SNOT_BLOB: result = entity_manager.get_enemy(World.Enemy.SNOT_BLOB)
-		World.Enemy.SNOT_SPIKE: result = entity_manager.get_enemy(World.Enemy.SNOT_SPIKE)
-		World.Enemy.WALKER_HEAD: result = entity_manager.get_enemy(World.Enemy.WALKER_HEAD)
-		World.Enemy.WIZARD: result = entity_manager.get_enemy(World.Enemy.WIZARD)
-			
 	result.set_level_relative_to_location(rng, p.x, p.y)
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
@@ -183,38 +153,8 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector
 	return prepare_entity(state, result, pos, true, always_valid)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
-	var result: Enemy = null
-	match enemy:
-		World.Enemy.UNDEAD: result = Enemy.make(World.Enemy.UNDEAD)
-		World.Enemy.BAT: result = Enemy.make(World.Enemy.BAT)
-		World.Enemy.MOLE: result = Enemy.make(World.Enemy.MOLE)
-		World.Enemy.WALKER: result = Enemy.make(World.Enemy.WALKER)
-		World.Enemy.FISH: result = Enemy.make(World.Enemy.FISH)
-		World.Enemy.BIRDMAN: result = Enemy.make(World.Enemy.BIRDMAN)
-		World.Enemy.FISHMAN: result = Enemy.make(World.Enemy.FISHMAN)
-		World.Enemy.DRAGON: result = Enemy.make(World.Enemy.DRAGON)
-		World.Enemy.DRAGOON: result = Enemy.make(World.Enemy.DRAGOON)
-		World.Enemy.GHOST: result = Enemy.make(World.Enemy.GHOST)
-		World.Enemy.GHOSTLY: result = Enemy.make(World.Enemy.GHOSTLY)
-		World.Enemy.BIRD: result = Enemy.make(World.Enemy.BIRD)
-		World.Enemy.FUNGI: result = Enemy.make(World.Enemy.FUNGI)
-		World.Enemy.HOT_BLOB: result = Enemy.make(World.Enemy.HOT_BLOB)
-		World.Enemy.MUSHROOM: result = Enemy.make(World.Enemy.MUSHROOM)
-		World.Enemy.BLUEMON: result = Enemy.make(World.Enemy.BLUEMON) 
-		World.Enemy.FROG: result = Enemy.make(World.Enemy.FROG) 
-		World.Enemy.MUSHKING: result = Enemy.make(World.Enemy.MUSHKING) 
-		World.Enemy.RABBIT: result = Enemy.make(World.Enemy.RABBIT)
-		World.Enemy.BATTY: result = Enemy.make(World.Enemy.BATTY)
-		World.Enemy.BEE: result = Enemy.make(World.Enemy.BEE)
-		World.Enemy.BUMBLE_BEE: result = Enemy.make(World.Enemy.BUMBLE_BEE)
-		World.Enemy.UNDEAD_HEAD: result = Enemy.make(World.Enemy.UNDEAD_HEAD)
-		World.Enemy.SNOT_BLOB: result = Enemy.make(World.Enemy.SNOT_BLOB)
-		World.Enemy.SNOT_SPIKE: result = Enemy.make(World.Enemy.SNOT_SPIKE)
-		World.Enemy.WALKER_HEAD: result = Enemy.make(World.Enemy.WALKER_HEAD)
-		World.Enemy.WIZARD: result = Enemy.make(World.Enemy.WIZARD)
-		
-	result.name = World.Enemy.keys()[enemy] + str(randi())
-			
+	var result := Enemy.make(enemy)
+	result.name = World.Enemy.keys()[enemy] + Globals.encode_v3(Vector3(x, y, z))
 	result.set_level_relative_to_location(null, x, y)
 	result.player = _player
 	result.position = Vector3(x, y, z)
@@ -225,14 +165,9 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
-	match foliage:
-		World.Foliage.TREE_ROUND, World.Foliage.TREE_PYRAMID, World.Foliage.TREE_CHRISTMAS, World.Foliage.TREE_BRANCHED, World.Foliage.TREE_SAFARI, \
-		World.Foliage.ROCK_EGG, World.Foliage.ROCK_FLATTOP, World.Foliage.ROCK_OVERHANG, World.Foliage.ROCK_SQUASHED, World.Foliage.ROCK_TALL, \
-		World.Foliage.BUSH_ROUND, World.Foliage.BUSH_SPROUT, World.Foliage.BUSH_TALL, World.Foliage.FLOWERS_SUN2, World.Foliage.FLOWERS_SUN3, \
-		World.Foliage.GRASS_REED, World.Foliage.GRASS_SHRUB, World.Foliage.MUSHROOM_BULB, World.Foliage.MUSHROOM_POINTED:
-			result = entity_manager.get_foliage(foliage) as Foliage
-			pos.x += spacing * rng.randf_range(-0.5, 0.5)
-			pos.z += spacing * rng.randf_range(-0.5, 0.5)
+	result = entity_manager.get_foliage(foliage) as Foliage
+	pos.x += spacing * rng.randf_range(-0.5, 0.5)
+	pos.z += spacing * rng.randf_range(-0.5, 0.5)
 	return prepare_entity(state, result, pos, false, user_info)
 	
 func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
@@ -256,10 +191,9 @@ func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vec
 	var result: Node3D = entity_manager.get_world_item(item)
 	var pos := Vector3(p.x, 0, p.y)
 	
-	match item:
-		World.Item.TARGET:
-			var temp := result as TargetShape
-			temp.configure(config)
+	if item == World.Item.TARGET:
+		var temp := result as TargetShape
+		temp.configure(config)
 	
 	return prepare_entity(state, result, pos, false, always_valid)
 	
@@ -327,6 +261,17 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
 			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))
 			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, state, points[i], spacing))
+			
+	var high_watermark := result.size() - 1	
+	for i in result.size():
+		if result[i] == null:
+			result[i] = result[high_watermark]
+			high_watermark -= 1
+			if high_watermark <= 0:
+				break
+				
+	if high_watermark < result.size() - 1:
+		result = result.slice(0, high_watermark + 1)
 	
 	return result
 	

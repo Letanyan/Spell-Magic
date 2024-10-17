@@ -106,6 +106,9 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 static func vec3_y(xz: Vector3, y: float) -> Vector3:
 	return Vector3(xz.x, y, xz.z)
 	
+static func encode_v3(v: Vector3) -> String:
+	return "(%.0f,%.0f,%0.f)" % [v.x, v.y, v.z]
+	
 static func replace_ranges_in_string(source: String, ranges: Array, what: String) -> String:
 	var result := ""
 	var source_offset := 0

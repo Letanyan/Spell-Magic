@@ -180,12 +180,12 @@ func _init() -> void:
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
 	buffer_well = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
 	
-	buffer_target = EntityBuffer.new(10, func() -> WorldItem: return TargetShape.make(), deinit_world_item, "target")
-	buffer_artifact = EntityBuffer.new(0, func() -> WorldItem: return ArtifactCube.make(), deinit_world_item, "artifact")
-	buffer_coin = EntityBuffer.new(0, func() -> WorldItem: return CoinDisc.make(), deinit_world_item, "coin")
-	buffer_key = EntityBuffer.new(0, func() -> WorldItem: return KeyPrism.make(), deinit_world_item, "key")
-	buffer_spell = EntityBuffer.new(0, func() -> WorldItem: return SpellPaper.make(), deinit_world_item, "spell")
-	buffer_health = EntityBuffer.new(0, func() -> WorldItem: return RedCross.make(), deinit_world_item, "health_pack")
+	buffer_target = EntityBuffer.new(10, func() -> WorldItem: return TargetShape.make(), deinit_world_item, "TARGET")
+	buffer_artifact = EntityBuffer.new(10, func() -> WorldItem: return ArtifactCube.make(), deinit_world_item, "ARTIFACT")
+	buffer_coin = EntityBuffer.new(10, func() -> WorldItem: return CoinDisc.make(), deinit_world_item, "COIN")
+	buffer_key = EntityBuffer.new(10, func() -> WorldItem: return KeyPrism.make(), deinit_world_item, "KEY")
+	buffer_spell = EntityBuffer.new(10, func() -> WorldItem: return SpellPaper.make(), deinit_world_item, "SPELL")
+	buffer_health = EntityBuffer.new(10, func() -> WorldItem: return RedCross.make(), deinit_world_item, "HEALTH")
 
 func get_foliage(kind: World.Foliage) -> Foliage:
 	match kind:
@@ -217,20 +217,20 @@ func free_foliage(foliage: Foliage) -> void:
 		World.Foliage.TREE_PYRAMID: buffer_tree_pyramid.free_entity(foliage)
 		World.Foliage.TREE_CHRISTMAS: buffer_tree_christmas.free_entity(foliage)
 		World.Foliage.TREE_SAFARI: buffer_tree_safari.free_entity(foliage)
-		World.Foliage.ROCK_EGG: return buffer_rock_egg.free_entity(foliage)
-		World.Foliage.ROCK_FLATTOP: return buffer_rock_flattop.free_entity(foliage)
-		World.Foliage.ROCK_OVERHANG: return buffer_rock_overhang.free_entity(foliage)
-		World.Foliage.ROCK_SQUASHED: return buffer_rock_squashed.free_entity(foliage)
-		World.Foliage.ROCK_TALL: return buffer_rock_tall.free_entity(foliage)
-		World.Foliage.BUSH_ROUND: return buffer_bush_round.free_entity(foliage)
-		World.Foliage.BUSH_SPROUT: return buffer_bush_sprout.free_entity(foliage)
-		World.Foliage.BUSH_TALL: return buffer_bush_tall.free_entity(foliage)
-		World.Foliage.FLOWERS_SUN2: return buffer_flowers_sun2.free_entity(foliage)
-		World.Foliage.FLOWERS_SUN3: return buffer_flowers_sun3.free_entity(foliage)
-		World.Foliage.GRASS_REED: return buffer_grass_reed.free_entity(foliage)
-		World.Foliage.GRASS_SHRUB: return buffer_grass_shrub.free_entity(foliage)
-		World.Foliage.MUSHROOM_BULB: return buffer_mushroom_bulb.free_entity(foliage)
-		World.Foliage.MUSHROOM_POINTED: return buffer_mushroom_pointed.free_entity(foliage)
+		World.Foliage.ROCK_EGG: buffer_rock_egg.free_entity(foliage)
+		World.Foliage.ROCK_FLATTOP: buffer_rock_flattop.free_entity(foliage)
+		World.Foliage.ROCK_OVERHANG: buffer_rock_overhang.free_entity(foliage)
+		World.Foliage.ROCK_SQUASHED: buffer_rock_squashed.free_entity(foliage)
+		World.Foliage.ROCK_TALL: buffer_rock_tall.free_entity(foliage)
+		World.Foliage.BUSH_ROUND: buffer_bush_round.free_entity(foliage)
+		World.Foliage.BUSH_SPROUT: buffer_bush_sprout.free_entity(foliage)
+		World.Foliage.BUSH_TALL: buffer_bush_tall.free_entity(foliage)
+		World.Foliage.FLOWERS_SUN2: buffer_flowers_sun2.free_entity(foliage)
+		World.Foliage.FLOWERS_SUN3: buffer_flowers_sun3.free_entity(foliage)
+		World.Foliage.GRASS_REED: buffer_grass_reed.free_entity(foliage)
+		World.Foliage.GRASS_SHRUB: buffer_grass_shrub.free_entity(foliage)
+		World.Foliage.MUSHROOM_BULB: buffer_mushroom_bulb.free_entity(foliage)
+		World.Foliage.MUSHROOM_POINTED: buffer_mushroom_pointed.free_entity(foliage)
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
 	match kind:
@@ -308,12 +308,12 @@ func free_building(building: Buildings) -> void:
 		
 func get_world_item(kind: World.Item) -> WorldItem:
 	match kind:
-		World.Item.TARGET: buffer_target.get_entity()
-		World.Item.ARTIFACT: buffer_artifact.get_entity()
-		World.Item.KEY: buffer_key.get_entity()
-		World.Item.COIN: buffer_coin.get_entity()
-		World.Item.SPELL: buffer_spell.get_entity()
-		World.Item.HEALTH: buffer_health.get_entity()
+		World.Item.TARGET: return buffer_target.get_entity()
+		World.Item.ARTIFACT: return buffer_artifact.get_entity()
+		World.Item.KEY: return buffer_key.get_entity()
+		World.Item.COIN: return buffer_coin.get_entity()
+		World.Item.SPELL: return buffer_spell.get_entity()
+		World.Item.HEALTH: return buffer_health.get_entity()
 	return buffer_target.get_entity()
 
 func free_world_item(node: WorldItem) -> void:
