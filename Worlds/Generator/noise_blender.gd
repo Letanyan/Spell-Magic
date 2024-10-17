@@ -229,7 +229,7 @@ static func walking_audio_for_biome(b: World.Biome) -> String:
 		World.Biome.HFIL: return "Grassland"
 		_: return "empty"
 
-static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_start: bool) -> void:
+static func update_world_environment(env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, b: World.Biome, is_start: bool) -> void:
 	var prefix := "start_" if is_start else "final_"
 	var shader := env.environment.sky.sky_material as ShaderMaterial
 	match b:
@@ -251,6 +251,7 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
 			env.environment.ambient_light_color = Color.WHITE
+			sun.light_color = Color(1, 1, 1)
 		World.Biome.FOREST:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.294, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.8, 0.557))
@@ -269,6 +270,7 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
 			env.environment.ambient_light_color = Color(0, 0.75, 0)
+			sun.light_color = Color(1, 1, 1)
 		World.Biome.TAIGA:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.659, 0.847, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.8, 0.933, 1))
@@ -287,6 +289,7 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
 			env.environment.ambient_light_color = Color(0, 0.75, 0.5)
+			sun.light_color = Color(1, 1, 1)
 		_:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.594, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.3, 0.557))
@@ -305,6 +308,7 @@ static func update_world_environment(env: WorldEnvironment, b: World.Biome, is_s
 			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
 			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
 			env.environment.ambient_light_color = Color(0.75, 0.75, 0.75)
+			sun.light_color = Color(0.75, 0.75, 0.75)
 
 func count_biomes(positions: Array[Vector2]) -> void:
 	var summary := {}

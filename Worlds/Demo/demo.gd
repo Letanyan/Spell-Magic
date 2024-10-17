@@ -418,10 +418,10 @@ func transition_to_biome(biome: World.Biome) -> void:
 		shader.set_shader_parameter("transition", a)
 		
 	biome_tween = get_tree().create_tween()
-	NoiseBlender.update_world_environment(env, biome, false)
+	NoiseBlender.update_world_environment(env, sun, moon, biome, false)
 	biome_tween.tween_method(update_world, 0.0, 1.0, 0.5)
 	biome_tween.finished.connect(func() -> void:
-		NoiseBlender.update_world_environment(env, biome, true)
+		NoiseBlender.update_world_environment(env, sun, moon, biome, true)
 		update_world.call(0.0)
 		if biome_tween_next != -1:
 			biome_tween = null

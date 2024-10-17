@@ -2,14 +2,16 @@ class_name JungleGen
 
 enum JUNGLE_STRUCTURES_KIND {
 	NONE,
-	TREE_BRANCHED,
+	TREE_BRANCHED, BUSH_SPROUT, BUSH_ROUND,
 	PLATFORM,
 	BIRD,
 }
 
 const JUNGLE_STRUCTURE = {
-	JUNGLE_STRUCTURES_KIND.NONE: 60,
+	JUNGLE_STRUCTURES_KIND.NONE: 90,
 	JUNGLE_STRUCTURES_KIND.TREE_BRANCHED: 5,
+	JUNGLE_STRUCTURES_KIND.BUSH_SPROUT: 10,
+	JUNGLE_STRUCTURES_KIND.BUSH_ROUND: 10,
 	JUNGLE_STRUCTURES_KIND.PLATFORM: 0.75,
 	JUNGLE_STRUCTURES_KIND.BIRD: 0.25,
 }
@@ -32,8 +34,15 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 			JUNGLE_STRUCTURES_KIND.TREE_BRANCHED:
 				var pos := area[index]
 				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing) as Foliage
-				if p != null:
-					result.append(p)
+				if p != null: result.append(p)
+			JUNGLE_STRUCTURES_KIND.BUSH_SPROUT:
+				var pos := area[index]
+				var p := pop.spawn_foliage(World.Foliage.BUSH_SPROUT, state, pos, spacing) as Foliage
+				if p != null: result.append(p)
+			JUNGLE_STRUCTURES_KIND.BUSH_ROUND:
+				var pos := area[index]
+				var p := pop.spawn_foliage(World.Foliage.BUSH_ROUND, state, pos, spacing) as Foliage
+				if p != null: result.append(p)
 					
 			JUNGLE_STRUCTURES_KIND.PLATFORM:
 				var pos := area[index]

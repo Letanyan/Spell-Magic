@@ -66,7 +66,7 @@ static func make(_kind: World.Foliage) -> Foliage:
 	
 func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	var s := rng.randf_range(2, 5)
-	if biome == World.Biome.JUNGLE:
+	if biome == World.Biome.JUNGLE and [World.Foliage.TREE_BRANCHED].has(kind):
 		s *= rng.randf_range(5, 10)
 	
 	(get_node("MeshNode") as Node3D).scale = Vector3(s, s, s)
@@ -93,5 +93,8 @@ func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
 		
-		
+func set_albedo_override(color: Color) -> void:
+	var m := get_node("MeshNode/mesh") as MeshInstance3D
+	var shader := m.mesh.surface_get_material(0) as ShaderMaterial
+	shader.set_shader_parameter("albedo_override", color)
 				
