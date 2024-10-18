@@ -314,7 +314,13 @@ func update_info() -> void:
 				(item.get_node("./static/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > maxf((item as TargetShape).bounds.length() * 1.25, 50)
 			else:
 				(item.get_node("./area/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
-		item.is_active = item.position.distance_to(player.position) < 150 and not player.world_settings.is_paused
+		else:
+			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
+				
+		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
+			item.is_active = item.position.distance_to(player.position) < maxf((item as TargetShape).bounds.length() * 1.25, 50) and not player.world_settings.is_paused
+		else:
+			item.is_active = item.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
 
 func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 	if index <= -1:

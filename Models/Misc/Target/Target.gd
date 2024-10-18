@@ -23,7 +23,8 @@ var element: Spell.Element = Spell.Element.VOID
 var spell_caster: SpellCaster = null
 var caster_position := Vector3.ZERO
 var vitals: Vitals = null
-var spell: Spell = null
+var current_attack: AttackPatterns = null
+var attack_sequence: AttackSequence = null
 
 var spawner: ItemSpawner = null:
 	set(value):
@@ -39,7 +40,6 @@ var target_position := Vector3.ZERO
 var bounds := Vector3(2, 2, 2)
 var movement_tick: float = 0.0
 var vital_tick: float = 1.0
-var spell_tick: float = 0.0
 var invunerable: int = 0
 
 var focus_point := Vector3.ZERO
@@ -141,11 +141,16 @@ func _physics_process(delta: float) -> void:
 			
 	if spell_caster != null:
 		spell_caster.update(self, delta)
-		if spell != null:
-			spell_tick += delta
-			if spell_tick >= spell.duration:
-				cast_spell(func(p: SpellBody) -> void: add_sibling(p))
-				spell_tick = 0.0
+		var is_done := Globals.Ref.new(false)
+		if attack_sequence != null:
+			attack_sequence.update(0.5, self, self, is_done)  # FIXME: pass caster_position as me
+			if attack_sequence.last_path:
+				caster_position = attack_sequence.next_position
+			current_attack = attack_sequence.last_attack
+		if current_attack != null:
+			var spell := current_attack.choose_spell(vitals)
+			if spell != null:
+				cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell)
 			
 	vital_tick -= delta
 	if vital_tick <= 0.0:
@@ -321,13 +326,13 @@ static func config_for_gauge(el: Spell.Element, spwnr: ItemSpawner, retime: floa
 		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "gauge": gg,
 	}
 	
-static func config_for_avoid_damage(el: Spell.Element, spwnr: ItemSpawner, retime: float, hlth: Vitals.Stat, pth: PathStyle, spll: Spell, caster_pos: Vector3) -> Dictionary:
+static func config_for_avoid_damage(el: Spell.Element, spwnr: ItemSpawner, retime: float, hlth: Vitals.Stat, pth: PathStyle, spll: AttackPatterns, caster_pos: Vector3) -> Dictionary:
 	return {
 		"puzzle": PuzzleKind.AVOID_DAMAGE, "spell": spll, "caster_position": caster_pos,
 		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "health": hlth
 	}
 	
-static func config_for_avoid_gauge(el: Spell.Element, spwnr: ItemSpawner, retime: float, gg: Vitals.Stat, pth: PathStyle, spll: Spell, caster_pos: Vector3) -> Dictionary:
+static func config_for_avoid_gauge(el: Spell.Element, spwnr: ItemSpawner, retime: float, gg: Vitals.Stat, pth: PathStyle, spll: AttackPatterns, caster_pos: Vector3) -> Dictionary:
 	return {
 		"puzzle": PuzzleKind.AVOID_EA, "spell": spll, "caster_position": caster_pos,
 		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "gauge": gg,
@@ -347,7 +352,7 @@ func configure(config: Dictionary) -> void:
 	health = config.get("health", Vitals.Stat.new(100, 0, 100))
 	gauge = config.get("gauge", Vitals.Stat.new(0, 0, 1))
 	puzzle_kind = config.get("puzzle", PuzzleKind.SINGLE_HIT)
-	spell = config.get("spell", null)
+	current_attack = config.get("spell", null)
 	caster_position = config.get("caster_position", Vector3.ZERO)
 	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
 	($area/shape as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM
@@ -361,7 +366,7 @@ func configure(config: Dictionary) -> void:
 		vitals.attack.value = 100
 		vitals.defence.value = 100
 
-func cast_spell(insert: Callable) -> void:
+func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if spell_caster == null:
 		return
-	spell_caster.cast_spell(self, vitals, insert, spell)
+	spell_caster.cast_spell(self, vitals, insert, next_spell)

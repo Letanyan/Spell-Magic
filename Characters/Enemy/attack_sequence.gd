@@ -35,7 +35,7 @@ func reset() -> void:
 	last_path = null
 	last_attack = null
 	
-func update(delta: float, me: Enemy, player: Player, is_done: Globals.Ref) -> bool:
+func update(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref) -> bool:
 	if actions.is_empty():
 		return false
 		
