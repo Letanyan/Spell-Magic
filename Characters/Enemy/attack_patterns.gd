@@ -69,13 +69,13 @@ static func choose_from_distribution(interval: float, weights: Array[int], repea
 	return func(t: float, is_done: Globals.Ref, should_reset: Globals.Ref) -> int:
 		if t < interval or repeat_count.data == 0:
 			return -1
-		
+			
 		repeat_count.data -= 1
 		if repeat_count.data == 0:
 			is_done.data = true
 		if repeat_count.data <= 0:
 			repeat_count.data = repeat_count.storage
-			should_reset.data = true
+		should_reset.data = true
 		var range_end := 0.0
 		var p := randf()
 		for i in range(probs.size()):

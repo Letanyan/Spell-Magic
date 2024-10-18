@@ -134,7 +134,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	var is_player : int = _body.collision_layer & 0b0010 != 0
 	var is_enemy  : int = _body.collision_layer & 0b0100 != 0
 	
-	if is_enemy and origin_node is Enemy:
+	if is_enemy and (origin_node is Enemy or origin_node is TargetShape):
 		return
 	
 	var is_world_object : int = _body.collision_layer & (1 << 9) != 0

@@ -106,8 +106,9 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 				
 		Entity.TARGET:
 			var body := _body as TargetShape
-			result[prefix + "C"] = body.caster_position.distance_to(body.global_position)
-			cdir = (body.global_position - body.caster_position).normalized() # direction to player
+			var pos := body.get_caster_target_position()
+			result[prefix + "C"] = body.caster_position.distance_to(pos)
+			cdir = (pos - body.caster_position).normalized() # direction to player
 			result["Bx"] = body.bounds.x
 			result["By"] = body.bounds.y
 			result["Bz"] = body.bounds.z

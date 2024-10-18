@@ -107,14 +107,31 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var h := Vec3.y(rng.randf_range(50, 100) + platform_scale) 
 					var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
 					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing()
-					var config := TargetShape.config_for_platform(Spell.Element.AIR, platform_scale, path)
+					var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
 					var platform := pop.spawn_world_item(World.Item.TARGET, state, center, spacing, config) as TargetShape
 					if platform != null:
+						var wh := Navigator.get_world_height(state, center.x, center.y)
+						platform.position.y = h.y + wh
+						platform.caster_target_position = Vec3.xz(center) + Vec3.y(h.y + wh + platform.bounds.y + pop.player.bounds.y * 0.5)
+						var arc := GlobalData.magic_book.copy_spell("linear-arc")
+						arc.configure({"R": "5", "s": "10"}, Spell.Element.FIRE, 10, 0, 0.5, 8, 0, 0, 0)
+						var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(5, [1], 1))
+						platform.attack_sequence = AttackSequence.new(true, [
+							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+							pattern,
+							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
+							pattern,
+							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+							pattern,
+							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
+							pattern,
+						])
+							
 						result.append(platform)
 						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, state, center, spacing) as Birdman
 						if p != null:
-							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(h))
-							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(h))
+							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(h + Vec3.y(platform.bounds.y)))
+							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(h + Vec3.y(platform.bounds.y)))
 							p.position.y += h.y
 							result.append(p)
 						for q in points: exclusion[q] = true

@@ -25,9 +25,10 @@ var world_settings: WorldSettings
 var name_generator: NameGenerator
 var keys: int
 
-var enemies_in_range: Dictionary = {} # [Enemy]bool
-var enemies_normalised_separations: Dictionary = {} # [Enemy]Vector3
-var projectile_indicators: Dictionary = {} # [Node3D]MeshInstance
+var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
+var enemies_normalised_separations: Dictionary = {} ## [Enemy]Vector3
+var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_system
+var projectile_indicators: Dictionary = {} ## [Node3D]MeshInstance
 var max_watched_enemies_distance := 0.0
 var indicator_update_tick := 0.0
 const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
@@ -272,6 +273,14 @@ func ignore_enemy(enemy: Enemy) -> void:
 	enemies_in_range.erase(enemy)
 	enemies_normalised_separations.erase(enemy)
 	enemy.vitals.health.value = enemy.vitals.health.max_value
+	
+func watch_target(target: TargetShape) -> void:
+	targets_in_range[target] = Time.get_unix_time_from_system()
+	target.player = self
+	
+func ignore_target(target: TargetShape) -> void:
+	targets_in_range.erase(target)
+	target.player = null
 	
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
@@ -588,13 +597,19 @@ func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color
 
 func update_projectile_indicators(pi_scale: float) -> void:
 	var pivot := $Pivot as Node3D
-	var updated_spell_bodies := {} # [SpellBody]bool
+	var updated_spell_bodies := {} ## [SpellBody]bool
 	var pi_size := world_settings.hud_settings.projectile_indicator_size * pi_scale
 	if pi_size > 0:
 		for enemy: Enemy in enemies_in_range:
 			var enemy_dist := clampf(1.0 - enemy.position.distance_to(position) / 20.0, 0.0, 1.0)
 			updated_spell_bodies[enemy] = update_projectile(pivot, pi_size * (1.0 + enemy_dist * enemy_dist), enemy, Color.BLACK)
 			for spell: SpellBody in enemy.spell_caster.particles:
+				var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
+				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
+		for target: TargetShape in targets_in_range:
+			if target.spell_caster == null:
+				continue
+			for spell: SpellBody in target.spell_caster.particles:
 				var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
 				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
 		for spell: SpellBody in spell_caster.particles:

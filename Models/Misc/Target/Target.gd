@@ -22,9 +22,11 @@ var element: Spell.Element = Spell.Element.VOID
 
 var spell_caster: SpellCaster = null
 var caster_position := Vector3.ZERO
+var caster_target_position := Vector3.ZERO
 var vitals: Vitals = null
 var current_attack: AttackPatterns = null
 var attack_sequence: AttackSequence = null
+var player: Player = null
 
 var spawner: ItemSpawner = null:
 	set(value):
@@ -62,6 +64,12 @@ func feet_position() -> float:
 	
 func set_feet_position(y: float) -> void:
 	position.y = y + bounds.y / 2.0
+	
+func get_caster_target_position() -> Vector3:
+	if is_nan(caster_target_position.x):
+		return global_position if player == null else player.global_position
+	else:
+		return caster_target_position
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
@@ -143,7 +151,8 @@ func _physics_process(delta: float) -> void:
 		spell_caster.update(self, delta)
 		var is_done := Globals.Ref.new(false)
 		if attack_sequence != null:
-			attack_sequence.update(0.5, self, self, is_done)  # FIXME: pass caster_position as me
+			var player_body := (self as Node3D) if player == null else (player as Node3D)
+			attack_sequence.update(0.5, self, player_body, is_done)  # FIXME: pass caster_position as me
 			if attack_sequence.last_path:
 				caster_position = attack_sequence.next_position
 			current_attack = attack_sequence.last_attack
@@ -288,15 +297,15 @@ func update_mesh_color() -> void:
 	
 func resize_target(size: float) -> void:
 	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
-	($platform as MeshInstance3D).scale = Vector3(0.5, 0.1, 0.5) * size
-	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, size / 4.0, size)
+	($platform as MeshInstance3D).scale = Vector3(0.5 * size, 0.15, 0.5 * size)
+	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, 0.25, size)
 	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
-	bounds = Vector3(size, size / 4.0, size)
+	bounds = Vector3(size, 0.25, size)
 	
 func rescale_target(size: Vector3) -> void:
 	($coin as MeshInstance3D).scale = size * 5
-	($platform as MeshInstance3D).scale = Vector3(size.x * 0.5, size.y * 0.1, size.z * 0.5)
+	($platform as MeshInstance3D).scale = Vector3(size.x * 0.5, size.y * 0.15, size.z * 0.5)
 	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = size
 	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size.y / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
@@ -338,9 +347,9 @@ static func config_for_avoid_gauge(el: Spell.Element, spwnr: ItemSpawner, retime
 		"element": el, "spawner": spwnr, "respawn_time": retime, "path": pth, "gauge": gg,
 	}
 	
-static func config_for_platform(el: Spell.Element, size: float, pth: PathStyle) -> Dictionary:
+static func config_for_platform(el: Spell.Element, size: float, pth: PathStyle, has_spell: bool = false) -> Dictionary:
 	return {
-		"puzzle": PuzzleKind.PLATFORM,
+		"puzzle": PuzzleKind.PLATFORM, "has_spell": has_spell,
 		"element": el, "path": pth, "size": size
 	}
 	
@@ -360,9 +369,9 @@ func configure(config: Dictionary) -> void:
 		resize_target(config["size"] as float)
 	else:
 		resize_target(1.0)
-	if is_blocking_puzzle():
+	if config.has("has_spell") or is_blocking_puzzle():
 		spell_caster = SpellCaster.new(self, SpellCaster.Entity.TARGET)
-		vitals = Vitals.new(Vitals.Stat.new(0), Vitals.Stat.new(0))
+		vitals = Vitals.new(Vitals.Stat.new(1000), Vitals.Stat.new(1000))
 		vitals.attack.value = 100
 		vitals.defence.value = 100
 

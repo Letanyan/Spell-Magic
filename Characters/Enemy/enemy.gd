@@ -230,7 +230,7 @@ func _physics_process(delta: float) -> void:
 	
 	if is_nan(time_since_navigation_update):
 		time_since_navigation_update = Time.get_unix_time_from_system()
-	if behavior_ticked_over or (not velocity_movement.has_navigation_target and tick_scale == 1.0):
+	if (behavior_ticked_over or (not velocity_movement.has_navigation_target and tick_scale == 1.0)):
 		if behavior_ticked_over:
 			update_behaviour()
 			behavior_tick = 0
@@ -270,7 +270,7 @@ func _physics_process(delta: float) -> void:
 			if reset_spell_tick:
 				behavior_tick = Globals.behaviour_tick()
 
-	if reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0):
+	if (reset_spell_tick or (spell_tick >= (1.0 + vitals.freeze.value) and vitals.stun.value == 0 and vitals.freeze.value < 1.0)):
 		var spell: Spell = null
 		if attack_sequence:
 			if attack_sequence.last_attack:

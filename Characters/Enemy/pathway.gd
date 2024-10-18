@@ -174,8 +174,8 @@ func move_to(start: Vector3) -> Pathway:
 	cursor = start
 	return self
 	
-func wait(d: float) -> Pathway:
-	add(Segment.point(cursor, d), d, Easing.linear)
+func wait(d: float, point: Vector3 = cursor) -> Pathway:
+	add(Segment.point(point, d), d, Easing.linear)
 	return self
 	
 func line_to(end: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:

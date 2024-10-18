@@ -228,7 +228,13 @@ func _physics_process(delta: float) -> void:
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
 		update_population_at(chunker.backing.get_loaded_chunks_location(), state)
-		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z) + player.bounds.y / 2.0
+		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
+		var platform_h := Navigator.get_platform_height(state, player.position.x, player.position.z)
+		# FIXME: place player on correct platform and remove "+ 200"
+		if abs(player.position.y - world_h) < abs(player.position.y - platform_h):
+			player.position.y = world_h + player.bounds.y / 2.0 + 200
+		else:
+			player.position.y = platform_h + player.bounds.y / 2.0 + 200
 		player.set_underwater()
 		#chunker.hide_water(player.position.y, true)
 		chunker.update_environment(player.position.x, player.position.z)

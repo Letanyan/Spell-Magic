@@ -301,7 +301,7 @@ func update_info() -> void:
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
 		col.disabled = dist > 50
 		area.disabled = col.disabled
-		habitant.animation_tree.active = dist < 150
+		habitant.animation_tree.active = dist < 50
 	
 	for g in garden:
 		var s: CollisionShape3D = g.get_node("./static/shape")
@@ -319,8 +319,13 @@ func update_info() -> void:
 				
 		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
 			item.is_active = item.position.distance_to(player.position) < maxf((item as TargetShape).bounds.length() * 1.25, 50) and not player.world_settings.is_paused
+			if item.is_active:
+				player.watch_target(item as TargetShape)
+			else:
+				player.ignore_target(item as TargetShape)
 		else:
 			item.is_active = item.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
+			
 
 func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 	if index <= -1:

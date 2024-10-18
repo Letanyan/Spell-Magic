@@ -157,6 +157,20 @@ class Ref extends RefCounted:
 	func _init(value: Variant) -> void:
 		data = value
 		storage = value
+		
+enum Layer {
+	WORLD    = 1 << 0, 
+	PLAYER   = 1 << 1,
+	ENEMY    = 1 << 2,
+	FIRE     = 1 << 3,
+	ROCK     = 1 << 4,
+	WATER    = 1 << 5,
+	AIR      = 1 << 6,
+	ICE      = 1 << 7,
+	ELECTRIC = 1 << 8,
+	OBJECT   = 1 << 9,
+	ITEM     = 1 << 10,
+}
 
 static func particle_system_lifetime(p: GPUParticles3D) -> float:
 	return p.lifetime * (1.0 + 1.0 - p.explosiveness) + 0.1
