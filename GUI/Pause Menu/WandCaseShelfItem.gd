@@ -8,6 +8,7 @@ extends Control
 var store_key: Array[String] = []
 var store_action: Wand.Kind = Wand.Kind.NONE
 var store_spell: Array[String] = []
+var store_params: Array[Dictionary] = []
 
 var spell_changed: Callable
 var action_changed: Callable
@@ -25,8 +26,10 @@ func _ready() -> void:
 		
 func setup() -> void:
 	key.text = "[center]" + GlobalData.controller.key_images(store_key) + "[/center]"
-	spell.text = ", ".join(store_spell)
-	_on_spell_text_changed(", ".join(store_spell))
+	#spell.text = ", ".join(store_spell)
+	var actual_spell_text := build_spell_list()
+	spell.text = actual_spell_text
+	_on_spell_text_changed(actual_spell_text)
 	cast_combo.selected = store_action
 	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.FIRE_PICKED_RAPID
 	if store_key.size() > 1:
@@ -47,3 +50,20 @@ func _on_spell_text_changed(new_text: String) -> void:
 	
 func update_state(ignore_signals: bool) -> void:
 	spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, ignore_signals)
+
+func build_spell_list() -> String:
+	var result := ""
+	for i in store_spell.size():
+		result += store_spell[i]
+		if not store_params[i].is_empty():
+			result += "("
+			var j := 0
+			for k: String in store_params[i]:
+				result += k + " = " + store_params[i][k]
+				if j < store_params[i].size() - 1:
+					result += ", "
+				j += 1
+			result += ")"
+		if i < store_spell.size() - 1:
+			result += ", "
+	return result

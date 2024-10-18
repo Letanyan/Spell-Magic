@@ -304,6 +304,7 @@ func close_menu_for_player() -> void:
 	indices.reverse()
 	for i in indices:
 		inhabitants.remove_at(i)
+	hud.update_pause_time(pause_duration)
 	menu.close()
 	hud.show()
 	

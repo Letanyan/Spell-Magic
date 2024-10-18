@@ -5,17 +5,21 @@ enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HO
 class Option:
 	var kind: Kind
 	var spell: Array[String]
+	var parameters: Array[Dictionary] ## [][String]String
 	var spell_index: int
 	var start_hold: float
 	
 	func _init(_kind: Kind = Kind.NONE, _spell: Array[String] = []) -> void:
 		kind = _kind
 		spell = _spell
+		parameters = []
+		for s in spell:
+			parameters.append({})
 		spell_index = spell.size() - 1
 		start_hold = 0.0
 		
 	func save_dict() -> Dictionary:
-		return {"kind": kind, "spell": spell}
+		return {"kind": kind, "spell": spell, "parameters": parameters}
 		
 	func load_dict(dict: Dictionary) -> void:
 		kind = dict["kind"]
@@ -24,6 +28,9 @@ class Option:
 			spell = [s]
 		else:
 			spell.assign(s as Array[String])
+		parameters.assign(dict.get("parameters", []) as Array[Dictionary])
+		while parameters.size() < spell.size():
+			parameters.append({})
 		spell_index = spell.size() - 1
 		start_hold = 0.0
 		
@@ -35,22 +42,111 @@ class Option:
 			spell_index = 0
 		return spell[spell_index]
 		
+	func get_spell(book: MagicBook) -> Spell:
+		if not (spell_index >= 0 and spell_index < spell.size()):
+			return null
+		for s in book.spells:
+			if s.name == spell[spell_index]:
+				if parameters.is_empty():
+					return s
+				else:
+					var ns := s.duplicate()
+					var params := parameters[spell_index]
+					ns.configure_using_parameter_collection(params)
+					return ns
+		return null
+		
 	func display_rotated_spells_list(color_spell: Callable) -> String:
 		if spell.size() == 0:
 			return ""
 		var result := ""
-		var i := spell_index + 1
-		if i >= spell.size():
-			i = 0
+		var saved_index := spell_index
+		
+		spell_index += 1
+		if spell_index >= spell.size():
+			spell_index = 0
 		while true:
-			result += color_spell.call(spell[i] as String) + ", "	
-			if i == spell_index:
+			result += color_spell.call(self) + ", "	
+			if spell_index == saved_index:
 				break
-			i += 1
-			if i >= spell.size():
-				i = 0
+			spell_index += 1
+			if spell_index >= spell.size():
+				spell_index = 0
 		result = result.substr(0, result.length() - 2)
 		return result
+		
+	func parse_spells(text: String) -> void:
+		const SPELL_NAME = 0
+		const PARAM_NAME = 1
+		const PARAM_VALUE = 2
+		
+		var state := SPELL_NAME
+		var buffer := ""
+		var param_name := ""
+		
+		spell.clear()
+		parameters.clear()
+		
+		for s in text:
+			match state:
+				SPELL_NAME:
+					if "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890 -_".contains(s):
+						buffer += s
+					elif s == "(":
+						state = PARAM_NAME
+						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						if not buffer.is_empty():
+							spell.append(buffer)
+							parameters.append({})
+							buffer = ""
+					elif s == ",":
+						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						if not buffer.is_empty():
+							spell.append(buffer)
+							parameters.append({})
+							buffer = ""
+				PARAM_NAME:
+					if "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890_".contains(s):
+						buffer += s
+					elif s == "=":
+						state = PARAM_VALUE
+						param_name = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						buffer = ""
+					elif s == ",":
+						state = PARAM_NAME
+						buffer = ""
+					elif s == ")":
+						state = SPELL_NAME
+						buffer = ""
+				PARAM_VALUE:
+					if "1234567890.-qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890_".contains(s):
+						buffer += s
+					elif s == ",":
+						state = PARAM_NAME
+						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						parameters[parameters.size() - 1][param_name] = buffer
+						buffer = ""
+					elif s == ")":
+						state = SPELL_NAME
+						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						parameters[parameters.size() - 1][param_name] = buffer
+						buffer = ""
+		
+		match state:
+			SPELL_NAME:
+				buffer = buffer.lstrip("\t\n ").rstrip("\t\n ")
+				if not buffer.is_empty():
+					spell.append(buffer)
+					parameters.append({})
+			PARAM_VALUE:
+				buffer = buffer.lstrip("\t\n ").rstrip("\t\n ")
+				parameters[parameters.size() - 1][param_name] = buffer
+		
+		if not spell.is_empty() and (spell.back() as String).is_empty():
+			spell.pop_back()
+			parameters.pop_back()
+		
+		spell_index = spell.size() - 1
 
 const basic_keys: Array[String] = [
 	"LT",
@@ -76,7 +172,8 @@ const basic_keys: Array[String] = [
 var name: String
 var mods: Dictionary ## [String]bool
 var keys: Dictionary ## [PackedStringArray]Option
-var picked: String
+var picked_key: PackedStringArray
+var picked_index: int
 
 var current_actions: Dictionary ## [String]bool
 var selection_wheel: SelectionWheel
@@ -93,7 +190,8 @@ func _init() -> void:
 	name = "Default"
 	mods = {}
 	keys = {}
-	picked = ""
+	picked_key = PackedStringArray([])
+	picked_index = -1
 	current_actions = {}
 	build_keys()
 
@@ -160,12 +258,49 @@ func add_mod(mod: String) -> void:
 	mods[mod] = true
 	build_keys()
 	
+func picked_name() -> String:
+	if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spell as Array).size():
+		return ""
+	return keys[picked_key].spells[picked_index]
+	
+func get_spell(opt: Option, book: MagicBook) -> Spell:
+	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD:
+		if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spell as Array).size():
+			return null
+		var picked_option := keys[picked_key] as Option
+		var picked := picked_option.spell[picked_index]
+		var picked_parameters := picked_option.parameters[picked_index]
+		for s in book.spells:
+			if s.name == picked:
+				if picked_parameters.is_empty():
+					return s
+				else:
+					var ns := s.duplicate()
+					ns.configure_using_parameter_collection(picked_parameters)
+					return ns
+		return null
+	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
+		return null
+	elif opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.PICK:
+		return opt.get_spell(book)
+	return null
+	
 func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 	var opt: Option = keys[key]
 	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD:
+		if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spell as Array).size():
+			return null
+		var picked_option := keys[picked_key] as Option
+		var picked := picked_option.spell[picked_index]
+		var picked_parameters := picked_option.parameters[picked_index]
 		for s in book.spells:
 			if s.name == picked:
-				return s
+				if picked_parameters.is_empty():
+					return s
+				else:
+					var ns := s.duplicate()
+					ns.configure_using_parameter_collection(picked_parameters)
+					return ns
 		return null
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
 		return null
@@ -173,9 +308,16 @@ func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 	for s in book.spells:
 		if s.name == opt_spell:
 			if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.RAPID_FIRE:
-				return s
+				if opt.parameters.is_empty():
+					return s
+				else:
+					var ns := s.duplicate()
+					var params := opt.parameters[opt.spell_index]
+					ns.configure_using_parameter_collection(params)
+					return ns
 			elif opt.kind == Kind.PICK:
-				picked = s.name
+				picked_key = key
+				picked_index = opt.spell_index
 				picked_spell_changed.emit()
 				return null
 	return null
@@ -296,10 +438,13 @@ func action_up(action: String, book: MagicBook) -> Spell:
 	
 
 func save_dict() -> Dictionary:
+	# TODO [0]: Maybe todo? We not saving because the actual saving operation would require saving the entire wand case every time.
+	#var picked_key_array: Array[String] = []
+	#for k in picked_key:
+		#picked_key_array.append(k)
 	var result := {
-		"name": name,
-		"keys": {},
-		"mods": mods,
+		"name": name, "keys": {}, "mods": mods,
+		#"picked_key": picked_key_array, "picked_index": picked_index,
 	}
 	for key: PackedStringArray in keys:
 		result["keys"][key] = (keys[key] as Option).save_dict()
@@ -308,7 +453,11 @@ func save_dict() -> Dictionary:
 func load_dict(dict: Dictionary) -> void:
 	name = dict["name"]
 	mods = dict["mods"]
-	picked = ""
+	# TODO [0]:
+	#picked_key = PackedStringArray([])
+	#for k: String in dict.get("picked_key", []):
+		#picked_key.append(k)
+	#picked_index = dict.get("picked_index", -1)
 	for k: Variant in dict["keys"]:
 		var opt := Option.new()
 		opt.load_dict(dict["keys"][k] as Dictionary)

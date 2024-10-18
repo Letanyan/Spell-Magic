@@ -190,6 +190,26 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 	var text := edit.text
 	if old_text.length() > text.length():
 		return text
+		
+	var in_param_list := false
+	var current_spell_name := ""
+	if true:
+		var i := 0
+		var paren_count := 0
+		while i < edit.caret_column:
+			if paren_count == 0: 
+				if "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890 -_".contains(text[i]):
+					current_spell_name += text[i]
+				elif text[i] != "(":
+					current_spell_name = ""
+			if text[i] == "(":
+				paren_count += 1
+			elif text[i] == ")":
+				paren_count -= 1
+			i += 1
+		current_spell_name = current_spell_name.lstrip("\n\t\r ").rstrip("\n\t\r ")
+		in_param_list = paren_count != 0
+		
 	var eidx := edit.caret_column
 	var sidx := edit.caret_column
 	if sidx == text.length():
@@ -208,11 +228,24 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 	var prefix := text.substr(sidx, eidx - sidx)
 	
 	var complete := ""
-	for s in spells:
-		if (s.is_active or not suggest_only_active) and s.name.begins_with(prefix):
-			if ignore_recursive_chains == null or find_recursive_spell_chain(ignore_recursive_chains, s.name).is_empty():
-				complete = s.name
+	if in_param_list:
+		var s := find_spell(current_spell_name)
+		if s == null:
+			return text
+		for p: String in s.expression_strings:
+			if p.begins_with(prefix):
+				complete = p
 				break
+		for p: String in ["element", "CD", "CR"]:
+			if p.begins_with(prefix):
+				complete = p
+				break
+	else:
+		for s in spells:
+			if (s.is_active or not suggest_only_active) and s.name.begins_with(prefix):
+				if ignore_recursive_chains == null or find_recursive_spell_chain(ignore_recursive_chains, s.name).is_empty():
+					complete = s.name
+					break
 			
 	if complete.is_empty():
 		return text
@@ -223,7 +256,7 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 	if fidx == text.length():
 		fidx -= 1
 	while fidx < text.length():
-		if text[fidx] in " \n\t,":
+		if text[fidx] in " \n\t,()":
 			break
 		fidx += 1
 	

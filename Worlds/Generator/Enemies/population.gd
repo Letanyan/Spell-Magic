@@ -339,6 +339,12 @@ func update_pause_time(pause_time: float) -> void:
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.update_pause_time(pause_time)
+	for item in world_items:
+		if item is TargetShape:
+			var target := item as TargetShape
+			if target.spell_caster != null:
+				target.spell_caster.update_pause_time(pause_time)
+		
 
 func mark_entity(entity: Node3D) -> void:
 	mark_entity_name(entity.name)

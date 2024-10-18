@@ -246,6 +246,7 @@ func close_menu_for_player() -> void:
 	for loc: Vector2 in population:
 		var pop := population[loc] as Population
 		pop.update_pause_time(pause_duration)
+	hud.update_pause_time(pause_duration)
 	menu.close()
 	hud.show()
 	

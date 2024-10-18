@@ -21,7 +21,7 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 @onready var selection_wheel: SelectionWheel = $SelectionWheel
 var image_preview_raws := {} ## [String]Texture2D
 
-var cooldown_map: Dictionary
+var cooldown_map: Dictionary ## [String]float
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
@@ -140,33 +140,34 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -
 	
 func spell_was_cast(s: Spell) -> void:
 	var t := Time.get_unix_time_from_system()
-	cooldown_map[s.name] = t
+	if cooldown_map.has(s.name):
+		var v := cooldown_map[s.name] as float
+		cooldown_map[s.name] = maxf(v, t + s.cooldown)
+	else:
+		cooldown_map[s.name] = t + s.cooldown
 	var ns := s.chain
 	while ns != null:
-		cooldown_map[ns.name] = t
+		if cooldown_map.has(ns.name):
+			var v := cooldown_map[ns.name] as float
+			cooldown_map[ns.name] = maxf(v, t + ns.cooldown)
+		else:
+			cooldown_map[ns.name] = t + ns.cooldown
 		ns = ns.chain
 	update_spell_cooldowns()
 	
-func get_spell(spell_name: String) -> Spell:
-	for s in book.spells:
-		if s.name == spell_name:
-			return s
-	return null
-	
 func update_spell_cooldowns() -> void:
-	if book == null:
+	if book == null or not visible:
 		return
 	
 	var i := 0
-	var to_remove := []
+	var to_remove_from_list: Array[int] = []
+	var to_remove_from_map: Array[String] = []
 	for s: String in cooldown_map:
-		var spell := get_spell(s)
-		var used := book.last_use.get(s, 0.0) as float
-		if spell == null:
-			continue
-		var wait := spell.cooldown - (Time.get_unix_time_from_system() - used)
+		var cooldown := cooldown_map[s] as float
+		var wait := cooldown - Time.get_unix_time_from_system()
 		if wait < 0.0:
-			to_remove.append(i)
+			to_remove_from_list.append(i)
+			to_remove_from_map.append(s)
 		var description := " " + s + " - " +("%d" % wait) + "s"
 		if i < cooldown_list.item_count:
 			cooldown_list.set_item_text(i, description)
@@ -176,11 +177,13 @@ func update_spell_cooldowns() -> void:
 			cooldown_list.deselect(i)
 		i += 1
 		
-	i = to_remove.size() - 1
+	i = to_remove_from_list.size() - 1
 	while i >= 0:
-		var idx := to_remove[i] as int
+		var idx := to_remove_from_list[i] as int
 		cooldown_list.remove_item(idx)
 		i -= 1
+	for s in to_remove_from_map:
+		cooldown_map.erase(s)
 		
 	cooldown_list.visible = not((hud_settings != null and hud_settings.hide_cooldown_timings) or cooldown_list.item_count == 0) 
 		
@@ -193,6 +196,9 @@ func update_spell_cooldowns() -> void:
 		
 	draw_notifications()
 	
+func update_pause_time(pause_time: float) -> void:
+	for s: String in cooldown_map:
+		cooldown_map[s] += pause_time
 		
 func show_notification(message: String, duration: float) -> void:
 	notifications[message] = Time.get_unix_time_from_system() + duration
@@ -229,38 +235,41 @@ func update_wand_mappings() -> void:
 			modifier_keys += GlobalData.controller.key_images([m]) + " "
 		rich_text += " Modifiers: " + modifier_keys + "\n"
 		
-	var color_spell := func(spell: String) -> String:
-		var reason := book.can_use_spell_with_name(spell)
+		
+	var color_spell := func(s: Spell) -> String:
+		var reason := book.can_use_spell(s)
 		if reason == MagicBook.DisallowSpellReason.NONE:
-			var s := book.find_spell(spell)
 			if player.vitals.mana.value < s.actual_mana_cost():
 				reason = MagicBook.DisallowSpellReason.MANA
 		match reason:
 			MagicBook.DisallowSpellReason.NONE:
-				return spell
+				return s.name
 			MagicBook.DisallowSpellReason.COOLDOWN:
-				return "[color=#F05]" + spell + "[/color]"
+				return "[color=#F05]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.MANA:
-				return "[color=#A0A]" + spell + "[/color]"
+				return "[color=#A0A]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.ACTIVE:
-				return "[color=#777]" + spell + "[/color]"
+				return "[color=#777]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.COUNT:
-				return "[color=#F700FF]" + spell + "[/color]"
+				return "[color=#F700FF]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.POWER:
-				return "[color=#0008FF]" + spell + "[/color]"
+				return "[color=#0008FF]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.DURATION:
-				return "[color=#00FF08]" + spell + "[/color]"
+				return "[color=#00FF08]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.RADIUS:
-				return "[color=#7700FF]" + spell + "[/color]"
+				return "[color=#7700FF]" + s.name + "[/color]"
 			_:
-				return "[color=#F50]" + spell + "[/color]"
+				return "[color=#F50]" + s.name + "[/color]"
+				
+	var color_spell_option := func(opt: Wand.Option) -> String:
+		var s := wand.get_spell(opt, book)
+		return color_spell.call(s)
 		
 		
-	var build_desc := func(kd: String, title: String, spell: String) -> String:
-		var reason := book.can_use_spell_with_name(spell)
+	var build_desc := func(kd: String, title: String, spell: Spell) -> String:
+		var reason := book.can_use_spell(spell)
 		if reason == MagicBook.DisallowSpellReason.NONE:
-			var s := book.find_spell(spell)
-			if player.vitals.mana.value < s.actual_mana_cost():
+			if player.vitals.mana.value < spell.actual_mana_cost():
 				reason = MagicBook.DisallowSpellReason.MANA
 		match reason:
 			MagicBook.DisallowSpellReason.NONE:
@@ -287,27 +296,34 @@ func update_wand_mappings() -> void:
 		var kd := " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
-				if not s.spell.is_empty():
-					rich_text += build_desc.call(kd, "Cast", s.spell[0])
+				var spell := s.get_spell(book)
+				if spell != null:
+					rich_text += build_desc.call(kd, "Cast", spell)
 			Wand.Kind.FIRE_HOLD:
-				if not s.spell.is_empty(): 
-					rich_text += build_desc.call(kd, "Charge", s.spell[0])					
+				var spell := s.get_spell(book)
+				if spell != null:
+					rich_text += build_desc.call(kd, "Charge", spell)					
 			Wand.Kind.RAPID_FIRE:
-				if not s.spell.is_empty():
-					rich_text += build_desc.call(kd, "Rapid", s.spell[0])
+				var spell := s.get_spell(book)
+				if spell != null:
+					rich_text += build_desc.call(kd, "Rapid", spell)
 				
 			Wand.Kind.PICK:
-				if not s.spell.is_empty(): 
-					rich_text += kd + " [b]Choose[/b]: " + s.display_rotated_spells_list(color_spell) + "\n"
+				var colored_list := s.display_rotated_spells_list(color_spell_option)
+				if not colored_list.is_empty(): 
+					rich_text += kd + " [b]Choose[/b]: " + colored_list + "\n"
 			Wand.Kind.FIRE_PICKED:
-				if not wand.picked.is_empty():
-					rich_text += build_desc.call(kd, "[i]Cast[/i]", wand.picked)
+				var spell := wand.get_spell(s, book)
+				if spell != null:
+					rich_text += build_desc.call(kd, "[i]Cast[/i]", spell)
 			Wand.Kind.FIRE_PICKED_HOLD:
-				if not wand.picked.is_empty():
-					rich_text += build_desc.call(kd, "[i]Charge[/i]", wand.picked)
+				var spell := wand.get_spell(s, book)
+				if spell != null:
+					rich_text += build_desc.call(kd, "[i]Charge[/i]", spell)
 			Wand.Kind.FIRE_PICKED_RAPID:
-				if not wand.picked.is_empty():
-					rich_text += build_desc.call(kd, "[i]Rapid[/i]", wand.picked)
+				var spell := wand.get_spell(s, book)
+				if spell != null:
+					rich_text += build_desc.call(kd, "[i]Rapid[/i]", spell)
 	
 	rich_text += "[/font_size]"
 	wand_mapping.text = ""

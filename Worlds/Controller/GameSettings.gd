@@ -187,6 +187,7 @@ static var notes := {
 	"wand Charged Chosen": "Keys can be held and then released to cast the {Chosen} spell. The time spent holding the keys will be set in the variable {C} to be used in the spell.",
 	"wand Rapid Chosen": "Keys can be held and the {Chosen} spell will continuosly be cast when ready.",
 	"wand Modifier Key": "The key will become a modifier key for all other non modifier keys. Use this to increase the availble key combinations.",
+	"wand Spell Parameters": "Sometimes you might want to the cast the same spell but with only a few changes. You can do this using spell parameters in the wand. Each spell can have a set of customised parameters set from a wand action. Parameters must be set inside a pair of parentheses '()' which appear after the spell name. Parameters are a set of '=' separated key-value pairs separated by commas. For example, if we have a spell called 'blast', we can set its values by declaring the spell like 'blast(N=5, element=ice, speed=10).' In this example we change 'N' to 5, change the element of the spell to ice and change its custom variable 'speed' to 10.",
 	
 	"upgrades Max Health": "The maximum health of the player.",
 	"upgrades Max M": "The maximum mana of the player.",

@@ -166,6 +166,35 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 	calculate_cooldown()
 	overwrite_expressions(constants)
 	
+func configure_using_parameter_collection(parameters: Dictionary) -> void:
+	var params := parameters.duplicate()
+	if params.has("element"):
+		element = Element.keys().find((params["element"] as String).to_upper()) as Element
+		params.erase("element")
+	if params.has("r"):
+		radius = (params["r"] as String).to_float()
+		params.erase("r")
+	if params.has("P"):
+		power = (params["P"] as String).to_float()
+		params.erase("P")
+	if params.has("T"):
+		duration = (params["T"] as String).to_float()
+		params.erase("T")
+	if params.has("N"):
+		count = (params["N"] as String).to_int()
+		params.erase("N")
+	if params.has("CR"):
+		crit_rate = (params["CR"] as String).to_float()
+		params.erase("CR")
+	if params.has("CD"):
+		crit_dmg = (params["CD"] as String).to_float()
+		params.erase("CD")
+	if params.has("M"):
+		mana_cost = (params["M"] as String).to_float()
+		params.erase("M")
+	calculate_cooldown()
+	overwrite_expressions(params)
+	
 func set_delay(d: String) -> void:
 	delay = d
 	d_expr = Expr.new(delay)
