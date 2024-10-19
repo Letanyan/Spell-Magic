@@ -153,8 +153,7 @@ func _physics_process(delta: float) -> void:
 		if attack_sequence != null:
 			var player_body := (self as Node3D) if player == null else (player as Node3D)
 			attack_sequence.update(0.5, self, player_body, is_done)  # FIXME: pass caster_position as me
-			if attack_sequence.last_path:
-				caster_position = attack_sequence.next_position
+			caster_position = attack_sequence.next_position
 			current_attack = attack_sequence.last_attack
 		if current_attack != null:
 			var spell := current_attack.choose_spell(vitals)

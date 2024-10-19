@@ -85,7 +85,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.wait(fit(2,8))
 	angry_sequence = AttackSequence.new(true, [
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player_xz().align_y_to_ground_and_dirt(),
-		PathStyle.new().follow_path(Pathway.empty(5)).set_player_body_rotation_as_vision_angle(0, 2, 1, 1).align_y_to_origin(),
+		PathStyle.new().follow_path(Pathway.empty(5)).set_player_body_rotation_as_vision_angle(0, 2, 1, 1).align_y_to_ground_air_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player_xz().align_y_to_ground_and_dirt(),
 		basic_pattern_sequence,
 	])

@@ -1,6 +1,6 @@
 class_name PathStyle
 
-enum CoordY { GROUND, ORIGIN, GROUND_AND_AIR, GROUND_AND_DIRT, AIR, GROUND_AND_JUMP }
+enum CoordY { GROUND, GROUND_AIR_AND_DIRT, GROUND_AND_AIR, GROUND_AND_DIRT, AIR, GROUND_AND_JUMP, ORIGIN }
 enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER, PLAYER_XZ, NOTHING }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
@@ -69,7 +69,7 @@ static func still_path() -> PathStyle:
 	var result := PathStyle.new()
 	result.use_absolute()
 	result.set_use_me_as_origin()
-	result.align_y_to_origin()
+	result.align_y_to_ground_air_and_dirt()
 	result.path = Pathway.empty()
 	return result
 	
@@ -137,8 +137,8 @@ func set_player_camera_as_vision_angle(a: float, r: float, min_m: float = 0.0, m
 	return self
 	
 ## movement is allowed above and below ground
-func align_y_to_origin() -> PathStyle:
-	coord_y = CoordY.ORIGIN
+func align_y_to_ground_air_and_dirt() -> PathStyle:
+	coord_y = CoordY.GROUND_AIR_AND_DIRT
 	return self
 	
 ## movement is fixed to ground
@@ -164,6 +164,11 @@ func align_y_to_air() -> PathStyle:
 ## movement is allowed above ground (flying)
 func align_y_to_ground_and_jump() -> PathStyle:
 	coord_y = CoordY.GROUND_AND_JUMP
+	return self
+	
+## movement is allowed above and below ground. y aligned to origin.
+func align_y_to_origin() -> PathStyle:
+	coord_y = CoordY.ORIGIN
 	return self
 	
 func towards_player(speed: float, mn: float, mx: float) -> PathStyle:
@@ -246,6 +251,8 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 	var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
 	var v := path.position_at_time_with_rotation(duration, -psvr, index) + temp_origin
 	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	if coord_y == CoordY.ORIGIN:
+		y += temp_origin.y
 	#print(y, " = ", v.y, " - ", temp_origin.y)
 	if time_was_up and (when_initial_position_can_update & InitialPositionCanUpdate.WHEN_LOOP != 0):
 		player_start_vision_rotation = null
@@ -271,31 +278,37 @@ func next_y_position(me: Node3D, x: float, y: float, z: float) -> float:
 		
 	var result := 0.0
 	var actual_y := y
-	var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 	match coord_y:
 		CoordY.GROUND:
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			result = g
 			actual_y = 0.0
 		CoordY.GROUND_AND_DIRT:
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y > 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y
 		CoordY.GROUND_AND_AIR, CoordY.GROUND_AND_JUMP:
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y < 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y
-		CoordY.ORIGIN: 
+		CoordY.GROUND_AIR_AND_DIRT: 
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			result = g + y 
 		CoordY.AIR:
+			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
 			if y <= me_y / 2.0:
 				result = g + me_y / 2.0
 				actual_y = me_y / 2.0
 			else:
 				result = g + y
+		CoordY.ORIGIN:
+			result = y
 
 	if actual_y > 0.001:
 		can_update_initial_position_now = when_initial_position_can_update & InitialPositionCanUpdate.IN_AIR != 0

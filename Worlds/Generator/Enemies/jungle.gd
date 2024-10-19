@@ -106,33 +106,35 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var platform_scale := sqrt(platform_size ** 2 / 2)
 					var h := Vec3.y(rng.randf_range(50, 100) + platform_scale) 
 					var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
-					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_ground_air_and_dirt().look_at_nothing()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
 					var platform := pop.spawn_world_item(World.Item.TARGET, state, center, spacing, config) as TargetShape
 					if platform != null:
 						var wh := Navigator.get_world_height(state, center.x, center.y)
 						platform.position.y = h.y + wh
-						platform.caster_target_position = Vec3.xz(center) + Vec3.y(h.y + wh + platform.bounds.y + pop.player.bounds.y * 0.5)
+						var caster_y := h.y + platform.bounds.y + pop.player.bounds.y * 0.5
+						platform.caster_target_position = Vec3.xz(center) + Vec3.y(wh + caster_y)
 						var arc := GlobalData.magic_book.copy_spell("arc")
-						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 10, 0, 0.5, 8, 0, 0, 0)
-						var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(15, [1], 1))
+						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 5, 0, 0.5, 8, 0, 0, 0)
+						var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(10, [1], 1))
 						platform.attack_sequence = AttackSequence.new(true, [
-							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+							PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, caster_y, 0))).align_y_to_origin(),
 							pattern,
-							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
+							PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, caster_y, platform_scale))).align_y_to_origin(),
 							pattern,
-							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+							PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, caster_y, 0))).align_y_to_origin(),
 							pattern,
-							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
+							PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, caster_y, -platform_scale))).align_y_to_origin(),
 							pattern,
 						])
+							
 							
 						result.append(platform)
 						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, state, center, spacing) as Birdman
 						if p != null:
-							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(h + Vec3.y(platform.bounds.y)))
-							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(h + Vec3.y(platform.bounds.y)))
-							p.position.y += h.y
+							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(caster_y)))
+							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(caster_y)))
+							p.position.y += caster_y
 							result.append(p)
 						for q in points: exclusion[q] = true
 					

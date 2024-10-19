@@ -137,7 +137,7 @@ func create_attack_jump_path() -> void:
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
-	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_origin().look_at_player()
+	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_ground_air_and_dirt().look_at_player()
 
 
 func drop_artifact() -> Artifact:

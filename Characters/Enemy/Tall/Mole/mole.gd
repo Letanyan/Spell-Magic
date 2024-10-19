@@ -70,35 +70,35 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(
 			Pathway.new().move_to(a).line_to(b, 8, Easing.linear)
-		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_ground_air_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(
 			Pathway.new().move_to(b).line_to(c, 8, Easing.linear)
-		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_ground_air_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(
 			Pathway.new().move_to(c).line_to(d, 8, Easing.linear)
-		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_ground_air_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(
 			Pathway.new().move_to(d).line_to(e, 8, Easing.linear)
-		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_ground_air_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 		
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		PathStyle.new().follow_path(
 			Pathway.new().move_to(e).line_to(a, 8, Easing.linear)
-		).set_use_player_as_origin().look_at_player().align_y_to_origin(),
+		).set_use_player_as_origin().look_at_player().align_y_to_ground_air_and_dirt(),
 		PathStyle.new().follow_path(up_pathway).set_use_me_as_origin().look_at_player().align_y_to_ground_and_dirt(),
 		random_pattern,
 	])
