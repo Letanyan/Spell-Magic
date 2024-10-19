@@ -29,6 +29,7 @@ resource_local_to_scene = true
 emission_shape = 1
 emission_sphere_radius = 0.5
 direction = Vector3(0, -1, 0)
+spread = 0.0
 initial_velocity_max = 1.0
 gravity = Vector3(0, -1, 0)
 scale_min = 0.3

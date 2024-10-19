@@ -335,7 +335,9 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
-			particles.local_coords = spell.follow
+			particles.amount = roundi(80 * rl)
+			
+			#particles.local_coords = spell.follow
 			
 		Spell.Element.ROCK:
 			if not ignore_time:
@@ -366,7 +368,8 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
-			particles.local_coords = spell.follow
+			#particles.local_coords = spell.follow
+			particles.amount = roundi(80 * rl)
 			
 		Spell.Element.AIR:
 			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = rl * 4
@@ -379,7 +382,8 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
-			source.local_coords = spell.follow
+			#source.local_coords = spell.follow
+			source.amount = roundi(160 * rl)
 			
 		Spell.Element.ICE:
 			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rl * 2
@@ -387,19 +391,21 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
-			source.local_coords = spell.follow
+			source.amount = roundi(100 * rl)
+			#source.local_coords = spell.follow
 			
 		Spell.Element.ELECTRIC:
 			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
+			source.amount = roundi(80 * rl)
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
 			mat.set_shader_parameter("len", rl * 5)
 			var body := get_node("body") as MeshInstance3D
 			(body.mesh as SphereMesh).radius = rl
 			(body.mesh as SphereMesh).height = rl * 2
-			source.local_coords = spell.follow
+			#source.local_coords = spell.follow
 			
 		Spell.Element.VOID:
 			var mesh: SphereMesh = (get_node("mesh") as MeshInstance3D).mesh
@@ -411,14 +417,15 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 	var next_pos : Vector3 = p - (vars["~rel_pos"] if spell.follow else vars["~abs_pos"])
+	var velocity_maintained_distance := velocity
 	if started:
 		var fr := vars.get("~~frame_time", 0.0166667) as float
 		if old_velocity.size() < 6:
 			old_velocity.append(velocity)
 		else:
 			old_velocity[rng.randi_range(0, old_velocity.size() - 1)] = velocity
-		velocity = (next_pos - old_pos) * fr
-		velocity = velocity.normalized()
+		velocity_maintained_distance = (next_pos - old_pos) / fr
+		velocity = ((next_pos - old_pos) * fr).normalized()
 		
 		complexity_samples_total += 1
 		
@@ -460,7 +467,9 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.FIRE:
 			position = p
 			var particles: GPUParticles3D = get_node("source")
-			(particles.process_material as ParticleProcessMaterial).direction = (-velocity + Vector3.UP).normalized()
+			(particles.process_material as ParticleProcessMaterial).direction = (velocity + Vector3.UP * 0.15).normalized()
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = velocity_maintained_distance.length() * 0.99
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length() * 1.01
 		
 		Spell.Element.ROCK:
 			position = p
@@ -473,15 +482,15 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.WATER:
 			position = p
 			var particles: GPUParticles3D = get_node("source")
-			(particles.process_material as ParticleProcessMaterial).direction = (-velocity + Vector3.DOWN).normalized()
+			(particles.process_material as ParticleProcessMaterial).direction = (velocity + Vector3.DOWN * 0.15).normalized()
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = velocity_maintained_distance.length() * 0.99
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length() * 1.01
 			
 		Spell.Element.AIR:
 			position = p
-			var box: Shape3D = get_shape()
-			var h : float = (box as CylinderShape3D).height
 			var source: GPUParticles3D = get_node("source")
-			(source.process_material as ParticleProcessMaterial).initial_velocity_min = (h / source.lifetime) + abs(velocity.length()) * 0.99
-			(source.process_material as ParticleProcessMaterial).initial_velocity_max = (h / source.lifetime) + abs(velocity.length()) * 1.01
+			(source.process_material as ParticleProcessMaterial).initial_velocity_min = velocity_maintained_distance.length() * 0.99
+			(source.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length() * 1.01
 			
 			var v := velocity.normalized()
 			if v != Vector3.ZERO:
@@ -494,8 +503,8 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.ICE:
 			position = p
 			var particles: GPUParticles3D = get_node("source")
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.2 * 0.9
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = 0.2 * 1.1
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = velocity_maintained_distance.length() * 0.99
+			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length() * 1.01
 			var v : Vector3 = velocity.normalized()
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:

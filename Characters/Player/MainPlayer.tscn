@@ -14312,15 +14312,18 @@ scale_curve = SubResource("CurveTexture_slgpg")
 color_ramp = SubResource("GradientTexture1D_2lywn")
 color_initial_ramp = SubResource("GradientTexture1D_qalgr")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5y0j"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_phbfl"]
+cull_mode = 2
 vertex_color_use_as_albedo = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
-[sub_resource type="SphereMesh" id="SphereMesh_6taqb"]
-material = SubResource("StandardMaterial3D_e5y0j")
-radius = 0.1
-height = 0.2
-radial_segments = 4
-rings = 2
+[sub_resource type="QuadMesh" id="QuadMesh_yrfhb"]
+material = SubResource("StandardMaterial3D_phbfl")
+size = Vector2(0.05, 0.1)
 
 [node name="MainPlayer" type="CharacterBody3D"]
 collision_layer = 2
@@ -14888,14 +14891,16 @@ autoplay = true
 max_distance = 50.0
 
 [node name="Rain" type="GPUParticles3D" parent="."]
+process_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.5072, 0)
 visible = false
+emitting = false
 amount = 1000
 lifetime = 3.0
 visibility_aabb = AABB(-4, -22, -4, 8, 36, 8)
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_mldf1")
-draw_pass_1 = SubResource("SphereMesh_6taqb")
+draw_pass_1 = SubResource("QuadMesh_yrfhb")
 
 [node name="GroundCast" type="RayCast3D" parent="."]
 target_position = Vector3(0, -1.5, 0)

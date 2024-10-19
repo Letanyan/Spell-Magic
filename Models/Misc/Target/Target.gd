@@ -22,7 +22,7 @@ var element: Spell.Element = Spell.Element.VOID
 
 var spell_caster: SpellCaster = null
 var caster_position := Vector3.ZERO
-var caster_target_position := Vector3.ZERO
+var caster_target_position := Vector3(NAN, NAN, NAN)
 var vitals: Vitals = null
 var current_attack: AttackPatterns = null
 var attack_sequence: AttackSequence = null
@@ -296,12 +296,13 @@ func update_mesh_color() -> void:
 	update_health_bar()
 	
 func resize_target(size: float) -> void:
+	var y_size := minf(size, 5.0)
 	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
-	($platform as MeshInstance3D).scale = Vector3(0.5 * size, 0.15, 0.5 * size)
-	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, 0.25, size)
+	($platform as MeshInstance3D).scale = Vector3(0.5 * size, 0.15 * y_size, 0.5 * size)
+	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, 0.25 * y_size, size)
 	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
-	bounds = Vector3(size, 0.25, size)
+	bounds = Vector3(size, 0.25 * y_size, size)
 	
 func rescale_target(size: Vector3) -> void:
 	($coin as MeshInstance3D).scale = size * 5

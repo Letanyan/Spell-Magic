@@ -28,6 +28,9 @@ func _ready() -> void:
 	mat.shader = load("res://Characters/Enemy/Health Bar/status_effects.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
+	mat.shader = load("res://Worlds/SkyBox/water.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
 	SceneHandler.load_new_scene("res://Worlds/TestArena/TestArena.tscn", "blink_to", func(content: Node3D) -> void: print("loading test arena"))
 	#SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "blink_to", func(content: Node3D) -> void: print("loading main menu world"))
 

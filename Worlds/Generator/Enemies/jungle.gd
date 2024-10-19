@@ -113,9 +113,9 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						var wh := Navigator.get_world_height(state, center.x, center.y)
 						platform.position.y = h.y + wh
 						platform.caster_target_position = Vec3.xz(center) + Vec3.y(h.y + wh + platform.bounds.y + pop.player.bounds.y * 0.5)
-						var arc := GlobalData.magic_book.copy_spell("linear-arc")
-						arc.configure({"R": "5", "s": "10"}, Spell.Element.FIRE, 10, 0, 0.5, 8, 0, 0, 0)
-						var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(5, [1], 1))
+						var arc := GlobalData.magic_book.copy_spell("arc")
+						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 10, 0, 0.5, 8, 0, 0, 0)
+						var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(15, [1], 1))
 						platform.attack_sequence = AttackSequence.new(true, [
 							PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
 							pattern,

@@ -11,7 +11,7 @@ radius = 1.0
 [sub_resource type="Gradient" id="Gradient_c4dcj"]
 interpolation_color_space = 2
 offsets = PackedFloat32Array(0, 0.166052, 0.640187, 0.792829)
-colors = PackedColorArray(0, 0.501961, 0, 1, 0.501961, 1, 0.501961, 0.501961, 1, 1, 1, 0, 1, 1, 1, 1)
+colors = PackedColorArray(0, 0.501961, 0, 1, 0.501961, 1, 0.501961, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_rlncl"]
 gradient = SubResource("Gradient_c4dcj")
@@ -41,8 +41,6 @@ gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_tncfq")
 color = Color(0.501961, 1, 0.501961, 1)
 color_ramp = SubResource("GradientTexture1D_rlncl")
-hue_variation_min = -2.23517e-08
-hue_variation_max = -2.23517e-08
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cw5ub"]
 resource_local_to_scene = true
@@ -61,8 +59,9 @@ resource_local_to_scene = true
 material = SubResource("ShaderMaterial_cw5ub")
 radius = 1.0
 height = 2.0
-radial_segments = 16
-rings = 8
+radial_segments = 4
+rings = 4
+is_hemisphere = true
 
 [node name="air" type="Node3D"]
 script = ExtResource("1_a23cr")

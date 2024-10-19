@@ -154,6 +154,33 @@ func setup(_settings: WorldSettings) -> void:
 	spawner = ItemSpawner.key_spawner(rng, null, Vector3(20, 1000, 20), 16)
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
+	var h := Vec3.y(10)
+	var center := Vector2(0, 0)
+	var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
+	var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+	var platform_scale := 15.0
+	var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
+	var platform := TargetShape.make()
+	platform.configure(config)
+	var wh := 1000.0
+	platform.position.y = h.y + wh
+	platform.caster_target_position = Vec3.xz(center) + Vec3.y(h.y + wh + platform.bounds.y + player.bounds.y * 0.5)
+	var arc := GlobalData.magic_book.copy_spell("arc")
+	arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 2, 0, 0.5, 8, 0, 0, 0)
+	var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(5, [1], 1))
+	platform.attack_sequence = AttackSequence.new(true, [
+		PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+		pattern,
+		PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
+		pattern,
+		PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+		pattern,
+		PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
+		pattern,
+	])
+	
+	add_child(platform)
+	
 	#var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
 	#var RT := Transform3D.IDENTITY.rotated(Vector3.UP, 2 * PI / 3)
 	#var circle_path := Pathway.new().move_to(Vector3.ZERO).circle_with_speed(4, 2, 1)

@@ -279,7 +279,7 @@ func update_info() -> void:
 		game_flags = "None"
 		
 	var hour := floori(world_settings.time_of_day)
-	var time := "%02d:%02d" % [hour, clampi(int(world_settings.time_of_day - hour) * 60, 0, 59)]
+	var time := "%02d:%02d" % [hour, clampi(int((world_settings.time_of_day - hour) * 60), 0, 59)]
 	info_label.text = """
 [center]
 [b]World Name:[/b] %s

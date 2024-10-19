@@ -26,8 +26,6 @@ emission_box_extents = Vector3(1, 0.2, 1)
 angle_max = 360.0
 direction = Vector3(0, 1, 0)
 spread = 0.0
-initial_velocity_min = 1.0
-initial_velocity_max = 1.2
 angular_velocity_min = 50.0
 angular_velocity_max = 100.0
 gravity = Vector3(0, 0, 0)
@@ -69,7 +67,7 @@ collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-amount = 100
+amount = 50
 process_material = SubResource("ParticleProcessMaterial_p7bpa")
 draw_pass_1 = SubResource("SphereMesh_b25tq")
 

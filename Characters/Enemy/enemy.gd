@@ -217,12 +217,16 @@ func _physics_process(delta: float) -> void:
 					
 			if current_path.lookat == PathStyle.LookAt.PLAYER:
 				var goal_position := position + velocity * 10
-				look_at(player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+				var looking_at := player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0))
+				if not looking_at.is_equal_approx(position):
+					look_at(looking_at)
 			elif current_path.lookat == PathStyle.LookAt.PLAYER_XZ:
 				var goal_position := position + velocity * 10
 				var player_position := player.position
 				player_position.y = position.y
-				look_at(player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0)))
+				var looking_at := player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0))
+				if not looking_at.is_equal_approx(position):
+					look_at(looking_at)
 		
 
 	var reset_spell_tick := false

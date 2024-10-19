@@ -84,8 +84,8 @@ linear: fires a projectile straight from camera
 	d ; offset
 	
 linear-arc: fires multiple projectiles in a straight line set in an arc starting point
-	R ; arc radius
-	d ; offset
+	R ; arc angle
+	d ; arc radius
 	s ; speed
 	voff ; vertical offset in radians
 	hoff ; horizontal offset in radians
