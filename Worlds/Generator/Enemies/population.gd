@@ -29,52 +29,6 @@ func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player:
 func seed_location() -> void:
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
 	
-# probs: [Variant]float|int
-# probs is a dictionary where each key has its 'value' as a value of being choosen relative to other siblings
-static func random_entity_from_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
-	var keys := probs.keys()
-	if keys.size() == 0:
-		return default
-	
-	if keys.size() == 1:
-		return keys[0]
-		
-	var sum := 0.0
-	for n: float in probs.values():
-		sum += n
-		
-	var base := 0.0
-	for n in range(0, keys.size()):
-		var i: Variant = keys[n]
-		var next_base : float = base + probs[i] / sum
-		if base <= r and r < next_base:
-			return i
-		base = next_base
-	
-	return default
-	
-# probs: [Variant]float
-# probs is a dictionary where each key has its 'value' as a value of being choosen. Sum of all values must equal 1.0
-static func random_entity_from_non_relative_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
-	var keys := probs.keys()
-	if keys.size() == 0:
-		return default
-	
-	if keys.size() == 1:
-		return keys[0]
-		
-	var base := 0.0
-	for n in range(0, keys.size()):
-		var i: Variant = keys[n]
-		var next_base : float = base + probs[i]
-		if base <= r and r < next_base:
-			return i
-		base = next_base
-	if base != 1.0:
-		push_error("sum of probs must equal 1.0")
-	
-	return default
-	
 func do_nothing(entity: Node3D) -> void:
 	pass
 	
@@ -121,7 +75,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
 			(entity as Enemy).setup(rng.randi(), current_biome_during_generation)
-			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + Globals.encode_v3(entity.position)
+			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + Globals.encode_v3(entity.position) + Rand.id(5, rng)
 			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)

@@ -45,16 +45,9 @@ signal vital_update(index_in_population: int, vitals: Vitals)
 @onready var effects_mesh: MeshInstance3D = $HealthBar/Effects
 
 func _ready() -> void:
-	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.ENEMY)
-	still_path = PathStyle.still_path()
-	current_path = still_path
 	level_text.text = str(int(level))
 	animator = $AnimationPlayer
 	animation_tree = $AnimationTree
-	if not bounds:
-		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
-		#(get_node("Collision") as CollisionShape3D).disabled = true
-		#(get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
 	if kind == World.Enemy.NONE:
 		setup(0, World.Biome.WATER)
 	health_bar.visible = not is_idle
@@ -119,6 +112,15 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.WALKER_HEAD: result = walker_head.instantiate()
 		World.Enemy.WIZARD: result = wizard.instantiate()
 		_: push_error("Missing enemy")
+		
+	result.spell_caster = SpellCaster.new(result, SpellCaster.Entity.ENEMY)
+	result.still_path = PathStyle.still_path()
+	result.current_path = result.still_path
+	if not result.bounds:
+		result.bounds = Navigator.shape_bounds((result.get_node("Collision") as CollisionShape3D).shape)
+		#(result.get_node("Collision") as CollisionShape3D).disabled = true
+		#(result.get_node("WetArea/WetCollision") as CollisionShape3D).disabled = true
+		
 	return result
 	
 func setup(seedling: int, biome: World.Biome) -> void:
@@ -135,7 +137,9 @@ func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: flo
 	else:
 		random_offset = rng.randf_range(0.0, absf(offset_max_range))
 	level = maxf(base + random_offset, 1.0)
-	
+	if level_text != null:
+		level_text.text = str(int(level))
+		
 func separation_multiplier() -> float:
 	return 1.05
 	
@@ -413,7 +417,7 @@ func drop_coin_items(world: Node3D) -> bool:
 		for coin in coins:
 			var item := CoinDisc.make()
 			item.position = position
-			item.global_transform = global_transform.translated(Globals.rand_point_in_circle(1.0 + log(coins.size()), 0))
+			item.global_transform = global_transform.translated(Rand.point_in_circle(1.0 + log(coins.size()), 0))
 			item.amount = ceili(coin * maxf(level / 10.0, 1.0))
 			world.add_child(item)
 		return true
@@ -425,7 +429,7 @@ func drop_health_item(world: Node3D, time_to_kill: float) -> bool:
 	if h > 0.0:
 		var item := RedCross.make()
 		item.position = position
-		item.global_transform = global_transform.translated(Globals.rand_point_in_circle(3, 0))
+		item.global_transform = global_transform.translated(Rand.point_in_circle(3, 0))
 		item.health = h
 		world.add_child(item)
 		return true
@@ -436,7 +440,7 @@ func drop_scroll_note(world: Node3D) -> bool:
 	if note_id != "":
 		var item := ScrollNote.make()
 		item.position = position
-		item.global_transform = global_transform.translated(Globals.rand_point_in_circle(3, 0))
+		item.global_transform = global_transform.translated(Rand.point_in_circle(3, 0))
 		item.note_id = note_id
 		world.add_child(item)
 		return true

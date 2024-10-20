@@ -24,11 +24,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(15), mana(10), mana_regen(10), percep(1,4), atk(5), def(7), {Artifact.Element.WATER: res(10, 0)})
 	
 	const idle_r := 10.0
-	var a := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
-	var b := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
-	var c := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
-	var d := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
-	var e := Globals.rand_v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var a := Rand.v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var b := Rand.v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var c := Rand.v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var d := Rand.v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
+	var e := Rand.v3_abs(idle_r, 0, idle_r) + Vector3(0, bounds.y / 2, 0)
 	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, bounds.y / 2, 0)) \
 		.line_to(a, 2, Easing.linear) \

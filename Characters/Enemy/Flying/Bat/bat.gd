@@ -24,10 +24,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	const idle_r := 20.0
 	const idle_h := 10.0
 		
-	var a: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
-	var b: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
-	var c: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
-	var d: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
+	var a: Vector3 = Rand.point_in_circle(idle_r, idle_h)
+	var b: Vector3 = Rand.point_in_circle(idle_r, idle_h)
+	var c: Vector3 = Rand.point_in_circle(idle_r, idle_h)
+	var d: Vector3 = Rand.point_in_circle(idle_r, idle_h)
 	
 	var rotate_path := Pathway.new() \
 		.move_to(a) \

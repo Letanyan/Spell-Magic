@@ -88,7 +88,7 @@ func generate(max_word_length: int, word_count: int = 1, max_length: int = (max_
 		output.clear()
 		return generate(max_word_length, word_count, max_length, true)
 		
-	var s := Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+	var s := Rand.entity_from_non_relative_distribution(randf(), initial, "") as String
 	var result := s
 	var current_word_length := s.length()
 	var terminate := false
@@ -107,15 +107,15 @@ func generate(max_word_length: int, word_count: int = 1, max_length: int = (max_
 			for key: String in (transitions[s] as Dictionary):
 				if key[key.length() - 1] == ".":
 					terminal_transitions[key] = transitions[s][key]
-			next = Population.random_entity_from_distribution(randf(), terminal_transitions, "") as String
+			next = Rand.entity_from_distribution(randf(), terminal_transitions, "") as String
 		else:
-			next = Population.random_entity_from_non_relative_distribution(randf(), transitions[s] as Dictionary, "") as String
+			next = Rand.entity_from_non_relative_distribution(randf(), transitions[s] as Dictionary, "") as String
 			
 		var last_char := ""
 		if next.length() <= 0:
 			if current_word_length <= 0:
 				terminate = false
-				s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+				s = Rand.entity_from_non_relative_distribution(randf(), initial, "") as String
 				continue
 			else:
 				goto_next_word = true
@@ -125,7 +125,7 @@ func generate(max_word_length: int, word_count: int = 1, max_length: int = (max_
 			if last_char == ".":
 				if current_word_length <= 0:
 					terminate = false
-					s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+					s = Rand.entity_from_non_relative_distribution(randf(), initial, "") as String
 					continue
 				else:
 					goto_next_word = true
@@ -138,7 +138,7 @@ func generate(max_word_length: int, word_count: int = 1, max_length: int = (max_
 			terminate = false
 			word_count -= 1
 			result += " "
-			s = Population.random_entity_from_non_relative_distribution(randf(), initial, "") as String
+			s = Rand.entity_from_non_relative_distribution(randf(), initial, "") as String
 			current_word_length = 0
 			continue
 		

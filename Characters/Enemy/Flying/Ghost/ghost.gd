@@ -30,7 +30,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	const idle_r := 20.0
 	const idle_h := 10.0
 		
-	var a: Vector3 = Globals.rand_point_in_circle(idle_r, idle_h)
+	var a: Vector3 = Rand.point_in_circle(idle_r, idle_h)
 	var rotate_path := Pathway.new() \
 		.move_to(a) \
 		.arc_to(a.rotated(Vector3.UP, PI / 2), true, fit(4,1), Easing.linear) \

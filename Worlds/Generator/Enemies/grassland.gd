@@ -36,7 +36,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 		if exclusion.has(index):
 			index += 1
 			continue
-		var struct := Population.random_entity_from_distribution(rng.randf(), GRASSLAND_STRUCTURE) as GRASSLAND_STRUCTURES_KIND
+		var struct := Rand.entity_from_distribution(rng.randf(), GRASSLAND_STRUCTURE) as GRASSLAND_STRUCTURES_KIND
 		match struct:
 			GRASSLAND_STRUCTURES_KIND.NONE:
 				pass
@@ -64,7 +64,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 			GRASSLAND_STRUCTURES_KIND.HIVE:
 				var pos := area[index]
-				var r := Population.random_entity_from_distribution(rng.randf(), {0.05: 10, 0.15: 5, 0.8: 1}) as float
+				var r := Rand.entity_from_distribution(rng.randf(), {0.05: 10, 0.15: 5, 0.8: 1}) as float
 				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
 				var bumble_count := rng.randi_range(roundi(r * 1), roundi(r * 2))
 				var art := Artifact.new("", Artifact.Option.make_effect(Artifact.Effect.BOOST_PERCENTAGE, Artifact.Element.FIRE, 2, Artifact.Pattern.TRIANGLE))
@@ -81,12 +81,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 				var spawner := ItemSpawner.artifact_spawner(rng, pop, pop.set_world_ground(state, pos), art)
 				for i in bee_count:
-					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
 					if p != null:
 						result.append(p)
 						spawner.nodes_to_be_cleared[p] = true
 				for i in bumble_count:
-					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
 					if p != null:
 						result.append(p)
 						spawner.nodes_to_be_cleared[p] = true
@@ -94,11 +94,11 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 			GRASSLAND_STRUCTURES_KIND.SLIMY:
 				var pos := area[index]
 				for i in rng.randi_range(5, 15):
-					var rock := pop.spawn_foliage(World.Foliage.ROCK_EGG, state, pos + Globals.rand_point_in_circle_2d(spacing * 2.0, rng), spacing)
+					var rock := pop.spawn_foliage(World.Foliage.ROCK_EGG, state, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
 					if rock != null:
 						result.append(rock)
 				
-				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 2: 0.8}) as int
+				var r := Rand.entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 2: 0.8}) as int
 				var spike_count := rng.randi_range(1, r)
 				var path := Pathway.new().random_points_in_disc(1, 0, spacing / 2.0, 0, spike_count, Easing.linear, rng)
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)))
@@ -115,14 +115,14 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 								
 			GRASSLAND_STRUCTURES_KIND.FLOCK:
 				var pos := area[index]
-				var r := Population.random_entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
+				var r := Rand.entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
 				const circle_points = 3
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
 				for p in path.sample_points_xz(r * circle_points):
-					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
+					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
 					if entity != null:
 						result.append(entity)
@@ -132,30 +132,30 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if boss != null:
 					result.append(boss)
 				for i in mini_count:
-					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Rand.point_in_circle_2d(r * 4, rng), spacing)
 					if p != null:
 						result.append(p)
 						
 			GRASSLAND_STRUCTURES_KIND.PETS:
 				var pos := area[index]
-				var r := Population.random_entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 1: 0.8}) as int
+				var r := Rand.entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 1: 0.8}) as int
 				const circle_points = 3
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
 				for p in path.sample_points_xz(r * circle_points):
-					var kind := Population.random_entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
+					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)
 					if entity != null:
 						result.append(entity)
 					
 				var mini_count := rng.randi_range(1, r)
 				for i in mini_count:
-					var boss := pop.spawn_enemy(World.Enemy.RABBIT, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
+					var boss := pop.spawn_enemy(World.Enemy.RABBIT, state, pos + Rand.point_in_circle_2d(r * 4, rng), spacing)
 					if boss != null:
 						result.append(boss)
-					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Globals.rand_point_in_circle_2d(r * 4, rng), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Rand.point_in_circle_2d(r * 4, rng), spacing)
 					if p != null:
 						result.append(p)
 						 
@@ -250,10 +250,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					#var house_size := 0
 					#if rng.randf() < 0.7:
 						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, state, pos.x, pos.y, spacing)
-						#house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.4, 2: 0.05})
+						#house_size = Rand.entity_from_distribution(rng.randf(), {1: 0.4, 2: 0.05})
 					#else:
 						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, state, pos.x, pos.y, spacing)
-						#house_size = Population.random_entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.3, 3: 0.1, 4: 0.05})
+						#house_size = Rand.entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.3, 3: 0.1, 4: 0.05})
 					#if p != null:
 						#max_limit -= 1
 						#exclusion[j] = true

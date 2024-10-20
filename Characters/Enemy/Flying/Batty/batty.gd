@@ -26,10 +26,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	const idle_r := 20.0
 		
-	var a: Vector3 = Globals.rand_point_in_sphere(idle_r)
-	var b: Vector3 = Globals.rand_point_in_sphere(idle_r)
-	var c: Vector3 = Globals.rand_point_in_sphere(idle_r)
-	var d: Vector3 = Globals.rand_point_in_sphere(idle_r)
+	var a: Vector3 = Rand.point_in_sphere(idle_r)
+	var b: Vector3 = Rand.point_in_sphere(idle_r)
+	var c: Vector3 = Rand.point_in_sphere(idle_r)
+	var d: Vector3 = Rand.point_in_sphere(idle_r)
 	
 	var rotate_path := Pathway.new() \
 		.move_to(a) \

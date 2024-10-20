@@ -36,36 +36,6 @@ static func invf(v: float) -> float:
 		return 1.0 / 0.0000000001
 	else:
 		return 1.0 / v
-		
-static func rand_v3_abs(x: float, y: float, z: float, rng: RandomNumberGenerator = null) -> Vector3:
-	if rng == null:
-		return Vector3(x * randf(), y * randf(), z * randf())
-	else:
-		return Vector3(x * rng.randf(), y * rng.randf(), z * rng.randf())
-	
-static func rand_point_in_circle(r: float, h: float, rng: RandomNumberGenerator = null) -> Vector3:
-	var p: Vector3
-	if rng == null:
-		p = Vector3(randf() * 2.0 - 1.0, 0, randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
-	else:
-		p = Vector3(rng.randf() * 2.0 - 1.0, 0, rng.randf() * 2.0 - 1.0).normalized() * r + Vector3(0, h, 0)
-	return p 
-	
-static func rand_point_in_circle_2d(r: float, rng: RandomNumberGenerator = null) -> Vector2:
-	var p: Vector2
-	if rng == null:
-		p = Vector2(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
-	else:
-		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
-	return p
-	
-static func rand_point_in_sphere(r: float, rng: RandomNumberGenerator = null) -> Vector3:
-	var p: Vector3
-	if rng == null:
-		p = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r
-	else:
-		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
-	return p 
 	
 static func project_point_onto_sphere(point: Vector3, radius: float, center: Vector3 = Vector3.ZERO) -> Vector3:
 	var P := point - center

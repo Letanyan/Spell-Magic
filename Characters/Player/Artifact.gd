@@ -61,52 +61,52 @@ class Option:
 		Element.CRIT_RATE: 0.1, Element.CRIT_DMG: 0.1}, 
 		tier_range: Variant = Vector2i(-10, 10), 
 		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
-		var flip := Population.random_entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
-		var ef := Population.random_entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
-		var ev := Population.random_entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
+		var flip := Rand.entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
+		var ef := Rand.entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
+		var ev := Rand.entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
 		var el: Element
 		if el_prob.size() == 21:
 			if flip:
-				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+				el = Rand.entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 			else:
 				el_prob = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
 				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.ANY: 0.1}
-				el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+				el = Rand.entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 		else:
-			el = Population.random_entity_from_distribution(randf(), el_prob, Element.ANY) as Element
+			el = Rand.entity_from_distribution(randf(), el_prob, Element.ANY) as Element
 		var tier := 0
 		if tier_range is Vector2i:
 			tier = randi_range((tier_range as Vector2i).x, (tier_range as Vector2i).y)
 		elif tier_range is Dictionary:
-			tier = Population.random_entity_from_distribution(randf(), tier_range as Dictionary) as int
+			tier = Rand.entity_from_distribution(randf(), tier_range as Dictionary) as int
 		var am: int
 		if not flip: # is event
 			am = event_amount_at_tier(absi(tier), ev, el)
 		else:
 			am = effect_amount_at_tier(tier, ef, el)
-		var pt := Population.random_entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
+		var pt := Rand.entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
 	
 	static func make_random_event(ev_prob: Dictionary, el_prob: Dictionary, tier_range: Variant, pt_prob: Dictionary) -> Option:
-		var ev := Population.random_entity_from_distribution(randf(), ev_prob) as Event
-		var el := Population.random_entity_from_distribution(randf(), el_prob) as Element
-		var pt := Population.random_entity_from_distribution(randf(), pt_prob) as Pattern
+		var ev := Rand.entity_from_distribution(randf(), ev_prob) as Event
+		var el := Rand.entity_from_distribution(randf(), el_prob) as Element
+		var pt := Rand.entity_from_distribution(randf(), pt_prob) as Pattern
 		var ti := 0
 		if tier_range is Vector2i:
 			ti = randi_range((tier_range as Vector2i).x, (tier_range as Vector2i).y)
 		elif tier_range is Dictionary:
-			ti = Population.random_entity_from_distribution(randf(), tier_range as Dictionary) as int
+			ti = Rand.entity_from_distribution(randf(), tier_range as Dictionary) as int
 		return Option.new(Effect.NONE, ev, el, ti, pt)
 		
 	static func make_random_effect(ef_prob: Dictionary, el_prob: Dictionary, tier_range: Variant, pt_prob: Dictionary) -> Option:
-		var ef := Population.random_entity_from_distribution(randf(), ef_prob) as Effect
-		var el := Population.random_entity_from_distribution(randf(), el_prob) as Element
-		var pt := Population.random_entity_from_distribution(randf(), pt_prob) as Pattern
+		var ef := Rand.entity_from_distribution(randf(), ef_prob) as Effect
+		var el := Rand.entity_from_distribution(randf(), el_prob) as Element
+		var pt := Rand.entity_from_distribution(randf(), pt_prob) as Pattern
 		var ti := 0
 		if tier_range is Vector2i:
 			ti = randi_range((tier_range as Vector2i).x, (tier_range as Vector2i).y)
 		elif tier_range is Dictionary:
-			ti = Population.random_entity_from_distribution(randf(), tier_range as Dictionary) as int
+			ti = Rand.entity_from_distribution(randf(), tier_range as Dictionary) as int
 		return Option.new(ef, Event.NONE, el, ti, pt)
 	
 	# tier between [1,10]

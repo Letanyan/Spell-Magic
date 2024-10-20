@@ -27,13 +27,13 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	const x_size = 10
 	const y_size = 10
 	const z_size = 10
-	var start_point := Globals.rand_v3_abs(x_size, y_size, z_size)
+	var start_point := Rand.v3_abs(x_size, y_size, z_size)
 	var cube_path := Pathway.new() \
 		.move_to(start_point) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(8,3), Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(3,1), Easing.in_out_sine) \
-		.line_to(Globals.rand_v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(8,3), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(3,1), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
 		.line_to(start_point, 3, Easing.in_out_sine)
 	
 	attack_path = PathStyle.new(randi()).follow_path(cube_path).align_y_to_air().look_at_player() \

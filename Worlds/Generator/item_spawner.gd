@@ -109,7 +109,7 @@ func drop_coin_items(world: Node3D) -> bool:
 	if not coins.is_empty():
 		for coin in coins:
 			var item := population.entity_manager.get_world_item(World.Item.COIN) as CoinDisc
-			item.position = position + Globals.rand_point_in_circle(1.0 + log(coins.size()), 0)
+			item.position = position + Rand.point_in_circle(1.0 + log(coins.size()), 0)
 			item.amount = coin
 			world.add_child(item)
 		return true

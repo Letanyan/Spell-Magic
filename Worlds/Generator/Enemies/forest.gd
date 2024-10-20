@@ -32,7 +32,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 		area[j] = t
 	
 	while index < area.size() - 1:
-		var struct := Population.random_entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
+		var struct := Rand.entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
 				pass

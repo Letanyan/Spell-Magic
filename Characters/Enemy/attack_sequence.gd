@@ -140,4 +140,4 @@ class ASCondition:
 		condition = cond
 		
 	static func probability_jump(map: Dictionary) -> ASCondition:
-		return ASCondition.new(func() -> String: return Population.random_entity_from_distribution(randf(), map, ""))
+		return ASCondition.new(func() -> String: return Rand.entity_from_distribution(randf(), map, ""))
