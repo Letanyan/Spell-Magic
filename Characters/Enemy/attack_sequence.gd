@@ -120,6 +120,7 @@ func update(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref) -> 
 			if new_index > -1:
 				index = new_index
 			else:
+				push_error("No index found for condition at index " + str(index) + ". Action: " + str(current_action))
 				index += 1
 			did_update_index = true
 			is_done.data = true
@@ -141,3 +142,6 @@ class ASCondition:
 		
 	static func probability_jump(map: Dictionary) -> ASCondition:
 		return ASCondition.new(func() -> String: return Rand.entity_from_distribution(randf(), map, ""))
+		
+	static func jump(lbl: String) -> ASCondition:
+		return ASCondition.new(func() -> String: return lbl)

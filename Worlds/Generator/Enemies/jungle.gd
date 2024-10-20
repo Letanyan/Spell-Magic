@@ -113,18 +113,40 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						platform.position.y = h.y + Navigator.get_world_height(state, center.x, center.y)
 						var caster_y := platform.position.y + platform.bounds.y + pop.player.bounds.y * 0.5
 						platform.caster_target_position = Vec3.xz(center) + Vec3.y(caster_y)
+						
 						var arc := GlobalData.magic_book.copy_spell("arc")
-						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 5, 0, 0.5, 8, 0, 0, 0)
-						var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(10, [1], 1))
+						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 5, 0, 0.5, 8, 0, 0, 30)
+						var arc_pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(10, [1], 1))
+						
+						var linear := GlobalData.magic_book.copy_spell("linear-arc")
+						linear.configure({"R": "pi", "s": "10", "d": str(platform_scale * 0.5)}, Spell.Element.AIR, 5, 0, 0.5, 8, 0, 0, 30)
+						var linear_pattern := AttackPatterns.new([linear], AttackPatterns.choose_from_distribution(10, [1], 1))
+						
 						platform.attack_sequence = AttackSequence.new(true, [
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, 0, 0))).align_y_to_origin(),
-							pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vector3(0, 0, platform_scale))).align_y_to_origin(),
-							pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, 0, 0))).align_y_to_origin(),
-							pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vector3(0, 0, -platform_scale))).align_y_to_origin(),
-							pattern,
+							AttackSequence.ASLabel.new("choose"),
+							AttackSequence.ASCondition.probability_jump({"arc": 5, "line": 2}),
+							
+							AttackSequence.ASLabel.new("arc"),
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4))).align_y_to_origin(),
+							arc_pattern,
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4 + PI / 2))).align_y_to_origin(),
+							arc_pattern,
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4 + PI))).align_y_to_origin(),
+							arc_pattern,
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4 + PI / 2 * 3))).align_y_to_origin(),
+							arc_pattern,
+							AttackSequence.ASCondition.jump("choose"),
+							
+							AttackSequence.ASLabel.new("line"),
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, 0))).align_y_to_origin(),
+							linear_pattern,
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 2))).align_y_to_origin(),
+							linear_pattern,
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 2 * 3))).align_y_to_origin(),
+							linear_pattern,
+							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI  * 2))).align_y_to_origin(),
+							linear_pattern,
+							AttackSequence.ASCondition.jump("choose"),
 						])
 							
 							

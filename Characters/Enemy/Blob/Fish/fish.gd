@@ -56,11 +56,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var jump_point_5 := jump_point_4.rotated(Vector3.UP, PI * (randf_range(-1.0, -0.25) if randf() < 0.5 else randf_range(0.25, 1.0) ))
 	var jump_circle_path := Pathway.new() \
 		.move_to(jump_point_1) \
-		.quad_to(jump_point_2, Globals.vec3_y(jump_point_1.lerp(jump_point_2, 0.5), 20), 3, Easing.out_expo) \
-		.quad_to(jump_point_3, Globals.vec3_y(jump_point_2.lerp(jump_point_3, 0.5), 20), 3, Easing.out_expo) \
-		.quad_to(jump_point_4, Globals.vec3_y(jump_point_3.lerp(jump_point_4, 0.5), 20), 3, Easing.out_expo) \
-		.quad_to(jump_point_5, Globals.vec3_y(jump_point_4.lerp(jump_point_5, 0.5), 20), 3, Easing.out_expo) \
-		.quad_to(jump_point_1, Globals.vec3_y(jump_point_5.lerp(jump_point_1, 0.5), 20), 3, Easing.out_expo)
+		.quad_to(jump_point_2, Vec3.xz_y(jump_point_1.lerp(jump_point_2, 0.5), 20), 3, Easing.out_expo) \
+		.quad_to(jump_point_3, Vec3.xz_y(jump_point_2.lerp(jump_point_3, 0.5), 20), 3, Easing.out_expo) \
+		.quad_to(jump_point_4, Vec3.xz_y(jump_point_3.lerp(jump_point_4, 0.5), 20), 3, Easing.out_expo) \
+		.quad_to(jump_point_5, Vec3.xz_y(jump_point_4.lerp(jump_point_5, 0.5), 20), 3, Easing.out_expo) \
+		.quad_to(jump_point_1, Vec3.xz_y(jump_point_5.lerp(jump_point_1, 0.5), 20), 3, Easing.out_expo)
 	attack_jump_circle_path = PathStyle.new().follow_path(jump_circle_path).align_y_to_ground_and_air() \
 		.set_player_body_rotation_as_vision_angle(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.NEVER) \
 		.look_at_player_xz()

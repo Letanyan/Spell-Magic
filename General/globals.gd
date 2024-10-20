@@ -73,9 +73,6 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 	var d := e.z
 	return Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), (s.y + e.y) / 2.0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
 	
-static func vec3_y(xz: Vector3, y: float) -> Vector3:
-	return Vector3(xz.x, y, xz.z)
-	
 static func encode_v3(v: Vector3) -> String:
 	return "(%.0f,%.0f,%0.f)" % [v.x, v.y, v.z]
 	
