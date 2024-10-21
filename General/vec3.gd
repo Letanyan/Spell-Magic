@@ -13,8 +13,8 @@ static func x(v: float) -> Vector3: return Vector3(v, 0, 0)
 static func y(v: float) -> Vector3: return Vector3(0, v, 0)
 static func z(v: float) -> Vector3: return Vector3(0, 0, v)
 
-static func xz_y(xz: Vector3, y: float) -> Vector3:
-	return Vector3(xz.x, y, xz.z)
+static func xz_y(vxz: Vector3, vy: float) -> Vector3:
+	return Vector3(vxz.x, vy, vxz.z)
 
 static func polar(radius: float, angle: float, height: float = 0.0) -> Vector3:
 	return Vector3(radius, 0, 0).rotated(Vector3.UP, angle) + Vec3.y(height)

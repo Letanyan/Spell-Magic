@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=35 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -14,9 +14,30 @@
 [ext_resource type="Texture2D" uid="uid://ckh44temenbma" path="res://GUI/Images/duplicate.svg" id="10_ne1rx"]
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
 [ext_resource type="Texture2D" uid="uid://5kr3ouhyf7f6" path="res://GUI/Images/sphere.svg" id="12_g3iwv"]
+[ext_resource type="Texture2D" uid="uid://qeny6kl34ssf" path="res://GUI/Images/horizontal-flip.svg" id="45_5l252"]
+[ext_resource type="Texture2D" uid="uid://j1tb85tfr0iu" path="res://GUI/Images/vertical-flip.svg" id="46_m27cl"]
+[ext_resource type="Texture2D" uid="uid://dbjjasa34u3gb" path="res://GUI/Images/clockwise-rotation.svg" id="47_n6fxk"]
+[ext_resource type="Texture2D" uid="uid://bx3vpmt8at58e" path="res://GUI/Images/anticlockwise-rotation.svg" id="48_o76hh"]
+[ext_resource type="Texture2D" uid="uid://brlfh6w1mm1pl" path="res://GUI/Images/minus.svg" id="49_03f7l"]
+[ext_resource type="Texture2D" uid="uid://kbr8jyfogxvl" path="res://GUI/Images/plus.svg" id="50_scaxk"]
+[ext_resource type="Texture2D" uid="uid://dlbvuvut1hjj8" path="res://GUI/Images/Spell Preview/positions/pos1.svg" id="51_s13f6"]
+[ext_resource type="Texture2D" uid="uid://b16fjxobv66ae" path="res://GUI/Images/Spell Preview/positions/pos2.svg" id="52_upqjq"]
+[ext_resource type="Texture2D" uid="uid://ca2mt8ylgm84" path="res://GUI/Images/Spell Preview/positions/pos3.svg" id="53_tpdbe"]
+[ext_resource type="Texture2D" uid="uid://cvrred3pl2r6r" path="res://GUI/Images/Spell Preview/positions/pos4.svg" id="54_kiext"]
+[ext_resource type="Texture2D" uid="uid://ccprmgfl8lnb8" path="res://GUI/Images/Spell Preview/positions/pos5.svg" id="55_b01d0"]
+[ext_resource type="Texture2D" uid="uid://cnb1eygh6moc8" path="res://GUI/Images/Spell Preview/positions/pos6.svg" id="56_52wbm"]
+[ext_resource type="Texture2D" uid="uid://2jw3xhpjvpcm" path="res://GUI/Images/Spell Preview/positions/pos7.svg" id="57_osbru"]
+[ext_resource type="Texture2D" uid="uid://bx4cihijp8ik2" path="res://GUI/Images/Spell Preview/positions/pos8.svg" id="58_51mrn"]
+[ext_resource type="Texture2D" uid="uid://c47q51obdwfv5" path="res://GUI/Images/Spell Preview/positions/pos9.svg" id="59_wkhj1"]
+[ext_resource type="Texture2D" uid="uid://don243x7nndwe" path="res://GUI/Images/Spell Preview/positions/pos10.svg" id="60_rbjei"]
+[ext_resource type="Texture2D" uid="uid://csh82j663nqac" path="res://GUI/Images/Spell Preview/positions/pos11.svg" id="61_qe4fs"]
+[ext_resource type="Texture2D" uid="uid://cnvrxvnkic2d4" path="res://GUI/Images/Spell Preview/positions/pos12.svg" id="62_gl3h1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
 font_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_2tlsy"]
+font_size = 21
 
 [node name="MagicPage" type="Control"]
 layout_mode = 3
@@ -41,6 +62,10 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 40.0
 offset_bottom = 40.0
+focus_neighbor_right = NodePath("../name_edit")
+focus_neighbor_bottom = NodePath("../x_edit")
+focus_next = NodePath("../x_edit")
+focus_previous = NodePath("../Delete")
 toggle_mode = true
 
 [node name="name_edit" type="LineEdit" parent="container"]
@@ -51,10 +76,11 @@ offset_top = 8.0
 offset_right = -328.0
 offset_bottom = 40.0
 size_flags_vertical = 4
+focus_neighbor_left = NodePath("../preview_image")
 focus_neighbor_right = NodePath("../element_combo")
 focus_neighbor_bottom = NodePath("../x_edit")
 focus_next = NodePath("../element_combo")
-focus_previous = NodePath("../Delete")
+focus_previous = NodePath("../preview_image")
 placeholder_text = "Spell Name"
 
 [node name="element_combo" type="OptionButton" parent="container"]
@@ -623,6 +649,760 @@ offset_bottom = 280.0
 grow_horizontal = 2
 placeholder_text = "value"
 
+[node name="preview_selector" type="Panel" parent="container"]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 48.0
+offset_right = 256.0
+offset_bottom = 424.0
+
+[node name="title" type="Label" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 248.0
+offset_bottom = 40.0
+text = "Thumbnail"
+label_settings = SubResource("LabelSettings_2tlsy")
+vertical_alignment = 1
+
+[node name="next_thumbnail" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 8.0
+offset_right = 242.0
+offset_bottom = 40.0
+focus_neighbor_left = NodePath("../delete_preview")
+focus_neighbor_top = NodePath("../../preview_image")
+focus_neighbor_right = NodePath("../line1")
+focus_neighbor_bottom = NodePath("../line1")
+focus_next = NodePath("../line1")
+focus_previous = NodePath("../delete_preview")
+text = ">"
+
+[node name="prev_thumbnail" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 144.0
+offset_top = 8.0
+offset_right = 168.0
+offset_bottom = 40.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../../preview_image")
+focus_neighbor_right = NodePath("../delete_preview")
+focus_neighbor_bottom = NodePath("../line1")
+focus_next = NodePath("../delete_preview")
+focus_previous = NodePath("../../preview_image")
+text = "<"
+
+[node name="delete_preview" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 8.0
+offset_right = 208.0
+offset_bottom = 40.0
+tooltip_text = "Delete Thumbnail Component"
+focus_neighbor_left = NodePath("../prev_thumbnail")
+focus_neighbor_top = NodePath("../../preview_image")
+focus_neighbor_right = NodePath("../next_thumbnail")
+focus_neighbor_bottom = NodePath("../line1")
+focus_next = NodePath("../next_thumbnail")
+focus_previous = NodePath("../prev_thumbnail")
+icon = ExtResource("2_ap1iy")
+
+[node name="line1" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 48.0
+offset_right = 40.0
+offset_bottom = 80.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../prev_thumbnail")
+focus_neighbor_right = NodePath("../line2")
+focus_neighbor_bottom = NodePath("../bomb1")
+focus_next = NodePath("../line2")
+focus_previous = NodePath("../next_thumbnail")
+toggle_mode = true
+
+[node name="line2" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 48.0
+offset_right = 80.0
+offset_bottom = 80.0
+focus_neighbor_left = NodePath("../line1")
+focus_neighbor_top = NodePath("../prev_thumbnail")
+focus_neighbor_right = NodePath("../line3")
+focus_neighbor_bottom = NodePath("../bomb2")
+focus_next = NodePath("../line3")
+focus_previous = NodePath("../line1")
+toggle_mode = true
+
+[node name="line3" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 48.0
+offset_right = 120.0
+offset_bottom = 80.0
+focus_neighbor_left = NodePath("../line2")
+focus_neighbor_top = NodePath("../prev_thumbnail")
+focus_neighbor_right = NodePath("../line4")
+focus_neighbor_bottom = NodePath("../bomb3")
+focus_next = NodePath("../line4")
+focus_previous = NodePath("../line2")
+toggle_mode = true
+
+[node name="line4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 48.0
+offset_right = 160.0
+offset_bottom = 80.0
+focus_neighbor_left = NodePath("../line3")
+focus_neighbor_top = NodePath("../prev_thumbnail")
+focus_neighbor_right = NodePath("../line5")
+focus_neighbor_bottom = NodePath("../bomb4")
+focus_next = NodePath("../line5")
+focus_previous = NodePath("../line3")
+toggle_mode = true
+
+[node name="line5" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 48.0
+offset_right = 200.0
+offset_bottom = 80.0
+focus_neighbor_left = NodePath("../line4")
+focus_neighbor_top = NodePath("../delete_preview")
+focus_neighbor_right = NodePath("../line6")
+focus_neighbor_bottom = NodePath("../bomb5")
+focus_next = NodePath("../line6")
+focus_previous = NodePath("../line4")
+toggle_mode = true
+
+[node name="line6" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 48.0
+offset_right = 240.0
+offset_bottom = 80.0
+focus_neighbor_left = NodePath("../line5")
+focus_neighbor_top = NodePath("../next_thumbnail")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../bomb6")
+focus_next = NodePath("../bomb1")
+focus_previous = NodePath("../line5")
+toggle_mode = true
+
+[node name="bomb1" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 88.0
+offset_right = 40.0
+offset_bottom = 120.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../line1")
+focus_neighbor_right = NodePath("../bomb2")
+focus_neighbor_bottom = NodePath("../circle1")
+focus_next = NodePath("../bomb2")
+focus_previous = NodePath("../line6")
+toggle_mode = true
+
+[node name="bomb2" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 88.0
+offset_right = 80.0
+offset_bottom = 120.0
+focus_neighbor_left = NodePath("../bomb1")
+focus_neighbor_top = NodePath("../line2")
+focus_neighbor_right = NodePath("../bomb3")
+focus_neighbor_bottom = NodePath("../circle2")
+focus_next = NodePath("../bomb3")
+focus_previous = NodePath("../bomb1")
+toggle_mode = true
+
+[node name="bomb3" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 88.0
+offset_right = 120.0
+offset_bottom = 120.0
+focus_neighbor_left = NodePath("../bomb2")
+focus_neighbor_top = NodePath("../line3")
+focus_neighbor_right = NodePath("../bomb4")
+focus_neighbor_bottom = NodePath("../circle3")
+focus_next = NodePath("../bomb4")
+focus_previous = NodePath("../bomb2")
+toggle_mode = true
+
+[node name="bomb4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 88.0
+offset_right = 160.0
+offset_bottom = 120.0
+focus_neighbor_left = NodePath("../bomb3")
+focus_neighbor_top = NodePath("../line4")
+focus_neighbor_right = NodePath("../bomb5")
+focus_neighbor_bottom = NodePath("../circle4")
+focus_next = NodePath("../bomb5")
+focus_previous = NodePath("../bomb3")
+toggle_mode = true
+
+[node name="bomb5" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 88.0
+offset_right = 200.0
+offset_bottom = 120.0
+focus_neighbor_left = NodePath("../bomb4")
+focus_neighbor_top = NodePath("../line5")
+focus_neighbor_right = NodePath("../bomb6")
+focus_neighbor_bottom = NodePath("../circle5")
+focus_next = NodePath("../bomb6")
+focus_previous = NodePath("../bomb4")
+toggle_mode = true
+
+[node name="bomb6" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 88.0
+offset_right = 240.0
+offset_bottom = 120.0
+focus_neighbor_left = NodePath("../bomb5")
+focus_neighbor_top = NodePath("../line6")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../circle6")
+focus_next = NodePath("../outward1")
+focus_previous = NodePath("../bomb5")
+toggle_mode = true
+
+[node name="circle1" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 128.0
+offset_right = 40.0
+offset_bottom = 160.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../bomb1")
+focus_neighbor_right = NodePath("../circle2")
+focus_neighbor_bottom = NodePath("../outward1")
+focus_next = NodePath("../circle2")
+focus_previous = NodePath("../bomb6")
+toggle_mode = true
+
+[node name="circle2" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 128.0
+offset_right = 80.0
+offset_bottom = 160.0
+focus_neighbor_left = NodePath("../circle1")
+focus_neighbor_top = NodePath("../bomb2")
+focus_neighbor_right = NodePath("../circle3")
+focus_neighbor_bottom = NodePath("../outward2")
+focus_next = NodePath("../circle3")
+focus_previous = NodePath("../circle1")
+toggle_mode = true
+
+[node name="circle3" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 128.0
+offset_right = 120.0
+offset_bottom = 160.0
+focus_neighbor_left = NodePath("../circle2")
+focus_neighbor_top = NodePath("../bomb3")
+focus_neighbor_right = NodePath("../circle4")
+focus_neighbor_bottom = NodePath("../outward3")
+focus_next = NodePath("../circle4")
+focus_previous = NodePath("../circle2")
+toggle_mode = true
+
+[node name="circle4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 128.0
+offset_right = 160.0
+offset_bottom = 160.0
+focus_neighbor_left = NodePath("../circle3")
+focus_neighbor_top = NodePath("../bomb4")
+focus_neighbor_right = NodePath("../circle5")
+focus_neighbor_bottom = NodePath("../outward4")
+focus_next = NodePath("../circle5")
+focus_previous = NodePath("../circle3")
+toggle_mode = true
+
+[node name="circle5" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 128.0
+offset_right = 200.0
+offset_bottom = 160.0
+focus_neighbor_left = NodePath("../circle4")
+focus_neighbor_top = NodePath("../bomb5")
+focus_neighbor_right = NodePath("../circle6")
+focus_neighbor_bottom = NodePath("../outward5")
+focus_next = NodePath("../circle6")
+focus_previous = NodePath("../circle4")
+toggle_mode = true
+
+[node name="circle6" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 128.0
+offset_right = 240.0
+offset_bottom = 160.0
+focus_neighbor_left = NodePath("../circle5")
+focus_neighbor_top = NodePath("../bomb6")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../outward6")
+focus_next = NodePath("../outward1")
+focus_previous = NodePath("../circle5")
+toggle_mode = true
+
+[node name="outward1" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 168.0
+offset_right = 40.0
+offset_bottom = 200.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../circle1")
+focus_neighbor_right = NodePath("../outward2")
+focus_neighbor_bottom = NodePath("../inward1")
+focus_next = NodePath("../outward2")
+focus_previous = NodePath("../circle6")
+toggle_mode = true
+
+[node name="outward2" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 168.0
+offset_right = 80.0
+offset_bottom = 200.0
+focus_neighbor_left = NodePath("../outward1")
+focus_neighbor_top = NodePath("../circle2")
+focus_neighbor_right = NodePath("../outward3")
+focus_neighbor_bottom = NodePath("../inward2")
+focus_next = NodePath("../outward3")
+focus_previous = NodePath("../outward1")
+toggle_mode = true
+
+[node name="outward3" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 168.0
+offset_right = 120.0
+offset_bottom = 200.0
+focus_neighbor_left = NodePath("../outward2")
+focus_neighbor_top = NodePath("../circle3")
+focus_neighbor_right = NodePath("../outward4")
+focus_neighbor_bottom = NodePath("../inward3")
+focus_next = NodePath("../outward4")
+focus_previous = NodePath("../outward2")
+toggle_mode = true
+
+[node name="outward4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 168.0
+offset_right = 160.0
+offset_bottom = 200.0
+focus_neighbor_left = NodePath("../outward3")
+focus_neighbor_top = NodePath("../circle4")
+focus_neighbor_right = NodePath("../outward5")
+focus_neighbor_bottom = NodePath("../inward4")
+focus_next = NodePath("../outward5")
+focus_previous = NodePath("../outward3")
+toggle_mode = true
+
+[node name="outward5" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 168.0
+offset_right = 200.0
+offset_bottom = 200.0
+focus_neighbor_left = NodePath("../outward4")
+focus_neighbor_top = NodePath("../circle5")
+focus_neighbor_right = NodePath("../outward6")
+focus_neighbor_bottom = NodePath("../inward5")
+focus_next = NodePath("../outward6")
+focus_previous = NodePath("../outward4")
+toggle_mode = true
+
+[node name="outward6" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 168.0
+offset_right = 240.0
+offset_bottom = 200.0
+focus_neighbor_left = NodePath("../outward5")
+focus_neighbor_top = NodePath("../circle6")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../inward6")
+focus_next = NodePath("../inward1")
+focus_previous = NodePath("../outward5")
+toggle_mode = true
+
+[node name="inward1" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 208.0
+offset_right = 40.0
+offset_bottom = 240.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../outward1")
+focus_neighbor_right = NodePath("../inward2")
+focus_neighbor_bottom = NodePath("../flip_h")
+focus_next = NodePath("../inward2")
+focus_previous = NodePath("../outward6")
+toggle_mode = true
+
+[node name="inward2" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 208.0
+offset_right = 80.0
+offset_bottom = 240.0
+focus_neighbor_left = NodePath("../inward1")
+focus_neighbor_top = NodePath("../outward2")
+focus_neighbor_right = NodePath("../inward3")
+focus_neighbor_bottom = NodePath("../flip_v")
+focus_next = NodePath("../inward3")
+focus_previous = NodePath("../inward1")
+toggle_mode = true
+
+[node name="inward3" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 208.0
+offset_right = 120.0
+offset_bottom = 240.0
+focus_neighbor_left = NodePath("../inward2")
+focus_neighbor_top = NodePath("../outward3")
+focus_neighbor_right = NodePath("../inward4")
+focus_neighbor_bottom = NodePath("../rotate_cw")
+focus_next = NodePath("../inward4")
+focus_previous = NodePath("../inward2")
+toggle_mode = true
+
+[node name="inward4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 208.0
+offset_right = 160.0
+offset_bottom = 240.0
+focus_neighbor_left = NodePath("../inward3")
+focus_neighbor_top = NodePath("../outward4")
+focus_neighbor_right = NodePath("../inward5")
+focus_neighbor_bottom = NodePath("../rotate_ccw")
+focus_next = NodePath("../inward5")
+focus_previous = NodePath("../inward3")
+toggle_mode = true
+
+[node name="inward5" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 208.0
+offset_right = 200.0
+offset_bottom = 240.0
+focus_neighbor_left = NodePath("../inward4")
+focus_neighbor_top = NodePath("../outward5")
+focus_neighbor_right = NodePath("../inward6")
+focus_neighbor_bottom = NodePath("../scale_down")
+focus_next = NodePath("../inward6")
+focus_previous = NodePath("../inward4")
+toggle_mode = true
+
+[node name="inward6" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 208.0
+offset_right = 240.0
+offset_bottom = 240.0
+focus_neighbor_left = NodePath("../inward5")
+focus_neighbor_top = NodePath("../outward6")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../scale_up")
+focus_next = NodePath("../flip_h")
+focus_previous = NodePath("../inward5")
+toggle_mode = true
+
+[node name="HSeparator" type="HSeparator" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 240.0
+offset_right = 240.0
+offset_bottom = 256.0
+
+[node name="flip_h" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 256.0
+offset_right = 40.0
+offset_bottom = 288.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../inward1")
+focus_neighbor_right = NodePath("../flip_v")
+focus_neighbor_bottom = NodePath("../pos_NW4")
+focus_next = NodePath("../flip_v")
+focus_previous = NodePath("../inward6")
+toggle_mode = true
+icon = ExtResource("45_5l252")
+
+[node name="flip_v" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 256.0
+offset_right = 80.0
+offset_bottom = 288.0
+focus_neighbor_left = NodePath("../flip_h")
+focus_neighbor_top = NodePath("../inward2")
+focus_neighbor_right = NodePath("../rotate_cw")
+focus_neighbor_bottom = NodePath("../pos_NE4")
+focus_next = NodePath("../rotate_cw")
+focus_previous = NodePath("../flip_h")
+toggle_mode = true
+icon = ExtResource("46_m27cl")
+
+[node name="rotate_cw" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 256.0
+offset_right = 120.0
+offset_bottom = 288.0
+focus_neighbor_left = NodePath("../flip_v")
+focus_neighbor_top = NodePath("../inward3")
+focus_neighbor_right = NodePath("../rotate_ccw")
+focus_neighbor_bottom = NodePath("../pos_SW4")
+focus_next = NodePath("../rotate_ccw")
+focus_previous = NodePath("../flip_v")
+icon = ExtResource("47_n6fxk")
+
+[node name="rotate_ccw" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 256.0
+offset_right = 160.0
+offset_bottom = 288.0
+focus_neighbor_left = NodePath("../rotate_cw")
+focus_neighbor_top = NodePath("../inward4")
+focus_neighbor_right = NodePath("../scale_down")
+focus_neighbor_bottom = NodePath("../pos_SE4")
+focus_next = NodePath("../scale_down")
+focus_previous = NodePath("../rotate_cw")
+icon = ExtResource("48_o76hh")
+
+[node name="scale_down" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 256.0
+offset_right = 200.0
+offset_bottom = 288.0
+focus_neighbor_left = NodePath("../rotate_ccw")
+focus_neighbor_top = NodePath("../inward5")
+focus_neighbor_right = NodePath("../scale_up")
+focus_neighbor_bottom = NodePath("../pos_NW")
+focus_next = NodePath("../scale_up")
+focus_previous = NodePath("../rotate_ccw")
+icon = ExtResource("49_03f7l")
+
+[node name="scale_up" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 256.0
+offset_right = 240.0
+offset_bottom = 288.0
+focus_neighbor_left = NodePath("../scale_down")
+focus_neighbor_top = NodePath("../inward6")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../pos_N")
+focus_next = NodePath("../pos_NW4")
+focus_previous = NodePath("../scale_down")
+icon = ExtResource("50_scaxk")
+
+[node name="pos_NW4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 296.0
+offset_right = 40.0
+offset_bottom = 328.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../flip_h")
+focus_neighbor_right = NodePath("../pos_NE4")
+focus_neighbor_bottom = NodePath("../pos_NE")
+focus_next = NodePath("../pos_NE4")
+focus_previous = NodePath("../scale_up")
+toggle_mode = true
+icon = ExtResource("51_s13f6")
+
+[node name="pos_NE4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 296.0
+offset_right = 80.0
+offset_bottom = 328.0
+focus_neighbor_left = NodePath("../pos_NW4")
+focus_neighbor_top = NodePath("../flip_v")
+focus_neighbor_right = NodePath("../pos_SW4")
+focus_neighbor_bottom = NodePath("../pos_W")
+focus_next = NodePath("../pos_SW4")
+focus_previous = NodePath("../pos_NW4")
+toggle_mode = true
+icon = ExtResource("52_upqjq")
+
+[node name="pos_SW4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 296.0
+offset_right = 120.0
+offset_bottom = 328.0
+focus_neighbor_left = NodePath("../pos_NE4")
+focus_neighbor_top = NodePath("../rotate_cw")
+focus_neighbor_right = NodePath("../pos_SE4")
+focus_neighbor_bottom = NodePath("../pos_E")
+focus_next = NodePath("../pos_SE4")
+focus_previous = NodePath("../pos_NE4")
+toggle_mode = true
+icon = ExtResource("53_tpdbe")
+
+[node name="pos_SE4" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 296.0
+offset_right = 160.0
+offset_bottom = 328.0
+focus_neighbor_left = NodePath("../pos_SW4")
+focus_neighbor_top = NodePath("../rotate_ccw")
+focus_neighbor_right = NodePath("../pos_NW")
+focus_neighbor_bottom = NodePath("../pos_SW")
+focus_next = NodePath("../pos_NW")
+focus_previous = NodePath("../pos_SW4")
+toggle_mode = true
+icon = ExtResource("54_kiext")
+
+[node name="pos_NW" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 296.0
+offset_right = 200.0
+offset_bottom = 328.0
+focus_neighbor_left = NodePath("../pos_SE4")
+focus_neighbor_top = NodePath("../scale_down")
+focus_neighbor_right = NodePath("../pos_N")
+focus_neighbor_bottom = NodePath("../pos_S")
+focus_next = NodePath("../pos_N")
+focus_previous = NodePath("../pos_SE4")
+toggle_mode = true
+icon = ExtResource("55_b01d0")
+
+[node name="pos_N" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 296.0
+offset_right = 240.0
+offset_bottom = 328.0
+focus_neighbor_left = NodePath("../pos_NW")
+focus_neighbor_top = NodePath("../scale_up")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../pos_SE")
+focus_next = NodePath("../pos_NE")
+focus_previous = NodePath("../pos_NW")
+toggle_mode = true
+icon = ExtResource("56_52wbm")
+
+[node name="pos_NE" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 336.0
+offset_right = 40.0
+offset_bottom = 368.0
+focus_neighbor_left = NodePath("../../preview_image")
+focus_neighbor_top = NodePath("../pos_NW4")
+focus_neighbor_right = NodePath("../pos_W")
+focus_neighbor_bottom = NodePath("../../preview_image")
+focus_next = NodePath("../pos_W")
+focus_previous = NodePath("../pos_N")
+toggle_mode = true
+icon = ExtResource("57_osbru")
+
+[node name="pos_W" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 336.0
+offset_right = 80.0
+offset_bottom = 368.0
+focus_neighbor_left = NodePath("../pos_NE")
+focus_neighbor_top = NodePath("../pos_NE4")
+focus_neighbor_right = NodePath("../pos_E")
+focus_neighbor_bottom = NodePath("../../preview_image")
+focus_next = NodePath("../pos_E")
+focus_previous = NodePath("../pos_NE")
+toggle_mode = true
+icon = ExtResource("58_51mrn")
+
+[node name="pos_E" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 336.0
+offset_right = 120.0
+offset_bottom = 368.0
+focus_neighbor_left = NodePath("../pos_W")
+focus_neighbor_top = NodePath("../pos_SW4")
+focus_neighbor_right = NodePath("../pos_SW")
+focus_neighbor_bottom = NodePath("../../preview_image")
+focus_next = NodePath("../pos_SW")
+focus_previous = NodePath("../pos_W")
+toggle_mode = true
+icon = ExtResource("59_wkhj1")
+
+[node name="pos_SW" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 336.0
+offset_right = 160.0
+offset_bottom = 368.0
+focus_neighbor_left = NodePath("../pos_E")
+focus_neighbor_top = NodePath("../pos_SE4")
+focus_neighbor_right = NodePath("../pos_S")
+focus_neighbor_bottom = NodePath("../../preview_image")
+focus_next = NodePath("../pos_S")
+focus_previous = NodePath("../pos_E")
+toggle_mode = true
+icon = ExtResource("60_rbjei")
+
+[node name="pos_S" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 336.0
+offset_right = 200.0
+offset_bottom = 368.0
+focus_neighbor_left = NodePath("../pos_SW")
+focus_neighbor_top = NodePath("../pos_NW")
+focus_neighbor_right = NodePath("../pos_SE")
+focus_neighbor_bottom = NodePath("../../preview_image")
+focus_next = NodePath("../pos_SE")
+focus_previous = NodePath("../pos_SW")
+toggle_mode = true
+icon = ExtResource("61_qe4fs")
+
+[node name="pos_SE" type="Button" parent="container/preview_selector"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 336.0
+offset_right = 240.0
+offset_bottom = 368.0
+focus_neighbor_left = NodePath("../pos_S")
+focus_neighbor_top = NodePath("../pos_N")
+focus_neighbor_right = NodePath("../../preview_image")
+focus_neighbor_bottom = NodePath("../../preview_image")
+focus_next = NodePath("../../preview_image")
+focus_previous = NodePath("../pos_S")
+toggle_mode = true
+icon = ExtResource("62_gl3h1")
+
 [connection signal="pressed" from="container/preview_image" to="." method="_on_preview_image_pressed"]
 [connection signal="text_changed" from="container/name_edit" to="." method="_on_name_edit_text_changed"]
 [connection signal="item_selected" from="container/element_combo" to="." method="_on_element_combo_selected"]
@@ -649,3 +1429,54 @@ placeholder_text = "value"
 [connection signal="pressed" from="container/Delete" to="." method="_on_delete_pressed"]
 [connection signal="text_changed" from="container/CR_edit" to="." method="_on_cr_text_changed"]
 [connection signal="text_changed" from="container/CD_edit" to="." method="_on_cd_text_changed"]
+[connection signal="pressed" from="container/preview_selector/next_thumbnail" to="." method="_on_next_thumbnail_pressed"]
+[connection signal="pressed" from="container/preview_selector/prev_thumbnail" to="." method="_on_prev_thumbnail_pressed"]
+[connection signal="pressed" from="container/preview_selector/delete_preview" to="." method="_on_delete_thumnail_component_pressed"]
+[connection signal="pressed" from="container/preview_selector/line1" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/line1"), "Line 1", 0]]
+[connection signal="pressed" from="container/preview_selector/line2" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/line2"), "Line 2", 1]]
+[connection signal="pressed" from="container/preview_selector/line3" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/line3"), "Line 3", 2]]
+[connection signal="pressed" from="container/preview_selector/line4" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/line4"), "Line 4", 3]]
+[connection signal="pressed" from="container/preview_selector/line5" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/line5"), "Line 5", 4]]
+[connection signal="pressed" from="container/preview_selector/line6" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/line6"), "Line 6", 5]]
+[connection signal="pressed" from="container/preview_selector/bomb1" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/bomb1"), "Bomb 1", 6]]
+[connection signal="pressed" from="container/preview_selector/bomb2" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/bomb2"), "Bomb 2", 7]]
+[connection signal="pressed" from="container/preview_selector/bomb3" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/bomb3"), "Bomb 3", 8]]
+[connection signal="pressed" from="container/preview_selector/bomb4" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/bomb4"), "Bomb 4", 9]]
+[connection signal="pressed" from="container/preview_selector/bomb5" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/bomb5"), "Bomb 5", 10]]
+[connection signal="pressed" from="container/preview_selector/bomb6" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/bomb6"), "Bomb 6", 11]]
+[connection signal="pressed" from="container/preview_selector/circle1" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/circle1"), "Circle 1", 12]]
+[connection signal="pressed" from="container/preview_selector/circle2" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/circle2"), "Circle 2", 13]]
+[connection signal="pressed" from="container/preview_selector/circle3" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/circle3"), "Circle 3", 14]]
+[connection signal="pressed" from="container/preview_selector/circle4" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/circle4"), "Circle 4", 15]]
+[connection signal="pressed" from="container/preview_selector/circle5" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/circle5"), "Circle 5", 16]]
+[connection signal="pressed" from="container/preview_selector/circle6" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/circle6"), "Circle 6", 17]]
+[connection signal="pressed" from="container/preview_selector/outward1" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/outward1"), "Outward 1", 18]]
+[connection signal="pressed" from="container/preview_selector/outward2" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/outward2"), "Outward 2", 19]]
+[connection signal="pressed" from="container/preview_selector/outward3" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/outward3"), "Outward 3", 20]]
+[connection signal="pressed" from="container/preview_selector/outward4" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/outward4"), "Outward 4", 21]]
+[connection signal="pressed" from="container/preview_selector/outward5" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/outward5"), "Outward 5", 22]]
+[connection signal="pressed" from="container/preview_selector/outward6" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/outward6"), "Outward 6", 23]]
+[connection signal="pressed" from="container/preview_selector/inward1" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/inward1"), "Inward 1", 24]]
+[connection signal="pressed" from="container/preview_selector/inward2" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/inward2"), "Inward 2", 25]]
+[connection signal="pressed" from="container/preview_selector/inward3" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/inward3"), "Inward 3", 26]]
+[connection signal="pressed" from="container/preview_selector/inward4" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/inward4"), "Inward 4", 27]]
+[connection signal="pressed" from="container/preview_selector/inward5" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/inward5"), "Inward 5", 28]]
+[connection signal="pressed" from="container/preview_selector/inward6" to="." method="_on_thumbnail_image_pressed" binds= [NodePath("container/preview_selector/inward6"), "Inward 6", 29]]
+[connection signal="pressed" from="container/preview_selector/flip_h" to="." method="_on_flip_h_pressed"]
+[connection signal="pressed" from="container/preview_selector/flip_v" to="." method="_on_flip_v_pressed"]
+[connection signal="pressed" from="container/preview_selector/rotate_cw" to="." method="_on_rotate_cw_pressed"]
+[connection signal="pressed" from="container/preview_selector/rotate_ccw" to="." method="_on_rotate_ccw_pressed"]
+[connection signal="pressed" from="container/preview_selector/scale_down" to="." method="_on_scale_down_pressed"]
+[connection signal="pressed" from="container/preview_selector/scale_up" to="." method="_on_scale_up_pressed"]
+[connection signal="pressed" from="container/preview_selector/pos_NW4" to="." method="_on_pos_pressed" binds= [0]]
+[connection signal="pressed" from="container/preview_selector/pos_NE4" to="." method="_on_pos_pressed" binds= [1]]
+[connection signal="pressed" from="container/preview_selector/pos_SW4" to="." method="_on_pos_pressed" binds= [2]]
+[connection signal="pressed" from="container/preview_selector/pos_SE4" to="." method="_on_pos_pressed" binds= [3]]
+[connection signal="pressed" from="container/preview_selector/pos_NW" to="." method="_on_pos_pressed" binds= [4]]
+[connection signal="pressed" from="container/preview_selector/pos_N" to="." method="_on_pos_pressed" binds= [5]]
+[connection signal="pressed" from="container/preview_selector/pos_NE" to="." method="_on_pos_pressed" binds= [6]]
+[connection signal="pressed" from="container/preview_selector/pos_W" to="." method="_on_pos_pressed" binds= [7]]
+[connection signal="pressed" from="container/preview_selector/pos_E" to="." method="_on_pos_pressed" binds= [8]]
+[connection signal="pressed" from="container/preview_selector/pos_SW" to="." method="_on_pos_pressed" binds= [9]]
+[connection signal="pressed" from="container/preview_selector/pos_S" to="." method="_on_pos_pressed" binds= [10]]
+[connection signal="pressed" from="container/preview_selector/pos_SE" to="." method="_on_pos_pressed" binds= [11]]

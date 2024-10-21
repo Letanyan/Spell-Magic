@@ -5,20 +5,19 @@ extends Control
 
 @onready var name_edit: LineEdit = $container/name_edit
 @onready var preview_image: Button = $container/preview_image
-var preview_selector: Panel
-var preview_selector_buttons: Array[Button] = []
-var preview_images: Array[Texture2D] = []
-var next_thumbnail: Button
-var prev_thumbnail: Button
-var delete_thumbnail: Button
-var flip_h_thumbnail: Button
-var flip_v_thumbnail: Button
-var rotate_cw_thumbnail: Button
-var rotate_ccw_thumbnail: Button
-var scale_up_thumbnail: Button
-var scale_down_thumbnail: Button
-var positions_thumbnail: Array[Button] = []
+var preview_selector_thumbnail_buttons: Array[Button] = []
+var preview_selector_position_buttons: Array[Button] = []
 var current_preview_index: int = 0
+@onready var preview_selector: Panel = $container/preview_selector
+@onready var next_thumbnail: Button = $container/preview_selector/next_thumbnail
+@onready var prev_thumbnail: Button = $container/preview_selector/prev_thumbnail
+@onready var delete_thumbnail: Button = $container/preview_selector/delete_preview
+@onready var flip_h_thumbnail: Button = $container/preview_selector/flip_h
+@onready var flip_v_thumbnail: Button = $container/preview_selector/flip_v
+@onready var rotate_cw_thumbnail: Button = $container/preview_selector/rotate_cw
+@onready var rotate_ccw_thumbnail: Button = $container/preview_selector/rotate_ccw
+@onready var scale_up_thumbnail: Button = $container/preview_selector/scale_up
+@onready var scale_down_thumbnail: Button = $container/preview_selector/scale_down
 
 @onready var x_edit: LineEdit = $container/x_edit
 @onready var y_edit: LineEdit = $container/y_edit
@@ -74,8 +73,36 @@ signal return_focus
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if preview_selector == null:
-		make_preview_selector()
+	preview_selector_thumbnail_buttons = [
+		$container/preview_selector/line1, $container/preview_selector/line2, $container/preview_selector/line3,
+		$container/preview_selector/line4, $container/preview_selector/line5, $container/preview_selector/line6,
+		$container/preview_selector/bomb1, $container/preview_selector/bomb2, $container/preview_selector/bomb3,
+		$container/preview_selector/bomb4, $container/preview_selector/bomb5, $container/preview_selector/bomb6,
+		$container/preview_selector/circle1, $container/preview_selector/circle2, $container/preview_selector/circle3,
+		$container/preview_selector/circle4, $container/preview_selector/circle5, $container/preview_selector/circle6,
+		$container/preview_selector/outward1, $container/preview_selector/outward2, $container/preview_selector/outward3,
+		$container/preview_selector/outward4, $container/preview_selector/outward5, $container/preview_selector/outward6,
+		$container/preview_selector/inward1, $container/preview_selector/inward2, $container/preview_selector/inward3,
+		$container/preview_selector/inward4, $container/preview_selector/inward5, $container/preview_selector/inward6,
+	]
+	preview_selector_position_buttons = [
+		$container/preview_selector/pos_NW4, $container/preview_selector/pos_NE4, $container/preview_selector/pos_SW4,
+		$container/preview_selector/pos_SE4, 
+		$container/preview_selector/pos_NW, $container/preview_selector/pos_N, $container/preview_selector/pos_NE,
+		$container/preview_selector/pos_W, $container/preview_selector/pos_E,
+		$container/preview_selector/pos_SW, $container/preview_selector/pos_S, $container/preview_selector/pos_SE
+	]
+	
+	var i := 0
+	for btn in preview_selector_thumbnail_buttons:
+		var img := Spell.preview_images[i]
+		var tex := TintedTexture.new()
+		tex.texture = load("res://GUI/Images/Spell Preview/[small] %s.svg" % img)
+		tex.stretch_mode = TextureRect.StretchMode.STRETCH_TILE
+		btn.icon = tex
+		i += 1
+		prints(btn, img)
+		
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -84,7 +111,7 @@ func _process(delta: float) -> void:
 func refresh_preview_thumbnails(spell: Spell) -> void:
 	var tint_color := Spell.color_from_element(spell.element)
 	preview_image.icon = spell.create_thumbnail(true, {})
-	for btn in preview_selector_buttons:
+	for btn in preview_selector_thumbnail_buttons:
 		btn.set_pressed_no_signal(false)
 		(btn.icon as TintedTexture).tint = tint_color
 		(btn.icon as TintedTexture).flip_horizontal = spell.preview_is_horizontal_flip(current_preview_index)
@@ -93,12 +120,12 @@ func refresh_preview_thumbnails(spell: Spell) -> void:
 		(btn.icon as TintedTexture).scale = spell.preview_scale(current_preview_index)
 		(btn.icon as TintedTexture).offset = spell.preview_offset(current_preview_index)
 		btn.queue_redraw()
-	preview_selector_buttons[spell.preview_image[current_preview_index]].set_pressed_no_signal(true)
+	preview_selector_thumbnail_buttons[spell.preview_image[current_preview_index]].set_pressed_no_signal(true)
 	
-	for btn in positions_thumbnail:
+	for btn in preview_selector_position_buttons:
 		btn.set_pressed_no_signal(false)
 	if spell.preview_offset_tag(current_preview_index) > 0:
-		positions_thumbnail[spell.preview_offset_tag(current_preview_index) - 1].set_pressed_no_signal(true)
+		preview_selector_position_buttons[spell.preview_offset_tag(current_preview_index) - 1].set_pressed_no_signal(true)
 		
 	preview_image.set_pressed_no_signal(false)
 	flip_h_thumbnail.set_pressed_no_signal(spell.preview_is_horizontal_flip(current_preview_index))
@@ -107,6 +134,13 @@ func refresh_preview_thumbnails(spell: Spell) -> void:
 	
 	prev_thumbnail.disabled = current_preview_index == 0
 	delete_thumbnail.disabled = spell.preview_image.size() <= 1
+	if current_preview_index < spell.preview_image.size() - 1:
+		next_thumbnail.text = ">"
+	elif spell.preview_image.size() < 4 and (current_preview_index == spell.preview_image.size() - 1):
+		next_thumbnail.text = "+"
+	else:
+		next_thumbnail.text = ">"
+		next_thumbnail.disabled = true
 	
 
 func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
@@ -670,279 +704,160 @@ func _on_duplicate_pressed() -> void:
 func hide_preview_selector() -> void:
 	preview_selector.hide()
 	preview_image.set_pressed_no_signal(false)
-
-func make_preview_selector() -> void:
-	const S = 32
-	const ROWS = 9
-	const COLS = 6
-	
-	preview_selector = Panel.new()
-	preview_selector.size = Vector2(S * COLS + 8 * (COLS + 1), S * ROWS + 8 * (ROWS + 1))
-	preview_selector.position = preview_image.position + Vector2(0, preview_image.size.y + 8)
-	var preview_title := Label.new()
-	preview_title.text = "Thumbnail"
-	preview_title.label_settings = LabelSettings.new()
-	preview_title.label_settings.font_size = 21
-	preview_title.position = Vector2(0, 8)
-	preview_title.size.x = preview_selector.size.x
-	preview_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	preview_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	preview_selector.add_child(preview_title)
-	
-	main_container.add_child(preview_selector)
-	
-	var c := 0
-	var r := 1
-	var i := 0
-	for img in Spell.preview_images:
-		var btn := Button.new()
-		btn.size = Vector2(S, S)
-		btn.position = Vector2(c * S + 8 * (c + 1), r * S + 8 * (r + 1))
-		var tex := TintedTexture.new()
-		var raw_tex := load("res://GUI/Images/Spell Preview/[small] %s.svg" % img) as CompressedTexture2D
-		tex.texture = raw_tex
-		tex.stretch_mode = TextureRect.StretchMode.STRETCH_TILE
-		preview_images.append(raw_tex)
-		preview_selector_buttons.append(btn)
-		btn.icon = tex
-		btn.toggle_mode = true
-		btn.pressed.connect(func() -> void:
-			if current_index < 0:
-				return
-			book.spells[current_index].preview_image[current_preview_index] = i
-			for ibtn: Button in preview_selector_buttons:
-				ibtn.set_pressed_no_signal(false)
-			btn.set_pressed_no_signal(true)
-			btn.focus_exited.connect(hide_preview_selector)
-			preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-			preview_image.button_pressed = false
-			preview_selector.hide()
-		)
-		preview_selector.add_child(btn)
-		i += 1
-		c += 1
-		if c >= COLS:
-			c = 0
-			r += 1
 			
-	var sep := HSeparator.new()
-	sep.size = Vector2(preview_selector.size.x - 4, 8)
-	sep.position = Vector2(2, S * 7 + S * 0.5)
-	preview_selector.add_child(sep)
-	
-	flip_h_thumbnail = Button.new()
-	flip_h_thumbnail.icon = load("res://GUI/Images/horizontal-flip.svg")
-	flip_h_thumbnail.size = Vector2(S, S)
-	flip_h_thumbnail.position = Vector2(S * 0 + 8 * 1, S * 6 + 8 * 7)
-	flip_h_thumbnail.toggle_mode = true
-	flip_h_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var s := book.spells[current_index]
-		var result := not s.preview_is_horizontal_flip(current_preview_index)
-		book.spells[current_index].set_preview_is_horizontal_flip(current_preview_index, result)
-		for ibtn: Button in preview_selector_buttons:
-			(ibtn.icon as TintedTexture).flip_horizontal = result
-			ibtn.queue_redraw()
-		flip_h_thumbnail.set_pressed_no_signal(result)
-		preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-		preview_image.queue_redraw()
-	)
-	
-	flip_v_thumbnail = Button.new()
-	flip_v_thumbnail.icon = load("res://GUI/Images/vertical-flip.svg")
-	flip_v_thumbnail.size = Vector2(S, S)
-	flip_v_thumbnail.position = Vector2(S * 1 + 8 * 2, S * 6 + 8 * 7)
-	flip_v_thumbnail.toggle_mode = true
-	flip_v_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var s := book.spells[current_index]
-		var result := not s.preview_is_vertical_flip(current_preview_index)
-		book.spells[current_index].set_preview_is_vertical_flip(current_preview_index, result)
-		for ibtn: Button in preview_selector_buttons:
-			(ibtn.icon as TintedTexture).flip_vertical = result
-			ibtn.queue_redraw()
-		flip_v_thumbnail.set_pressed_no_signal(result)
-		preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-		preview_image.queue_redraw()
-	)
-	
-	rotate_cw_thumbnail = Button.new()
-	rotate_cw_thumbnail.icon = load("res://GUI/Images/clockwise-rotation.svg")
-	rotate_cw_thumbnail.size = Vector2(S, S)
-	rotate_cw_thumbnail.position = Vector2(S * 2 + 8 * 3, S * 6 + 8 * 7)
-	rotate_cw_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var s := book.spells[current_index]
-		var result := s.preview_rotation_tag(current_preview_index) + 1
-		if result > 0b111: result = 0
-		book.spells[current_index].set_preview_rotation_tag(current_preview_index, result)
-		for ibtn: Button in preview_selector_buttons:
-			(ibtn.icon as TintedTexture).rotation = book.spells[current_index].preview_rotation(current_preview_index)
-			ibtn.queue_redraw()
-		preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-		preview_image.queue_redraw()
-	)
-	
-	rotate_ccw_thumbnail = Button.new()
-	rotate_ccw_thumbnail.icon = load("res://GUI/Images/anticlockwise-rotation.svg")
-	rotate_ccw_thumbnail.size = Vector2(S, S)
-	rotate_ccw_thumbnail.position = Vector2(S * 3 + 8 * 4, S * 6 + 8 * 7)
-	rotate_ccw_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var s := book.spells[current_index]
-		var result := s.preview_rotation_tag(current_preview_index) - 1
-		if result < 0: result = 0b111
-		book.spells[current_index].set_preview_rotation_tag(current_preview_index, result)
-		for ibtn: Button in preview_selector_buttons:
-			(ibtn.icon as TintedTexture).rotation = book.spells[current_index].preview_rotation(current_preview_index)
-			ibtn.queue_redraw()
-		preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-		preview_image.queue_redraw()
-	)
-	
-	scale_down_thumbnail = Button.new()
-	scale_down_thumbnail.icon = load("res://GUI/Images/minus.svg")
-	scale_down_thumbnail.size = Vector2(S, S)
-	scale_down_thumbnail.position = Vector2(S * 4 + 8 * 5, S * 6 + 8 * 7)
-	scale_down_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var s := book.spells[current_index]
-		var result := s.preview_scale_tag(current_preview_index) - 1
-		if result < 0: result = 0b111
-		book.spells[current_index].set_preview_scale_tag(current_preview_index, result)
-		for ibtn: Button in preview_selector_buttons:
-			(ibtn.icon as TintedTexture).scale = book.spells[current_index].preview_scale(current_preview_index)
-			ibtn.queue_redraw()
-		preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-		preview_image.queue_redraw()
-	)
-	
-	scale_up_thumbnail = Button.new()
-	scale_up_thumbnail.icon = load("res://GUI/Images/plus.svg")
-	scale_up_thumbnail.size = Vector2(S, S)
-	scale_up_thumbnail.position = Vector2(S * 5 + 8 * 6, S * 6 + 8 * 7)
-	scale_up_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var s := book.spells[current_index]
-		var result := s.preview_scale_tag(current_preview_index) + 1
-		if result > 0b111: result = 0
-		book.spells[current_index].set_preview_scale_tag(current_preview_index, result)
-		for ibtn: Button in preview_selector_buttons:
-			(ibtn.icon as TintedTexture).scale = book.spells[current_index].preview_scale(current_preview_index)
-			ibtn.queue_redraw()
-		preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-		preview_image.queue_redraw()
-	)
-	
-	r = 7
-	c = 0
-	for pidx in 12:
-		var btn := Button.new()
-		btn.size = Vector2(S, S)
-		btn.position = Vector2(S * c + 8 * (c + 1), S * r + 8 * (r + 1))
-		btn.toggle_mode = true
-		btn.icon = load("res://GUI/Images/Spell Preview/positions/pos%d.svg" % (pidx + 1))
-		btn.pressed.connect(func() -> void:
-			if current_index < 0:
-				return
-				
-			var is_pressed := not positions_thumbnail[pidx].button_pressed
-			if is_pressed:
-				book.spells[current_index].set_preview_offset_tag(current_preview_index, 0)
-			else:
-				book.spells[current_index].set_preview_offset_tag(current_preview_index, pidx + 1)
-				
-			for ibtn: Button in preview_selector_buttons:
-				(ibtn.icon as TintedTexture).offset = book.spells[current_index].preview_offset(current_preview_index)
-				ibtn.queue_redraw()
-				
-			for ibtn in positions_thumbnail: 
-				ibtn.set_pressed_no_signal(false)
-			positions_thumbnail[pidx].set_pressed_no_signal(not is_pressed)
-			preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
-			preview_image.queue_redraw()
-		)
-		positions_thumbnail.append(btn)
 		
-		c += 1
-		if c >= COLS:
-			c = 0
-			r += 1
-			
-	prev_thumbnail = Button.new()
-	prev_thumbnail.text = "<"
-	prev_thumbnail.size = Vector2(S * 0.5, S)
-	prev_thumbnail.position = Vector2(S * 4 + 8 * 5 + S, S * 0 + 8 * 1)
-	prev_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		if current_preview_index > 0:	
+func _on_delete_thumnail_component_pressed() -> void:
+	if current_index < 0:
+		return
+	var spell := book.spells[current_index]
+	
+	if spell.preview_image.size() > 1:
+		spell.preview_image.remove_at(current_preview_index)
+		spell.preview_flags.remove_at(current_preview_index)
+		if current_preview_index > 0:
 			current_preview_index -= 1
-			refresh_preview_thumbnails(book.spells[current_index])
-		if current_preview_index == 0:
-			prev_thumbnail.disabled = true
-	)
-	
-	next_thumbnail = Button.new()
-	next_thumbnail.text = ">"
-	next_thumbnail.size = Vector2(S * 0.5, S)
-	next_thumbnail.position = Vector2(S * 5 + 8 * 6 + S * 0.5 - 2, S * 0 + 8 * 1)
-	next_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var spell := book.spells[current_index]
-		if current_preview_index < spell.preview_image.size() - 1:	
-			current_preview_index += 1
-			prev_thumbnail.disabled = false
-			refresh_preview_thumbnails(book.spells[current_index])
-		elif spell.preview_image.size() < 4 and (current_preview_index == spell.preview_image.size() - 1):
-			current_preview_index += 1
-			prev_thumbnail.disabled = false
-			delete_thumbnail.disabled = false
-			book.spells[current_index].preview_image.append(0)
-			book.spells[current_index].preview_flags.append(0)
-			refresh_preview_thumbnails(book.spells[current_index])
-	)
-	
-	delete_thumbnail = Button.new()
-	delete_thumbnail.icon = load("res://GUI/Images/delete.svg")
-	delete_thumbnail.size = Vector2(S, S)
-	delete_thumbnail.position = Vector2(S * 0 + 8 * 1, S * 0 + 8 * 1)
-	delete_thumbnail.tooltip_text = "Delete Component"
-	delete_thumbnail.pressed.connect(func() -> void:
-		if current_index < 0:
-			return
-		var spell := book.spells[current_index]
+		refresh_preview_thumbnails(book.spells[current_index])
+		prev_thumbnail.disabled = current_preview_index == 0
+		delete_thumbnail.disabled = spell.preview_image.size() <= 1
+
+
+func _on_next_thumbnail_pressed() -> void:
+	if current_index < 0:
+		return
+	var spell := book.spells[current_index]
+	if current_preview_index < spell.preview_image.size() - 1:	
+		current_preview_index += 1
+		prev_thumbnail.disabled = false
+		refresh_preview_thumbnails(book.spells[current_index])
+	elif spell.preview_image.size() < 4 and (current_preview_index == spell.preview_image.size() - 1):
+		current_preview_index += 1
+		prev_thumbnail.disabled = false
+		delete_thumbnail.disabled = false
+		book.spells[current_index].preview_image.append(0)
+		book.spells[current_index].preview_flags.append(0)
+		refresh_preview_thumbnails(book.spells[current_index])
+
+
+func _on_prev_thumbnail_pressed() -> void:
+	if current_index < 0:
+		return
+	if current_preview_index > 0:	
+		current_preview_index -= 1
+		refresh_preview_thumbnails(book.spells[current_index])
+	if current_preview_index == 0:
+		prev_thumbnail.disabled = true
+
+
+func _on_flip_h_pressed() -> void:
+	if current_index < 0:
+		return
+	var s := book.spells[current_index]
+	var result := not s.preview_is_horizontal_flip(current_preview_index)
+	book.spells[current_index].set_preview_is_horizontal_flip(current_preview_index, result)
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).flip_horizontal = result
+		ibtn.queue_redraw()
+	flip_h_thumbnail.set_pressed_no_signal(result)
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+
+func _on_flip_v_pressed() -> void:
+	if current_index < 0:
+		return
+	var s := book.spells[current_index]
+	var result := not s.preview_is_vertical_flip(current_preview_index)
+	book.spells[current_index].set_preview_is_vertical_flip(current_preview_index, result)
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).flip_vertical = result
+		ibtn.queue_redraw()
+	flip_v_thumbnail.set_pressed_no_signal(result)
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+
+func _on_rotate_cw_pressed() -> void:
+	if current_index < 0:
+		return
+	var s := book.spells[current_index]
+	var result := s.preview_rotation_tag(current_preview_index) + 1
+	if result > 0b111: result = 0
+	book.spells[current_index].set_preview_rotation_tag(current_preview_index, result)
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).rotation = book.spells[current_index].preview_rotation(current_preview_index)
+		ibtn.queue_redraw()
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+
+func _on_rotate_ccw_pressed() -> void:
+	if current_index < 0:
+		return
+	var s := book.spells[current_index]
+	var result := s.preview_rotation_tag(current_preview_index) - 1
+	if result < 0: result = 0b111
+	book.spells[current_index].set_preview_rotation_tag(current_preview_index, result)
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).rotation = book.spells[current_index].preview_rotation(current_preview_index)
+		ibtn.queue_redraw()
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+
+func _on_scale_down_pressed() -> void:
+	if current_index < 0:
+		return
+	var s := book.spells[current_index]
+	var result := s.preview_scale_tag(current_preview_index) - 1
+	if result < 0: result = 0b111
+	book.spells[current_index].set_preview_scale_tag(current_preview_index, result)
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).scale = book.spells[current_index].preview_scale(current_preview_index)
+		ibtn.queue_redraw()
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+
+func _on_scale_up_pressed() -> void:
+	if current_index < 0:
+		return
+	var s := book.spells[current_index]
+	var result := s.preview_scale_tag(current_preview_index) + 1
+	if result > 0b111: result = 0
+	book.spells[current_index].set_preview_scale_tag(current_preview_index, result)
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).scale = book.spells[current_index].preview_scale(current_preview_index)
+		ibtn.queue_redraw()
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+
+func _on_pos_pressed(pidx: int) -> void:
+	if current_index < 0:
+		return
 		
-		if spell.preview_image.size() > 1:
-			spell.preview_image.remove_at(current_preview_index)
-			spell.preview_flags.remove_at(current_preview_index)
-			if current_preview_index > 0:
-				current_preview_index -= 1
-			refresh_preview_thumbnails(book.spells[current_index])
-			prev_thumbnail.disabled = current_preview_index == 0
-			delete_thumbnail.disabled = spell.preview_image.size() <= 1
-	)
-	
-	
-	preview_selector.add_child(flip_h_thumbnail)
-	preview_selector.add_child(flip_v_thumbnail)
-	preview_selector.add_child(rotate_cw_thumbnail)
-	preview_selector.add_child(rotate_ccw_thumbnail)
-	preview_selector.add_child(scale_down_thumbnail)
-	preview_selector.add_child(scale_up_thumbnail)
-	for btn in positions_thumbnail:
-		preview_selector.add_child(btn)
-	preview_selector.add_child(next_thumbnail)
-	preview_selector.add_child(prev_thumbnail)
-	preview_selector.add_child(delete_thumbnail)
-			
-	preview_selector.hide()
+	var is_pressed := not preview_selector_position_buttons[pidx].button_pressed
+	if is_pressed:
+		book.spells[current_index].set_preview_offset_tag(current_preview_index, 0)
+	else:
+		book.spells[current_index].set_preview_offset_tag(current_preview_index, pidx + 1)
 		
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		(ibtn.icon as TintedTexture).offset = book.spells[current_index].preview_offset(current_preview_index)
+		ibtn.queue_redraw()
 		
+	for ibtn in preview_selector_position_buttons: 
+		ibtn.set_pressed_no_signal(false)
+	preview_selector_position_buttons[pidx].set_pressed_no_signal(not is_pressed)
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.queue_redraw()
+
+func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
+	if current_index < 0:
+		return
+	book.spells[current_index].preview_image[current_preview_index] = i
+	for ibtn: Button in preview_selector_thumbnail_buttons:
+		ibtn.set_pressed_no_signal(false)
+	(get_node(btn) as Button).set_pressed_no_signal(true)
+	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.button_pressed = false

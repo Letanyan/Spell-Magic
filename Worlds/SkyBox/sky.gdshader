@@ -167,12 +167,12 @@ float sphere_intersect( vec3 view_dir, vec3 sphere_pos, float radius )
 void sky()
 {
 	float time = overwritten_time != 0.0 ? overwritten_time : TIME;
-	
-	vec3 day_top_color = mix(start_day_top_color, final_day_top_color, transition); 
-	vec3 day_bottom_color = mix(start_day_bottom_color, final_day_bottom_color, transition); 
-	vec3 sunset_top_color = mix(start_sunset_top_color, final_sunset_top_color, transition); 
-	vec3 sunset_bottom_color = mix(start_sunset_bottom_color, final_sunset_bottom_color, transition); 
-	vec3 night_top_color = mix(start_night_top_color, final_night_top_color, transition); 
+
+	vec3 day_top_color = mix(start_day_top_color, final_day_top_color, transition);
+	vec3 day_bottom_color = mix(start_day_bottom_color, final_day_bottom_color, transition);
+	vec3 sunset_top_color = mix(start_sunset_top_color, final_sunset_top_color, transition);
+	vec3 sunset_bottom_color = mix(start_sunset_bottom_color, final_sunset_bottom_color, transition);
+	vec3 night_top_color = mix(start_night_top_color, final_night_top_color, transition);
 	vec3 night_bottom_color = mix(start_night_bottom_color, final_night_bottom_color, transition);
 	vec3 horizon_color = mix(start_horizon_color, final_horizon_color, transition);
 	float horizon_blur = mix(start_horizon_blur, final_horizon_blur, transition);
