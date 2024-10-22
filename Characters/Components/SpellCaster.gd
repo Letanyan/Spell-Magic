@@ -11,6 +11,8 @@ var tracking_node: Dictionary = {} # [String]Node3D
 var tracking_position: Dictionary = {} # [String]Vector3
 var tracking_offset: Dictionary = {} # [String]Vector3
 
+var complexity_tracker := {} ## [int]{count: float, mean: float, M2: float}
+
 func _init(o: Node3D, e: Entity) -> void:
 	origin_node = o
 	entity = e
@@ -19,27 +21,64 @@ func _init(o: Node3D, e: Entity) -> void:
 func update(body: Node3D, delta: float) -> void:
 	var t := Time.get_unix_time_from_system()
 	var should_remove := []
+	var should_halt := []
 	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
 		
-		if p.is_active():
+		if p.is_active() and not p.has_expired(t):
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
 				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
 			p.update_spell(t, delta, p.fixed_vars)
 			
+		var can_remove := false
+		if p.spell_caster != null:
+			p.spell_caster.update(p, delta)
+			can_remove = p.spell_caster.particles.is_empty()
+		else:
+			can_remove = true
+			
 		if p.has_expired(t):
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
 				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			tracking_node.erase(p.name)
-			should_remove.append(i)
-
-	var idx := should_remove.size() - 1
+			if can_remove:
+				should_remove.append(i)
+			elif p.is_emitting:
+				should_halt.append(i)
+				
+	var idx := should_halt.size() - 1
+	while idx >= 0:
+		var i := should_halt[idx] as int
+		particles[i].stop_emitting()
+		idx -= 1
+		
+	idx = should_remove.size() - 1
+	var should_remove_complexity := {}
+	var origin_spell_caster: SpellCaster = null
+	if origin_node is Player:
+		origin_spell_caster = (origin_node as Player).spell_caster
+	elif origin_node is Enemy:
+		origin_spell_caster = (origin_node as Enemy).spell_caster
 	while idx >= 0:
 		var i := should_remove[idx] as int
-		(particles[i] as SpellBody).stop_emitting()
+		particles[i].get_parent().remove_child(particles[i])
+		if origin_spell_caster != null and origin_spell_caster.complexity_tracker.has(particles[i].complexity_id):
+			should_remove_complexity[particles[i].complexity_id] = true
 		particles.remove_at(i)
 		idx -= 1
+		
+	if origin_spell_caster != null:
+		for cid: int in should_remove_complexity:
+			var should_skip := false
+			for p in origin_spell_caster.particles:
+				if p.complexity_id == cid:
+					should_skip = true
+					break
+			if should_skip:
+				continue
+			if origin_spell_caster.complexity_tracker.has(cid):
+				origin_spell_caster.complexity_tracker.erase(cid)
 		
 
 enum SpellVariableKind { FIXED, TIMED, BOMB }
@@ -261,12 +300,18 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		vars["fl"] = inherited_vars["fl"]
 		vars["C"] = inherited_vars["C"]
 		
+	var cid := 0
 	if body is SpellBody:
 		var spell_body := body as SpellBody
 		exvars.merge(spell_body.expression_vars, true)
 		vars.merge(exvars, true)
+		cid = spell_body.complexity_id
 		for id: String in spell_body.override_vars:
 			override_vars[id] = spell_body.override_vars[id]
+	else:
+		cid = randi()
+		while complexity_tracker.has(cid): cid = randi()
+		
 		
 	for id: String in inherited_vars:
 		if id.begins_with("^"):
@@ -279,6 +324,7 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		p.origin_node = origin_node
 		p.tracking_target = node_to_track
 		p.caster_vitals = vitals
+		p.complexity_id = cid
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir
@@ -334,3 +380,25 @@ func update_pause_time(pause_time: float) -> void:
 		p.pause_time += pause_time
 		if p.spell_caster != null:
 			p.spell_caster.update_pause_time(pause_time)
+
+func update_complexity(id: int, value: float) -> void:
+	var dict := complexity_tracker.get(id, {"count": 0.0, "mean": 0.0, "M2": 0.0}) as Dictionary
+	dict["count"] += 1
+	var delta := value - dict["mean"] as float
+	dict["mean"] += delta / dict["count"] as float
+	var delta2 := dict["count"] as float - dict["mean"] as float
+	dict["M2"] += delta * delta2
+	complexity_tracker[id] = dict
+
+func get_complexity(id: int) -> float:
+	var dict := complexity_tracker.get(id, {"count": 0.0, "mean": 0.0, "M2": 0.0}) as Dictionary
+	#var mean := dict["mean"] as float
+	var count := dict["count"] as float
+	var M2 := dict["M2"] as float
+		
+	if count >= 2:
+		var sample_variance := absf(M2) / (count - 1)
+		var stddev := sqrt(sample_variance)
+		return stddev
+	else:
+		return 0.0

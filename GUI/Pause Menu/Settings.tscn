@@ -163,6 +163,7 @@ offset_left = -192.0
 offset_top = 327.0
 offset_right = -62.0
 offset_bottom = 351.0
+grow_horizontal = 2
 text = "Key Display"
 
 [node name="KeyDisplay" type="OptionButton" parent="Tabs/HUD/KeyDisplayLabel"]
@@ -175,6 +176,7 @@ item_count = 3
 popup/item_0/text = "Automatic"
 popup/item_0/id = 2
 popup/item_1/text = "Keyboard and Mouse"
+popup/item_1/id = 1
 popup/item_2/text = "Controller"
 popup/item_2/id = 1
 

@@ -5,18 +5,18 @@ var spell: Spell
 var n: int
 var time_start: float
 var expired: bool = false
+var is_emitting: bool = true
 var started: bool = false
 var in_control: bool = true
+var free_when_ready := NAN
 var velocity: Vector3 = Vector3.ZERO
-var old_velocity: Array[Vector3] = []
+var old_velocity := Vector3.ZERO
 var lifetime_velocity: float = 0.0 
 var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: Vector3 = Vector3.ZERO
 var rng: RandomNumberGenerator
 
-var complexity_samples_total := 0
-var complexity_angular_total := 0.0
-var complexity := 0.0
+var complexity_id: int = 0
 
 var caster_vitals: Vitals
 var spell_caster: SpellCaster
@@ -29,6 +29,7 @@ var override_vars: Dictionary
 var to_remove := false
 var origin_node: Node3D = null
 var tracking_target: Variant = null
+var origin_spell_caster: SpellCaster = null
 
 var pause_time: float = 0.0
 
@@ -41,11 +42,14 @@ func _ready() -> void:
 		cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
 	rng = RandomNumberGenerator.new()
 	rng.seed = hash(spell.name)
+	if origin_node is Player:
+		origin_spell_caster = (origin_node as Player).spell_caster
+	elif origin_node is Enemy:
+		origin_spell_caster = (origin_node as Enemy).spell_caster
+		
 
 func _physics_process(delta: float) -> void:
-	spell_caster.update(self, delta)
-	if to_remove:
-		get_parent().remove_child(self)
+	pass
 
 func has_expired(t: float) -> bool:
 	if time_start <= 0:
@@ -420,24 +424,17 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 	var velocity_maintained_distance := velocity
 	if started:
 		var fr := vars.get("~~frame_time", 0.0166667) as float
-		if old_velocity.size() < 6:
-			old_velocity.append(velocity)
-		else:
-			old_velocity[rng.randi_range(0, old_velocity.size() - 1)] = velocity
+		old_velocity = velocity
 		velocity_maintained_distance = (next_pos - old_pos) / fr
 		velocity = ((next_pos - old_pos) * fr).normalized()
 		
-		complexity_samples_total += 1
-		
-		for v in old_velocity:
-			var M := PI / 2
-			# parabola with max-y at x=PI/2 falling off with x=0 and x=PI equal 0
-			var C := -pow(velocity.angle_to(v) - M, 2.0) / (M * M) + 1 
-			if is_nan(C) or is_inf(C):
-				C = 0.0
-			complexity_angular_total += C / (float(old_velocity.size()))
-		
-		complexity = pow(complexity_angular_total / complexity_samples_total, 2.0)
+		var M := PI / 2
+		# parabola with max y at x=PI/2 falling off with x=0 and x=PI (y in [0,1])
+		var complexity_angle := -pow(velocity.angle_to(old_velocity) - M, 2.0) / (M * M) + 1 
+		if is_nan(complexity_angle) or is_inf(complexity_angle):
+			complexity_angle = 0.0
+		if origin_spell_caster != null:
+			origin_spell_caster.update_complexity(complexity_id, complexity_angle)
 			
 	old_pos = next_pos
 	
@@ -530,6 +527,7 @@ func update_spell(t: float, delta: float, vars: Dictionary) -> void:
 
 func stop_emitting() -> void:
 	const AUDIO_FADE_OUT = 0.7
+	is_emitting = false
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")
@@ -581,18 +579,7 @@ func stop_emitting() -> void:
 			free_after(maxf(0.1, AUDIO_FADE_OUT + 0.1))
 			
 func free_after(duration: float) -> void:
-	if get_parent() != null and get_tree() != null:
-		var max_duration: float = duration
-		if max_duration <= 0.0 and not spell_caster.particles.is_empty():
-			max_duration = 0.1
-		while max_duration > 0:
-			await get_tree().create_timer(max_duration, false, true).timeout
-			max_duration = actual_duration()
-			if not spell_caster.particles.is_empty():
-				max_duration = max(max_duration, 2)
-			else:
-				max_duration = 0
-		to_remove = true
+	free_when_ready = duration
 		
 func fade_audio(final: float, duration: float, is_in: bool) -> void:
 	var audio: AudioStreamPlayer3D = get_node("audio")
@@ -612,3 +599,9 @@ func free_particle() -> void:
 	if spell_caster != null:
 		spell_caster.free_particles()
 	queue_free()
+
+func calculate_overall_complexity() -> float:
+	if origin_spell_caster != null:
+		return origin_spell_caster.get_complexity(complexity_id)
+	else:
+		return 0.0
