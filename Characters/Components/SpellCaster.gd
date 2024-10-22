@@ -332,4 +332,5 @@ func free_particles() -> void:
 func update_pause_time(pause_time: float) -> void:
 	for p: SpellBody in particles:
 		p.pause_time += pause_time
-		p.spell_caster.update_pause_time(pause_time)
+		if p.spell_caster != null:
+			p.spell_caster.update_pause_time(pause_time)

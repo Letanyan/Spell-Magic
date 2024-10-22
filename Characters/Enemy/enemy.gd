@@ -29,6 +29,7 @@ var invfl: float:
 var is_dead: bool = false
 var kind: World.Enemy = World.Enemy.NONE
 var is_idle := true
+var is_idle_is_set := false
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
@@ -181,7 +182,7 @@ func _physics_process(delta: float) -> void:
 	var tick_scale := maxf(pow(dist, 2.0), 0.01)
 	increment_ticks(delta * tick_scale)
 			
-	var group_positioning_adjustment := player.enemies_normalised_separations.get(self, Vector3.ZERO) as Vector3
+	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
 	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
@@ -328,20 +329,24 @@ func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellR
 
 
 func update_behaviour() -> void:
+	var old_is_idle := is_idle
 	if is_idle:
 		if player.position.distance_to(position) < vitals.perception.min_value:
 			is_idle = false
 	else:
 		if player.position.distance_to(position) > vitals.perception.max_value:
 			is_idle = true
-						
-	if is_idle:
-		player.ignore_enemy(self)
-	else:
-		player.watch_enemy(self)
-		
-	if health_bar != null:
-		health_bar.visible = not is_idle
+	
+	if old_is_idle != is_idle or not is_idle_is_set:
+		if is_idle:
+			player.ignore_enemy(self)
+		else:
+			player.watch_enemy(self)
+			
+		if health_bar != null:
+			health_bar.visible = not is_idle
+			
+		is_idle_is_set = true
 		
 
 func handle_damage() -> void:
@@ -357,7 +362,7 @@ func die() -> void:
 	
 	var world := get_parent_node_3d()
 	await world.get_tree().create_timer(animator.get_animation("Death").length + 0.1).timeout
-	var time_to_kill := Time.get_unix_time_from_system() - (player.enemies_in_range.get(self, 0.0) as float)
+	var multiplier := player.kill_multiplier(self)
 	player.ignore_enemy(get_node(".") as Enemy)
 	explosion.position = position
 	explosion.global_transform = global_transform
@@ -370,7 +375,7 @@ func die() -> void:
 		if not drop_artifact_item(world):
 			drop_spell_item(world)
 	drop_coin_items(world)
-	drop_health_item(world, time_to_kill)
+	drop_health_item(world, multiplier)
 	drop_scroll_note(world)
 	
 	SignalBus.enemy_death.emit(get_node("."))
@@ -423,9 +428,9 @@ func drop_coin_items(world: Node3D) -> bool:
 		return true
 	return false
 	
-func drop_health_item(world: Node3D, time_to_kill: float) -> bool:
-	var t := 1.0 - clampf(time_to_kill / 100.0, 0.0, 1.0)
-	var h := drop_health() * (t * t)
+func drop_health_item(world: Node3D, multiplier: float) -> bool:
+	var amount := drop_health()
+	var h := amount * 0.25 + amount * 0.75 * multiplier
 	if h > 0.0:
 		var item := RedCross.make()
 		item.position = position

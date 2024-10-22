@@ -220,14 +220,14 @@ func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area
 				invunerable = 20
 		update_health_bar()
 		
-	if is_rock:
-		projectile.lose_control(projectile, area)
-	else:
-		projectile.expire_now(projectile, area)
 	if projectile.spell.chain_cast_kind == Spell.ChainCastKind.HIT and projectile.spell.chain != null and not projectile.on_hit_casts.has(area):
 		projectile.on_hit_casts[area] = true
 		projectile.cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), projectile.spell.chain)
 	var dmg := projectile.spell.damage(caster_vitals)
+	if is_rock:
+		projectile.lose_control(projectile, area, {"dmg": dmg, "el": projectile.spell.element})
+	else:
+		projectile.expire_now(projectile, area, {"dmg": dmg, "el": projectile.spell.element})
 	Vitals.apply_damage(projectile.get_parent() as Node3D, area, dmg, projectile.spell.element, false, true, contact_points, projectile.most_recent_radius.length(), projectile.velocity)
 		
 

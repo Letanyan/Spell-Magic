@@ -52,16 +52,16 @@ func has_expired(t: float) -> bool:
 		return false
 	return expired or (t - time_start) >= spell.duration + pause_time
 	
-func expire_now(p: Node3D, q: CollisionObject3D) -> void:
+func expire_now(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 	if q != null:
-		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
+		SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
 	expired = true
 	
-func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool) -> void:
+func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool, damage: Dictionary) -> void:
 	var timer := get_tree().create_timer(t)
 	timer.timeout.connect(func() -> void:
 		if q != null:
-			SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
+			SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
 		expired = true
 		var amount := clampi(int(spell.damage(caster_vitals)), 0, 100)
 		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius.length(), velocity, is_alternate)
@@ -70,7 +70,7 @@ func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool
 func is_active() -> bool:
 	return in_control and time_start > 0.0  
 	
-func lose_control(p: Node3D, q: CollisionObject3D) -> void:
+func lose_control(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 	in_control = false
 	if spell.element == Spell.Element.ROCK:
 		var body: RigidBody3D = p.get_node("body")
@@ -78,11 +78,11 @@ func lose_control(p: Node3D, q: CollisionObject3D) -> void:
 			body.freeze = false
 			body.apply_central_impulse(velocity)
 			if q != null:
-				SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
+				SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
 
-func nothing(p: Node3D, q: CollisionObject3D) -> void:
+func nothing(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 	if q != null:
-		SignalBus.projectile_hit.emit(origin_node, q.collision_layer, spell, Time.get_unix_time_from_system(), p)
+		SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
 	
 func actual_duration() -> float:
 	var result := (spell.duration + pause_time) - (Time.get_unix_time_from_system() - time_start)
@@ -148,51 +148,51 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	match spell.element:
 		Spell.Element.FIRE:
 			if is_world or is_rock or is_world_object:
-				expire_now(self, _body)
+				expire_now(self, _body, dmg)
 			elif (is_enemy or is_player) and not invunerable:
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.FIRE, spell.damage(caster_vitals), spell.elemental_application)
-				expire_now(self, body)
+				expire_now(self, body, dmg)
 		Spell.Element.ROCK:
 			if _body != get_node("body"):
 				if is_world or is_world_object:
-					lose_control(self, _body)
+					lose_control(self, _body, dmg)
 				elif is_rock:
-					lose_control(self, _body)
+					lose_control(self, _body, dmg)
 					(_body as RigidBody3D).apply_central_impulse(impulse())
 				elif (is_enemy or is_player) and not invunerable:
 					var body := _body as CharacterBody
 					body.add_impulse(impulse())
 					dmg = body.vitals.handle_damage(Spell.Element.ROCK, spell.damage(caster_vitals), spell.elemental_application)
-					lose_control(self, body)
+					lose_control(self, body, dmg)
 		Spell.Element.WATER:
 			if is_world or is_rock or is_world_object or is_ice:
-				expire_now(self, _body)
+				expire_now(self, _body, dmg)
 			elif (is_enemy or is_player) and not invunerable:
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.WATER, spell.damage(caster_vitals), spell.elemental_application)
-				expire_now(self, body)
+				expire_now(self, body, dmg)
 		Spell.Element.AIR:
 			if is_world or is_world_object:
-				nothing(self, _body)
+				nothing(self, _body, dmg)
 			elif (is_player or is_enemy) and not invunerable:
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.AIR, spell.damage(caster_vitals), spell.elemental_application)
-				nothing(self, body)
+				nothing(self, body, dmg)
 			elif is_rock:
 				(_body as RigidBody3D).apply_impulse(impulse())
-				nothing(self, _body)
+				nothing(self, _body, dmg)
 		Spell.Element.ICE:
 			if is_world or is_rock or is_world_object or is_fire:
-				expire_now(self, _body)
+				expire_now(self, _body, dmg)
 			elif (is_player or is_enemy) and not invunerable:
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.damage(caster_vitals), spell.elemental_application)
-				nothing(self, body)
+				nothing(self, body, dmg)
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
 				pass
@@ -204,12 +204,12 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				pass
 		Spell.Element.VOID:
 			if is_world or is_rock or is_world_object:
-				nothing(self, _body)
+				nothing(self, _body, dmg)
 			elif (is_enemy or is_player) and not invunerable:
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.VOID, spell.damage(caster_vitals), spell.elemental_application)
-				nothing(self, body)
+				nothing(self, body, dmg)
 	
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(_body):
@@ -256,16 +256,16 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		Spell.Element.FIRE:
 			if not (is_enemy or is_player):
 				if is_water:
-					expire_now(self, _body)
+					expire_now(self, _body, dmg)
 				elif is_electric:
 					update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
-					explode_after(self, _body, 0.0166667 * 2, false)
+					explode_after(self, _body, 0.0166667 * 2, false, dmg)
 		Spell.Element.WATER:
 			if not (is_enemy or is_player):
 				if is_ice:
-					expire_now(self, _body)
+					expire_now(self, _body, dmg)
 				elif is_fire:
-					explode_after(self, _body, 0.0166667 * 2, true)
+					explode_after(self, _body, 0.0166667 * 2, true, dmg)
 		Spell.Element.ICE:
 			if not (is_enemy or is_player):
 				if is_water:
@@ -277,22 +277,22 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 					pass
 				elif is_fire:
 					update_shape(Vector3(1, 1, 1).normalized() * spell.radius * 3, true)
-					explode_after(self, _body, 0.0166667 * 2, false)
+					explode_after(self, _body, 0.0166667 * 2, false, dmg)
 					pass
 			elif is_water and not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, spell.damage(caster_vitals), spell.elemental_application)
-				nothing(self, body)
+				nothing(self, body, dmg)
 		Spell.Element.VOID:
 			if not (is_player or is_enemy):
 				if is_world or is_rock or is_world_object:
-					nothing(self, _body)
+					nothing(self, _body, dmg)
 			elif not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.VOID, spell.damage(caster_vitals), spell.elemental_application)
-				nothing(self, body)
+				nothing(self, body, dmg)
 		_:
 			dmg = {}
 				

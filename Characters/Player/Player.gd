@@ -26,7 +26,6 @@ var name_generator: NameGenerator
 var keys: int
 
 var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
-var enemies_normalised_separations: Dictionary = {} ## [Enemy]Vector3
 var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_system
 var projectile_indicators: Dictionary = {} ## [Node3D]MeshInstance
 var max_watched_enemies_distance := 0.0
@@ -251,7 +250,7 @@ func _on_wet_area_body_entered(body: Node3D) -> void:
 	print(body)
 	
 
-func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: float, p: SpellBody) -> void:
+func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: Spell, time: float, p: SpellBody, damage: Dictionary) -> void:
 	if not origin is Player:
 		return
 	var c := spell.cooldown
@@ -262,16 +261,22 @@ func give_back_mana_after_hit(origin: Node3D, target: int, spell: Spell, time: f
 	var rv := 1.0 - clampf(absf(p.lifetime_velocity) / (UpgradeSettings.LIMIT_v + spell.buff_v), 0.0, 1.0)
 	t = t * (1.0 - pow(1.0 - rv, 2.0)) # scale payback down when spell has high velocity.
 	vitals.mana.apply_ignoring_resistance(t * p.complexity)
-	if target & 0b0100 != 0: # is enemy
+	if target.collision_layer & 0b0100 != 0: # is enemy
 		update_artifact_effects(Artifact.Event.DEAL, spell)
+		if enemies_in_range.has(target) and (damage["dmg"] as int) > 0:
+			var stats := enemies_in_range[target] as CombatStats
+			stats.hit_count += 1
+			var interval := Time.get_unix_time_from_system() - stats.last_hit_time
+			var factor := clampf(1.0 - interval / 5.0, 0.0, 1.0)
+			stats.sum_of_hit_intervals += factor
+			stats.last_hit_time = Time.get_unix_time_from_system()
+		
 	
 func watch_enemy(enemy: Enemy) -> void:
-	enemies_in_range[enemy] = Time.get_unix_time_from_system()
-	enemies_normalised_separations[enemy] = Vector3.ZERO
+	enemies_in_range[enemy] = CombatStats.new(Time.get_unix_time_from_system())
 	
 func ignore_enemy(enemy: Enemy) -> void:
 	enemies_in_range.erase(enemy)
-	enemies_normalised_separations.erase(enemy)
 	enemy.vitals.health.value = enemy.vitals.health.max_value
 	
 func watch_target(target: TargetShape) -> void:
@@ -281,6 +286,19 @@ func watch_target(target: TargetShape) -> void:
 func ignore_target(target: TargetShape) -> void:
 	targets_in_range.erase(target)
 	target.player = null
+	
+func kill_multiplier(enemy: Enemy) -> float:
+	if enemies_in_range.has(enemy):
+		var stats := enemies_in_range[enemy] as CombatStats
+		var count := stats.hit_count
+		var sum := stats.sum_of_hit_intervals
+		if count == 0:
+			return 0.0
+		else:
+			return sum / float(count)
+	else:
+		return 0.0
+	
 	
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
@@ -320,10 +338,11 @@ func update_watched_enemies_positions(delta: float) -> void:
 			if distance < enemy_seperation:
 				movement += (enemy.position - other.position).normalized() * (1.0 - distance / enemy_seperation)
 				
+		var stats := enemies_in_range[enemy] as CombatStats
 		if movement.is_zero_approx():			
-			enemies_normalised_separations[enemy] = Vector3.ZERO
+			stats.seperation = Vector3.ZERO
 		else:
-			enemies_normalised_separations[enemy] += movement / enemies_in_range.size()
+			stats.seperation += movement / enemies_in_range.size()
 	
 	
 func pick_up_key(key: int) -> bool:
@@ -622,3 +641,17 @@ func update_projectile_indicators(pi_scale: float) -> void:
 			var mi := projectile_indicators[body] as Node3D
 			pivot.remove_child(mi)
 			projectile_indicators.erase(body)
+
+class CombatStats:
+	var start_time: float
+	var seperation: Vector3
+	var hit_count: int
+	var last_hit_time: float
+	var sum_of_hit_intervals: float
+	
+	func _init(t: float) -> void:
+		start_time = t
+		seperation = Vector3.ZERO
+		hit_count = 0
+		last_hit_time = t
+		sum_of_hit_intervals = 0.0
