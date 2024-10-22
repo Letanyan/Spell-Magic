@@ -18,10 +18,11 @@ func _init(o: Node3D, e: Entity) -> void:
 	entity = e
 	ignore_mana_cost = true
 	
-func update(body: Node3D, delta: float) -> void:
+func update(body: Node3D, delta: float) -> Dictionary:
 	var t := Time.get_unix_time_from_system()
 	var should_remove := []
 	var should_halt := []
+	var limit_reasons := {}
 	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
 		
@@ -29,11 +30,14 @@ func update(body: Node3D, delta: float) -> void:
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
 				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
-			p.update_spell(t, delta, p.fixed_vars)
+			var reason := p.update_spell(t, delta, p.fixed_vars)
+			if reason != MagicBook.DisallowSpellReason.NONE:
+				limit_reasons[p.spell] = reason
 			
 		var can_remove := false
 		if p.spell_caster != null:
-			p.spell_caster.update(p, delta)
+			var reasons := p.spell_caster.update(p, delta)
+			limit_reasons.merge(reasons)
 			can_remove = p.spell_caster.particles.is_empty()
 		else:
 			can_remove = true
@@ -79,6 +83,8 @@ func update(body: Node3D, delta: float) -> void:
 				continue
 			if origin_spell_caster.complexity_tracker.has(cid):
 				origin_spell_caster.complexity_tracker.erase(cid)
+				
+	return limit_reasons
 		
 
 enum SpellVariableKind { FIXED, TIMED, BOMB }

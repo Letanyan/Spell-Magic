@@ -228,7 +228,7 @@ func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	return result
 	
 	
-func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
+func calculate_location(vars: Dictionary, only_delta: bool = false, velocity_exceeds_limit: Globals.Ref = null) -> Vector3:
 	var result := calculate_cartesian_point(vars)
 	
 	if vars.has("~old_pos") and not only_delta:
@@ -236,7 +236,10 @@ func calculate_location(vars: Dictionary, only_delta: bool = false) -> Vector3:
 		var frame_time := vars.get("~~frame_time", 0.0166667) as float
 		var velocity := (result - old_pos)
 		if not velocity.is_zero_approx():
-			var temp := old_pos + velocity.normalized() * clampf(velocity.length(), 0, (limit_v + buff_v) * frame_time)
+			var limit := (limit_v + buff_v) * frame_time
+			if velocity_exceeds_limit != null and velocity.length() > limit:
+				velocity_exceeds_limit.data = true
+			var temp := old_pos + velocity.normalized() * clampf(velocity.length(), 0.0, limit)
 			result = temp
 		else:
 			result = old_pos

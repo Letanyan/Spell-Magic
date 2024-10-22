@@ -40,6 +40,7 @@ signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
 signal spell_was_cast(spell: Spell)
 signal spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason)
+signal spell_was_limited(spell: Spell, reason: MagicBook.DisallowSpellReason)
 signal spell_velocity_was_buffed(amount: float)
 signal spell_radius_was_buffed(amount: float)
 signal attack_was_buffed(amount: float)
@@ -219,7 +220,9 @@ func _physics_process(delta: float) -> void:
 		cam.rotation.y = (dy * intensity) * (2 * PI / 8)
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
 				
-	spell_caster.update(self, delta)
+	var reasons := spell_caster.update(self, delta)
+	for spell in reasons:
+		spell_was_limited.emit(spell, reasons[spell])
 	
 	update_projectile_indicators(1.0 + (spring_extension / 10.0) * 2.0)
 	

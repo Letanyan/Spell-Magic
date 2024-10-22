@@ -144,9 +144,9 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	element_ice_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
 	element_electric_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
 	
-	chain_at_start_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
-	chain_at_end_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
-	chain_on_hit_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method) + coin_suffix
+	chain_at_start_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.START) ) + coin_suffix
+	chain_at_end_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.END)) + coin_suffix
+	chain_on_hit_cost.text = "[center]" + str(settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.HIT)) + coin_suffix
 	
 	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/right]"
 	

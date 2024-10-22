@@ -35,6 +35,7 @@ var player: Player:
 		update_hud_with_vitals(player.vitals)
 		player.spell_was_cast.connect(spell_was_cast)
 		player.spell_was_disallowed.connect(spell_was_disallowed)
+		player.spell_was_limited.connect(spell_was_limited)
 
 var wand: Wand: set = set_wand
 		
@@ -137,6 +138,14 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -
 			show_notification(bbcode_error("'%s' requires r %.1f upgrade" % [spell.name, spell.radius]), 5)
 		MagicBook.DisallowSpellReason.ACTIVE:
 			show_notification(bbcode_error("'%s' is not active in magic book" % [spell.name]), 5)
+		# We don't disallow spells from being cast because of velocity. We just limit the velocity and notify the player.
+		#MagicBook.DisallowSpellReason.VELOCITY:
+			#show_notification(bbcode_error(""), 5)
+			
+func spell_was_limited(spell: Spell, reason: MagicBook.DisallowSpellReason) -> void:
+	match reason:
+		MagicBook.DisallowSpellReason.VELOCITY:
+			show_notification(bbcode_error("'%s' velocity limited to %.0fm/s" % [spell.name, world_settings.upgrade_settings.max_v() + world_settings.upgrade_settings.buff_v]), 5)
 	
 func spell_was_cast(s: Spell) -> void:
 	var t := Time.get_unix_time_from_system()

@@ -39,7 +39,12 @@ const HAS_CHAIN_ON_START := 1 << 0
 const HAS_CHAIN_ON_END := 1 << 1
 const HAS_CHAIN_ON_HIT := 1 << 2
 var has_chain_method := 0
-var cost_chain_method := 500
+func cost_chain_method(method: Spell.ChainCastKind) -> int:
+	if method == Spell.ChainCastKind.START or method == Spell.ChainCastKind.END:
+		return 200
+	else:
+		return 1000
+		
 func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 	if currency < cost_spell_element:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
@@ -48,7 +53,7 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	has_chain_method |= (1 << cm)
-	currency -= cost_chain_method
+	currency -= cost_chain_method(cm)
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 
@@ -392,7 +397,7 @@ func emit_upgrade_purchase() -> void:
 func save_dict() -> Dictionary:
 	return {
 		"has_spell_element": has_spell_element, "has_chain_method": has_chain_method,
-		"cost_spell_element": cost_spell_element, "cost_chain_method": cost_chain_method,
+		"cost_spell_element": cost_spell_element,
 		
 		"level_r": level_r,
 		"level_T": level_T, 
@@ -415,7 +420,6 @@ func load_dict(data: Dictionary) -> void:
 	has_spell_element = data.get("has_spell_element", 0b1)
 	has_chain_method = data.get("has_chain_method", 0)
 	cost_spell_element = data.get("cost_spell_element", 100)
-	cost_chain_method = data.get("cost_chain_method", 100)
 	
 	level_r = data.get("level_r", 1)
 	level_T = data.get("level_T", 1)

@@ -515,15 +515,17 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.VOID:
 			position = p
 			
-func update_spell(t: float, delta: float, vars: Dictionary) -> void:
+func update_spell(t: float, delta: float, vars: Dictionary) -> MagicBook.DisallowSpellReason:
 	if not is_active():
-		return
+		return MagicBook.DisallowSpellReason.NONE
 	t = t - pause_time
 	fixed_vars["t"] = clampf(t - time_start, 0.0, 100000.0)
 	vars["~~frame_time"] = delta
 	spell.compute_expressions(vars, expression_vars, override_vars, true)
-	var p := spell.calculate_location(vars)
+	var exceeds := Globals.Ref.new(false)
+	var p := spell.calculate_location(vars, false, exceeds)
 	update_movement(p, false, vars)
+	return MagicBook.DisallowSpellReason.VELOCITY if exceeds.data else MagicBook.DisallowSpellReason.NONE
 
 func stop_emitting() -> void:
 	const AUDIO_FADE_OUT = 0.7

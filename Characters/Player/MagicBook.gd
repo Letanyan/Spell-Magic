@@ -4,7 +4,7 @@ var spells: Array[Spell]
 var spell_index: Dictionary
 var last_use: Dictionary # [String]Unix.Time
 var ignore_cooldown: bool
-enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE }
+enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE, VELOCITY }
 
 var settings: WorldSettings # set by the world
 
