@@ -72,6 +72,7 @@ debug_shape_custom_color = Color(0, 0, 1, 1)
 [node name="source" type="GPUParticles3D" parent="."]
 cast_shadow = 0
 amount = 40
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_omybi")
 draw_pass_1 = SubResource("SphereMesh_1reub")
 

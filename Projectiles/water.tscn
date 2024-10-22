@@ -71,6 +71,7 @@ collide_with_areas = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0652502)
 amount = 80
 randomness = 1.0
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_tnio6")
 draw_pass_1 = SubResource("SphereMesh_37v5l")
 

@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode cull_disabled;
 //render_mode unshaded;
 
 uniform float alpha = 1.0;

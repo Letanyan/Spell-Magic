@@ -221,7 +221,7 @@ func _physics_process(delta: float) -> void:
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)
 				
 	var reasons := spell_caster.update(self, delta)
-	for spell in reasons:
+	for spell: Spell in reasons:
 		spell_was_limited.emit(spell, reasons[spell])
 	
 	update_projectile_indicators(1.0 + (spring_extension / 10.0) * 2.0)

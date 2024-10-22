@@ -42,8 +42,7 @@ scale_curve = SubResource("CurveTexture_tncfq")
 color = Color(0.501961, 1, 0.501961, 1)
 color_ramp = SubResource("GradientTexture1D_rlncl")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cw5ub"]
-resource_local_to_scene = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ib6y7"]
 render_priority = 0
 shader = ExtResource("2_qxk8k")
 shader_parameter/alpha = 1.0
@@ -54,14 +53,11 @@ shader_parameter/width = 0.1
 shader_parameter/use_vertex_color = true
 shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_itdcf"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_cw5ub")
-radius = 1.0
-height = 2.0
-radial_segments = 4
-rings = 4
-is_hemisphere = true
+[sub_resource type="PlaneMesh" id="PlaneMesh_40ex8"]
+material = SubResource("ShaderMaterial_ib6y7")
+subdivide_width = 1
+subdivide_depth = 3
+orientation = 2
 
 [node name="air" type="Node3D"]
 script = ExtResource("1_a23cr")
@@ -77,8 +73,9 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 
 cast_shadow = 0
 amount = 80
 lifetime = 4.0
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_0lwgo")
-draw_pass_1 = SubResource("SphereMesh_itdcf")
+draw_pass_1 = SubResource("PlaneMesh_40ex8")
 
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("3_lq2kl")
