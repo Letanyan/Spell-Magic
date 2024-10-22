@@ -154,32 +154,32 @@ func setup(_settings: WorldSettings) -> void:
 	spawner = ItemSpawner.key_spawner(rng, null, Vector3(20, 1000, 20), 16)
 	#spawner.nodes_to_be_cleared[fishman] = true
 	
-	var h := Vec3.y(10)
-	var center := Vector2(0, 0)
-	var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
-	var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_ground_air_and_dirt().look_at_nothing()
-	var platform_scale := 15.0
-	var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
-	var platform := TargetShape.make()
-	platform.configure(config)
-	var wh := 1000.0
-	platform.position.y = h.y + wh
-	platform.caster_target_position = Vec3.xz(center) + Vec3.y(h.y + wh + platform.bounds.y + player.bounds.y * 0.5)
-	var arc := GlobalData.magic_book.copy_spell("arc")
-	arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 2, 0, 0.5, 8, 0, 0, 0)
-	var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(5, [1], 1))
-	platform.attack_sequence = AttackSequence.new(true, [
-		PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
-		pattern,
-		PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
-		pattern,
-		PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
-		pattern,
-		PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
-		pattern,
-	])
-	
-	add_child(platform)
+	#var h := Vec3.y(10)
+	#var center := Vector2(0, 0)
+	#var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
+	#var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_ground_air_and_dirt().look_at_nothing()
+	#var platform_scale := 15.0
+	#var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
+	#var platform := TargetShape.make()
+	#platform.configure(config)
+	#var wh := 1000.0
+	#platform.position.y = h.y + wh
+	#platform.caster_target_position = Vec3.xz(center) + Vec3.y(h.y + wh + platform.bounds.y + player.bounds.y * 0.5)
+	#var arc := GlobalData.magic_book.copy_spell("arc")
+	#arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 2, 0, 0.5, 8, 0, 0, 0)
+	#var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(5, [1], 1))
+	#platform.attack_sequence = AttackSequence.new(true, [
+		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+		#pattern,
+		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
+		#pattern,
+		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+		#pattern,
+		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
+		#pattern,
+	#])
+	#
+	#add_child(platform)
 	
 	#var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
 	#var RT := Transform3D.IDENTITY.rotated(Vector3.UP, 2 * PI / 3)
@@ -286,8 +286,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
+	
 func _physics_process(delta: float) -> void:
 	if player.magic_book.settings.is_paused:
+		if get_window().has_focus():
+			var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
+			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		return
 	
 	knowledge_tick += delta
@@ -356,25 +360,20 @@ func toggle_menu() -> void:
 	#menu.visible = true
 	player.transition_menu(not menu.is_showing)
 		
-
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 		
-	if not menu.is_showing and event.is_action_pressed("RT"):
-		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.stop_joy_vibration(event.device)
 			
 	if not menu.is_showing:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative)
-	else:
-		if event is InputEventJoypadMotion:
-			var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
-			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		
 	if not menu.is_showing:
+		GlobalData.controller.handle_input(event)
+		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
 			if settings.camera_settings.distance > 1:
 				settings.camera_settings.distance -= 1

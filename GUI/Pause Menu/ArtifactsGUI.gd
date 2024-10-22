@@ -242,11 +242,11 @@ func _on_artifact_grid_on_cell_unselected(coord: Vector2) -> void:
 	update_list_and_grid()
 
 func _on_artifacts_list_gui_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		var e := event as InputEventKey
-		if e.is_action_pressed("ui_accept"):
+	if event is InputEventKey or event is InputEventJoypadButton:
+		if event.is_action_pressed("ui_accept"):
 			confirm_place_artifact_from_list()
-		elif e.is_action_pressed("E"):
+		elif event.is_action_pressed("E"):
+			print("hello")
 			deselect_all()
 			
 func confirm_place_artifact_from_list() -> void:
@@ -263,13 +263,12 @@ func confirm_place_artifact_from_list() -> void:
 		artifact_grid.grab_focus()
 
 func _on_artifact_grid_gui_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		var e := event as InputEventKey
-		if e.is_action_pressed("E") or e.is_action_pressed("ui_accept"):
-			if e.is_action_pressed("E"):
+	if event is InputEventKey or event is InputEventJoypadButton:
+		if event.is_action_pressed("E") or event.is_action_pressed("ui_accept"):
+			if event.is_action_pressed("E"):
 				deselect_all()
 				artifact_grid.selected_cell_coord = null
-			elif e.is_action_pressed("ui_accept"):
+			elif event.is_action_pressed("ui_accept"):
 				if artifact_preview.artifact == null and artifacts_list.item_count > 0:
 					artifacts_list.select(0)
 					_on_artifacts_list_item_selected(0)
@@ -279,10 +278,10 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 						attempt_place_artifact(temporary_grid_tile.artifact, artifact_grid.selected_cell_coord as Vector2, false)
 			
 			artifacts_list.grab_focus()
-		elif e.is_action_pressed("W"):
+		elif event.is_action_pressed("W"):
 			if artifact_grid.selected_cell_coord != null:
 				attempt_remove_artifact(artifact_grid.selected_cell_coord as Vector2)
-		elif e.is_action_pressed("LEFT") or e.is_action_pressed("RIGHT") or e.is_action_pressed("DOWN") or e.is_action_pressed("UP"):
+		elif event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or event.is_action_pressed("ui_down") or event.is_action_pressed("ui_up"):
 			if not artifact_grid.highlighted_cells.is_empty() and artifact_grid.selected_cell_coord != null:
 				var possible_moves := artifacts.highlight_all_available_cells_for_placement(temporary_grid_tile.artifact)
 				var old_coord := artifact_grid.selected_cell_coord as Vector2
@@ -294,7 +293,7 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 						break
 					current_index += 1
 					
-				var direction := Input.get_vector("LEFT", "RIGHT", "UP", "DOWN")
+				var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_up")
 				var best_index := 0
 				var best_distance := INF
 				var i := 0
@@ -569,3 +568,7 @@ class FilterOptions:
 		events.clear()
 		effects.clear()
 		elements.clear()
+
+
+func _on_artifact_grid_focus_entered() -> void:
+	print("got focus")

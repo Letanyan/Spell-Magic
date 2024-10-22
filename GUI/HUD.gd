@@ -326,10 +326,11 @@ func update_wand_mappings() -> void:
 					rich_text += build_desc.call(kd, "[i]Rapid[/i]", spell)
 	
 	rich_text += "[/font_size]"
-	wand_mapping.text = ""
+	var old_text := wand_mapping.text
 	wand_mapping.size = Vector2(($WandMappingPanel as Control).size.x, 0)
 	($WandMappingPanel as Control).size.y = 0
-	wand_mapping.text = rich_text
+	if old_text != rich_text:
+		wand_mapping.text = rich_text
 	if hud_settings != null and hud_settings.hide_wand_mappings:
 		wand_mapping.visible = false
 	else:
@@ -347,6 +348,12 @@ func update_wand_mappings() -> void:
 func update_settings(settings: WorldSettings) -> void:
 	world_settings = settings
 	hud_settings = settings.hud_settings
+	
+	match hud_settings.key_display:
+		HUDSettings.KeyDisplay.KEYBOARD:
+			GlobalData.controller.last_input_type = Controller.InputType.KEYBOARD
+		HUDSettings.KeyDisplay.CONTROLLER:
+			GlobalData.controller.last_input_type = Controller.InputType.CONTROLLER
 	
 	wand_mapping.visible = not hud_settings.hide_wand_mappings
 	notification_label.visible = not hud_settings.hide_notifications

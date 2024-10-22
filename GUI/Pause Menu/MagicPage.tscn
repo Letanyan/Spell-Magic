@@ -63,7 +63,7 @@ offset_top = 8.0
 offset_right = 40.0
 offset_bottom = 40.0
 focus_neighbor_right = NodePath("../name_edit")
-focus_neighbor_bottom = NodePath("../x_edit")
+focus_neighbor_bottom = NodePath("../preview_selector/prev_thumbnail")
 focus_next = NodePath("../x_edit")
 focus_previous = NodePath("../Delete")
 toggle_mode = true
@@ -650,7 +650,6 @@ grow_horizontal = 2
 placeholder_text = "value"
 
 [node name="preview_selector" type="Panel" parent="container"]
-visible = false
 layout_mode = 0
 offset_left = 8.0
 offset_top = 48.0

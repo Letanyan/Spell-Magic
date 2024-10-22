@@ -42,6 +42,7 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		
 	spell_change_callables.clear()
 	action_change_callables.clear()
+	
 	for w: PackedStringArray in wand.keys:
 		var spell_changed := func(item: WandCaseShelfItem, text: String, ignore_signals: bool) -> void:
 			var option := wand.keys[w] as Wand.Option

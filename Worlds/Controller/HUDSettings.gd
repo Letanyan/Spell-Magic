@@ -1,5 +1,7 @@
 class_name HUDSettings
 
+enum KeyDisplay { AUTO, KEYBOARD, CONTROLLER }
+
 var hide_wand_mappings: bool = false
 var hide_wand_modifier_hints: bool = false
 var hide_notifications: bool = false
@@ -9,6 +11,7 @@ var hide_cooldown_timings: bool = false
 var hide_stats_view: bool = true
 var hide_reticule: bool = false
 var projectile_indicator_size: float = 1.0
+var key_display: KeyDisplay = KeyDisplay.AUTO
 
 func save_dict() -> Dictionary:
 	return {
@@ -16,7 +19,7 @@ func save_dict() -> Dictionary:
 		"hide_notifications": hide_notifications, "hide_status_effects": hide_status_effects,
 		"hide_health_mana": hide_health_mana, "hide_cooldown_timings": hide_cooldown_timings,
 		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule,
-		"projectile_indicator_size": projectile_indicator_size,
+		"projectile_indicator_size": projectile_indicator_size, "key_display": key_display,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -29,3 +32,4 @@ func load_dict(dict: Dictionary) -> void:
 	hide_stats_view = dict.get("hide_stats_view", true)
 	hide_reticule = dict.get("hide_reticule", false)
 	projectile_indicator_size = dict.get("projectile_indicator_size", 1.0)
+	key_display = dict.get("key_display", KeyDisplay.AUTO)

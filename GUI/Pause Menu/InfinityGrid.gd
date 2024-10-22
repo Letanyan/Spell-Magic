@@ -172,7 +172,7 @@ func _gui_input(_event: InputEvent) -> void:
 				m_pos /= csize
 				m_pos = floor(m_pos)
 				on_cell_moused_over.emit(m_pos)
-	elif _event is InputEventKey or _event is InputEventJoypadButton:
+	elif _event is InputEventKey or _event is InputEventJoypadButton or _event is InputEventJoypadMotion:
 		if selected_cell_coord != null and has_focus():
 			var old_pos := selected_cell_coord as Vector2
 			if _event.is_action_pressed("ui_down"):

@@ -59,6 +59,8 @@ grow_horizontal = 2
 focus_neighbor_left = NodePath("../Quit")
 focus_neighbor_right = NodePath("../Wands")
 focus_neighbor_bottom = NodePath("../../MagicBook")
+focus_next = NodePath("../Wands")
+focus_previous = NodePath("../Quit")
 toggle_mode = true
 text = "Spells"
 
@@ -76,6 +78,8 @@ grow_horizontal = 2
 focus_neighbor_left = NodePath("../Spells")
 focus_neighbor_right = NodePath("../Artifacts")
 focus_neighbor_bottom = NodePath("../../WandCase")
+focus_next = NodePath("../Artifacts")
+focus_previous = NodePath("../Spells")
 toggle_mode = true
 text = "Wands"
 
@@ -93,6 +97,8 @@ offset_bottom = 15.99
 focus_neighbor_left = NodePath("../Wands")
 focus_neighbor_right = NodePath("../Upgrades")
 focus_neighbor_bottom = NodePath("../../Artifacts")
+focus_next = NodePath("../Upgrades")
+focus_previous = NodePath("../Wands")
 toggle_mode = true
 text = "Artifacts"
 
@@ -102,7 +108,10 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 104.0
 offset_bottom = 40.0
+focus_neighbor_left = NodePath("../Settings")
 focus_neighbor_right = NodePath("../Spells")
+focus_next = NodePath("../Spells")
+focus_previous = NodePath("../Settings")
 text = "Close"
 
 [node name="Upgrades" type="Button" parent="Tabbar"]
@@ -119,6 +128,8 @@ offset_bottom = 15.99
 focus_neighbor_left = NodePath("../Artifacts")
 focus_neighbor_right = NodePath("../Settings")
 focus_neighbor_bottom = NodePath("../../Upgrades")
+focus_next = NodePath("../Settings")
+focus_previous = NodePath("../Artifacts")
 toggle_mode = true
 text = "Upgrades"
 
@@ -133,7 +144,10 @@ offset_right = -10.0
 offset_bottom = 40.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../Upgrades")
+focus_neighbor_right = NodePath("../Quit")
 focus_neighbor_bottom = NodePath("../../Settings")
+focus_next = NodePath("../Quit")
+focus_previous = NodePath("../Upgrades")
 toggle_mode = true
 text = "Settings"
 

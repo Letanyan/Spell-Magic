@@ -37,6 +37,7 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../artifacts_list")
+focus_previous = NodePath("../artifacts_list")
 focus_mode = 2
 mouse_filter = 0
 script = ExtResource("2_reg1r")
@@ -81,9 +82,11 @@ offset_top = 96.0
 offset_right = 184.0
 offset_bottom = -232.0
 grow_vertical = 2
-focus_neighbor_top = NodePath("../Left")
+focus_neighbor_top = NodePath("../FilterAll")
 focus_neighbor_right = NodePath("../artifact_grid")
 focus_neighbor_bottom = NodePath("../Destroy")
+focus_next = NodePath("../artifact_grid")
+focus_previous = NodePath("../FilterAll")
 
 [node name="Top" type="MenuButton" parent="."]
 layout_mode = 0
@@ -95,6 +98,8 @@ tooltip_text = "Top Artifact Side Matches Filter"
 focus_neighbor_left = NodePath("../Left")
 focus_neighbor_right = NodePath("../Bottom")
 focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_next = NodePath("../Bottom")
+focus_previous = NodePath("../Left")
 focus_mode = 2
 icon = ExtResource("4_hp0s5")
 flat = false
@@ -117,8 +122,11 @@ offset_top = 57.0
 offset_right = 76.0
 offset_bottom = 88.0
 tooltip_text = "Left Artifact Side Matches Filter"
+focus_neighbor_left = NodePath("../FilterAll")
 focus_neighbor_right = NodePath("../Top")
 focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_next = NodePath("../Top")
+focus_previous = NodePath("../FilterAll")
 focus_mode = 2
 icon = ExtResource("5_hb31u")
 flat = false
@@ -169,6 +177,8 @@ tooltip_text = "Bottom Artifact Side Matches Filter"
 focus_neighbor_left = NodePath("../Top")
 focus_neighbor_right = NodePath("../Right")
 focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_next = NodePath("../Right")
+focus_previous = NodePath("../Top")
 focus_mode = 2
 icon = ExtResource("7_s27d8")
 flat = false
@@ -191,6 +201,9 @@ offset_top = 56.0
 offset_right = 40.0
 offset_bottom = 89.0
 tooltip_text = "Any Artifact Side Matches Filter"
+focus_neighbor_right = NodePath("../Left")
+focus_neighbor_bottom = NodePath("../artifacts_list")
+focus_next = NodePath("../Left")
 icon = ExtResource("10_qgfxf")
 flat = false
 item_count = 3
@@ -217,6 +230,7 @@ label_settings = SubResource("LabelSettings_goeow")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[connection signal="focus_entered" from="artifact_grid" to="." method="_on_artifact_grid_focus_entered"]
 [connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
 [connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]

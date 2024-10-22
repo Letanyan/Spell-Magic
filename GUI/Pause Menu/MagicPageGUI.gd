@@ -101,7 +101,6 @@ func _ready() -> void:
 		tex.stretch_mode = TextureRect.StretchMode.STRETCH_TILE
 		btn.icon = tex
 		i += 1
-		prints(btn, img)
 		
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -228,6 +227,7 @@ func update_cooldown() -> void:
 	
 func _on_preview_image_pressed() -> void:
 	preview_selector.visible = preview_image.button_pressed
+	prev_thumbnail.grab_focus()
 	
 func _on_name_edit_text_changed(new_text: String) -> void:
 	if current_index < 0:

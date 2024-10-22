@@ -56,11 +56,11 @@ func update_index(index: int) -> void:
 	upgrades.visible = false
 	settings.visible = false
 	match current_index:
-		0: magic_book.visible = true; # spells_button.grab_focus()
-		1: wand_case.visible = true; # wands_button.grab_focus()
-		2: artifacts.visible = true; # artifacts_button.grab_focus()
-		3: upgrades.visible = true; # upgrades_button.grab_focus()
-		4: settings.visible = true; # settings_button.grab_focus()
+		0: magic_book.visible = true; spells_button.grab_focus()
+		1: wand_case.visible = true; wands_button.grab_focus()
+		2: artifacts.visible = true; artifacts_button.grab_focus()
+		3: upgrades.visible = true; upgrades_button.grab_focus()
+		4: settings.visible = true; settings_button.grab_focus()
 	spells_button.set_pressed_no_signal(magic_book.visible)
 	wands_button.set_pressed_no_signal(wand_case.visible)
 	artifacts_button.set_pressed_no_signal(artifacts.visible)
@@ -116,16 +116,16 @@ func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 		
+	GlobalData.controller.handle_input(event)
+		
 	if event is InputEventJoypadButton:
-		if event.is_action_pressed("RT"):
+		if event.is_action_pressed("RB"):
 			update_index(current_index + 1)
-		elif event.is_action_pressed("LT"):
+		elif event.is_action_pressed("LB"):
 			update_index(current_index - 1)
 			
 		if event.is_action_pressed("Back"):
-			if not (spells_button.has_focus() or wands_button.has_focus() or artifacts_button.has_focus() or quit_button.has_focus() or upgrades_button.has_focus() or settings_button.has_focus()):
-				quit_button.grab_focus()
-			else:
+			if spells_button.has_focus() or wands_button.has_focus() or artifacts_button.has_focus() or quit_button.has_focus() or upgrades_button.has_focus() or settings_button.has_focus():
 				close_menu.emit()
 	
 

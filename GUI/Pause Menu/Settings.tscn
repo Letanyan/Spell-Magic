@@ -154,6 +154,30 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="KeyDisplayLabel" type="Label" parent="Tabs/HUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
+offset_top = 327.0
+offset_right = -62.0
+offset_bottom = 351.0
+text = "Key Display"
+
+[node name="KeyDisplay" type="OptionButton" parent="Tabs/HUD/KeyDisplayLabel"]
+layout_mode = 2
+offset_left = 192.0
+offset_right = 384.0
+offset_bottom = 25.0
+selected = 0
+item_count = 3
+popup/item_0/text = "Automatic"
+popup/item_0/id = 2
+popup/item_1/text = "Keyboard and Mouse"
+popup/item_2/text = "Controller"
+popup/item_2/id = 1
+
 [node name="Camera" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
@@ -810,6 +834,7 @@ bbcode_enabled = true
 [connection signal="toggled" from="Tabs/HUD/HideStatsView" to="." method="_on_hide_stats_view_toggled"]
 [connection signal="toggled" from="Tabs/HUD/HideReticule" to="." method="_on_hide_reticule_toggled"]
 [connection signal="value_changed" from="Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSize" to="." method="_on_projectile_indicator_size_value_changed"]
+[connection signal="item_selected" from="Tabs/HUD/KeyDisplayLabel/KeyDisplay" to="." method="_on_key_display_item_selected"]
 [connection signal="value_changed" from="Tabs/Camera/FOV Label/Slider" to="." method="_on_fov_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Camera/Distance/Slider" to="." method="_on_distance_slider_value_changed"]
 [connection signal="toggled" from="Tabs/Camera/Auto Distance/Check" to="." method="_on_auto_distance_toggled"]

@@ -11,6 +11,7 @@ extends Control
 @onready var hide_reticule: CheckButton = $Tabs/HUD/HideReticule as CheckButton
 @onready var projectile_indicator_size: HSlider = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
 @onready var projectile_indicator_size_display: Label = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
+@onready var key_display: OptionButton = $Tabs/HUD/KeyDisplayLabel/KeyDisplay
 
 @onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
@@ -80,6 +81,7 @@ func update_controls() -> void:
 	hide_reticule.button_pressed = world_settings.hud_settings.hide_reticule
 	projectile_indicator_size.value = world_settings.hud_settings.projectile_indicator_size
 	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
+	key_display.selected = world_settings.hud_settings.key_display
 	
 	fov_slider.value = int(world_settings.camera_settings.fov)
 	fov_value.text = str(int(world_settings.camera_settings.fov))
@@ -161,6 +163,10 @@ func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 func _on_projectile_indicator_size_value_changed(value: float) -> void:
 	world_settings.hud_settings.projectile_indicator_size = value
 	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
+	settings_changed.emit(world_settings)
+	
+func _on_key_display_item_selected(index: int) -> void:
+	world_settings.hud_settings.key_display = index as HUDSettings.KeyDisplay
 	settings_changed.emit(world_settings)
 
 func _on_fov_slider_value_changed(value: float) -> void:
