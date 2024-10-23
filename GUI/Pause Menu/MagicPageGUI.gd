@@ -172,7 +172,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	update_cooldown()
 	
 	element_combo.selected = spell.element
-	chain_edit.text = spell.chain.name if spell.chain else ""
+	chain_edit.text = spell.chain_configuration_call_text()
 	chain_edit.editable = book.settings.upgrade_settings.has_chain_method != 0
 	old_chain_text = chain_edit.text
 	chain_combo.selected = spell.chain_cast_kind
@@ -400,27 +400,40 @@ func _on_chain_text_changed(new_text: String) -> void:
 	var spell: Spell = book.spells[current_index]
 	
 	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell)
+	var option := Wand.Option.new()
+	option.parse_spells(n)
 	
 	if n == "":
 		spell.chain = null
 		errors_list.erase("chain")
-	elif n == spell.name:
-		errors_list["chain"] = "'%s' can not chain to itself" % n
+	elif option.spell.size() != 1:
+		spell.chain = null
+		errors_list["chain"] = "Only one spell is allowed to be chained"
+	elif option.next_spell() == spell.name:
+		errors_list["chain"] = "'%s' can not chain to itself" % spell.name
 	else:
-		var problem_chain := book.find_recursive_spell_chain(spell, n)
+		var new_spell = option.next_spell()
+		var problem_chain := book.find_recursive_spell_chain(spell, new_spell)
 		if not problem_chain.is_empty():
-			var message := "'%s' can not exist in a recursive spell chain " % n
+			var message := "'%s' can not exist in a recursive spell chain " % new_spell
 			for s in problem_chain:
 				message += s + "->"
 			errors_list["chain"] = message.trim_suffix("->")
 		else:
 			spell.chain = null
 			for s in book.spells:
-				if s.name == n:
-					spell.chain = s
+				if s.name == new_spell:
+					if option.parameters.is_empty():
+						spell.chain = s
+					else:
+						var ns := s.duplicate()
+						var params := option.parameters[0]
+						ns.configure_using_parameter_collection(params)
+						spell.chain = ns
+						spell.configuration_parameters_for_chain = option.parameters[0]
 					break
 			if spell.chain == null:
-				errors_list["chain"] = "'%s' does not exists" % n
+				errors_list["chain"] = "'%s' does not exists" % new_spell
 			else:
 				errors_list.erase("chain")
 				
@@ -657,13 +670,18 @@ func check_all_errors() -> void:
 		
 	text = chain_edit.text
 	if not text.is_empty():
-		var found := false
-		for s in book.spells:
-			if s.name == text:
-				found = true
-				break
-		if not found:
-			errors_list["chain"] = "'%s' does not exists" % text
+		var option := Wand.Option.new()
+		option.parse_spells(text)
+		if option.spell.size() != 1:
+			errors_list["chain"] = "Only one spell is allowed to be chained"
+		else:
+			var found := false
+			for s in book.spells:
+				if s.name == option.next_spell():
+					found = true
+					break
+			if not found:
+				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
 			
 	#for k: String in book.spells[current_index].expressions:
 		#var expr: Expr = book.spells[current_index].expressions[k]

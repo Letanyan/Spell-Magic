@@ -129,7 +129,11 @@ func rebuild_spell_chains() -> void:
 		if s.chain != null:
 			for t in spells:
 				if s.chain.name == t.name:
-					s.chain = t
+					if s.configuration_parameters_for_chain.is_empty():
+						s.chain = t
+					else:
+						s.chain = t.duplicate()
+						s.chain.configure_using_parameter_collection(s.configuration_parameters_for_chain)
 					break
 		
 func find_parent_chains(spell: Spell) -> PackedStringArray:

@@ -77,6 +77,8 @@ var buff_v: float = 0.0
 var buff_attack: float = 0.0
 var buff_defence: float = 0.0
 
+var configuration_parameters_for_chain: Dictionary = {}
+
 func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false, no_comp: bool = false) -> void:
 	x = _x
 	y = _y
@@ -123,6 +125,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.crit_rate = crit_rate
 	result.crit_dmg = crit_dmg
 	result.spherical_coords = spherical_coords
+	result.configuration_parameters_for_chain.merge(configuration_parameters_for_chain, true)
 	if for_player:
 		result.limit_r = limit_r
 		result.limit_v = limit_v
@@ -565,6 +568,7 @@ func save_dict() -> Dictionary:
 		"expression_strings": expression_strings, "is_active": is_active, 
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
 		"spherical_coords": spherical_coords, "preview_image": pimages, "preview_flags": pflags,
+		"configuration_parameters_for_chain": configuration_parameters_for_chain,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -599,6 +603,7 @@ func load_dict(dict: Dictionary) -> void:
 	if dict["chain"] != {}:
 		chain = Spell.new()
 		chain.load_dict(dict["chain"] as Dictionary)
+		chain.configure_using_parameter_collection(configuration_parameters_for_chain)
 	id = dict.get("id", -1)
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
@@ -606,6 +611,7 @@ func load_dict(dict: Dictionary) -> void:
 	expression_strings = dict.get("expression_strings", {})
 	is_active = dict.get("is_active", false)
 	elemental_application = dict.get("elemental_application", 0.0)
+	configuration_parameters_for_chain = dict.get("configuration_parameters_for_chain", {})
 	for e: String in expression_strings:
 		expression_strings[e] = (expression_strings[e] as String).strip_edges()
 	
@@ -925,4 +931,19 @@ func create_thumbnail(is_small: bool, cache: Dictionary) -> Texture2D:
 		tinted.offset = preview_offset(i)
 		result.texture.append(tinted)
 		
+	return result
+
+func chain_configuration_call_text() -> String:
+	if chain == null:
+		return ""
+	var result := chain.name
+	if not configuration_parameters_for_chain.is_empty():
+		result += "("
+		var j := 0
+		for k: String in configuration_parameters_for_chain:
+			result += k + " = " + configuration_parameters_for_chain[k]
+			if j < configuration_parameters_for_chain.size() - 1:
+				result += ", "
+			j += 1
+		result += ")"
 	return result
