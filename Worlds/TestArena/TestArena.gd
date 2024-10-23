@@ -26,6 +26,8 @@ var pause_start: float
 var inhabitants: Array[Enemy] = []
 var spawner: ItemSpawner
 
+var is_mouse_down: bool = false
+
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
 	
@@ -290,6 +292,21 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if player.magic_book.settings.is_paused:
 		if get_window().has_focus():
+			if Input.get_joy_axis(0, JOY_AXIS_TRIGGER_RIGHT) > 0:
+				if not is_mouse_down:
+					var event := InputEventMouseButton.new()
+					is_mouse_down = true
+					event.position = get_viewport().get_mouse_position()
+					event.pressed = true
+					event.button_index = MOUSE_BUTTON_LEFT
+					Input.parse_input_event(event)
+			elif is_mouse_down:
+				is_mouse_down = false
+				var event := InputEventMouseButton.new()
+				event.position = get_viewport().get_mouse_position()
+				event.pressed = false
+				event.button_index = MOUSE_BUTTON_LEFT
+				Input.parse_input_event(event)
 			var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
 			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		return

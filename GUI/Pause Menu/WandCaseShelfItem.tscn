@@ -35,6 +35,8 @@ offset_left = -80.0
 offset_top = 8.0
 offset_right = 72.0
 offset_bottom = 41.0
+focus_neighbor_right = NodePath("../spell")
+focus_next = NodePath("../spell")
 selected = 0
 item_count = 9
 popup/item_0/text = "None"
@@ -64,6 +66,8 @@ offset_left = 24.0
 offset_top = 8.0
 offset_right = -8.0
 offset_bottom = 41.0
+focus_neighbor_left = NodePath("../cast_combo")
+focus_previous = NodePath("../cast_combo")
 
 [connection signal="item_selected" from="cast_combo" to="." method="_on_cast_combo_selected"]
 [connection signal="text_changed" from="spell" to="." method="_on_spell_text_changed"]

@@ -571,7 +571,3 @@ class FilterOptions:
 		events.clear()
 		effects.clear()
 		elements.clear()
-
-
-func _on_artifact_grid_focus_entered() -> void:
-	print("got focus")

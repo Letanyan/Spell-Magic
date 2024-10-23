@@ -91,7 +91,8 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		action_change_callables.append(action_changed)
 		
 		
-	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index))
+	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index), update_wand_shelf_relative_item)
+		
 		
 func update_wand_shelf_item(widx: int = current_index) -> Callable:
 	return func(item: WandCaseShelfItem, index: int) -> void:
@@ -105,6 +106,14 @@ func update_wand_shelf_item(widx: int = current_index) -> Callable:
 		item.action_changed = action_change_callables[index]
 		item.autocomplete = book.autocomplete
 		item.setup()
+
+func update_wand_shelf_relative_item(item: WandCaseShelfItem, prev: WandCaseShelfItem, next: WandCaseShelfItem) -> void:
+	item.cast_combo.focus_neighbor_top = prev.cast_combo.get_path()
+	item.cast_combo.focus_neighbor_bottom = next.cast_combo.get_path()
+	item.spell.focus_neighbor_top = prev.spell.get_path()
+	item.spell.focus_neighbor_bottom = next.spell.get_path()
+	item.spell.focus_next = next.cast_combo.get_path()
+	item.cast_combo.focus_previous = prev.spell.get_path()
 	
 func _on_wand_index_item_selected(index: int) -> void:
 	reload_wand_shelf_items(index)

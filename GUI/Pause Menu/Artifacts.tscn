@@ -230,7 +230,6 @@ label_settings = SubResource("LabelSettings_goeow")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="focus_entered" from="artifact_grid" to="." method="_on_artifact_grid_focus_entered"]
 [connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
 [connection signal="on_cell_selected" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_selected"]

@@ -4,8 +4,9 @@ extends Control
 @onready var scroll_bar: ScrollBar = $scroll_bar
 @onready var holder: Control = $holder
 
-var make_template: Callable # () -> Control
-var update_item: Callable # (item: Control, index: int) -> void
+var make_template: Callable ## () -> Control
+var update_item: Callable ## (item: Control, index: int) -> void
+var relative_update: Callable = func(item: Control, prev: Control, next: Control) -> void: pass
 var total_items: int
 var height_for_items: float
 
@@ -14,7 +15,7 @@ var y_offset: float = 0.0
 var items_offset: int = 0
 var items_shown: int = 0
 
-var _visible_items: Dictionary = {} # [int]bool
+var _visible_items: Dictionary = {} ## [int]int // [index]items.index
 
 func _ready() -> void:
 	get_tree().get_root().size_changed.connect(generate_items)
@@ -22,11 +23,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func setup(total: int, height: float, template: Callable, update: Callable) -> void:
+func setup(total: int, height: float, template: Callable, update: Callable, rel_update: Callable = relative_update) -> void:
 	total_items = total
 	height_for_items = height
 	make_template = template
 	update_item = update
+	relative_update = rel_update
 	y_offset = 0
 	scroll_bar.value = 0
 	items_offset = 0
@@ -45,6 +47,7 @@ func generate_items() -> void:
 	else:
 		scroll_bar.visible = true
 	
+	# FIXME: update all items on size change
 	if items_shown < items.size():
 		for i in items.size() - items_shown:
 			var item := items.pop_back() as Control
@@ -72,7 +75,15 @@ func update_items() -> void:
 		if j >= 0 and j < total_items:
 			if not _visible_items.has(j):
 				update_item.call(items[i], j)
-			new_visible_items[j] = true
+			new_visible_items[j] = i
+			
+	for i in items.size():
+		var j := items_offset + posmod(i - min_index, items.size())
+		if j >= 0 and j < total_items:
+			if not _visible_items.has(j):
+				var prev := posmod(i - 1, items.size())
+				var next := posmod(i + 1, items.size())
+				relative_update.call(items[i], items[prev], items[next])
 			
 	_visible_items = new_visible_items
 	
@@ -100,9 +111,12 @@ func _on_scroll_bar_scrolling() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if scroll_bar.visible and event.is_pressed():
+			var view_count := (total_items - items_shown + 1)
 			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_WHEEL_UP:
-				scroll_bar.value -= 32.0 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
+				scroll_bar.value -= 0.75 / view_count
+				#scroll_bar.value -= height_for_items * 0.75 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
 				update_y_offset()
 			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				scroll_bar.value += 32.0 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
+				scroll_bar.value += 0.75 / view_count
+				#scroll_bar.value += height_for_items * 0.75 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
 				update_y_offset()

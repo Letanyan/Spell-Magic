@@ -396,7 +396,6 @@ func _on_cd_text_changed(new_text: String) -> void:
 func _on_chain_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
-	# FIXME: allow passing parameters
 	var spell: Spell = book.spells[current_index]
 	
 	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell)
