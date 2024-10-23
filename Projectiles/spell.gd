@@ -169,31 +169,31 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 	calculate_cooldown()
 	overwrite_expressions(constants)
 	
-func configure_using_parameter_collection(parameters: Dictionary) -> void:
+func configure_using_parameter_collection(parameters: Dictionary, vars: Dictionary) -> void:
 	var params := parameters.duplicate()
 	if params.has("element"):
 		element = Element.keys().find((params["element"] as String).to_upper()) as Element
 		params.erase("element")
 	if params.has("r"):
-		radius = (params["r"] as String).to_float()
+		radius = Expr.new(params["r"] as String).compute(vars)
 		params.erase("r")
 	if params.has("P"):
-		power = (params["P"] as String).to_float()
+		power = Expr.new(params["P"] as String).compute(vars)
 		params.erase("P")
 	if params.has("T"):
-		duration = (params["T"] as String).to_float()
+		duration = Expr.new(params["T"] as String).compute(vars)
 		params.erase("T")
 	if params.has("N"):
-		count = (params["N"] as String).to_int()
+		count = roundi(Expr.new(params["N"] as String).compute(vars))
 		params.erase("N")
 	if params.has("CR"):
-		crit_rate = (params["CR"] as String).to_float()
+		crit_rate = Expr.new(params["CR"] as String).compute(vars)
 		params.erase("CR")
 	if params.has("CD"):
-		crit_dmg = (params["CD"] as String).to_float()
+		crit_dmg = Expr.new(params["CD"] as String).compute(vars)
 		params.erase("CD")
 	if params.has("M"):
-		mana_cost = (params["M"] as String).to_float()
+		mana_cost = Expr.new(params["M"] as String).compute(vars)
 		params.erase("M")
 	calculate_cooldown()
 	overwrite_expressions(params)
@@ -436,10 +436,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	fixed_vars["rn7"] = randf()
 	fixed_vars["rn8"] = randf()
 	fixed_vars["rn9"] = randf()
-	fixed_vars["T"] = duration
-	fixed_vars["P"] = power
 	fixed_vars["n"] = float(n)
-	fixed_vars["r"] = radius
 	fixed_vars.merge(fvars, true)
 	compute_expressions(fixed_vars, {}, overrides)
 	fixed_vars["D"] = d_expr.compute(fixed_vars)
@@ -484,6 +481,17 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 		
 func get_particles(fvars: Dictionary, exvars: Dictionary, overrides: Dictionary) -> Array[SpellBody]:
 	var result: Array[SpellBody] = []
+	var fixed_vars := basic_fixed_vars()
+	charge = 0.0
+	fixed_vars.merge(fvars, true)
+	for i in range(count):
+		var p := get_particle(i, fixed_vars, exvars, overrides)
+		p.n = i
+		p.spell = self
+		result.append(p)
+	return result
+	
+func basic_fixed_vars() -> Dictionary:
 	var fixed_vars := {}
 	fixed_vars["r0"] = randf()
 	fixed_vars["r1"] = randf()
@@ -500,17 +508,22 @@ func get_particles(fvars: Dictionary, exvars: Dictionary, overrides: Dictionary)
 	fixed_vars["M"] = mana_cost
 	fixed_vars["C"] = charge
 	fixed_vars["L"] = charge
-	charge = 0.0
-	fixed_vars.merge(fvars, true)
-	for i in range(count):
-		var p := get_particle(i, fixed_vars, exvars, overrides)
-		p.n = i
-		p.spell = self
-		result.append(p)
+	fixed_vars["T"] = duration
+	fixed_vars["P"] = power
+	fixed_vars["r"] = radius
+	fixed_vars["CR"] = crit_rate
+	fixed_vars["CD"] = crit_dmg
+	return fixed_vars
+	
+func global_constant_variables() -> Dictionary:
+	var result := basic_fixed_vars()
+	for key: String in expressions:
+		result[key] = (expressions[key] as Expr).compute(result)
 	return result
 	
 func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
 	var fixed_vars := {}
+	# FIXME: should we really be using these variables. It should rather be identical to the actual spell
 	fixed_vars["rn0"] = randf()
 	fixed_vars["rn1"] = randf()
 	fixed_vars["rn2"] = randf()
@@ -600,10 +613,6 @@ func load_dict(dict: Dictionary) -> void:
 	crit_dmg = dict.get("crit_dmg", 0.0)
 	spherical_coords = dict.get("spherical_coords", false)
 	charge = 0.0
-	if dict["chain"] != {}:
-		chain = Spell.new()
-		chain.load_dict(dict["chain"] as Dictionary)
-		chain.configure_using_parameter_collection(configuration_parameters_for_chain)
 	id = dict.get("id", -1)
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
@@ -620,6 +629,11 @@ func load_dict(dict: Dictionary) -> void:
 	z_expr = Expr.new(z)
 	d_expr = Expr.new(delay)
 	build_expressions()
+	
+	if dict["chain"] != {}:
+		chain = Spell.new()
+		chain.load_dict(dict["chain"] as Dictionary)
+		chain.configure_using_parameter_collection(configuration_parameters_for_chain, global_constant_variables())
 	
 	calculate_cooldown()
 	

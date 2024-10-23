@@ -406,7 +406,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
 			source.amount = roundi(80 * rl)
-			var trail: GPUParticles3D = get_node("trail_trail")
+			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			(trail.process_material as ParticleProcessMaterial).emission_ring_radius = rl
 			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", rl / 10.0)

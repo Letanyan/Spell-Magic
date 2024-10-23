@@ -133,7 +133,7 @@ func rebuild_spell_chains() -> void:
 						s.chain = t
 					else:
 						s.chain = t.duplicate()
-						s.chain.configure_using_parameter_collection(s.configuration_parameters_for_chain)
+						s.chain.configure_using_parameter_collection(s.configuration_parameters_for_chain, s.global_constant_variables())
 					break
 		
 func find_parent_chains(spell: Spell) -> PackedStringArray:

@@ -52,7 +52,7 @@ class Option:
 				else:
 					var ns := s.duplicate()
 					var params := parameters[spell_index]
-					ns.configure_using_parameter_collection(params)
+					ns.configure_using_parameter_collection(params, {})
 					return ns
 		return null
 		
@@ -87,6 +87,7 @@ class Option:
 		spell.clear()
 		parameters.clear()
 		
+		var param_paren_count := 0
 		for s in text:
 			match state:
 				SPELL_NAME:
@@ -119,18 +120,24 @@ class Option:
 						state = SPELL_NAME
 						buffer = ""
 				PARAM_VALUE:
-					if "1234567890.-qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890_".contains(s):
+					if "1234567890.-qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_ (+-*/^".contains(s) or (param_paren_count > 0 and (s == "," or s == ")")):
 						buffer += s
+						if s == "(":
+							param_paren_count += 1
+						elif s == ")":
+							param_paren_count -= 1
 					elif s == ",":
 						state = PARAM_NAME
 						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
 						parameters[parameters.size() - 1][param_name] = buffer
 						buffer = ""
+						param_paren_count = 0
 					elif s == ")":
 						state = SPELL_NAME
 						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
 						parameters[parameters.size() - 1][param_name] = buffer
 						buffer = ""
+						param_paren_count = 0
 		
 		match state:
 			SPELL_NAME:
@@ -276,7 +283,7 @@ func get_spell(opt: Option, book: MagicBook) -> Spell:
 					return s
 				else:
 					var ns := s.duplicate()
-					ns.configure_using_parameter_collection(picked_parameters)
+					ns.configure_using_parameter_collection(picked_parameters, {})
 					return ns
 		return null
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
@@ -299,7 +306,7 @@ func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 					return s
 				else:
 					var ns := s.duplicate()
-					ns.configure_using_parameter_collection(picked_parameters)
+					ns.configure_using_parameter_collection(picked_parameters, {})
 					return ns
 		return null
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
@@ -313,7 +320,7 @@ func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 				else:
 					var ns := s.duplicate()
 					var params := opt.parameters[opt.spell_index]
-					ns.configure_using_parameter_collection(params)
+					ns.configure_using_parameter_collection(params, {})
 					return ns
 			elif opt.kind == Kind.PICK:
 				picked_key = key

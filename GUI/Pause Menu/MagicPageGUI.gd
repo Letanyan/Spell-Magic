@@ -412,7 +412,7 @@ func _on_chain_text_changed(new_text: String) -> void:
 	elif option.next_spell() == spell.name:
 		errors_list["chain"] = "'%s' can not chain to itself" % spell.name
 	else:
-		var new_spell = option.next_spell()
+		var new_spell := option.next_spell()
 		var problem_chain := book.find_recursive_spell_chain(spell, new_spell)
 		if not problem_chain.is_empty():
 			var message := "'%s' can not exist in a recursive spell chain " % new_spell
@@ -428,9 +428,9 @@ func _on_chain_text_changed(new_text: String) -> void:
 					else:
 						var ns := s.duplicate()
 						var params := option.parameters[0]
-						ns.configure_using_parameter_collection(params)
+						ns.configure_using_parameter_collection(params, spell.global_constant_variables())
 						spell.chain = ns
-						spell.configuration_parameters_for_chain = option.parameters[0]
+						spell.configuration_parameters_for_chain = params
 					break
 			if spell.chain == null:
 				errors_list["chain"] = "'%s' does not exists" % new_spell
