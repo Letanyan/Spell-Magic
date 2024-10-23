@@ -25,6 +25,9 @@ func update(body: Node3D, delta: float) -> Dictionary:
 	var limit_reasons := {}
 	for i in range(particles.size()):
 		var p: SpellBody = particles[i]
+		if p == null:
+			should_remove.append(i)
+			continue
 		
 		if p.is_active() and not p.has_expired(t):
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
@@ -66,9 +69,10 @@ func update(body: Node3D, delta: float) -> Dictionary:
 		origin_spell_caster = (origin_node as Enemy).spell_caster
 	while idx >= 0:
 		var i := should_remove[idx] as int
-		particles[i].get_parent().remove_child(particles[i])
 		if origin_spell_caster != null and origin_spell_caster.complexity_tracker.has(particles[i].complexity_id):
 			should_remove_complexity[particles[i].complexity_id] = true
+		if particles[i].is_emitting:
+			particles[i].stop_emitting()
 		particles.remove_at(i)
 		idx -= 1
 		
@@ -366,7 +370,6 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 	p.spell.compute_expressions(p.fixed_vars, {}, p.override_vars)
 	insert.call(p)
 	if q and q.get_parent():
-		q.get_parent().remove_child(q)
 		q.queue_free()
 	
 func set_up_collision(world: Node3D, p: SpellBody) -> void:

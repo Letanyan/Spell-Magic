@@ -82,7 +82,6 @@ func _physics_process(delta: float) -> void:
 				spell_caster.free_particles()
 			var parent := get_parent()
 			if parent:
-				parent.call_deferred("remove_child", self)
 				queue_free()
 		return
 	

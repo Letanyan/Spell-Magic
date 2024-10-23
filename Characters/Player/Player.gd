@@ -638,11 +638,12 @@ func update_projectile_indicators(pi_scale: float) -> void:
 			var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
 			updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
 		
-	# FIXME: use spellbody after free 
+	# FIXME: use spellbody after free
+	# FIXME: reuse indicators from circle buffer
 	for body: Node3D in projectile_indicators:
 		if not updated_spell_bodies.get(body, false) as bool:
 			var mi := projectile_indicators[body] as Node3D
-			pivot.remove_child(mi)
+			mi.queue_free()
 			projectile_indicators.erase(body)
 
 class CombatStats:

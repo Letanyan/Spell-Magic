@@ -100,7 +100,10 @@ func update_list() -> void:
 func update_list_and_grid() -> void:
 	update_list()
 	for c in artifact_grid.get_children():
-		artifact_grid.remove_child(c)
+		if c != temporary_grid_tile:
+			c.queue_free()
+		else:
+			artifact_grid.remove_grid_tile(temporary_grid_tile)
 	artifact_grid.child_grid.clear()
 	for a: Artifact in artifacts.connected:
 		var v := artifacts.connected[a] as Vector2

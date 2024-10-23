@@ -49,7 +49,7 @@ func generate_items() -> void:
 		for i in items.size() - items_shown:
 			var item := items.pop_back() as Control
 			if item != null:
-				holder.remove_child(item)
+				item.queue_free()
 	if items_shown > items.size():
 		for i in items_shown - items.size():
 			var item := make_template.call() as Control

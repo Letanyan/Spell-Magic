@@ -154,7 +154,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 	effect = body.find_child("burn_effect", false, false)
 	if effect != null:
 		if burning.value == 0.0:
-			body.remove_child(effect)
+			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
 			(source.process_material as ParticleProcessMaterial).scale_min = burning.value
@@ -163,7 +163,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 	effect = body.find_child("stun_effect", false, false)
 	if effect != null:
 		if stun.value == 0.0:
-			body.remove_child(effect)
+			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
@@ -172,7 +172,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 	effect = body.find_child("wet_effect", false, false)
 	if effect != null:
 		if wetness.value == 0.0:
-			body.remove_child(effect)
+			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
 			(source.process_material as ParticleProcessMaterial).scale_max = wetness.value
@@ -180,7 +180,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 	effect = body.find_child("freeze_effect", false, false)
 	if effect != null:
 		if freeze.value == 0.0:
-			body.remove_child(effect)
+			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
 			source.amount = int(freeze.value * 100)

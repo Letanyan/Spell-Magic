@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=13 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
 [ext_resource type="AudioStream" uid="uid://blus3u8usi3fc" path="res://Audio/projectile/water.mp3" id="2_7rwhp"]
@@ -58,6 +58,18 @@ height = 0.5
 radial_segments = 8
 rings = 4
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_us730"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, -1, 0)
+scale_min = 0.3
+scale_curve = SubResource("CurveTexture_58u4p")
+color_ramp = SubResource("GradientTexture1D_a2dhw")
+
 [node name="water" type="Node3D"]
 script = ExtResource("1_dkd3k")
 
@@ -73,6 +85,12 @@ amount = 80
 randomness = 1.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_tnio6")
+draw_pass_1 = SubResource("SphereMesh_37v5l")
+
+[node name="source_trail" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0652502)
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_us730")
 draw_pass_1 = SubResource("SphereMesh_37v5l")
 
 [node name="audio" type="AudioStreamPlayer3D" parent="."]

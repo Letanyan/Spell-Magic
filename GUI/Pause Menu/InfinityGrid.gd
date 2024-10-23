@@ -52,10 +52,18 @@ func remove_grid_tile(n: Control) -> void:
 			remove_child(n)
 			break
 			
+func delete_grid_tile(n: Control) -> void:
+	for coord: Vector2 in child_grid:
+		if child_grid[coord] == n:
+			child_grid.erase(coord)
+			n.queue_free()
+			break
+			
 func remove_tile_at_coord(coord: Vector2) -> void:
 	if child_grid.has(coord):
-		remove_child(child_grid[coord] as Control)
+		var control := child_grid[coord] as Control
 		child_grid.erase(coord)
+		control.queue_free()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

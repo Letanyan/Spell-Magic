@@ -379,7 +379,7 @@ func die() -> void:
 	drop_scroll_note(world)
 	
 	SignalBus.enemy_death.emit(get_node("."))
-	world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout.connect(func() -> void: world.remove_child(explosion))
+	world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout.connect(func() -> void: explosion.queue_free())
 	
 		
 func drop_artifact_item(world: Node3D) -> bool:

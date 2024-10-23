@@ -31,9 +31,9 @@ func _ready() -> void:
 func _on_cancel_pressed() -> void:
 	cancelled.emit()
 	if get_parent():
-		get_parent().remove_child(get_node("."))
+		queue_free()
 
 func _on_confirm_pressed() -> void:
 	confirmed.emit()
 	if get_parent():
-		get_parent().remove_child(get_node("."))
+		queue_free()
