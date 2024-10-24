@@ -49,7 +49,6 @@ extends Control
 @onready var show_notes: OptionButton = $Tabs/Notes/ShowNotes
 @onready var sort_notes: OptionButton = $Tabs/Notes/SortNotes
 
-
 var world_settings: WorldSettings:
 	set(value):
 		world_settings = value

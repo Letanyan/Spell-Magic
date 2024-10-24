@@ -197,8 +197,9 @@ func _physics_process(delta: float) -> void:
 				event.pressed = false
 				event.button_index = MOUSE_BUTTON_LEFT
 				Input.parse_input_event(event)
-			var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
-			get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
+			if GlobalData.controller.last_input_type == Controller.InputType.CONTROLLER:
+				var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * 12
+				get_viewport().warp_mouse(get_viewport().get_mouse_position() + movement)
 		return
 	
 	knowledge_tick += delta

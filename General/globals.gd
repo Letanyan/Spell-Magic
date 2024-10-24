@@ -117,6 +117,39 @@ func get_date_time_string(timestamp: int) -> String:
 		12: month = "December"
 	return "%d %s %d (%02d:%02d)" % [dict.day, month, dict.year, dict.hour, dict.minute]
 
+static func save_credits() -> void:
+	if not FileAccess.file_exists("user://credits/license/godotengine.txt"):
+		var dir := DirAccess.open("user://")
+		if not dir.dir_exists("credits"):
+			dir.make_dir("credits/")
+			dir.make_dir("credits/license")
+		var file := FileAccess.open("user://credits/license/godotengine.txt", FileAccess.WRITE)
+		file.store_string(Engine.get_license_text())
+		file.close()
+		var license_info := Engine.get_license_info()
+		for license_name: String in license_info:
+			file = FileAccess.open("user://credits/license/%s.txt" % license_name, FileAccess.WRITE)
+			file.store_string(license_info[license_name] as String)
+			file.close()
+			
+		file = FileAccess.open("user://credits/copyright.txt", FileAccess.WRITE)
+		var copyright_info := Engine.get_copyright_info()
+		for info in copyright_info:
+			file.store_string((info["name"] as String) + "\n")
+			var parts := info["parts"] as Array
+			for part: Dictionary in parts:
+				file.store_string("Files: ")
+				for f: String in part["files"]:
+					file.store_string(f + "\n")
+				file.store_string("Copyright: ")
+				for f: String in part["copyright"]:
+					file.store_string(f + "\n")
+				file.store_string("License: " + (part["license"] as String) + "\n\n")
+			file.store_string("\n")
+		file.flush()
+		file.close()
+			
+
 class Ref extends RefCounted:
 	var storage: Variant = null
 	var data: Variant

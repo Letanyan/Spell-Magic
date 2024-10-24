@@ -46,7 +46,6 @@ func _on_cast_combo_selected(id: int) -> void:
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text: String) -> void:
-	# FIXME: handle list of spells when action is not the choose action
 	var updated_text: String = autocomplete.call(old_text, spell, true)
 	spell_changed.call(get_node(".") as WandCaseShelfItem, updated_text, false)
 	old_text = updated_text
