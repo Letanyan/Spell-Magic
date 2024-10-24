@@ -42,6 +42,11 @@ class Option:
 			spell_index = 0
 		return spell[spell_index]
 		
+	func get_spell_string() -> String:
+		if not (spell_index >= 0 and spell_index < spell.size()):
+			return ""
+		return spell[spell_index]
+		
 	func get_spell(book: MagicBook) -> Spell:
 		if not (spell_index >= 0 and spell_index < spell.size()):
 			return null

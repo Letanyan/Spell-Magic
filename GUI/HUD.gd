@@ -272,7 +272,10 @@ func update_wand_mappings() -> void:
 				
 	var color_spell_option := func(opt: Wand.Option) -> String:
 		var s := wand.get_spell(opt, book)
-		return color_spell.call(s)
+		if s == null:
+			return "[color=#333]" + opt.get_spell_string() + "[/color]"
+		else:
+			return color_spell.call(s)
 		
 		
 	var build_desc := func(kd: String, title: String, spell: Spell) -> String:
@@ -305,17 +308,17 @@ func update_wand_mappings() -> void:
 		var kd := " " + GlobalData.controller.key_images(k, int(SIZE * 1.5) )
 		match s.kind:
 			Wand.Kind.FIRE:
-				var spell := s.get_spell(book)
-				if spell != null:
-					rich_text += build_desc.call(kd, "Cast", spell)
+				var colored_list := s.display_rotated_spells_list(color_spell_option)
+				if not colored_list.is_empty(): 
+					rich_text += kd + " [b]Cast[/b]: " + colored_list + "\n"
 			Wand.Kind.FIRE_HOLD:
-				var spell := s.get_spell(book)
-				if spell != null:
-					rich_text += build_desc.call(kd, "Charge", spell)					
+				var colored_list := s.display_rotated_spells_list(color_spell_option)
+				if not colored_list.is_empty(): 
+					rich_text += kd + " [b]Charge[/b]: " + colored_list + "\n"				
 			Wand.Kind.RAPID_FIRE:
-				var spell := s.get_spell(book)
-				if spell != null:
-					rich_text += build_desc.call(kd, "Rapid", spell)
+				var colored_list := s.display_rotated_spells_list(color_spell_option)
+				if not colored_list.is_empty(): 
+					rich_text += kd + " [b]Rapid[/b]: " + colored_list + "\n"
 				
 			Wand.Kind.PICK:
 				var colored_list := s.display_rotated_spells_list(color_spell_option)
