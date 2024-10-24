@@ -14,7 +14,8 @@ extends CharacterBody
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
-@onready var ground_cast: RayCast3D = $GroundCast
+@onready var ground_cast: RayCast3D = $Pivot/GroundCast
+@onready var step_cast: RayCast3D = $Pivot/StepCast
 var platform: PhysicsBody3D = null
 var old_platform_position: Vector3 = Vector3.ZERO
 
@@ -169,6 +170,12 @@ func _physics_process(delta: float) -> void:
 		if is_on_floor():
 			play_walking_audio("empty")
 			play_animation("battle_idle")
+			if step_cast.is_colliding():
+				var new_y := step_cast.get_collision_point().y
+				if new_y > feet_position():
+					print(new_y, " - ", feet_position(), " = ", new_y - feet_position())
+					velocity_movement.impulse.y = (new_y - feet_position()) * 10
+			
 			var collider := ground_cast.get_collider() as PhysicsBody3D
 			if collider == null:
 				platform = null

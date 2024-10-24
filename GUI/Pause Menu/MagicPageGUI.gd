@@ -249,6 +249,7 @@ func _on_element_combo_selected(index: int) -> void:
 	book.spells[current_index].element = index as Spell.Element
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
+	refresh_preview_thumbnails(book.spells[current_index])
 
 func _on_chain_combo_selected(index: int) -> void:
 	if current_index < 0:

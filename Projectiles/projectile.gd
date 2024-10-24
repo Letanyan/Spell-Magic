@@ -14,6 +14,7 @@ var old_velocity := Vector3.ZERO
 var lifetime_velocity: float = 0.0 
 var old_pos: Vector3 = Vector3.ZERO
 var most_recent_radius: Vector3 = Vector3.ZERO
+var rotation_angle: float = NAN
 var rng: RandomNumberGenerator
 
 var complexity_id: int = 0
@@ -176,7 +177,8 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 					var body := _body as CharacterBody
 					body.add_impulse(impulse())
 					dmg = body.vitals.handle_damage(Spell.Element.ROCK, spell.damage(caster_vitals), spell.elemental_application)
-					lose_control(self, body, dmg)
+					if not (is_player and origin_node is Player):
+						lose_control(self, body, dmg)
 		Spell.Element.WATER:
 			if is_world or is_rock or is_world_object or is_ice:
 				expire_now(self, _body, dmg)
@@ -501,10 +503,9 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.ROCK:
 			position = p
 			var rot_axis := Vector3.UP.cross(velocity).normalized()
-			var rot_ang := Vector3.UP.angle_to(velocity)
-			if rot_axis:
+			var rot_ang := Vector3.UP.angle_to(velocity) if is_nan(rotation_angle) else rotation_angle
+			if rot_axis and rot_ang:
 				rotate(rot_axis, rot_ang * vars.get("~~frame_time", 0.0166667) as float)
-			
 				
 		Spell.Element.WATER:
 			position = p
@@ -575,6 +576,7 @@ func stop_emitting() -> void:
 			body.visible = false
 			body.collision_mask = 0
 			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			(get_node("body/shape") as CollisionShape3D).disabled = true
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(max(0.1, AUDIO_FADE_OUT))
 			

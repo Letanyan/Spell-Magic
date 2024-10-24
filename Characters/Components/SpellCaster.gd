@@ -201,9 +201,15 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 	
 	if s.player_is_origin:
 		if variable_kind == SpellVariableKind.FIXED:
-			result["~abs_pos"] = _body.position
+			if entity == Entity.PLAYER or entity == Entity.ENEMY:
+				result["~abs_pos"] = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
+			else:
+				result["~abs_pos"] = _body.position
 		elif variable_kind == SpellVariableKind.TIMED:
-			result["~rel_pos"] = _body.position
+			if entity == Entity.PLAYER or entity == Entity.ENEMY:
+				result["~rel_pos"] = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
+			else:
+				result["~rel_pos"] = _body.position
 	else:
 		if entity == Entity.PLAYER:
 			var port := _body.get_viewport()

@@ -465,17 +465,18 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 		p.update_shape(nr * radius, true)
 	else:
 		p.update_shape(Vector3(1, 1, 1).normalized() * radius, true)
+	p.rotation_angle = clampf(fixed_vars.get("ra", NAN) as float, -2 * PI, 2 * PI)
 	
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
 	if element == Element.ROCK:
-		var origin: Vector3 = fixed_vars.get("~abs_pos", Vector3.ZERO)
+		var origin: Vector3 = fixed_vars.get("~abs_pos", Vector3.ZERO) # FIXME: change '~abs_pos' to '~~abs_pos' to avoid user overwrite?
 		var dir: Vector3 = origin.direction_to(p.position)
 		var rot_axis := dir.cross(Vector3.BACK).normalized()
 		var rot_angle := dir.angle_to(Vector3.BACK)
 		if not rot_axis.is_zero_approx():
-			p.rotate_object_local(rot_axis, rot_angle)
+			p.rotate_object_local(rot_axis, rot_angle if is_nan(p.rotation_angle) else p.rotation_angle)
 	
 	return p
 		

@@ -178,6 +178,7 @@ static var notes := {
 	"variable M": "The base mana cost for this spell",
 	"variable C": "The charge time in seconds. Spell must be set to a {Charged Cast} on the {Wand}.",
 	"variable rx, ry, rz": "These describe the width, height and depth of {Rock} projectile. The actual size is given as the vector {(rx,ry,rz)} normalised then scaled by {r}. {These values can only be set in the variables field of each spell.}",
+	"variable ra": "{ra} describe the rotation angle speed of {Rock} spells. Limited to {2*pi}.",
 	
 	"wand Cast": "Casts the assigned spell immediatly once keys are released.",
 	"wand Charged Cast": "Keys can be held and then released to cast the assigned spell. The time spent holding the keys will be set in the variable {C} to be used in the spell.",
