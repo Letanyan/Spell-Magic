@@ -107,10 +107,11 @@ func _physics_process(delta: float) -> void:
 			animation_player.play("unset_down")
 			
 	movement_tick -= delta
+	position = start_position.lerp(target_position, (0.5 - movement_tick) / 0.5)
 	if movement_tick <= 0.0:
-		var next := path.next_position(0.5, self, focus_point)
-		target_position = Vector3(next.x, next.y, next.z)
 		movement_tick = 0.5
+		var next := path.next_position(movement_tick, self, focus_point)
+		target_position = Vector3(next.x, next.y, next.z)
 		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 		if feet_position() < g:
 			if path.coord_y == PathStyle.CoordY.GROUND or path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
@@ -124,7 +125,6 @@ func _physics_process(delta: float) -> void:
 					target_position.y = position.y
 		start_position = position
 				
-	position = start_position.lerp(target_position, (0.5 - movement_tick) / 0.5)
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:
 		var actual_goal := focus_point
