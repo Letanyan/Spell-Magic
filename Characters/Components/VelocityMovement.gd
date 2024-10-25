@@ -149,7 +149,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + wb * delta
-		elif not body.is_on_floor() and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
+		elif not body.is_on_floor and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
 			target_velocity.y = target_velocity.y - fa * delta
 		else:
 			target_velocity.y = 0

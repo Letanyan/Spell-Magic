@@ -49,6 +49,8 @@ func _ready() -> void:
 	level_text.text = str(int(level))
 	animator = $AnimationPlayer
 	animation_tree = $AnimationTree
+	collider = $Collision
+	moving_platform_layers = Globals.Layer.OBJECT | Globals.Layer.ROCK
 	if kind == World.Enemy.NONE:
 		setup(0, World.Biome.WATER)
 	health_bar.visible = not is_idle
@@ -298,7 +300,7 @@ func _physics_process(delta: float) -> void:
 	var final_is_on_floor: bool
 	# TODO: work on precision of on floor when using physics
 	if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
-		final_is_on_floor = is_on_floor()
+		final_is_on_floor = is_on_floor
 	else:
 		final_is_on_floor = is_on_floor_1_not_on_floor_2_else_check_0 == 1
 		

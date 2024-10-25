@@ -213,11 +213,10 @@ func setup(_settings: WorldSettings) -> void:
 	#SignalBus.enemy_death.connect(spawner.remove_node)
 	#
 	#
-	#var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_player()
-	#var target4 := TargetShape.make()
-	#target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
-	#target4.focus_point = Vector3.UP * 3e10
-	#add_child(target4)
+	var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_nothing()
+	var target4 := TargetShape.make()
+	target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
+	add_child(target4)
 	
 
 func add_enemy(enemy: Enemy) -> void:

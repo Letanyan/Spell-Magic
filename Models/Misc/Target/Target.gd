@@ -8,6 +8,7 @@ enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID
 @onready var health_bar: Node3D = $HealthBar
 @onready var health_bar_level: Label3D = $HealthBar/Level
 @onready var health_bar_mesh: MeshInstance3D = $HealthBar/Bar
+@onready var static_body: StaticBody3D = $static
 
 var puzzle_kind: PuzzleKind = PuzzleKind.DAMAGE
 
@@ -123,7 +124,7 @@ func _physics_process(delta: float) -> void:
 					target_position.y = position.y
 		start_position = position
 				
-	position = lerp(start_position, target_position, (0.5 - movement_tick) / 0.5)
+	position = start_position.lerp(target_position, (0.5 - movement_tick) / 0.5)
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:
 		var actual_goal := focus_point
@@ -294,7 +295,7 @@ func update_mesh_color() -> void:
 	update_health_bar()
 	
 func resize_target(size: float) -> void:
-	var y_size := minf(size, 5.0)
+	var y_size := minf(size, 1.5)
 	($coin as MeshInstance3D).scale = Vector3(5, 5, 5) * size
 	($platform as MeshInstance3D).scale = Vector3(0.5 * size, 0.15 * y_size, 0.5 * size)
 	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, 0.25 * y_size, size)

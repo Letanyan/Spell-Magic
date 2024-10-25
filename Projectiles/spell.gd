@@ -757,12 +757,12 @@ static func element_from_name(_name: String) -> Element:
 		
 static func collision_layer_from_element(el: Element) -> int:
 	match el:
-		Element.FIRE: return 0b0000_1000
-		Element.ROCK: return 0b0001_0000
-		Element.WATER: return 0b0010_0000
-		Element.AIR: return 0b0100_0000
-		Element.ICE: return 0b1000_0000
-		Element.ELECTRIC: return 0b1_0000_0000
+		Element.FIRE: return Globals.Layer.FIRE
+		Element.ROCK: return Globals.Layer.ROCK
+		Element.WATER: return Globals.Layer.WATER
+		Element.AIR: return Globals.Layer.AIR
+		Element.ICE: return Globals.Layer.ICE
+		Element.ELECTRIC: return Globals.Layer.ELECTRIC
 		Element.VOID: return 0b0000_0000
 		_: return 0
 

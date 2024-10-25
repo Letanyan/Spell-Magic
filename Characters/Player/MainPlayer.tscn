@@ -14325,24 +14325,16 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_phbfl")
 size = Vector2(0.05, 0.1)
 
-[node name="MainPlayer" type="CharacterBody3D"]
+[node name="MainPlayer" type="CharacterBody3D" node_paths=PackedStringArray("collider")]
 collision_layer = 2
 collision_mask = 599
 floor_max_angle = 1.39626
 script = ExtResource("1_pc14x")
+collider = NodePath("Collision")
+moving_platform_layers = 528
 
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, 0)
-
-[node name="GroundCast" type="RayCast3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
-target_position = Vector3(0, -1.5, 0)
-collision_mask = 528
-
-[node name="StepCast" type="RayCast3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -0.5)
-target_position = Vector3(0, -0.3, 0)
-collision_mask = 528
 
 [node name="King" type="Node3D" parent="Pivot"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)

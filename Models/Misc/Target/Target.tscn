@@ -224,7 +224,7 @@ surface_material_override/0 = ExtResource("5_74v1s")
 
 [node name="static" type="StaticBody3D" parent="."]
 collision_layer = 512
-collision_mask = 6
+collision_mask = 0
 
 [node name="shape" type="CollisionShape3D" parent="static"]
 shape = SubResource("BoxShape3D_hm6m2")

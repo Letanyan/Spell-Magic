@@ -142,19 +142,19 @@ func get_spell_collision_mask() -> int:
 	return (get_node("shape_cast") as ShapeCast3D).collision_mask
 
 func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) -> void:
-	var is_world  : int = _body.collision_layer & 0b0001 != 0
-	var is_player : int = _body.collision_layer & 0b0010 != 0
-	var is_enemy  : int = _body.collision_layer & 0b0100 != 0
+	var is_world  : int = _body.collision_layer & Globals.Layer.WORLD != 0
+	var is_player : int = _body.collision_layer & Globals.Layer.PLAYER != 0
+	var is_enemy  : int = _body.collision_layer & Globals.Layer.ENEMY != 0
 	
 	if is_enemy and (origin_node is Enemy or origin_node is TargetShape):
 		return
 	
-	var is_world_object : int = _body.collision_layer & (1 << 9) != 0
-	var is_fire    : int = _body.collision_layer & 0b0_0000_1000 != 0
-	var is_rock    : int = _body.collision_layer & 0b0_0001_0000 != 0
-	#var is_water   : int = _body.collision_layer & 0b0_0010_0000 != 0
-	var is_ice     : int = _body.collision_layer & 0b0_1000_0000 != 0
-	#var is_electric: int = _body.collision_layer & 0b1_0000_0000 != 0
+	var is_world_object : int = _body.collision_layer & Globals.Layer.OBJECT != 0
+	var is_fire    : int = _body.collision_layer & Globals.Layer.FIRE != 0
+	var is_rock    : int = _body.collision_layer & Globals.Layer.ROCK != 0
+	#var is_water   : int = _body.collision_layer & Globals.Layer.WATER != 0
+	var is_ice     : int = _body.collision_layer & Globals.Layer.ICE != 0
+	#var is_electric: int = _body.collision_layer & Globals.Layer.ELECTRIC != 0
 	var dmg := {"el": spell.element, "dmg": spell.power} # set default for contact with non player/enemy
 	var invunerable: bool = (is_player or is_enemy) and (_body as CharacterBody).invunerable > 0.0
 	match spell.element:
@@ -250,19 +250,19 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	var _body := area.get_parent_node_3d() as CollisionObject3D
-	var is_world  : int = area.collision_layer & 0b0001 != 0
-	var is_player : int = area.collision_layer & 0b0010 != 0
-	var is_enemy  : int = area.collision_layer & 0b0100 != 0
+	var is_world  : int = area.collision_layer & Globals.Layer.WORLD != 0
+	var is_player : int = area.collision_layer & Globals.Layer.PLAYER != 0
+	var is_enemy  : int = area.collision_layer & Globals.Layer.ENEMY != 0
 	
 	if is_enemy and origin_node is Enemy:
 		return
 	
 	var is_world_object := area.collision_layer & (1 << 9) != 0
-	var is_fire  : int = area.collision_layer   & 0b0_0000_1000 != 0
-	var is_rock  : int = area.collision_layer   & 0b0_0001_0000 != 0
-	var is_water : int = area.collision_layer   & 0b0_0010_0000 != 0
-	var is_ice   : int = area.collision_layer   & 0b0_1000_0000 != 0
-	var is_electric: int = area.collision_layer & 0b1_0000_0000 != 0
+	var is_fire  : int = area.collision_layer   & Globals.Layer.FIRE != 0
+	var is_rock  : int = area.collision_layer   & Globals.Layer.ROCK != 0
+	var is_water : int = area.collision_layer   & Globals.Layer.WATER != 0
+	var is_ice   : int = area.collision_layer   & Globals.Layer.ICE != 0
+	var is_electric: int = area.collision_layer & Globals.Layer.ELECTRIC != 0
 	var dmg := {}
 	var invunerable: bool = (is_player or is_enemy) and (_body as CharacterBody).invunerable > 0.0
 	match spell.element:
@@ -458,6 +458,10 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		var fr := vars.get("~~frame_time", 0.0166667) as float
 		old_velocity = velocity
 		velocity_maintained_distance = (next_pos - old_pos) / fr
+		#if spell.element == Spell.Element.ROCK:
+			#var rigid_body := get_node("body") as RigidBody3D
+			#rigid_body.linear_velocity = velocity_maintained_distance
+		
 		velocity = ((next_pos - old_pos) * fr).normalized()
 		
 		var M := PI / 2
@@ -483,7 +487,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		if spell.element == Spell.Element.ROCK and (obj == get_node("body")):
 			continue
 		if obj is Area3D:
-			if (obj as Area3D).collision_layer & 0b0100_0000_0000 != 0:
+			if (obj as Area3D).collision_layer & Globals.Layer.ITEM != 0:
 				var parent := (obj as Area3D).get_parent() as Node3D
 				if parent != null and parent is TargetShape:
 					((obj as Area3D).get_parent() as TargetShape)._on_area_3d_area_entered(self, caster_vitals, obj as Area3D, [point])

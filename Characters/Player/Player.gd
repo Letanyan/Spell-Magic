@@ -14,10 +14,7 @@ extends CharacterBody
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
-@onready var ground_cast: RayCast3D = $Pivot/GroundCast
-@onready var step_cast: RayCast3D = $Pivot/StepCast
 var platform: PhysicsBody3D = null
-var old_platform_position: Vector3 = Vector3.ZERO
 
 var spell_caster: SpellCaster
 var magic_book: MagicBook
@@ -131,11 +128,11 @@ func _physics_process(delta: float) -> void:
 	
 	velocity = movement["velocity"]
 	var direction := movement["direction"] as Vector3
-	var is_underwater := not is_on_floor() and position.y <= Globals.sea_level() and direction != Vector3.ZERO and velocity != Vector3.ZERO
+	var is_underwater := not is_on_floor and position.y <= Globals.sea_level() and direction != Vector3.ZERO and velocity != Vector3.ZERO
 	velocity_movement.rotate_character(get_node(".") as Player, direction, is_underwater)
 	move_and_slide()
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
-		if is_on_floor():
+		if is_on_floor:
 			if velocity.length() < 0.166667:
 				play_walking_audio(NoiseBlender.walking_audio_for_biome(velocity_movement.current_biome))
 				play_animation("walk")
@@ -167,31 +164,15 @@ func _physics_process(delta: float) -> void:
 		elif position.y <= Globals.sea_level():
 			play_animation("swim")
 	else:
-		if is_on_floor():
+		if is_on_floor:
 			play_walking_audio("empty")
 			play_animation("battle_idle")
-			if step_cast.is_colliding():
-				var new_y := step_cast.get_collision_point().y
-				if new_y > feet_position():
-					print(new_y, " - ", feet_position(), " = ", new_y - feet_position())
-					velocity_movement.impulse.y = (new_y - feet_position()) * 10
-			
-			var collider := ground_cast.get_collider() as PhysicsBody3D
-			if collider == null:
-				platform = null
-			elif platform != collider:
-				platform = collider
-				old_platform_position = platform.global_position
-			else:
-				var platform_delta := platform.global_position - old_platform_position
-				old_platform_position = platform.global_position
-				position += platform_delta
 		
-	if not is_on_floor_only():
+	if not is_on_floor:
 		if position.y <= Globals.sea_level():
 			if velocity.length() <= 0:
 				play_animation("float")
-		else:
+		elif feet_position() > Navigator.get_platform_height(get_world_3d().direct_space_state, position.x, position.z) + 0.25:
 			play_animation("fall")
 	elif current_animation_is("fall"):
 		play_animation("land")

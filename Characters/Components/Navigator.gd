@@ -203,7 +203,7 @@ static func get_world_height(space_state: PhysicsDirectSpaceState3D, x: float, z
 		return result.get("position", Vector3.ZERO).y
 		
 static func get_platform_height(space_state: PhysicsDirectSpaceState3D, x: float, z: float, no_hit := Globals.Ref.new(false)) -> float:
-	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), Globals.Layer.WORLD & Globals.Layer.OBJECT)
+	var query := PhysicsRayQueryParameters3D.create(Vector3(x, 5000, z), Vector3(x, -5000, z), Globals.Layer.WORLD | Globals.Layer.OBJECT)
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
 		no_hit.data = true

@@ -1,5 +1,5 @@
 class_name CharacterBody
-extends CharacterBody3D
+extends IKCC
 
 var invunerable := 0.0
 var velocity_movement := VelocityMovement.new()
