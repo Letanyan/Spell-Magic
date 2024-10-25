@@ -148,13 +148,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 							linear_pattern,
 							AttackSequence.ASCondition.jump("choose"),
 						])
-							
-							
 						result.append(platform)
 						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, state, center, spacing) as Birdman
 						if p != null:
 							var y_offset := h.y + platform.bounds.y + p.bounds.y
-							prints(h.y, platform.bounds, p.bounds)
 							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
 							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
 							p.position.y += y_offset

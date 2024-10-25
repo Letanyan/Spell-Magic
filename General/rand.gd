@@ -1,5 +1,7 @@
 class_name Rand
 
+enum Accum { SUM, MAX, MIN, AVG }
+
 static func v3_abs(x: float, y: float, z: float, rng: RandomNumberGenerator = null) -> Vector3:
 	if rng == null:
 		return Vector3(x * randf(), y * randf(), z * randf())
@@ -86,3 +88,20 @@ static func entity_from_non_relative_distribution(r: float, probs: Dictionary, d
 		push_error("sum of probs must equal 1.0")
 	
 	return default
+
+static func roll(sides: int, count: int, constant: int, rng: RandomNumberGenerator = null, accum: Accum = Accum.SUM, clamping: Vector2i = Vector2i(1, sides * count)) -> int:
+	var result := 0
+	if rng == null:
+		match accum:
+			Accum.SUM, Accum.AVG: for n in count: result += randi_range(1, sides)
+			Accum.MAX: for n in count: result = maxi(result, randi_range(1, sides))
+			Accum.MIN: for n in count: result = mini(result, randi_range(1, sides))
+	else:
+		match accum:
+			Accum.SUM, Accum.AVG: for n in count: result += rng.randi_range(1, sides)
+			Accum.MAX: for n in count: result = maxi(result, rng.randi_range(1, sides))
+			Accum.MIN: for n in count: result = mini(result, rng.randi_range(1, sides))
+	if accum == Accum.AVG:
+		result = roundi(result / float(count))
+	return clampi(result + constant, clamping.x, clamping.y)
+	

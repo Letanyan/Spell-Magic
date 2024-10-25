@@ -215,6 +215,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
 			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))
 			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, state, points[i], spacing))
+			World.Biome.HFIL: result.append_array(HFILGen.populate(self, state, points[i], spacing))
 			
 	var high_watermark := result.size() - 1	
 	for i in result.size():

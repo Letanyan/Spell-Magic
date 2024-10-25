@@ -195,15 +195,16 @@ func _physics_process(delta: float) -> void:
 	cam_arm.spring_length = (1.0 + spring_extension) * cam_distance_ratio
 	
 	if shake_intensity > 0.0:
-		var intensity := clampf(shake_intensity, 0, 1) ** 2
+		var intensity := clampf(shake_intensity, 0.0, 1.0) ** 2
 		if is_zero_approx(intensity):
 			shake_intensity = 0.0
 		else:
-			shake_intensity = clamp(lerp(shake_intensity, 0.0, 0.05), 0.0, 1.0)
+			shake_intensity = clampf(lerpf(shake_intensity, 0.0, 0.05), 0.0, 1.0)
 		var t := fmod(Time.get_unix_time_from_system(), 1000000)
 		var dx := camera_shake_noise.get_noise_3d(t, 0, 0)
 		var dy := camera_shake_noise.get_noise_3d(0, t, 0)
 		var dz := camera_shake_noise.get_noise_3d(0, 0, t)
+		print(t, ": ", intensity, " * ", Vector3(dx, dy, dz))
 		cam.rotation.x = (dx * intensity) * (2 * PI / 8)
 		cam.rotation.y = (dy * intensity) * (2 * PI / 8)
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)

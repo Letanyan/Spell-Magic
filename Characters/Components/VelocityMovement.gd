@@ -125,7 +125,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		var stun_value := 0.005 if vitals.stun.value > 0 else 1.0
 		target_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 		target_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
-		(body as Player).add_shake(vitals.stun.value)
+		if vitals.stun.value > 0.0:
+			(body as Player).add_shake(vitals.stun.value)
 	else:
 		target_velocity.x = 0.0
 		target_velocity.z = 0.0

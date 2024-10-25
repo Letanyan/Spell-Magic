@@ -843,7 +843,6 @@ func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, 
 			c = c * Vector3(size.x, 0.05, size.y) * 0.5 + Vector3(size.x, 0.05, size.y) * 0.5
 			coords[i] = c
 		
-		print(coords)
 		var clr := color_from_element(element)
 		for i in coords.size():
 			var c := coords[i]
