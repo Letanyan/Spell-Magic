@@ -22,48 +22,6 @@ enum InputType {
 	CONTROLLER
 }
 
-const pc_images = {
-	"LT": "[img=%d]res://addons/controller_icons/assets/key/shift.png[/img]",
-	"LB": "[img=%d]res://addons/controller_icons/assets/key/ctrl.png[/img]",
-	"RT": "[img=%d]res://addons/controller_icons/assets/mouse/left.png[/img]",
-	"RB": "[img=%d]res://addons/controller_icons/assets/mouse/right.png[/img]",
-	"S": "[img=%d]res://addons/controller_icons/assets/key/space.png[/img]",
-	"W": "[img=%d]res://addons/controller_icons/assets/key/r.png[/img]",
-	"E": "[img=%d]res://addons/controller_icons/assets/key/e.png[/img]",
-	"N": "[img=%d]res://addons/controller_icons/assets/key/q.png[/img]",
-	"UP": "[img=%d]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
-	"DOWN": "[img=%d]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
-	"LEFT": "[img=%d]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
-	"RIGHT": "[img=%d]res://addons/controller_icons/assets/key/arrow_right.png[/img]",
-	"L3": "[img=%d]res://addons/controller_icons/assets/key/z.png[/img]",
-	"R3": "[img=%d]res://addons/controller_icons/assets/key/alt.png[/img]",
-	"move_forward": "[img=%d]res://addons/controller_icons/assets/key/w.png[/img]",
-	"move_left": "[img=%d]res://addons/controller_icons/assets/key/a.png[/img]",
-	"move_back": "[img=%d]res://addons/controller_icons/assets/key/s.png[/img]",
-	"move_right": "[img=%d]res://addons/controller_icons/assets/key/d.png[/img]",
-}
-
-const ps5_images = {
-	"LT": "[img=%d]res://addons/controller_icons/assets/ps5/l2.png[/img]",
-	"LB": "[img=%d]res://addons/controller_icons/assets/ps5/l1.png[/img]",
-	"RT": "[img=%d]res://addons/controller_icons/assets/ps5/r2.png[/img]",
-	"RB": "[img=%d]res://addons/controller_icons/assets/ps5/r1.png[/img]",
-	"S": "[img=%d]res://addons/controller_icons/assets/ps5/cross.png[/img]",
-	"W": "[img=%d]res://addons/controller_icons/assets/ps5/square.png[/img]",
-	"E": "[img=%d]res://addons/controller_icons/assets/ps5/circle.png[/img]",
-	"N": "[img=%d]res://addons/controller_icons/assets/ps5/triangle.png[/img]",
-	"UP": "[img=%d]res://addons/controller_icons/assets/ps5/dpad_up.png[/img]",
-	"DOWN": "[img=%d]res://addons/controller_icons/assets/ps5/dpad_down.png[/img]",
-	"LEFT": "[img=%d]res://addons/controller_icons/assets/ps5/dpad_left.png[/img]",
-	"RIGHT": "[img=%d]res://addons/controller_icons/assets/ps5/dpad_right.png[/img]",
-	"L3": "[img=%d]res://addons/controller_icons/assets/ps5/l_stick_click.png[/img]",
-	"R3": "[img=%d]res://addons/controller_icons/assets/ps5/r_stick_click.png[/img]",
-	"move_forward": "[img=%d]res://addons/controller_icons/assets/ps5/l_stick.png[/img]",#[img=%d]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
-	"move_left": "[img=%d]res://addons/controller_icons/assets/ps5/l_stick.png[/img]",#[img=%d]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
-	"move_back": "[img=%d]res://addons/controller_icons/assets/ps5/l_stick.png[/img]",#[img=%d]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
-	"move_right": "[img=%d]res://addons/controller_icons/assets/ps5/l_stick.png[/img]",#[img=%d]res://addons/controller_icons/assets/key/arrow_right.png[/img]",
-}
-
 signal last_input_type_changed(newType: InputType)
 var switching_mode := HUDSettings.KeyDisplay.AUTO
 var last_input_type: InputType:
@@ -83,7 +41,7 @@ var last_input_type: InputType:
 			last_image_set = get_image_set()
 			last_input_type_changed.emit(value)
 		
-var last_image_set: Dictionary = pc_images # FIXME: caching image set for faster updates.
+var last_image_set: Dictionary = ControllerImageMap.pc_images # FIXME: caching image set for faster updates.
 		
 func _ready() -> void:
 	Input.joy_connection_changed.connect(on_joy_connection_changed)
@@ -164,16 +122,24 @@ func get_joypad_type(fallback: Devices = Devices.JOYCON) -> Devices:
 		
 func get_image_set() -> Dictionary:
 	if last_input_type == InputType.KEYBOARD:
-		return pc_images
+		return ControllerImageMap.pc_images
 	else:
-		# TODO: add images for controllers
 		match get_joypad_type():
-			Devices.JOYCON:
-				return ps5_images
-			Devices.PS5:
-				return ps5_images
+			Devices.LUNA: return ControllerImageMap.luna_images
+			Devices.OUYA: return ControllerImageMap.ouya_images
+			Devices.PS3: return ControllerImageMap.ps3_images
+			Devices.PS4: return ControllerImageMap.ps4_images
+			Devices.PS5: return ControllerImageMap.ps5_images
+			Devices.STADIA: return ControllerImageMap.stadia_images
+			Devices.STEAM: return ControllerImageMap.xboxone_images
+			Devices.SWITCH: return ControllerImageMap.switch_images
+			Devices.JOYCON: return ControllerImageMap.xboxone_images
+			Devices.XBOX360: return ControllerImageMap.xbox360_images
+			Devices.XBOXONE: return ControllerImageMap.xboxone_images
+			Devices.XBOXSERIES: return ControllerImageMap.xboxseries_images
+			Devices.STEAM_DECK: return ControllerImageMap.steamdeck_images
 				
-	return pc_images
+	return ControllerImageMap.pc_images
 		
 func key_images(key: PackedStringArray, size: int = 32) -> String:
 	var text := (last_image_set.get(key[0], "img:%d") as String)
