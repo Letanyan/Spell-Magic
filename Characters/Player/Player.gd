@@ -35,6 +35,7 @@ const projectile_indicator = preload("res://Characters/Player/ProjectileIndicato
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
+var camera_bounce_direction := 0
 
 signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
@@ -185,6 +186,21 @@ func _physics_process(delta: float) -> void:
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		player_moved.emit(delta, state)
 		set_underwater()
+	
+	if enemies_in_range.is_empty() and velocity:
+		if camera_bounce_direction == 0:
+			camera_bounce_direction = 1
+		var y_mult := clampf(velocity.y, -10.0, 10.0) / 10.0
+		if is_zero_approx(y_mult):
+			if absf(cam.v_offset) > 0.05:
+				camera_bounce_direction *= -1
+		else:
+			camera_bounce_direction = signi(y_mult)
+		cam.v_offset = lerpf(cam.v_offset, 0.5 * camera_bounce_direction, 0.025)
+	else:
+		camera_bounce_direction = 0
+		if not is_zero_approx(cam.v_offset):
+			cam.v_offset = lerpf(cam.v_offset, 0.0, 0.05)
 		
 	var rate := 0.05 if velocity.length() == 0 else 0.01
 	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
