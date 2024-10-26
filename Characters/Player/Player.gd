@@ -195,7 +195,7 @@ func _physics_process(delta: float) -> void:
 			if absf(cam.v_offset) > 0.05:
 				camera_bounce_direction *= -1
 		else:
-			camera_bounce_direction = signi(y_mult)
+			camera_bounce_direction = floori(signf(y_mult))
 		cam.v_offset = lerpf(cam.v_offset, 0.5 * camera_bounce_direction, 0.025)
 	else:
 		camera_bounce_direction = 0
@@ -263,8 +263,8 @@ func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: 
 	if not origin is Player:
 		return
 	var c := spell.cooldown
-	var u := magic_book.last_use.get(spell.name, 0.0) as float
-	var v := minf((time - u) / (c + spell.mana_cost), 1.0)
+	var u := magic_book.cooldown.get(spell.name, 0.0) as float
+	var v := minf(u / (c + spell.mana_cost), 1.0)
 	var t := (1.0 - (-1.5 * (v ** 3.0 / 3.0 - v))) * spell.mana_cost / float(spell.count)
 	#t = t / (clampf(absf(p.lifetime_velocity) * 0.05, 0.0, 1.0) ** 10.0 + 1) 
 	var rv := 1.0 - clampf(absf(p.lifetime_velocity) / (UpgradeSettings.LIMIT_v + spell.buff_v), 0.0, 1.0)

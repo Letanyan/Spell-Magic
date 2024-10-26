@@ -21,7 +21,6 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 @onready var selection_wheel: SelectionWheel = $SelectionWheel
 var image_preview_raws := {} ## [String]Texture2D
 
-var cooldown_map: Dictionary ## [String]float
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
@@ -43,10 +42,8 @@ var book: MagicBook:
 	set(value):
 		book = value
 		
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	($SpellCooldownTimer as Timer).start()
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_key.connect(func(k: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
@@ -74,7 +71,7 @@ func set_wand(value: Wand) -> void:
 	wand.key_down.connect(update_wand_mappings)
 	wand.will_show_selection_wheel.connect(update_selection_wheel_spells)
 	update_wand_mappings()
-	update_spell_cooldowns()
+	update_spell_cooldowns(0.0)
 
 func update_hud_with_vitals(vitals: Vitals) -> void:
 	health_bar.value = vitals.health.value
@@ -95,14 +92,14 @@ func update_hud_with_vitals(vitals: Vitals) -> void:
 
 func spell_on_cooldown(spell: Spell) -> void:
 	var i := 0
-	for s: String in cooldown_map:
+	for s: String in book.cooldown:
 		if i >= cooldown_list.item_count:
 			break
 		if s == spell.name:
 			cooldown_list.select(i, false)
 			cooldown_alert[s] = Time.get_unix_time_from_system()
 		i += 1
-	update_spell_cooldowns()
+	update_spell_cooldowns(0.0)
 	
 func not_enough_mana_for_spell(spell: Spell) -> void:
 	not_enough_mana_alert = Time.get_unix_time_from_system()
@@ -148,36 +145,17 @@ func spell_was_limited(spell: Spell, reason: MagicBook.DisallowSpellReason) -> v
 			show_notification(bbcode_error("'%s' velocity limited to %.0fm/s" % [spell.name, world_settings.upgrade_settings.max_v() + world_settings.upgrade_settings.buff_v]), 5)
 	
 func spell_was_cast(s: Spell) -> void:
-	var t := Time.get_unix_time_from_system()
-	if cooldown_map.has(s.name):
-		var v := cooldown_map[s.name] as float
-		cooldown_map[s.name] = maxf(v, t + s.cooldown)
-	else:
-		cooldown_map[s.name] = t + s.cooldown
-	var ns := s.chain
-	while ns != null:
-		if cooldown_map.has(ns.name):
-			var v := cooldown_map[ns.name] as float
-			cooldown_map[ns.name] = maxf(v, t + ns.cooldown)
-		else:
-			cooldown_map[ns.name] = t + ns.cooldown
-		ns = ns.chain
-	update_spell_cooldowns()
+	#book.use_spell(s)
+	update_spell_cooldowns(0.0)
 	
-func update_spell_cooldowns() -> void:
+func update_spell_cooldowns(delta: float) -> void:
 	if book == null or not visible:
 		return
 	
 	var i := 0
-	var to_remove_from_list: Array[int] = []
-	var to_remove_from_map: Array[String] = []
-	for s: String in cooldown_map:
-		var cooldown := cooldown_map[s] as float
-		var wait := cooldown - Time.get_unix_time_from_system()
-		if wait < 0.0:
-			to_remove_from_list.append(i)
-			to_remove_from_map.append(s)
-		var description := " " + s + " - " +("%d" % wait) + "s"
+	for s: String in book.cooldown:
+		var cooldown := book.cooldown[s] as float
+		var description := " " + s + " - " + ("%.0f" % cooldown) + "s"
 		if i < cooldown_list.item_count:
 			cooldown_list.set_item_text(i, description)
 		else:
@@ -186,13 +164,8 @@ func update_spell_cooldowns() -> void:
 			cooldown_list.deselect(i)
 		i += 1
 		
-	i = to_remove_from_list.size() - 1
-	while i >= 0:
-		var idx := to_remove_from_list[i] as int
-		cooldown_list.remove_item(idx)
-		i -= 1
-	for s in to_remove_from_map:
-		cooldown_map.erase(s)
+	while i < cooldown_list.item_count:
+		cooldown_list.remove_item(i)
 		
 	cooldown_list.visible = not((hud_settings != null and hud_settings.hide_cooldown_timings) or cooldown_list.item_count == 0) 
 		
@@ -203,17 +176,13 @@ func update_spell_cooldowns() -> void:
 		mana_bar.add_theme_stylebox_override("background", style)
 		not_enough_mana_alert = 0.0
 		
-	draw_notifications()
-	
-func update_pause_time(pause_time: float) -> void:
-	for s: String in cooldown_map:
-		cooldown_map[s] += pause_time
+	draw_notifications(delta)
 		
 func show_notification(message: String, duration: float) -> void:
 	notifications[message] = Time.get_unix_time_from_system() + duration
-	draw_notifications()
+	draw_notifications(0.0)
 	
-func draw_notifications() -> void:
+func draw_notifications(delta: float) -> void:
 	var to_erase := []
 	var count := 0
 	var result: String = "[right]\n"
@@ -222,8 +191,8 @@ func draw_notifications() -> void:
 		if Time.get_unix_time_from_system() >= d:
 			to_erase.append(n)
 		else:
-			notifications[n] -= 1
 			count += 1
+			notifications[n] -= delta
 			result += n + "\n"
 		if count >= 4:
 			break

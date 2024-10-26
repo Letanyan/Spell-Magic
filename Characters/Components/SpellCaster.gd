@@ -19,7 +19,6 @@ func _init(o: Node3D, e: Entity) -> void:
 	ignore_mana_cost = true
 	
 func update(body: Node3D, delta: float) -> Dictionary:
-	var t := Time.get_unix_time_from_system()
 	var should_remove := []
 	var should_halt := []
 	var limit_reasons := {}
@@ -29,11 +28,11 @@ func update(body: Node3D, delta: float) -> Dictionary:
 			should_remove.append(i)
 			continue
 		
-		if p.is_active() and not p.has_expired(t):
+		if p.is_active() and not p.has_expired():
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
 				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
-			var reason := p.update_spell(t, delta, p.fixed_vars)
+			var reason := p.update_spell(delta, p.fixed_vars)
 			if reason != MagicBook.DisallowSpellReason.NONE:
 				limit_reasons[p.spell] = reason
 			
@@ -45,7 +44,7 @@ func update(body: Node3D, delta: float) -> Dictionary:
 		else:
 			can_remove = true
 			
-		if p.has_expired(t):
+		if p.has_expired():
 			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
 				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			tracking_node.erase(p.name)
@@ -368,7 +367,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 		q = p.spell.get_turret(p.n, p.fixed_vars, p.override_vars)
 		insert.call(q)
 	await body.get_tree().create_timer(delay, false, true).timeout
-	p.time_start = Time.get_unix_time_from_system()
+	p.time_stamp = 0.0
 	if p.spell.is_bomb:
 		spell_variables(p.fixed_vars, body, SpellVariableKind.BOMB, p, p.spell)
 	else:
@@ -389,12 +388,6 @@ func free_particles() -> void:
 	for p: SpellBody in particles:
 		p.free_particle()
 	particles.clear()
-
-func update_pause_time(pause_time: float) -> void:
-	for p: SpellBody in particles:
-		p.pause_time += pause_time
-		if p.spell_caster != null:
-			p.spell_caster.update_pause_time(pause_time)
 
 func update_complexity(id: int, value: float) -> void:
 	var dict := complexity_tracker.get(id, {"count": 0.0, "mean": 0.0, "M2": 0.0}) as Dictionary

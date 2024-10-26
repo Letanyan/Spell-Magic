@@ -76,9 +76,9 @@ func setup(_settings: WorldSettings) -> void:
 	const pX = 100
 	const pY = 100
 	const LVL = 1
-	var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0)
-	undead.level = LVL
-	add_enemy(undead)
+	#var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0)
+	#undead.level = LVL
+	#add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -pX, 1000, -pY)
@@ -314,6 +314,9 @@ func _physics_process(delta: float) -> void:
 	knowledge_tick += delta
 	daytime_tick += delta
 
+	book.update_spell_cooldowns(delta)
+	hud.update_spell_cooldowns(delta)
+
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
 		for loc: Vector2 in population:
@@ -339,20 +342,16 @@ func _physics_process(delta: float) -> void:
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false
-	var pause_duration := Time.get_unix_time_from_system() - pause_start
-	player.spell_caster.update_pause_time(pause_duration)
 	var indices: Array[int] = []
 	var idx := 0
 	for e in inhabitants:
 		if e == null:
 			indices.append(idx)
 			continue
-		e.spell_caster.update_pause_time(pause_duration)
 		idx += 1
 	indices.reverse()
 	for i in indices:
 		inhabitants.remove_at(i)
-	hud.update_pause_time(pause_duration)
 	menu.close()
 	hud.show()
 	

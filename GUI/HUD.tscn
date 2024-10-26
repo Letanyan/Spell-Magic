@@ -238,9 +238,6 @@ offset_bottom = -7.0
 grow_horizontal = 1
 grow_vertical = 0
 
-[node name="SpellCooldownTimer" type="Timer" parent="."]
-autostart = true
-
 [node name="NotificationLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -269,5 +266,3 @@ line_width = 4.0
 line_color = Color(0, 0.6, 0.6, 1)
 inner_circle_fraction = 0.5
 radius_range = Vector2(128, 256)
-
-[connection signal="timeout" from="SpellCooldownTimer" to="." method="update_spell_cooldowns"]

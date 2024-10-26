@@ -2,7 +2,7 @@ class_name MagicBook
 
 var spells: Array[Spell]
 var spell_index: Dictionary
-var last_use: Dictionary # [String]Unix.Time
+var cooldown: Dictionary ## [String]float
 var ignore_cooldown: bool
 enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE, VELOCITY }
 
@@ -30,7 +30,7 @@ func read(world_name: String) -> void:
 		
 func read_absolute_path(file_path: String) -> void:
 	var file := FileAccess.open(file_path, FileAccess.READ)
-	last_use = {}
+	cooldown = {}
 	ignore_cooldown = false
 	spell_index = {}
 	if not file:
@@ -54,14 +54,14 @@ func read_absolute_path(file_path: String) -> void:
 	
 func _init() -> void:
 	spells = []
-	last_use = {}
+	cooldown = {}
 	ignore_cooldown = false
 	settings = null
 	
 func reset_by_deleting_all_spells() -> void:
 	spells = []
 	spell_index.clear()
-	last_use = {}
+	cooldown = {}
 	
 func add(spell: Spell) -> void:
 	var active_count := 0
@@ -78,19 +78,25 @@ func remove(i: int) -> void:
 	spell_index.erase(s.name)
 
 func use_spell(spell: Spell) -> void:
-	var t := Time.get_unix_time_from_system()
-	last_use[spell.name] = t
-	var s := spell.chain
-	while s != null:
-		last_use[s.name] = t
-		s = s.chain
+	if cooldown.has(spell.name):
+		var v := cooldown[spell.name] as float
+		cooldown[spell.name] = maxf(v, spell.cooldown)
+	else:
+		cooldown[spell.name] = spell.cooldown
+	var ns := spell.chain
+	while ns != null:
+		if cooldown.has(ns.name):
+			var v := cooldown[ns.name] as float
+			cooldown[ns.name] = maxf(v, ns.cooldown)
+		else:
+			cooldown[ns.name] = ns.cooldown
+		ns = ns.chain
 	
 func can_use_spell(spell: Spell) -> DisallowSpellReason:
 	if not spell.is_active:
 		return DisallowSpellReason.ACTIVE
 	
-	var elapsed := Time.get_unix_time_from_system() - last_use.get(spell.name, 0.0) as float
-	if elapsed < spell.cooldown and not ignore_cooldown:
+	if cooldown.has(spell.name) and not ignore_cooldown:
 		return DisallowSpellReason.COOLDOWN
 		
 	if spell.count > settings.upgrade_settings.max_N() + settings.upgrade_settings.buff_N:
@@ -150,7 +156,17 @@ func find_recursive_spell_chain(parent: Spell, child: String) -> PackedStringArr
 			return chain
 		
 	return PackedStringArray([])
- 			
+ 		
+func update_spell_cooldowns(delta: float) -> void:
+	var to_remove_from_map: Array[String] = []
+	for s: String in cooldown:
+		cooldown[s] = (cooldown[s] as float) - delta
+		if cooldown[s] < 0.0:
+			to_remove_from_map.append(s)
+			
+	for s in to_remove_from_map:
+		cooldown.erase(s)
+			
 func update_spell_limits(v: float, r: float) -> void:
 	for s in spells:
 		s.limit_v = v

@@ -242,6 +242,7 @@ func calculate_location(vars: Dictionary, only_delta: bool = false, velocity_exc
 			var limit := (limit_v + buff_v) * frame_time
 			if velocity_exceeds_limit != null and velocity.length() > limit:
 				velocity_exceeds_limit.data = true
+				
 			var temp := old_pos + velocity.normalized() * clampf(velocity.length(), 0.0, limit)
 			result = temp
 		else:

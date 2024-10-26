@@ -3,7 +3,7 @@ extends Node3D
 
 var spell: Spell
 var n: int
-var time_start: float
+var time_stamp: float = -1.0
 var expired: bool = false
 var is_emitting: bool = true
 var started: bool = false
@@ -32,8 +32,6 @@ var origin_node: Node3D = null
 var tracking_target: Variant = null
 var origin_spell_caster: SpellCaster = null
 
-var pause_time: float = 0.0
-
 const INVUNERABLE_DURATION: float = 0.5
 
 # Called when the node enters the scene tree for the first time.
@@ -58,10 +56,10 @@ func _physics_process(delta: float) -> void:
 			else:
 				queue_free()
 
-func has_expired(t: float) -> bool:
-	if time_start <= 0:
+func has_expired() -> bool:
+	if time_stamp < 0:
 		return false
-	return expired or (t - time_start) >= spell.duration + pause_time
+	return expired or time_stamp > spell.duration
 	
 func expire_now(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 	if q != null:
@@ -79,7 +77,7 @@ func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool
 	)
 	
 func is_active() -> bool:
-	return in_control and time_start > 0.0  
+	return in_control and time_stamp >= 0 
 	
 func lose_control(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 	in_control = false
@@ -96,7 +94,7 @@ func nothing(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 		SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
 	
 func actual_duration() -> float:
-	var result := (spell.duration + pause_time) - (Time.get_unix_time_from_system() - time_start)
+	var result := spell.duration - time_stamp
 	for p: SpellBody in spell_caster.particles:
 		result = max(result, p.actual_duration())
 	return max(0, result)
@@ -549,11 +547,11 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.VOID:
 			position = p
 			
-func update_spell(t: float, delta: float, vars: Dictionary) -> MagicBook.DisallowSpellReason:
+func update_spell(delta: float, vars: Dictionary) -> MagicBook.DisallowSpellReason:
 	if not is_active():
 		return MagicBook.DisallowSpellReason.NONE
-	t = t - pause_time
-	fixed_vars["t"] = clampf(t - time_start, 0.0, 100000.0)
+	time_stamp += delta
+	fixed_vars["t"] = time_stamp
 	vars["~~frame_time"] = delta
 	spell.compute_expressions(vars, expression_vars, override_vars, true)
 	var exceeds := Globals.Ref.new(false)

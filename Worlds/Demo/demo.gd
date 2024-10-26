@@ -204,6 +204,9 @@ func _physics_process(delta: float) -> void:
 	
 	knowledge_tick += delta
 	daytime_tick += delta
+	
+	book.update_spell_cooldowns(delta)
+	hud.update_spell_cooldowns(delta)
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
@@ -264,12 +267,6 @@ func _physics_process(delta: float) -> void:
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false
-	var pause_duration := Time.get_unix_time_from_system() - pause_start
-	player.spell_caster.update_pause_time(pause_duration)
-	for loc: Vector2 in population:
-		var pop := population[loc] as Population
-		pop.update_pause_time(pause_duration)
-	hud.update_pause_time(pause_duration)
 	menu.close()
 	hud.show()
 	
