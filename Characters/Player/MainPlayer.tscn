@@ -1,4 +1,4 @@
-[gd_scene load_steps=147 format=4 uid="uid://cs66h1r8861hy"]
+[gd_scene load_steps=153 format=4 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_kw0nn"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://c7buo0xdor3it" path="res://Worlds/Generator/Terrain/caustic_texture.tres" id="3_en07u"]
 [ext_resource type="AudioStream" uid="uid://d2l4v4uaejwcg" path="res://Audio/biome/ambience.tres" id="5_ql3oh"]
 [ext_resource type="AudioStream" uid="uid://efnlhhufuwhw" path="res://Audio/walking/walking.tres" id="6_4wfaj"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="8_ak60u"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_50sl4"]
 resource_name = "Metal"
@@ -14325,6 +14326,48 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_phbfl")
 size = Vector2(0.05, 0.1)
 
+[sub_resource type="Curve" id="Curve_n0v2c"]
+_data = [Vector2(0, 0.0179857), 0.0, 0.0, 0, 0, Vector2(0.501767, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_so8od"]
+width = 32
+curve = SubResource("Curve_n0v2c")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_23tir"]
+lifetime_randomness = 0.5
+particle_flag_align_y = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 90.0
+initial_velocity_min = 0.1
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_so8od")
+color = Color(0.170833, 0.25, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bop5x"]
+render_priority = 0
+shader = ExtResource("8_ak60u")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+
+[sub_resource type="PrismMesh" id="PrismMesh_4fxuw"]
+material = SubResource("ShaderMaterial_bop5x")
+size = Vector3(0.05, 0.05, 0.001)
+
 [node name="MainPlayer" type="CharacterBody3D" node_paths=PackedStringArray("collider")]
 collision_layer = 2
 collision_mask = 599
@@ -14904,3 +14947,8 @@ visibility_aabb = AABB(-4, -22, -4, 8, 36, 8)
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_mldf1")
 draw_pass_1 = SubResource("QuadMesh_yrfhb")
+
+[node name="leaves" type="GPUParticles3D" parent="."]
+lifetime = 10.0
+process_material = SubResource("ParticleProcessMaterial_23tir")
+draw_pass_1 = SubResource("PrismMesh_4fxuw")

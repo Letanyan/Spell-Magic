@@ -226,6 +226,9 @@ func _physics_process(delta: float) -> void:
 		settings.day_of_the_year = skybox.day_of_year
 		
 	blender.compute_biome_distances(player.position.x, player.position.z)
+	const MULT = 2.5
+	var clr := Color(blender.color.r * MULT, blender.color.g * MULT, blender.color.b * MULT)
+	player.set_current_biome_grass_color(clr)
 	var b := blender.biome
 	if last_biome != b:
 		player.set_current_biome(b)

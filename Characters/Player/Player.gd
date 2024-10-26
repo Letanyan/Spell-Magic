@@ -14,6 +14,8 @@ extends CharacterBody
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
+@onready var leaves: GPUParticles3D = $leaves
+
 var platform: PhysicsBody3D = null
 
 var spell_caster: SpellCaster
@@ -293,6 +295,9 @@ func kill_multiplier(enemy: Enemy) -> float:
 	
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
+	
+func set_current_biome_grass_color(color: Color) -> void:
+	(leaves.process_material as ParticleProcessMaterial).color = color
 
 func set_underwater(underwater: float = 0.5) -> float:
 	var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
