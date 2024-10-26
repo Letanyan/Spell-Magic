@@ -54,7 +54,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 			HFIL_STRUCTURES_KIND.SNOT_ENEMIES:
 				var pos := area[index]
-				var king := pop.spawn_enemy(World.Enemy.SNOT_BLOB, state, pos, spacing) as Mushking
+				var king := pop.spawn_enemy(World.Enemy.SNOT_BLOB, state, pos, spacing) as SnotBlob
 				if king != null: result.append(king)
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: 0.25, 4: 0.125, 3: 0.5, 2: 0.25, 1: 0.125}) as int
 				var angle_offset := rng.randf_range(0, 2 * PI)
@@ -62,13 +62,13 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
 				path.apply_transform(Transform3D.IDENTITY.rotated(Vector3.UP, angle_offset))
 				for c in path.sample_points_xz(minion_count):
-					var minion := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, state, pos + c, spacing) as Mushroom
+					var minion := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, state, pos + c, spacing) as SnotSpike
 					if minion != null:
 						result.append(minion)
 					
 			HFIL_STRUCTURES_KIND.HOT_DRAGONS:
 				var pos := area[index]
-				var king := pop.spawn_enemy(World.Enemy.DRAGON if rng.randf() < 0.8 else World.Enemy.DRAGOON, state, pos, spacing) as Mushking
+				var king := pop.spawn_enemy(World.Enemy.DRAGON if rng.randf() < 0.8 else World.Enemy.DRAGOON, state, pos, spacing) as Enemy
 				if king != null: result.append(king)
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
 				var angle_offset := rng.randf_range(0, 2 * PI)
@@ -79,7 +79,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					.line_to(Vector3(0, 0, 0), 1)
 				path.apply_transform(Transform3D.IDENTITY.rotated(Vector3.UP, angle_offset))
 				for c in path.sample_points_xz(minion_count):
-					var minion := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, state, pos + c, spacing) as Mushroom
+					var minion := pop.spawn_enemy(World.Enemy.HOT_BLOB, state, pos + c, spacing) as HotBlob
 					if minion != null:
 						result.append(minion)
 				

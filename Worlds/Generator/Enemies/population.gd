@@ -142,7 +142,7 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
 	
 func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
-	var result: Node3D = entity_manager.get_world_item(item)
+	var result := entity_manager.get_world_item(item) as WorldItem
 	var pos := Vector3(p.x, 0, p.y)
 	
 	if item == World.Item.TARGET:
@@ -271,7 +271,7 @@ func update_info() -> void:
 				(item.get_node("./area/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
 		else:
 			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
-				
+		
 		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
 			item.is_active = item.position.distance_to(player.position) < maxf((item as TargetShape).bounds.length() * 1.25, 50) and not player.world_settings.is_paused
 			if item.is_active:

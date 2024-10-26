@@ -38,7 +38,7 @@ var spawner: ItemSpawner = null:
 			spawner.condition_met.connect(remove_when_done)
 
 var path := PathStyle.still_path()
-var start_position := Vector3.ZERO
+var start_position := Vector3(NAN, NAN, NAN)
 var target_position := Vector3.ZERO
 var bounds := Vector3(2, 2, 2)
 var movement_tick: float = 0.0
@@ -81,9 +81,7 @@ func _physics_process(delta: float) -> void:
 		if spell_caster.particles.is_empty():
 			if spell_caster != null:
 				spell_caster.free_particles()
-			var parent := get_parent()
-			if parent:
-				queue_free()
+			custom_free.call()
 		return
 	
 	invunerable -= 1
@@ -107,10 +105,12 @@ func _physics_process(delta: float) -> void:
 			animation_player.play("unset_down")
 			
 	movement_tick -= delta
-	position = start_position.lerp(target_position, (0.5 - movement_tick) / 0.5)
+	const MOVE_TICK_TIME = 0.5
+	if not is_nan(start_position.x):
+		position = start_position.lerp(target_position, (MOVE_TICK_TIME - movement_tick) / MOVE_TICK_TIME)
 	if movement_tick <= 0.0:
-		movement_tick = 0.5
-		var next := path.next_position(movement_tick, self, focus_point)
+		movement_tick = MOVE_TICK_TIME
+		var next := path.next_position(MOVE_TICK_TIME, self, focus_point)
 		target_position = Vector3(next.x, next.y, next.z)
 		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 		if feet_position() < g:
@@ -124,6 +124,8 @@ func _physics_process(delta: float) -> void:
 				if target_position.y > position.y:
 					target_position.y = position.y
 		start_position = position
+		static_body.constant_linear_velocity = (target_position - start_position) / movement_tick
+		
 				
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:

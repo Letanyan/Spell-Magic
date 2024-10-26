@@ -21,5 +21,5 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		eaten = true
 		SignalBus.pick_up_world_item_red_cross.emit(health, "%d%% health gained back" % roundi(health * 100))
 		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25)
-		tween.finished.connect(func() -> void: queue_free())
+		tween.finished.connect(custom_free)
 		tween.play()

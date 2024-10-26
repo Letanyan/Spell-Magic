@@ -225,7 +225,6 @@ var current_floor_normal            : Vector3
 var current_wall_normal             : Vector3
 var current_ceiling_normal          : Vector3
 var platform_velocity               : Vector3
-var old_platform_position           : Vector3 = Vector3(NAN, NAN, NAN)
 var floor_impact_velocity           : Vector3
 var remaining_floor_impact_velocity : Vector3
 var total_travel                    : Vector3
@@ -399,13 +398,9 @@ func grounded_move(p_delta_t : float) -> void :
 				var platform_body_state : PhysicsDirectBodyState3D = PhysicsServer3D.body_get_direct_state(platform_rid)
 				
 				if platform_body_state :
-					#var local_position : Vector3 = global_position - platform_body_state.transform.origin
-					#platform_velocity = platform_body_state.get_velocity_at_local_position(local_position)
+					var local_position : Vector3 = global_position - platform_body_state.transform.origin
+					platform_velocity = platform_body_state.get_velocity_at_local_position(local_position)
 					# NOTE : Static body constant velocity is also taken into account.
-					
-					if not is_nan(old_platform_position.x):
-						platform_velocity = (platform_body_state.transform.origin - old_platform_position) / p_delta_t
-					old_platform_position = platform_body_state.transform.origin
 					
 					if interact_with_rigid_bodies and floor_collider_object is RigidBody3D :
 						current_floor_is_rigidbody = true

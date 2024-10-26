@@ -57,7 +57,6 @@ func _physics_process(delta: float) -> void:
 				free_when_ready = max(free_when_ready, 2)
 			else:
 				queue_free()
-				#get_parent().remove_child(self)
 
 func has_expired(t: float) -> bool:
 	if time_start <= 0:
@@ -458,9 +457,9 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		var fr := vars.get("~~frame_time", 0.0166667) as float
 		old_velocity = velocity
 		velocity_maintained_distance = (next_pos - old_pos) / fr
-		#if spell.element == Spell.Element.ROCK:
-			#var rigid_body := get_node("body") as RigidBody3D
-			#rigid_body.linear_velocity = velocity_maintained_distance
+		if spell.element == Spell.Element.ROCK:
+			var rigid_body := get_node("body") as RigidBody3D
+			rigid_body.linear_velocity = velocity_maintained_distance
 		
 		velocity = ((next_pos - old_pos) * fr).normalized()
 		

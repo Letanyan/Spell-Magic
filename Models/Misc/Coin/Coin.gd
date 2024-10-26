@@ -22,7 +22,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		(body as Player).world_settings.upgrade_settings.currency += amount
 		SignalBus.pick_up_world_item_coin.emit(amount, "'%d' coin collected" % amount)
 		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25)
-		tween.finished.connect(func() -> void: queue_free())
+		tween.finished.connect(custom_free)
 		tween.play()
 
 func update_mesh_with_color(color: Color) -> void:

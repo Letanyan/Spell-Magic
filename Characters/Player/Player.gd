@@ -204,7 +204,6 @@ func _physics_process(delta: float) -> void:
 		var dx := camera_shake_noise.get_noise_3d(t, 0, 0)
 		var dy := camera_shake_noise.get_noise_3d(0, t, 0)
 		var dz := camera_shake_noise.get_noise_3d(0, 0, t)
-		print(t, ": ", intensity, " * ", Vector3(dx, dy, dz))
 		cam.rotation.x = (dx * intensity) * (2 * PI / 8)
 		cam.rotation.y = (dy * intensity) * (2 * PI / 8)
 		cam.rotation.z = (dz * intensity) * (2 * PI / 8)

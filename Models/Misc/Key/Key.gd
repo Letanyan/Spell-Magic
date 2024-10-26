@@ -24,7 +24,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		else:
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' already obtained" % key)
 		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25) # TODO: create special animation that locks the model to the camera view.
-		tween.finished.connect(func() -> void: queue_free())
+		tween.finished.connect(custom_free)
 		tween.play()
 
 func update_mesh_with_color(color: Color) -> void:

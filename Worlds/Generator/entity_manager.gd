@@ -180,12 +180,32 @@ func _init() -> void:
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
 	buffer_well = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
 	
-	buffer_target = EntityBuffer.new(10, func() -> WorldItem: return TargetShape.make(), deinit_world_item, "TARGET")
-	buffer_artifact = EntityBuffer.new(10, func() -> WorldItem: return ArtifactCube.make(), deinit_world_item, "ARTIFACT")
-	buffer_coin = EntityBuffer.new(10, func() -> WorldItem: return CoinDisc.make(), deinit_world_item, "COIN")
-	buffer_key = EntityBuffer.new(10, func() -> WorldItem: return KeyPrism.make(), deinit_world_item, "KEY")
-	buffer_spell = EntityBuffer.new(10, func() -> WorldItem: return SpellPaper.make(), deinit_world_item, "SPELL")
-	buffer_health = EntityBuffer.new(10, func() -> WorldItem: return RedCross.make(), deinit_world_item, "HEALTH")
+	var make_target_shape := func() -> WorldItem:
+		var result := TargetShape.make(); result.custom_free = func() -> void: free_world_item(result)
+		return result
+	var make_artifact := func() -> WorldItem:
+		var result := ArtifactCube.make(); result.custom_free = func() -> void: free_world_item(result)
+		return result
+	var make_coin := func() -> WorldItem:
+		var result := CoinDisc.make(); result.custom_free = func() -> void: free_world_item(result)
+		return result
+	var make_key := func() -> WorldItem:
+		var result := KeyPrism.make(); result.custom_free = func() -> void: free_world_item(result)
+		return result
+	var make_spell := func() -> WorldItem:
+		var result := SpellPaper.make(); result.custom_free = func() -> void: free_world_item(result)
+		return result
+	var make_health := func() -> WorldItem:
+		var result := RedCross.make(); result.custom_free = func() -> void: free_world_item(result)
+		return result
+	
+	buffer_target = EntityBuffer.new(10, make_target_shape, deinit_world_item, "TARGET")
+	buffer_artifact = EntityBuffer.new(10, make_artifact, deinit_world_item, "ARTIFACT")
+	buffer_coin = EntityBuffer.new(10, make_coin, deinit_world_item, "COIN")
+	buffer_key = EntityBuffer.new(10, make_key, deinit_world_item, "KEY")
+	buffer_spell = EntityBuffer.new(10, make_spell, deinit_world_item, "SPELL")
+	buffer_health = EntityBuffer.new(10, make_health, deinit_world_item, "HEALTH")
+
 
 func get_foliage(kind: World.Foliage) -> Foliage:
 	match kind:
