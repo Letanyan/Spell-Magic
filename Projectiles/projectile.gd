@@ -636,7 +636,7 @@ func fade_audio(final: float, duration: float, is_in: bool) -> void:
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	await get_tree().physics_frame
-	spell_caster.cast_spell(self, null, insert, next_spell, tracking_target, fixed_vars)
+	spell_caster.cast_spell(self, caster_vitals, insert, next_spell, tracking_target, fixed_vars)
 
 func free_particle() -> void:
 	if spell_caster != null:
