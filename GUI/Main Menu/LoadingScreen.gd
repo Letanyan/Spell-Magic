@@ -4,15 +4,17 @@ extends Node
 @onready var progress_bar: TextureProgressBar = $ProgressBar
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var timer: Timer = $Timer
-@onready var label: Label = $Label
+@onready var loading_label: Label = $Loading
+@onready var message_label: Label = $Message
 
+var message: String
 var starting_animation_name:String
 
 
 func _ready() -> void:
 	progress_bar.visible = false
-	label.visible = false
-	pass
+	loading_label.visible = false
+	message_label.visible = false
 	
 func start_transition(animation_name: String, on_complete: Callable) -> void:
 	if !anim_player.has_animation(animation_name):
@@ -43,8 +45,10 @@ func finish_transition() -> void:
 
 func _on_timer_timeout() -> void:
 	#progress_bar.visible = true
-	label.visible = true
-	pass
+	loading_label.visible = true
+	message_label.visible = true
+	message_label.text = message
+	print(message)
 
 func update_bar(val: float) -> void:
 	progress_bar.value = val

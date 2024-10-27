@@ -34,7 +34,7 @@ func _ready() -> void:
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
 	#SceneHandler.load_new_scene("res://Worlds/TestArena/TestArena.tscn", "blink_to", func(content: Node3D) -> void: print("loading test arena"))
-	SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "blink_to", func(content: Node3D) -> void: print("loading main menu world"))
+	SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "blink_to", func(content: Node3D) -> void: print("loading main menu world"), Quotes.random())
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

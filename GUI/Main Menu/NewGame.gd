@@ -8,6 +8,7 @@ extends Control
 @onready var use_hardcore: Button = $UseHardcore
 @onready var seed_edit: TextEdit = $Seed
 @onready var worlds_list: ItemList = $WorldsList
+@onready var generation_version_label: Label = $WorldGenerationVersion
 @onready var generator_version: OptionButton = $WorldGenerationVersion/GeneratorVersion
 
 @onready var permadeath: Button = $Permadeath
@@ -59,6 +60,7 @@ extends Control
 @onready var starting_upgrades_panel: Panel = $StartingUpgradesPanel
 
 @onready var game_mode_description: Label = $GameModeDescription
+
 
 
 var game_mode: GameModeSettings.GameMode = GameModeSettings.GameMode.RESPAWN
@@ -143,9 +145,8 @@ func _on_worlds_list_item_activated(index: int) -> void:
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(selected_world_name)
 	settings.world_name = save_name.text
-	settings.world_generation_version = generator_version.selected + 1
 	settings.save()
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 
 func _on_create_pressed() -> void:
 	if save_name.text.is_empty():
@@ -170,7 +171,7 @@ func _on_create_pressed() -> void:
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
 		settings.save()
 
-		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_save_file.button_pressed:
 		if worlds_list.get_selected_items().is_empty():
 			return
@@ -179,7 +180,7 @@ func _on_create_pressed() -> void:
 		settings.read(selected_world_name)
 		settings.world_name = save_name.text
 		settings.save()
-		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_normal.button_pressed:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
@@ -191,7 +192,7 @@ func _on_create_pressed() -> void:
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.save()
-		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_hardcore.button_pressed:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
@@ -204,7 +205,7 @@ func _on_create_pressed() -> void:
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.save()
-		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 
 
 func _on_permadeath_toggled(button_pressed: bool) -> void:
@@ -412,6 +413,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		game_options.visible = true
 		starting_upgrades.visible = true
 		game_mode_description.visible = false
+		generation_version_label.visible = true
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
@@ -431,6 +433,7 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
 		game_mode_description.visible = false
+		generation_version_label.visible = false
 
 func _on_use_normal_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -449,6 +452,7 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		worlds_list.visible = false
 		game_mode_description.visible = true
 		game_mode_description.text = "When you die you will respawn with all your progressed saved."
+		generation_version_label.visible = true
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -467,3 +471,4 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		worlds_list.visible = false
 		game_mode_description.visible = true
 		game_mode_description.text = "When you die the game is over. You will also not be allowed to edit or create your own new spells."
+		generation_version_label.visible = true

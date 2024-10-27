@@ -23,7 +23,7 @@ func load_current_item(selected: int) -> void:
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(world_name)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(settings)

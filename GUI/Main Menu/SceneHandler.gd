@@ -19,10 +19,11 @@ func _ready() -> void:
 	content_failed_to_load.connect(on_content_failed_to_load)
 	content_finished_loading.connect(on_content_finished_loading)
 
-func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content: Variant) -> void: pass) -> void:
+func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content: Variant) -> void: pass, message: String = "") -> void:
 	_transition = transition_type
 	# add loading screen
 	loading_screen = _loading_screen_scene.instantiate() as LoadingScreen
+	loading_screen.message = message
 	get_tree().root.add_child(loading_screen)
 	loading_screen.start_transition(transition_type, _load_content.bind(content_path, on_complete))
 	

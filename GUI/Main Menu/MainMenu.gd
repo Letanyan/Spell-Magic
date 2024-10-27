@@ -28,7 +28,7 @@ func _on_continue_pressed() -> void:
 	var world_settings := WorldSettings.new(get_viewport())
 	world_settings.read(GlobalData.game_settings.last_world)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(world_settings))
+	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(world_settings), Quotes.random())
 	
 	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
 	#demo.setup(world_settings)
