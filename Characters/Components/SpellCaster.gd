@@ -45,7 +45,8 @@ func update(body: Node3D, delta: float) -> Dictionary:
 			can_remove = true
 			
 		if p.has_expired():
-			if p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
+			if p.is_emitting and p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
+				can_remove = false
 				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			tracking_node.erase(p.name)
 			if can_remove:
