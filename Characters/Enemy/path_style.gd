@@ -69,7 +69,7 @@ static func still_path() -> PathStyle:
 	var result := PathStyle.new()
 	result.use_absolute()
 	result.set_use_me_as_origin()
-	result.align_y_to_ground_air_and_dirt()
+	result.align_y_to_origin()
 	result.path = Pathway.empty()
 	return result
 	
@@ -193,18 +193,19 @@ func transform_path(transform: Variant) -> PathStyle:
 		push_error("Expected Transform3D/Array[Transform3D] for transform")
 	return self
 	
-# xyz = position, w = speed
-func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref = null) -> Vector4:
+# me: xyz = position, w = bounds.y
+# return: xyz = position, w = speed
+func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.Ref = null, direct_space_state: PhysicsDirectSpaceState3D = null) -> Vector4:
 	if is_nan(time):
 		time = 0.0
 	else:
 		time += delta
 	if is_done:
 		is_done.data = false
+	var me_pos := Vec3.vec4(me)
 	if me_start_position == null:
-		me_start_position = me.position
-		if me is Enemy:
-			me_start_position.y -= (me as Enemy).bounds.y / 2.0
+		me_start_position = me_pos
+		me_start_position.y -= me.w / 2.0
 	if player_start_position == null:
 		if player is Player:
 			player_start_position = (player as Player).position
@@ -228,16 +229,16 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 	if origin_kind == OriginKind.VISION:
 		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation as float + player_vision_offset.x)
 		var rel_off := off + (player_start_position as Vector3)
-		var dist := me.position.distance_to(rel_off)
+		var dist := me_pos.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
-			off = rel_off.lerp(me.position, player_vision_offset.w / dist) - player_start_position
+			off = rel_off.lerp(me_pos, player_vision_offset.w / dist) - player_start_position
 		elif dist < player_vision_offset.z + 0.1:
-			off = rel_off.lerp(me.position, player_vision_offset.z / dist) - player_start_position
+			off = rel_off.lerp(me_pos, player_vision_offset.z / dist) - player_start_position
 		temp_origin += off
 		
 	var time_was_up := false
 	# don't use positions to determine completion as we might get stuck if time near total_duration
-	if time > path.total_duration: #and me.position.is_equal_approx(Vector3(v.x, y, v.z)):
+	if time > path.total_duration: #and me_pos.is_equal_approx(Vector3(v.x, y, v.z)):
 		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0):
 			me_start_position = null
 		time_was_up = true
@@ -250,7 +251,11 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 	var index := Globals.Ref.new(0)
 	var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
 	var v := path.position_at_time_with_rotation(duration, -psvr, index) + temp_origin
-	var y := next_y_position(me, v.x, v.y - temp_origin.y, v.z)
+	var y: float
+	if direct_space_state != null:
+		y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, direct_space_state)
+	else:
+		y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
 	if coord_y == CoordY.ORIGIN:
 		y += temp_origin.y
 	#print(y, " = ", v.y, " - ", temp_origin.y)
@@ -263,45 +268,41 @@ func next_position(delta: float, me: Node3D, player: Variant, is_done: Globals.R
 			player_start_position = null
 		previous_path_index = index.data
 		
-	is_on_path = Vector3(old_position.x, old_position.y, old_position.z).is_equal_approx(me.position) and old_origin.distance_to(temp_origin) < 0.1
+	is_on_path = Vec3.vec4(old_position).is_equal_approx(me_pos) and old_origin.distance_to(temp_origin) < 0.1
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
 	old_origin = temp_origin
 	
 	return old_position
 
-func next_y_position(me: Node3D, x: float, y: float, z: float) -> float:
-	var me_y := 0.0
-	if me is Enemy:
-		me_y = (me as Enemy).bounds.y
-	elif me is TargetShape:
-		me_y = (me as TargetShape).bounds.y
+func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_state: PhysicsDirectSpaceState3D) -> float:
+	var me_y := me.w
 		
 	var result := 0.0
 	var actual_y := y
 	match coord_y:
 		CoordY.GROUND:
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
 			result = g
 			actual_y = 0.0
 		CoordY.GROUND_AND_DIRT:
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
 			if y > 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y
 		CoordY.GROUND_AND_AIR, CoordY.GROUND_AND_JUMP:
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
 			if y < 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y
 		CoordY.GROUND_AIR_AND_DIRT: 
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
 			result = g + y 
 		CoordY.AIR:
-			var g := Navigator.get_world_height(me.get_world_3d().direct_space_state, x, z) + me_y / 2.0
+			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
 			if y <= me_y / 2.0:
 				result = g + me_y / 2.0
 				actual_y = me_y / 2.0

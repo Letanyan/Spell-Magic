@@ -41,7 +41,7 @@ var last_input_type: InputType:
 			last_image_set = get_image_set()
 			last_input_type_changed.emit(value)
 		
-var last_image_set: Dictionary = ControllerImageMap.pc_images # FIXME: caching image set for faster updates.
+var last_image_set: Dictionary = ControllerImageMap.pc_images
 		
 func _ready() -> void:
 	Input.joy_connection_changed.connect(on_joy_connection_changed)

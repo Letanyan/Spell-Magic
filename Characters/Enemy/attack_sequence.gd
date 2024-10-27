@@ -35,7 +35,8 @@ func reset() -> void:
 	last_path = null
 	last_attack = null
 	
-func update(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref) -> bool:
+# me: xyz = position, w = bounds.y
+func update(delta: float, me: Vector4, player: Variant, is_done: Globals.Ref, direct_space_state: PhysicsDirectSpaceState3D) -> bool:
 	if actions.is_empty():
 		return false
 		
@@ -76,7 +77,7 @@ func update(delta: float, me: Node3D, player: Variant, is_done: Globals.Ref) -> 
 		if last_path != current_action:
 			last_path = current_action
 			last_path.time = NAN
-		var next_movement := last_path.next_position(delta, me, player, is_done)
+		var next_movement := last_path.next_position(delta, me, player, is_done, direct_space_state)
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)
 		if is_done.data:

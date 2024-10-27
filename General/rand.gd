@@ -24,6 +24,14 @@ static func point_in_circle_2d(r: float, rng: RandomNumberGenerator = null) -> V
 		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
 	return p
 	
+static func point_in_rect_2d(w: float, h: float, r: float, rng: RandomNumberGenerator = null) -> Vector2:
+	var p: Vector2
+	if rng == null:
+		p = Vector2(randf() * w, randf() * h).rotated(r)
+	else:
+		p = Vector2(rng.randf() * w, rng.randf() * h).rotated(r)
+	return p
+	
 static func point_in_sphere(r: float, rng: RandomNumberGenerator = null) -> Vector3:
 	var p: Vector3
 	if rng == null:

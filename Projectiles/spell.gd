@@ -247,12 +247,12 @@ func calculate_location(vars: Dictionary, only_delta: bool = false, velocity_exc
 			result = temp
 		else:
 			result = old_pos
-		vars["~old_pos"] = result
+		vars["~~old_pos"] = result
 	else:
-		vars["~old_pos"] = result
+		vars["~~old_pos"] = result
 	
 	if not only_delta:
-		result += (vars["~rel_pos"] if follow else vars["~abs_pos"])
+		result += (vars["~~rel_pos"] if follow else vars["~~abs_pos"])
 	
 	return result
 	
@@ -472,7 +472,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
 	if element == Element.ROCK:
-		var origin: Vector3 = fixed_vars.get("~abs_pos", Vector3.ZERO) # FIXME: change '~abs_pos' to '~~abs_pos' to avoid user overwrite?
+		var origin: Vector3 = fixed_vars.get("~~abs_pos", Vector3.ZERO)
 		var dir: Vector3 = origin.direction_to(p.position)
 		var rot_axis := dir.cross(Vector3.BACK).normalized()
 		var rot_angle := dir.angle_to(Vector3.BACK)
@@ -525,7 +525,6 @@ func global_constant_variables() -> Dictionary:
 	
 func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
 	var fixed_vars := {}
-	# FIXME: should we really be using these variables. It should rather be identical to the actual spell
 	fixed_vars["rn0"] = randf()
 	fixed_vars["rn1"] = randf()
 	fixed_vars["rn2"] = randf()
@@ -536,13 +535,10 @@ func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
 	fixed_vars["rn7"] = randf()
 	fixed_vars["rn8"] = randf()
 	fixed_vars["rn9"] = randf()
-	fixed_vars["T"] = duration
-	fixed_vars["P"] = power
 	fixed_vars["n"] = float(n)
 	fixed_vars.merge(fvars, true)
 	compute_expressions(fixed_vars, {}, overrides)
 	fixed_vars["D"] = d_expr.compute(fixed_vars)
-	
 	
 	var p := turret.instantiate() as Node3D
 			

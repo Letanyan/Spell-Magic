@@ -10,7 +10,7 @@ var attack_direct_path: PathStyle
 var water_para := GlobalData.magic_book.copy_spell("loop-shot")
 var water_line := GlobalData.magic_book.copy_spell("linear")
 var water_arc := GlobalData.magic_book.copy_spell("arc")
-var water_shower := GlobalData.magic_book.copy_spell("linear")
+var water_shower := GlobalData.magic_book.copy_spell("line")
 var water_shower_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
@@ -26,8 +26,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_para.configure({"H":"4", "s":atks(3,6), "CC": "C", "spread":"pi/2"}, Spell.Element.WATER, 5, power(12), radius(4), fiti(1, 7), 50, 100, 50)
 	water_line.configure({"s":atks(2,8), "d":"2"}, Spell.Element.WATER, 5, power(8), radius(3), 1, 50, 100, 50)
 	water_arc.configure({"s":atks(2,10), "d":"Br", "R":"pi/4"}, Spell.Element.WATER, 5, power(9), radius(3), fiti(3, 15), 50, 100, 50)
-	# FIXME: [1]
-	water_shower.configure({"s":fits(4,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower_chain)
+	water_shower.configure({"sx":"u*Br","sy":"v*Br","sz":"w*Br","ex":"u*C","ey":"C*v","ez":"C*w"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower_chain)
 	water_shower_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": fits(4,10)}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	default_pattern = AttackPatterns.new(

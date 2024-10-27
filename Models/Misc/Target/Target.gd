@@ -110,7 +110,8 @@ func _physics_process(delta: float) -> void:
 		position = start_position.lerp(target_position, (MOVE_TICK_TIME - movement_tick) / MOVE_TICK_TIME)
 	if movement_tick <= 0.0:
 		movement_tick = MOVE_TICK_TIME
-		var next := path.next_position(MOVE_TICK_TIME, self, focus_point)
+		var me := Vec4.vec3(caster_position, bounds.y)
+		var next := path.next_position(MOVE_TICK_TIME, me, focus_point, null, get_world_3d().direct_space_state)
 		target_position = Vector3(next.x, next.y, next.z)
 		var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 		if feet_position() < g:
@@ -154,7 +155,8 @@ func _physics_process(delta: float) -> void:
 		var is_done := Globals.Ref.new(false)
 		if attack_sequence != null:
 			var player_body := (self as Node3D) if player == null else (player as Node3D)
-			attack_sequence.update(0.5, self, player_body, is_done)  # FIXME: pass caster_position as me
+			var me := Vec4.vec3(caster_position, 2.0)
+			attack_sequence.update(0.5, me, player_body, is_done, get_world_3d().direct_space_state)
 			caster_position = attack_sequence.next_position
 			current_attack = attack_sequence.last_attack
 		if current_attack != null:

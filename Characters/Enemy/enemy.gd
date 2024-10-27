@@ -251,7 +251,8 @@ func _physics_process(delta: float) -> void:
 			var navigation_time_delta := minf(Time.get_unix_time_from_system() - time_since_navigation_update, Globals.behaviour_tick())
 			time_since_navigation_update = Time.get_unix_time_from_system()
 			if attack_sequence:
-				reset_spell_tick = attack_sequence.update(navigation_time_delta, self, player, is_done)
+				var me := Vec4.vec3(position, bounds.y)
+				reset_spell_tick = attack_sequence.update(navigation_time_delta, me, player, is_done, get_world_3d().direct_space_state)
 				if attack_sequence.last_path:
 					current_path = attack_sequence.last_path
 					next_pos = attack_sequence.next_position
@@ -262,7 +263,8 @@ func _physics_process(delta: float) -> void:
 					speed_for_current_behaviour_tick = 0.0
 				current_attack = attack_sequence.last_attack
 			else:
-				var next_movement := current_path.next_position(navigation_time_delta, self, player, is_done)
+				var me := Vec4.vec3(position, bounds.y)
+				var next_movement := current_path.next_position(navigation_time_delta, me, player, is_done)
 				next_pos = Vector3(next_movement.x, next_movement.y, next_movement.z)
 				speed_for_current_behaviour_tick = next_movement.w
 			var collision_shape := get_node("Collision") as CollisionShape3D

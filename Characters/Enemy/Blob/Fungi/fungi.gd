@@ -17,7 +17,7 @@ var water_line3 := GlobalData.magic_book.copy_spell("linear")
 var water_down1 := GlobalData.magic_book.copy_spell("top-down")
 var water_down2 := GlobalData.magic_book.copy_spell("top-down")
 var water_down3 := GlobalData.magic_book.copy_spell("top-down")
-var water_shower1 := GlobalData.magic_book.copy_spell("linear")
+var water_shower1 := GlobalData.magic_book.copy_spell("line")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
@@ -38,8 +38,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_down1.configure({"H": "10"}, Spell.Element.WATER, fit(10,3), power(8), radius(3), 1, 75, 25, 55)
 	water_down2.configure({"H": "20"}, Spell.Element.WATER, fit(8,4), power(10), radius(3), 1, 75, 50, 65)
 	water_down3.configure({"H": "30"}, Spell.Element.WATER, fit(6,5), power(12), radius(3), 1, 75, 75, 75)
-	# FIXME: [1]
-	water_shower1.configure({"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
+	water_shower1.configure({"sx":"u*Br","sy":"v*Br","sz":"w*Br","ex":"u*C","ey":"C*v","ez":"C*w"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
 	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 		
 	

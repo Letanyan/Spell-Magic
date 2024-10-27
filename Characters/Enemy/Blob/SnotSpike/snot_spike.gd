@@ -11,12 +11,15 @@ var attack_path: PathStyle
 var fire1 := GlobalData.magic_book.copy_spell("linear")
 var fire2 := GlobalData.magic_book.copy_spell("linear")
 var fire3 := GlobalData.magic_book.copy_spell("linear")
-var fire_down1 := GlobalData.magic_book.copy_spell("top-down")
-var fire_down2 := GlobalData.magic_book.copy_spell("top-down")
-var fire_down3 := GlobalData.magic_book.copy_spell("top-down")
+var water_down1 := GlobalData.magic_book.copy_spell("top-down")
+var water_down2 := GlobalData.magic_book.copy_spell("top-down")
+var water_down3 := GlobalData.magic_book.copy_spell("top-down")
 var water_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
 var water_mine2 := GlobalData.magic_book.copy_spell("bomb")
 var water_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
+var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
+var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
+var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(18), mana(5), mana_regen(10), percep(1,4), atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
@@ -24,7 +27,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
 	
-	attack_path = PathStyle.new(randi(), position).towards_player(fit(2,25), 1, 2).set_use_player_as_origin().align_y_to_ground().look_at_player()
+	attack_path = PathStyle.new(randi(), position).towards_player(fit(2,10), 1, 2).set_use_player_as_origin().align_y_to_ground().look_at_player()
 	
 	current_path = idle_path
 	
@@ -33,18 +36,25 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	fire1.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 10.0, power(10), radius(2), 1, 50, 50, 55)
 	fire2.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 8.0, power(12), radius(2), 1, 50, 50, 65)
 	fire3.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 6.0, power(18), radius(2), 1, 50, 50, 75)
-	fire_down1.configure({"H": "10"}, Spell.Element.FIRE, fit(10,2), power(8), radius(3), 1, 75, 25, 55)
-	fire_down2.configure({"H": "20"}, Spell.Element.FIRE, fit(10,4), power(10), radius(3), 1, 75, 50, 65)
-	fire_down3.configure({"H": "30"}, Spell.Element.FIRE, fit(10,5), power(12), radius(3), 1, 75, 75, 75)
+	water_down1.configure({"H": "10"}, Spell.Element.WATER, fit(15,1), power(8), radius(13), 1, 75, 25, 55)
+	water_down2.configure({"H": "20"}, Spell.Element.WATER, fit(20,2), power(10), radius(13), 1, 75, 50, 65)
+	water_down3.configure({"H": "30"}, Spell.Element.WATER, fit(25,3), power(12), radius(13), 1, 75, 75, 75)
 	water_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.WATER, fit(5, 20), power(5), radius(5), fiti(4, 15), 33, 66, 25)
 	water_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.WATER, fit(5, 15), power(9), radius(7), fiti(2, 8), 75, 120, 50)
 	water_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.WATER, fit(10, 20), power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	fire_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, fit(5, 20), power(5), radius(5), fiti(4, 15), 33, 66, 25)
+	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, fit(5, 15), power(9), radius(7), fiti(2, 8), 75, 120, 50)
+	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, fit(10, 20), power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	
 	
 	random_pattern = AttackPatterns.new(
 		[
 			water_mine1,
 			water_mine2,
 			water_mine3,
+			fire_mine1,
+			fire_mine2,
+			fire_mine3,
 		],
 		AttackPatterns.choose_from_distribution(fit(5, 1), [ 10, 5, 2 ], -1)
 	)
@@ -54,15 +64,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			fire1,
 			fire2,
 			fire3,
-			fire_down1,
+			water_down1,
 			fire3,
 			fire2,
 			fire1,
-			fire_down2,
+			water_down2,
 			fire2,
 			fire1,
 			fire3,
-			fire_down3,
+			water_down3,
 		],
 		AttackPatterns.choose_in_sequence(fitas(0.3, [ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ]), -1)
 	)

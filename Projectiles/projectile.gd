@@ -449,7 +449,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
-	var next_pos : Vector3 = p - (vars["~rel_pos"] if spell.follow else vars["~abs_pos"])
+	var next_pos : Vector3 = p - (vars["~~rel_pos"] if spell.follow else vars["~~abs_pos"])
 	var velocity_maintained_distance := velocity
 	if started:
 		var fr := vars.get("~~frame_time", 0.0166667) as float

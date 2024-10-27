@@ -27,7 +27,7 @@ const mushroom_bulb = preload("res://Models/Nature/mushroom_bulb.tscn") as Packe
 const mushroom_pointed = preload("res://Models/Nature/mushroom_pointed.tscn") as PackedScene
 
 var kind: World.Foliage
-var scale_store: float = 1.0
+var collision_is_active: bool = true
 	
 static func make(_kind: World.Foliage) -> Foliage:
 	var result: Foliage
@@ -42,15 +42,15 @@ static func make(_kind: World.Foliage) -> Foliage:
 		World.Foliage.ROCK_OVERHANG: result = rock_overhang.instantiate()
 		World.Foliage.ROCK_SQUASHED: result = rock_squashed.instantiate()
 		World.Foliage.ROCK_TALL: result = rock_tall.instantiate()
-		World.Foliage.BUSH_ROUND: result = bush_round.instantiate()
-		World.Foliage.BUSH_SPROUT: result = bush_sprout.instantiate()
-		World.Foliage.BUSH_TALL: result = bush_tall.instantiate()
-		World.Foliage.FLOWERS_SUN2: result = flowers_sun2.instantiate()
-		World.Foliage.FLOWERS_SUN3: result = flowers_sun3.instantiate()
-		World.Foliage.GRASS_REED: result = grass_reed.instantiate()
-		World.Foliage.GRASS_SHRUB: result = grass_shrub.instantiate()
-		World.Foliage.MUSHROOM_BULB: result = mushroom_bulb.instantiate()
-		World.Foliage.MUSHROOM_POINTED: result = mushroom_pointed.instantiate()
+		World.Foliage.BUSH_ROUND: result = bush_round.instantiate(); result.collision_is_active = false;
+		World.Foliage.BUSH_SPROUT: result = bush_sprout.instantiate(); result.collision_is_active = false;
+		World.Foliage.BUSH_TALL: result = bush_tall.instantiate(); result.collision_is_active = false;
+		World.Foliage.FLOWERS_SUN2: result = flowers_sun2.instantiate(); result.collision_is_active = false;
+		World.Foliage.FLOWERS_SUN3: result = flowers_sun3.instantiate(); result.collision_is_active = false;
+		World.Foliage.GRASS_REED: result = grass_reed.instantiate(); result.collision_is_active = false;
+		World.Foliage.GRASS_SHRUB: result = grass_shrub.instantiate(); result.collision_is_active = false;
+		World.Foliage.MUSHROOM_BULB: result = mushroom_bulb.instantiate(); result.collision_is_active = false;
+		World.Foliage.MUSHROOM_POINTED: result = mushroom_pointed.instantiate(); result.collision_is_active = false;
 		_: result = tree_round.instantiate(); push_error("no such enum for foliage")
 	result.kind = _kind
 	if base_size.size() <= _kind:
@@ -62,6 +62,7 @@ static func make(_kind: World.Foliage) -> Foliage:
 	elif base_size[_kind] == Vector3.ZERO:
 		base_size[_kind] = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
 		base_position[_kind] = (result.get_node("./static/shape") as CollisionShape3D).position
+	
 	return result
 	
 func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
@@ -92,6 +93,8 @@ func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 		(box.shape as SphereShape3D).radius = base_size[kind].x * s / 2.0
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
+		
+	collision_is_active = maxf(base_size[kind].x, maxf(base_size[kind].y, base_size[kind].z)) * s > 1.0
 		
 func set_albedo_override(color: Color) -> void:
 	var m := get_node("MeshNode/mesh") as MeshInstance3D

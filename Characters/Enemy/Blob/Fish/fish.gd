@@ -17,7 +17,7 @@ var water_para3 := GlobalData.magic_book.copy_spell("loop-shot")
 var water_line1 := GlobalData.magic_book.copy_spell("linear")
 var water_line2 := GlobalData.magic_book.copy_spell("linear")
 var water_line3 := GlobalData.magic_book.copy_spell("linear")
-var water_shower1 := GlobalData.magic_book.copy_spell("linear")
+var water_shower1 := GlobalData.magic_book.copy_spell("line")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
@@ -73,8 +73,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_line1.configure({"s":atks(2,10), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
 	water_line2.configure({"s":atks(3,12), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
 	water_line3.configure({"s":atks(4,15), "d":"Br*2"}, Spell.Element.WATER, fit(2, 8), power(10), radius(3), 1, 10, 200, 50)
-	# FIXME [1]: create linear spell that travels an exact distance
-	water_shower1.configure({"s":atks(3,4), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
+	water_shower1.configure({"sx":"u*Br","sy":"v*Br","sz":"w*Br","ex":"u*C","ey":"C*v","ez":"C*w"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
 	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	basic_pattern = AttackPatterns.new(

@@ -18,7 +18,7 @@ var water_flurry1 := GlobalData.magic_book.copy_spell("linear-flurry")
 var water_flurry2 := GlobalData.magic_book.copy_spell("linear-flurry")
 var water_flurry3 := GlobalData.magic_book.copy_spell("linear-flurry")
 
-var water_shower1 := GlobalData.magic_book.copy_spell("linear")
+var water_shower1 := GlobalData.magic_book.copy_spell("line")
 var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
@@ -39,8 +39,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_flurry1.configure({"s":atks(1,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(7), radius(4), fiti(3,20), 10, 100, fit(50,75))
 	water_flurry2.configure({"s":atks(2,15), "R":fits(PI*0.2, PI*0.5)}, Spell.Element.WATER, fit(5,10), power(4), radius(3), fiti(3,15), 10, 200, fit(50,75))
 	water_flurry3.configure({"s":atks(3,15), "R":fits(PI*0.1, PI*0.2)}, Spell.Element.WATER, fit(5,10), power(2), radius(2), fiti(3,10), 10, 300, fit(50,75))
-	# FIXME: [1]
-	water_shower1.configure({"s":atks(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
+	water_shower1.configure({"sx":"u*Br","sy":"v*Br","sz":"w*Br","ex":"u*C","ey":"C*v","ez":"C*w"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
 	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	basic_pattern = AttackPatterns.new(

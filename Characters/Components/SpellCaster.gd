@@ -202,38 +202,38 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 	if s.player_is_origin:
 		if variable_kind == SpellVariableKind.FIXED:
 			if entity == Entity.PLAYER or entity == Entity.ENEMY:
-				result["~abs_pos"] = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
+				result["~~abs_pos"] = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
 			else:
-				result["~abs_pos"] = _body.position
+				result["~~abs_pos"] = _body.position
 		elif variable_kind == SpellVariableKind.TIMED:
 			if entity == Entity.PLAYER or entity == Entity.ENEMY:
-				result["~rel_pos"] = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
+				result["~~rel_pos"] = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
 			else:
-				result["~rel_pos"] = _body.position
+				result["~~rel_pos"] = _body.position
 	else:
 		if entity == Entity.PLAYER:
 			var port := _body.get_viewport()
 			var pos := port.get_visible_rect().size / 2.0
 			var dist: SpringArm3D = _body.get_node("./CamPivot/Arm")
 			if variable_kind == SpellVariableKind.FIXED:
-				result["~abs_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
+				result["~~abs_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["~rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
+				result["~~rel_pos"] = port.get_camera_3d().project_position(pos, dist.spring_length)
 		elif entity == Entity.ENEMY:
 			if variable_kind == SpellVariableKind.FIXED:
-				result["~abs_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
+				result["~~abs_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["~rel_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
+				result["~~rel_pos"] = _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4
 		elif entity == Entity.PROJECTILE:
 			if variable_kind == SpellVariableKind.FIXED:
-				result["~abs_pos"] = _body.position + cdir
+				result["~~abs_pos"] = _body.position + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["~rel_pos"] = _body.position + cdir
+				result["~~rel_pos"] = _body.position + cdir
 		elif entity == Entity.TARGET:
 			if variable_kind == SpellVariableKind.FIXED:
-				result["~abs_pos"] = (_body as TargetShape).caster_position + cdir
+				result["~~abs_pos"] = (_body as TargetShape).caster_position + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
-				result["~rel_pos"] = (_body as TargetShape).caster_position + cdir
+				result["~~rel_pos"] = (_body as TargetShape).caster_position + cdir
 			
 	
 	if p != null: # direction from character to spell

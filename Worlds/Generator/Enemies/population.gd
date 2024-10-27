@@ -260,7 +260,7 @@ func update_info() -> void:
 	
 	for g in garden:
 		var s: CollisionShape3D = g.get_node("./static/shape")
-		if s != null:
+		if s != null and (g as Foliage).collision_is_active:
 			s.disabled = g.position.distance_to(player.position) > 50
 			
 	for item in world_items:

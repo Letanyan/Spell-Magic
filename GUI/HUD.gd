@@ -394,7 +394,6 @@ func update_stats_view() -> void:
 
 func update_selection_wheel_spells() -> void:
 	selection_wheel.image_segments.clear()
-	# FIXME: update canvas drawing only when texture is ready
 	for spell_text in selection_wheel.segments:
 		var spell := book.find_spell(spell_text)
 		if spell != null:
