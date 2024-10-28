@@ -94,7 +94,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			elif entity is WorldItem:
 				(entity as WorldItem).setup(rng, current_biome_during_generation)
 				entity.name = World.Item.keys()[(entity as WorldItem).kind] + Globals.encode_v3(entity.position)
-				world_items.append(entity)
+				world_items.append(entity) # FIXME: check if item is marked with `entity_name_is_marked` before adding
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
@@ -217,16 +217,16 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, state, points[i], spacing))
 			World.Biome.HFIL: result.append_array(HFILGen.populate(self, state, points[i], spacing))
 			
-	var high_watermark := result.size() - 1	
-	for i in result.size():
-		if result[i] == null:
-			result[i] = result[high_watermark]
-			high_watermark -= 1
-			if high_watermark <= 0:
-				break
-				
-	if high_watermark < result.size() - 1:
-		result = result.slice(0, high_watermark + 1)
+	#var high_watermark := result.size() - 1	
+	#for i in result.size():
+		#if result[i] == null:
+			#result[i] = result[high_watermark]
+			#high_watermark -= 1
+			#if high_watermark <= 0:
+				#break
+				#
+	#if high_watermark < result.size() - 1:
+		#result = result.slice(0, high_watermark + 1)
 	
 	return result
 	
@@ -291,21 +291,11 @@ func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 
 func mark_entity(entity: Node3D) -> void:
 	mark_entity_name(entity.name)
-	
-func get_tag_from_name(name: String) -> int:
-	var tag := name.substr(name.find(" ") + 1)
-	if tag.is_valid_int():
-		return tag.to_int()
-	else:
-		return -1
 
 func mark_entity_name(name: String) -> void:
-	var tag := get_tag_from_name(name)
-	if tag != -1:
-		if not player.world_settings.marked_entities.has(coord):
-			player.world_settings.marked_entities[coord] = []
-		(player.world_settings.marked_entities[coord] as Array[int]).append(tag)
+	if not player.world_settings.marked_entities.has(coord):
+		player.world_settings.marked_entities[coord] = []
+	(player.world_settings.marked_entities[coord] as Array[String]).append(name)
 	
 func entity_name_is_marked(name: String) -> bool:
-	var tag := get_tag_from_name(name)
-	return (player.world_settings.marked_entities.get(coord, []) as Array[int]).find(tag) != -1
+	return (player.world_settings.marked_entities.get(coord, []) as Array[String]).find(name) != -1

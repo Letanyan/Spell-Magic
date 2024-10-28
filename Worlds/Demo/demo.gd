@@ -12,7 +12,7 @@ extends Node3D
 const CHUNK_SIZE = 256
 @onready var blender: NoiseBlender
 @onready var chunker: Terrain
-@onready var population: Dictionary = {} # [Vector2]Population
+@onready var population: Dictionary = {} ## [Vector2]Population
 var entity_manager: EntityManager
 
 var last_biome: World.Biome = World.Biome.WATER

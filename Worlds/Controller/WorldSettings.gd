@@ -7,8 +7,8 @@ var player_health: float
 var player_mana: float
 var last_save_time: float
 var sed: int
-var enemies_killed := {} # [World.Enemy]int
-var marked_entities := {} # [Vector2][]int
+var enemies_killed := {} ## [World.Enemy]int
+var marked_entities := {} ## [Vector2][]String
 var is_paused: bool
 var day_of_the_year: int
 var time_of_day: float

@@ -3,6 +3,21 @@
 [ext_resource type="Script" path="res://GUI/Main Menu/LoadingScreen.gd" id="1_lx61i"]
 [ext_resource type="Texture2D" uid="uid://b78atkfmuchnc" path="res://GUI/Images/check-empty.svg" id="2_602if"]
 
+[sub_resource type="Animation" id="Animation_5kl2m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Message:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [null]
+}
+
 [sub_resource type="Animation" id="Animation_4tcun"]
 resource_name = "blink_from"
 length = 0.1
@@ -89,21 +104,6 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_5kl2m"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Message:theme_override_colors/font_color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [null]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tw3lk"]
@@ -223,12 +223,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
 offset_bottom = -200.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 60
-text = "Message"
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
