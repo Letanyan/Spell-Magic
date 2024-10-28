@@ -6,6 +6,7 @@ class EntityBuffer:
 	var allocater: Callable
 	var deinit: Callable
 	var tag: String
+	var last_index_check: int = -1
 	
 	func _init(capacity: int, alloc: Callable, deiniter: Callable, k: String = "") -> void:
 		buffer = []
@@ -24,18 +25,28 @@ class EntityBuffer:
 		return buffer[high_watermark - 1]
 			
 	func free_entity(node: Node3D) -> void:
-		var i := 0
 		var index := -1
-		for n in buffer:
-			if n == node:
+		var i := maxi(last_index_check - 1, 0)
+		var found := false
+		while i < high_watermark:
+			if buffer[i] == node:
 				index = i
+				found = true
 				break
 			i += 1
+		if not found and last_index_check > 2:
+			i = last_index_check - 2
+			while i >= 0:
+				if buffer[i] == node:
+					index = i
+					break
+				i -= 1
 		
 		if index == -1:
 			push_error(tag + ": free node that does not exist: ", str(node.get_instance_id()))
 			return
 		
+		last_index_check = index
 		high_watermark -= 1
 		var temp := buffer[index]
 		buffer[index] = buffer[high_watermark]
