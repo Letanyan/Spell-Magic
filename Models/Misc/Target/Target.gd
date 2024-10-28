@@ -81,7 +81,7 @@ func _physics_process(delta: float) -> void:
 		if spell_caster.particles.is_empty():
 			if spell_caster != null:
 				spell_caster.free_particles()
-			custom_free.call()
+			custom_free.call(self)
 		return
 	
 	invunerable -= 1

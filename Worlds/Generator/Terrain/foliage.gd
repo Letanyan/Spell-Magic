@@ -67,7 +67,7 @@ static func make(_kind: World.Foliage) -> Foliage:
 	
 func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	var s := rng.randf_range(2, 5)
-	if biome == World.Biome.JUNGLE and [World.Foliage.TREE_BRANCHED].has(kind):
+	if biome == World.Biome.JUNGLE and World.Foliage.TREE_BRANCHED == kind:
 		s *= rng.randf_range(5, 10)
 	
 	(get_node("MeshNode") as Node3D).scale = Vector3(s, s, s)
@@ -76,21 +76,19 @@ func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	
 	var box := get_node("./static/shape") as CollisionShape3D
 	if box.shape is CylinderShape3D:
-		(box.shape as CylinderShape3D).height = base_size[kind].y * s
-		(box.shape as CylinderShape3D).radius = base_size[kind].x * s / 2.0
+		box.scale = Vec3.a(s)
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
 	elif box.shape is BoxShape3D:
-		(box.shape as BoxShape3D).size = base_size[kind] * s
+		box.scale = Vec3.a(s)
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
 	elif box.shape is CapsuleShape3D:
-		(box.shape as CapsuleShape3D).height = base_size[kind].y * s
-		(box.shape as CapsuleShape3D).radius = base_size[kind].x * s / 2.0
+		box.scale = Vec3.a(s)
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
 	elif box.shape is SphereShape3D:
-		(box.shape as SphereShape3D).radius = base_size[kind].x * s / 2.0
+		box.scale = Vec3.a(s)
 		box.position.y = base_position[kind].y * s
 		box.rotation.y = r
 		

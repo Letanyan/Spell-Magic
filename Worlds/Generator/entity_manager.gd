@@ -180,23 +180,24 @@ func _init() -> void:
 	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
 	buffer_well = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
 	
+
 	var make_target_shape := func() -> WorldItem:
-		var result := TargetShape.make(); result.custom_free = func() -> void: free_world_item(result)
+		var result := TargetShape.make(); result.custom_free = free_world_item
 		return result
 	var make_artifact := func() -> WorldItem:
-		var result := ArtifactCube.make(); result.custom_free = func() -> void: free_world_item(result)
+		var result := ArtifactCube.make(); result.custom_free = free_world_item
 		return result
 	var make_coin := func() -> WorldItem:
-		var result := CoinDisc.make(); result.custom_free = func() -> void: free_world_item(result)
+		var result := CoinDisc.make(); result.custom_free = free_world_item
 		return result
 	var make_key := func() -> WorldItem:
-		var result := KeyPrism.make(); result.custom_free = func() -> void: free_world_item(result)
+		var result := KeyPrism.make(); result.custom_free = free_world_item
 		return result
 	var make_spell := func() -> WorldItem:
-		var result := SpellPaper.make(); result.custom_free = func() -> void: free_world_item(result)
+		var result := SpellPaper.make(); result.custom_free = free_world_item
 		return result
 	var make_health := func() -> WorldItem:
-		var result := RedCross.make(); result.custom_free = func() -> void: free_world_item(result)
+		var result := RedCross.make(); result.custom_free = free_world_item
 		return result
 	
 	buffer_target = EntityBuffer.new(10, make_target_shape, deinit_world_item, "TARGET")
