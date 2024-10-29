@@ -42,7 +42,7 @@ func setup(_settings: WorldSettings) -> void:
 func _ready() -> void:
 	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
-	_settings.sed = randi()
+	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	
 	# FIXME: _settings.sed = 5, rng.seed = _settings.sed * 10
@@ -115,6 +115,7 @@ func _physics_process(delta: float) -> void:
 	blender.compute_biome_distances(player.position.x, player.position.z)
 	var b := blender.biome
 	if last_biome != b:
+		print(World.Biome.keys()[b])
 		last_biome = b
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)

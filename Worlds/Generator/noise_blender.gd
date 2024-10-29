@@ -127,10 +127,13 @@ static func make(version: int, s: int) -> NoiseBlender:
 	
 static func version0(s: int) -> NoiseBlender:
 	var result := NoiseBlender.new()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = s
 	
 	result.back = GDNoiseBlender.new()
+	result.back.set_elevation_mix_exp(20.0)
 	
-	var biome_locations := result.shuffle_biome_locations(s)
+	var biome_locations := result.shuffle_biome_locations(rng)
 	
 	result.back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
 	result.back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
@@ -149,10 +152,15 @@ static func version0(s: int) -> NoiseBlender:
 	
 static func version1(s: int) -> NoiseBlender:
 	var result := NoiseBlender.new()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = s
 	
 	result.back = GDNoiseBlender.new()
 	
-	var biome_locations := result.shuffle_biome_locations(s)
+	var biome_locations := result.shuffle_biome_locations(rng)
+	
+	var elevation_curve := lerpf(20.0, 40.0, rng.randf())
+	result.back.set_elevation_mix_exp(elevation_curve)
 	
 	result.back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
 	result.back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
@@ -183,7 +191,7 @@ func compute_biome_distances(x: float, y: float) -> void:
 func grass_height(b: World.Biome, x: float, y: float) -> float:
 	return back.grass_height(b, x, y)
 		
-func shuffle_biome_locations(s: int) -> PackedVector2Array:
+func shuffle_biome_locations(rng: RandomNumberGenerator) -> PackedVector2Array:
 	var result := PackedVector2Array([])
 	var source: Array[Vector2] = [
 		Vector2(0.00, 1.00), Vector2(0.25, 1.00), Vector2(0.50, 1.00), Vector2(0.75, 1.00), Vector2(1.00, 1.00),
@@ -192,8 +200,6 @@ func shuffle_biome_locations(s: int) -> PackedVector2Array:
 		Vector2(0.00, 0.25), Vector2(0.25, 0.25), Vector2(0.50, 0.25), Vector2(0.75, 0.25), Vector2(1.00, 0.25),
 		Vector2(0.00, 0.00), Vector2(0.25, 0.00), Vector2(0.50, 0.00), Vector2(0.75, 0.00), Vector2(1.00, 0.00),
 	]
-	var rng := RandomNumberGenerator.new()
-	rng.seed = s
 	for i in biome_colors.size():
 		var j := rng.randi_range(0, source.size() - 1)
 		result.append(source[j])

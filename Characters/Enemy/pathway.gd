@@ -278,6 +278,19 @@ func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: in
 	add_with_speed(Segment.linear(p, cursor), speed, m)
 	return self
 	
+func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.seed = Time.get_ticks_usec()
+	var angle := 0.0
+	var angle_step = (2 * PI) / sides
+	var p := Vector3(radius, 0.0, 0.0)
+	move_to(p)
+	for i in range(sides):
+		p = p.rotated(Vector3.UP, angle_step)
+		line_with_speed_to(p, speed, m)
+	return self
+	
 func to_and_back(duration: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:
 	var o := cursor
 	line_to(to, duration / 2.0, m)

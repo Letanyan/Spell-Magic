@@ -75,46 +75,47 @@ func calculate_distance(interval: float = 0.005) -> void:
 func position_at_time(t: float) -> Vector3:
 	match kind:
 		BezierKind.LINEAR:
-			return lerp(start, end, t)
+			return start.lerp(end, t)
 		BezierKind.QUAD:
-			var a: Vector3 = lerp(start, c1, t)
-			var b: Vector3 = lerp(c1, end, t)
-			return lerp(a, b, t)
+			var a := start.lerp(c1, t)
+			var b := c1.lerp(end, t)
+			return a.lerp(b, t)
 		BezierKind.CUBIC:
-			var a1: Vector3 = lerp(start, c1, t)
-			var b1: Vector3 = lerp(c1, end, t)
-			var e1: Vector3 = lerp(a1, b1, t)
-			var a2: Vector3 = lerp(c1, c2, t)
-			var b2: Vector3 = lerp(c2, end, t)
-			var e2: Vector3 = lerp(a2, b2, t)
-			return lerp(e1, e2, t)
+			var a1 := start.lerp(c1, t)
+			var b1 := c1.lerp(end, t)
+			var e1 := a1.lerp(b1, t)
+			var a2 := c1.lerp(c2, t)
+			var b2 := c2.lerp(end, t)
+			var e2 := a2.lerp(b2, t)
+			return e1.lerp(e2, t)
 			
 	return Vector3.ZERO
 	
 func position_at_time_with_rotation(t: float, angle: float) -> Vector3:
 	var mat := Transform3D.IDENTITY.rotated(Vector3.UP, angle)
+	# FIXME: change from lerp(Variant, Variant, Variant) to Vector3.lerp(Vector3, float)
 	match kind:
 		BezierKind.LINEAR:
-			return lerp(mat * start, mat * end, t)
+			return (mat * start).lerp(mat * end, t)
 		BezierKind.QUAD:
 			var s := mat * start
 			var i1 := mat * c1
 			var e := mat * end
-			var a: Vector3 = lerp(s, i1, t)
-			var b: Vector3 = lerp(i1, e, t)
-			return lerp(a, b, t)
+			var a := s.lerp(i1, t)
+			var b := i1.lerp(e, t)
+			return a.lerp(b, t)
 		BezierKind.CUBIC:
 			var s := mat * start
 			var i1 := mat * c1
 			var i2 := mat * c2
 			var e := mat * end
-			var a1: Vector3 = lerp(s, i1, t)
-			var b1: Vector3 = lerp(i1, e, t)
-			var e1: Vector3 = lerp(a1, b1, t)
-			var a2: Vector3 = lerp(i1, i2, t)
-			var b2: Vector3 = lerp(i2, e, t)
-			var e2: Vector3 = lerp(a2, b2, t)
-			return lerp(e1, e2, t)
+			var a1 := s.lerp(i1, t)
+			var b1 := i1.lerp(e, t)
+			var e1 := a1.lerp(b1, t)
+			var a2 := i1.lerp(i2, t)
+			var b2 := i2.lerp(e, t)
+			var e2 := a2.lerp(b2, t)
+			return e1.lerp(e2, t)
 			
 	return Vector3.ZERO
 	
