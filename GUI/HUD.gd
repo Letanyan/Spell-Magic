@@ -371,11 +371,11 @@ func update_stats_view() -> void:
 	sv.defence.text = "%d%+d" % [ws.max_defence(), ws.buff_defence]
 	sv.crit_rate.text = "%s%%%s" % [Globals.format_number_nearest_place(player.buff_crit_rate.x, 1), Globals.format_number_nearest_place(player.buff_crit_rate.y, 1, true)]
 	sv.crit_dmg.text = "%s%s" % [Globals.format_number_nearest_place(player.buff_crit_dmg.x, 1), Globals.format_number_nearest_place(player.buff_crit_dmg.y, 1, true)]
-	sv.r.text = "%s%s" % [Globals.format_number_nearest_place(ws.max_r(), 1), Globals.format_number_nearest_place(ws.buff_r, 1, true)]
-	sv.T.text = "%d%+d" % [ws.max_T(), ws.buff_T]
-	sv.N.text = "%d%+d" % [ws.max_N(), ws.buff_N]
-	sv.P.text = "%d%+d" % [ws.max_P(), ws.buff_P]
-	sv.S.text = "%s%s" % [ws.max_running_speed(), ws.buff_running_speed]
+	sv.radius.text = "%s%s" % [Globals.format_number_nearest_place(ws.max_r(), 1), Globals.format_number_nearest_place(ws.buff_r, 1, true)]
+	sv.duration.text = "%d%+d" % [ws.max_T(), ws.buff_T]
+	sv.count.text = "%d%+d" % [ws.max_N(), ws.buff_N]
+	sv.power.text = "%d%+d" % [ws.max_P(), ws.buff_P]
+	sv.running_speed.text = "%s%s" % [ws.max_running_speed(), ws.buff_running_speed]
 	
 	var v: Vector2 = Vector2.ZERO
 	sv.fireDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]

@@ -74,7 +74,8 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 	return Vector3(0.5*(c+a) - sqrt(3.0)/2.0 * (d-b), (s.y + e.y) / 2.0, 0.5*(d+b) + sqrt(3.0)/2.0 * (c-a))
 	
 static func encode_v3(v: Vector3) -> String:
-	return "(%.0f,%.0f,%0.f)" % [v.x, v.y, v.z]
+	# FIXME: improve speed
+	return "%.v" % v
 	
 static func replace_ranges_in_string(source: String, ranges: Array, what: String) -> String:
 	var result := ""

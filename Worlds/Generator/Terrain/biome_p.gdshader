@@ -78,6 +78,7 @@ vec4 biome_color(vec4 V, vec2 uv) {
 			float mix_alpha = pow(1.0 - dist / (axial_weight + 1.0), 3.0);
 			vec3 c = oklab_mix(vec3(1), colors[i].rgb, mix_alpha);
 			color = color * vec4(c, mix(1, colors[i].a, mix_alpha));
+			
 			//vec4 c = mix(vec4(1), colors[i], pow(1.0 - dist / (axial_weight + 1.0), 3.0));
 			//color = color * c;
 		}

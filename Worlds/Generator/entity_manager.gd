@@ -43,6 +43,7 @@ class EntityBuffer:
 				i -= 1
 		
 		if index == -1:
+			# FIXME: this should not be getting called
 			push_error(tag + ": free node that does not exist: ", str(node.get_instance_id()))
 			return
 		

@@ -120,7 +120,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
-				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
+				path.apply_transform(Transform3D.IDENTITY.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				for p in path.sample_points_xz(r * circle_points):
 					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
 					var entity := pop.spawn_foliage(kind, state, p, 0, pop.always_valid)

@@ -282,8 +282,7 @@ func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear, r
 	if rng == null:
 		rng = RandomNumberGenerator.new()
 		rng.seed = Time.get_ticks_usec()
-	var angle := 0.0
-	var angle_step = (2 * PI) / sides
+	var angle_step := (2.0 * PI) / sides
 	var p := Vector3(radius, 0.0, 0.0)
 	move_to(p)
 	for i in range(sides):

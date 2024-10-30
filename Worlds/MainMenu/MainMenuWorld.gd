@@ -112,7 +112,7 @@ func _physics_process(delta: float) -> void:
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
 	
-	blender.compute_biome_distances(player.position.x, player.position.z)
+	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	var b := blender.biome
 	if last_biome != b:
 		print(World.Biome.keys()[b])

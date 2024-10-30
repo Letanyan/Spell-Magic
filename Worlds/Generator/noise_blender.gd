@@ -180,8 +180,9 @@ static func version1(s: int) -> NoiseBlender:
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)
 
-func compute_biome_distances(x: float, y: float) -> void:
-	back.compute_biome_stats(x, y)
+func compute_biome_distances(x: float, y: float, scale: float) -> void:
+	# FIXME: improve speed (reduce total calls)
+	back.compute_biome_stats(x, y, scale)
 	biome = biome_list[back.get_biome()]
 	color = back.get_color()
 	distances = back.get_distances()

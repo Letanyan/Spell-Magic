@@ -1,6 +1,7 @@
 class_name Population
 
 var rng: RandomNumberGenerator
+var chunker: Terrain
 var blender: NoiseBlender
 var player: Player
 var entity_manager: EntityManager
@@ -16,9 +17,10 @@ var other_objects: Array = []
 var world_items: Array[WorldItem] = []
 var current_biome_during_generation: World.Biome = World.Biome.WATER
 
-func _init(_coord: Vector2, _chunk_size: float, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
+func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
 	rng = RandomNumberGenerator.new()
 	coord = _coord
+	chunker = _chunker
 	blender = _blender
 	player = _player
 	chunk_size = _chunk_size
@@ -152,39 +154,44 @@ func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vec
 	return prepare_entity(state, result, pos, false, always_valid)
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
-	for p in collection:
-		if p.distance_to(point) <= spacing:
+	# FIXME: improve speed
+	for pidx in range(collection.size() - 1, -1, -1):
+		if collection[pidx].distance_squared_to(point) <= spacing * spacing:
 			return true
 	return false
 	
 func group_spawn_points(spacing: float) -> Dictionary:
 	var result: Array[PackedVector2Array] = []
 	var biomes: Array[World.Biome] = []
-	for x in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
-		for y in range(-chunk_size / 2.0 + spacing / 2.0, chunk_size / 2.0 - spacing / 2.0 + 1.0, spacing):
-			var p := Vector2(coord.x * chunk_size + x, coord.y * chunk_size + y)
-			blender.compute_biome_distances(p.x, p.y)
-			var biome := blender.biome
-			var found_subsets := PackedInt32Array([])
-			for i in range(result.size()):
-				if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
-					found_subsets.append(i)
-					break		
-			if found_subsets.is_empty():
-				result.append(PackedVector2Array([p]))
-				biomes.append(biome)
-			elif found_subsets.size() == 1:
-				result[found_subsets[0]].append(p)
-			else:
-				found_subsets.sort()
-				found_subsets.reverse()
-				var new_pack := PackedVector2Array([])
-				for subset in found_subsets:
-					new_pack.append_array(result[subset])
-					result.remove_at(subset)
-					biomes.remove_at(subset)
-				result.append(new_pack)
-				biomes.append(biome)
+	var points := PackedVector2Array([])
+	var b := 0
+	var offsetv := coord * chunk_size
+	var biome_map := chunker.get_biomes_map(offsetv)
+	for vp in chunker.get_chunk_vertices():
+		var p := -Vec2.xz(vp) + offsetv
+		points.append(p)
+		var biome := biome_map[b] as World.Biome
+		var found_subsets := PackedInt32Array([])
+		for i in range(result.size()):
+			if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
+				found_subsets.append(i)
+				break		
+		if found_subsets.is_empty():
+			result.append(PackedVector2Array([p]))
+			biomes.append(biome)
+		elif found_subsets.size() == 1:
+			result[found_subsets[0]].append(p)
+		else:
+			found_subsets.sort()
+			found_subsets.reverse()
+			var new_pack := PackedVector2Array([])
+			for subset in found_subsets:
+				new_pack.append_array(result[subset])
+				result.remove_at(subset)
+				biomes.remove_at(subset)
+			result.append(new_pack)
+			biomes.append(biome)
+		b += 1
 				
 	return {"points": result, "biomes": biomes}
 	
