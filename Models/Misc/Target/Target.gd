@@ -100,7 +100,7 @@ func _physics_process(delta: float) -> void:
 				if not is_zero_approx(gauge.change_per_tick):
 					gauge.value = gauge.min_value
 			if spawner != null:
-				spawner.nodes_to_be_cleared[self] = true
+				spawner.add_condition(self)
 			update_health_bar()
 			animation_player.play("unset_down")
 			

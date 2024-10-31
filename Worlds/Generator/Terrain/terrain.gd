@@ -1,6 +1,7 @@
 class_name Terrain
 
 var backing: GDTerrain
+var height_map_scale: float
 
 var biome_shader := preload("res://Worlds/Generator/Terrain/biome_p.gdshader") as Shader
 var water_shader := preload("res://Worlds/SkyBox/water.gdshader") as Shader
@@ -17,6 +18,7 @@ func _init(b: NoiseBlender, cs: float = 256, gs: float = cs * 0.5, r: float = 3,
 	backing.set_water_ripples_noise(water_ripples_noise)
 	backing.set_sea_level(Globals.sea_level())
 	backing.set_noise_texture(noise_texture)
+	height_map_scale = cs / (cs * subdivide + 1.0)
 	
 func init_chunks_of_size(chunks: Array, index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> Array[Node3D]:
 	return backing.init_chunks_of_size(chunks, index, x, y, cs, r, subdivide)
@@ -113,12 +115,12 @@ static func _height_at_position(collision: CollisionShape3D, x: float, z: float)
 	
 	# if we are on a vertex move up/down for a coord
 	if c0 == c1:
-		if c1 < hmap.map_width: 
+		if c1 < hmap.map_width - 1: 
 			c1 += 1
 		else:
 			c0 -= 1
 	if r0 == r1: 
-		if r1 < hmap.map_depth: 
+		if r1 < hmap.map_depth - 1: 
 			r1 += 1
 		else:
 			r0 -= 1

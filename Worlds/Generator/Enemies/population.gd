@@ -43,14 +43,16 @@ func on_flat_surface(distance: float) -> Callable:
 	
 func set_world_ground(state: PhysicsDirectSpaceState3D, pos: Vector2) -> Vector3:
 	var result := Vector3(pos.x, 0, pos.y)
-	var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
+	#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
+	var world_normal := chunker.terrain_normal(pos.x, pos.y)
 	var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 	result.y = wh
 	return result
 	
 func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
 	if entity != null:
-		var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
+		var world_normal := chunker.terrain_normal(pos.x, pos.z)
+		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		var info: Dictionary = user_info.call(world_normal)
 		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < Globals.sea_level()
@@ -82,8 +84,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)
 				return null
-			else:
-				inhabitants[inhabitants.size()] = entity
+			inhabitants[inhabitants.size()] = entity
 		else:
 			if entity is Foliage:
 				(entity as Foliage).setup(rng, current_biome_during_generation)
@@ -95,8 +96,19 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 				garden.append(entity)
 			elif entity is WorldItem:
 				(entity as WorldItem).setup(rng, current_biome_during_generation)
-				entity.name = World.Item.keys()[(entity as WorldItem).kind] + Globals.encode_v3(entity.position)
-				world_items.append(entity) # FIXME: check if item is marked with `entity_name_is_marked` before adding
+				entity.name = World.Item.keys()[(entity as WorldItem).kind] + Globals.encode_v3(entity.position) + Rand.id(5, rng)
+				var is_marked := entity_name_is_marked(entity.name)
+				if is_marked:
+					entity_manager.free_world_item(entity as WorldItem)
+					return null
+				world_items.append(entity) 
+				match (entity as WorldItem).kind:
+					World.Item.ARTIFACT: SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, message: String) -> void: mark_entity(entity))
+					World.Item.SPELL: SignalBus.pick_up_world_item_spell.connect(func(a: Spell, message: String) -> void: mark_entity(entity))
+					World.Item.COIN: SignalBus.pick_up_world_item_coin.connect(func(a: Array[int], message: String) -> void: mark_entity(entity))
+					World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
+					World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
+					World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
@@ -153,6 +165,29 @@ func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vec
 	
 	return prepare_entity(state, result, pos, false, always_valid)
 	
+func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
+	var result: ItemSpawner
+	var world_normal := chunker.terrain_normal(p.x, p.y)
+	var wh: float = world_normal.get("position", Vector3.ZERO).y
+	var pos := Vector3(p.x, wh, p.y)
+	match item:
+		World.Item.ARTIFACT: result = ItemSpawner.artifact_spawner(self, pos, value as Artifact)
+		World.Item.SPELL: result = ItemSpawner.spell_spawner(self, pos, value as Spell)
+		World.Item.KEY: result = ItemSpawner.key_spawner(self, pos, value as int)
+		World.Item.COIN: result = ItemSpawner.coins_spawner(self, pos, value as Array[int])
+		World.Item.HEALTH: result = ItemSpawner.health_spawner(self, pos, value as float)
+		World.Item.NOTE: result = ItemSpawner.note_spawner(self, pos, value as String)
+		
+	result.name = World.Item.keys()[item] + "Spawner" + Globals.encode_v3(pos) + Rand.id(5, rng)
+	# if the spawner has already been consumed don't create a new one.
+	# IMPORTANT: Even if the spawner is consumed the generation algorithm must 
+	#            still assume the spawner exists. We do this to maintain the RNG
+	#            state.
+	if entity_name_is_marked(result.name):
+		return null
+		
+	return result
+	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
 	# FIXME: improve speed
 	for pidx in range(collection.size() - 1, -1, -1):
@@ -167,8 +202,9 @@ func group_spawn_points(spacing: float) -> Dictionary:
 	var b := 0
 	var offsetv := coord * chunk_size
 	var biome_map := chunker.get_biomes_map(offsetv)
+	var point_offset := Vector2(chunker.height_map_scale * 0.5, chunker.height_map_scale * 0.5)
 	for vp in chunker.get_chunk_vertices():
-		var p := -Vec2.xz(vp) + offsetv
+		var p := -Vec2.xz(vp) + point_offset + offsetv
 		points.append(p)
 		var biome := biome_map[b] as World.Biome
 		var found_subsets := PackedInt32Array([])

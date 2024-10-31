@@ -76,9 +76,9 @@ func setup(_settings: WorldSettings) -> void:
 		#artifact.right = Artifact.Option.make_random()
 		#artifacts.collection.append(artifact)
 	
-	const pX = 100
-	const pY = 100
-	const LVL = 1
+	#const pX = 100
+	#const pY = 100
+	#const LVL = 1
 	#var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0) # FIXME: reduce navigation when target is impossible to reach
 	#undead.level = LVL
 	#add_enemy(undead)
@@ -156,8 +156,8 @@ func setup(_settings: WorldSettings) -> void:
 	#add_enemy(undead_head)
 	
 	var rng := RandomNumberGenerator.new()
-	spawner = ItemSpawner.key_spawner(rng, null, Vector3(20, 1000, 20), 16)
-	#spawner.nodes_to_be_cleared[fishman] = true
+	spawner = ItemSpawner.key_spawner(null, Vector3(20, 1000, 20), 16)
+	#spawner.add_condition(fishman)
 	
 	#var h := Vec3.y(10)
 	#var center := Vector2(0, 0)
@@ -205,15 +205,14 @@ func setup(_settings: WorldSettings) -> void:
 	#target1.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 3e10
 	#target2.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 3e10
 	#target3.focus_point = Vector3(20, 1000, -20) + Vector3.RIGHT * 3e10
-	#spawner.nodes_to_be_cleared[target1] = true
-	#spawner.nodes_to_be_cleared[target2] = true
-	#spawner.nodes_to_be_cleared[target3] = true
+	#spawner.add_condition(target1)
+	#spawner.add_condition(target2)
+	#spawner.add_condition(target3)
 	#
 	#add_child(target1)
 	#add_child(target2)
 	#add_child(target3)
 	#
-	#SignalBus.enemy_death.connect(spawner.remove_node)
 	#
 	#
 	var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_nothing()
@@ -349,21 +348,24 @@ func _physics_process(delta: float) -> void:
 	if test_tick < 0.0:
 		test_tick = UPDATE
 		var collision := $rigid_block/CollisionShape3D as CollisionShape3D
-		var V := chunker.height_at_position(collision, player.position.x, player.position.z)
+		var V := Terrain._height_at_position(collision, player.position.x, player.position.z)
 		DebugDraw3D.draw_sphere(Vec3.xz_y(player.position, V.w + collision.global_position.y), 0.3, Color.BLUE, UPDATE)
-		var normal := Vector3(V.x, V.y, V.z)
-		DebugDraw3D.draw_arrow_ray(player.position, normal, 2, Color.RED, 0.5, false, UPDATE)
+		#var normal := Vector3(V.x, V.y, V.z)
+		#DebugDraw3D.draw_arrow_ray(player.position, normal, 2, Color.RED, 0.5, false, UPDATE)
 		var hmap := collision.shape as HeightMapShape3D
 		var S := collision.scale.x
 		var w := (hmap.map_width - 1) * collision.scale.x
 		var d := (hmap.map_depth - 1) * collision.scale.x
 		var x := -w / 2.0
 		var z := -d / 2.0
-		#for c in range(x, -x, S):
-			#for r in range(z, -z, S):
-				#var h := chunker.height_at_position(collision, c + collision.global_position.x, r + collision.global_position.z).w
-				#var p := Vector3(c, h, r) + collision.global_position
-				#DebugDraw3D.draw_sphere(p, 0.1, Color.BLACK, UPDATE)
+		var s := S * 0.5
+		for c in range(x, -x, S):
+			for r in range(z, -z, S):
+				var X := (c + s + collision.global_position.x) 
+				var Y := (r + s + collision.global_position.z)
+				var h := Terrain._height_at_position(collision, X, Y).w
+				var p := Vector3(c + s, h, r + s) + collision.global_position
+				DebugDraw3D.draw_sphere(p, 0.1, Color.BLACK, UPDATE)
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false

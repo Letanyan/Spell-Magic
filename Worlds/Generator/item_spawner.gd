@@ -13,49 +13,56 @@ var spell: Spell = null
 var key: int = 0
 var coins: Array[int] = []
 var health: float = 0.0
+var note_id: String = ""
 
 signal condition_met
+
+func free() -> void:
+	if SignalBus.enemy_death.is_connected(remove_node):
+		SignalBus.enemy_death.disconnect(remove_node)
 
 func _init() -> void:
 	pass
 
-static func artifact_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, a: Artifact) -> ItemSpawner:
+static func artifact_spawner(pop: Population, pos: Vector3, a: Artifact) -> ItemSpawner:
 	var result := ItemSpawner.new()
-	result.name = "ArtifactSpawner " + Globals.encode_v3(pos)
 	result.population = pop
 	result.artifact = a
 	result.position = pos
 	return result
 	
-static func spell_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, s: Spell) -> ItemSpawner:
+static func spell_spawner(pop: Population, pos: Vector3, s: Spell) -> ItemSpawner:
 	var result := ItemSpawner.new()
-	result.name = "SpellSpawner " + Globals.encode_v3(pos)
 	result.population = pop
 	result.spell = s
 	result.position = pos
 	return result
 	
-static func key_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, k: int) -> ItemSpawner:
+static func key_spawner(pop: Population, pos: Vector3, k: int) -> ItemSpawner:
 	var result := ItemSpawner.new()
-	result.name = "KeySpawner " + Globals.encode_v3(pos)
 	result.population = pop
 	result.key = k
 	result.position = pos
 	return result
 	
-static func coins_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, cs: Array[int]) -> ItemSpawner:
+static func coins_spawner(pop: Population, pos: Vector3, cs: Array[int]) -> ItemSpawner:
 	var result := ItemSpawner.new()
-	result.name = "CoinsSpawner " + Globals.encode_v3(pos)
 	result.population = pop
 	result.coins = cs
 	result.position = pos
 	return result
 	
-static func health_spawner(rng: RandomNumberGenerator, pop: Population, pos: Vector3, h: float) -> ItemSpawner:
+static func health_spawner(pop: Population, pos: Vector3, h: float) -> ItemSpawner:
 	var result := ItemSpawner.new()
-	result.name = "HealthSpawner " + Globals.encode_v3(pos)
 	result.population = pop
 	result.health = h
+	result.position = pos
+	return result
+	
+static func note_spawner(pop: Population, pos: Vector3, id: String) -> ItemSpawner:
+	var result := ItemSpawner.new()
+	result.population = pop
+	result.note_id = id
 	result.position = pos
 	return result
 	
@@ -75,7 +82,12 @@ func remove_node(node: Node3D) -> void:
 			drop_coin_items(world)
 		if health != 0.0:
 			drop_health_item(world)
-		condition_met.emit() 
+		condition_met.emit()
+		
+func add_condition(node: Node3D) -> void:
+	nodes_to_be_cleared[node] = true
+	if node is Enemy and not SignalBus.enemy_death.is_connected(remove_node):
+		SignalBus.enemy_death.connect(remove_node)
 	
 func drop_artifact_item(world: Node3D) -> bool:
 	if artifact:
@@ -120,6 +132,15 @@ func drop_health_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.HEALTH) as RedCross
 		item.position = position
 		item.health = health
+		world.add_child(item)
+		return true
+	return false
+
+func drop_note_item(world: Node3D) -> bool:
+	if note_id != "":
+		var item := population.entity_manager.get_world_item(World.Item.NOTE) as ScrollNote
+		item.position = position
+		item.note_id = note_id
 		world.add_child(item)
 		return true
 	return false

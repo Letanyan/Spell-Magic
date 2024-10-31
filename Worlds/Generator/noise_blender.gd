@@ -181,7 +181,6 @@ func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale
 	return back.texture(noise, x, y, w, h, scale)
 
 func compute_biome_distances(x: float, y: float, scale: float) -> void:
-	# FIXME: improve speed (reduce total calls)
 	back.compute_biome_stats(x, y, scale)
 	biome = biome_list[back.get_biome()]
 	color = back.get_color()

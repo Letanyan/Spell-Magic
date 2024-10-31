@@ -79,17 +79,17 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					if tree != null:
 						result.append(tree)
 					
-				var spawner := ItemSpawner.artifact_spawner(rng, pop, pop.set_world_ground(state, pos), art)
+				var spawner := pop.spawn_spawner(World.Item.ARTIFACT, pos, art)
 				for i in bee_count:
 					var p := pop.spawn_enemy(World.Enemy.BEE, state, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
-					if p != null:
+					if p != null and spawner != null:
 						result.append(p)
-						spawner.nodes_to_be_cleared[p] = true
+						spawner.add_condition(p)
 				for i in bumble_count:
 					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, state, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
-					if p != null:
+					if p != null and spawner != null:
 						result.append(p)
-						spawner.nodes_to_be_cleared[p] = true
+						spawner.add_condition(p)
 				
 			GRASSLAND_STRUCTURES_KIND.SLIMY:
 				var pos := area[index]
@@ -176,8 +176,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var pos := area[index] as Vector2
 				
 				var pos3 := Vector3.ZERO
-				var spawner := ItemSpawner.key_spawner(rng, pop, pos3, 2)
-				var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
+				var spawner := pop.spawn_spawner(World.Item.KEY, pos, 2)
 				
 				for i in 3:
 					var circle_path := Pathway.new().random_points_in_disc(2, 0, 2, 2, 8)
@@ -186,8 +185,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config)
 					pos3 = p.position
 					path.origin = pos3
-					if p != null and can_add_spawner:
-						spawner.nodes_to_be_cleared[p] = true
+					if p != null and spawner != null:
+						spawner.add_condition(p)
 						result.append(p)				
 					
 				spawner.position = pos3
@@ -258,9 +257,8 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						#max_limit -= 1
 						#exclusion[j] = true
 						#result.append(p)
-						#var spawner := ItemSpawner.key_spawner(rng, pop, p.position, 2)
-						#var can_add_spawner := not pop.entity_name_is_marked(spawner.name)
-						#if can_add_spawner:
+						#var spawner := pop.spawn_spawner(World.Item.KEY, pos, 2)
+						#if spawner != null:
 							#SignalBus.enemy_death.connect(spawner.remove_node)
 						#for k in house_size:
 							#if rng.randf() < 0.2:
@@ -268,15 +266,15 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 								#if n != null:
 									#n.velocity_movement.current_biome = World.Biome.GRASSLAND
 									#result.append(n)
-									#if can_add_spawner:
-										#spawner.nodes_to_be_cleared[n] = true
+									#if spawner != null:
+										#spawner.add_condition(n)
 							#else:
 								#var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, state, pos.x, pos.y, spacing)
 								#if n != null:
 									#n.velocity_movement.current_biome = World.Biome.GRASSLAND
 									#result.append(n)
-									#if can_add_spawner:
-										#spawner.nodes_to_be_cleared[n] = true
+									#if spawner != null:
+										#spawner.add_condition(n)
 					#if max_limit <= 0:
 						#break
 		index += 1

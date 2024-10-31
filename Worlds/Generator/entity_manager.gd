@@ -116,6 +116,7 @@ var buffer_coin: EntityBuffer
 var buffer_spell: EntityBuffer
 var buffer_key: EntityBuffer
 var buffer_health: EntityBuffer
+var buffer_note: EntityBuffer
 
 func _init() -> void:
 	var deinit_foliage := func(node: Foliage) -> void:
@@ -211,6 +212,9 @@ func _init() -> void:
 	var make_health := func() -> WorldItem:
 		var result := RedCross.make(); result.custom_free = free_world_item
 		return result
+	var make_note := func() -> WorldItem:
+		var result := ScrollNote.make(); result.custom_free = free_world_item
+		return result
 	
 	buffer_target = EntityBuffer.new(10, make_target_shape, deinit_world_item, "TARGET")
 	buffer_artifact = EntityBuffer.new(10, make_artifact, deinit_world_item, "ARTIFACT")
@@ -218,6 +222,7 @@ func _init() -> void:
 	buffer_key = EntityBuffer.new(10, make_key, deinit_world_item, "KEY")
 	buffer_spell = EntityBuffer.new(10, make_spell, deinit_world_item, "SPELL")
 	buffer_health = EntityBuffer.new(10, make_health, deinit_world_item, "HEALTH")
+	buffer_note = EntityBuffer.new(10, make_note, deinit_world_item, "NOTE")
 
 
 func get_foliage(kind: World.Foliage) -> Foliage:
@@ -347,6 +352,7 @@ func get_world_item(kind: World.Item) -> WorldItem:
 		World.Item.COIN: return buffer_coin.get_entity()
 		World.Item.SPELL: return buffer_spell.get_entity()
 		World.Item.HEALTH: return buffer_health.get_entity()
+		World.Item.NOTE: return buffer_note.get_entity()
 	return buffer_target.get_entity()
 
 func free_world_item(node: WorldItem) -> void:
@@ -357,3 +363,4 @@ func free_world_item(node: WorldItem) -> void:
 		World.Item.COIN: buffer_coin.free_entity(node)
 		World.Item.SPELL: buffer_spell.free_entity(node)
 		World.Item.HEALTH: buffer_health.free_entity(node)
+		World.Item.NOTE: buffer_note.free_entity(node)

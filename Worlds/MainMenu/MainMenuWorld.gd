@@ -49,6 +49,7 @@ func _ready() -> void:
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed * 12
+	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)
 	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
