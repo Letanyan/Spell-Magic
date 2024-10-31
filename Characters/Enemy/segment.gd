@@ -2,6 +2,7 @@ class_name Segment
 
 enum BezierKind { LINEAR, QUAD, CUBIC }
 
+# TODO: support baking. make this a GDExtension 
 var start: Vector3
 var end: Vector3
 var c1: Vector3
@@ -63,6 +64,7 @@ func calculate_distance(interval: float = 0.005) -> void:
 	if kind == BezierKind.LINEAR:
 		distance = end.distance_to(start)
 	else:
+		# FIXME: speed improvement
 		var p := start
 		distance = 0.0
 		var i := interval
@@ -93,7 +95,6 @@ func position_at_time(t: float) -> Vector3:
 	
 func position_at_time_with_rotation(t: float, angle: float) -> Vector3:
 	var mat := Transform3D.IDENTITY.rotated(Vector3.UP, angle)
-	# FIXME: change from lerp(Variant, Variant, Variant) to Vector3.lerp(Vector3, float)
 	match kind:
 		BezierKind.LINEAR:
 			return (mat * start).lerp(mat * end, t)

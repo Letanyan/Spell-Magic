@@ -20,6 +20,7 @@ var artifacts: Artifacts
 
 var knowledge_tick: float = 0.0
 var daytime_tick: float = 0.0
+var test_tick: float = 0.0
 
 var settings: WorldSettings
 var pause_start: float
@@ -27,6 +28,8 @@ var inhabitants: Array[Enemy] = []
 var spawner: ItemSpawner
 
 var is_mouse_down: bool = false
+
+var chunker: Terrain
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
@@ -76,9 +79,9 @@ func setup(_settings: WorldSettings) -> void:
 	const pX = 100
 	const pY = 100
 	const LVL = 1
-	var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0) # FIXME: reduce navigation when target is impossible to reach
-	undead.level = LVL
-	add_enemy(undead)
+	#var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0) # FIXME: reduce navigation when target is impossible to reach
+	#undead.level = LVL
+	#add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -pX, 1000, -pY)
@@ -234,6 +237,8 @@ func _ready() -> void:
 	for enemy in inhabitants:
 		enemy.animation_tree.active = true
 		
+	chunker = Terrain.new(NoiseBlender.new())
+		
 	settings.upgrade_settings.currency = 10000
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	menu.setup(book, case, artifacts, settings)
@@ -282,7 +287,6 @@ func _ready() -> void:
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 	sub_viewport_container.visible = false
-	
 
 func _process(delta: float) -> void:
 	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
@@ -339,6 +343,27 @@ func _physics_process(delta: float) -> void:
 		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
+			
+	test_tick -= delta
+	const UPDATE = 2.0
+	if test_tick < 0.0:
+		test_tick = UPDATE
+		var collision := $rigid_block/CollisionShape3D as CollisionShape3D
+		var V := chunker.height_at_position(collision, player.position.x, player.position.z)
+		DebugDraw3D.draw_sphere(Vec3.xz_y(player.position, V.w + collision.global_position.y), 0.3, Color.BLUE, UPDATE)
+		var normal := Vector3(V.x, V.y, V.z)
+		DebugDraw3D.draw_arrow_ray(player.position, normal, 2, Color.RED, 0.5, false, UPDATE)
+		var hmap := collision.shape as HeightMapShape3D
+		var S := collision.scale.x
+		var w := (hmap.map_width - 1) * collision.scale.x
+		var d := (hmap.map_depth - 1) * collision.scale.x
+		var x := -w / 2.0
+		var z := -d / 2.0
+		#for c in range(x, -x, S):
+			#for r in range(z, -z, S):
+				#var h := chunker.height_at_position(collision, c + collision.global_position.x, r + collision.global_position.z).w
+				#var p := Vector3(c, h, r) + collision.global_position
+				#DebugDraw3D.draw_sphere(p, 0.1, Color.BLACK, UPDATE)
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false

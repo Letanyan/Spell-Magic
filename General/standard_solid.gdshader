@@ -29,11 +29,11 @@ void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	albedo_tex *= COLOR;
-	
+
 	vec3 temp_color = rgb2hsv(albedo.rgb * albedo_tex.rgb);
 	temp_color.b = 1.0 - pow(1.0 - temp_color.b, 2.0);
 	ALBEDO = hsv2rgb(temp_color);
-	
+
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);

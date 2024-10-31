@@ -69,8 +69,8 @@ func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
 	var player := data.get("player", {}) as Dictionary
 	player_position = player.get("position", Vector3.ZERO)
-	temp_position = player_position
-	player_position = Vector3.ZERO
+	temp_position = player_position # FIXME: remove temp_position
+	player_position = Vector3.ZERO # FIXME: remove set player to zero on start
 	player_keys = player.get("keys", 0)
 	player_health = player.get("health", 1000.0)
 	player_mana = player.get("mana", 1000.0)

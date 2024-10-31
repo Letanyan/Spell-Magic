@@ -214,6 +214,15 @@ func _physics_process(delta: float) -> void:
 			var pop := population[loc] as Population
 			pop.update_info()
 			
+		#for chunk in chunker.get_loaded_chunks():
+			#var mi := chunk.get_node("mesh")
+			#var static_body := mi.get_node("static")
+			#var collision := static_body.get_node("collision")
+			#var V := chunker.height_at_position(collision, player.position.x, player.position.z)
+			#if not is_nan(V.x):
+				#DebugDraw3D.draw_sphere(Vec3.xz_y(player.position, V.w), 0.2, Color.RED, Globals.knowledge_tick())
+				#DebugDraw3D.draw_arrow_ray(player.position, Vector3(V.x, V.y, V.z), 2, Color.BLUE, 0.5, false, Globals.knowledge_tick())
+			
 	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
 		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
@@ -375,7 +384,8 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	await get_tree().physics_frame
 	update_population_at(updated_chunks, state)
 	
-	chunker.update_environment(player.position.x, player.position.z)
+	if updated_chunks.is_empty():
+		chunker.update_environment(player.position.x, player.position.z)
 	
 
 func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> void:

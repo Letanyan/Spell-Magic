@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bayn6retdbrwm"]
+[gd_scene load_steps=24 format=3 uid="uid://bayn6retdbrwm"]
 
 [ext_resource type="Script" path="res://Worlds/TestArena/TestArena.gd" id="1_so5kd"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_g4l27"]
@@ -109,6 +109,11 @@ size = Vector3(30, 10, 5)
 material = ExtResource("9_fy4ku")
 size = Vector3(30, 10, 5)
 
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_vftdr"]
+map_width = 18
+map_depth = 18
+map_data = PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 0, 3, 2, 1, 0, 0, 2, 1, 0, 1, 0, 2, 1, 0, 0, 0, 0, 1, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
 [node name="TestArena" type="Node3D"]
 script = ExtResource("1_so5kd")
 
@@ -205,6 +210,10 @@ shape = SubResource("BoxShape3D_d4i3w")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 5, 0)
 mesh = SubResource("BoxMesh_hcdbc")
 skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="rigid_block"]
+transform = Transform3D(14, 0, 0, 0, 14, 0, 0, 0, 14, -39.0616, 0, -257.019)
+shape = SubResource("HeightMapShape3D_vftdr")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
 [connection signal="vital_update" from="Player" to="." method="_on_player_vital_update"]
