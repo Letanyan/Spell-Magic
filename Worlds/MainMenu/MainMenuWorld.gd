@@ -46,13 +46,14 @@ func _ready() -> void:
 	setup(_settings)
 	
 	# FIXME: _settings.sed = 5, rng.seed = _settings.sed * 10
+	# FIXME: VERSION: 0, WORLD SEED: 6677285, RNG SEED: 66772850
 	
 	var rng := RandomNumberGenerator.new()
-	rng.seed = _settings.sed * 12
+	rng.seed = _settings.sed * 10
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)
-	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
+	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1) * 10.0
 	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
@@ -72,7 +73,7 @@ func _ready() -> void:
 	#Vector2(-2000, 2000), Vector2(2000, 2000), Vector2(-2000, -2000), \
 	#])
 	
-	chunker = Terrain.new(blender, 256, 128, 2, 0.0625, 16)
+	chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
 	build_terrain()
 	var space := get_world_3d().space
 	var state := PhysicsServer3D.space_get_direct_state(space)
@@ -162,6 +163,12 @@ func build_terrain() -> void:
 		add_child(chunk)
 	player.position = chunker.backing.get_max_height_position()
 	player.position.y = maxf(player.position.y, Globals.sea_level())
+	
+	var direction := player.position.direction_to(chunker.backing.get_min_height_position())
+	var goal_position := player.position + direction * 10.0
+	goal_position.y = player.position.y
+	if not goal_position.is_equal_approx(player.position):
+		player.look_at(goal_position)
 
 func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)

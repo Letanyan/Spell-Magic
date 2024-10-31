@@ -9,9 +9,9 @@ var water_noise := preload("res://Worlds/SkyBox/water_noise.tres") as NoiseTextu
 var water_ripples_noise := preload("res://Worlds/SkyBox/ripples_noise.tres") as NoiseTexture2D
 var noise_texture := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
 
-func _init(b: NoiseBlender, cs: float = 256, gs: float = cs * 0.5, r: float = 3, subdivide: float = 1.0 / 16.0, mcw: float = 18) -> void:
+func _init(b: NoiseBlender, cs: float = 256, gs: float = cs * 0.5, r: float = 3, subdivide: float = 1.0 / 16.0, mcw: float = 18, find_bound_coords: bool = false) -> void:
 	backing = GDTerrain.new()
-	backing.init(b.back, cs, gs, r, subdivide, mcw)
+	backing.init(b.back, cs, gs, r, subdivide, mcw, find_bound_coords)
 	backing.set_biome_shader(biome_shader)
 	backing.set_water_shader(water_shader)
 	backing.set_water_noise(water_noise)

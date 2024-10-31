@@ -13,7 +13,7 @@ var is_paused: bool
 var day_of_the_year: int
 var time_of_day: float
 var is_test_arena: bool = false
-var world_generation_version: int
+var world_generation_version: int = -1
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings

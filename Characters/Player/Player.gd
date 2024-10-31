@@ -27,7 +27,8 @@ var keys: int
 
 var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
 var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_system
-var projectile_indicators: Dictionary = {} ## [Node3D]MeshInstance
+var projectile_indicators: Dictionary = {} ## [Node3D]ProjectileIndicator
+var projectile_indicator_store: Array[ProjectileIndicator] = []
 var max_watched_enemies_distance := 0.0
 var indicator_update_tick := 0.0
 const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
@@ -615,11 +616,15 @@ func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color
 			if not Vector3.UP.cross(body.position - mi.global_position).is_zero_approx():
 				mi.look_at(body.position)
 	else:
-		var mi := projectile_indicator.instantiate() as ProjectileIndicator
+		var mi: ProjectileIndicator
+		if projectile_indicator_store.is_empty():
+			mi = projectile_indicator.instantiate() as ProjectileIndicator
+			pivot.add_child(mi)
+		else:
+			mi = projectile_indicator_store.pop_back()
 		mi.position = Vector3(0, 2, 0)
 		mi.scale = Vector3(pi_size, pi_size, pi_size)
 		projectile_indicators[body] = mi
-		pivot.add_child(mi)
 		var mat := mi.mesh_instance.mesh.surface_get_material(0) as ShaderMaterial
 		mat.set_shader_parameter("albedo", color)
 		
@@ -648,11 +653,11 @@ func update_projectile_indicators(pi_scale: float) -> void:
 			updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
 		
 	# FIXME: use spellbody after free
-	# FIXME: reuse indicators from circle buffer
 	for body: Node3D in projectile_indicators:
 		if not updated_spell_bodies.get(body, false) as bool:
 			var mi := projectile_indicators[body] as Node3D
-			mi.queue_free()
+			projectile_indicator_store.append(mi)
+			mi.position = Vector3(0, -1000, 0)
 			projectile_indicators.erase(body)
 
 class CombatStats:

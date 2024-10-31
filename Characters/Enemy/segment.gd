@@ -2,7 +2,6 @@ class_name Segment
 
 enum BezierKind { LINEAR, QUAD, CUBIC }
 
-# TODO: support baking. make this a GDExtension 
 var start: Vector3
 var end: Vector3
 var c1: Vector3
@@ -60,11 +59,10 @@ static func arc_between_of_points(a: Vector3, b: Vector3) -> Segment:
 	
 	return Segment.new(a, b, c, d, BezierKind.CUBIC)
 	
-func calculate_distance(interval: float = 0.005) -> void:
+func calculate_distance(interval: float = 0.05) -> void:
 	if kind == BezierKind.LINEAR:
 		distance = end.distance_to(start)
 	else:
-		# FIXME: speed improvement
 		var p := start
 		distance = 0.0
 		var i := interval

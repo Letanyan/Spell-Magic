@@ -54,7 +54,6 @@ static func id(length: int, rng: RandomNumberGenerator = null) -> String:
 # probs: [Variant]float|int
 # probs is a dictionary where each key has its 'value' as a value of being choosen relative to other siblings
 static func entity_from_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
-	# FIXME: improve speed
 	var keys := probs.keys()
 	if keys.size() == 0:
 		return default
@@ -67,10 +66,9 @@ static func entity_from_distribution(r: float, probs: Dictionary, default: Varia
 		sum += n
 		
 	var base := 0.0
-	for n in range(0, keys.size()):
-		var i: Variant = keys[n]
-		var next_base : float = base + probs[i] / sum
-		if base <= r and r < next_base:
+	for i: Variant in keys:
+		var next_base: float = base + probs[i] / sum
+		if r < next_base:
 			return i
 		base = next_base
 	
@@ -87,12 +85,12 @@ static func entity_from_non_relative_distribution(r: float, probs: Dictionary, d
 		return keys[0]
 		
 	var base := 0.0
-	for n in range(0, keys.size()):
-		var i: Variant = keys[n]
+	for i: Variant in keys:
 		var next_base : float = base + probs[i]
-		if base <= r and r < next_base:
+		if r < next_base:
 			return i
 		base = next_base
+		
 	if base != 1.0:
 		push_error("sum of probs must equal 1.0")
 	
