@@ -155,7 +155,7 @@ func setup(_settings: WorldSettings) -> void:
 	#var undead_head := Population.generate_enemy(World.Enemy.UNDEAD_HEAD, player, pX, 1000, pY)
 	#add_enemy(undead_head)
 	
-	var rng := RandomNumberGenerator.new()
+	#var rng := RandomNumberGenerator.new()
 	spawner = ItemSpawner.key_spawner(null, Vector3(20, 1000, 20), 16)
 	#spawner.add_condition(fishman)
 	

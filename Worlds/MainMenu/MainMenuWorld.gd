@@ -45,15 +45,12 @@ func _ready() -> void:
 	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	
-	# FIXME: _settings.sed = 5, rng.seed = _settings.sed * 10
-	# FIXME: VERSION: 0, WORLD SEED: 6677285, RNG SEED: 66772850
-	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed * 10
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)
-	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1) * 10.0
+	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
 	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
@@ -89,7 +86,6 @@ func _ready() -> void:
 	settings_menu.main_menu_world = get_node(".")
 	
 	(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("base_seed", randi_range(0, 1000000))
-
 	
 func _physics_process(delta: float) -> void:
 	daytime_tick += delta
@@ -113,7 +109,6 @@ func _physics_process(delta: float) -> void:
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
-	
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	var b := blender.biome
 	if last_biome != b:
@@ -154,15 +149,17 @@ func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:
 	terrain_update_interval = 0
 	update_terrain(state)
 	player_movement_direction.y = Navigator.get_world_height(state, player.position.x, player.position.z) - player.position.y
-	player_movement_direction.y = player_movement_direction.normalized().y
+	#player_movement_direction.y = player_movement_direction.normalized().y
 		
 		
 func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
-	player.position = chunker.backing.get_max_height_position()
-	player.position.y = maxf(player.position.y, Globals.sea_level())
+	var heighest_pos := chunker.backing.get_max_height_position()
+	if not heighest_pos.is_zero_approx():
+		player.position = heighest_pos
+		player.position.y = maxf(player.position.y, Globals.sea_level())
 	
 	var direction := player.position.direction_to(chunker.backing.get_min_height_position())
 	var goal_position := player.position + direction * 10.0

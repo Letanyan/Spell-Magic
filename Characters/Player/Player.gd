@@ -5,6 +5,9 @@ extends CharacterBody
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
+@onready var body_pivot: Node3D = $Pivot
+var projectile_indicator_scale: float = 1.0
+
 @onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
 @onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
@@ -231,7 +234,8 @@ func _physics_process(delta: float) -> void:
 	for spell: Spell in reasons:
 		spell_was_limited.emit(spell, reasons[spell])
 	
-	update_projectile_indicators(1.0 + (spring_extension / 10.0) * 2.0)
+	projectile_indicator_scale = 1.0 + (spring_extension / 10.0) * 2.0
+	update_projectile_indicators()
 	
 	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
@@ -631,28 +635,26 @@ func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color
 	return true
 	
 
-func update_projectile_indicators(pi_scale: float) -> void:
-	var pivot := $Pivot as Node3D
+## updated_spell_bodies: [SpellBody]bool
+func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
+	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
+	var dist := clampf(1.0 - body.position.distance_to(position) / 20.0, 0.0, 1.0)
+	updated_spell_bodies[body] = update_projectile(body_pivot, pis * (1.0 + dist * dist), body, Spell.color_from_element(body.spell.element))
+
+func update_projectile_indicators() -> void:
 	var updated_spell_bodies := {} ## [SpellBody]bool
-	var pi_size := world_settings.hud_settings.projectile_indicator_size * pi_scale
-	if pi_size > 0:
+	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
+	if pis > 0:
 		for enemy: Enemy in enemies_in_range:
 			var enemy_dist := clampf(1.0 - enemy.position.distance_to(position) / 20.0, 0.0, 1.0)
-			updated_spell_bodies[enemy] = update_projectile(pivot, pi_size * (1.0 + enemy_dist * enemy_dist), enemy, Color.BLACK)
-			for spell: SpellBody in enemy.spell_caster.particles:
-				var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
-				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
+			updated_spell_bodies[enemy] = update_projectile(body_pivot, pis * (1.0 + enemy_dist * enemy_dist), enemy, Color.BLACK)
+			enemy.spell_caster.apply_to_all_particles(update_projectile_indicator, updated_spell_bodies)
 		for target: TargetShape in targets_in_range:
 			if target.spell_caster == null:
 				continue
-			for spell: SpellBody in target.spell_caster.particles:
-				var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
-				updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
-		for spell: SpellBody in spell_caster.particles:
-			var dist := clampf(1.0 - spell.position.distance_to(position) / 20.0, 0.0, 1.0)
-			updated_spell_bodies[spell] = update_projectile(pivot, pi_size * (1.0 + dist * dist), spell, Spell.color_from_element(spell.spell.element))
+			target.spell_caster.apply_to_all_particles(update_projectile_indicator, updated_spell_bodies)
+		spell_caster.apply_to_all_particles(update_projectile_indicator, updated_spell_bodies)
 		
-	# FIXME: use spellbody after free
 	for body: Node3D in projectile_indicators:
 		if not updated_spell_bodies.get(body, false) as bool:
 			var mi := projectile_indicators[body] as Node3D

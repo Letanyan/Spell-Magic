@@ -411,3 +411,13 @@ func get_complexity(id: int) -> float:
 		return stddev
 	else:
 		return 0.0
+
+func apply_to_all_particles(callback: Callable, result: Dictionary) -> void:
+	var stack: Array[SpellCaster] = [self]
+	while not stack.is_empty():
+		var caster := stack.pop_back() as SpellCaster
+		for p: SpellBody in caster.particles:
+			callback.call(p, result)
+			if p.spell_caster != null and not p.spell_caster.particles.is_empty():
+				stack.push_back(p.spell_caster)
+		

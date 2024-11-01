@@ -30,7 +30,6 @@ func update_chunks_with_size(chunks: Array[Node3D], index: int, x: float, y: flo
 	return backing.update_chunks_with_size(chunks, index, x, y, cs, r, subdivide)
 	
 func update_chunks(x: float, y: float) -> Dictionary:
-	# FIXME: improve speed
 	return backing.update_chunks(x, y)
 		
 func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> MeshInstance3D:
@@ -52,7 +51,6 @@ func update_chunk_with_size(node: Node3D, index: int, chunk_index: int, x: float
 	return backing.update_chunk_with_size(node, index, chunk_index, x, y, cs, r, subdivide)
 
 func update_environment(x: float, y: float) -> void:
-	# FIXME: improve speed
 	return backing.update_environment(x, y)
 
 func update_chunk_environment(node: Node3D) -> void:
