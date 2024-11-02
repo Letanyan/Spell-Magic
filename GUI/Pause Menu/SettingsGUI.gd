@@ -159,6 +159,10 @@ func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_reticule = button_pressed
 	settings_changed.emit(world_settings)
 	
+func _on_hide_key_count_toggled(toggled_on: bool) -> void:
+	world_settings.hud_settings.hide_collected_keys_label = toggled_on
+	settings_changed.emit(world_settings)
+	
 func _on_projectile_indicator_size_value_changed(value: float) -> void:
 	world_settings.hud_settings.projectile_indicator_size = value
 	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
@@ -288,25 +292,24 @@ func update_info() -> void:
 	info_label.text = """
 [center]
 [b]World Name:[/b] %s
-[b]Keys Obtained:[/b] %s / 8 (%s)
-
-
-[b]Enemies Killed:[/b]
-%s
-
+[b]Keys Obtained:[/b] %d / 8 (%s)
 [b]Day of the Year:[/b] %d
 [b]Time of Day:[/b] %s
 [b]Game Mode:[/b] %s
 [b]Flags:[/b] %s
+
+[b]Enemies Killed:[/b]
+%s
+
 [b]Seed:[/b] %d
 [b]Generator Version: [/b] %d
 [/center]
 """ % [
 	world_settings.world_name,
 	GlobalData.nav.popcnt(world_settings.player_keys), String.num_int64(world_settings.player_keys, 2),
-	world_settings.enemies_killed_table(),
-	world_settings.game_mode_settings.game_mode_description(), game_flags,
 	world_settings.day_of_the_year, time,
+	world_settings.game_mode_settings.game_mode_description(), game_flags,
+	world_settings.enemies_killed_table(),
 	world_settings.sed, world_settings.world_generation_version,
 ]
 

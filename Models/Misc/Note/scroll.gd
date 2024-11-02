@@ -21,6 +21,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if not eaten and body is Player:
 		eaten = true
 		SignalBus.pick_up_world_item_scroll_note.emit(note_id, "Note '%s' picked up" % note_id)
-		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25)
-		tween.finished.connect(custom_free)
+		var tween := create_tween_for_world_item_pick_up(body, 0.25) 
+		tween.finished.connect(custom_free.bind(self))
 		tween.play()

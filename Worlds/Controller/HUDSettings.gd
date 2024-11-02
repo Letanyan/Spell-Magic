@@ -12,6 +12,7 @@ var hide_stats_view: bool = true
 var hide_reticule: bool = false
 var projectile_indicator_size: float = 1.0
 var key_display: KeyDisplay = KeyDisplay.AUTO
+var hide_collected_keys_label: bool = false
 
 func save_dict() -> Dictionary:
 	return {
@@ -20,6 +21,7 @@ func save_dict() -> Dictionary:
 		"hide_health_mana": hide_health_mana, "hide_cooldown_timings": hide_cooldown_timings,
 		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule,
 		"projectile_indicator_size": projectile_indicator_size, "key_display": key_display,
+		"hide_collected_keys_label": hide_collected_keys_label,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -33,3 +35,4 @@ func load_dict(dict: Dictionary) -> void:
 	hide_reticule = dict.get("hide_reticule", false)
 	projectile_indicator_size = dict.get("projectile_indicator_size", 1.0)
 	key_display = dict.get("key_display", KeyDisplay.AUTO)
+	hide_collected_keys_label = dict.get("hide_collected_keys_label", false)

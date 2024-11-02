@@ -17,14 +17,16 @@ func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	update_mesh_color()
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player and key != 0:
+	if not eaten and body is Player:
 		eaten = true
 		if (body as Player).pick_up_key(key):
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' picked up" % key)
-		else:
+		elif key != 0:
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' already obtained" % key)
-		var tween := Player.create_tween_for_world_item_pick_up(self, body.position, 0.25) # TODO: create special animation that locks the model to the camera view.
-		tween.finished.connect(custom_free)
+		else:
+			SignalBus.pick_up_world_item_key.emit(key, "Key 0 shouldn't exist")
+		var tween := create_tween_for_key_pick_up(body as Player, 2.0)
+		tween.finished.connect(custom_free.bind(self))
 		tween.play()
 
 func update_mesh_with_color(color: Color) -> void:
@@ -33,9 +35,25 @@ func update_mesh_with_color(color: Color) -> void:
 	
 func update_mesh_color() -> void:
 	match key:
-		1: update_mesh_with_color(Color(1, 0, 0))
-		2: update_mesh_with_color(Color(0, 1, 0))
-		4: update_mesh_with_color(Color(0, 0, 1))
-		8: update_mesh_with_color(Color(1, 1, 0))
-		16: update_mesh_with_color(Color(1, 0, 1))
-		32: update_mesh_with_color(Color(0, 1, 1))
+		1 <<  0: update_mesh_with_color(Color(1, 0, 0))
+		1 <<  1: update_mesh_with_color(Color(0, 1, 0))
+		1 <<  2: update_mesh_with_color(Color(0, 0, 1))
+		
+		1 <<  3: update_mesh_with_color(Color(1, 1, 0))
+		1 <<  4: update_mesh_with_color(Color(1, 0, 1))
+		1 <<  5: update_mesh_with_color(Color(0, 1, 1))
+		
+		1 <<  6: update_mesh_with_color(Color(1, 0.5, 0))
+		1 <<  7: update_mesh_with_color(Color(1, 0, 0.5))
+		1 <<  8: update_mesh_with_color(Color(0, 1, 0.5))
+		1 <<  9: update_mesh_with_color(Color(0.5, 1, 0))
+		1 << 10: update_mesh_with_color(Color(0.5, 0, 1))
+		1 << 11: update_mesh_with_color(Color(0, 0.5, 1))
+		
+		1 << 12: update_mesh_with_color(Color(1, 0.5, 0.5))
+		1 << 13: update_mesh_with_color(Color(0.5, 1, 0.5))
+		1 << 14: update_mesh_with_color(Color(0.5, 0.5, 1))
+		1 << 15: update_mesh_with_color(Color(1, 1, 0.5))
+		1 << 16: update_mesh_with_color(Color(1, 0.5, 1))
+		1 << 17: update_mesh_with_color(Color(0.5, 1, 1))
+		

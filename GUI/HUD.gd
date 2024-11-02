@@ -18,6 +18,8 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 
 @onready var stats_view: StatsView = $StatsView
 
+@onready var key_count_label: RichTextLabel = $KeyCountLabel
+
 @onready var selection_wheel: SelectionWheel = $SelectionWheel
 var image_preview_raws := {} ## [String]Texture2D
 
@@ -35,6 +37,7 @@ var player: Player:
 		player.spell_was_cast.connect(spell_was_cast)
 		player.spell_was_disallowed.connect(spell_was_disallowed)
 		player.spell_was_limited.connect(spell_was_limited)
+		key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GlobalData.nav.popcnt(player.keys)
 
 var wand: Wand: set = set_wand
 		
@@ -46,7 +49,7 @@ var book: MagicBook:
 func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode_new_item(m), 5))
-	SignalBus.pick_up_world_item_key.connect(func(k: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
+	SignalBus.pick_up_world_item_key.connect(update_pick_up_world_item_key)
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 5))
 	SignalBus.pick_up_world_item_scroll_note.connect(func(c: String, m: String) -> void: show_notification(bbcode_new_item(m), 5))
@@ -353,6 +356,8 @@ func update_settings(settings: WorldSettings) -> void:
 	player.cam.fov = settings.camera_settings.fov
 	
 	player.change_reticule_visible(hud_settings.hide_reticule)
+	
+	key_count_label.visible = not hud_settings.hide_collected_keys_label
 		
 	update_stats_view()
 	update_wand_mappings()
@@ -399,3 +404,6 @@ func update_selection_wheel_spells() -> void:
 		if spell != null:
 			selection_wheel.image_segments[spell_text] = spell.create_thumbnail(false, image_preview_raws)
 		
+func update_pick_up_world_item_key(k: int, m: String) -> void: 
+	show_notification(bbcode_new_item(m), 5)
+	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GlobalData.nav.popcnt(world_settings.player_keys)

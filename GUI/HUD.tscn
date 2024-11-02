@@ -266,3 +266,16 @@ line_width = 4.0
 line_color = Color(0, 0.6, 0.6, 1)
 inner_circle_fraction = 0.5
 radius_range = Vector2(128, 256)
+
+[node name="KeyCountLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 40.0
+grow_horizontal = 0
+bbcode_enabled = true
+text = "[right][font_size=24][color=#ffb500]0 [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]"
