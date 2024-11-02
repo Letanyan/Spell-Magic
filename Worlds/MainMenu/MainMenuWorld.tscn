@@ -273,4 +273,5 @@ process_material = SubResource("ParticleProcessMaterial_0jras")
 draw_pass_1 = SubResource("SphereMesh_3prl5")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("PlaneMesh_oqkeh")

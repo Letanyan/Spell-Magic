@@ -288,23 +288,26 @@ func update_info() -> void:
 	info_label.text = """
 [center]
 [b]World Name:[/b] %s
-[b]Seed:[/b] %d
-[b]Game Mode:[/b] %s
-[b]Flags:[/b] %s
 [b]Keys Obtained:[/b] %s / 8 (%s)
+
 
 [b]Enemies Killed:[/b]
 %s
 
 [b]Day of the Year:[/b] %d
 [b]Time of Day:[/b] %s
+[b]Game Mode:[/b] %s
+[b]Flags:[/b] %s
+[b]Seed:[/b] %d
+[b]Generator Version: [/b] %d
 [/center]
 """ % [
-	world_settings.world_name, world_settings.sed,
-	world_settings.game_mode_settings.game_mode_description(), game_flags,
+	world_settings.world_name,
 	GlobalData.nav.popcnt(world_settings.player_keys), String.num_int64(world_settings.player_keys, 2),
 	world_settings.enemies_killed_table(),
-	world_settings.day_of_the_year, time
+	world_settings.game_mode_settings.game_mode_description(), game_flags,
+	world_settings.day_of_the_year, time,
+	world_settings.sed, world_settings.world_generation_version,
 ]
 
 func update_notes() -> void:
@@ -389,5 +392,4 @@ func _on_tabs_tab_selected(tab: int) -> void:
 
 func _on_user_functions_focus_exited() -> void:
 	GlobalData.game_settings.build_user_functions(user_functions.text)
-	print("save functions")
 	GlobalData.game_settings.save()

@@ -185,7 +185,7 @@ func _physics_process(delta: float) -> void:
 	increment_ticks(delta * tick_scale)
 			
 	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
-	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY)
+	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
@@ -300,7 +300,6 @@ func _physics_process(delta: float) -> void:
 
 	spell_caster.update(self, delta)
 	var final_is_on_floor: bool
-	# TODO: work on precision of on floor when using physics
 	if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
 		final_is_on_floor = is_on_floor
 	else:

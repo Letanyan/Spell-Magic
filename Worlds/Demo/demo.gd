@@ -140,7 +140,8 @@ func run_on_ready() -> void:
 	player.name_generator.read(settings.world_name)
 		
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
-	chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16)
+	settings.sea_level = blender.sea_level
+	chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
 	build_terrain()
 	
 	SignalBus.enemy_death.connect(enemy_dies)

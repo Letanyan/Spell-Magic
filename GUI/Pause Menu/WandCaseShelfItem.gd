@@ -20,8 +20,6 @@ signal move_down_request
 signal move_up_request
 signal return_focus
 
-# TODO: make wandshelfitem work with focus.
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass

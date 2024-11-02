@@ -95,7 +95,7 @@ func pan_camera(movement: Vector2) -> void:
 	cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
 	
 	var size := -movement.length()
-	if vitals.wetness.value > vitals.wetness.min_value and position.y > Globals.sea_level():
+	if vitals.wetness.value > vitals.wetness.min_value and position.y > world_settings.sea_level:
 		vitals.wetness.apply(size / 50_000.0)
 	if vitals.freeze.value > vitals.freeze.min_value:
 		vitals.wetness.apply(size / 75_000.0)
@@ -130,12 +130,12 @@ func _physics_process(delta: float) -> void:
 		
 	update_watched_enemies_positions(delta)
 	velocity_movement.update_player_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed)
-	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false)
+	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings.sea_level)
 	emit_vitals_update()
 	
 	velocity = movement["velocity"]
 	var direction := movement["direction"] as Vector3
-	var is_underwater := not is_on_floor and position.y <= Globals.sea_level() and direction != Vector3.ZERO and velocity != Vector3.ZERO
+	var is_underwater := not is_on_floor and position.y <= world_settings.sea_level and direction != Vector3.ZERO and velocity != Vector3.ZERO
 	velocity_movement.rotate_character(get_node(".") as Player, direction, is_underwater)
 	move_and_slide()
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
@@ -168,7 +168,7 @@ func _physics_process(delta: float) -> void:
 						"parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0,
 						"parameters/run/Speed/scale": velocity_movement.player_movement_speed_animation_scale()
 					})
-		elif position.y <= Globals.sea_level():
+		elif position.y <= world_settings.sea_level:
 			play_animation("swim")
 	else:
 		if is_on_floor:
@@ -176,7 +176,7 @@ func _physics_process(delta: float) -> void:
 			play_animation("battle_idle")
 		
 	if not is_on_floor:
-		if position.y <= Globals.sea_level():
+		if position.y <= world_settings.sea_level:
 			if velocity.length() <= 0:
 				play_animation("float")
 		elif feet_position() > Navigator.get_platform_height(get_world_3d().direct_space_state, position.x, position.z) + 0.25:
@@ -324,10 +324,10 @@ func set_underwater(underwater: float = 0.5) -> float:
 	var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
 	var screen_mesh: Mesh = screen_filter.mesh
 	var screen_material: ShaderMaterial = screen_mesh.surface_get_material(0)
-	if position.y + 2.0 < Globals.sea_level():
+	if position.y + 2.0 < world_settings.sea_level:
 		screen_filter.visible = true
 		screen_material.set_shader_parameter("underwater", underwater)
-		var meters_below_sea := Globals.sea_level() - (position.y + 2.0)
+		var meters_below_sea := world_settings.sea_level - (position.y + 2.0)
 		screen_material.set_shader_parameter("depth_distance", maxf(10.0, 500.0 - meters_below_sea))
 		return underwater
 	else:

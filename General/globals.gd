@@ -1,13 +1,5 @@
 class_name Globals
 extends Node
-
-static func sea_level() -> float:
-	# TODO: calculate terrain average value using each biome elevation curve. Samples points on the curve and take the average. 
-	# Take this avarage for each curve and then average them.
-	# Once we have the average height of the world then we can set the sea level to some amount relative to that amount.
-	# For example if the the average world height is 400. We can decide 30% of the world should be underwater, then set sea level = 30% * 400.
-	# Maybe we could make sea level dynamic per world????   
-	return 0.0 
 	
 static func behaviour_tick() -> float:
 	return 0.166667

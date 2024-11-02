@@ -59,7 +59,8 @@ extends Control
 @onready var starting_upgrades: Button = $StartingUpgrades
 @onready var starting_upgrades_panel: Panel = $StartingUpgradesPanel
 
-@onready var game_mode_description: Label = $GameModeDescription
+@onready var game_mode_description_panel: Panel = $GameModeDescriptionPanel
+@onready var game_mode_description: Label = $GameModeDescriptionPanel/GameModeDescription
 
 
 
@@ -163,6 +164,10 @@ func _on_create_pressed() -> void:
 			settings.sed = seed_edit.text.to_int()
 		else:
 			settings.sed = hash(seed_edit.text)
+		var rng := RandomNumberGenerator.new()
+		rng.seed = settings.sed
+		settings.time_of_day = rng.randf_range(0.0, 24.0)
+		settings.day_of_the_year = rng.randi_range(1, 365)
 		
 		settings.game_mode_settings.mode = game_mode
 		match game_mode:
@@ -186,7 +191,11 @@ func _on_create_pressed() -> void:
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
 		settings.world_generation_version = generator_version.selected + 1
-		settings.sed = randi()
+		settings.sed = Time.get_ticks_usec()
+		var rng := RandomNumberGenerator.new()
+		rng.seed = settings.sed
+		settings.time_of_day = rng.randf_range(0.0, 24.0)
+		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.normal_mode()
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
@@ -198,7 +207,11 @@ func _on_create_pressed() -> void:
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
 		settings.world_generation_version = generator_version.selected + 1
-		settings.sed = randi()
+		settings.sed = Time.get_ticks_usec()
+		var rng := RandomNumberGenerator.new()
+		rng.seed = settings.sed
+		settings.time_of_day = rng.randf_range(0.0, 24.0)
+		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
 		upgrades.reset_all_stats_to_default_values()
 		var temp_upgrades := UpgradeSettings.new()
@@ -388,7 +401,7 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	respawn.position.x += pos_delta
 	sandbox.position.x += pos_delta
 	respawn_options.position.x += pos_delta
-	game_mode_description.position.x += pos_delta
+	game_mode_description_panel.position.x += pos_delta
 	game_options.position.x += pos_delta
 	worlds_list.position.x += pos_delta
 
@@ -412,7 +425,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		respawn_options.visible = true
 		game_options.visible = true
 		starting_upgrades.visible = true
-		game_mode_description.visible = false
+		game_mode_description_panel.visible = false
 		generation_version_label.visible = true
 
 
@@ -432,7 +445,7 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		starting_upgrades.visible = false
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
-		game_mode_description.visible = false
+		game_mode_description_panel.visible = false
 		generation_version_label.visible = false
 
 func _on_use_normal_toggled(toggled_on: bool) -> void:
@@ -450,9 +463,9 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
 		worlds_list.visible = false
-		game_mode_description.visible = true
+		game_mode_description_panel.visible = true
 		game_mode_description.text = "When you die you will respawn with all your progressed saved."
-		generation_version_label.visible = true
+		generation_version_label.visible = false
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -469,6 +482,6 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		starting_upgrades.set_pressed_no_signal(false)
 		starting_upgrades_panel.visible = false
 		worlds_list.visible = false
-		game_mode_description.visible = true
+		game_mode_description_panel.visible = true
 		game_mode_description.text = "When you die the game is over. You will also not be allowed to edit or create your own new spells."
-		generation_version_label.visible = true
+		generation_version_label.visible = false

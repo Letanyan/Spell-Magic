@@ -46,7 +46,7 @@ func _ready() -> void:
 	setup(_settings)
 	
 	var rng := RandomNumberGenerator.new()
-	rng.seed = _settings.sed * 10
+	rng.seed = _settings.sed
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)
@@ -77,8 +77,8 @@ func _ready() -> void:
 	update_terrain(state)
 	
 	skybox = SkyBox.new(world_environment, sun, moon)
-	skybox.day_time = randf_range(0.0, 24.0)
-	skybox.day_of_year = randi_range(1, 365)
+	skybox.day_time = rng.randf_range(0.0, 24.0)
+	skybox.day_of_year = rng.randi_range(1, 365)
 	
 	main_menu.main_menu_world = get_node(".")
 	load_game.main_menu_world = get_node(".")
@@ -142,7 +142,7 @@ func _physics_process(delta: float) -> void:
 		player.position.y = Navigator.get_world_height(state, player.position.x, player.position.z)
 		chunker.update_environment(player.position.x, player.position.z)
 		
-	player.position.y = maxf(player.position.y, Globals.sea_level())
+	player.position.y = maxf(player.position.y, blender.sea_level)
 				
 
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
@@ -157,9 +157,9 @@ func build_terrain() -> void:
 	for chunk in chunks:
 		add_child(chunk)
 	var heighest_pos := chunker.backing.get_max_height_position()
-	if not heighest_pos.is_zero_approx():
+	if heighest_pos.is_finite():
 		player.position = heighest_pos
-		player.position.y = maxf(player.position.y, Globals.sea_level())
+		player.position.y = maxf(player.position.y, blender.sea_level)
 	
 	var direction := player.position.direction_to(chunker.backing.get_min_height_position())
 	var goal_position := player.position + direction * 10.0

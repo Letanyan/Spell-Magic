@@ -55,7 +55,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
 		var info: Dictionary = user_info.call(world_normal)
-		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < Globals.sea_level()
+		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
 		var is_fish := is_enemy and (entity is Fish or entity is Fishman)
 		if not info.get("valid", true) or (below_sea_level and not_hfil and not is_fish):
@@ -189,7 +189,6 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	return result
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
-	# FIXME: improve speed
 	for pidx in range(collection.size() - 1, -1, -1):
 		if collection[pidx].distance_squared_to(point) <= spacing * spacing:
 			return true

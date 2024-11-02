@@ -102,6 +102,7 @@ var distances: PackedFloat64Array = [
 var biome := World.Biome.GRASSLAND
 var color := Color.WHITE
 var total_size := 0.0
+var sea_level := 0.0
 
 static func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
@@ -148,6 +149,8 @@ static func version0(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
+	result.sea_level = rng.randf_range(-50.0, 250.0)
+	
 	return result
 	
 static func version1(s: int) -> NoiseBlender:
@@ -174,6 +177,8 @@ static func version1(s: int) -> NoiseBlender:
 						  
 	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
+	
+	result.sea_level = rng.randf_range(-50.0, 250.0)
 	
 	return result
 	

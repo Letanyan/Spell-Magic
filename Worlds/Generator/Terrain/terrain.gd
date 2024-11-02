@@ -16,7 +16,7 @@ func _init(b: NoiseBlender, cs: float = 256, gs: float = cs * 0.5, r: float = 3,
 	backing.set_water_shader(water_shader)
 	backing.set_water_noise(water_noise)
 	backing.set_water_ripples_noise(water_ripples_noise)
-	backing.set_sea_level(Globals.sea_level())
+	backing.set_sea_level(b.sea_level)
 	backing.set_noise_texture(noise_texture)
 	height_map_scale = cs / (cs * subdivide + 1.0)
 	

@@ -855,19 +855,29 @@ focus_previous = NodePath("../ChainAtEnd")
 toggle_mode = true
 text = "On Hit"
 
-[node name="GameModeDescription" type="Label" parent="."]
-visible = false
+[node name="GameModeDescriptionPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
+offset_top = 216.0
+offset_right = 192.0
+offset_bottom = 384.0
+grow_horizontal = 2
+
+[node name="GameModeDescription" type="Label" parent="GameModeDescriptionPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.472
 anchor_right = 0.472
-offset_left = -159.744
-offset_top = 176.0
-offset_right = 224.256
-offset_bottom = 344.0
+offset_left = -181.248
+offset_right = 202.752
+offset_bottom = 168.0
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="WorldsList" type="ItemList" parent="."]
 visible = false

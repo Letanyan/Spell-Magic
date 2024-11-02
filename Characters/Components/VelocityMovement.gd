@@ -57,7 +57,7 @@ func increment_ticks(delta: float) -> void:
 # result["target"] = target_velocity * delta
 # result["impulse"] = impulse
 # result["direction"] = direction
-func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool) -> Dictionary:
+func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
 		
@@ -102,10 +102,10 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
 		vital_tick = 0.0
-		if body.position.y < Globals.sea_level():
-			var underwater := clampf(Globals.sea_level() - body.position.y, 0.0, 10.0) / 10.0
+		if body.position.y < sea_level:
+			var underwater := clampf(sea_level - body.position.y, 0.0, 10.0) / 10.0
 			vitals.wetness.apply(underwater)
-			vitals.health.apply(clampf(body.position.y - Globals.sea_level(), -100.0, 0.0) / 100.0 * 5.0)
+			vitals.health.apply(clampf(body.position.y - sea_level, -100.0, 0.0) / 100.0 * 5.0)
 
 	
 	var direction := Vector3.ZERO
@@ -144,9 +144,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			fa = fa * 0.25
 			fl = wb * delta
 			
-		if Globals.sea_level() - 1.5 < body.feet_position() and body.feet_position() < Globals.sea_level() - 1.45:
+		if sea_level - 1.5 < body.feet_position() and body.feet_position() < sea_level - 1.45:
 			target_velocity.y = fl
-		elif body.feet_position() < Globals.sea_level() - 1.5:
+		elif body.feet_position() < sea_level - 1.5:
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + wb * delta
