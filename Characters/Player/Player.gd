@@ -201,7 +201,7 @@ func _physics_process(delta: float) -> void:
 		if camera_bounce_direction == 0:
 			camera_bounce_direction = 1
 		var y_mult := clampf(velocity.y, -10.0, 10.0) / 10.0
-		var vratio := velocity.length_squared() / (UpgradeSettings.LIMIT_RUNNING_SPEED ** 2)
+		var vratio := clampf(velocity.length_squared() / (UpgradeSettings.LIMIT_RUNNING_SPEED ** 2), 0.0, 1.0)
 		var damping := 0.025 if velocity.length_squared() > 1.0 else velocity.length_squared() * 0.025
 		if is_zero_approx(y_mult):
 			if absf(cam.v_offset) > 0.05:

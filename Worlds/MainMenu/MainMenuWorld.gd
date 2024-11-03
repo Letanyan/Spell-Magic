@@ -103,6 +103,9 @@ func _physics_process(delta: float) -> void:
 		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
+		world_environment.environment.ambient_light_color = NoiseBlender.environment_ambient_color(settings.time_of_day, sun, moon)
+		sun.light_color = world_environment.environment.ambient_light_color
+		
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		_on_player_moved(0.25, state)
@@ -148,8 +151,10 @@ func _physics_process(delta: float) -> void:
 func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
 	terrain_update_interval = 0
 	update_terrain(state)
-	player_movement_direction.y = Navigator.get_world_height(state, player.position.x, player.position.z) - player.position.y
-	#player_movement_direction.y = player_movement_direction.normalized().y
+	var h := Navigator.get_world_height(state, player.position.x, player.position.z)
+	player_movement_direction.y = h - player.position.y
+	if player.position.y < h + 1.0:
+		player.position.y = h + 1.0
 		
 		
 func build_terrain() -> void:
@@ -225,3 +230,11 @@ func transition_to_biome(biome: World.Biome) -> void:
 		else:
 			biome_tween = null			
 	)
+
+
+func _on_button_pressed() -> void:
+	NoiseBlender.print_world_environment(world_environment, sun, moon)
+
+
+func _on_button_2_pressed() -> void:
+	skybox.day_time = fmod(snappedf(skybox.day_time + 6, 6), 24)

@@ -56,14 +56,23 @@ group_uniforms clouds;
 	uniform vec3 final_clouds_top_color : source_color = vec3( 1.0, 1.0, 1.00 );
 	uniform vec3 final_clouds_middle_color : source_color = vec3( 0.92, 0.92, 0.98 );
 	uniform vec3 final_clouds_bottom_color : source_color = vec3( 0.83, 0.83, 0.94 );
-	uniform float clouds_speed : hint_range( 0.0, 20.0, 0.01 ) = 2.0;
-	uniform float clouds_direction : hint_range( -0.5, 0.5, 0.05 ) = 0.2;
-	uniform float clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
-	uniform float clouds_cutoff : hint_range( 0.0, 1.0, 0.01 ) = 0.3;
-	uniform float clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.5;
+	uniform float start_clouds_speed : hint_range( 0.0, 20.0, 0.01 ) = 2.0;
+	uniform float start_clouds_direction : hint_range( -0.5, 0.5, 0.05 ) = 0.2;
+	uniform float start_clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
+	uniform float start_clouds_cutoff : hint_range( 0.0, 1.0, 0.01 ) = 0.3;
+	uniform float start_clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.5;
 	// More weight is simply a darker color, usefull for rain/storm
-	uniform float clouds_weight : hint_range( 0.0, 1.0, 0.01 ) = 0.0;
-	uniform float clouds_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.25;
+	uniform float start_clouds_weight : hint_range( 0.0, 1.0, 0.01 ) = 0.0;
+	uniform float start_clouds_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.25;
+	
+	uniform float final_clouds_speed : hint_range( 0.0, 20.0, 0.01 ) = 2.0;
+	uniform float final_clouds_direction : hint_range( -0.5, 0.5, 0.05 ) = 0.2;
+	uniform float final_clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
+	uniform float final_clouds_cutoff : hint_range( 0.0, 1.0, 0.01 ) = 0.3;
+	uniform float final_clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.5;
+	// More weight is simply a darker color, usefull for rain/storm
+	uniform float final_clouds_weight : hint_range( 0.0, 1.0, 0.01 ) = 0.0;
+	uniform float final_clouds_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.25;
 
 group_uniforms stars;
 	// Stars should be at black background
@@ -166,7 +175,8 @@ float sphere_intersect( vec3 view_dir, vec3 sphere_pos, float radius )
 
 void sky()
 {
-	float time = overwritten_time != 0.0 ? overwritten_time : TIME;
+	float time = abs(overwritten_time - 0.0) > 0.0001 ? overwritten_time : TIME;
+	
 
 	vec3 day_top_color = mix(start_day_top_color, final_day_top_color, transition);
 	vec3 day_bottom_color = mix(start_day_bottom_color, final_day_bottom_color, transition);
@@ -187,6 +197,13 @@ void sky()
 	vec3 clouds_top_color = mix(start_clouds_top_color, final_clouds_top_color, transition);
 	vec3 clouds_middle_color = mix(start_clouds_middle_color, final_clouds_middle_color, transition);
 	vec3 clouds_bottom_color = mix(start_clouds_bottom_color, final_clouds_bottom_color, transition);
+	float clouds_speed = mix(start_clouds_speed, final_clouds_speed, transition);
+	float clouds_direction = mix(start_clouds_direction, final_clouds_direction, transition);
+	float clouds_scale = mix(start_clouds_scale, final_clouds_scale, transition);
+	float clouds_cutoff = mix(start_clouds_cutoff, final_clouds_cutoff, transition);
+	float clouds_fuzziness = mix(start_clouds_fuzziness, final_clouds_fuzziness, transition);
+	float clouds_weight = mix(start_clouds_weight, final_clouds_weight, transition);
+	float clouds_blur = mix(start_clouds_blur, final_clouds_blur, transition);
 
 	//////////////////// SKY ///////////////////////////////////////////////////////////////////////
 	float _eyedir_y = abs( sin( EYEDIR.y * PI * 0.5 ));
