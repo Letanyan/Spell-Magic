@@ -70,7 +70,7 @@ func setup(_settings: WorldSettings) -> void:
 	const pX = 100
 	const pY = 100
 	const LVL = 1
-	var undead := Population.generate_enemy(World.Enemy.FISHMAN, player, pX / 8.0, 1000, pY / 8.0) # FIXME: reduce navigation when target is impossible to reach
+	var undead := Population.generate_enemy(World.Enemy.FISHMAN, player, pX / 5.0, 1000, pY / 5.0) # FIXME: reduce navigation when target is impossible to reach SNOT_SPIKE
 	undead.level = LVL
 	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)

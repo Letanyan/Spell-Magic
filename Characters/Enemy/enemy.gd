@@ -208,7 +208,7 @@ func _physics_process(delta: float) -> void:
 	
 	var is_on_floor_1_not_on_floor_2_else_check_0: int = 0
 	var did_move := false
-	if move_tick < Globals.move_tick():
+	if snappedf(move_tick, 0.00001) < Globals.move_tick():
 		if velocity_movement.impulse != Vector3.ZERO or current_path.mover == PathStyle.Mover.PHYSICS:
 			velocity = movement["velocity"]
 			move_and_slide()
@@ -235,7 +235,8 @@ func _physics_process(delta: float) -> void:
 					if feet_position() < g:
 						if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 							if pushed_with_impulse:
-								pushed_with_impulse = feet_position() < g - 0.1
+								pushed_with_impulse = feet_position() + t.y < g
+								v.y = 0
 							else:
 								set_feet_position(g)
 								t.y = 0
@@ -245,7 +246,8 @@ func _physics_process(delta: float) -> void:
 					elif feet_position() > g:
 						if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 							if pushed_with_impulse:
-								pushed_with_impulse = feet_position() > g + 0.1
+								pushed_with_impulse = feet_position() + t.y > g
+								v.y = 0
 							else:
 								set_feet_position(g)
 								t.y = 0

@@ -176,10 +176,10 @@ func _physics_process(delta: float) -> void:
 	else:
 		if is_on_floor:
 			play_walking_audio("empty")
-			#if enemies_in_range.is_empty():
-				#play_animation("idle")
-			#else:
-			play_animation("battle_idle")
+			if enemies_in_range.is_empty():
+				play_animation("idle")
+			else:
+				play_animation("battle_idle")
 		
 	if not is_on_floor:
 		if position.y <= world_settings.sea_level:

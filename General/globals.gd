@@ -2,7 +2,7 @@ class_name Globals
 extends Node
 	
 static func behaviour_tick() -> float:
-	return 0.166667
+	return 0.01666666666667
 	
 static func knowledge_tick() -> float:
 	return 1.0

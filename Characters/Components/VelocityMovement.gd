@@ -136,12 +136,12 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		target_velocity.x = 0.0
 		target_velocity.z = 0.0
 		if body is Enemy and (body as Enemy).pushed_with_impulse:
-			if target_velocity.y > 0:
-				target_velocity.y = maxf(0.0, target_velocity.y - fall_acceleration * delta)
-			elif target_velocity.y < 0:
-				target_velocity.y = minf(0.0, target_velocity.y + fall_acceleration * delta)
-			if not body.is_on_floor and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
-				target_velocity.y = target_velocity.y - fall_acceleration * delta
+			var g := Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+			if not body.is_on_floor: 
+				if g < body.feet_position():
+					target_velocity.y = target_velocity.y - fall_acceleration * delta
+				elif g > body.feet_position():
+					target_velocity.y = target_velocity.y + fall_acceleration * delta
 			else:
 				target_velocity.y = 0
 		
