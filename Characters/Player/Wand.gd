@@ -450,13 +450,8 @@ func action_up(action: String, book: MagicBook) -> Spell:
 	
 
 func save_dict() -> Dictionary:
-	# TODO [0]: Maybe todo? We not saving because the actual saving operation would require saving the entire wand case every time.
-	#var picked_key_array: Array[String] = []
-	#for k in picked_key:
-		#picked_key_array.append(k)
 	var result := {
 		"name": name, "keys": {}, "mods": mods,
-		#"picked_key": picked_key_array, "picked_index": picked_index,
 	}
 	for key: PackedStringArray in keys:
 		result["keys"][key] = (keys[key] as Option).save_dict()
@@ -465,11 +460,6 @@ func save_dict() -> Dictionary:
 func load_dict(dict: Dictionary) -> void:
 	name = dict["name"]
 	mods = dict["mods"]
-	# TODO [0]:
-	#picked_key = PackedStringArray([])
-	#for k: String in dict.get("picked_key", []):
-		#picked_key.append(k)
-	#picked_index = dict.get("picked_index", -1)
 	for k: Variant in dict["keys"]:
 		var opt := Option.new()
 		opt.load_dict(dict["keys"][k] as Dictionary)

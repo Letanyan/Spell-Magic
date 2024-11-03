@@ -66,7 +66,7 @@ var on_menu_open: Callable = func() -> void: pass
 var on_menu_close: Callable = func() -> void: pass
 
 func _ready() -> void:
-	velocity_movement = VelocityMovement.player()
+	velocity_movement = VelocityMovement.new()
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
 	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PLAYER)
 	emit_vitals_update()
@@ -132,7 +132,7 @@ func _physics_process(delta: float) -> void:
 	invunerable = max(0.0, invunerable - delta)
 		
 	update_watched_enemies_positions(delta)
-	velocity_movement.update_player_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed)
+	velocity_movement.update_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed, bounds.y, 21.0)
 	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings.sea_level)
 	emit_vitals_update()
 	
@@ -162,20 +162,23 @@ func _physics_process(delta: float) -> void:
 						"parameters/run/Backward/blend_amount": 0, 
 						"parameters/run/Forward/blend_amount": 0, 
 						"parameters/run/Movement/blend_amount": 1,
-						"parameters/run/Speed/scale": velocity_movement.player_movement_speed_animation_scale()
+						"parameters/run/Speed/scale": velocity_movement.movement_speed_animation_scale()
 					})
 				else:
 					play_animation("run", {
 						"parameters/run/Backward/blend_amount": left_right, 
 						"parameters/run/Forward/blend_amount": left_right, 
 						"parameters/run/Movement/blend_amount": 1.0 if is_forward else 0.0,
-						"parameters/run/Speed/scale": velocity_movement.player_movement_speed_animation_scale()
+						"parameters/run/Speed/scale": velocity_movement.movement_speed_animation_scale()
 					})
 		elif position.y <= world_settings.sea_level:
 			play_animation("swim")
 	else:
 		if is_on_floor:
 			play_walking_audio("empty")
+			#if enemies_in_range.is_empty():
+				#play_animation("idle")
+			#else:
 			play_animation("battle_idle")
 		
 	if not is_on_floor:

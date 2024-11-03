@@ -38,6 +38,8 @@ var move_tick: float = 0
 var speed_for_current_behaviour_tick := 0.0
 var path_movement_remaining_duration := 0.0
 var time_since_navigation_update := NAN
+var frame_count := Vector2(0, 0) # animation frame count for each enemy. x=walk, y=run
+var pushed_with_impulse := false
 
 var index_in_population: int = -1
 signal vital_update(index_in_population: int, vitals: Vitals)
@@ -51,6 +53,7 @@ func _ready() -> void:
 	animation_tree = $AnimationTree
 	collider = $Collision
 	moving_platform_layers = Globals.Layer.OBJECT | Globals.Layer.ROCK
+	max_snap_length = 0.0
 	if kind == World.Enemy.NONE:
 		setup(0, World.Biome.WATER)
 	health_bar.visible = not is_idle
@@ -129,6 +132,16 @@ static func make(_kind: World.Enemy) -> Enemy:
 func setup(seedling: int, biome: World.Biome) -> void:
 	update_behaviour()
 	rotation.y = randf() * 2 * PI
+	match kind:
+		World.Enemy.BIRDMAN, World.Enemy.BLUEMON, World.Enemy.FISHMAN, World.Enemy.FROG, \
+		World.Enemy.MOLE, World.Enemy.MUSHKING, World.Enemy.RABBIT, World.Enemy.UNDEAD, World.Enemy.WALKER: 
+			frame_count = Vector2(30, 17)
+		World.Enemy.BIRD, World.Enemy.FISH, World.Enemy.FUNGI, World.Enemy.HOT_BLOB, World.Enemy.MUSHROOM, \
+		World.Enemy.SNOT_BLOB, World.Enemy.SNOT_SPIKE, World.Enemy.WALKER_HEAD, World.Enemy.WIZARD: 
+			frame_count = Vector2(13, 13)
+		World.Enemy.BAT, World.Enemy.BATTY, World.Enemy.BEE, World.Enemy.BUMBLE_BEE, World.Enemy.DRAGON, \
+		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD: 
+			frame_count = Vector2(35, 25)
 	
 func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
 	var p := clampf(Vector2(x, y).length() / 10000.0, 0.0, 100.0)
@@ -185,6 +198,8 @@ func _physics_process(delta: float) -> void:
 	increment_ticks(delta * tick_scale)
 			
 	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
+	var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
+	velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
 	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
@@ -192,16 +207,25 @@ func _physics_process(delta: float) -> void:
 	update_vitals_display()
 	
 	var is_on_floor_1_not_on_floor_2_else_check_0: int = 0
-	if move_tick >= Globals.move_tick():
+	var did_move := false
+	if move_tick < Globals.move_tick():
+		if velocity_movement.impulse != Vector3.ZERO or current_path.mover == PathStyle.Mover.PHYSICS:
+			velocity = movement["velocity"]
+			move_and_slide()
+			pushed_with_impulse = not is_on_floor
+	else:
+		did_move = true
 		move_tick = 0.0
 		if velocity_movement.impulse != Vector3.ZERO:
 			velocity = movement["velocity"]
 			move_and_slide()
+			pushed_with_impulse = not is_on_floor
 		else:
 			match current_path.mover:
 				PathStyle.Mover.PHYSICS:
 					velocity = movement["velocity"]
 					move_and_slide()
+					pushed_with_impulse = not is_on_floor
 				PathStyle.Mover.ABSOLUTE:
 					var v: Vector3 
 					var t: Vector3
@@ -210,14 +234,24 @@ func _physics_process(delta: float) -> void:
 					var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
 					if feet_position() < g:
 						if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
-							set_feet_position(g)
-							t.y = 0
-							v.y = 0
+							if pushed_with_impulse:
+								pushed_with_impulse = feet_position() < g - 0.1
+							else:
+								set_feet_position(g)
+								t.y = 0
+								v.y = 0
+						else:
+							pushed_with_impulse = false
 					elif feet_position() > g:
 						if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
-							set_feet_position(g)
-							t.y = 0
-							v.y = 0
+							if pushed_with_impulse:
+								pushed_with_impulse = feet_position() > g + 0.1
+							else:
+								set_feet_position(g)
+								t.y = 0
+								v.y = 0
+						else:
+							pushed_with_impulse = false
 					is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.1 else 2
 					velocity = Vector3(v.x, v.y + t.y, v.z)
 					position += Vector3(v.x, v.y + t.y, v.z) + group_positioning_adjustment * delta * speed_for_current_behaviour_tick
@@ -299,32 +333,33 @@ func _physics_process(delta: float) -> void:
 		
 
 	spell_caster.update(self, delta)
-	var final_is_on_floor: bool
-	if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
-		final_is_on_floor = is_on_floor
-	else:
-		final_is_on_floor = is_on_floor_1_not_on_floor_2_else_check_0 == 1
-		
-	if animation_tree.active:
-		if velocity != Vector3.ZERO:
-			if final_is_on_floor:
-				if velocity.length() < 0.166667:
-					#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
-					play_animation("walk", {"parameters/walk/speed/scale": speed_for_current_behaviour_tick})
-				else:
-					#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
-					play_animation("run", {"parameters/run/speed/scale": speed_for_current_behaviour_tick / 10.0})
+	if did_move:
+		var final_is_on_floor: bool
+		if is_on_floor_1_not_on_floor_2_else_check_0 == 0:
+			final_is_on_floor = is_on_floor
 		else:
-			idle_tick += delta
-			if final_is_on_floor and idle_tick > 0.5:
-				play_walking_audio("empty")
-				play_animation("idle")
-				idle_tick = 0
+			final_is_on_floor = is_on_floor_1_not_on_floor_2_else_check_0 == 1
 			
-		if not final_is_on_floor:
-			play_animation("fall")
-		elif current_animation_is("fall"):
-			play_animation("land")
+		if animation_tree.active:
+			if velocity != Vector3.ZERO:
+				if final_is_on_floor:
+					if velocity.length() < 0.166667:
+						#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
+						play_animation("walk", {"parameters/walk/speed/scale": velocity_movement.movement_speed_animation_scale()})
+					else:
+						#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
+						play_animation("run", {"parameters/run/speed/scale": velocity_movement.movement_speed_animation_scale()})
+			else:
+				idle_tick += delta
+				if final_is_on_floor and idle_tick > 0.5:
+					play_walking_audio("empty")
+					play_animation("idle")
+					idle_tick = 0
+				
+			if not final_is_on_floor:
+				play_animation("fall")
+			elif current_animation_is("fall"):
+				play_animation("land")
 
 
 func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellReason:

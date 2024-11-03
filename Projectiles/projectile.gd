@@ -106,7 +106,7 @@ func impulse() -> Vector3:
 			return velocity * (amp)
 		Spell.Element.AIR:
 			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
-			return velocity * (amp + clampf(spell.elemental_application, 0.0, 1.0)) * 20
+			return velocity * (amp + clampf(spell.elemental_application, 0.0, 1.0)) * 100
 		Spell.Element.FIRE:
 			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
 			return velocity * (amp * 4)

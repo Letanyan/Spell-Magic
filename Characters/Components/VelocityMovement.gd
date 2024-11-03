@@ -26,27 +26,30 @@ var velocity := Vector3.ZERO
 var target_velocity := Vector3.ZERO
 var impulse := Vector3.ZERO
 
-func _init(_speed: float = 24, _fall_acceleration: float = 75, _friction: float = 75, _jump_impulse: float = 20, _bounce_impulse: float = 16) -> void:
-	speed = _speed
+var animation_scale: float
+
+func _init(_speed: float = 24, _fall_acceleration: float = 150, _friction: float = 150, _jump_impulse: float = 20, _bounce_impulse: float = 16) -> void:
+	update_movement_speed(speed, 1, 60.0)
 	fall_acceleration = _fall_acceleration
 	friction = _friction
 	jump_impulse = _jump_impulse
 	bounce_impulse = _bounce_impulse
 	has_navigation_target = false
 	
-static func player() -> VelocityMovement:
-	# FIXME: apply this to enemies as well and update their animation speed accordingly
-	var desired_speed := 12.0
-	var s := (60.0 / 21.0) * 0.85
-	return VelocityMovement.new(s * desired_speed, 150, 150)
+# returns the distance traveled by taking two steps. Which is what an animation walk cycle would use before looping.
+static func stride_length_meters(height: float) -> float:
+	return height * 0.0105156 * 2
 	
-func update_player_movement_speed(target: float) -> void:
-	var s := (60.0 / 21.0) * 0.85
-	speed = s * target
+func update_movement_speed(target: float, height: float, animation_frames: float) -> void:
+	speed = target
+	animation_scale = target / (Engine.get_frames_per_second() / animation_frames)
+	
+func movement_speed_animation_scale() -> float:
+	return animation_scale
 
-func player_movement_speed_animation_scale() -> float:
-	var s := (60.0 / 21.0) * 0.85
-	return speed / s
+#func player_movement_speed_animation_scale() -> float:
+	#var s := (60.0 / 21.0) * 0.85
+	#return speed / s
 
 func increment_ticks(delta: float) -> void:
 	vital_tick += delta
@@ -96,7 +99,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 
 	if vital_tick >= 1.0:
 		var h := vitals.update_vitals(body)
-		for dmg: Dictionary in h: # [][String(dmg, el)](float, Spell.Element)
+		for dmg: Dictionary in h: ## [][String(dmg, el)](float, Spell.Element)
 			Vitals.apply_damage(body.get_parent() as Node3D, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [])
 		var wet_area := body.get_node("WetArea") as Area3D
 		if wet_area != null:
@@ -125,13 +128,22 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		var stun_value := 0.005 if vitals.stun.value > 0 else 1.0
 		target_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 		target_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
+		if target_velocity.y > 0:
+			target_velocity.y = maxf(0.0, target_velocity.y - fall_acceleration * delta)
 		if vitals.stun.value > 0.0:
 			(body as Player).add_shake(vitals.stun.value)
 	else:
 		target_velocity.x = 0.0
 		target_velocity.z = 0.0
-		if target_velocity.y > 0.0:
-			target_velocity.y = 0.0
+		if body is Enemy and (body as Enemy).pushed_with_impulse:
+			if target_velocity.y > 0:
+				target_velocity.y = maxf(0.0, target_velocity.y - fall_acceleration * delta)
+			elif target_velocity.y < 0:
+				target_velocity.y = minf(0.0, target_velocity.y + fall_acceleration * delta)
+			if not body.is_on_floor and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
+				target_velocity.y = target_velocity.y - fall_acceleration * delta
+			else:
+				target_velocity.y = 0
 		
 	if body.feet_position() < -1000.0 or is_nan(body.position.y):
 		body.set_feet_position(Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z))

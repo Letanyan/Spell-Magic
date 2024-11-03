@@ -95,8 +95,12 @@ func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	collision_is_active = maxf(base_size[kind].x, maxf(base_size[kind].y, base_size[kind].z)) * s > 1.0
 		
 func set_albedo_override(color: Color) -> void:
-	# TODO: check for other mesh LODs'
 	var m := get_node("MeshNode/mesh") as MeshInstance3D
 	var shader := m.mesh.surface_get_material(0) as ShaderMaterial
 	shader.set_shader_parameter("albedo_override", color)
+	
+	var m1 := get_node("MeshNode/mesh_1") as MeshInstance3D
+	if m1 != null:
+		shader = m1.mesh.surface_get_material(0) as ShaderMaterial
+		shader.set_shader_parameter("albedo_override", color)
 				
