@@ -26,10 +26,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
-		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), fit(6,1), Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), fit(6,1), Easing.out_quart) \
-		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), fit(6,1), Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), fit(6,1), Easing.out_quart)
+		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), runs(17), Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), runs(17), Easing.out_quart) \
+		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), runs(17), Easing.out_quart) \
+		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), runs(17), Easing.out_quart)
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_jump() \
 		.set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND)
 	

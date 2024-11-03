@@ -154,7 +154,7 @@ func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:
 	var h := Navigator.get_world_height(state, player.position.x, player.position.z)
 	player_movement_direction.y = h - player.position.y
 	if player.position.y < h + 1.0:
-		player.position.y = h + 1.0
+		player.position.y = lerpf(player.position.y, h + 1.0, 0.1)
 		
 		
 func build_terrain() -> void:

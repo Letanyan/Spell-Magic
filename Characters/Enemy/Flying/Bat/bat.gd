@@ -31,10 +31,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var rotate_path := Pathway.new() \
 		.move_to(a) \
-		.arc_to(b, true, fit(4,2), Easing.in_out_cubic) \
-		.arc_to(c, true, fit(3,1), Easing.in_out_cubic) \
-		.arc_to(d, true, fit(4,2), Easing.in_out_cubic) \
-		.arc_to(a, true, fit(3,1), Easing.in_out_cubic)
+		.arc_to(b, true, runs(4), Easing.in_out_cubic) \
+		.arc_to(c, true, runs(3), Easing.in_out_cubic) \
+		.arc_to(d, true, runs(4), Easing.in_out_cubic) \
+		.arc_to(a, true, runs(3), Easing.in_out_cubic)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

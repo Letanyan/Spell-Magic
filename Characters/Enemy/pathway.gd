@@ -178,43 +178,23 @@ func wait(d: float, point: Vector3 = cursor) -> Pathway:
 	add(Segment.point(point, d), d, Easing.linear)
 	return self
 	
-func line_to(end: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:
-	add(Segment.linear(cursor, end), d, m)
+func line_to(end: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.linear(cursor, end), speed, m)
 	cursor = end
 	return self
 	
-func cubic_to(end: Vector3, c1: Vector3, c2: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:
-	add(Segment.cubic(cursor, end, c1, c2), d, m)
+func cubic_to(end: Vector3, c1: Vector3, c2: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.cubic(cursor, end, c1, c2), speed, m)
 	cursor = end
 	return self
 	
-func quad_to(end: Vector3, c1: Vector3, d: float, m: Segment = Easing.linear) -> Pathway:
-	add(Segment.quad(cursor, end, c1), d, m)
+func quad_to(end: Vector3, c1: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.quad(cursor, end, c1), speed, m)
 	cursor = end
 	return self
 	
-func line_with_speed_to(end: Vector3, s: float, m: Segment = Easing.linear) -> Pathway:
-	add_with_speed(Segment.linear(cursor, end), s, m)
-	cursor = end
-	return self
-	
-func cubic_with_speed_to(end: Vector3, c1: Vector3, c2: Vector3, s: float, m: Segment = Easing.linear) -> Pathway:
-	add_with_speed(Segment.cubic(cursor, end, c1, c2), s, m)
-	cursor = end
-	return self
-	
-func quad_with_speed_to(end: Vector3, c1: Vector3, s: float, m: Segment = Easing.linear) -> Pathway:
-	add_with_speed(Segment.quad(cursor, end, c1), s, m)
-	cursor = end
-	return self
-	
-func arc_to(end: Vector3, clockwise: bool, dur: float, m: Segment = Easing.linear) -> Pathway:
-	add(Segment.arc_between_of_points(cursor, end), dur, m)
-	cursor = end
-	return self
-	
-func arc_with_speed_to(end: Vector3, clockwise: bool, s: float, m: Segment = Easing.linear) -> Pathway:
-	add_with_speed(Segment.arc_between_of_points(cursor, end), s, m)
+func arc_to(end: Vector3, clockwise: bool, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.arc_between_of_points(cursor, end), speed, m)
 	cursor = end
 	return self
 	
@@ -238,14 +218,7 @@ func sample_points_xz(count: int) -> PackedVector2Array:
 		result.append(Vector2(p.x, p.z))
 	return result
 	
-func circle(radius: float, h: float, dur: float, m: Segment = Easing.linear) -> Pathway:
-	var a := Segment.cubic(Vector3(0, h, radius)+cursor, Vector3(0, h, -radius)+cursor, Vector3(radius * 1.5, h, radius)+cursor, Vector3(radius * 1.5, h, -radius)+cursor)
-	var b := Segment.cubic(Vector3(0, h, -radius)+cursor, Vector3(0, h, radius)+cursor, Vector3(radius * -1.5, h, -radius)+cursor, Vector3(radius * -1.5, h, radius)+cursor)
-	add(a, dur / 2.0, m)
-	add(b, dur / 2.0, m)
-	return self
-	
-func circle_with_speed(radius: float, h: float, s: float, m: Segment = Easing.linear) -> Pathway:
+func circle(radius: float, h: float, s: float, m: Segment = Easing.linear) -> Pathway:
 	var a := Segment.cubic(Vector3(0, h, radius)+cursor, Vector3(0, h, -radius)+cursor, Vector3(radius * 1.5, h, radius)+cursor, Vector3(radius * 1.5, h, -radius)+cursor)
 	var b := Segment.cubic(Vector3(0, h, -radius)+cursor, Vector3(0, h, radius)+cursor, Vector3(radius * -1.5, h, -radius)+cursor, Vector3(radius * -1.5, h, radius)+cursor)
 	add_with_speed(a, s, m)
@@ -287,29 +260,17 @@ func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear, r
 	move_to(p)
 	for i in range(sides):
 		p = p.rotated(Vector3.UP, angle_step)
-		line_with_speed_to(p, speed, m)
+		line_to(p, speed, m)
 	return self
 	
-func to_and_back(duration: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:
+func to_and_back(speed: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:
 	var o := cursor
-	line_to(to, duration / 2.0, m)
-	line_to(o, duration / 2.0, m)
-	return self
-	
-func to_and_back_with_speed(speed: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:
-	var o := cursor
-	line_with_speed_to(to, speed, m)
-	line_with_speed_to(o, speed, m)
+	line_to(to, speed, m)
+	line_to(o, speed, m)
 	return self
 
-func from_to_and_back(duration: float, from: Vector3, to: Vector3, m: Segment = Easing.linear) -> Pathway:
+func from_to_and_back(speed: float, from: Vector3, to: Vector3, m: Segment = Easing.linear) -> Pathway:
 	move_to(from)
-	line_to(to, duration / 2.0, m)
-	line_to(from, duration / 2.0, m)
-	return self
-
-func from_to_and_back_with_speed(speed: float, from: Vector3, to: Vector3, m: Segment = Easing.linear) -> Pathway:
-	move_to(from)
-	line_with_speed_to(to, speed, m)
-	line_with_speed_to(from, speed, m)
+	line_to(to, speed, m)
+	line_to(from, speed, m)
 	return self

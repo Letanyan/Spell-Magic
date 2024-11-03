@@ -42,7 +42,8 @@ static func stride_length_meters(height: float) -> float:
 	
 func update_movement_speed(target: float, height: float, animation_frames: float) -> void:
 	speed = target
-	animation_scale = target / (Engine.get_frames_per_second() / animation_frames)
+	var result := (stride_length_meters(height) / animation_frames) * Engine.get_frames_per_second()
+	animation_scale = result / target
 	
 func movement_speed_animation_scale() -> float:
 	return animation_scale

@@ -30,10 +30,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var rotate_path := Pathway.new() \
 		.move_to(a) \
-		.quad_to(b, Globals.project_point_onto_sphere(a.lerp(b, 0.5), idle_r), fit(5,2)) \
-		.quad_to(c, Globals.project_point_onto_sphere(b.lerp(c, 0.5), idle_r), fit(5,2)) \
-		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), fit(5,2)) \
-		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), fit(5,2))
+		.quad_to(b, Globals.project_point_onto_sphere(a.lerp(b, 0.5), idle_r), runs(6)) \
+		.quad_to(c, Globals.project_point_onto_sphere(b.lerp(c, 0.5), idle_r), runs(6)) \
+		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), runs(6)) \
+		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), runs(6))
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

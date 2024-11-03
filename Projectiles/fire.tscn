@@ -98,3 +98,6 @@ draw_pass_1 = SubResource("SphereMesh_1reub")
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("2_uwget")
 autoplay = true
+
+[node name="light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.129083, 0.0447589, 0.0129376)

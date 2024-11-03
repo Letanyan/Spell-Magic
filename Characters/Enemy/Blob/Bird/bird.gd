@@ -24,15 +24,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \
-		.line_to(Vector3(0, 20, 0), 10, Easing.out_quart) \
-		.line_to(Vector3(0, 0, 0), 2, Easing.out_quart)
+		.line_to(Vector3(0, 20, 0), runs(16), Easing.out_quart) \
+		.line_to(Vector3(0, 0, 0), runs(14), Easing.out_quart)
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
 	var attack_pathway := Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, fit(10,20), 0), fit(5,15), Easing.out_quart) \
+		.line_to(Vector3(10, fit(10,20), 0), runs(10), Easing.out_quart) \
 		.wait(10) \
-		.line_to(Vector3(10, 0, 0), 2, Easing.out_quart) \
+		.line_to(Vector3(10, 0, 0), runs(15), Easing.out_quart) \
 		.wait(4)
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\

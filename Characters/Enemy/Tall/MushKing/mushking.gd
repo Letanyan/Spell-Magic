@@ -76,11 +76,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var U := -bounds.y * 2.5
 	var up_pathway := Pathway.new() \
 		.move_to(Vector3(0, U, 0)) \
-		.line_to(Z, 3, Easing.linear) \
+		.line_to(Z, runs(12), Easing.linear) \
 		.wait(fit(8,2))
 	var down_pathway := Pathway.new() \
 		.move_to(Z) \
-		.line_to(Vector3(0, U, 0), 3, Easing.linear) \
+		.line_to(Vector3(0, U, 0), runs(12), Easing.linear) \
 		.wait(fit(2,8))
 	angry_sequence = AttackSequence.new(true, [
 		PathStyle.new().follow_path(down_pathway).set_use_me_as_origin().look_at_player_xz().align_y_to_ground_and_dirt(),

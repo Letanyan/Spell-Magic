@@ -30,11 +30,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var start_point := Rand.v3_abs(x_size, y_size, z_size)
 	var cube_path := Pathway.new() \
 		.move_to(start_point) \
-		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(8,3), Easing.in_out_sine) \
-		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
-		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(3,1), Easing.in_out_sine) \
-		.line_to(Rand.v3_abs(x_size, y_size, z_size), fit(5,2), Easing.in_out_sine) \
-		.line_to(start_point, 3, Easing.in_out_sine)
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), runs(12), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), runs(14), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), runs(11), Easing.in_out_sine) \
+		.line_to(Rand.v3_abs(x_size, y_size, z_size), runs(13), Easing.in_out_sine) \
+		.line_to(start_point, runs(15), Easing.in_out_sine)
 	
 	attack_path = PathStyle.new(randi()).follow_path(cube_path).align_y_to_air().look_at_player() \
 		.set_player_body_rotation_as_vision_angle(0, 10, 3, 6)

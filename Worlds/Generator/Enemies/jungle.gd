@@ -55,6 +55,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					distance = rng.randf_range(10, 20)
 					var dest := cursor + direction * distance
 					var pathway: Pathway
+					# FIXME: use level (once we pass it to populate functions) to calculate pathway speed. 
 					if i % 2 == 0:
 						pathway = Pathway.new().from_to_and_back(duration * 2, cursor, dest, Easing.in_out_quad)
 					else:

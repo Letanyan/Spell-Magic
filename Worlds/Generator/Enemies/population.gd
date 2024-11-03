@@ -253,6 +253,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
+		# FIXME: pass level to all populate calls
 		match biomes[i]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
 			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))

@@ -20,3 +20,6 @@ static func xz_y(vxz: Vector3, vy: float) -> Vector3:
 
 static func polar(radius: float, angle: float, height: float = 0.0) -> Vector3:
 	return Vector3(radius, 0, 0).rotated(Vector3.UP, angle) + Vec3.y(height)
+
+static func max(v: Vector3) -> float:
+	return maxf(v.x, maxf(v.y, v.z))

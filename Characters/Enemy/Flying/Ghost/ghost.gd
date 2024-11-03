@@ -33,10 +33,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var a: Vector3 = Rand.point_in_circle(idle_r, idle_h)
 	var rotate_path := Pathway.new() \
 		.move_to(a) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2), true, fit(4,1), Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI), true, fit(4,1), Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3), true, fit(4,1), Easing.linear) \
-		.arc_to(a, true, fit(4,1), Easing.linear)
+		.arc_to(a.rotated(Vector3.UP, PI / 2), true, runs(6), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI), true, runs(6), Easing.linear) \
+		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3), true, runs(6), Easing.linear) \
+		.arc_to(a, true, runs(6), Easing.linear)
 	
 	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
 	

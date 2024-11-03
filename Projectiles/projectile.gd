@@ -344,13 +344,13 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
-			particles.amount = roundi(40 * rl)
+			particles.amount = roundi(80 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			(trail.process_material as ParticleProcessMaterial).scale_min = rl * 2
 			(trail.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(trail.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
-			trail.amount = roundi(40 * rl)
+			trail.amount = roundi(80 * rl)
 			
 			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
 			
@@ -385,13 +385,13 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
-			particles.amount = roundi(40 * rl)
+			particles.amount = roundi(80 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			(trail.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			(trail.process_material as ParticleProcessMaterial).scale_max = rl * 2
 			(trail.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
-			trail.amount = roundi(40 * rl)
+			trail.amount = roundi(80 * rl)
 			
 		Spell.Element.AIR:
 			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = rl * 4
@@ -404,7 +404,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
-			source.amount = roundi(80 * rl)
+			source.amount = roundi(160 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			(trail.process_material as ParticleProcessMaterial).emission_ring_radius = rl
@@ -412,7 +412,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
 			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
 			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
-			trail.amount = roundi(80 * rl)
+			trail.amount = roundi(160 * rl)
 			
 		Spell.Element.ICE:
 			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rl * 2
@@ -420,10 +420,10 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
-			source.amount = roundi(50 * rl)
+			source.amount = roundi(100 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
-			trail.amount = roundi(50 * rl)
+			trail.amount = roundi(100 * rl)
 			
 			#source.local_coords = spell.follow
 			
@@ -568,6 +568,12 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
+			var tween := create_tween()
+			var light: OmniLight3D = get_node("light")
+			var fade_light := func(t: float) -> void:
+				light.omni_range = lerpf(5.0, 0.0, t)
+			tween.tween_method(fade_light, 0, 1, 0.2)
+			tween.play()
 			(get_node("shape_cast") as ShapeCast3D).enabled = false
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))

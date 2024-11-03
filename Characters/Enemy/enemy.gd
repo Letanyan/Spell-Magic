@@ -310,7 +310,7 @@ func _physics_process(delta: float) -> void:
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN or current_path.coord_y == PathStyle.CoordY.AIR:
 				options |= Navigator.MovementOptions.CAN_FLY
 			var obj := get_node(".") as CharacterBody
-			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, 0.5)
+			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, Vec3.max(player.bounds))
 			velocity_movement.target_position = Navigator.find_next_target_from_path(velocity_movement.target_path, position, obj, next_pos)
 			#var clr := Color(randf(), randf(), randf())
 			#DebugDraw3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
@@ -586,6 +586,7 @@ func fiti(mn: int, mx: int) -> int:
 func fits(mn: float, mx: float) -> String:
 	return Globals.format_number_nearest_place(lerpf(mn, mx, fl))
 	
+## fit between fit(mn_i, mx_i) 
 func fita(mn: Array[float], mx: Array[float]) -> Array[float]:
 	var result: Array[float] = []
 	if mn.size() != mx.size():
@@ -595,12 +596,14 @@ func fita(mn: Array[float], mx: Array[float]) -> Array[float]:
 		result.append(fit(mn[i], mx[i]))	
 	return result
 	
+## fit between fit(arr_i, arr_i * mult) 
 func fitas(mult: float, arr: Array[float]) -> Array[float]:
 	var result: Array[float] = []
 	for i in arr.size():
 		result.append(fit(arr[i], arr[i] * mult))	
 	return result
 	
+## fit between fit(arr_i, arr_i - arr_i * (1 - (1-mult)^exponent))
 func fitase(mult: float, exponent: float, arr: Array[float]) -> Array[float]:
 	var result: Array[float] = []
 	for i in arr.size():
@@ -640,6 +643,9 @@ func atks(mncls: int, mxcls: int) -> String:
 	var mn := 1.0 + pow(float(mncls) / 20.0, 1.5) * 31.0
 	var mx := 1.0 + pow(float(mxcls) / 20.0, 1.5) * 31.0
 	return fits(mn, mx)
+	
+func runs(cls: int) -> float:
+	return fit(0.5, 2.0 + cls*0.5)
 
 func timing(cls: int, value: float) -> float:
 	var ratio := 1.0 - float(cls) / 20.0

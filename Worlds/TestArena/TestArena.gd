@@ -70,7 +70,7 @@ func setup(_settings: WorldSettings) -> void:
 	const pX = 100
 	const pY = 100
 	const LVL = 1
-	var undead := Population.generate_enemy(World.Enemy.FISHMAN, player, pX / 5.0, 1000, pY / 5.0) # FIXME: reduce navigation when target is impossible to reach SNOT_SPIKE
+	var undead := Population.generate_enemy(World.Enemy.SNOT_SPIKE, player, pX / 10.0, 1000, pY / 10.0)
 	undead.level = LVL
 	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
@@ -409,17 +409,21 @@ func _input(event: InputEvent) -> void:
 		GlobalData.controller.handle_input(event)
 		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
-			if settings.camera_settings.distance > 1:
-				settings.camera_settings.distance -= 1
-				menu.settings.settings_changed.emit(settings)
-				menu.settings.update_controls()
-				settings.save()
+			settings.upgrade_settings.level_running_speed -= 1
+			print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
+			#if settings.camera_settings.distance > 1:
+				#settings.camera_settings.distance -= 1
+				#menu.settings.settings_changed.emit(settings)
+				#menu.settings.update_controls()
+				#settings.save()
 		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
-			if settings.camera_settings.distance < 10:
-				settings.camera_settings.distance += 1
-				menu.settings.settings_changed.emit(settings)
-				menu.settings.update_controls()
-				settings.save()
+			settings.upgrade_settings.level_running_speed += 1
+			print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
+			#if settings.camera_settings.distance < 10:
+				#settings.camera_settings.distance += 1
+				#menu.settings.settings_changed.emit(settings)
+				#menu.settings.update_controls()
+				#settings.save()
 		
 		for k: String in wand.basic_keys:
 			var s: Spell = null
