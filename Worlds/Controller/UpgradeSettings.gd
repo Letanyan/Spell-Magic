@@ -35,15 +35,17 @@ func purchase_spell_element(el: Spell.Element) -> PurchaseError:
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) != 0
 
-const HAS_CHAIN_ON_START := 1 << 0
-const HAS_CHAIN_ON_END := 1 << 1
-const HAS_CHAIN_ON_HIT := 1 << 2
-var has_chain_method := 0
+const HAS_CHAIN_ON_START := 1 << 1
+const HAS_CHAIN_ON_END := 1 << 2
+const HAS_CHAIN_ON_HIT := 1 << 3
+var has_chain_method := 1
 func cost_chain_method(method: Spell.ChainCastKind) -> int:
 	if method == Spell.ChainCastKind.START or method == Spell.ChainCastKind.END:
 		return 200
-	else:
+	elif method == Spell.ChainCastKind.HIT:
 		return 1000
+	else:
+		return 0
 		
 func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 	if currency < cost_spell_element:
@@ -316,7 +318,7 @@ var level_running_speed := 1:
 	set(value):
 		level_running_speed = clampi(value, 1, level_max_running_speed)
 const level_max_running_speed := 25
-func max_running_speed(x: int = level_running_speed) -> float: return 50 # ((x - 1) * 0.25) + 2.0
+func max_running_speed(x: int = level_running_speed) -> float: return ((x - 1) * 0.25) + 2.0
 func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
 func cost_running_speed() -> int: return level_running_speed * 500
 var buff_running_speed := 0.0

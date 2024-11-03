@@ -327,63 +327,63 @@ func _on_fire_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_FIRE
 	else:
-		upgrades.has_spell_element &= ~(1 << UpgradeSettings.HAS_FIRE)
+		upgrades.has_spell_element &= ~UpgradeSettings.HAS_FIRE
 
 
 func _on_water_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_WATER
 	else:
-		upgrades.has_spell_element &= ~(1 << UpgradeSettings.HAS_WATER)
+		upgrades.has_spell_element &= ~UpgradeSettings.HAS_WATER
 
 
 func _on_rock_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_ROCK
 	else:
-		upgrades.has_spell_element &= ~(1 << UpgradeSettings.HAS_ROCK)
+		upgrades.has_spell_element &= ~UpgradeSettings.HAS_ROCK
 
 
 func _on_air_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_AIR
 	else:
-		upgrades.has_spell_element &= ~(1 << UpgradeSettings.HAS_AIR)
+		upgrades.has_spell_element &= ~UpgradeSettings.HAS_AIR
 
 
 func _on_ice_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_ICE
 	else:
-		upgrades.has_spell_element &= ~(1 << UpgradeSettings.HAS_ICE)
+		upgrades.has_spell_element &= ~UpgradeSettings.HAS_ICE
 
 
 func _on_electric_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_ELECTRIC
 	else:
-		upgrades.has_spell_element &= ~(1 << UpgradeSettings.HAS_ELECTRIC)
+		upgrades.has_spell_element &= ~UpgradeSettings.HAS_ELECTRIC
 
 
 func _on_chain_at_start_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_chain_method |= UpgradeSettings.HAS_CHAIN_ON_START
 	else:
-		upgrades.has_chain_method &= ~(1 << UpgradeSettings.HAS_CHAIN_ON_START)
+		upgrades.has_chain_method &= ~UpgradeSettings.HAS_CHAIN_ON_START
 
 
 func _on_chain_at_end_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_chain_method |= UpgradeSettings.HAS_CHAIN_ON_END
 	else:
-		upgrades.has_chain_method &= ~(1 << UpgradeSettings.HAS_CHAIN_ON_END)
+		upgrades.has_chain_method &= ~UpgradeSettings.HAS_CHAIN_ON_END
 
 
 func _on_chain_on_hit_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		upgrades.has_chain_method |= UpgradeSettings.HAS_CHAIN_ON_HIT
 	else:
-		upgrades.has_chain_method &= ~(1 << UpgradeSettings.HAS_CHAIN_ON_HIT)
+		upgrades.has_chain_method &= ~UpgradeSettings.HAS_CHAIN_ON_HIT
 
 
 func _on_starting_upgrades_toggled(button_pressed: bool) -> void:

@@ -220,7 +220,7 @@ func update_cooldown() -> void:
 	
 	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " + Globals.format_number_nearest_place(book.spells[current_index].cooldown) + "s[/font_size][/left]"
 	element_application.text = book.spells[current_index].elemental_application_description()
-	if book.spells[current_index].chain != null:
+	if book.spells[current_index].chain_cast_kind != Spell.ChainCastKind.NONE and book.spells[current_index].chain != null:
 		mana_cost.text = "Total (Inc. chain): " + Globals.format_number_nearest_place(book.spells[current_index].actual_mana_cost())
 	else:
 		mana_cost.text = ""

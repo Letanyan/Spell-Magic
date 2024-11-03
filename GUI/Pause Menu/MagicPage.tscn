@@ -375,12 +375,14 @@ focus_neighbor_bottom = NodePath("../expressions")
 focus_next = NodePath("../view_chain_button")
 focus_previous = NodePath("../chain_edit")
 selected = 0
-item_count = 3
-popup/item_0/text = "At Start"
-popup/item_1/text = "At End"
+item_count = 4
+popup/item_0/text = "None"
+popup/item_1/text = "At Start"
 popup/item_1/id = 1
-popup/item_2/text = "On Hit"
+popup/item_2/text = "At End"
 popup/item_2/id = 2
+popup/item_3/text = "On Hit"
+popup/item_3/id = 3
 
 [node name="view_chain_button" type="Button" parent="container"]
 layout_mode = 1
@@ -650,6 +652,7 @@ grow_horizontal = 2
 placeholder_text = "value"
 
 [node name="preview_selector" type="Panel" parent="container"]
+visible = false
 layout_mode = 0
 offset_left = 8.0
 offset_top = 48.0

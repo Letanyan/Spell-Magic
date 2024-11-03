@@ -60,7 +60,8 @@ func _on_spell_index_item_selected(index: int) -> void:
 	page.visible = true
 	
 	filter_popup.set_item_disabled(TOTAL_FILTER_ITEMS - 1, false)
-	filter_popup.set_item_text(TOTAL_FILTER_ITEMS - 1, "Chains '" + spell.name + "'")
+	if not filter_options.get(11, false):
+		filter_popup.set_item_text(TOTAL_FILTER_ITEMS - 1, "Chains '" + spell.name + "'")
 	
 	
 func update_spells_list() -> void:
@@ -232,7 +233,10 @@ func filter_popup_selected(id: int) -> void:
 		filter_options[id] = true
 	filter_popup.set_item_checked(id, not is_selected)
 	if id == TOTAL_FILTER_ITEMS - 1 and current_index != -1:
-		filter_chain = book.spells[current_index].name
+		if filter_options.has(id):
+			filter_chain = book.spells[current_index].name
+		else:
+			filter_popup.set_item_text(id, "Chains '" + book.spells[current_index].name + "'")
 		
 	reload_list()
 	

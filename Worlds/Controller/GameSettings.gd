@@ -154,6 +154,7 @@ static var notes := {
 	"spell Cooldown": "The time before the spell can be cast again.",
 	"spell Variables": "A list of your variables which can be used in the x, y, z and D expressions. You can use these variables to simplify your other expressions.",
 	"spell chain ^": "If you use ^ at the start of a variable name, all chained spells following will inherit and/or override their same named variables.",
+	"spell mana return": "Spells that have complicated movement will return some amount of mana back to the player. The amount returned is proportional to the complexity of the spells movement. The complexity of a spell is vaguely defined as how different it is from a spell which travels in a straight line.",
 	
 	"variable u, v, w": "A unit vector {(u,v,w)} describing the direction from the player to the camera aim.",
 	"variable U, V, W": "A unit vector {(U,V,W)} decsribing the direction from the player to an enemy that was in line with the players aim when the spell was cast.",

@@ -197,16 +197,18 @@ func _physics_process(delta: float) -> void:
 		player_moved.emit(delta, state)
 		set_underwater()
 	
-	if enemies_in_range.is_empty() and velocity:
+	if enemies_in_range.is_empty() and not velocity.is_zero_approx():
 		if camera_bounce_direction == 0:
 			camera_bounce_direction = 1
 		var y_mult := clampf(velocity.y, -10.0, 10.0) / 10.0
+		var vratio := velocity.length_squared() / (UpgradeSettings.LIMIT_RUNNING_SPEED ** 2)
+		var damping := 0.025 if velocity.length_squared() > 1.0 else velocity.length_squared() * 0.025
 		if is_zero_approx(y_mult):
 			if absf(cam.v_offset) > 0.05:
 				camera_bounce_direction *= -1
 		else:
 			camera_bounce_direction = floori(signf(y_mult))
-		cam.v_offset = lerpf(cam.v_offset, 0.5 * camera_bounce_direction, 0.025)
+		cam.v_offset = lerpf(cam.v_offset, camera_bounce_direction * (0.2 + vratio * 0.3), damping)
 	else:
 		camera_bounce_direction = 0
 		if not is_zero_approx(cam.v_offset):

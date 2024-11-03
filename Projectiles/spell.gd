@@ -1,7 +1,7 @@
 class_name Spell
 
 enum Element { VOID, FIRE, ROCK, ELECTRIC, WATER, AIR, ICE }
-enum ChainCastKind { START, END, HIT }
+enum ChainCastKind { NONE, START, END, HIT }
 const preview_images: Array[String] = [
 	"Line 1", "Line 2", "Line 3", "Line 4", "Line 5", "Line 6", 
 	"Bomb 1", "Bomb 2", "Bomb 3", "Bomb 4", "Bomb 5", "Bomb 6",
@@ -38,7 +38,7 @@ var count: int:
 		count = clamp(value, 1, UpgradeSettings.LIMIT_N)
 var delay: String
 var mana_cost: float = 0.0
-var chain_cast_kind: ChainCastKind = ChainCastKind.START:
+var chain_cast_kind: ChainCastKind = ChainCastKind.NONE:
 	set(value):
 		chain_cast_kind = value
 		calculate_cooldown()
@@ -376,7 +376,7 @@ func calculate_cooldown() -> float:
 		(duration / UpgradeSettings.LIMIT_T + 1.0) * \
 		(((radius + 1) ** 2) / UpgradeSettings.LIMIT_r + 1.0) * \
 		(maxf(1.0, count * 0.98))
-	if chain != null:
+	if chain_cast_kind != ChainCastKind.NONE and chain != null:
 		chain_cost = chain.calculate_cooldown() * count
 		
 	elemental_application = clampf(power / UpgradeSettings.LIMIT_P * 0.25, 0.0, 0.25)
@@ -661,6 +661,7 @@ func make_gdscript_init(variable_name: String, wrap_in_function: bool = false) -
 		
 	var repr_chain_cast_kind := func(v: ChainCastKind) -> String:
 		match v as ChainCastKind:
+			ChainCastKind.NONE: return "Spell.ChainCastKind.NONE"
 			ChainCastKind.START: return "Spell.ChainCastKind.START"
 			ChainCastKind.END: return "Spell.ChainCastKind.END"
 			ChainCastKind.HIT: return "Spell.ChainCastKind.HIT"

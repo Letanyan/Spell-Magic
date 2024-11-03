@@ -2,7 +2,7 @@ class_name VelocityMovement
 
 @export var speed: float = 24
 @export var fall_acceleration: float = 25
-@export var friction: float = 75
+@export var friction: float = 0.9
 @export var jump_impulse: float = 20
 @export var bounce_impulse: float = 16
 @export var water_bouyancy: float = 75
@@ -28,7 +28,7 @@ var impulse := Vector3.ZERO
 
 var animation_scale: float
 
-func _init(_speed: float = 24, _fall_acceleration: float = 150, _friction: float = 150, _jump_impulse: float = 20, _bounce_impulse: float = 16) -> void:
+func _init(_speed: float = 24, _fall_acceleration: float = 150, _friction: float = 0.9, _jump_impulse: float = 20, _bounce_impulse: float = 16) -> void:
 	update_movement_speed(speed, 1, 60.0)
 	fall_acceleration = _fall_acceleration
 	friction = _friction
@@ -96,23 +96,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		else:
 			direction *= movement_speed * (1.0 - vitals.freeze.value) * stun_value
 		navigation_velocity = direction
-
-	if vital_tick >= 1.0:
-		var h := vitals.update_vitals(body)
-		for dmg: Dictionary in h: ## [][String(dmg, el)](float, Spell.Element)
-			Vitals.apply_damage(body.get_parent() as Node3D, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [])
-		var wet_area := body.get_node("WetArea") as Area3D
-		if wet_area != null:
-			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
-		vital_tick = 0.0
-		if body.position.y < sea_level:
-			var underwater := clampf(sea_level - body.position.y, 0.0, 10.0) / 10.0
-			vitals.wetness.apply(underwater)
-			vitals.health.apply(clampf(body.position.y - sea_level, -100.0, 0.0) / 100.0 * 5.0)
-
-	
-	var direction := Vector3.ZERO
-	if body.has_node("CamPivot"):
+	else:
+		var direction := Vector3.ZERO
 		#var cam_pivot := body.get_node("CamPivot") as Node3D
 		var input_dir := VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
 		var input_len := input_dir.length()
@@ -126,24 +111,35 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		#direction = direction.rotated(Vector3.UP, cam_pivot.rotation.y)
 		result["direction"] = direction
 		var stun_value := 0.005 if vitals.stun.value > 0 else 1.0
-		target_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
-		target_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
-		if target_velocity.y > 0:
-			target_velocity.y = maxf(0.0, target_velocity.y - fall_acceleration * delta)
+		navigation_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
+		navigation_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 		if vitals.stun.value > 0.0:
 			(body as Player).add_shake(vitals.stun.value)
-	else:
-		target_velocity.x = 0.0
-		target_velocity.z = 0.0
-		if body is Enemy and (body as Enemy).pushed_with_impulse:
-			var g := Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
-			if not body.is_on_floor: 
-				if g < body.feet_position():
-					target_velocity.y = target_velocity.y - fall_acceleration * delta
-				elif g > body.feet_position():
-					target_velocity.y = target_velocity.y + fall_acceleration * delta
-			else:
-				target_velocity.y = 0
+
+	if vital_tick >= 1.0:
+		var h := vitals.update_vitals(body)
+		for dmg: Dictionary in h: ## [][String(dmg, el)](float, Spell.Element)
+			Vitals.apply_damage(body.get_parent() as Node3D, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [])
+		var wet_area := body.get_node("WetArea") as Area3D
+		if wet_area != null:
+			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
+		vital_tick = 0.0
+		if body.position.y < sea_level:
+			var underwater := clampf(sea_level - body.position.y, 0.0, 10.0) / 10.0
+			vitals.wetness.apply(underwater)
+			vitals.health.apply(clampf(body.position.y - sea_level, -100.0, 0.0) / 100.0 * 5.0)
+	
+	target_velocity.x *= friction
+	target_velocity.z *= friction
+	if (body is Enemy and (body as Enemy).pushed_with_impulse) or (body is Player):
+		var g := Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		if not body.is_on_floor: 
+			if g < body.feet_position():
+				target_velocity.y = target_velocity.y - fall_acceleration * delta
+			elif g > body.feet_position():
+				target_velocity.y = target_velocity.y + fall_acceleration * delta
+		else:
+			target_velocity.y = 0
 		
 	if body.feet_position() < -1000.0 or is_nan(body.position.y):
 		body.set_feet_position(Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z))
