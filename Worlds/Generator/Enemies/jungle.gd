@@ -55,11 +55,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					distance = rng.randf_range(10, 20)
 					var dest := cursor + direction * distance
 					var pathway: Pathway
-					# FIXME: use level (once we pass it to populate functions) to calculate pathway speed. 
 					if i % 2 == 0:
-						pathway = Pathway.new().from_to_and_back(duration * 2, cursor, dest, Easing.in_out_quad)
+						pathway = Pathway.new().from_to_and_back(pop.runs(10), cursor, dest, Easing.in_out_quad)
 					else:
-						pathway = Pathway.new().from_to_and_back(duration * 2, dest, cursor, Easing.in_out_quad)
+						pathway = Pathway.new().from_to_and_back(pop.runs(10), dest, cursor, Easing.in_out_quad)
 					var path := PathStyle.new(0, Vec3.xz(pos)).follow_path(pathway).align_y_to_ground_and_air().look_at_nothing()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
 					var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config) as TargetShape

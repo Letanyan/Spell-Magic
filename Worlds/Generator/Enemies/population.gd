@@ -16,6 +16,7 @@ var garden: Array[Node3D] = []
 var other_objects: Array = []
 var world_items: Array[WorldItem] = []
 var current_biome_during_generation: World.Biome = World.Biome.WATER
+var current_fl_during_generation: float = 0.0
 
 func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
 	rng = RandomNumberGenerator.new()
@@ -253,6 +254,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
+		current_fl_during_generation = Population.level_relative_to_position(rng, coord.x, coord.y)
 		# FIXME: pass level to all populate calls
 		match biomes[i]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
@@ -342,3 +344,99 @@ func mark_entity_name(name: String) -> void:
 	
 func entity_name_is_marked(name: String) -> bool:
 	return (player.world_settings.marked_entities.get(coord, []) as Array[String]).find(name) != -1
+
+# returns the actual value if the enemy with a class (1-20) where 1 is low 
+static func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:
+	var p := clampf(Vector2(x, z).length() / 10000.0, 0.0, 100.0)
+	var base := 45.0 * (log(p + 1.0) / log(10.0))
+	var offset_max_range := (p * p) / 10000.0 + 9 * sin(p * PI / 10.0)
+	var random_offset := 0.0
+	if rang == null:
+		random_offset = randf_range(0.0, absf(offset_max_range))
+	else:
+		random_offset = rang.randf_range(0.0, absf(offset_max_range))
+	var result := maxf(base + random_offset, 1.0)
+	return result
+
+func fit(mn: float, mx: float) -> float:
+	return lerpf(mn, mx, current_fl_during_generation)
+	
+func fiti(mn: int, mx: int) -> int:
+	return roundi(lerpf(mn, mx, current_fl_during_generation))
+	
+func fits(mn: float, mx: float) -> String:
+	return Globals.format_number_nearest_place(lerpf(mn, mx, current_fl_during_generation))
+	
+## fit between fit(mn_i, mx_i) 
+func fita(mn: Array[float], mx: Array[float]) -> Array[float]:
+	var result: Array[float] = []
+	if mn.size() != mx.size():
+		push_error("mn and mx not same size")
+		return mn
+	for i in mn.size():
+		result.append(fit(mn[i], mx[i]))	
+	return result
+	
+## fit between fit(arr_i, arr_i * mult) 
+func fitas(mult: float, arr: Array[float]) -> Array[float]:
+	var result: Array[float] = []
+	for i in arr.size():
+		result.append(fit(arr[i], arr[i] * mult))	
+	return result
+	
+## fit between fit(arr_i, arr_i - arr_i * (1 - (1-mult)^exponent))
+func fitase(mult: float, exponent: float, arr: Array[float]) -> Array[float]:
+	var result: Array[float] = []
+	for i in arr.size():
+		result.append(fit(arr[i], arr[i] - arr[i] * (1 - pow(1 - mult, exponent))))	
+	return result
+
+func atk(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+
+func def(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+	
+func hp(cls: int) -> float:
+	return fit(50.0, cls * 50.0)
+	
+func mana(cls: int) -> float:
+	return fit(50.0, cls * 50.0)
+	
+func mana_regen(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+
+func power(cls: int) -> float:
+	return fit(5.0, cls * 5.0)
+	
+func radius(cls: int) -> float:
+	return fit(0.1, minf(cls * cls / 80.0 + 0.875, 5.0))
+
+func res(per_cls: int, flat_cls: int) -> Vector2:
+	return Vector2(fit(0.0, per_cls / 20.0), fit(0.0, flat_cls * 5.0))
+	
+func percep(mncls: int, mxcls: int) -> Vector2:
+	var mn := pow(float(mncls) / 20.0, 0.5) * 100
+	var mx := pow(float(mxcls) / 20.0, 0.5) * 100
+	return Vector2(mn, mx)
+	
+func atks(mncls: int, mxcls: int) -> String:
+	var mn := 1.0 + pow(float(mncls) / 20.0, 1.5) * 31.0
+	var mx := 1.0 + pow(float(mxcls) / 20.0, 1.5) * 31.0
+	return fits(mn, mx)
+	
+func runs(cls: int) -> float:
+	return fit(0.5, 2.0 + cls*0.5)
+
+func timing(cls: int, value: float) -> float:
+	var ratio := 1.0 - float(cls) / 20.0
+	return fit(value, value * (1.0 + ratio))
+
+func timings(cls: int, array: Array[float]) -> Array[float]:
+	var ratio := 1.0 - float(cls) / 20.0
+	for i in array.size():
+		array[i] = fit(array[i], array[i] * (1.0 + ratio))
+	return array
+
+func health_drop(cls: int) -> float:
+	return float(cls) / 20.0

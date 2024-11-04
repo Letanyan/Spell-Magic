@@ -144,15 +144,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			frame_count = Vector2(35, 25)
 	
 func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
-	var p := clampf(Vector2(x, y).length() / 10000.0, 0.0, 100.0)
-	var base := 45.0 * (log(p + 1.0) / log(10.0))
-	var offset_max_range := (p * p) / 10000.0 + 2 * sin(p * PI / 10.0)
-	var random_offset := 0.0
-	if rng == null:
-		random_offset = randf_range(0.0, absf(offset_max_range))
-	else:
-		random_offset = rng.randf_range(0.0, absf(offset_max_range))
-	level = maxf(base + random_offset, 1.0)
+	level = Population.level_relative_to_position(rng, x, y)
 	if level_text != null:
 		level_text.text = str(int(level))
 		
