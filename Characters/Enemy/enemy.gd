@@ -638,6 +638,9 @@ func atks(mncls: int, mxcls: int) -> String:
 	
 func runs(cls: int) -> float:
 	return fit(0.5, 2.0 + cls*0.5)
+	
+func dst(cls: int, x1: float, y1: float, z1: float, x2: float, y2: float, z2: float) -> Vector3:
+	return Vector3(x1, y1, z1).normalized().lerp(Vector3(x2, y2, z2).normalized(), fit(1, cls * 10))
 
 func timing(cls: int, value: float) -> float:
 	var ratio := 1.0 - float(cls) / 20.0

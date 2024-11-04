@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://rwkc6syjqkdp"]
+
+[ext_resource type="Texture2D" uid="uid://dfu8l0xun2hqv" path="res://GUI/Images/enemy-direction.svg" id="1_n55un"]
+[ext_resource type="Script" path="res://Characters/Player/EnemyIndicator.gd" id="2_t7wf6"]
+
+[node name="EnemyIndicator" type="Sprite2D"]
+modulate = Color(1, 0, 0, 1)
+scale = Vector2(0.831, 1)
+texture = ExtResource("1_n55un")
+script = ExtResource("2_t7wf6")

@@ -60,7 +60,7 @@ group_uniforms clouds;
 	uniform float start_clouds_direction : hint_range( -0.5, 0.5, 0.05 ) = 0.2;
 	uniform float start_clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
 	uniform float start_clouds_cutoff : hint_range( 0.0, 1.0, 0.01 ) = 0.3;
-	uniform float start_clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.5;
+	uniform float start_clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.0;
 	// More weight is simply a darker color, usefull for rain/storm
 	uniform float start_clouds_weight : hint_range( 0.0, 1.0, 0.01 ) = 0.0;
 	uniform float start_clouds_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.25;
@@ -69,7 +69,7 @@ group_uniforms clouds;
 	uniform float final_clouds_direction : hint_range( -0.5, 0.5, 0.05 ) = 0.2;
 	uniform float final_clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
 	uniform float final_clouds_cutoff : hint_range( 0.0, 1.0, 0.01 ) = 0.3;
-	uniform float final_clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.5;
+	uniform float final_clouds_fuzziness : hint_range( 0.0, 2.0, 0.01 ) = 0.0;
 	// More weight is simply a darker color, usefull for rain/storm
 	uniform float final_clouds_weight : hint_range( 0.0, 1.0, 0.01 ) = 0.0;
 	uniform float final_clouds_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.25;

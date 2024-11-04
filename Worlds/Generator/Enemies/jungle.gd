@@ -50,7 +50,6 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var cursor := Vector3.ZERO
 				var direction := Vector3.UP
 				var distance := 0.0
-				var duration := rng.randf_range(10, 20)
 				for i in rng.randi_range(1, 5):
 					distance = rng.randf_range(10, 20)
 					var dest := cursor + direction * distance

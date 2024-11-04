@@ -234,7 +234,6 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 				result["~~abs_pos"] = (_body as TargetShape).caster_position + cdir
 			elif variable_kind == SpellVariableKind.TIMED:
 				result["~~rel_pos"] = (_body as TargetShape).caster_position + cdir
-			
 	
 	if p != null: # direction from character to spell
 		var old_origin := Vector3(result.get(prefix + "I", 0) as float, result.get(prefix + "J", 0) as float, result.get(prefix + "K", 0) as float)
@@ -341,6 +340,11 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		p.tracking_target = node_to_track
 		p.caster_vitals = vitals
 		p.complexity_id = cid
+		var look_at_dir := p.position + body.position.direction_to(p.position) * 10.0
+		if look_at_dir.is_equal_approx(Vector3.UP):
+			p.look_at_from_position(p.position, Vector3.UP, Vector3.BACK)
+		else:
+			p.look_at_from_position(p.position, look_at_dir)
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir

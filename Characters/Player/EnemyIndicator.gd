@@ -1,0 +1,2 @@
+class_name EnemyIndicator
+extends Sprite2D

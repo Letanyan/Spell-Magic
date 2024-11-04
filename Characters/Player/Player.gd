@@ -6,6 +6,8 @@ extends CharacterBody
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
 
 @onready var body_pivot: Node3D = $Pivot
+@onready var canvas_layer: CanvasLayer = $CanvasLayer
+@onready var canvas_layer_bg: Control = $CanvasLayer/BG
 var projectile_indicator_scale: float = 1.0
 
 @onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 
@@ -33,11 +35,13 @@ var keys: int
 
 var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
 var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_system
-var projectile_indicators: Dictionary = {} ## [Node3D]ProjectileIndicator
+var projectile_indicators: Dictionary = {} ## [Node3D]ProjectileIndicator|EnemyIndicator
 var projectile_indicator_store: Array[ProjectileIndicator] = []
+var enemy_indicator_store: Array[EnemyIndicator] = []
 var max_watched_enemies_distance := 0.0
 var indicator_update_tick := 0.0
 const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
+const enemy_indicator = preload("res://Characters/Player/EnemyIndicator.tscn")
 
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
@@ -606,6 +610,39 @@ func on_pick_up_scroll_note(note_id: String, message: String) -> void:
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)
 
+func update_enemy_indicator(pivot: Node, pi_size: float, body: Node3D) -> bool:
+	if not body.is_inside_tree():
+		return false
+	if cam.is_position_in_frustum(body.global_position):
+		return false
+		
+	var length := minf(canvas_layer_bg.size.x, canvas_layer_bg.size.y)
+	
+	var center := canvas_layer_bg.size * 0.5
+	var local_to_camera := cam.to_local(body.global_position)
+	var reticule_position := Vector2(local_to_camera.x, -local_to_camera.y)
+	if reticule_position.abs().aspect() > center.aspect():
+		reticule_position *= center.x / absf(reticule_position.x)
+	else:
+		reticule_position *= center.y / absf(reticule_position.y)
+		
+	if projectile_indicators.has(body):
+		var si := projectile_indicators[body] as Sprite2D
+		si.position = canvas_layer_bg.size * 0.5
+		si.look_at(center + reticule_position)
+		si.position = center + reticule_position.normalized() * (length * 0.4)
+	else:
+		var si: EnemyIndicator
+		if enemy_indicator_store.is_empty():
+			si = enemy_indicator.instantiate() as Sprite2D
+			pivot.add_child(si)
+		else:
+			si = enemy_indicator_store.pop_back()
+		projectile_indicators[body] = si
+		si.position = canvas_layer_bg.size * 0.5
+		
+	return true		
+
 func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color) -> bool:
 	if not body.is_inside_tree():
 		return false
@@ -632,7 +669,6 @@ func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color
 		mat.set_shader_parameter("albedo", color)
 		
 	return true
-	
 
 ## updated_spell_bodies: [SpellBody]bool
 func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
@@ -645,8 +681,8 @@ func update_projectile_indicators() -> void:
 	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
 	if pis > 0:
 		for enemy: Enemy in enemies_in_range:
-			var enemy_dist := clampf(1.0 - enemy.position.distance_to(position) / 20.0, 0.0, 1.0)
-			updated_spell_bodies[enemy] = update_projectile(body_pivot, pis * (1.0 + enemy_dist * enemy_dist), enemy, Color.BLACK)
+			var dist := clampf(1.0 - enemy.position.distance_to(position) / 20.0, 0.0, 1.0)
+			updated_spell_bodies[enemy] = update_enemy_indicator(canvas_layer, pis * (1.0 + dist * dist), enemy)
 			enemy.spell_caster.apply_to_all_particles(update_projectile_indicator, updated_spell_bodies)
 		for target: TargetShape in targets_in_range:
 			if target.spell_caster == null:
@@ -656,10 +692,15 @@ func update_projectile_indicators() -> void:
 		
 	for body: Node3D in projectile_indicators:
 		if not updated_spell_bodies.get(body, false) as bool:
-			var mi := projectile_indicators[body] as Node3D
-			projectile_indicator_store.append(mi)
-			mi.position = Vector3(0, -1000, 0)
+			var mi := projectile_indicators[body] as Node
+			if mi is Node3D:
+				projectile_indicator_store.append(mi)
+				(mi as Node3D).position = Vector3(0, -1000, 0)
+			elif mi is Node2D:
+				enemy_indicator_store.append(mi)
+				(mi as Node2D).position = Vector2(0, -1000)
 			projectile_indicators.erase(body)
+				
 
 class CombatStats:
 	var start_time: float
