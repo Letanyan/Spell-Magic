@@ -13,7 +13,7 @@ enum Persist { PATH = 1 << 0, ATTACK = 1 << 1 }
 var actions: Array # [](ASOptions, PathStyle, AttackPatterns, ASLabel, ASCondition)
 var index: int
 var should_loop: bool
-var persist: int = 0 #Persist.ATTACK
+var persist: int = 0
 
 var last_path: PathStyle
 var last_attack: AttackPatterns

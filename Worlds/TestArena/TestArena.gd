@@ -70,7 +70,7 @@ func setup(_settings: WorldSettings) -> void:
 	const pX = 100
 	const pY = 100
 	const LVL = 1
-	var undead := Population.generate_enemy(World.Enemy.MUSHROOM, player, pX / 10.0, 1000, pY / 10.0)
+	var undead := Population.generate_enemy(World.Enemy.BLUEMON, player, pX / 10.0, 1000, pY / 10.0)
 	undead.level = LVL
 	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
@@ -206,10 +206,10 @@ func setup(_settings: WorldSettings) -> void:
 	#
 	#
 	#
-	var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_nothing()
-	var target4 := TargetShape.make()
-	target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
-	add_child(target4)
+	#var path4 := PathStyle.new(0, Vector3(20, 1000, 20)).follow_path(Pathway.new().move_to(Vector3(0, 0, 0)).line_to(Vector3(0, 10, 10), 5).line_to(Vector3.ZERO, 5)).align_y_to_ground_and_air().look_at_nothing()
+	#var target4 := TargetShape.make()
+	#target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
+	#add_child(target4)
 	
 
 func add_enemy(enemy: Enemy) -> void:

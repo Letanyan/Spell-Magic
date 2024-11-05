@@ -13,7 +13,7 @@ static func x(v: float) -> Vector3: return Vector3(v, 0, 0)
 static func y(v: float) -> Vector3: return Vector3(0, v, 0)
 static func z(v: float) -> Vector3: return Vector3(0, 0, v)
 
-static func vec4(v: Vector4) -> Vector3: return Vector3(v.x, v.y, v.z)
+static func xyz(v: Vector4) -> Vector3: return Vector3(v.x, v.y, v.z)
 
 static func xz_y(vxz: Vector3, vy: float) -> Vector3:
 	return Vector3(vxz.x, vy, vxz.z)

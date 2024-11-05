@@ -5,6 +5,7 @@ var none_pattern: AttackPatterns
 var attack_pattern1: AttackPatterns
 var attack_pattern2: AttackPatterns
 var attack_pattern3: AttackPatterns
+var cover_and_attack_sequence: AttackSequence
 
 var idle_path: PathStyle
 var attack_path: PathStyle
@@ -15,6 +16,7 @@ var water_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
 var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
+var rock_wall := GlobalData.magic_book.copy_spell("bomb")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
@@ -33,6 +35,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	fire_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.FIRE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
 	fire_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.FIRE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
 	fire_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
+	rock_wall.configure({"d": "0.2","S":"0","s":"0","rx":"5","ry":"5","rz":"0.1","ra":"0"}, Spell.Element.ROCK, fit(10,20), power(0), 1.5, 1, 0, 0, 0)
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -61,8 +64,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			water_attack2,
 			water_attack3,
 		],
-		AttackPatterns.choose_from_distribution(fit(8,2), [ 15, 10, 5, 15, 10, 5 ], -1)
+		AttackPatterns.choose_from_distribution(0.5, [ 15, 10, 5, 15, 10, 5 ], 1)
 	)
+	
+	cover_and_attack_sequence = AttackSequence.new(true, [
+		AttackPatterns.new([rock_wall], AttackPatterns.choose_from_distribution(0, [1])),
+		PathStyle.new().follow_path(Pathway.new().line_to(Vector3(5, 0, 0), runs(15))).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.AT_INTERCHANGE),
+		attack_pattern3,
+		AttackPatterns.new([rock_wall], AttackPatterns.choose_from_distribution(0, [1])),
+		PathStyle.new().follow_path(Pathway.new().line_to(Vector3(-5, 0, 0), runs(15))).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.AT_INTERCHANGE),
+		attack_pattern3,
+		PathStyle.new().follow_path(Pathway.new().wait(0.1)).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.AT_INTERCHANGE),
+	])
 	
 	
 	animation_map["attack"] = "Weapon"
@@ -73,19 +86,21 @@ func attack_state() -> AttackPatterns:
 	if is_idle:
 		return none_pattern
 	elif vitals.health.percentage() > 0.75:
-		return attack_pattern1
+		return none_pattern
 	elif vitals.health.percentage() > 0.5:
 		return attack_pattern2
 	else:
-		return attack_pattern3
+		return none_pattern
 
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
 		current_path = idle_path
-	else:
+	elif vitals.health.percentage() > 0.5:
 		current_path = attack_path
+	else:
+		attack_sequence = cover_and_attack_sequence
 		
 
 func drop_artifact() -> Artifact:

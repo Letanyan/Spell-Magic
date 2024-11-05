@@ -4,7 +4,7 @@ enum CoordY { GROUND, GROUND_AIR_AND_DIRT, GROUND_AND_AIR, GROUND_AND_DIRT, AIR,
 enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER, PLAYER_XZ, NOTHING }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
-enum PlayerVisionAngle { CAMERA, BODY_ROTATION }
+enum PlayerVisionAngle { CAMERA, BODY_ROTATION, LINE_OF_SIGHT }
 
 enum InitialPositionCanUpdate {
 	ON_GROUND = 1 << 0,
@@ -136,6 +136,13 @@ func set_player_camera_as_vision_angle(a: float, r: float, min_m: float = 0.0, m
 	origin = Vector3.ZERO
 	return self
 	
+func set_player_line_of_sight_as_vision_angle(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
+	player_vision_angle = PlayerVisionAngle.LINE_OF_SIGHT
+	player_vision_offset = Vector4(a, r, min_m, max_m)
+	origin_kind = OriginKind.VISION
+	origin = Vector3.ZERO
+	return self
+	
 ## movement is allowed above and below ground
 func align_y_to_ground_air_and_dirt() -> PathStyle:
 	coord_y = CoordY.GROUND_AIR_AND_DIRT
@@ -202,7 +209,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		time += delta
 	if is_done:
 		is_done.data = false
-	var me_pos := Vec3.vec4(me)
+	var me_pos := Vec3.xyz(me)
 	if me_start_position == null:
 		me_start_position = me_pos
 		me_start_position.y -= me.w / 2.0
@@ -218,6 +225,8 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 				player_start_vision_rotation = ((player as Player).get_node("CamPivot") as Node3D).rotation.y
 			elif player_vision_angle == PlayerVisionAngle.BODY_ROTATION:
 				player_start_vision_rotation = ((player as Player).get_node("Pivot") as Node3D).rotation.y
+			elif player_vision_angle == PlayerVisionAngle.LINE_OF_SIGHT:
+				player_start_vision_rotation = Vec2.xz((player as Player).position).angle_to(Vector2(me.x, me.z))
 		else:
 			player_start_vision_rotation = 0.0
 	var temp_origin := origin
@@ -268,7 +277,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			player_start_position = null
 		previous_path_index = index.data
 		
-	is_on_path = Vec3.vec4(old_position).is_equal_approx(me_pos) and old_origin.distance_to(temp_origin) < 0.1
+	is_on_path = Vec3.xyz(old_position).is_equal_approx(me_pos) and old_origin.distance_to(temp_origin) < 0.1
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
 	old_origin = temp_origin
 	

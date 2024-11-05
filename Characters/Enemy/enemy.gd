@@ -276,7 +276,7 @@ func _physics_process(delta: float) -> void:
 		if not velocity_movement.has_navigation_target:
 			var is_done := Globals.Ref.new(false)
 			var next_pos: Vector3
-			var navigation_time_delta := minf(Time.get_unix_time_from_system() - time_since_navigation_update, Globals.behaviour_tick())
+			var navigation_time_delta := Time.get_unix_time_from_system() - time_since_navigation_update
 			time_since_navigation_update = Time.get_unix_time_from_system()
 			if attack_sequence:
 				var me := Vec4.vec3(position, bounds.y)
