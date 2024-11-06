@@ -158,6 +158,7 @@ func increment_ticks(delta: float) -> void:
 	behavior_tick += delta
 	spell_tick += delta
 	move_tick += delta
+	time_since_navigation_update += delta
 	invunerable = max(0.0, invunerable - delta)
 		
 func current_animation_is(animation: String) -> bool:
@@ -268,7 +269,7 @@ func _physics_process(delta: float) -> void:
 	var behavior_ticked_over := ((behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick()))
 	
 	if is_nan(time_since_navigation_update):
-		time_since_navigation_update = Time.get_unix_time_from_system()
+		time_since_navigation_update = 0.0
 	if (behavior_ticked_over or (not velocity_movement.has_navigation_target and tick_scale == 1.0)):
 		if behavior_ticked_over:
 			update_behaviour()
@@ -276,8 +277,8 @@ func _physics_process(delta: float) -> void:
 		if not velocity_movement.has_navigation_target:
 			var is_done := Globals.Ref.new(false)
 			var next_pos: Vector3
-			var navigation_time_delta := Time.get_unix_time_from_system() - time_since_navigation_update
-			time_since_navigation_update = Time.get_unix_time_from_system()
+			var navigation_time_delta := time_since_navigation_update
+			time_since_navigation_update = 0.0
 			if attack_sequence:
 				var me := Vec4.vec3(position, bounds.y)
 				reset_spell_tick = attack_sequence.update(navigation_time_delta, me, player, is_done, get_world_3d().direct_space_state)

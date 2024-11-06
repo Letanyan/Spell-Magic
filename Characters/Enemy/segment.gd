@@ -91,8 +91,7 @@ func position_at_time(t: float) -> Vector3:
 			
 	return Vector3.ZERO
 	
-func position_at_time_with_rotation(t: float, angle: float) -> Vector3:
-	var mat := Transform3D.IDENTITY.rotated(Vector3.UP, angle)
+func position_at_time_with_transform(t: float, mat: Transform3D) -> Vector3:
 	match kind:
 		BezierKind.LINEAR:
 			return (mat * start).lerp(mat * end, t)

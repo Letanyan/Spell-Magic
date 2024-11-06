@@ -67,14 +67,23 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(0.5, [ 15, 10, 5, 15, 10, 5 ], 1)
 	)
 	
+	var cover_and_attack_path := PathStyle.new().follow_path(
+		Pathway.new() \
+			.move_to(Vector3(0, 0, 0))
+			.line_to(Vector3(5, 0, 0), runs(15)) \
+			.line_to(Vector3(-5, 0, 0), runs(15)) \
+			.line_to(Vector3(0, 0, 0), runs(15))
+	).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.WHEN_LOOP)
+	
 	cover_and_attack_sequence = AttackSequence.new(true, [
+		AttackSequence.ASOptions.PATH_SEGMENT_IS_DONE,
 		AttackPatterns.new([rock_wall], AttackPatterns.choose_from_distribution(0, [1])),
-		PathStyle.new().follow_path(Pathway.new().line_to(Vector3(5, 0, 0), runs(15))).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.AT_INTERCHANGE),
+		cover_and_attack_path,
 		attack_pattern3,
 		AttackPatterns.new([rock_wall], AttackPatterns.choose_from_distribution(0, [1])),
-		PathStyle.new().follow_path(Pathway.new().line_to(Vector3(-5, 0, 0), runs(15))).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.AT_INTERCHANGE),
+		cover_and_attack_path,
 		attack_pattern3,
-		PathStyle.new().follow_path(Pathway.new().wait(0.1)).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.AT_INTERCHANGE),
+		cover_and_attack_path,	
 	])
 	
 	
@@ -98,7 +107,8 @@ func update_behaviour() -> void:
 	if is_idle:
 		current_path = idle_path
 	elif vitals.health.percentage() > 0.5:
-		current_path = attack_path
+		#current_path = attack_path
+		attack_sequence = cover_and_attack_sequence
 	else:
 		attack_sequence = cover_and_attack_sequence
 		

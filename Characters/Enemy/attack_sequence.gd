@@ -6,7 +6,10 @@ enum ASOptions {
 	PERSIST_PATH, # ignore Path is_done and keep going with Path
 	PERSIST_ATTACK, # ignore Attack is_done and keep going with Attack
 	AUTO_RESET_PATH, # null Path when is_done
-	AUTO_RESET_ATTACK # null Attack when is_done
+	AUTO_RESET_ATTACK, # null Attack when is_done
+	
+	PATH_SEGMENT_IS_DONE, # move to the next action when a path moves to its next segment
+	PATH_LOOP_IS_DONE, # move to the next action when a path completes a full loop
 }
 enum Persist { PATH = 1 << 0, ATTACK = 1 << 1 }
 
@@ -14,6 +17,7 @@ var actions: Array # [](ASOptions, PathStyle, AttackPatterns, ASLabel, ASConditi
 var index: int
 var should_loop: bool
 var persist: int = 0
+var path_must_loop_for_next_action: bool = true
 
 var last_path: PathStyle
 var last_attack: AttackPatterns
@@ -69,18 +73,25 @@ func update(delta: float, me: Vector4, player: Variant, is_done: Globals.Ref, di
 		elif current_action == ASOptions.AUTO_RESET_PATH:
 			if DEBUG: print(index, " AUTO RESET: PATH")	
 			persist &= ~Persist.PATH
+		elif current_action == ASOptions.PATH_SEGMENT_IS_DONE:
+			if DEBUG: print(index, " PATH_SEGMENT_IS_DONE")	
+			path_must_loop_for_next_action = false
+		elif current_action == ASOptions.PATH_LOOP_IS_DONE:
+			if DEBUG: print(index, " PATH_LOOP_IS_DONE")	
+			path_must_loop_for_next_action = true
 		index += 1
 		did_update_index = true
 		is_done.data = true
 	elif current_action is PathStyle:
 		if DEBUG: print(index, " PathStyle")
-		if last_path != current_action:
+		if last_path != current_action and current_action is PathStyle:
 			last_path = current_action
 			last_path.time = NAN
+		var path_last_index := last_path.previous_path_index
 		var next_movement := last_path.next_position(delta, me, player, is_done, direct_space_state)
 		next_movement_speed = next_movement.w
 		next_position = Vector3(next_movement.x, next_movement.y, next_movement.z)
-		if is_done.data:
+		if path_must_loop_for_next_action and is_done.data:
 			# we can set loop_count_start to -x to have last_path repeat x times
 			if last_path.stored_loops >= 0:
 				did_update_index = true
@@ -88,6 +99,9 @@ func update(delta: float, me: Vector4, player: Variant, is_done: Globals.Ref, di
 				if (persist & Persist.PATH) == 0:
 					last_path.reset()
 					last_path = null
+		elif not path_must_loop_for_next_action and path_last_index != last_path.previous_path_index and path_last_index != -1:
+			did_update_index = true
+			index += 1
 	elif current_action is AttackPatterns:
 		if DEBUG: print(index, " AttackPatterns")
 		last_attack = current_action

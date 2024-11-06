@@ -109,7 +109,7 @@ func position_at_time(t: float, index: Globals.Ref = null) -> Vector3:
 	var modifier := (path_modifiers[segment] as Segment).position_at_time(ratio).y
 	return (segments[segment] as Segment).position_at_time(modifier)
 	
-func position_at_time_with_rotation(t: float, angle: float, index: Globals.Ref = null) -> Vector3:
+func position_at_time_with_transform(t: float, transform: Transform3D, index: Globals.Ref = null) -> Vector3:
 	var running := 0.0
 	var segment := 0
 	for i in range(durations.size()):
@@ -124,7 +124,7 @@ func position_at_time_with_rotation(t: float, angle: float, index: Globals.Ref =
 		
 	var ratio := t / durations[segment]
 	var modifier := (path_modifiers[segment] as Segment).position_at_time(ratio).y
-	return (segments[segment] as Segment).position_at_time_with_rotation(modifier, angle)
+	return (segments[segment] as Segment).position_at_time_with_transform(modifier, transform)
 	
 func speed_at_time(t: float, delta: float, use_relative_speed: float, index: Globals.Ref = null) -> float:
 	var running := 0.0
@@ -205,7 +205,7 @@ func sample_points(count: int) -> PackedVector3Array:
 	var index := Globals.Ref.new(0)
 	var i := 0
 	while i < count:
-		var p := position_at_time_with_rotation(t, 0.0, index)
+		var p := position_at_time_with_transform(t, Transform3D.IDENTITY, index)
 		result.append(p)
 		t += step
 		i += 1

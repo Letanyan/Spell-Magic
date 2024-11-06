@@ -34,6 +34,7 @@ var time: float = NAN
 var old_position: Vector4 = Vector4.ZERO
 var old_origin: Vector3 = Vector3.ZERO
 var is_on_path: bool = false
+var is_on_path_position: bool = false
 
 var when_initial_position_can_update: int = InitialPositionCanUpdate.ALWAYS
 var can_update_initial_position_now: bool = true
@@ -226,7 +227,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			elif player_vision_angle == PlayerVisionAngle.BODY_ROTATION:
 				player_start_vision_rotation = ((player as Player).get_node("Pivot") as Node3D).rotation.y
 			elif player_vision_angle == PlayerVisionAngle.LINE_OF_SIGHT:
-				player_start_vision_rotation = Vec2.xz((player as Player).position).angle_to(Vector2(me.x, me.z))
+				player_start_vision_rotation = Vec2.xz((player as Player).position).angle_to_point(Vector2(me.x, me.z)) - PI / 2
 		else:
 			player_start_vision_rotation = 0.0
 	var temp_origin := origin
@@ -235,32 +236,36 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	elif origin_kind == OriginKind.ME:
 		temp_origin += me_start_position
 	
+	var transform := Transform3D.IDENTITY
 	if origin_kind == OriginKind.VISION:
-		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, player_start_vision_rotation as float + player_vision_offset.x)
+		var ang := player_start_vision_rotation as float + player_vision_offset.x
+		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, ang)
 		var rel_off := off + (player_start_position as Vector3)
 		var dist := me_pos.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
 			off = rel_off.lerp(me_pos, player_vision_offset.w / dist) - player_start_position
 		elif dist < player_vision_offset.z + 0.1:
 			off = rel_off.lerp(me_pos, player_vision_offset.z / dist) - player_start_position
-		temp_origin += off
+		#temp_origin += off
+		transform = transform.translated(Vector3(0, 0, -off.length())).rotated(Vector3.UP, ang)
+		
 		
 	var time_was_up := false
 	# don't use positions to determine completion as we might get stuck if time near total_duration
-	if time > path.total_duration: #and me_pos.is_equal_approx(Vector3(v.x, y, v.z)):
+	if time >= path.total_duration: # and me_pos.is_equal_approx(Vector3(v.x, y, v.z)):
 		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0):
 			me_start_position = null
 		time_was_up = true
-		time = time - path.total_duration
+		time = 0.0
 		if is_done:
 			is_done.data = true
 		stored_loops += 1
 	
+	var y: float
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
-	var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
-	var v := path.position_at_time_with_rotation(duration, -psvr, index) + temp_origin
-	var y: float
+	#var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
+	var v := path.position_at_time_with_transform(duration, transform, index) + temp_origin
 	if direct_space_state != null:
 		y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, direct_space_state)
 	else:
@@ -277,9 +282,21 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			player_start_position = null
 		previous_path_index = index.data
 		
-	is_on_path = Vec3.xyz(old_position).is_equal_approx(me_pos) and old_origin.distance_to(temp_origin) < 0.1
+	if not is_on_path and delta > 1.0:
+		time = clampf(time - delta, 0.0, path.total_duration)
+	is_on_path_position = Vec3.xyz(old_position).distance_squared_to(me_pos) < 0.001
+	is_on_path = is_on_path_position and old_origin.distance_to(temp_origin) < 0.1
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
 	old_origin = temp_origin
+	
+	for segment: Segment in path.segments:
+		var s := segment.position_at_time_with_transform(0.0, transform) + temp_origin
+		s.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
+		var e := segment.position_at_time_with_transform(1.0, transform) + temp_origin
+		e.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
+		DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
+		DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)
+		
 	
 	return old_position
 
