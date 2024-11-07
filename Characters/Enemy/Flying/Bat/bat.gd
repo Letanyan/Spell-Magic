@@ -36,7 +36,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.arc_to(d, true, runs(4), Easing.in_out_cubic) \
 		.arc_to(a, true, runs(3), Easing.in_out_cubic)
 	
-	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
+	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().origin_is_player().look_at_player()
 	
 	current_path = idle_path
 	

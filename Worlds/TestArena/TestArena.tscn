@@ -80,6 +80,9 @@ sky = SubResource("Sky_ntni5")
 ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
+fog_enabled = true
+fog_density = 0.0
+fog_sky_affect = 0.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wjmcb"]
 material = ExtResource("7_xb0vc")

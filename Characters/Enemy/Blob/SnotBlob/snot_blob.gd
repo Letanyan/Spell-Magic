@@ -24,7 +24,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
 	
-	attack_path = PathStyle.new(randi(), position).towards_player(fit(5,20), 1, 2).set_use_player_as_origin().align_y_to_ground().look_at_player()
+	attack_path = PathStyle.new(randi(), position).towards_player(fit(5,20), 1, 2).origin_is_player().align_y_to_ground().look_at_player()
 	
 	current_path = idle_path
 	

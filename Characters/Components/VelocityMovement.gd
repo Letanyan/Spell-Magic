@@ -61,7 +61,7 @@ func increment_ticks(delta: float) -> void:
 # result["target"] = target_velocity * delta
 # result["impulse"] = impulse
 # result["direction"] = direction
-func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float) -> Dictionary:
+func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float, world_radius: float) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
 		
@@ -134,11 +134,24 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	target_velocity.z *= friction
 	if (body is Enemy and (body as Enemy).pushed_with_impulse) or (body is Player):
 		var g := Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		var lvl := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, world_radius)
+		var wb := water_bouyancy
+		var fa := fall_acceleration
+		var fl := 0.0
+		if current_biome == World.Biome.HFIL:
+			wb = wb * -1.0
+			fa = fa * lerpf(0.75, 0.25, lvl / 100.0)
+			fl = wb * delta
+		elif current_biome == World.Biome.OTHERWORLD:
+			wb = wb * -1.0
+			fa = fa * lerpf(1.1, 1.9, lvl / 100.0)
+			fl = wb * delta
+		
 		if not body.is_on_floor: 
 			if g < body.feet_position():
-				target_velocity.y = target_velocity.y - fall_acceleration * delta
+				target_velocity.y = target_velocity.y - fa * delta
 			elif g > body.feet_position():
-				target_velocity.y = target_velocity.y + fall_acceleration * delta
+				target_velocity.y = target_velocity.y + fa * delta
 		else:
 			target_velocity.y = 0
 		
@@ -159,8 +172,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + wb * delta
-		elif not body.is_on_floor and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
-			target_velocity.y = target_velocity.y - fa * delta
+		#elif not body.is_on_floor and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
+			#target_velocity.y = target_velocity.y - fa * delta
 		else:
 			target_velocity.y = 0
 		

@@ -115,7 +115,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
 	var result := entity_manager.get_enemy(enemy)
 	var pos := Vector3(p.x, 0, p.y)
-	result.set_level_relative_to_location(rng, p.x, p.y)
+	result.set_level(level_relative_to_position(rng, p.x, p.y))
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
@@ -124,7 +124,7 @@ func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
 	var result := Enemy.make(enemy)
 	result.name = World.Enemy.keys()[enemy] + Globals.encode_v3(Vector3(x, y, z))
-	result.set_level_relative_to_location(null, x, y)
+	result.set_level(1)
 	result.player = _player
 	result.position = Vector3(x, y, z)
 	result.setup(0, World.Biome.WATER)
@@ -251,27 +251,16 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var points: Array[PackedVector2Array] = areas["points"]
 	var biomes: Array[World.Biome] = areas["biomes"]
 	
+	current_fl_during_generation = level_relative_to_position(rng, coord.x, coord.y)
 	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
-		current_fl_during_generation = Population.level_relative_to_position(rng, coord.x, coord.y)
-		# FIXME: pass level to all populate calls
 		match biomes[i]:
 			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
 			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))
 			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, state, points[i], spacing))
 			World.Biome.HFIL: result.append_array(HFILGen.populate(self, state, points[i], spacing))
-			
-	#var high_watermark := result.size() - 1	
-	#for i in result.size():
-		#if result[i] == null:
-			#result[i] = result[high_watermark]
-			#high_watermark -= 1
-			#if high_watermark <= 0:
-				#break
-				#
-	#if high_watermark < result.size() - 1:
-		#result = result.slice(0, high_watermark + 1)
+			World.Biome.TUNDRA: result.append_array(TundraGen.populate(self, state, points[i], spacing))
 	
 	return result
 	
@@ -345,18 +334,20 @@ func mark_entity_name(name: String) -> void:
 func entity_name_is_marked(name: String) -> bool:
 	return (player.world_settings.marked_entities.get(coord, []) as Array[String]).find(name) != -1
 
-# returns the actual value if the enemy with a class (1-20) where 1 is low 
-static func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:
-	var p := clampf(Vector2(x, z).length() / 10000.0, 0.0, 100.0)
+static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float) -> float:
+	var p := clampf(Vector2(x, z).length() / world_radius, 0.0, 100.0)
 	var base := 45.0 * (log(p + 1.0) / log(10.0))
 	var offset_max_range := (p * p) / 10000.0 + 9 * sin(p * PI / 10.0)
 	var random_offset := 0.0
 	if rang == null:
-		random_offset = randf_range(0.0, absf(offset_max_range))
+		random_offset = 0
 	else:
 		random_offset = rang.randf_range(0.0, absf(offset_max_range))
-	var result := maxf(base + random_offset, 1.0)
+	var result := maxf(base + random_offset, 100.0)
 	return result
+	
+func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:
+	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius)
 
 func fit(mn: float, mx: float) -> float:
 	return lerpf(mn, mx, current_fl_during_generation)
@@ -391,6 +382,7 @@ func fitase(mult: float, exponent: float, arr: Array[float]) -> Array[float]:
 		result.append(fit(arr[i], arr[i] - arr[i] * (1 - pow(1 - mult, exponent))))	
 	return result
 
+# returns the actual value if the enemy with a class (1-20) where 1 is low 
 func atk(cls: int) -> float:
 	return fit(5.0, cls * 5.0)
 
@@ -443,3 +435,13 @@ func timings(cls: int, array: Array[float]) -> Array[float]:
 
 func health_drop(cls: int) -> float:
 	return float(cls) / 20.0
+
+func arttv(mn: int, mx: int) -> Vector2i:
+	return Vector2i(fiti(0, mn), fiti(0, mx))
+	
+func arttd(probs: Dictionary) -> Dictionary:
+	for t: int in probs:
+		var val := probs[t] as float
+		probs.erase(t)
+		probs[fiti(0, t)] = val
+	return probs	

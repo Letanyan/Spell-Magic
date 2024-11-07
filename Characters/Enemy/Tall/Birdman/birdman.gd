@@ -38,8 +38,8 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.wait(fit(4,8))
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\
-		.set_use_player_as_origin()\
-		.set_player_body_rotation_as_vision_angle(0, 0, 10.0)\
+		.origin_is_player()\
+		.player_vision_is_body_rotation(0, 0, 10.0)\
 		.look_at_player_xz()
 	
 	current_path = idle_path

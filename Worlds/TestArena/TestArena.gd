@@ -6,12 +6,7 @@ extends Node3D
 @onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 
-@onready var population: Dictionary = {}
-
 @onready var skybox: SkyBox
-
-var terrain_update_interval := 0
-var has_init_terrain_population := false
 
 var book: MagicBook
 var case: WandCase
@@ -23,13 +18,10 @@ var daytime_tick: float = 0.0
 var test_tick: float = 0.0
 
 var settings: WorldSettings
-var pause_start: float
 var inhabitants: Array[Enemy] = []
 var spawner: ItemSpawner
 
 var is_mouse_down: bool = false
-
-var chunker: Terrain
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
@@ -227,8 +219,6 @@ func _ready() -> void:
 	for enemy in inhabitants:
 		enemy.animation_tree.active = true
 		
-	chunker = Terrain.new(NoiseBlender.new())
-		
 	settings.upgrade_settings.currency = 10000
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	menu.setup(book, case, artifacts, settings)
@@ -310,12 +300,6 @@ func _physics_process(delta: float) -> void:
 
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
-
-	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
-		knowledge_tick = 0.0
-		for loc: Vector2 in population:
-			var pop := population[loc] as Population
-			pop.update_info()
 			
 	if daytime_tick >= 1.0:
 		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:
@@ -376,7 +360,6 @@ func close_menu_for_player() -> void:
 func open_menu_for_player() -> void:
 	settings.is_paused = true
 	sub_viewport_container.visible = true
-	pause_start = Time.get_unix_time_from_system()
 	menu.open(Menu.Kind.ANY)
 	settings.player_position = player.position
 	settings.player_health = player.vitals.health.value

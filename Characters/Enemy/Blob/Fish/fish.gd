@@ -38,15 +38,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.quad_to(e, Globals.midpoint_tangent1(d, e) if randf() < 0.5 else Globals.midpoint_tangent2(d, e), runs(12), Easing.linear) \
 		.quad_to(a, Globals.midpoint_tangent1(e, a) if randf() < 0.5 else Globals.midpoint_tangent2(e, a), runs(12), Easing.linear)
 	
-	idle_path = PathStyle.new().follow_path(idle_pathway).align_y_to_ground().set_origin(position).use_absolute()
+	idle_path = PathStyle.new().follow_path(idle_pathway).align_y_to_ground().set_origin(position)
 	current_path = idle_path
 	
 	var jump_over_path := Pathway.new() \
 		.move_to(Vector3(0, 0, 10)) \
 		.quad_to(Vector3(0, 0, -10), Vector3(0, 20, 0), runs(20), Easing.out_expo) \
 		.quad_to(Vector3(0, 0, 10), Vector3(0, 20, 0), runs(20), Easing.out_expo)
-	attack_jump_over_path = PathStyle.new().follow_path(jump_over_path).align_y_to_ground_and_jump() \
-		.set_player_body_rotation_as_vision_angle(0, 0).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.ON_GROUND) \
+	attack_jump_over_path = PathStyle.new().follow_path(jump_over_path).align_y_to_ground_and_air() \
+		.player_vision_is_body_rotation(0, 0).initial_position_can_update_on_ground() \
 		.look_at_player_xz()
 		
 	var jump_point_1 := Vector3(0, 0, 10).rotated(Vector3.UP, PI * 2 * randf())
@@ -62,7 +62,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.quad_to(jump_point_5, Vec3.xz_y(jump_point_4.lerp(jump_point_5, 0.5), 20), runs(17), Easing.out_expo) \
 		.quad_to(jump_point_1, Vec3.xz_y(jump_point_5.lerp(jump_point_1, 0.5), 20), runs(17), Easing.out_expo)
 	attack_jump_circle_path = PathStyle.new().follow_path(jump_circle_path).align_y_to_ground_and_air() \
-		.set_player_body_rotation_as_vision_angle(0, 1).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.NEVER) \
+		.player_vision_is_body_rotation(0, 1).initial_position_can_update_at_start() \
 		.look_at_player_xz()
 	
 	none_pattern = AttackPatterns.none()
@@ -136,7 +136,7 @@ func create_attack_jump_path() -> void:
 	DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
 	DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
-	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).set_use_player_as_origin().align_y_to_ground_air_and_dirt().look_at_player()
+	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).origin_is_player().align_y_to_ground_air_and_dirt().look_at_player()
 
 
 func drop_artifact() -> Artifact:

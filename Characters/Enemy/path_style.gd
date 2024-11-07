@@ -1,6 +1,13 @@
 class_name PathStyle
 
-enum CoordY { GROUND, GROUND_AIR_AND_DIRT, GROUND_AND_AIR, GROUND_AND_DIRT, AIR, GROUND_AND_JUMP, ORIGIN }
+enum CoordY { 
+	GROUND, ## movement is fixed to ground 
+	GROUND_AIR_AND_DIRT, ## movement is allowed above and below ground
+	GROUND_AND_AIR, ## movement is allowed on ground or above ground
+	GROUND_AND_DIRT, ## movement is allowed on ground or below ground
+	AIR, ## movement is allowed above ground (flying)
+	ORIGIN, ## movement is allowed above and below ground. y aligned to origin.
+}
 enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER, PLAYER_XZ, NOTHING }
 enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
@@ -17,7 +24,7 @@ enum InitialPositionCanUpdate {
 	ON_GROUND_AND_AIR = 0b101,
 	UNDERGROUND_AND_AIR = 0b110,
 	ALWAYS = 0b1111,
-	NEVER = 0b0
+	AT_START = 0b0
 }
 
 var origin := Vector3.ZERO
@@ -68,116 +75,63 @@ func reset() -> void:
 		
 static func still_path() -> PathStyle:
 	var result := PathStyle.new()
-	result.use_absolute()
-	result.set_use_me_as_origin()
+	result.origin_is_me()
 	result.align_y_to_origin()
 	result.path = Pathway.empty()
 	return result
 	
-func set_origin(o: Vector3) -> PathStyle:
-	origin = o
-	return self
-	
-func look_at_player() -> PathStyle:
-	lookat = LookAt.PLAYER
-	return self
-	
-func look_at_direction() -> PathStyle:
-	lookat = LookAt.VELOCITY
-	return self
-	
-func look_at_player_xz() -> PathStyle:
-	lookat = LookAt.PLAYER_XZ
-	return self
+func set_origin(o: Vector3) -> PathStyle: origin = o; return self
 
-func look_at_nothing() -> PathStyle:
-	lookat = LookAt.NOTHING
-	return self
+func look_at_player() -> PathStyle: lookat = LookAt.PLAYER; return self
+func look_at_direction() -> PathStyle: lookat = LookAt.VELOCITY; return self
+func look_at_player_xz() -> PathStyle: lookat = LookAt.PLAYER_XZ; return self
+func look_at_nothing() -> PathStyle: lookat = LookAt.NOTHING; return self
 	
-func use_physics() -> PathStyle:
-	mover = Mover.PHYSICS
-	return self
+func move_with_physics() -> PathStyle: mover = Mover.PHYSICS; return self
+func move_with_absolute() -> PathStyle: mover = Mover.ABSOLUTE; return self
 	
-func use_absolute() -> PathStyle:
-	mover = Mover.ABSOLUTE
-	return self
-	
-func set_initial_position_can_update(can_update: InitialPositionCanUpdate = InitialPositionCanUpdate.ALWAYS) -> PathStyle:
-	when_initial_position_can_update = can_update
-	return self
+func initial_position_can_update_on_ground() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.ON_GROUND; return self
+func initial_position_can_update_underground() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.UNDERGROUND; return self
+func initial_position_can_update_in_air() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.IN_AIR; return self
+func initial_position_can_update_at_interchange() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.AT_INTERCHANGE; return self
+func initial_position_can_update_when_loop() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.WHEN_LOOP; return self
+func initial_position_can_update_on_ground_and_under() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.ON_GROUND_AND_UNDER; return self
+func initial_position_can_update_on_ground_and_air() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.ON_GROUND_AND_AIR; return self
+func initial_position_can_update_underground_and_air() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.UNDERGROUND_AND_AIR; return self
+func initial_position_can_update_always() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.ALWAYS; return self
+func initial_position_can_update_at_start() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.AT_START; return self
 
-func set_use_absolute_origin(o: Vector3) -> PathStyle:
-	origin_kind = OriginKind.ABSOLUTE
-	origin = o
-	return self
+func origin_is_absolute(o: Vector3) -> PathStyle: origin_kind = OriginKind.ABSOLUTE; origin = o; return self
+func origin_is_player() -> PathStyle: origin_kind = OriginKind.PLAYER; return self
+func origin_is_me() -> PathStyle: origin_kind = OriginKind.ME; return self
 	
-func set_use_player_as_origin(o: bool = true) -> PathStyle:
-	origin_kind = OriginKind.PLAYER if o else OriginKind.ABSOLUTE
-	if o:
-		origin = Vector3.ZERO
-	return self
-	
-func set_use_me_as_origin(o: bool = true) -> PathStyle:
-	origin_kind = OriginKind.ME if o else OriginKind.ABSOLUTE
-	if o:
-		origin = Vector3.ZERO
-	return self
-	
-func set_player_body_rotation_as_vision_angle(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
+func player_vision_is_body_rotation(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	player_vision_angle = PlayerVisionAngle.BODY_ROTATION
 	player_vision_offset = Vector4(a, r, min_m, max_m)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
 	return self
 	
-func set_player_camera_as_vision_angle(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
+func player_vision_is_camera(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	player_vision_angle = PlayerVisionAngle.CAMERA
 	player_vision_offset = Vector4(a, r, min_m, max_m)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
 	return self
 	
-func set_player_line_of_sight_as_vision_angle(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
+func player_vision_is_line_of_sight(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	player_vision_angle = PlayerVisionAngle.LINE_OF_SIGHT
 	player_vision_offset = Vector4(a, r, min_m, max_m)
 	origin_kind = OriginKind.VISION
 	origin = Vector3.ZERO
 	return self
 	
-## movement is allowed above and below ground
-func align_y_to_ground_air_and_dirt() -> PathStyle:
-	coord_y = CoordY.GROUND_AIR_AND_DIRT
-	return self
-	
-## movement is fixed to ground
-func align_y_to_ground() -> PathStyle:
-	coord_y = CoordY.GROUND
-	return self
-	
-## movement is allowed on ground or above ground
-func align_y_to_ground_and_air() -> PathStyle:
-	coord_y = CoordY.GROUND_AND_AIR
-	return self
-	
-## movement is allowed on ground or below ground
-func align_y_to_ground_and_dirt() -> PathStyle:
-	coord_y = CoordY.GROUND_AND_DIRT
-	return self
-	
-## movement is allowed above ground (flying)
-func align_y_to_air() -> PathStyle:
-	coord_y = CoordY.AIR
-	return self
-	
-## movement is allowed above ground (flying)
-func align_y_to_ground_and_jump() -> PathStyle:
-	coord_y = CoordY.GROUND_AND_JUMP
-	return self
-	
-## movement is allowed above and below ground. y aligned to origin.
-func align_y_to_origin() -> PathStyle:
-	coord_y = CoordY.ORIGIN
-	return self
+func align_y_to_ground_air_and_dirt() -> PathStyle: coord_y = CoordY.GROUND_AIR_AND_DIRT; return self
+func align_y_to_ground() -> PathStyle: coord_y = CoordY.GROUND; return self
+func align_y_to_ground_and_air() -> PathStyle: coord_y = CoordY.GROUND_AND_AIR; return self
+func align_y_to_ground_and_dirt() -> PathStyle: coord_y = CoordY.GROUND_AND_DIRT; return self
+func align_y_to_air() -> PathStyle: coord_y = CoordY.AIR; return self
+func align_y_to_origin() -> PathStyle: coord_y = CoordY.ORIGIN; return self
 	
 func towards_player(speed: float, mn: float, mx: float) -> PathStyle:
 	player_vision_angle = PlayerVisionAngle.BODY_ROTATION
@@ -264,7 +218,6 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	var y: float
 	var duration := clampf(time, 0, path.total_duration)
 	var index := Globals.Ref.new(0)
-	#var psvr := 0.0 if player_start_vision_rotation == null else player_start_vision_rotation as float
 	var v := path.position_at_time_with_transform(duration, transform, index) + temp_origin
 	if direct_space_state != null:
 		y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, direct_space_state)
@@ -272,7 +225,6 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
 	if coord_y == CoordY.ORIGIN:
 		y += temp_origin.y
-	#print(y, " = ", v.y, " - ", temp_origin.y)
 	if time_was_up and (when_initial_position_can_update & InitialPositionCanUpdate.WHEN_LOOP != 0):
 		player_start_vision_rotation = null
 		player_start_position = null
@@ -317,7 +269,7 @@ func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_sta
 				actual_y = 0.0
 			else:
 				result = g + y
-		CoordY.GROUND_AND_AIR, CoordY.GROUND_AND_JUMP:
+		CoordY.GROUND_AND_AIR:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
 			if y < 0:
 				result = g

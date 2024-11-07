@@ -217,10 +217,11 @@ func transition_to_biome(biome: World.Biome) -> void:
 		shader.set_shader_parameter("transition", a)
 		
 	biome_tween = get_tree().create_tween()
-	NoiseBlender.update_world_environment(world_environment, sun, moon, biome, false)
+	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius)
+	NoiseBlender.update_world_environment(world_environment, sun, moon, lvl, biome, false)
 	biome_tween.tween_method(update_world, 0.0, 1.0, 0.5)
 	biome_tween.finished.connect(func() -> void:
-		NoiseBlender.update_world_environment(world_environment, sun, moon, biome, true)
+		NoiseBlender.update_world_environment(world_environment, sun, moon, lvl, biome, true)
 		update_world.call(0.0)
 		if biome_tween_next != World.Biome.WATER:
 			biome_tween = null

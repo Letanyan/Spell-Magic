@@ -23,7 +23,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var circle_path := Pathway.new().move_to(Vector3.ZERO).circle(fit(10,15), 0, runs(19))
 	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
-	attack_path = PathStyle.new(0, Vector3.ZERO).follow_path(circle_path).align_y_to_ground().look_at_player_xz().set_use_player_as_origin()
+	attack_path = PathStyle.new(0, Vector3.ZERO).follow_path(circle_path).align_y_to_ground().look_at_player_xz().origin_is_player()
 	
 	current_path = idle_path
 	
@@ -73,7 +73,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			.line_to(Vector3(5, 0, 0), runs(15)) \
 			.line_to(Vector3(-5, 0, 0), runs(15)) \
 			.line_to(Vector3(0, 0, 0), runs(15))
-	).align_y_to_ground().look_at_player_xz().set_player_line_of_sight_as_vision_angle(0, 10).set_initial_position_can_update(PathStyle.InitialPositionCanUpdate.WHEN_LOOP)
+	).align_y_to_ground().look_at_player_xz().player_vision_is_line_of_sight(0, 10).initial_position_can_update_when_loop()
 	
 	cover_and_attack_sequence = AttackSequence.new(true, [
 		AttackSequence.ASOptions.PATH_SEGMENT_IS_DONE,

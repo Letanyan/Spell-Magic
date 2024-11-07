@@ -103,6 +103,7 @@ var biome := World.Biome.GRASSLAND
 var color := Color.WHITE
 var total_size := 0.0
 var sea_level := 0.0
+var world_radius := 10000.0
 
 static func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
@@ -150,6 +151,7 @@ static func version0(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
 	result.sea_level = rng.randf_range(-50.0, 250.0)
+	result.world_radius = rng.randf_range(7_500.0, 25_000.0)
 	
 	return result
 	
@@ -179,6 +181,7 @@ static func version1(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
 	result.sea_level = rng.randf_range(-50.0, 250.0)
+	result.world_radius = rng.randf_range(7_500.0, 25_000.0)
 	
 	return result
 	
@@ -240,9 +243,12 @@ static func walking_audio_for_biome(b: World.Biome) -> String:
 		World.Biome.HFIL: return "Grassland"
 		_: return "empty"
 
-static func update_world_environment(env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, b: World.Biome, is_start: bool) -> void:
+static func update_world_environment(env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, level: float, b: World.Biome, is_start: bool) -> void:
 	var prefix := "start_" if is_start else "final_"
 	var shader := env.environment.sky.sky_material as ShaderMaterial
+	
+	env.environment.fog_density = 0.0
+	env.environment.fog_sky_affect = 0.0
 	match b:
 		World.Biome.GRASSLAND:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.1, 0.6, 1, 1))
@@ -372,6 +378,9 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.6499999854712)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0)
+			env.environment.fog_density = lerpf(0.1, 0.5, level / 100.0)
+			env.environment.fog_sky_affect = lerpf(0.1, 0.95, level / 100.0)
+			env.environment.fog_light_color = Color.WHITE
 			
 		World.Biome.OTHERWORLD:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0, 1, 1, 1))

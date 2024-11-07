@@ -37,7 +37,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.line_to(start_point, runs(11), Easing.in_out_sine)
 	
 	attack_path = PathStyle.new(randi()).follow_path(cube_path).align_y_to_air().look_at_player() \
-		.set_player_body_rotation_as_vision_angle(0, 10, 3, 6)
+		.player_vision_is_body_rotation(0, 10, 3, 6)
 	
 	current_path = idle_path
 	

@@ -2,7 +2,7 @@ class_name JungleGen
 
 enum JUNGLE_STRUCTURES_KIND {
 	NONE,
-	TREE_BRANCHED, BUSH_SPROUT, BUSH_ROUND,
+	TREE_BRANCHED, BUSH,
 	ELEVATOR, PLATFORM,
 	BIRD,
 }
@@ -10,11 +10,10 @@ enum JUNGLE_STRUCTURES_KIND {
 const JUNGLE_STRUCTURE = {
 	JUNGLE_STRUCTURES_KIND.NONE: 60,
 	JUNGLE_STRUCTURES_KIND.TREE_BRANCHED: 5,
-	#JUNGLE_STRUCTURES_KIND.BUSH_SPROUT: 10,
-	#JUNGLE_STRUCTURES_KIND.BUSH_ROUND: 10,
-	JUNGLE_STRUCTURES_KIND.ELEVATOR: 0.75,
-	JUNGLE_STRUCTURES_KIND.PLATFORM: 0.9,
-	JUNGLE_STRUCTURES_KIND.BIRD: 0.25,
+	JUNGLE_STRUCTURES_KIND.BUSH: 1,
+	JUNGLE_STRUCTURES_KIND.ELEVATOR: 0.075,
+	JUNGLE_STRUCTURES_KIND.PLATFORM: 0.01,
+	JUNGLE_STRUCTURES_KIND.BIRD: 0.1,
 }
 
 static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
@@ -36,21 +35,30 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var pos := area[index]
 				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing) as Foliage
 				if p != null: result.append(p)
-			JUNGLE_STRUCTURES_KIND.BUSH_SPROUT:
+			JUNGLE_STRUCTURES_KIND.BUSH:
 				var pos := area[index]
-				var p := pop.spawn_foliage(World.Foliage.BUSH_SPROUT, state, pos, spacing) as Foliage
-				if p != null: result.append(p)
-			JUNGLE_STRUCTURES_KIND.BUSH_ROUND:
-				var pos := area[index]
-				var p := pop.spawn_foliage(World.Foliage.BUSH_ROUND, state, pos, spacing) as Foliage
-				if p != null: result.append(p)
+				var ratio := rng.randf()
+				if rng.randf() < 0.5:
+					var radius := rng.randf_range(10, 25)
+					for i in Rand.roll(8, 4, 2, rng, Rand.Accum.AVG):
+						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
+						var p := pop.spawn_foliage(kind, state, pos + Rand.point_in_circle_2d(radius, rng), spacing) as Foliage
+						if p != null: result.append(p)
+				else:
+					var w := rng.randf_range(10, 25)
+					var h := rng.randf_range(10, 25)
+					var r := rng.randf_range(-PI, PI)
+					for i in Rand.roll(8, 4, 2, rng, Rand.Accum.AVG):
+						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
+						var p := pop.spawn_foliage(kind, state, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing) as Foliage
+						if p != null: result.append(p)
 					
 			JUNGLE_STRUCTURES_KIND.ELEVATOR:
 				var pos := area[index]
 				var cursor := Vector3.ZERO
 				var direction := Vector3.UP
 				var distance := 0.0
-				for i in rng.randi_range(1, 5):
+				for i in rng.randi_range(1, pop.fiti(1, 5)) * 2:
 					distance = rng.randf_range(10, 20)
 					var dest := cursor + direction * distance
 					var pathway: Pathway
@@ -79,7 +87,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					{Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 5}, \
 					{Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5}, \
 					{Artifact.Element.AIR: 10, Artifact.Element.RUNNING_SPEED: 2}, \
-					Vector2i(1,5), \
+					pop.arttv(1, 5), \
 					{Artifact.Pattern.TRIANGLE: 8, Artifact.Pattern.CIRCLE: 4}
 				)
 				var reward := pop.spawn_world_item(World.Item.ARTIFACT, state, pos, spacing, {}) as ArtifactCube

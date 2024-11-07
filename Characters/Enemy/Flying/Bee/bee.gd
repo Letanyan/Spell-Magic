@@ -35,7 +35,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.quad_to(d, Globals.project_point_onto_sphere(c.lerp(d, 0.5), idle_r), runs(6)) \
 		.quad_to(a, Globals.project_point_onto_sphere(d.lerp(a, 0.5), idle_r), runs(6))
 	
-	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().set_use_player_as_origin().look_at_player()
+	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().origin_is_player().look_at_player()
 	
 	current_path = idle_path
 	

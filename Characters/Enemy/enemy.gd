@@ -143,8 +143,8 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD: 
 			frame_count = Vector2(35, 25)
 	
-func set_level_relative_to_location(rng: RandomNumberGenerator, x: float, y: float) -> void:
-	level = Population.level_relative_to_position(rng, x, y)
+func set_level(lvl: float) -> void:
+	level = lvl
 	if level_text != null:
 		level_text.text = str(int(level))
 		
@@ -193,7 +193,7 @@ func _physics_process(delta: float) -> void:
 	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
 	var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
 	velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
-	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level)
+	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level, player.world_settings.world_radius)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
