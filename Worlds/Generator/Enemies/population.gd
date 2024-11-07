@@ -77,6 +77,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 			(entity as Enemy).player = player
 			(entity as Enemy).index_in_population = inhabitants.size()
 			(entity as Enemy).is_dead = false
+			(entity as Enemy).velocity_movement.current_biome = current_biome_during_generation
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
 			(entity as Enemy).setup(rng.randi(), current_biome_during_generation)
@@ -343,7 +344,7 @@ static func level_relative_to_position_within_radius(rang: RandomNumberGenerator
 		random_offset = 0
 	else:
 		random_offset = rang.randf_range(0.0, absf(offset_max_range))
-	var result := maxf(base + random_offset, 100.0)
+	var result := maxf(base + random_offset, 1.0)
 	return result
 	
 func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:

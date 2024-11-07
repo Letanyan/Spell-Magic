@@ -85,7 +85,7 @@ static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: 
 	result.damage_resistance = res
 	return result
 
-func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
+func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool = true) -> Dictionary:
 	match kind:
 		Spell.Element.FIRE:
 			var amount := burning.amount_of_change(gauge)
@@ -125,9 +125,11 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 		if e == kind or e == Artifact.Element.ANY:
 			power = power * (1.0 - damage_resistance[e].y) - damage_resistance[e].x
 	health.apply_ignoring_resistance(-power)
-	print("power: ", power, ", gauge: ", gauge)
-	print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
-	print("element: ", Spell.name_from_element(kind))
+	
+	if debug:
+		print("power: ", power, ", gauge: ", gauge)
+		print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
+		print("element: ", Spell.name_from_element(kind))
 	
 	return {"dmg": power, "el": kind}
 
@@ -249,7 +251,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
 				(source.process_material as ParticleProcessMaterial).scale_min = r * 2
 				(source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				source.amount = 80 + roundi(20 * (amount / 100.0))
+				source.amount = 20 + roundi(80 * (amount / 100.0))
 			
 			if not body.has_node("burn_effect"):
 				visual_effect = fire_exp.instantiate()
@@ -274,7 +276,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
 				(source.process_material as ParticleProcessMaterial).scale_min = r * 2
 				(source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				source.amount = 80 + roundi(20 * (amount / 100.0))
+				source.amount = 20 + roundi(80 * (amount / 100.0))
 			
 			if not body.has_node("wet_effect"):
 				visual_effect = water_exp.instantiate()

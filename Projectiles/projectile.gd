@@ -125,7 +125,7 @@ func impulse() -> Vector3:
 			return Vector3.ZERO
 
 func get_shape() -> Shape3D:
-	return (get_node("shape_cast") as ShapeCast3D).shape
+	return get_shape_cast().shape
 
 func get_spell_transform() -> Transform3D:
 	if spell.element == Spell.Element.ROCK:
@@ -136,7 +136,40 @@ func get_spell_transform() -> Transform3D:
 		return global_transform
 		
 func get_spell_collision_mask() -> int:
-	return (get_node("shape_cast") as ShapeCast3D).collision_mask
+	return get_shape_cast().collision_mask
+
+func get_shape_cast() -> ShapeCast3D:
+	match spell.element:
+		Spell.Element.FIRE: return get_node("shape_cast") as ShapeCast3D
+		Spell.Element.WATER: return get_node("shape_cast") as ShapeCast3D
+		Spell.Element.AIR: return get_node("shape_cast") as ShapeCast3D
+		Spell.Element.ICE: return get_node("shape_cast") as ShapeCast3D
+		Spell.Element.ELECTRIC: return get_node("shape_cast") as ShapeCast3D
+		Spell.Element.ROCK: return get_node("shape_cast") as ShapeCast3D
+		Spell.Element.VOID: return get_node("shape_cast") as ShapeCast3D
+	return null
+	
+func get_area_node() -> Area3D:
+	match spell.element:
+		Spell.Element.FIRE: return get_node("area") as Area3D
+		Spell.Element.WATER: return get_node("area") as Area3D
+		Spell.Element.AIR: return get_node("area") as Area3D
+		Spell.Element.ICE: return get_node("area") as Area3D
+		Spell.Element.ELECTRIC: return get_node("area") as Area3D
+		Spell.Element.ROCK: return null
+		Spell.Element.VOID: return get_node("area") as Area3D
+	return null
+	
+func get_area_collision() -> CollisionShape3D:
+	match spell.element:
+		Spell.Element.FIRE: return get_node("area/collision") as CollisionShape3D
+		Spell.Element.WATER: return get_node("area/collision") as CollisionShape3D
+		Spell.Element.AIR: return get_node("area/collision") as CollisionShape3D
+		Spell.Element.ICE: return get_node("area/collision") as CollisionShape3D
+		Spell.Element.ELECTRIC: return get_node("area/collision") as CollisionShape3D
+		Spell.Element.ROCK: return null
+		Spell.Element.VOID: return get_node("area/collision") as CollisionShape3D
+	return null
 
 func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) -> void:
 	var is_world  : int = _body.collision_layer & Globals.Layer.WORLD != 0
@@ -352,7 +385,8 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(trail.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			trail.amount = roundi(80 * rl)
 			
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
+			(get_shape_cast().shape as SphereShape3D).radius = rl
+			(get_area_collision().shape as SphereShape3D).radius = rl
 			
 			#particles.local_coords = spell.follow
 			
@@ -363,23 +397,18 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 				return
 			var p_shape: CollisionShape3D = get_node("body/shape")
 			
-			(p_shape.shape as BoxShape3D).size.x = r.x * 2
-			(p_shape.shape as BoxShape3D).size.y = r.y * 2
-			(p_shape.shape as BoxShape3D).size.z = r.z * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = r.x * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.y = r.y * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = r.z * 2
+			(p_shape.shape as BoxShape3D).size = r * 2
+			(get_shape_cast().shape as BoxShape3D).size = r * 2
 			var mesh: MeshInstance3D = get_node("body/mesh")
-			(mesh.mesh as BoxMesh).size.x = r.x * 2
-			(mesh.mesh as BoxMesh).size.y = r.y * 2
-			(mesh.mesh as BoxMesh).size.z = r.z * 2
+			(mesh.mesh as BoxMesh).size = r * 2
 			
 			var body: RigidBody3D = get_node("body")
 			body.mass = (r.x + r.y + r.z) / 3.0 * 2.0
 			scale = Vector3(1, 1, 1)
 			
 		Spell.Element.WATER:
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
+			(get_shape_cast().shape as SphereShape3D).radius = rl
+			(get_area_collision().shape as SphereShape3D).radius = rl
 			var particles: GPUParticles3D = get_node("source")
 			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
@@ -394,8 +423,10 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			trail.amount = roundi(80 * rl)
 			
 		Spell.Element.AIR:
-			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).height = rl * 4
-			((get_node("shape_cast") as ShapeCast3D).shape as CylinderShape3D).radius = rl
+			(get_shape_cast().shape as CylinderShape3D).height = rl * 4
+			(get_shape_cast().shape as CylinderShape3D).radius = rl
+			(get_area_collision().shape as CylinderShape3D).height = rl * 4
+			(get_area_collision().shape as CylinderShape3D).radius = rl
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
@@ -415,8 +446,10 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			trail.amount = roundi(160 * rl)
 			
 		Spell.Element.ICE:
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.x = rl * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as BoxShape3D).size.z = rl * 2
+			(get_shape_cast().shape as BoxShape3D).size.x = rl * 2
+			(get_shape_cast().shape as BoxShape3D).size.z = rl * 2
+			(get_area_collision().shape as BoxShape3D).size.x = rl * 2
+			(get_area_collision().shape as BoxShape3D).size.z = rl * 2
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
@@ -428,7 +461,8 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			#source.local_coords = spell.follow
 			
 		Spell.Element.ELECTRIC:
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
+			(get_shape_cast().shape as SphereShape3D).radius = rl
+			(get_area_collision().shape as SphereShape3D).radius = rl
 			
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
@@ -444,7 +478,7 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			var mesh: SphereMesh = (get_node("mesh") as MeshInstance3D).mesh
 			mesh.radius = rl
 			mesh.height = rl * 2
-			((get_node("shape_cast") as ShapeCast3D).shape as SphereShape3D).radius = rl
+			(get_shape_cast().shape as SphereShape3D).radius = rl
 #			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
 			
 
@@ -473,7 +507,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 	
 	started = true
 
-	var shape_cast: ShapeCast3D = get_node("shape_cast")
+	var shape_cast := get_shape_cast()
 	var target := p - position
 	if target.length() > 1.0 or target.distance_to(shape_cast.target_position) > 1.0:
 		shape_cast.target_position = target
@@ -514,6 +548,18 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			(particles.process_material as ParticleProcessMaterial).direction = (velocity + Vector3.DOWN * 0.15).normalized()
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
+			var biome := World.Biome.WATER
+			var world_radius := 10000.0
+			if origin_node is Player:
+				biome = (origin_node as Player).velocity_movement.current_biome
+				world_radius = (origin_node as Player).world_settings.world_radius
+			elif origin_node is Enemy:
+				biome = (origin_node as Enemy).velocity_movement.current_biome
+				world_radius = (origin_node as Enemy).player.world_settings.world_radius
+			var lvl := Population.level_relative_to_position_within_radius(null, p.x, p.z, world_radius)
+			if biome == World.Biome.DESERT:
+				if time_stamp > lerpf(UpgradeSettings.LIMIT_T / 25.0, 1.0, lvl / 100.0):
+					explode_after(self, null, 0.0166667 * 2, true, {})
 			
 		Spell.Element.AIR:
 			position = p
@@ -574,7 +620,8 @@ func stop_emitting() -> void:
 				light.omni_range = lerpf(5.0, 0.0, t)
 			tween.tween_method(fade_light, 0, 1, 0.2)
 			tween.play()
-			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			get_shape_cast().enabled = false
+			get_area_collision().disabled = true
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
@@ -582,7 +629,7 @@ func stop_emitting() -> void:
 			var body: RigidBody3D = get_node("body")
 			body.visible = false
 			body.collision_mask = 0
-			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			get_shape_cast().enabled = false
 			(get_node("body/shape") as CollisionShape3D).disabled = true
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(max(0.1, AUDIO_FADE_OUT))
@@ -592,7 +639,8 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
-			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			get_shape_cast().enabled = false
+			get_area_collision().disabled = true
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
@@ -601,7 +649,8 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
-			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			get_shape_cast().enabled = false
+			get_area_collision().disabled = true
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
@@ -610,14 +659,16 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
-			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			get_shape_cast().enabled = false
+			get_area_collision().disabled = true
 			fade_audio(-40, AUDIO_FADE_OUT, false)
 			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
 			
 		Spell.Element.ELECTRIC:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
-			(get_node("shape_cast") as ShapeCast3D).enabled = false
+			get_shape_cast().enabled = false
+			get_area_collision().disabled = true
 			var body := get_node("body") as MeshInstance3D
 			body.visible = false
 			fade_audio(-40, AUDIO_FADE_OUT, false)
@@ -625,6 +676,7 @@ func stop_emitting() -> void:
 			
 		Spell.Element.VOID:
 			#fade_audio(-40, AUDIO_FADE_OUT, false)
+			get_area_collision().disabled = true
 			free_after(maxf(0.1, AUDIO_FADE_OUT + 0.1))
 			
 func free_after(duration: float) -> void:

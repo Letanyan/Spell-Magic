@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://kjdhhq3p1a5m"]
+[gd_scene load_steps=12 format=3 uid="uid://kjdhhq3p1a5m"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_gw4hd"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_a6nxg"]
@@ -75,13 +75,16 @@ scale_min = 0.1
 color_ramp = SubResource("GradientTexture1D_gddqt")
 hue_variation_max = 0.02
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_c1na5"]
+size = Vector3(1, 0.2, 1)
+
 [node name="ice" type="Node3D"]
 script = ExtResource("1_gw4hd")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_hwdgd")
-target_position = Vector3(0, 0, 0.1)
+target_position = Vector3(0, 0, 0)
 collision_mask = 1566
 collide_with_areas = true
 
@@ -101,3 +104,12 @@ draw_pass_1 = SubResource("SphereMesh_b25tq")
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("3_7ubeh")
 autoplay = true
+
+[node name="area" type="Area3D" parent="."]
+collision_layer = 128
+collision_mask = 0
+monitoring = false
+
+[node name="collision" type="CollisionShape3D" parent="area"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("BoxShape3D_c1na5")

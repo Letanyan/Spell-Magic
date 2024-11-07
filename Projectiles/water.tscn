@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=14 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
 [ext_resource type="AudioStream" uid="uid://blus3u8usi3fc" path="res://Audio/projectile/water.mp3" id="2_7rwhp"]
@@ -70,13 +70,15 @@ scale_min = 0.3
 scale_curve = SubResource("CurveTexture_58u4p")
 color_ramp = SubResource("GradientTexture1D_a2dhw")
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_cbplr"]
+
 [node name="water" type="Node3D"]
 script = ExtResource("1_dkd3k")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_ygggg")
 target_position = Vector3(0, 0, 0)
-collision_mask = 1815
+collision_mask = 1951
 collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]
@@ -96,3 +98,11 @@ draw_pass_1 = SubResource("SphereMesh_37v5l")
 [node name="audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("2_7rwhp")
 autoplay = true
+
+[node name="area" type="Area3D" parent="."]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+
+[node name="collision" type="CollisionShape3D" parent="area"]
+shape = SubResource("SphereShape3D_cbplr")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://8p44w2bikis2"]
+[gd_scene load_steps=14 format=3 uid="uid://8p44w2bikis2"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_pf3b3"]
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
@@ -65,6 +65,8 @@ material = SubResource("ShaderMaterial_g1ktx")
 radial_segments = 16
 rings = 8
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_dfuly"]
+
 [node name="electric" type="Node3D"]
 script = ExtResource("1_pf3b3")
 
@@ -94,3 +96,11 @@ stream = ExtResource("4_gu14i")
 autoplay = true
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
+
+[node name="area" type="Area3D" parent="."]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+
+[node name="collision" type="CollisionShape3D" parent="area"]
+shape = SubResource("SphereShape3D_dfuly")

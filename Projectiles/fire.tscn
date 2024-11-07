@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ded2wbijwa0uu"]
+[gd_scene load_steps=14 format=3 uid="uid://ded2wbijwa0uu"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_ku5ha"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_l30px"]
@@ -72,6 +72,8 @@ scale_min = 0.0
 scale_curve = SubResource("CurveTexture_drmjp")
 color_ramp = SubResource("GradientTexture1D_lctcp")
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_jx1nk"]
+
 [node name="fire" type="Node3D"]
 script = ExtResource("1_ku5ha")
 
@@ -101,3 +103,11 @@ autoplay = true
 
 [node name="light" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.129083, 0.0447589, 0.0129376)
+
+[node name="area" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+
+[node name="collision" type="CollisionShape3D" parent="area"]
+shape = SubResource("SphereShape3D_jx1nk")
