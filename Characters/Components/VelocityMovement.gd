@@ -137,13 +137,24 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	target_velocity.z *= friction
 	if (body is Enemy and (body as Enemy).pushed_with_impulse) or (body is Player):
 		var g := Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		var wb := water_bouyancy
 		var fa := fall_acceleration
+		var fl := 0.0
+		
 		if current_biome == World.Biome.HFIL:
+			wb = wb * -1.0
 			fa = fa * lerpf(0.75, 0.25, world_level / 100.0)
+			fl = wb * delta
 		elif current_biome == World.Biome.OTHERWORLD:
 			fa = fa * lerpf(1.1, 1.9, world_level / 100.0)
-		
-		if not body.is_on_floor: 
+			
+		if sea_level - 1.5 < body.feet_position() and body.feet_position() < sea_level - 1.45:
+			target_velocity.y = fl
+		elif body.feet_position() < sea_level - 1.5:
+			if target_velocity.y < 0:
+				target_velocity.y = target_velocity.y * 0.9
+			target_velocity.y = target_velocity.y + wb * delta
+		elif not body.is_on_floor: 
 			if g < body.feet_position():
 				target_velocity.y = target_velocity.y - fa * delta
 			elif g > body.feet_position():
@@ -153,25 +164,6 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		
 	if body.feet_position() < -1000.0 or is_nan(body.position.y):
 		body.set_feet_position(Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z))
-	elif body is Player:
-		var wb := water_bouyancy
-		var fa := fall_acceleration
-		var fl := 0.0
-		if current_biome == World.Biome.HFIL:
-			wb = wb * -1.0
-			fa = fa * 0.25
-			fl = wb * delta
-			
-		if sea_level - 1.5 < body.feet_position() and body.feet_position() < sea_level - 1.45:
-			target_velocity.y = fl
-		elif body.feet_position() < sea_level - 1.5:
-			if target_velocity.y < 0:
-				target_velocity.y = target_velocity.y * 0.9
-			target_velocity.y = target_velocity.y + wb * delta
-		#elif not body.is_on_floor and Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z) < body.feet_position():
-			#target_velocity.y = target_velocity.y - fa * delta
-		else:
-			target_velocity.y = 0
 		
 	target_velocity.x = clampf(target_velocity.x, -50.0, 50.0)
 	target_velocity.y = clampf(target_velocity.y, -50.0, 50.0)

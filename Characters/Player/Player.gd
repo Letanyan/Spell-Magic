@@ -20,6 +20,7 @@ var projectile_indicator_scale: float = 1.0
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
 @onready var leaves: GPUParticles3D = $leaves
+@onready var breeze: GPUParticles3D = $breeze
 
 var platform: PhysicsBody3D = null
 
@@ -324,7 +325,6 @@ func kill_multiplier(enemy: Enemy) -> float:
 			return sum / float(count)
 	else:
 		return 0.0
-	
 	
 func set_current_biome(biome: World.Biome) -> void:
 	velocity_movement.current_biome = biome
@@ -700,7 +700,17 @@ func update_projectile_indicators() -> void:
 				enemy_indicator_store.append(mi)
 				(mi as Node2D).position = Vector2(0, -1000)
 			projectile_indicators.erase(body)
-				
+			
+func apply_environment_impulse(color: Color, impulse: Vector3) -> void:
+	var dir := impulse.normalized()
+	breeze.position = dir * -impulse.length() * 0.5
+	var process_mat := breeze.process_material as ParticleProcessMaterial
+	process_mat.direction = dir
+	process_mat.initial_velocity_min = impulse.length()
+	process_mat.initial_velocity_max = impulse.length()
+	process_mat.color = color
+	breeze.emitting = true
+	add_impulse(impulse)
 
 class CombatStats:
 	var start_time: float

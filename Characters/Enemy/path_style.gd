@@ -241,13 +241,14 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
 	old_origin = temp_origin
 	
-	for segment: Segment in path.segments:
-		var s := segment.position_at_time_with_transform(0.0, transform) + temp_origin
-		s.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
-		var e := segment.position_at_time_with_transform(1.0, transform) + temp_origin
-		e.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
-		DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
-		DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)
+	if player is Player:
+		for segment: Segment in path.segments:
+			var s := segment.position_at_time_with_transform(0.0, transform) + temp_origin
+			s.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
+			var e := segment.position_at_time_with_transform(1.0, transform) + temp_origin
+			e.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
+			DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
+			DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)
 		
 	
 	return old_position

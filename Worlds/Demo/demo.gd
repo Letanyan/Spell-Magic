@@ -8,6 +8,8 @@ extends Node3D
 @onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 
+#var noise_image := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
+var noise_image: Image
 
 const CHUNK_SIZE = 256
 @onready var blender: NoiseBlender
@@ -36,6 +38,8 @@ var artifacts: Artifacts
 
 var knowledge_tick: float = 0.0
 var daytime_tick: float = 0.0
+var environment_effect_tick: float = 0.0
+var environment_timer: float = 0.0
 
 var settings: WorldSettings
 var pause_start: float
@@ -109,6 +113,9 @@ func run_on_ready() -> void:
 		wand = case.wands[id]
 		
 	menu.close_menu.connect(toggle_menu)
+	
+	var noise_tex := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
+	noise_image = noise_tex.get_image()
 		
 	# Forest location for world seed 0
 	#player.position.x = 800
@@ -206,6 +213,7 @@ func _physics_process(delta: float) -> void:
 	
 	knowledge_tick += delta
 	daytime_tick += delta
+	environment_effect_tick += delta
 	
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
@@ -251,6 +259,22 @@ func _physics_process(delta: float) -> void:
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
 		transition_to_biome(b)
 		last_biome = b
+		
+	if environment_effect_tick >= 2.0:
+		environment_timer += delta
+		if environment_timer > 1.0:
+			environment_timer = 0.0
+		environment_effect_tick = 0.0
+		var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, player.world_settings.world_radius)
+		var chance := lvl / 100.0
+		if last_biome == World.Biome.HFIL:
+			if randf() < chance * 0.01:
+				player.apply_environment_impulse(Color.RED, Vector3(0, lvl, 0) * 100)
+		elif last_biome == World.Biome.TAIGA:
+			var nx := noise_image.get_pixel(1, floori(environment_timer * noise_image.get_height())).r / 255.0
+			var ny := noise_image.get_pixel(floori(environment_timer * noise_image.get_height()), 1).r / 255.0
+			if randf() < chance * 0.1:
+				player.apply_environment_impulse(Color.WHITE, Vector3(nx, 0, ny).normalized() * (lvl / 100.0 * 3))
 		
 	if OS.is_debug_build():
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())

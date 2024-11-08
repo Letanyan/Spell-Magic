@@ -59,7 +59,7 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
 		var is_fish := is_enemy and (entity is Fish or entity is Fishman)
-		if not info.get("valid", true) or (below_sea_level and not_hfil and not is_fish):
+		if not info.get("valid", true) or (below_sea_level and not_hfil and not is_fish) or is_nan(wh):
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
 			else:
@@ -291,7 +291,8 @@ func update_info() -> void:
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
 		col.disabled = dist > 50
 		area.disabled = col.disabled
-		habitant.animation_tree.active = dist < 50
+		if habitant.is_node_ready():
+			habitant.animation_tree.active = dist < 50
 	
 	for g in garden:
 		var s: CollisionShape3D = g.get_node("./static/shape")
