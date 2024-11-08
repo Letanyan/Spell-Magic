@@ -252,7 +252,7 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	var points: Array[PackedVector2Array] = areas["points"]
 	var biomes: Array[World.Biome] = areas["biomes"]
 	
-	current_fl_during_generation = level_relative_to_position(rng, coord.x, coord.y)
+	current_fl_during_generation = level_relative_to_position(rng, coord.x, coord.y) / 100.0
 	var result: Array[Node3D] = []
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
@@ -378,12 +378,19 @@ func fitas(mult: float, arr: Array[float]) -> Array[float]:
 	return result
 	
 ## fit between fit(arr_i, arr_i - arr_i * (1 - (1-mult)^exponent))
+func fitas_dict(mult: float, dict: Dictionary) -> Dictionary:
+	var result := {}
+	for k in dict:
+		result[k] = fit(dict[k], dict[k] * mult)
+	return result
+	
+## fit between fit(arr_i, arr_i - arr_i * (1 - (1-mult)^exponent))
 func fitase(mult: float, exponent: float, arr: Array[float]) -> Array[float]:
 	var result: Array[float] = []
 	for i in arr.size():
 		result.append(fit(arr[i], arr[i] - arr[i] * (1 - pow(1 - mult, exponent))))	
 	return result
-
+	
 # returns the actual value if the enemy with a class (1-20) where 1 is low 
 func atk(cls: int) -> float:
 	return fit(5.0, cls * 5.0)

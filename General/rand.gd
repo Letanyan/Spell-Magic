@@ -24,6 +24,17 @@ static func point_in_circle_2d(r: float, rng: RandomNumberGenerator = null) -> V
 		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
 	return p
 	
+static func point_in_disc_2d(inner: float, outer: float, rng: RandomNumberGenerator = null) -> Vector2:
+	var p: Vector2
+	var r := outer - inner
+	if rng == null:
+		p = Vector2(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized()
+		p = (p * inner).lerp(p * outer, randf())
+	else:
+		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized()
+		p = (p * inner).lerp(p * outer, rng.randf())
+	return p
+	
 static func point_in_rect_2d(w: float, h: float, r: float, rng: RandomNumberGenerator = null) -> Vector2:
 	var p: Vector2
 	if rng == null:

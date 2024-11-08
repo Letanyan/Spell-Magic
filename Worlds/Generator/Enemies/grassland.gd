@@ -54,7 +54,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 			GRASSLAND_STRUCTURES_KIND.FISH:
 				var pos := area[index]
 				
-				if rng.randf() < 0.8:
+				if rng.randf() < pop.fit(0.8, 0.2):
 					var p := pop.spawn_enemy(World.Enemy.FISH, state, pos, spacing)
 					if p != null: result.append(p)
 				else:
@@ -64,7 +64,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 			GRASSLAND_STRUCTURES_KIND.HIVE:
 				var pos := area[index]
-				var r := Rand.entity_from_distribution(rng.randf(), {0.05: 10, 0.15: 5, 0.8: 1}) as float
+				var r := Rand.entity_from_distribution(rng.randf(), {3: pop.fit(0.05, 0.5), 2: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as float
 				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
 				var bumble_count := rng.randi_range(roundi(r * 1), roundi(r * 2))
 				var art := Artifact.new("", Artifact.Option.make_effect(Artifact.Effect.BOOST_PERCENTAGE, Artifact.Element.FIRE, 2, Artifact.Pattern.TRIANGLE))
@@ -98,7 +98,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					if rock != null:
 						result.append(rock)
 				
-				var r := Rand.entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 2: 0.8}) as int
+				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 2: pop.fit(0.8, 0.5)}) as int
 				var spike_count := rng.randi_range(1, r)
 				var path := Pathway.new().random_points_in_disc(1, 0, spacing / 2.0, 0, spike_count, Easing.linear, rng)
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)))
@@ -115,7 +115,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 								
 			GRASSLAND_STRUCTURES_KIND.FLOCK:
 				var pos := area[index]
-				var r := Rand.entity_from_distribution(rng.randf(), {10: 0.05, 5: 0.15, 3: 0.8}) as int
+				var r := Rand.entity_from_distribution(rng.randf(), {10: pop.fit(0.05, 0.5), 5: pop.fit(0.15, 0.5), 3: pop.fit(0.8, 0.5)}) as int
 				const circle_points = 3
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
@@ -138,7 +138,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						
 			GRASSLAND_STRUCTURES_KIND.PETS:
 				var pos := area[index]
-				var r := Rand.entity_from_distribution(rng.randf(), {5: 0.05, 3: 0.15, 1: 0.8}) as int
+				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as int
 				const circle_points = 3
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
@@ -178,7 +178,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				var pos3 := Vector3.ZERO
 				var spawner := pop.spawn_spawner(World.Item.KEY, pos, 2)
 				
-				for i in 3:
+				for i in pop.fit(3, 8):
 					var circle_path := Pathway.new().random_points_in_disc(2, 0, 2, 2, 8)
 					var path := PathStyle.new(rng.randi(), pos3).follow_path(circle_path).align_y_to_ground_and_air()
 					var config := TargetShape.config_for_damage(Spell.Element.FIRE, spawner, 5, Vitals.Stat.new(100), path)
