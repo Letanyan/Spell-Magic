@@ -26,24 +26,47 @@ class EntityBuffer:
 			
 	func free_entity(node: Node3D) -> void:
 		var index := -1
-		var i := maxi(last_index_check - 1, 0)
+		var i := maxi(last_index_check, 0)
+		var j := i
 		var found := false
-		while i < high_watermark:
+		
+		var min_bound := maxi(mini(last_index_check, high_watermark - last_index_check), 0)
+		var k := 0
+		var visited: Array[int] = []
+		while k <= min_bound:
+			visited.append(i)
 			if buffer[i] == node:
 				index = i
 				found = true
 				break
-			i += 1
-		if not found and last_index_check > 2:
-			i = last_index_check - 2
-			while i >= 0:
-				if buffer[i] == node:
-					index = i
-					break
-				i -= 1
+			visited.append(j)
+			if buffer[j] == node:
+				index = j
+				found = true
+				break
+			i -= 1
+			j += 1
+			k += 1
+			
+		if not found:
+			if i == -1:
+				k = j
+				while k < high_watermark:
+					visited.append(k)
+					if buffer[k] == node:
+						index = k
+						break
+					k += 1
+			else:
+				k = i
+				while k >= 0:
+					visited.append(k)
+					if buffer[k] == node:
+						index = k
+						break
+					k -= 1
 		
 		if index == -1:
-			# FIXME: this should not be getting called
 			push_error(tag + ": free node that does not exist: ", str(node.get_instance_id()))
 			return
 		
@@ -131,7 +154,8 @@ func _init() -> void:
 		var area: CollisionShape3D = node.get_node("./WetArea/WetCollision")
 		col.disabled = true
 		area.disabled = col.disabled
-		node.animation_tree.active = false
+		if node.is_node_ready():
+			node.animation_tree.active = false 
 	var deinit_building := func(node: Buildings) -> void:
 		node.position.y = -1000
 		var s: CollisionShape3D = node.get_node("./static/shape")

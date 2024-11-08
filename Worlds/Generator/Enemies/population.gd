@@ -380,8 +380,8 @@ func fitas(mult: float, arr: Array[float]) -> Array[float]:
 ## fit between fit(arr_i, arr_i - arr_i * (1 - (1-mult)^exponent))
 func fitas_dict(mult: float, dict: Dictionary) -> Dictionary:
 	var result := {}
-	for k in dict:
-		result[k] = fit(dict[k], dict[k] * mult)
+	for k: Variant in dict:
+		result[k] = fit(dict[k] as float, (dict[k] as float) * mult)
 	return result
 	
 ## fit between fit(arr_i, arr_i - arr_i * (1 - (1-mult)^exponent))

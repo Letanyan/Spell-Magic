@@ -62,7 +62,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				for i in king_count:
 					var king := pop.spawn_enemy(World.Enemy.WALKER, state, pos, spacing) as Mushking
 					if king != null: result.append(king)
-				var minion_count := Rand.roll(6 * pop.fit(1, 1.5), 2, king_count, rng, Rand.Accum.AVG)
+				var minion_count := Rand.roll(floori(6 * pop.fit(1, 1.5)), 2, king_count, rng, Rand.Accum.AVG)
 				for c in minion_count:
 					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, state, pos + Rand.point_in_disc_2d(10, 20, rng), spacing) as Mushroom
 					if minion != null:

@@ -340,7 +340,6 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.15999999642368)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0.999999977648)
-			
 		World.Biome.SAVANNAH:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.27, 0.562, 1, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.81, 0.9683, 1, 1))
@@ -359,7 +358,6 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.6999999843536)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0)
-			
 		World.Biome.TUNDRA:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.51, 0.706, 1, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(1, 1, 1, 1))
@@ -381,7 +379,6 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			env.environment.fog_density = lerpf(0.1, 0.5, level / 100.0)
 			env.environment.fog_sky_affect = lerpf(0.1, 0.95, level / 100.0)
 			env.environment.fog_light_color = Color.WHITE
-			
 		World.Biome.OTHERWORLD:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0, 1, 1, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0, 0.0167, 1, 1))
@@ -400,7 +397,6 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.31999999284736)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0.999999977648)
-			
 		World.Biome.HFIL:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(1, 0, 0, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(1, 0.0157, 1, 1))
@@ -419,7 +415,6 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.499999988824)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0.999999977648)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0.61999998614176)
-			
 		_:
 			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.594, 1))
 			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.3, 0.557))
@@ -438,17 +433,100 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.3)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0.25)
-			
-static func environment_ambient_color(time_of_day: float, sun: DirectionalLight3D, moon: DirectionalLight3D) -> Color:
+	
+enum SkyColorKind { DAY_TOP, DAY_BOTTOM, SUNSET_TOP, SUNSET_BOTTOM, NIGHT_TOP, NIGHT_BOTTOM }
+static func sky_color(b: World.Biome, kind: SkyColorKind) -> Color:
 	var result := Color(1, 1, 1)
-	
-	var sunset_amount := clampf( 0.5 - absf( sun.rotation.y ), 0.0, 0.5 ) * 2.0
-	result = result.lerp(Color(0.5, 0.5, 0.5), sunset_amount)
-	
-	var night_amount := clampf( -sun.rotation.y + 0.7, 0.0, 1.0 )
-	result = result.lerp(Color(0, 0, 0), night_amount)
-	
+	match b:
+		World.Biome.GRASSLAND:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0.1, 0.6, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0.43, 1, 0.8195, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.7085, 0.47, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.3667, 0.24, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.039, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.0819, 0.2411, 0.39, 1)
+		World.Biome.FOREST:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0, 0.3725, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0.4627, 1, 0.4275, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.702, 0.749, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.9176, 0.2353, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.04, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.102, 0.4824, 0.2, 1)
+		World.Biome.TAIGA:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0.05, 0, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.8367, 0.9796, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.66, 0.9377, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.35, 0.5992, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.04, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.1034, 0.1636, 0.22, 1)
+		World.Biome.JUNGLE:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0, 0.53, 0.1943, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.63, 0.567, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.5553, 0.42, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(0.368, 0.48, 0, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.04, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.1269, 0.27, 0.2175, 1)
+		World.Biome.DESERT:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0, 0.4833, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.9333, 1, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.3667, 0, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.7, 0, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0.136, 0.34, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.2162, 0.4031, 0.46, 1)
+		World.Biome.SAVANNAH:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0.27, 0.562, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0.81, 0.9683, 1, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(1, 0.35, 0, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.55, 0, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0.216, 0.54, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0, 0, 0, 1)
+		World.Biome.TUNDRA:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0.51, 0.706, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(1, 1, 1, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.7958, 0.51, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.7795, 0.51, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0.12, 0.3, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.2444, 0.4557, 0.52, 1)
+		World.Biome.OTHERWORLD:
+			if kind == SkyColorKind.DAY_TOP: result = Color(0, 1, 1, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.0167, 1, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(0, 0, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0, 1, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0, 1, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0, 0, 0, 1)
+		World.Biome.HFIL:
+			if kind == SkyColorKind.DAY_TOP: result = Color(1, 0, 0, 1)
+			if kind == SkyColorKind.DAY_BOTTOM: result = Color(1, 0.0157, 1, 1)
+			if kind == SkyColorKind.SUNSET_TOP: result = Color(1, 0, 1, 1)
+			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 1, 0, 1)
+			if kind == SkyColorKind.NIGHT_TOP: result = Color(1, 0, 0, 1)
+			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0, 0, 0, 1)
 	return result
+			
+static func environment_ambient_color(b: World.Biome, time_of_day: float, sun: DirectionalLight3D, moon: DirectionalLight3D) -> Color:
+	var daylight := Color(1, 1, 1)
+	var sun_direction := sun.to_global( Vector3( 0.0, 0.0, 1.0 )).normalized()
+	var sunset_amount := clampf( 0.5 - absf( sun_direction.y ), 0.0, 0.5 ) * 2.0
+	daylight = daylight.lerp(Color(0.8, 0.8, 0.8), sunset_amount)
+	var night_amount := clampf( -sun_direction.y + 0.7, 0.0, 1.0 )
+	daylight = daylight.lerp(Color(0.1, 0.1, 0.1), night_amount)
+	
+	var day_top_color := sky_color(b, SkyColorKind.DAY_TOP)
+	var day_bottom_color := sky_color(b, SkyColorKind.DAY_BOTTOM)
+	var sunset_top_color := sky_color(b, SkyColorKind.SUNSET_TOP)
+	var sunset_bottom_color := sky_color(b, SkyColorKind.SUNSET_BOTTOM)
+	var night_top_color := sky_color(b, SkyColorKind.NIGHT_TOP)
+	var night_bottom_color := sky_color(b, SkyColorKind.NIGHT_BOTTOM)
+	
+	var _eyedir := 0.5
+	var _sky_color := day_bottom_color.lerp(day_top_color, _eyedir)
+	var _sky_sunset_color := sunset_bottom_color.lerp(sunset_top_color, _eyedir + 0.5)
+	_sky_sunset_color = _sky_sunset_color.lerp(sunset_bottom_color, sunset_amount)
+	_sky_color = _sky_color.lerp(_sky_sunset_color, sunset_amount)
+	var _sky_night_color := night_bottom_color.lerp(night_top_color, _eyedir)
+	_sky_color = _sky_color.lerp(_sky_night_color, night_amount)
+	
+	return _sky_color.lerp(daylight, 0.75)
 			
 static func print_world_environment(env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D) -> void:
 	var shader := env.environment.sky.sky_material as ShaderMaterial
