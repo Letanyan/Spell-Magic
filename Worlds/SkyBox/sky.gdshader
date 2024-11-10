@@ -64,7 +64,7 @@ group_uniforms clouds;
 	// More weight is simply a darker color, usefull for rain/storm
 	uniform float start_clouds_weight : hint_range( 0.0, 1.0, 0.01 ) = 0.0;
 	uniform float start_clouds_blur : hint_range( 0.0, 1.0, 0.01 ) = 0.25;
-	
+
 	uniform float final_clouds_speed : hint_range( 0.0, 20.0, 0.01 ) = 2.0;
 	uniform float final_clouds_direction : hint_range( -0.5, 0.5, 0.05 ) = 0.2;
 	uniform float final_clouds_scale : hint_range( 0.0, 4.0, 0.01 ) = 1.0;
@@ -176,7 +176,7 @@ float sphere_intersect( vec3 view_dir, vec3 sphere_pos, float radius )
 void sky()
 {
 	float time = abs(overwritten_time - 0.0) > 0.0001 ? overwritten_time : TIME;
-	
+
 
 	vec3 day_top_color = mix(start_day_top_color, final_day_top_color, transition);
 	vec3 day_bottom_color = mix(start_day_bottom_color, final_day_bottom_color, transition);

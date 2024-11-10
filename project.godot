@@ -50,7 +50,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/repl/plugin.cfg")
+enabled=PackedStringArray("res://addons/BetterSearch/plugin.cfg", "res://addons/repl/plugin.cfg")
 
 [file_customization]
 
