@@ -158,6 +158,7 @@ func run_on_ready() -> void:
 	skybox.day_time = settings.time_of_day
 	skybox.day_of_year = settings.day_of_the_year
 	
+	player.chunker = chunker
 	player.magic_book = book
 	player.artifacts = artifacts
 	hud.player = player
@@ -291,7 +292,7 @@ func _physics_process(delta: float) -> void:
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
-		update_population_at(chunker.backing.get_loaded_chunks_location(), state)
+		update_population_at(chunker.backing.get_loaded_chunks_location())
 		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
 		var platform_h := Navigator.get_platform_height(state, player.position.x, player.position.z)
 		if abs(player.position.y - world_h) < abs(player.position.y - platform_h):
@@ -383,14 +384,14 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 				cast_spell_with_recusive_check_for_rapid_fire(ns, true)
 		)
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:
+func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta
 	
 	#chunker.hide_water(player.position.y, false)
 	
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
-		update_terrain(state)
+		update_terrain()
 		
 func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
@@ -398,7 +399,7 @@ func build_terrain() -> void:
 		add_child(chunk)
 
 
-func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
+func update_terrain() -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
 	for loc: Vector2 in chunks.get("removed", []):
 		var pop := population.get(loc, null) as Population
@@ -410,18 +411,18 @@ func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
 
 	await get_tree().physics_frame
-	update_population_at(updated_chunks, state)
+	update_population_at(updated_chunks)
 	
 	if updated_chunks.is_empty():
 		chunker.update_environment(player.position.x, player.position.z)
 	
 
-func update_population_at(locations: Array[Vector2], state: PhysicsDirectSpaceState3D) -> void:
+func update_population_at(locations: Array[Vector2]) -> void:
 	var items_to_add := {}
 	for loc: Vector2 in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
 		var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager)
-		items_to_add[pop] = pop.spawn_all_into_world(state)
+		items_to_add[pop] = pop.spawn_all_into_world()
 		population[loc] = pop
 		
 	for pop: Population in items_to_add:

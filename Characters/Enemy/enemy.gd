@@ -69,7 +69,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const snot_spike = preload("res://Characters/Enemy/Blob/SnotSpike/snot_spike.tscn") as PackedScene
 	const walker_head = preload("res://Characters/Enemy/Blob/WalkerHead/walker_head.tscn") as PackedScene
 	const wizard = preload("res://Characters/Enemy/Blob/Wizard/wizard.tscn") as PackedScene
-	
+
 	const undead = preload("res://Characters/Enemy/Tall/Undead/undead.tscn") as PackedScene
 	const mole = preload("res://Characters/Enemy/Tall/Mole/mole.tscn") as PackedScene
 	const walker = preload("res://Characters/Enemy/Tall/Walker/walker.tscn") as PackedScene
@@ -79,7 +79,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const frog = preload("res://Characters/Enemy/Tall/Frog/frog.tscn") as PackedScene
 	const mushking = preload("res://Characters/Enemy/Tall/MushKing/mushking.tscn") as PackedScene
 	const rabbit = preload("res://Characters/Enemy/Tall/Rabbit/rabbit.tscn") as PackedScene
-	
+
 	const bat = preload("res://Characters/Enemy/Flying/Bat/bat.tscn") as PackedScene
 	const dragon = preload("res://Characters/Enemy/Flying/Dragon/Dragon.tscn") as PackedScene
 	const dragoon = preload("res://Characters/Enemy/Flying/Dragoon/Dragoon.tscn") as PackedScene
@@ -193,7 +193,7 @@ func _physics_process(delta: float) -> void:
 	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
 	var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
 	velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
-	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level, player.world_settings.world_radius)
+	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level, player.world_settings.world_radius, player.chunker)
 	vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()

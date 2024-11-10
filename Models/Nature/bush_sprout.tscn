@@ -21,7 +21,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_yer04"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_c2ipq"]
+resource_local_to_scene = true
 resource_name = "Cube_008"
 _surfaces = [{
 "aabb": AABB(-0.673548, -0.0194555, -0.899236, 1.50269, 0.515531, 1.51348),
@@ -53,7 +54,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_xcu17"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_8ddk0"]
+resource_local_to_scene = true
 resource_name = "Cube_002"
 _surfaces = [{
 "aabb": AABB(-0.670591, -0.0179258, -0.900478, 1.49958, 0.530536, 1.5137),
@@ -87,11 +89,11 @@ disabled = true
 [node name="mesh" type="MeshInstance3D" parent="MeshNode"]
 visibility_range_end = 10.0
 visibility_range_end_margin = 1.0
-mesh = SubResource("ArrayMesh_yer04")
+mesh = SubResource("ArrayMesh_c2ipq")
 skeleton = NodePath("")
 
 [node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
 visibility_range_begin = 10.0
 visibility_range_begin_margin = 1.0
-mesh = SubResource("ArrayMesh_xcu17")
+mesh = SubResource("ArrayMesh_8ddk0")
 skeleton = NodePath("")

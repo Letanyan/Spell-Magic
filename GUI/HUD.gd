@@ -37,7 +37,7 @@ var player: Player:
 		player.spell_was_cast.connect(spell_was_cast)
 		player.spell_was_disallowed.connect(spell_was_disallowed)
 		player.spell_was_limited.connect(spell_was_limited)
-		key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GlobalData.nav.popcnt(player.keys)
+		key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(player.keys)
 
 var wand: Wand: set = set_wand
 		
@@ -406,4 +406,4 @@ func update_selection_wheel_spells() -> void:
 		
 func update_pick_up_world_item_key(k: int, m: String) -> void: 
 	show_notification(bbcode_new_item(m), 5)
-	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GlobalData.nav.popcnt(world_settings.player_keys)
+	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)

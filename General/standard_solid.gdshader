@@ -19,6 +19,9 @@ uniform vec3 uv1_offset;
 uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 
+uniform vec3 nature_mat_green_blend: source_color = vec3(1);
+uniform vec3 nature_mat_brown_blend: source_color = vec3(1);
+
 
 void vertex() {
 	ROUGHNESS=roughness;
@@ -28,6 +31,12 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	if (base_uv.y > 0.125 && base_uv.y < 0.125 + 0.0625) {
+		albedo_tex = mix(albedo_tex, vec4(nature_mat_green_blend, 1), 0.9);
+	}
+	if (base_uv.y < 0.0625) {
+		albedo_tex = mix(albedo_tex, vec4(nature_mat_brown_blend, 1), 0.9);
+	}
 	albedo_tex *= COLOR;
 
 	vec3 temp_color = rgb2hsv(albedo.rgb * albedo_tex.rgb);

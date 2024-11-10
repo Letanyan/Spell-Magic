@@ -19,7 +19,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_wahup"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_76qlc"]
+resource_local_to_scene = true
 resource_name = "Cube_055"
 _surfaces = [{
 "aabb": AABB(-0.0847841, -0.000948993, -0.0952135, 0.170337, 0.197095, 0.191332),
@@ -51,7 +52,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_6r6vi"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_qn71c"]
+resource_local_to_scene = true
 resource_name = "Cube_010"
 _surfaces = [{
 "aabb": AABB(-0.0847841, -0.000948993, -0.0952135, 0.170337, 0.197095, 0.191332),
@@ -86,12 +88,12 @@ disabled = true
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 visibility_range_end = 10.0
 visibility_range_end_margin = 1.0
-mesh = SubResource("ArrayMesh_wahup")
+mesh = SubResource("ArrayMesh_76qlc")
 skeleton = NodePath("")
 
 [node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 visibility_range_begin = 10.0
 visibility_range_begin_margin = 1.0
-mesh = SubResource("ArrayMesh_6r6vi")
+mesh = SubResource("ArrayMesh_qn71c")
 skeleton = NodePath("")

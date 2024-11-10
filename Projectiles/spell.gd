@@ -326,6 +326,7 @@ func build_expressions() -> void:
 			time_dependent_vars.append(k)
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
+	# FIXME: speed up
 	for k: String in mappings:
 		expressions[k] = Expr.new(mappings[k] as String)
 	

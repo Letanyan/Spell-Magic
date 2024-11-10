@@ -118,6 +118,10 @@ static func color_for_biome(_biome: World.Biome) -> Color:
 		World.Biome.OTHERWORLD: return Color(0, 0, 0)
 		World.Biome.HFIL: return Color(1, 0, 0)
 		_: return Color(1, 0, 1)
+		
+static func real_color_for_biome(_biome: World.Biome) -> Color:
+	var vec := biome_colors[_biome as int - 1]
+	return Color(vec.x, vec.y, vec.z)
 
 var back: GDNoiseBlender
 
@@ -150,7 +154,7 @@ static func version0(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
-	result.sea_level = rng.randf_range(-50.0, 250.0)
+	result.sea_level = rng.randf_range(-50.0, 50.0)
 	result.world_radius = rng.randf_range(7_500.0, 25_000.0)
 	
 	return result
@@ -180,7 +184,7 @@ static func version1(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
-	result.sea_level = rng.randf_range(-50.0, 250.0)
+	result.sea_level = rng.randf_range(-50.0, 50.0)
 	result.world_radius = rng.randf_range(7_500.0, 25_000.0)
 	
 	return result

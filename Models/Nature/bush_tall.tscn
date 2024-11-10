@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://2w42ds8ts4c3"]
+[gd_scene load_steps=8 format=4 uid="uid://2w42ds8ts4c3"]
 
 [ext_resource type="Material" uid="uid://bea4dl4060sxo" path="res://Models/Nature/Nature_Mat_01.tres" id="1_4nmi0"]
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/foliage.gd" id="1_gt1td"]
@@ -21,7 +21,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_4v08d"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_1jfv6"]
+resource_local_to_scene = true
 resource_name = "Icosphere_083"
 _surfaces = [{
 "aabb": AABB(-0.428326, -0.0253467, -0.455566, 0.799059, 0.829276, 0.826285),
@@ -39,14 +40,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gkuel")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lmk88"]
-resource_name = "Nature_Mat_01"
-vertex_color_use_as_albedo = true
-albedo_color = Color(1, 1, 1, 1)
-emission_enabled = true
-emission = Color(0.906332, 0.906332, 0.906332, 1)
-emission_energy_multiplier = 0.0
-
 [sub_resource type="ArrayMesh" id="ArrayMesh_428co"]
 _surfaces = [{
 "aabb": AABB(-0.428326, -0.0166091, -0.455566, 0.799059, 0.820538, 0.826285),
@@ -61,7 +54,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_drrxn"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_bixci"]
+resource_local_to_scene = true
 resource_name = "Icosphere_001"
 _surfaces = [{
 "aabb": AABB(-0.428326, -0.0166091, -0.455566, 0.799059, 0.820538, 0.826285),
@@ -69,7 +63,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 132,
 "index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB/AIAAgQCCAIMA"),
-"material": SubResource("StandardMaterial3D_lmk88"),
+"material": ExtResource("1_4nmi0"),
 "name": "Nature_Mat_01",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -95,11 +89,11 @@ disabled = true
 [node name="mesh" type="MeshInstance3D" parent="MeshNode"]
 visibility_range_end = 30.0
 visibility_range_end_margin = 1.0
-mesh = SubResource("ArrayMesh_4v08d")
+mesh = SubResource("ArrayMesh_1jfv6")
 skeleton = NodePath("")
 
 [node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
 visibility_range_begin = 30.0
 visibility_range_begin_margin = 1.0
-mesh = SubResource("ArrayMesh_drrxn")
+mesh = SubResource("ArrayMesh_bixci")
 skeleton = NodePath("")

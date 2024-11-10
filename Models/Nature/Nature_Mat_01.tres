@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bp2erx00grov7" path="res://Models/Nature/NaturePackLite_Texture_01.png" id="1_78our"]
 
 [resource]
+resource_local_to_scene = true
 resource_name = "Nature_Mat_01"
 render_priority = 0
 shader = ExtResource("1_3sr76")
@@ -18,4 +19,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
+shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 shader_parameter/texture_albedo = ExtResource("1_78our")

@@ -61,17 +61,10 @@ func increment_ticks(delta: float) -> void:
 # result["target"] = target_velocity * delta
 # result["impulse"] = impulse
 # result["direction"] = direction
-func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float, world_radius: float) -> Dictionary:
+func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float, world_radius: float, chunker: Terrain) -> Dictionary:
+	# FIXME: speed up
 	var result := {}
 	increment_ticks(delta)
-		
-	#if not target_path.is_empty():
-		#if target_path_duration < 0.0:
-			#target_path_duration = 0.0
-			#target_path.clear()
-			#has_navigation_target = false
-		#else:
-			#target_path_duration -= delta
 		
 	if position_is_same_as_last_update_count < 0 or body.global_position.is_equal_approx(target_position):
 		position_is_same_as_last_update_count = 30
@@ -83,7 +76,6 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	
 	var navigation_velocity := Vector3.ZERO
 	if has_navigation_target:
-		#print(position_at_last_update, " == ", body.global_position, " => ", position_at_last_update.is_equal_approx(body.global_position))
 		if target_position.distance_squared_to(body.global_position) >= target_position.distance_squared_to(closest_position_at_last_update):
 			position_is_same_as_last_update_count -= 1
 		else:
@@ -136,7 +128,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	target_velocity.x *= friction
 	target_velocity.z *= friction
 	if (body is Enemy and (body as Enemy).pushed_with_impulse) or (body is Player):
-		var g := Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		var wn := chunker.terrain_normal(body.position.x, body.position.z)
+		var g := (wn["position"] as Vector3).y
+		# Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
 		var wb := water_bouyancy
 		var fa := fall_acceleration
 		var fl := 0.0

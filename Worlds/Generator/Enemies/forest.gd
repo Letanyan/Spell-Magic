@@ -21,7 +21,7 @@ const FOREST_STRUCTURES: Dictionary = {
 	FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD: 0.0005,
 }
 
-static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
+static func populate(pop: Population, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := 0
 	var rng := RandomNumberGenerator.new()
@@ -44,49 +44,49 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				pass
 			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, state, pos, spacing)
+				var p := pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_PYRAMID, state, pos, spacing)
+				var p := pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.BAT:
 				var pos := area[index] as Vector2
 				var elite_prob := pop.fit(0.2, 0.8)
-				var p := pop.spawn_enemy(World.Enemy.BATTY if rng.randf() < elite_prob else World.Enemy.BAT, state, pos, spacing)
+				var p := pop.spawn_enemy(World.Enemy.BATTY if rng.randf() < elite_prob else World.Enemy.BAT, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.MOLE:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.MOLE, state, pos, spacing)
+				var p := pop.spawn_enemy(World.Enemy.MOLE, pos, spacing)
 				if p != null:
 					result.append(p)
 			FOREST_STRUCTURES_KIND.UNDEAD:
 				var pos := area[index] as Vector2
 				var elite_prob := pop.fit(0.2, 0.8)
-				var p := pop.spawn_enemy(World.Enemy.UNDEAD if rng.randf() < elite_prob else World.Enemy.UNDEAD_HEAD, state, pos, spacing)
+				var p := pop.spawn_enemy(World.Enemy.UNDEAD if rng.randf() < elite_prob else World.Enemy.UNDEAD_HEAD, pos, spacing)
 				if p != null:
 					result.append(p)	
 			FOREST_STRUCTURES_KIND.UNDEAD_HORDE:
 				var pos := area[index]
-				var count := rng.randi_range(4, pop.fit(6, 10))
+				var count := rng.randi_range(4, pop.fiti(6, 10))
 				var path := Pathway.new().random_points_in_disc(1, spacing * 0.5, spacing * 2, 0, count, Easing.linear, rng)
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)))
 				var elite_prob := pop.fit(0.1, 0.5)
 				for ppos in path.sample_points_xz(count):
-					var p := pop.spawn_enemy(World.Enemy.UNDEAD if rng.randf() < elite_prob else World.Enemy.UNDEAD_HEAD, state, ppos, spacing)
+					var p := pop.spawn_enemy(World.Enemy.UNDEAD if rng.randf() < elite_prob else World.Enemy.UNDEAD_HEAD, ppos, spacing)
 					if p != null:
 						result.append(p)
 			FOREST_STRUCTURES_KIND.BAT_HORDE:
 				var pos := area[index]
-				var count := rng.randi_range(2, pop.fit(4, 12))
+				var count := rng.randi_range(2, pop.fiti(4, 12))
 				var path := Pathway.new().random_points_in_sphere(1, 0, spacing / 2.0, count, Easing.linear, rng)
 				path.apply_transform(T.translated(Vec3.xz(pos)))
 				var elite_prob := pop.fit(0.1, 0.9)
 				for ppos in path.sample_points_xz(count):
-					var p := pop.spawn_enemy(World.Enemy.BATTY if rng.randf() < elite_prob else World.Enemy.BAT, state, ppos, spacing)
+					var p := pop.spawn_enemy(World.Enemy.BATTY if rng.randf() < elite_prob else World.Enemy.BAT, ppos, spacing)
 					if p != null:
 						result.append(p)
 					
@@ -94,12 +94,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				if area.size() - index < 100:
 					index += 1
 					continue
-				var count_tree := pop.rng.randi_range(10, pop.fit(20, 30))
+				var count_tree := pop.rng.randi_range(10, pop.fiti(20, 30))
 				var pos := area[index]
 				for i in range(count_tree):
 					index += 1
 					pos = area[index]
-					var count := pop.rng.randi_range(5, pop.fit(5, 15))
+					var count := pop.rng.randi_range(5, pop.fiti(5, 15))
 					var path := Pathway.new().circle(rng.randf_range(spacing, spacing * 2), 0, 1)
 					path.apply_transform(T.translated(Vec3.xz(pos)))
 					for ppos in path.sample_points_xz(count):
@@ -112,9 +112,9 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 							World.Enemy.BAT: rng.randf_range(7, pop.fit(6, 2)),
 						}
 						if rng.randf() < tree_prob:
-							p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID if rng.randf() < 0.5 else World.Foliage.TREE_CHRISTMAS, state, ppos, spacing)
+							p = pop.spawn_foliage(World.Foliage.TREE_PYRAMID if rng.randf() < 0.5 else World.Foliage.TREE_CHRISTMAS, ppos, spacing)
 						else:
-							p = pop.spawn_enemy(Rand.entity_from_distribution(rng.randf(), enemy_prob), state, ppos, spacing)
+							p = pop.spawn_enemy(Rand.entity_from_distribution(rng.randf(), enemy_prob) as World.Enemy, ppos, spacing)
 						if p != null:
 							result.append(p)
 		index += 1

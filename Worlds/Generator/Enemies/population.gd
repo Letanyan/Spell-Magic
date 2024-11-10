@@ -42,7 +42,7 @@ func on_flat_surface(distance: float) -> Callable:
 	return func(normal: Dictionary) -> Dictionary:
 		return {"valid": (normal.get("normal", Vector3.ZERO) as Vector3).angle_to(Vector3.UP) < distance, "y_offset": distance * -2}
 	
-func set_world_ground(state: PhysicsDirectSpaceState3D, pos: Vector2) -> Vector3:
+func set_world_ground(pos: Vector2) -> Vector3:
 	var result := Vector3(pos.x, 0, pos.y)
 	#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
 	var world_normal := chunker.terrain_normal(pos.x, pos.y)
@@ -50,7 +50,7 @@ func set_world_ground(state: PhysicsDirectSpaceState3D, pos: Vector2) -> Vector3
 	result.y = wh
 	return result
 	
-func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
+func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
 		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
@@ -90,6 +90,8 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 		else:
 			if entity is Foliage:
 				(entity as Foliage).setup(rng, current_biome_during_generation)
+				blender.compute_biome_distances(entity.position.x, entity.position.z, chunker.get_noise_scale())
+				(entity as Foliage).set_albedo_blend(blender.color)
 				entity.name = World.Foliage.keys()[(entity as Foliage).kind] + Globals.encode_v3(entity.position)
 				garden.append(entity)
 			elif entity is Buildings:
@@ -113,14 +115,14 @@ func prepare_entity(state: PhysicsDirectSpaceState3D, entity: Node3D, pos: Vecto
 					World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
 	return entity
 	
-func spawn_enemy(enemy: World.Enemy, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Enemy:
+func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
 	var result := entity_manager.get_enemy(enemy)
 	var pos := Vector3(p.x, 0, p.y)
 	result.set_level(level_relative_to_position(rng, p.x, p.y))
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
-	return prepare_entity(state, result, pos, true, always_valid)
+	return prepare_entity(result, pos, true, always_valid)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float) -> Enemy:
 	var result := Enemy.make(enemy)
@@ -132,15 +134,15 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	return result
 
 
-func spawn_foliage(foliage: World.Foliage, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
+func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
 	result = entity_manager.get_foliage(foliage) as Foliage
 	pos.x += spacing * rng.randf_range(-0.5, 0.5)
 	pos.z += spacing * rng.randf_range(-0.5, 0.5)
-	return prepare_entity(state, result, pos, false, user_info)
+	return prepare_entity(result, pos, false, user_info)
 	
-func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float) -> Node3D:
+func spawn_building(building: World.Building, p: Vector2, spacing: float) -> Node3D:
 	var result: Node3D = null
 	var pos := Vector3(p.x, 0, p.y)
 	var ground_angle := 0.0
@@ -155,9 +157,9 @@ func spawn_building(building: World.Building, state: PhysicsDirectSpaceState3D, 
 			pos.x += spacing * rng.randf_range(-0.25, 0.25)
 			pos.z += spacing * rng.randf_range(-0.25, 0.25)
 			ground_angle = PI / 16
-	return prepare_entity(state, result, pos, false, on_flat_surface(ground_angle))
+	return prepare_entity(result, pos, false, on_flat_surface(ground_angle))
 	
-func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
+func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
 	var result := entity_manager.get_world_item(item) as WorldItem
 	var pos := Vector3(p.x, 0, p.y)
 	
@@ -165,7 +167,7 @@ func spawn_world_item(item: World.Item, state: PhysicsDirectSpaceState3D, p: Vec
 		var temp := result as TargetShape
 		temp.configure(config)
 	
-	return prepare_entity(state, result, pos, false, always_valid)
+	return prepare_entity(result, pos, false, always_valid)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	var result: ItemSpawner
@@ -191,12 +193,10 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	return result
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
-	for pidx in range(collection.size() - 1, -1, -1):
-		if collection[pidx].distance_squared_to(point) <= spacing * spacing:
-			return true
-	return false
+	return GDNavigator.contains_neighbour_point(collection, point, spacing)
 	
 func group_spawn_points(spacing: float) -> Dictionary:
+	# FIXME: speed up
 	var result: Array[PackedVector2Array] = []
 	var biomes: Array[World.Biome] = []
 	var points := PackedVector2Array([])
@@ -245,7 +245,7 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 			indices[j] = temp
 	return indices
 	
-func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
+func spawn_all_into_world() -> Array[Node3D]:
 	const spacing = 16.0
 	rng.seed = hash(coord)
 	var areas := group_spawn_points(spacing)
@@ -257,11 +257,11 @@ func spawn_all_into_world(state: PhysicsDirectSpaceState3D) -> Array[Node3D]:
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
 		match biomes[i]:
-			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, state, points[i], spacing))
-			World.Biome.FOREST: result.append_array(ForestGen.populate(self, state, points[i], spacing))
-			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, state, points[i], spacing))
-			World.Biome.HFIL: result.append_array(HFILGen.populate(self, state, points[i], spacing))
-			World.Biome.TUNDRA: result.append_array(TundraGen.populate(self, state, points[i], spacing))
+			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, points[i], spacing))
+			World.Biome.FOREST: result.append_array(ForestGen.populate(self, points[i], spacing))
+			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, points[i], spacing))
+			World.Biome.HFIL: result.append_array(HFILGen.populate(self, points[i], spacing))
+			World.Biome.TUNDRA: result.append_array(TundraGen.populate(self, points[i], spacing))
 	
 	return result
 	

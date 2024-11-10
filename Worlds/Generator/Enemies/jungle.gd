@@ -16,7 +16,7 @@ const JUNGLE_STRUCTURE = {
 	JUNGLE_STRUCTURES_KIND.BIRD: 0.1,
 }
 
-static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
+static func populate(pop: Population, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := 0
 	var rng := RandomNumberGenerator.new()
@@ -33,7 +33,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 				pass
 			JUNGLE_STRUCTURES_KIND.TREE_BRANCHED:
 				var pos := area[index]
-				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, state, pos, spacing) as Foliage
+				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing) as Foliage
 				if p != null: result.append(p)
 			JUNGLE_STRUCTURES_KIND.BUSH:
 				var pos := area[index]
@@ -42,7 +42,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var radius := rng.randf_range(10, 25)
 					for i in Rand.roll(16, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
-						var p := pop.spawn_foliage(kind, state, pos + Rand.point_in_circle_2d(radius, rng), spacing) as Foliage
+						var p := pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), spacing) as Foliage
 						if p != null: result.append(p)
 				else:
 					var w := rng.randf_range(10, 25)
@@ -50,7 +50,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var r := rng.randf_range(-PI, PI)
 					for i in Rand.roll(16, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
-						var p := pop.spawn_foliage(kind, state, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing) as Foliage
+						var p := pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing) as Foliage
 						if p != null: result.append(p)
 					
 			JUNGLE_STRUCTURES_KIND.ELEVATOR:
@@ -68,12 +68,12 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 						pathway = Pathway.new().from_to_and_back(pop.runs(10), dest, cursor, Easing.in_out_quad)
 					var path := PathStyle.new(0, Vec3.xz(pos)).follow_path(pathway).align_y_to_ground_and_air().look_at_nothing()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
-					var p := pop.spawn_world_item(World.Item.TARGET, state, pos, spacing, config) as TargetShape
+					var p := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 					if p != null:
 						result.append(p)
 						var offset_dir := Rand.entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
 						if cursor.y > 20 and rng.randf() < 0.5:
-							var op := pop.spawn_enemy(World.Enemy.BIRD, state, pos + Vec2.xz(cursor) + Rand.point_in_circle_2d(spacing, rng), spacing) as Bird
+							var op := pop.spawn_enemy(World.Enemy.BIRD, pos + Vec2.xz(cursor) + Rand.point_in_circle_2d(spacing, rng), spacing) as Bird
 							if op != null:
 								op.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
 								op.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
@@ -90,10 +90,10 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					pop.arttv(1, 5), \
 					{Artifact.Pattern.TRIANGLE: 8, Artifact.Pattern.CIRCLE: 4}
 				)
-				var reward := pop.spawn_world_item(World.Item.ARTIFACT, state, pos, spacing, {}) as ArtifactCube
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
 				if reward != null:
 					reward.artifact = artifact
-					reward.position = Vec3.xz(pos) + cursor + Vec3.y(Navigator.get_world_height(state, pos.x, pos.y))
+					reward.position = Vec3.xz(pos) + cursor # + Vec3.y(Navigator.get_world_height(FIXME, pos.x, pos.y))
 					result.append(reward)
 					
 			JUNGLE_STRUCTURES_KIND.PLATFORM:
@@ -115,9 +115,9 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
 					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_ground_air_and_dirt().look_at_nothing()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
-					var platform := pop.spawn_world_item(World.Item.TARGET, state, center, spacing, config) as TargetShape
+					var platform := pop.spawn_world_item(World.Item.TARGET, center, spacing, config) as TargetShape
 					if platform != null:
-						platform.position.y = h.y + Navigator.get_world_height(state, center.x, center.y)
+						platform.position.y = h.y #+ Navigator.get_world_height(FIXME, center.x, center.y)
 						var caster_y := platform.position.y + platform.bounds.y + pop.player.bounds.y * 0.5
 						platform.caster_target_position = Vec3.xz(center) + Vec3.y(caster_y)
 						
@@ -156,7 +156,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 							AttackSequence.ASCondition.jump("choose"),
 						])
 						result.append(platform)
-						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, state, center, spacing) as Birdman
+						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing) as Birdman
 						if p != null:
 							var y_offset := h.y + platform.bounds.y + p.bounds.y
 							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
@@ -167,7 +167,7 @@ static func populate(pop: Population, state: PhysicsDirectSpaceState3D, area: Pa
 					
 			JUNGLE_STRUCTURES_KIND.BIRD:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.BIRD, state, pos, spacing)
+				var p := pop.spawn_enemy(World.Enemy.BIRD, pos, spacing)
 				if p != null:
 					result.append(p)
 				

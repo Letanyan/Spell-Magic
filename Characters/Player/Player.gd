@@ -48,6 +48,7 @@ var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 var camera_bounce_direction := 0
+var chunker: Terrain
 
 signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
@@ -138,7 +139,7 @@ func _physics_process(delta: float) -> void:
 		
 	update_watched_enemies_positions(delta)
 	velocity_movement.update_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed, bounds.y, 21.0)
-	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings.sea_level, world_settings.world_radius)
+	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings.sea_level, world_settings.world_radius, chunker)
 	emit_vitals_update()
 	
 	velocity = movement["velocity"]
@@ -197,9 +198,7 @@ func _physics_process(delta: float) -> void:
 		
 		
 	if velocity:
-		var space := get_world_3d().space
-		var state := PhysicsServer3D.space_get_direct_state(space)
-		player_moved.emit(delta, state)
+		player_moved.emit(delta)
 		set_underwater()
 	
 	if enemies_in_range.is_empty() and not velocity.is_zero_approx():

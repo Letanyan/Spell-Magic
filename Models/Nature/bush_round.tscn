@@ -21,7 +21,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_5o3tc"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_6orni"]
+resource_local_to_scene = true
 resource_name = "Icosphere_084"
 _surfaces = [{
 "aabb": AABB(-0.290333, -0.0156576, -0.310114, 0.588634, 0.494737, 0.608404),
@@ -53,7 +54,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_i4g64"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_gb03w"]
+resource_local_to_scene = true
 resource_name = "Icosphere_002"
 _surfaces = [{
 "aabb": AABB(-0.285287, 0.0101813, -0.280655, 0.566213, 0.462995, 0.539137),
@@ -88,12 +90,12 @@ disabled = true
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 visibility_range_end = 30.0
 visibility_range_end_margin = 1.0
-mesh = SubResource("ArrayMesh_5o3tc")
+mesh = SubResource("ArrayMesh_6orni")
 skeleton = NodePath("")
 
 [node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 visibility_range_begin = 30.0
 visibility_range_begin_margin = 1.0
-mesh = SubResource("ArrayMesh_i4g64")
+mesh = SubResource("ArrayMesh_gb03w")
 skeleton = NodePath("")

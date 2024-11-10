@@ -306,7 +306,7 @@ func update_info() -> void:
 [/center]
 """ % [
 	world_settings.world_name,
-	GlobalData.nav.popcnt(world_settings.player_keys), String.num_int64(world_settings.player_keys, 2),
+	GDNavigator.popcnt(world_settings.player_keys), String.num_int64(world_settings.player_keys, 2),
 	world_settings.day_of_the_year, time,
 	world_settings.game_mode_settings.game_mode_description(), game_flags,
 	world_settings.enemies_killed_table(),
