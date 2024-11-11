@@ -38,16 +38,14 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 					var radius := rng.randf_range(5, 15)
 					for i in Rand.roll(8, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.MUSHROOM_POINTED if rng.randf() < ratio else World.Foliage.MUSHROOM_BULB
-						var p := pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), spacing) as Foliage
-						if p != null: result.append(p)
+						pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), spacing)
 				else:
 					var w := rng.randf_range(5, 15)
 					var h := rng.randf_range(5, 15)
 					var r := rng.randf_range(-PI, PI)
 					for i in Rand.roll(8, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.MUSHROOM_POINTED if rng.randf() < ratio else World.Foliage.MUSHROOM_BULB
-						var p := pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing) as Foliage
-						if p != null: result.append(p)
+						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing)
 						
 			HFIL_STRUCTURES_KIND.MUSH_ENEMIES:
 				var pos := area[index]

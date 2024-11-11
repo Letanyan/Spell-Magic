@@ -1,109 +1,510 @@
 class_name Foliage
-extends Node3D
 
-static var base_size := PackedVector3Array([])
-static var base_position := PackedVector3Array([])
+# FIXME: redesign entire foliage system. 
+#        - Use multimesh for each type. Custom shader that is similar to standard_solid but uses custom color instead of alebedo for blending
+#        - Have a buffer of collision shapes which are reused whenever they are needed. Store the size and position of the collision for each mesh in an array/dictionary 
 
-const tree_pyramid = preload("res://Models/Nature/tree_pyramid.tscn") as PackedScene
-const tree_round = preload("res://Models/Nature/tree_round.tscn") as PackedScene
-const tree_christmas = preload("res://Models/Nature/tree_christmas.tscn") as PackedScene
-const tree_safari = preload("res://Models/Nature/tree_safari.tscn") as PackedScene
-const tree_branched = preload("res://Models/Nature/tree_branched.tscn") as PackedScene
+const tree_pyramid_mesh = preload("res://Models/Nature/tree_pyramid.mesh") as ArrayMesh
+const tree_round_mesh = preload("res://Models/Nature/tree_round.mesh") as ArrayMesh
+const tree_christmas_mesh = preload("res://Models/Nature/tree_christmas.mesh") as ArrayMesh
+const tree_safari_mesh = preload("res://Models/Nature/tree_safari.mesh") as ArrayMesh
+const tree_branched_mesh = preload("res://Models/Nature/tree_branched.mesh") as ArrayMesh
+const rock_egg_mesh = preload("res://Models/Nature/rock_egg.mesh") as ArrayMesh
+const rock_flattop_mesh = preload("res://Models/Nature/rock_flattop.mesh") as ArrayMesh
+const rock_overhang_mesh = preload("res://Models/Nature/rock_overhang.mesh") as ArrayMesh
+const rock_squashed_mesh = preload("res://Models/Nature/rock_squashed.mesh") as ArrayMesh
+const rock_tall_mesh = preload("res://Models/Nature/rock_tall.mesh") as ArrayMesh
+const bush_round_mesh = preload("res://Models/Nature/bush_round.mesh") as ArrayMesh
+const bush_sprout_mesh = preload("res://Models/Nature/bush_sprout.mesh") as ArrayMesh
+const bush_tall_mesh = preload("res://Models/Nature/bush_tall.mesh") as ArrayMesh
+const flowers_sun2_mesh = preload("res://Models/Nature/flowers_sun2.mesh") as ArrayMesh
+const flowers_sun3_mesh = preload("res://Models/Nature/flowers_sun3.mesh") as ArrayMesh
+const grass_reed_mesh = preload("res://Models/Nature/grass_reed.mesh") as ArrayMesh
+const grass_shrub_mesh = preload("res://Models/Nature/grass_shrub.mesh") as ArrayMesh
+const mushroom_bulb_mesh = preload("res://Models/Nature/mushroom_bulb.mesh") as ArrayMesh
+const mushroom_pointed_mesh = preload("res://Models/Nature/mushroom_pointed.mesh") as ArrayMesh
 
-const rock_egg = preload("res://Models/Nature/rock_egg.tscn") as PackedScene
-const rock_flattop = preload("res://Models/Nature/rock_flattop.tscn") as PackedScene
-const rock_overhang = preload("res://Models/Nature/rock_overhang.tscn") as PackedScene
-const rock_squashed = preload("res://Models/Nature/rock_squashed.tscn") as PackedScene
-const rock_tall = preload("res://Models/Nature/rock_tall.tscn") as PackedScene
+var tree_pyramid_multimesh: MultiMeshInstance3D
+var tree_round_multimesh: MultiMeshInstance3D
+var tree_christmas_multimesh: MultiMeshInstance3D
+var tree_safari_multimesh: MultiMeshInstance3D
+var tree_branched_multimesh: MultiMeshInstance3D
+var rock_egg_multimesh: MultiMeshInstance3D
+var rock_flattop_multimesh: MultiMeshInstance3D
+var rock_overhang_multimesh: MultiMeshInstance3D
+var rock_squashed_multimesh: MultiMeshInstance3D
+var rock_tall_multimesh: MultiMeshInstance3D
+var bush_round_multimesh: MultiMeshInstance3D
+var bush_sprout_multimesh: MultiMeshInstance3D
+var bush_tall_multimesh: MultiMeshInstance3D
+var flowers_sun2_multimesh: MultiMeshInstance3D
+var flowers_sun3_multimesh: MultiMeshInstance3D
+var grass_reed_multimesh: MultiMeshInstance3D
+var grass_shrub_multimesh: MultiMeshInstance3D
+var mushroom_bulb_multimesh: MultiMeshInstance3D
+var mushroom_pointed_multimesh: MultiMeshInstance3D
 
-const bush_round = preload("res://Models/Nature/bush_round.tscn") as PackedScene
-const bush_sprout = preload("res://Models/Nature/bush_sprout.tscn") as PackedScene
-const bush_tall = preload("res://Models/Nature/bush_tall.tscn") as PackedScene
-const flowers_sun2 = preload("res://Models/Nature/flowers_sun2.tscn") as PackedScene
-const flowers_sun3 = preload("res://Models/Nature/flowers_sun3.tscn") as PackedScene
-const grass_reed = preload("res://Models/Nature/grass_reed.tscn") as PackedScene
-const grass_shrub = preload("res://Models/Nature/grass_shrub.tscn") as PackedScene
-const mushroom_bulb = preload("res://Models/Nature/mushroom_bulb.tscn") as PackedScene
-const mushroom_pointed = preload("res://Models/Nature/mushroom_pointed.tscn") as PackedScene
+var index_map: Dictionary = {} ## [World.Foliage][]int
 
-var kind: World.Foliage
-var collision_is_active: bool = true
+var static_bodies_buffer: EntityManager.EntityBuffer
+var cylinder_buffer: EntityManager.EntityBuffer
+var capsule_buffer: EntityManager.EntityBuffer
+var sphere_buffer: EntityManager.EntityBuffer
+
+func _init() -> void:
+	var tree_pyramid_multi := MultiMesh.new(); tree_pyramid_multi.mesh = tree_pyramid_mesh; tree_pyramid_multimesh = MultiMeshInstance3D.new(); tree_pyramid_multimesh.multimesh = tree_pyramid_multi; tree_pyramid_multi.visible_instance_count = 0;
+	var tree_round_multi := MultiMesh.new(); tree_round_multi.mesh = tree_round_mesh; tree_round_multimesh = MultiMeshInstance3D.new(); tree_round_multimesh.multimesh = tree_round_multi; tree_round_multi.visible_instance_count = 0;
+	var tree_christmas_multi := MultiMesh.new(); tree_christmas_multi.mesh = tree_christmas_mesh; tree_christmas_multimesh = MultiMeshInstance3D.new(); tree_christmas_multimesh.multimesh = tree_christmas_multi; tree_christmas_multi.visible_instance_count = 0;
+	var tree_safari_multi := MultiMesh.new(); tree_safari_multi.mesh = tree_safari_mesh; tree_safari_multimesh = MultiMeshInstance3D.new(); tree_safari_multimesh.multimesh = tree_safari_multi; tree_safari_multi.visible_instance_count = 0;
+	var tree_branched_multi := MultiMesh.new(); tree_branched_multi.mesh = tree_branched_mesh; tree_branched_multimesh = MultiMeshInstance3D.new(); tree_branched_multimesh.multimesh = tree_branched_multi; tree_branched_multi.visible_instance_count = 0;
+	var rock_egg_multi := MultiMesh.new(); rock_egg_multi.mesh = rock_egg_mesh; rock_egg_multimesh = MultiMeshInstance3D.new(); rock_egg_multimesh.multimesh = rock_egg_multi; rock_egg_multi.visible_instance_count = 0;
+	var rock_flattop_multi := MultiMesh.new(); rock_flattop_multi.mesh = rock_flattop_mesh; rock_flattop_multimesh = MultiMeshInstance3D.new(); rock_flattop_multimesh.multimesh = rock_flattop_multi; rock_flattop_multi.visible_instance_count = 0;
+	var rock_overhang_multi := MultiMesh.new(); rock_overhang_multi.mesh = rock_overhang_mesh; rock_overhang_multimesh = MultiMeshInstance3D.new(); rock_overhang_multimesh.multimesh = rock_overhang_multi; rock_overhang_multi.visible_instance_count = 0;
+	var rock_squashed_multi := MultiMesh.new(); rock_squashed_multi.mesh = rock_squashed_mesh; rock_squashed_multimesh = MultiMeshInstance3D.new(); rock_squashed_multimesh.multimesh = rock_squashed_multi; rock_squashed_multi.visible_instance_count = 0;
+	var rock_tall_multi := MultiMesh.new(); rock_tall_multi.mesh = rock_tall_mesh; rock_tall_multimesh = MultiMeshInstance3D.new(); rock_tall_multimesh.multimesh = rock_tall_multi; rock_tall_multi.visible_instance_count = 0;
+	var bush_round_multi := MultiMesh.new(); bush_round_multi.mesh = bush_round_mesh; bush_round_multimesh = MultiMeshInstance3D.new(); bush_round_multimesh.multimesh = bush_round_multi; bush_round_multi.visible_instance_count = 0;
+	var bush_sprout_multi := MultiMesh.new(); bush_sprout_multi.mesh = bush_sprout_mesh; bush_sprout_multimesh = MultiMeshInstance3D.new(); bush_sprout_multimesh.multimesh = bush_sprout_multi; bush_sprout_multi.visible_instance_count = 0;
+	var bush_tall_multi := MultiMesh.new(); bush_tall_multi.mesh = bush_tall_mesh; bush_tall_multimesh = MultiMeshInstance3D.new(); bush_tall_multimesh.multimesh = bush_tall_multi; bush_tall_multi.visible_instance_count = 0;
+	var flowers_sun2_multi := MultiMesh.new(); flowers_sun2_multi.mesh = flowers_sun2_mesh; flowers_sun2_multimesh = MultiMeshInstance3D.new(); flowers_sun2_multimesh.multimesh = flowers_sun2_multi; flowers_sun2_multi.visible_instance_count = 0;
+	var flowers_sun3_multi := MultiMesh.new(); flowers_sun3_multi.mesh = flowers_sun3_mesh; flowers_sun3_multimesh = MultiMeshInstance3D.new(); flowers_sun3_multimesh.multimesh = flowers_sun3_multi; flowers_sun3_multi.visible_instance_count = 0;
+	var grass_reed_multi := MultiMesh.new(); grass_reed_multi.mesh = grass_reed_mesh; grass_reed_multimesh = MultiMeshInstance3D.new(); grass_reed_multimesh.multimesh = grass_reed_multi; grass_reed_multi.visible_instance_count = 0;
+	var grass_shrub_multi := MultiMesh.new(); grass_shrub_multi.mesh = grass_shrub_mesh; grass_shrub_multimesh = MultiMeshInstance3D.new(); grass_shrub_multimesh.multimesh = grass_shrub_multi; grass_shrub_multi.visible_instance_count = 0;
+	var mushroom_bulb_multi := MultiMesh.new(); mushroom_bulb_multi.mesh = mushroom_bulb_mesh; mushroom_bulb_multimesh = MultiMeshInstance3D.new(); mushroom_bulb_multimesh.multimesh = mushroom_bulb_multi; mushroom_bulb_multi.visible_instance_count = 0;
+	var mushroom_pointed_multi := MultiMesh.new(); mushroom_pointed_multi.mesh = mushroom_pointed_mesh; mushroom_pointed_multimesh = MultiMeshInstance3D.new(); mushroom_pointed_multimesh.multimesh = mushroom_pointed_multi; mushroom_pointed_multi.visible_instance_count = 0;
 	
-static func make(_kind: World.Foliage) -> Foliage:
-	var result: Foliage
-	match _kind:
-		World.Foliage.TREE_PYRAMID: result = tree_pyramid.instantiate()
-		World.Foliage.TREE_ROUND: result = tree_round.instantiate()
-		World.Foliage.TREE_CHRISTMAS: result = tree_christmas.instantiate()
-		World.Foliage.TREE_SAFARI: result = tree_safari.instantiate()
-		World.Foliage.TREE_BRANCHED: result = tree_branched.instantiate()
-		World.Foliage.ROCK_EGG: result = rock_egg.instantiate()
-		World.Foliage.ROCK_FLATTOP: result = rock_flattop.instantiate()
-		World.Foliage.ROCK_OVERHANG: result = rock_overhang.instantiate()
-		World.Foliage.ROCK_SQUASHED: result = rock_squashed.instantiate()
-		World.Foliage.ROCK_TALL: result = rock_tall.instantiate()
-		World.Foliage.BUSH_ROUND: result = bush_round.instantiate(); result.collision_is_active = false;
-		World.Foliage.BUSH_SPROUT: result = bush_sprout.instantiate(); result.collision_is_active = false;
-		World.Foliage.BUSH_TALL: result = bush_tall.instantiate(); result.collision_is_active = false;
-		World.Foliage.FLOWERS_SUN2: result = flowers_sun2.instantiate(); result.collision_is_active = false;
-		World.Foliage.FLOWERS_SUN3: result = flowers_sun3.instantiate(); result.collision_is_active = false;
-		World.Foliage.GRASS_REED: result = grass_reed.instantiate(); result.collision_is_active = false;
-		World.Foliage.GRASS_SHRUB: result = grass_shrub.instantiate(); result.collision_is_active = false;
-		World.Foliage.MUSHROOM_BULB: result = mushroom_bulb.instantiate(); result.collision_is_active = false;
-		World.Foliage.MUSHROOM_POINTED: result = mushroom_pointed.instantiate(); result.collision_is_active = false;
-		_: result = tree_round.instantiate(); push_error("no such enum for foliage")
-	result.kind = _kind
-	if base_size.size() <= _kind:
-		while base_size.size() < (_kind + 1):
-			base_size.append(Vector3.ZERO)
-			base_position.append(Vector3.ZERO)
-		base_size[_kind] = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
-		base_position[_kind] = (result.get_node("./static/shape") as CollisionShape3D).position
-	elif base_size[_kind] == Vector3.ZERO:
-		base_size[_kind] = Navigator.shape_bounds((result.get_node("./static/shape") as CollisionShape3D).shape)
-		base_position[_kind] = (result.get_node("./static/shape") as CollisionShape3D).position
+	tree_pyramid_multi.use_colors = true; tree_pyramid_multi.use_custom_data = false; tree_pyramid_multi.transform_format = MultiMesh.TRANSFORM_3D; tree_pyramid_multi.instance_count = 1000
+	tree_round_multi.use_colors = true; tree_round_multi.use_custom_data = false; tree_round_multi.transform_format = MultiMesh.TRANSFORM_3D; tree_round_multi.instance_count = 1000
+	tree_christmas_multi.use_colors = true; tree_christmas_multi.use_custom_data = false; tree_christmas_multi.transform_format = MultiMesh.TRANSFORM_3D; tree_christmas_multi.instance_count = 1000
+	tree_safari_multi.use_colors = true; tree_safari_multi.use_custom_data = false; tree_safari_multi.transform_format = MultiMesh.TRANSFORM_3D; tree_safari_multi.instance_count = 1000
+	tree_branched_multi.use_colors = true; tree_branched_multi.use_custom_data = false; tree_branched_multi.transform_format = MultiMesh.TRANSFORM_3D; tree_branched_multi.instance_count = 1000
+	rock_egg_multi.use_colors = true; rock_egg_multi.use_custom_data = false; rock_egg_multi.transform_format = MultiMesh.TRANSFORM_3D; rock_egg_multi.instance_count = 1000
+	rock_flattop_multi.use_colors = true; rock_flattop_multi.use_custom_data = false; rock_flattop_multi.transform_format = MultiMesh.TRANSFORM_3D; rock_flattop_multi.instance_count = 1000
+	rock_overhang_multi.use_colors = true; rock_overhang_multi.use_custom_data = false; rock_overhang_multi.transform_format = MultiMesh.TRANSFORM_3D; rock_overhang_multi.instance_count = 1000
+	rock_squashed_multi.use_colors = true; rock_squashed_multi.use_custom_data = false; rock_squashed_multi.transform_format = MultiMesh.TRANSFORM_3D; rock_squashed_multi.instance_count = 1000
+	rock_tall_multi.use_colors = true; rock_tall_multi.use_custom_data = false; rock_tall_multi.transform_format = MultiMesh.TRANSFORM_3D; rock_tall_multi.instance_count = 1000
+	bush_round_multi.use_colors = true; bush_round_multi.use_custom_data = false; bush_round_multi.transform_format = MultiMesh.TRANSFORM_3D; bush_round_multi.instance_count = 1000
+	bush_sprout_multi.use_colors = true; bush_sprout_multi.use_custom_data = false; bush_sprout_multi.transform_format = MultiMesh.TRANSFORM_3D; bush_sprout_multi.instance_count = 1000
+	bush_tall_multi.use_colors = true; bush_tall_multi.use_custom_data = false; bush_tall_multi.transform_format = MultiMesh.TRANSFORM_3D; bush_tall_multi.instance_count = 1000
+	flowers_sun2_multi.use_colors = true; flowers_sun2_multi.use_custom_data = false; flowers_sun2_multi.transform_format = MultiMesh.TRANSFORM_3D; flowers_sun2_multi.instance_count = 1000
+	flowers_sun3_multi.use_colors = true; flowers_sun3_multi.use_custom_data = false; flowers_sun3_multi.transform_format = MultiMesh.TRANSFORM_3D; flowers_sun3_multi.instance_count = 1000
+	grass_reed_multi.use_colors = true; grass_reed_multi.use_custom_data = false; grass_reed_multi.transform_format = MultiMesh.TRANSFORM_3D; grass_reed_multi.instance_count = 1000
+	grass_shrub_multi.use_colors = true; grass_shrub_multi.use_custom_data = false; grass_shrub_multi.transform_format = MultiMesh.TRANSFORM_3D; grass_shrub_multi.instance_count = 1000
+	mushroom_bulb_multi.use_colors = true; mushroom_bulb_multi.use_custom_data = false; mushroom_bulb_multi.transform_format = MultiMesh.TRANSFORM_3D; mushroom_bulb_multi.instance_count = 1000
+	mushroom_pointed_multi.use_colors = true; mushroom_pointed_multi.use_custom_data = false; mushroom_pointed_multi.transform_format = MultiMesh.TRANSFORM_3D; mushroom_pointed_multi.instance_count = 1000
 	
+	#index_map[World.Foliage.TREE_PYRAMID] = PackedInt32Array([]); (index_map[World.Foliage.TREE_PYRAMID] as PackedInt32Array).resize(tree_pyramid_multi.instance_count); for i in tree_pyramid_multi.instance_count: (index_map[World.Foliage.TREE_PYRAMID] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.TREE_ROUND] = PackedInt32Array([]); (index_map[World.Foliage.TREE_ROUND] as PackedInt32Array).resize(tree_round_multi.instance_count); for i in tree_round_multi.instance_count: (index_map[World.Foliage.TREE_ROUND] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.TREE_CHRISTMAS] = PackedInt32Array([]); (index_map[World.Foliage.TREE_CHRISTMAS] as PackedInt32Array).resize(tree_christmas_multi.instance_count); for i in tree_christmas_multi.instance_count: (index_map[World.Foliage.TREE_CHRISTMAS] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.TREE_SAFARI] = PackedInt32Array([]); (index_map[World.Foliage.TREE_SAFARI] as PackedInt32Array).resize(tree_safari_multi.instance_count); for i in tree_safari_multi.instance_count: (index_map[World.Foliage.TREE_SAFARI] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.TREE_BRANCHED] = PackedInt32Array([]); (index_map[World.Foliage.TREE_BRANCHED] as PackedInt32Array).resize(tree_branched_multi.instance_count); for i in tree_branched_multi.instance_count: (index_map[World.Foliage.TREE_BRANCHED] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.ROCK_EGG] = PackedInt32Array([]); (index_map[World.Foliage.ROCK_EGG] as PackedInt32Array).resize(rock_egg_multi.instance_count); for i in rock_egg_multi.instance_count: (index_map[World.Foliage.ROCK_EGG] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.ROCK_FLATTOP] = PackedInt32Array([]); (index_map[World.Foliage.ROCK_FLATTOP] as PackedInt32Array).resize(rock_flattop_multi.instance_count); for i in rock_flattop_multi.instance_count: (index_map[World.Foliage.ROCK_FLATTOP] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.ROCK_OVERHANG] = PackedInt32Array([]); (index_map[World.Foliage.ROCK_OVERHANG] as PackedInt32Array).resize(rock_overhang_multi.instance_count); for i in rock_overhang_multi.instance_count: (index_map[World.Foliage.ROCK_OVERHANG] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.ROCK_SQUASHED] = PackedInt32Array([]); (index_map[World.Foliage.ROCK_SQUASHED] as PackedInt32Array).resize(rock_squashed_multi.instance_count); for i in rock_squashed_multi.instance_count: (index_map[World.Foliage.ROCK_SQUASHED] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.ROCK_TALL] = PackedInt32Array([]); (index_map[World.Foliage.ROCK_TALL] as PackedInt32Array).resize(rock_tall_multi.instance_count); for i in rock_tall_multi.instance_count: (index_map[World.Foliage.ROCK_TALL] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.BUSH_ROUND] = PackedInt32Array([]); (index_map[World.Foliage.BUSH_ROUND] as PackedInt32Array).resize(bush_round_multi.instance_count); for i in bush_round_multi.instance_count: (index_map[World.Foliage.BUSH_ROUND] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.BUSH_SPROUT] = PackedInt32Array([]); (index_map[World.Foliage.BUSH_SPROUT] as PackedInt32Array).resize(bush_sprout_multi.instance_count); for i in bush_sprout_multi.instance_count: (index_map[World.Foliage.BUSH_SPROUT] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.BUSH_TALL] = PackedInt32Array([]); (index_map[World.Foliage.BUSH_TALL] as PackedInt32Array).resize(bush_tall_multi.instance_count); for i in bush_tall_multi.instance_count: (index_map[World.Foliage.BUSH_TALL] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.FLOWERS_SUN2] = PackedInt32Array([]); (index_map[World.Foliage.FLOWERS_SUN2] as PackedInt32Array).resize(flowers_sun2_multi.instance_count); for i in flowers_sun2_multi.instance_count: (index_map[World.Foliage.FLOWERS_SUN2] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.FLOWERS_SUN3] = PackedInt32Array([]); (index_map[World.Foliage.FLOWERS_SUN3] as PackedInt32Array).resize(flowers_sun3_multi.instance_count); for i in flowers_sun3_multi.instance_count: (index_map[World.Foliage.FLOWERS_SUN3] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.GRASS_REED] = PackedInt32Array([]); (index_map[World.Foliage.GRASS_REED] as PackedInt32Array).resize(grass_reed_multi.instance_count); for i in grass_reed_multi.instance_count: (index_map[World.Foliage.GRASS_REED] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.GRASS_SHRUB] = PackedInt32Array([]); (index_map[World.Foliage.GRASS_SHRUB] as PackedInt32Array).resize(grass_shrub_multi.instance_count); for i in grass_shrub_multi.instance_count: (index_map[World.Foliage.GRASS_SHRUB] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.MUSHROOM_BULB] = PackedInt32Array([]); (index_map[World.Foliage.MUSHROOM_BULB] as PackedInt32Array).resize(mushroom_bulb_multi.instance_count); for i in mushroom_bulb_multi.instance_count: (index_map[World.Foliage.MUSHROOM_BULB] as PackedInt32Array).set(i, i)
+	#index_map[World.Foliage.MUSHROOM_POINTED] = PackedInt32Array([]); (index_map[World.Foliage.MUSHROOM_POINTED] as PackedInt32Array).resize(mushroom_pointed_multi.instance_count); for i in mushroom_pointed_multi.instance_count: (index_map[World.Foliage.MUSHROOM_POINTED] as PackedInt32Array).set(i, i)
+	
+	var tree_pyramid_index_map := PackedInt32Array([]); tree_pyramid_index_map.resize(tree_pyramid_multi.instance_count); for i in tree_pyramid_multi.instance_count: tree_pyramid_index_map.set(i, i)
+	index_map[World.Foliage.TREE_PYRAMID] = tree_pyramid_index_map
+	var tree_round_index_map := PackedInt32Array([]); tree_round_index_map.resize(tree_round_multi.instance_count); for i in tree_round_multi.instance_count: tree_round_index_map.set(i, i)
+	index_map[World.Foliage.TREE_ROUND] = tree_round_index_map
+	var tree_christmas_index_map := PackedInt32Array([]); tree_christmas_index_map.resize(tree_christmas_multi.instance_count); for i in tree_christmas_multi.instance_count: tree_christmas_index_map.set(i, i)
+	index_map[World.Foliage.TREE_CHRISTMAS] = tree_christmas_index_map
+	var tree_safari_index_map := PackedInt32Array([]); tree_safari_index_map.resize(tree_safari_multi.instance_count); for i in tree_safari_multi.instance_count: tree_safari_index_map.set(i, i)
+	index_map[World.Foliage.TREE_SAFARI] = tree_safari_index_map
+	var tree_branched_index_map := PackedInt32Array([]); tree_branched_index_map.resize(tree_branched_multi.instance_count); for i in tree_branched_multi.instance_count: tree_branched_index_map.set(i, i)
+	index_map[World.Foliage.TREE_BRANCHED] = tree_branched_index_map
+	var rock_egg_index_map := PackedInt32Array([]); rock_egg_index_map.resize(rock_egg_multi.instance_count); for i in rock_egg_multi.instance_count: rock_egg_index_map.set(i, i)
+	index_map[World.Foliage.ROCK_EGG] = rock_egg_index_map
+	var rock_flattop_index_map := PackedInt32Array([]); rock_flattop_index_map.resize(rock_flattop_multi.instance_count); for i in rock_flattop_multi.instance_count: rock_flattop_index_map.set(i, i)
+	index_map[World.Foliage.ROCK_FLATTOP] = rock_flattop_index_map
+	var rock_overhang_index_map := PackedInt32Array([]); rock_overhang_index_map.resize(rock_overhang_multi.instance_count); for i in rock_overhang_multi.instance_count: rock_overhang_index_map.set(i, i)
+	index_map[World.Foliage.ROCK_OVERHANG] = rock_overhang_index_map
+	var rock_squashed_index_map := PackedInt32Array([]); rock_squashed_index_map.resize(rock_squashed_multi.instance_count); for i in rock_squashed_multi.instance_count: rock_squashed_index_map.set(i, i)
+	index_map[World.Foliage.ROCK_SQUASHED] = rock_squashed_index_map
+	var rock_tall_index_map := PackedInt32Array([]); rock_tall_index_map.resize(rock_tall_multi.instance_count); for i in rock_tall_multi.instance_count: rock_tall_index_map.set(i, i)
+	index_map[World.Foliage.ROCK_TALL] = rock_tall_index_map
+	var bush_round_index_map := PackedInt32Array([]); bush_round_index_map.resize(bush_round_multi.instance_count); for i in bush_round_multi.instance_count: bush_round_index_map.set(i, i)
+	index_map[World.Foliage.BUSH_ROUND] = bush_round_index_map
+	var bush_sprout_index_map := PackedInt32Array([]); bush_sprout_index_map.resize(bush_sprout_multi.instance_count); for i in bush_sprout_multi.instance_count: bush_sprout_index_map.set(i, i)
+	index_map[World.Foliage.BUSH_SPROUT] = bush_sprout_index_map
+	var bush_tall_index_map := PackedInt32Array([]); bush_tall_index_map.resize(bush_tall_multi.instance_count); for i in bush_tall_multi.instance_count: bush_tall_index_map.set(i, i)
+	index_map[World.Foliage.BUSH_TALL] = bush_tall_index_map
+	var flowers_sun2_index_map := PackedInt32Array([]); flowers_sun2_index_map.resize(flowers_sun2_multi.instance_count); for i in flowers_sun2_multi.instance_count: flowers_sun2_index_map.set(i, i)
+	index_map[World.Foliage.FLOWERS_SUN2] = flowers_sun2_index_map
+	var flowers_sun3_index_map := PackedInt32Array([]); flowers_sun3_index_map.resize(flowers_sun3_multi.instance_count); for i in flowers_sun3_multi.instance_count: flowers_sun3_index_map.set(i, i)
+	index_map[World.Foliage.FLOWERS_SUN3] = flowers_sun3_index_map
+	var grass_reed_index_map := PackedInt32Array([]); grass_reed_index_map.resize(grass_reed_multi.instance_count); for i in grass_reed_multi.instance_count: grass_reed_index_map.set(i, i)
+	index_map[World.Foliage.GRASS_REED] = grass_reed_index_map
+	var grass_shrub_index_map := PackedInt32Array([]); grass_shrub_index_map.resize(grass_shrub_multi.instance_count); for i in grass_shrub_multi.instance_count: grass_shrub_index_map.set(i, i)
+	index_map[World.Foliage.GRASS_SHRUB] = grass_shrub_index_map
+	var mushroom_bulb_index_map := PackedInt32Array([]); mushroom_bulb_index_map.resize(mushroom_bulb_multi.instance_count); for i in mushroom_bulb_multi.instance_count: mushroom_bulb_index_map.set(i, i)
+	index_map[World.Foliage.MUSHROOM_BULB] = mushroom_bulb_index_map
+	var mushroom_pointed_index_map := PackedInt32Array([]); mushroom_pointed_index_map.resize(mushroom_pointed_multi.instance_count); for i in mushroom_pointed_multi.instance_count: mushroom_pointed_index_map.set(i, i)
+	index_map[World.Foliage.MUSHROOM_POINTED] = mushroom_pointed_index_map
+	
+func add_all_meshes(node: Node3D) -> void:
+	node.add_child(tree_pyramid_multimesh)
+	node.add_child(tree_round_multimesh)
+	node.add_child(tree_christmas_multimesh)
+	node.add_child(tree_safari_multimesh)
+	node.add_child(tree_branched_multimesh)
+	node.add_child(rock_egg_multimesh)
+	node.add_child(rock_flattop_multimesh)
+	node.add_child(rock_overhang_multimesh)
+	node.add_child(rock_squashed_multimesh)
+	node.add_child(rock_tall_multimesh)
+	node.add_child(bush_round_multimesh)
+	node.add_child(bush_sprout_multimesh)
+	node.add_child(bush_tall_multimesh)
+	node.add_child(flowers_sun2_multimesh)
+	node.add_child(flowers_sun3_multimesh)
+	node.add_child(grass_reed_multimesh)
+	node.add_child(grass_shrub_multimesh)
+	node.add_child(mushroom_bulb_multimesh)
+	node.add_child(mushroom_pointed_multimesh)
+
+func make(kind: World.Foliage) -> int:
+	var result := 0
+	match kind:
+		World.Foliage.TREE_PYRAMID: 
+			tree_pyramid_multimesh.multimesh.visible_instance_count += 1
+			if tree_pyramid_multimesh.multimesh.visible_instance_count > tree_pyramid_multimesh.multimesh.instance_count: tree_pyramid_multimesh.multimesh.visible_instance_count = tree_pyramid_multimesh.multimesh.instance_count 
+			result = tree_pyramid_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.TREE_ROUND: 
+			tree_round_multimesh.multimesh.visible_instance_count += 1
+			if tree_round_multimesh.multimesh.visible_instance_count > tree_round_multimesh.multimesh.instance_count: tree_round_multimesh.multimesh.visible_instance_count = tree_round_multimesh.multimesh.instance_count 
+			result = tree_round_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.TREE_CHRISTMAS: 
+			tree_christmas_multimesh.multimesh.visible_instance_count += 1
+			if tree_christmas_multimesh.multimesh.visible_instance_count > tree_christmas_multimesh.multimesh.instance_count: tree_christmas_multimesh.multimesh.visible_instance_count = tree_christmas_multimesh.multimesh.instance_count 
+			result = tree_christmas_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.TREE_SAFARI: 
+			tree_safari_multimesh.multimesh.visible_instance_count += 1
+			if tree_safari_multimesh.multimesh.visible_instance_count > tree_safari_multimesh.multimesh.instance_count: tree_safari_multimesh.multimesh.visible_instance_count = tree_safari_multimesh.multimesh.instance_count 
+			result = tree_safari_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.TREE_BRANCHED: 
+			tree_branched_multimesh.multimesh.visible_instance_count += 1
+			if tree_branched_multimesh.multimesh.visible_instance_count > tree_branched_multimesh.multimesh.instance_count: tree_branched_multimesh.multimesh.visible_instance_count = tree_branched_multimesh.multimesh.instance_count 
+			result = tree_branched_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.ROCK_EGG: 
+			rock_egg_multimesh.multimesh.visible_instance_count += 1
+			if rock_egg_multimesh.multimesh.visible_instance_count > rock_egg_multimesh.multimesh.instance_count: rock_egg_multimesh.multimesh.visible_instance_count = rock_egg_multimesh.multimesh.instance_count 
+			result = rock_egg_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.ROCK_FLATTOP: 
+			rock_flattop_multimesh.multimesh.visible_instance_count += 1
+			if rock_flattop_multimesh.multimesh.visible_instance_count > rock_flattop_multimesh.multimesh.instance_count: rock_flattop_multimesh.multimesh.visible_instance_count = rock_flattop_multimesh.multimesh.instance_count 
+			result = rock_flattop_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.ROCK_OVERHANG: 
+			rock_overhang_multimesh.multimesh.visible_instance_count += 1
+			if rock_overhang_multimesh.multimesh.visible_instance_count > rock_overhang_multimesh.multimesh.instance_count: rock_overhang_multimesh.multimesh.visible_instance_count = rock_overhang_multimesh.multimesh.instance_count 
+			result = rock_overhang_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.ROCK_SQUASHED: 
+			rock_squashed_multimesh.multimesh.visible_instance_count += 1
+			if rock_squashed_multimesh.multimesh.visible_instance_count > rock_squashed_multimesh.multimesh.instance_count: rock_squashed_multimesh.multimesh.visible_instance_count = rock_squashed_multimesh.multimesh.instance_count 
+			result = rock_squashed_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.ROCK_TALL: 
+			rock_tall_multimesh.multimesh.visible_instance_count += 1
+			if rock_tall_multimesh.multimesh.visible_instance_count > rock_tall_multimesh.multimesh.instance_count: rock_tall_multimesh.multimesh.visible_instance_count = rock_tall_multimesh.multimesh.instance_count 
+			result = rock_tall_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.BUSH_ROUND: 
+			bush_round_multimesh.multimesh.visible_instance_count += 1
+			if bush_round_multimesh.multimesh.visible_instance_count > bush_round_multimesh.multimesh.instance_count: bush_round_multimesh.multimesh.visible_instance_count = bush_round_multimesh.multimesh.instance_count 
+			result = bush_round_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.BUSH_SPROUT: 
+			bush_sprout_multimesh.multimesh.visible_instance_count += 1
+			if bush_sprout_multimesh.multimesh.visible_instance_count > bush_sprout_multimesh.multimesh.instance_count: bush_sprout_multimesh.multimesh.visible_instance_count = bush_sprout_multimesh.multimesh.instance_count 
+			result = bush_sprout_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.BUSH_TALL: 
+			bush_tall_multimesh.multimesh.visible_instance_count += 1
+			if bush_tall_multimesh.multimesh.visible_instance_count > bush_tall_multimesh.multimesh.instance_count: bush_tall_multimesh.multimesh.visible_instance_count = bush_tall_multimesh.multimesh.instance_count 
+			result = bush_tall_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.FLOWERS_SUN2: 
+			flowers_sun2_multimesh.multimesh.visible_instance_count += 1
+			if flowers_sun2_multimesh.multimesh.visible_instance_count > flowers_sun2_multimesh.multimesh.instance_count: flowers_sun2_multimesh.multimesh.visible_instance_count = flowers_sun2_multimesh.multimesh.instance_count 
+			result = flowers_sun2_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.FLOWERS_SUN3: 
+			flowers_sun3_multimesh.multimesh.visible_instance_count += 1
+			if flowers_sun3_multimesh.multimesh.visible_instance_count > flowers_sun3_multimesh.multimesh.instance_count: flowers_sun3_multimesh.multimesh.visible_instance_count = flowers_sun3_multimesh.multimesh.instance_count 
+			result = flowers_sun3_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.GRASS_REED: 
+			grass_reed_multimesh.multimesh.visible_instance_count += 1
+			if grass_reed_multimesh.multimesh.visible_instance_count > grass_reed_multimesh.multimesh.instance_count: grass_reed_multimesh.multimesh.visible_instance_count = grass_reed_multimesh.multimesh.instance_count 
+			result = grass_reed_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.GRASS_SHRUB: 
+			grass_shrub_multimesh.multimesh.visible_instance_count += 1
+			if grass_shrub_multimesh.multimesh.visible_instance_count > grass_shrub_multimesh.multimesh.instance_count: grass_shrub_multimesh.multimesh.visible_instance_count = grass_shrub_multimesh.multimesh.instance_count 
+			result = grass_shrub_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.MUSHROOM_BULB: 
+			mushroom_bulb_multimesh.multimesh.visible_instance_count += 1
+			if mushroom_bulb_multimesh.multimesh.visible_instance_count > mushroom_bulb_multimesh.multimesh.instance_count: mushroom_bulb_multimesh.multimesh.visible_instance_count = mushroom_bulb_multimesh.multimesh.instance_count 
+			result = mushroom_bulb_multimesh.multimesh.visible_instance_count - 1 
+		World.Foliage.MUSHROOM_POINTED: 
+			mushroom_pointed_multimesh.multimesh.visible_instance_count += 1
+			if mushroom_pointed_multimesh.multimesh.visible_instance_count > mushroom_pointed_multimesh.multimesh.instance_count: mushroom_pointed_multimesh.multimesh.visible_instance_count = mushroom_pointed_multimesh.multimesh.instance_count 
+			result = mushroom_pointed_multimesh.multimesh.visible_instance_count - 1 
+		_: push_error("no such enum for foliage"); return -1
 	return result
+		
+func get_mapped_index(kind: World.Foliage, index: int) -> int:
+	var mappings := index_map[kind] as PackedInt32Array
+	var target_index := index
+	while mappings[index] != target_index:
+		index = mappings[index]
+	return index
+		
+func remove(kind: World.Foliage, index: int) -> void:
+	var high := -1
+	var midx := get_mapped_index(kind, index)
+	match kind:
+		World.Foliage.TREE_PYRAMID:
+			var last_color := tree_pyramid_multimesh.multimesh.get_instance_color(tree_pyramid_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := tree_pyramid_multimesh.multimesh.get_instance_transform(tree_pyramid_multimesh.multimesh.instance_count - 1)
+			tree_pyramid_multimesh.multimesh.set_instance_color(midx, last_color)
+			tree_pyramid_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			tree_pyramid_multimesh.multimesh.visible_instance_count -= 1
+			high = tree_pyramid_multimesh.multimesh.visible_instance_count
+			if tree_pyramid_multimesh.multimesh.visible_instance_count < 0: tree_pyramid_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.TREE_ROUND:
+			var last_color := tree_round_multimesh.multimesh.get_instance_color(tree_round_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := tree_round_multimesh.multimesh.get_instance_transform(tree_round_multimesh.multimesh.instance_count - 1)
+			tree_round_multimesh.multimesh.set_instance_color(midx, last_color)
+			tree_round_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			tree_round_multimesh.multimesh.visible_instance_count -= 1 
+			high = tree_round_multimesh.multimesh.visible_instance_count
+			if tree_round_multimesh.multimesh.visible_instance_count < 0: tree_round_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.TREE_CHRISTMAS:
+			var last_color := tree_christmas_multimesh.multimesh.get_instance_color(tree_christmas_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := tree_christmas_multimesh.multimesh.get_instance_transform(tree_christmas_multimesh.multimesh.instance_count - 1)
+			tree_christmas_multimesh.multimesh.set_instance_color(midx, last_color)
+			tree_christmas_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			tree_christmas_multimesh.multimesh.visible_instance_count -= 1 
+			high = tree_christmas_multimesh.multimesh.visible_instance_count
+			if tree_christmas_multimesh.multimesh.visible_instance_count < 0: tree_christmas_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.TREE_SAFARI:
+			var last_color := tree_safari_multimesh.multimesh.get_instance_color(tree_safari_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := tree_safari_multimesh.multimesh.get_instance_transform(tree_safari_multimesh.multimesh.instance_count - 1)
+			tree_safari_multimesh.multimesh.set_instance_color(midx, last_color)
+			tree_safari_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			tree_safari_multimesh.multimesh.visible_instance_count -= 1 
+			high = tree_safari_multimesh.multimesh.visible_instance_count
+			if tree_safari_multimesh.multimesh.visible_instance_count < 0: tree_safari_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.TREE_BRANCHED:
+			var last_color := tree_branched_multimesh.multimesh.get_instance_color(tree_branched_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := tree_branched_multimesh.multimesh.get_instance_transform(tree_branched_multimesh.multimesh.instance_count - 1)
+			tree_branched_multimesh.multimesh.set_instance_color(midx, last_color)
+			tree_branched_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			tree_branched_multimesh.multimesh.visible_instance_count -= 1 
+			high = tree_branched_multimesh.multimesh.visible_instance_count
+			if tree_branched_multimesh.multimesh.visible_instance_count < 0: tree_branched_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.ROCK_EGG:
+			var last_color := rock_egg_multimesh.multimesh.get_instance_color(rock_egg_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := rock_egg_multimesh.multimesh.get_instance_transform(rock_egg_multimesh.multimesh.instance_count - 1)
+			rock_egg_multimesh.multimesh.set_instance_color(midx, last_color)
+			rock_egg_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			rock_egg_multimesh.multimesh.visible_instance_count -= 1 
+			high = rock_egg_multimesh.multimesh.visible_instance_count
+			if rock_egg_multimesh.multimesh.visible_instance_count < 0: rock_egg_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.ROCK_FLATTOP:
+			var last_color := rock_flattop_multimesh.multimesh.get_instance_color(rock_flattop_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := rock_flattop_multimesh.multimesh.get_instance_transform(rock_flattop_multimesh.multimesh.instance_count - 1)
+			rock_flattop_multimesh.multimesh.set_instance_color(midx, last_color)
+			rock_flattop_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			rock_flattop_multimesh.multimesh.visible_instance_count -= 1 
+			high = rock_flattop_multimesh.multimesh.visible_instance_count
+			if rock_flattop_multimesh.multimesh.visible_instance_count < 0: rock_flattop_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.ROCK_OVERHANG:
+			var last_color := rock_overhang_multimesh.multimesh.get_instance_color(rock_overhang_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := rock_overhang_multimesh.multimesh.get_instance_transform(rock_overhang_multimesh.multimesh.instance_count - 1)
+			rock_overhang_multimesh.multimesh.set_instance_color(midx, last_color)
+			rock_overhang_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			rock_overhang_multimesh.multimesh.visible_instance_count -= 1 
+			high = rock_overhang_multimesh.multimesh.visible_instance_count
+			if rock_overhang_multimesh.multimesh.visible_instance_count < 0: rock_overhang_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.ROCK_SQUASHED:
+			var last_color := rock_squashed_multimesh.multimesh.get_instance_color(rock_squashed_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := rock_squashed_multimesh.multimesh.get_instance_transform(rock_squashed_multimesh.multimesh.instance_count - 1)
+			rock_squashed_multimesh.multimesh.set_instance_color(midx, last_color)
+			rock_squashed_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			rock_squashed_multimesh.multimesh.visible_instance_count -= 1 
+			high = rock_squashed_multimesh.multimesh.visible_instance_count
+			if rock_squashed_multimesh.multimesh.visible_instance_count < 0: rock_squashed_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.ROCK_TALL:
+			var last_color := rock_tall_multimesh.multimesh.get_instance_color(rock_tall_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := rock_tall_multimesh.multimesh.get_instance_transform(rock_tall_multimesh.multimesh.instance_count - 1)
+			rock_tall_multimesh.multimesh.set_instance_color(midx, last_color)
+			rock_tall_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			rock_tall_multimesh.multimesh.visible_instance_count -= 1 
+			high = rock_tall_multimesh.multimesh.visible_instance_count
+			if rock_tall_multimesh.multimesh.visible_instance_count < 0: rock_tall_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.BUSH_ROUND:
+			var last_color := bush_round_multimesh.multimesh.get_instance_color(bush_round_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := bush_round_multimesh.multimesh.get_instance_transform(bush_round_multimesh.multimesh.instance_count - 1)
+			bush_round_multimesh.multimesh.set_instance_color(midx, last_color)
+			bush_round_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			bush_round_multimesh.multimesh.visible_instance_count -= 1 
+			high = bush_round_multimesh.multimesh.visible_instance_count
+			if bush_round_multimesh.multimesh.visible_instance_count < 0: bush_round_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.BUSH_SPROUT:
+			var last_color := bush_sprout_multimesh.multimesh.get_instance_color(bush_sprout_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := bush_sprout_multimesh.multimesh.get_instance_transform(bush_sprout_multimesh.multimesh.instance_count - 1)
+			bush_sprout_multimesh.multimesh.set_instance_color(midx, last_color)
+			bush_sprout_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			bush_sprout_multimesh.multimesh.visible_instance_count -= 1 
+			high = bush_sprout_multimesh.multimesh.visible_instance_count
+			if bush_sprout_multimesh.multimesh.visible_instance_count < 0: bush_sprout_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.BUSH_TALL:
+			var last_color := bush_tall_multimesh.multimesh.get_instance_color(bush_tall_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := bush_tall_multimesh.multimesh.get_instance_transform(bush_tall_multimesh.multimesh.instance_count - 1)
+			bush_tall_multimesh.multimesh.set_instance_color(midx, last_color)
+			bush_tall_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			bush_tall_multimesh.multimesh.visible_instance_count -= 1 
+			high = bush_tall_multimesh.multimesh.visible_instance_count
+			if bush_tall_multimesh.multimesh.visible_instance_count < 0: bush_tall_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.FLOWERS_SUN2:
+			var last_color := flowers_sun2_multimesh.multimesh.get_instance_color(flowers_sun2_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := flowers_sun2_multimesh.multimesh.get_instance_transform(flowers_sun2_multimesh.multimesh.instance_count - 1)
+			flowers_sun2_multimesh.multimesh.set_instance_color(midx, last_color)
+			flowers_sun2_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			flowers_sun2_multimesh.multimesh.visible_instance_count -= 1 
+			high = flowers_sun2_multimesh.multimesh.visible_instance_count
+			if flowers_sun2_multimesh.multimesh.visible_instance_count < 0: flowers_sun2_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.FLOWERS_SUN3:
+			var last_color := flowers_sun3_multimesh.multimesh.get_instance_color(flowers_sun3_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := flowers_sun3_multimesh.multimesh.get_instance_transform(flowers_sun3_multimesh.multimesh.instance_count - 1)
+			flowers_sun3_multimesh.multimesh.set_instance_color(midx, last_color)
+			flowers_sun3_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			flowers_sun3_multimesh.multimesh.visible_instance_count -= 1 
+			high = flowers_sun3_multimesh.multimesh.visible_instance_count
+			if flowers_sun3_multimesh.multimesh.visible_instance_count < 0: flowers_sun3_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.GRASS_REED:
+			var last_color := grass_reed_multimesh.multimesh.get_instance_color(grass_reed_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := grass_reed_multimesh.multimesh.get_instance_transform(grass_reed_multimesh.multimesh.instance_count - 1)
+			grass_reed_multimesh.multimesh.set_instance_color(midx, last_color)
+			grass_reed_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			grass_reed_multimesh.multimesh.visible_instance_count -= 1 
+			high = grass_reed_multimesh.multimesh.visible_instance_count
+			if grass_reed_multimesh.multimesh.visible_instance_count < 0: grass_reed_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.GRASS_SHRUB:
+			var last_color := grass_shrub_multimesh.multimesh.get_instance_color(grass_shrub_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := grass_shrub_multimesh.multimesh.get_instance_transform(grass_shrub_multimesh.multimesh.instance_count - 1)
+			grass_shrub_multimesh.multimesh.set_instance_color(midx, last_color)
+			grass_shrub_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			grass_shrub_multimesh.multimesh.visible_instance_count -= 1 
+			high = grass_shrub_multimesh.multimesh.visible_instance_count
+			if grass_shrub_multimesh.multimesh.visible_instance_count < 0: grass_shrub_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.MUSHROOM_BULB:
+			var last_color := mushroom_bulb_multimesh.multimesh.get_instance_color(mushroom_bulb_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := mushroom_bulb_multimesh.multimesh.get_instance_transform(mushroom_bulb_multimesh.multimesh.instance_count - 1)
+			mushroom_bulb_multimesh.multimesh.set_instance_color(midx, last_color)
+			mushroom_bulb_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			mushroom_bulb_multimesh.multimesh.visible_instance_count -= 1 
+			high = mushroom_bulb_multimesh.multimesh.visible_instance_count
+			if mushroom_bulb_multimesh.multimesh.visible_instance_count < 0: mushroom_bulb_multimesh.multimesh.visible_instance_count = 0
+		World.Foliage.MUSHROOM_POINTED:
+			var last_color := mushroom_pointed_multimesh.multimesh.get_instance_color(mushroom_pointed_multimesh.multimesh.visible_instance_count - 1)
+			var last_transform := mushroom_pointed_multimesh.multimesh.get_instance_transform(mushroom_pointed_multimesh.multimesh.instance_count - 1)
+			mushroom_pointed_multimesh.multimesh.set_instance_color(midx, last_color)
+			mushroom_pointed_multimesh.multimesh.set_instance_transform(midx, last_transform) 
+			mushroom_pointed_multimesh.multimesh.visible_instance_count -= 1 
+			high = mushroom_pointed_multimesh.multimesh.visible_instance_count
+			if mushroom_pointed_multimesh.multimesh.visible_instance_count < 0: mushroom_pointed_multimesh.multimesh.visible_instance_count = 0
+		_: push_error("no such enum for foliage")
+
+	var temp :=	(index_map[kind] as PackedInt32Array)[midx]
+	(index_map[kind] as PackedInt32Array).set(midx, (index_map[kind] as PackedInt32Array)[high])
+	(index_map[kind] as PackedInt32Array).set(high, temp)
 	
-func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
+	
+func setup(kind: World.Foliage, index: int, position: Vector3, rng: RandomNumberGenerator, biome: World.Biome) -> void:
 	var s := rng.randf_range(2, 5)
 	if biome == World.Biome.JUNGLE and World.Foliage.TREE_BRANCHED == kind:
 		s *= rng.randf_range(5, 10)
+		
+	var transform := (base_shapes[kind] as ShapeTemplate).transform
 	
-	(get_node("MeshNode") as Node3D).scale = Vector3(s, s, s)
+	var result := transform.scaled(Vector3(s, s, s))
 	var r := rng.randf_range(0, 2 * PI)
-	(get_node("MeshNode") as Node3D).rotation.y = r
+	result = result.rotated(Vector3.UP, r)
+	result = result.translated(position)
 	
-	var box := get_node("./static/shape") as CollisionShape3D
-	if box.shape is CylinderShape3D:
-		box.scale = Vec3.a(s)
-		box.position.y = base_position[kind].y * s
-		box.rotation.y = r
-	elif box.shape is BoxShape3D:
-		box.scale = Vec3.a(s)
-		box.position.y = base_position[kind].y * s
-		box.rotation.y = r
-	elif box.shape is CapsuleShape3D:
-		box.scale = Vec3.a(s)
-		box.position.y = base_position[kind].y * s
-		box.rotation.y = r
-	elif box.shape is SphereShape3D:
-		box.scale = Vec3.a(s)
-		box.position.y = base_position[kind].y * s
-		box.rotation.y = r
-		
-	collision_is_active = maxf(base_size[kind].x, maxf(base_size[kind].y, base_size[kind].z)) * s > 1.0
-		
-func set_albedo_blend(color: Color) -> void:
-	var m := get_node("MeshNode/mesh") as MeshInstance3D
-	var shader := m.mesh.surface_get_material(0) as ShaderMaterial
-	var brown_color := color.lerp(Color(0.5, 0.25, 0), 0.5)
-	shader.set_shader_parameter("nature_mat_green_blend", color)
-	shader.set_shader_parameter("nature_mat_brown_blend", brown_color)
+	# FIXME: this translation is only for the collision body. // translated(Vec3.y(transform.origin.y * s))
 	
-	if has_node("MeshNode/mesh_1"):
-		var m1 := get_node("MeshNode/mesh_1") as MeshInstance3D
-		shader = m1.mesh.surface_get_material(0) as ShaderMaterial
-		shader.set_shader_parameter("nature_mat_green_blend", color)
-		shader.set_shader_parameter("nature_mat_brown_blend", brown_color)
+	var midx := get_mapped_index(kind, index)
+	match kind:
+		World.Foliage.TREE_PYRAMID: tree_pyramid_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.TREE_ROUND: tree_round_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.TREE_CHRISTMAS: tree_christmas_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.TREE_SAFARI: tree_safari_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.TREE_BRANCHED: tree_branched_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.ROCK_EGG: rock_egg_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.ROCK_FLATTOP: rock_flattop_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.ROCK_OVERHANG: rock_overhang_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.ROCK_SQUASHED: rock_squashed_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.ROCK_TALL: rock_tall_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.BUSH_ROUND: bush_round_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.BUSH_SPROUT: bush_sprout_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.BUSH_TALL: bush_tall_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.FLOWERS_SUN2: flowers_sun2_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.FLOWERS_SUN3: flowers_sun3_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.GRASS_REED: grass_reed_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.GRASS_SHRUB: grass_shrub_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.MUSHROOM_BULB: mushroom_bulb_multimesh.multimesh.set_instance_transform(midx, result)
+		World.Foliage.MUSHROOM_POINTED: mushroom_pointed_multimesh.multimesh.set_instance_transform(midx, result)
+		
+	#collision_is_active = maxf(transform.x, maxf(transform.y, transform.z)) * s > 1.0
+		
+func set_albedo_blend(kind: World.Foliage, index: int, color: Color) -> void:
+	var midx := get_mapped_index(kind, index)
+	match kind:
+		World.Foliage.TREE_PYRAMID: tree_pyramid_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.TREE_ROUND: tree_round_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.TREE_CHRISTMAS: tree_christmas_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.TREE_SAFARI: tree_safari_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.TREE_BRANCHED: tree_branched_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.ROCK_EGG: rock_egg_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.ROCK_FLATTOP: rock_flattop_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.ROCK_OVERHANG: rock_overhang_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.ROCK_SQUASHED: rock_squashed_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.ROCK_TALL: rock_tall_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.BUSH_ROUND: bush_round_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.BUSH_SPROUT: bush_sprout_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.BUSH_TALL: bush_tall_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.FLOWERS_SUN2: flowers_sun2_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.FLOWERS_SUN3: flowers_sun3_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.GRASS_REED: grass_reed_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.GRASS_SHRUB: grass_shrub_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.MUSHROOM_BULB: mushroom_bulb_multimesh.multimesh.set_instance_color(midx, color)
+		World.Foliage.MUSHROOM_POINTED: mushroom_pointed_multimesh.multimesh.set_instance_color(midx, color)
+	
+	
 				
+static var base_shapes := {
+	World.Foliage.BUSH_ROUND: ShapeTemplate.capsule(0.65, 1.5, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.314))),
+	World.Foliage.BUSH_SPROUT: ShapeTemplate.cylinder(0.5, 0.9, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.252))),
+	World.Foliage.BUSH_TALL: ShapeTemplate.capsule(0.55, 1.2, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.214))),
+	World.Foliage.FLOWERS_SUN2: ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.469))),
+	World.Foliage.FLOWERS_SUN3: ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.495))),
+	World.Foliage.GRASS_REED: ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.496))),
+	World.Foliage.GRASS_SHRUB: ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.484))),
+	World.Foliage.MUSHROOM_BULB: ShapeTemplate.cylinder(0.3, 0.8, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.429))),
+	World.Foliage.MUSHROOM_POINTED: ShapeTemplate.capsule(0.35, 1.0, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(0.428))),
+	World.Foliage.ROCK_EGG: ShapeTemplate.capsule(1.2, 3.2, Transform3D(Basis(Quaternion(0, 0, 0.627, 0.779)), Vector3(0.07, 0.691, 0.079))),
+	World.Foliage.ROCK_FLATTOP: ShapeTemplate.cylinder(1.5, 1.5, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vector3(-0.048, 0.474, 0.023))),
+	World.Foliage.ROCK_OVERHANG: ShapeTemplate.cylinder(1.6, 1.25, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vector3(0.026, 0.366, 0))),
+	World.Foliage.ROCK_SQUASHED: ShapeTemplate.cylinder(1.4, 1.3, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vector3(-0.005, 0.4, 0.039))),
+	World.Foliage.ROCK_TALL: ShapeTemplate.capsule(1.2, 2.8, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vector3(-0.073, 0.906, 0.016))),
+	World.Foliage.TREE_BRANCHED: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(2))),
+	World.Foliage.TREE_CHRISTMAS: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(2))),
+	World.Foliage.TREE_PYRAMID: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(2))),
+	World.Foliage.TREE_ROUND: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(2))),
+	World.Foliage.TREE_SAFARI: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 0)), Vec3.y(2))),	
+}

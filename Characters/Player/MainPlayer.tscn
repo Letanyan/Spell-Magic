@@ -25,8 +25,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xeuo2"]
 resource_name = "Metal_Dark"
@@ -43,8 +41,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uqtg5"]
 resource_name = "Skin"
@@ -61,8 +57,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ebhv1"]
 resource_name = "Blue"
@@ -79,8 +73,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v3he1"]
 resource_name = "Beige"
@@ -97,8 +89,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vhnfk"]
 resource_name = "king_Cube_003"
@@ -393,8 +383,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_eswky"]
 resource_name = "king_Cube_001"
@@ -431,8 +419,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mmhmu"]
 resource_name = "Hair_White"
@@ -449,8 +435,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_osq7y"]
 resource_name = "Gold"
@@ -467,8 +451,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hw81k"]
 resource_name = "Eye"
@@ -485,8 +467,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_etpfs"]
 resource_name = "king_Cube_025"
@@ -567,8 +547,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i6g7c"]
 resource_name = "DarkBrown"
@@ -585,8 +563,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6o1it"]
 resource_name = "Metal_Dark"
@@ -603,8 +579,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/nature_mat_green_blend = Color(1, 1, 1, 1)
-shader_parameter/nature_mat_brown_blend = Color(1, 1, 1, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_p1kgp"]
 resource_name = "king_Cube_002"

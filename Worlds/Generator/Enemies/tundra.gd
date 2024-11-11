@@ -36,8 +36,7 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 				var pos := area[index]
 				var count := Rand.entity_from_distribution(rng.randf(), { 1: 10, 2: 20, 3: 10 }) as int
 				for i in count:
-					var p := pop.spawn_foliage(World.Foliage.ROCK_FLATTOP, pos + Rand.point_in_circle_2d(10, rng), spacing)
-					if p != null: result.append(p)
+					pop.spawn_foliage(World.Foliage.ROCK_FLATTOP, pos + Rand.point_in_circle_2d(10, rng), spacing)
 				
 			TUNDRA_STRUCTURES_KIND.LONE_HEAD:
 				var pos := area[index]

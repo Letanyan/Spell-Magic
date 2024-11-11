@@ -42,14 +42,10 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 				pass
 			GRASSLAND_STRUCTURES_KIND.TREE_ROUND:
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_ROUND, pos, spacing)
-				if p != null:
-					result.append(p)
+				pop.spawn_foliage(World.Foliage.TREE_ROUND, pos, spacing)
 			GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED:
 				var pos := area[index] as Vector2
-				var p := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
-				if p != null:
-					result.append(p)
+				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
 					
 			GRASSLAND_STRUCTURES_KIND.FISH:
 				var pos := area[index]
@@ -75,9 +71,7 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 				var angle_offset := rng.randf_range(0.0, 2 * PI)
 				for i in 6:
 					var p := pos + Vector2(radius, 0).rotated(PI * 2 * (float(i) / 6.0) + angle_offset)
-					var tree := pop.spawn_foliage(World.Foliage.TREE_BRANCHED, p, 0.0, pop.always_valid)
-					if tree != null:
-						result.append(tree)
+					pop.spawn_foliage(World.Foliage.TREE_BRANCHED, p, 0.0, pop.always_valid)
 					
 				var spawner := pop.spawn_spawner(World.Item.ARTIFACT, pos, art)
 				for i in bee_count:
@@ -94,9 +88,7 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 			GRASSLAND_STRUCTURES_KIND.SLIMY:
 				var pos := area[index]
 				for i in rng.randi_range(5, 15):
-					var rock := pop.spawn_foliage(World.Foliage.ROCK_EGG, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
-					if rock != null:
-						result.append(rock)
+					pop.spawn_foliage(World.Foliage.ROCK_EGG, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
 				
 				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 2: pop.fit(0.8, 0.5)}) as int
 				var spike_count := rng.randi_range(1, r)
@@ -123,9 +115,7 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 				path.apply_transform(Transform3D.IDENTITY.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				for p in path.sample_points_xz(r * circle_points):
 					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
-					var entity := pop.spawn_foliage(kind, p, 0, pop.always_valid)
-					if entity != null:
-						result.append(entity)
+					pop.spawn_foliage(kind, p, 0, pop.always_valid)
 					
 				var mini_count := rng.randi_range(1, r)
 				var boss := pop.spawn_enemy(World.Enemy.BIRDMAN, pos, spacing)
@@ -146,9 +136,7 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
 				for p in path.sample_points_xz(r * circle_points):
 					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
-					var entity := pop.spawn_foliage(kind, p, 0, pop.always_valid)
-					if entity != null:
-						result.append(entity)
+					pop.spawn_foliage(kind, p, 0, pop.always_valid)
 					
 				var mini_count := rng.randi_range(1, r)
 				for i in mini_count:

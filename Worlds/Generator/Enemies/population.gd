@@ -12,7 +12,7 @@ var chunk_size: float
 var is_ready := false
 
 var inhabitants: Dictionary = {}
-var garden: Array[Node3D] = []
+var garden: Array[Vector2i] = []
 var other_objects: Array = []
 var world_items: Array[WorldItem] = []
 var current_biome_during_generation: World.Biome = World.Biome.WATER
@@ -50,6 +50,24 @@ func set_world_ground(pos: Vector2) -> Vector3:
 	result.y = wh
 	return result
 	
+func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable) -> int:
+	if index != -1:
+		var world_normal := chunker.terrain_normal(pos.x, pos.z)
+		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
+		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
+		var info: Dictionary = user_info.call(world_normal)
+		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
+		var not_hfil := current_biome_during_generation != World.Biome.HFIL
+		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
+			entity_manager.free_foliage(kind, index)
+			return -1
+		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
+		entity_manager.buffer_foliage.setup(kind, index, position, rng, current_biome_during_generation)
+		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
+		entity_manager.buffer_foliage.set_albedo_blend(kind, index, blender.color)
+		garden.append(Vector2i(kind, index))
+	return index
+	
 func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -63,9 +81,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
 			else:
-				if entity is Foliage:
-					entity_manager.free_foliage(entity as Foliage)
-				elif entity is Buildings:
+				if entity is Buildings:
 					entity_manager.free_building(entity as Buildings)
 				elif entity is WorldItem:
 					entity_manager.free_world_item(entity as WorldItem)
@@ -88,17 +104,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 				return null
 			inhabitants[inhabitants.size()] = entity
 		else:
-			if entity is Foliage:
-				(entity as Foliage).setup(rng, current_biome_during_generation)
-				blender.compute_biome_distances(entity.position.x, entity.position.z, chunker.get_noise_scale())
-				(entity as Foliage).set_albedo_blend(blender.color)
-				entity.name = World.Foliage.keys()[(entity as Foliage).kind] + Globals.encode_v3(entity.position)
-				garden.append(entity)
-			elif entity is Buildings:
-				(entity as Buildings).setup(rng, current_biome_during_generation)
-				entity.name = World.Building.keys()[(entity as Buildings).entity_kind] + Globals.encode_v3(entity.position)
-				garden.append(entity)
-			elif entity is WorldItem:
+			if entity is WorldItem:
 				(entity as WorldItem).setup(rng, current_biome_during_generation)
 				entity.name = World.Item.keys()[(entity as WorldItem).kind] + Globals.encode_v3(entity.position) + Rand.id(5, rng)
 				var is_marked := entity_name_is_marked(entity.name)
@@ -134,30 +140,12 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	return result
 
 
-func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> Node3D:
-	var result: Node3D = null
+func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> int:
 	var pos := Vector3(p.x, 0, p.y)
-	result = entity_manager.get_foliage(foliage) as Foliage
+	var result := entity_manager.get_foliage(foliage)
 	pos.x += spacing * rng.randf_range(-0.5, 0.5)
 	pos.z += spacing * rng.randf_range(-0.5, 0.5)
-	return prepare_entity(result, pos, false, user_info)
-	
-func spawn_building(building: World.Building, p: Vector2, spacing: float) -> Node3D:
-	var result: Node3D = null
-	var pos := Vector3(p.x, 0, p.y)
-	var ground_angle := 0.0
-	match building:
-		World.Building.FANTASY_VALLEY_SINGLE, World.Building.FANTASY_VALLEY_DOUBLE:
-			result = entity_manager.get_building(building)
-			pos.x += spacing * rng.randf_range(-0.25, 0.25)
-			pos.z += spacing * rng.randf_range(-0.25, 0.25)
-			ground_angle = PI / 8
-		World.Building.FANTASY_WELL:
-			result = entity_manager.get_building(building)
-			pos.x += spacing * rng.randf_range(-0.25, 0.25)
-			pos.z += spacing * rng.randf_range(-0.25, 0.25)
-			ground_angle = PI / 16
-	return prepare_entity(result, pos, false, on_flat_surface(ground_angle))
+	return prepare_foliage(foliage, result, pos, user_info)
 	
 func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
 	var result := entity_manager.get_world_item(item) as WorldItem
@@ -271,10 +259,7 @@ func despawn_all_from_world(world: Node3D) -> void:
 		habitant.spell_caster.free_particles()
 		entity_manager.free_enemy(habitant)
 	for f in garden:
-		if f is Foliage:
-			entity_manager.free_foliage(f as Foliage)
-		elif f is Buildings:
-			entity_manager.free_building(f as Buildings)
+		entity_manager.free_foliage(f.x, f.y)
 	for item in world_items:
 		entity_manager.free_world_item(item)
 	other_objects.clear()
@@ -294,10 +279,11 @@ func update_info() -> void:
 		if habitant.is_node_ready():
 			habitant.animation_tree.active = dist < 50
 	
-	for g in garden:
-		var s: CollisionShape3D = g.get_node("./static/shape")
-		if s != null and (g as Foliage).collision_is_active:
-			s.disabled = g.position.distance_to(player.position) > 50
+	# FIXME: handle collisions
+	#for g: Vector2i in garden:
+		#var s: CollisionShape3D = g.get_node("./static/shape")
+		#if s != null and (g as Foliage).collision_is_active:
+			#s.disabled = g.position.distance_to(player.position) > 50
 			
 	for item in world_items:
 		if item is TargetShape:

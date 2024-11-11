@@ -93,7 +93,6 @@ skeleton = NodePath("")
 
 [node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
-visibility_range_begin = 10.0
 visibility_range_begin_margin = 1.0
 mesh = SubResource("ArrayMesh_cc5yi")
 skeleton = NodePath("")

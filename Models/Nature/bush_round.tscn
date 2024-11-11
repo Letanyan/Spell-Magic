@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://c664hgmq4agfu"]
+[gd_scene load_steps=6 format=4 uid="uid://c664hgmq4agfu"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/foliage.gd" id="1_4hs77"]
 [ext_resource type="Material" uid="uid://bea4dl4060sxo" path="res://Models/Nature/Nature_Mat_01.tres" id="1_yiysa"]
@@ -40,39 +40,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_obpdp")
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_q5r6g"]
-_surfaces = [{
-"aabb": AABB(-0.285287, 0.0101813, -0.280655, 0.566213, 0.462995, 0.539137),
-"format": 34359742465,
-"index_count": 114,
-"index_data": PackedByteArray("AAABAAIAAgADAAAABAAFAAYABgAHAAQACAAJAAoACwAAAAwACwABAAAACwAJAAEADQAOAA8AEAANAA8ACAARAAkAEAAPABEACAAQABEACgAJAAsAEQABAAkAEgATAAUABQAEABIABwAUAA4ADAADABQACwAMABQABgALABQABwAGABQABgAKAAsAEwAKAAYABgAFABMAEwANABAAEwASAA0AEwAIAAoAEwAQAAgAEgAEAAcABwANABIAEQAPAAIAAgABABEAAAADAAwADQAHAA4AAwAOABQAAgAPAA4AAwACAA4A"),
-"name": "Nature_Mat_01",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 21,
-"vertex_data": PackedByteArray("xCk6Pk/AJT62dHw+ffZ6Pe8RuD7chIA+jNWPPriOrT4NHqG8ZgBqPlw0ujxEKyU+3AAyvpNBGT7sK36+IhGSvpFBGT7DKsK9viuJvho2ujytZEAzSlegvVQ0ujwvoIW+BjwZvs4F8j6jt7A9FRoAvrhO3j6z12w+b257vu8RuD6Y9Bo+N8yvvX3cJz2wV4Q+MaevPapdNjyNsn0+hv66PdGOrT4Jso++ZgBqPiy7Ej3KOiq+zN9ePjt5zD7OQD++as9mPQAL6T7pSS6+CEz8PDJE8j5PHRQ+zKxcvl3hkj49KyW+qeCEvmR2pT6botu6CfWIPlzPJjz/lm66")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_gb03w"]
-resource_local_to_scene = true
-resource_name = "Icosphere_002"
-_surfaces = [{
-"aabb": AABB(-0.285287, 0.0101813, -0.280655, 0.566213, 0.462995, 0.539137),
-"attribute_data": PackedByteArray("gG55PlRkJT6Abnk+VGQlPoBueT7wejo+4ldkPvB6Oj6Abnk+VGQlPoBueT5UZCU+gG55PvB6Oj7iV2Q+8Ho6PoBueT5UZCU+gG55PvB6Oj7iV2Q+8Ho6PuJXZD7wejo+gG55PvB6Oj6Abnk+8Ho6PoBueT7wejo+gG55PlRkJT6Abnk+8Ho6PuJXZD7wejo+gG55PlRkJT6Abnk+VGQlPoBueT7wejo+4ldkPvB6Oj7iV2Q+8Ho6PuJXZD7wejo+gG55PvB6Oj6Abnk+8Ho6PoBueT7wejo+gG55PlRkJT6Abnk+8Ho6PuJXZD7wejo+gG55PlRkJT6Abnk+8Ho6PuJXZD7wejo+gG55PlRkJT6Abnk+8Ho6PuJXZD7wejo+4ldkPvB6Oj6Abnk+8Ho6PoBueT5UZCU+gG55PlRkJT6Abnk+8Ho6PoBueT7wejo+gG55PvB6Oj6Abnk+8Ho6PuJXZD7wejo+gG55PlRkJT6Abnk+8Ho6PoBueT5UZCU+gG55PvB6Oj7iV2Q+8Ho6PoBueT5UZCU+4ldkPvB6Oj7iV2Q+8Ho6PoBueT5UZCU+4ldkPvB6Oj6Abnk+8Ho6PoBueT7wejo+gG55PvB6Oj7iV2Q+8Ho6PuJXZD7wejo+gG55PlRkJT6Abnk+VGQlPoBueT7wejo+4ldkPvB6Oj7iV2Q+8Ho6PoBueT5UZCU+gG55PvB6Oj7iV2Q+8Ho6PoBueT5UZCU+gG55PvB6Oj7iV2Q+8Ho6PuJXZD7wejo+gG55PvB6Oj7iV2Q+8Ho6PoBueT5UZCU+gG55PvB6Oj4="),
-"format": 34359742487,
-"index_count": 114,
-"index_data": PackedByteArray("AAABAAIAAgADAAAABAAFAAYABgAHAAQACAAJAAoACwAMAA0ACwAOAAwACwAPAA4AEAARABIAEwAUABUAFgAXABgAGQAaABcAFgAZABcAGwAcAB0AHgAfACAAIQAiACMAIwAkACEAJQAmACcAKAApACYAKgAoACYAKwAqACYAJQArACYALAAtAC4ALwAwADEAMQAyAC8AMwA0ADUAMwA2ADQAMwA3ADgAMwA1ADcAOQA6ADsAOwA8ADkAPQA+AD8APwBAAD0AQQBCAEMARABFAEYARwBIAEkASgBLAEgARwBKAEgA"),
-"material": ExtResource("1_yiysa"),
-"name": "Nature_Mat_01",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 76,
-"vertex_data": PackedByteArray("xCk6Pk/AJT62dHw+ffZ6Pe8RuD7chIA+jNWPPriOrT4NHqG8ZgBqPlw0ujxEKyU+3AAyvpNBGT7sK36+IhGSvpFBGT7DKsK9viuJvho2ujytZEAzSlegvVQ0ujwvoIW+BjwZvs4F8j6jt7A9FRoAvrhO3j6z12w+b257vu8RuD6Y9Bo+N8yvvX3cJz2wV4Q+xCk6Pk/AJT62dHw+MaevPapdNjyNsn0+ffZ6Pe8RuD7chIA+FRoAvrhO3j6z12w+hv66PdGOrT4Jso++ZgBqPiy7Ej3KOiq+zN9ePjt5zD7OQD++as9mPQAL6T7pSS6+hv66PdGOrT4Jso++zN9ePjt5zD7OQD++BjwZvs4F8j6jt7A9CEz8PDJE8j5PHRQ+FRoAvrhO3j6z12w+as9mPQAL6T7pSS6+zN9ePjt5zD7OQD++b257vu8RuD6Y9Bo+FRoAvrhO3j6z12w+N8yvvX3cJz2wV4Q+CEz8PDJE8j5PHRQ+ffZ6Pe8RuD7chIA+FRoAvrhO3j6z12w+zKxcvl3hkj49KyW+qeCEvmR2pT6botu6IhGSvpFBGT7DKsK93AAyvpNBGT7sK36+SlegvVQ0ujwvoIW+CfWIPlzPJjz/lm66ZgBqPiy7Ej3KOiq+MaevPapdNjyNsn0+ZgBqPlw0ujxEKyU+N8yvvX3cJz2wV4Q+viuJvho2ujytZEAzviuJvho2ujytZEAzb257vu8RuD6Y9Bo+N8yvvX3cJz2wV4Q+qeCEvmR2pT6botu6b257vu8RuD6Y9Bo+viuJvho2ujytZEAzIhGSvpFBGT7DKsK9qeCEvmR2pT6botu6hv66PdGOrT4Jso++as9mPQAL6T7pSS6+zKxcvl3hkj49KyW+BjwZvs4F8j6jt7A9b257vu8RuD6Y9Bo+zKxcvl3hkj49KyW+3AAyvpNBGT7sK36+SlegvVQ0ujwvoIW+hv66PdGOrT4Jso++CEz8PDJE8j5PHRQ+zN9ePjt5zD7OQD++jNWPPriOrT4NHqG8ffZ6Pe8RuD7chIA+xCk6Pk/AJT62dHw+ZgBqPlw0ujxEKyU+MaevPapdNjyNsn0+hv66PdGOrT4Jso++SlegvVQ0ujwvoIW+ZgBqPiy7Ej3KOiq+ZgBqPlw0ujxEKyU+ZgBqPiy7Ej3KOiq+CfWIPlzPJjz/lm66jNWPPriOrT4NHqG8zN9ePjt5zD7OQD++KcJVlpi11/0pwlWW////PynCVZaYtdf9KcJVlpi11/0mJDI1Ikr/vyYkMjX///+/JiQyNSJK/78mJDI1Ikr/v2FOS7cJuF/RYU5Ltwm4X9FhTku3Cbhf0R9/xYKOqQrsH3/Fgv///z8ff8WC////Px9/xYKOqQrsH3/Fgo6pCuyV/TI28UUq8JX9MjbxRSrwlf0yNvFFKvBWxtHxihvQnFbG0fGKG9CcVsbR8Yob0Jxljbnw////P2WNufD///8/ZY258P///z9ljbnw////P2WNufD///8/7Uw0gH5th/rtTDSAfm2H+u1MNIB+bYf6ppAhuPXU+a6mkCG49dT5rqaQIbj11PmuPhITuGCBmOs+EhO4YIGY6z4SE7hggZjrPhITuP///79ffRAC////v199EAL///+/X30QAv///79ffRAC////v199EAL///+/X30QAv///79ffRAC////v2E/T2/LsorCYT9Pb8uyisJhP09vy7KKwjISJYN8h6fpMhIlg3yHp+kyEiWDfIen6TISJYP///8/pDSY10Op0dqkNJjX////v6Q0mNdDqdHapDSY1////7+kNJjXQ6nR2qQ0mNf///+/WBPY5/JcvOFYE9jn////v1gT2OfyXLzhWBPY5/JcvOFqrpK79Sfq9mqukrv1J+r2aq6Su/Un6vZqrpK7////Pxmo9GbU+Q7aGaj0ZtT5DtoZqPRm1PkO2sTsShoKBFqvxOxKGgoEWq/E7EoaCgRar239hG7CBLj4bf2EbsIEuPht/YRu////v239hG7CBLj4bf2Ebv///78=")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_q5r6g")
-
 [node name="BushRound" type="Node3D"]
 script = ExtResource("1_4hs77")
 
@@ -91,11 +58,4 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 visibility_range_end = 30.0
 visibility_range_end_margin = 1.0
 mesh = SubResource("ArrayMesh_6orni")
-skeleton = NodePath("")
-
-[node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
-visibility_range_begin = 30.0
-visibility_range_begin_margin = 1.0
-mesh = SubResource("ArrayMesh_gb03w")
 skeleton = NodePath("")

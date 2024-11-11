@@ -47,6 +47,7 @@ collision_layer = 512
 
 [node name="shape" type="CollisionShape3D" parent="static"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0480372, 0.473662, 0.0225994)
+rotation_edit_mode = 1
 shape = SubResource("CylinderShape3D_cy5au")
 disabled = true
 
