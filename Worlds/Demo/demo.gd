@@ -225,7 +225,7 @@ func _physics_process(delta: float) -> void:
 		knowledge_tick = 0.0
 		for loc: Vector2 in population:
 			var pop := population[loc] as Population
-			pop.update_info()
+			pop.update_info(self)
 			
 		#for chunk in chunker.get_loaded_chunks():
 			#var mi := chunk.get_node("mesh")
@@ -314,7 +314,7 @@ func open_menu_for_player() -> void:
 	settings.is_paused = true
 	for loc: Vector2 in population:
 		var pop := population[loc] as Population
-		pop.update_info()
+		pop.update_info(self)
 	sub_viewport_container.visible = true
 	pause_start = Time.get_unix_time_from_system()
 	settings.player_position = player.position

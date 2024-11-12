@@ -59,12 +59,15 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
 		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
-			entity_manager.free_foliage(kind, index)
+			entity_manager.buffer_foliage.remove(kind, index)
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
 		entity_manager.buffer_foliage.setup(kind, index, position, rng, current_biome_during_generation)
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
-		entity_manager.buffer_foliage.set_albedo_blend(kind, index, blender.color)
+		var rannum := RandomNumberGenerator.new()
+		rannum.seed = hash(coord)
+		var clr := Color(rannum.randf(), rannum.randf(), rannum.randf())
+		entity_manager.buffer_foliage.set_albedo_blend(kind, index, clr)
 		garden.append(Vector2i(kind, index))
 	return index
 	
@@ -233,6 +236,7 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 			indices[j] = temp
 	return indices
 	
+var added_trees := 0
 func spawn_all_into_world() -> Array[Node3D]:
 	const spacing = 16.0
 	rng.seed = hash(coord)
@@ -240,8 +244,9 @@ func spawn_all_into_world() -> Array[Node3D]:
 	var points: Array[PackedVector2Array] = areas["points"]
 	var biomes: Array[World.Biome] = areas["biomes"]
 	
-	current_fl_during_generation = level_relative_to_position(rng, coord.x, coord.y) / 100.0
+	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
 	var result: Array[Node3D] = []
+	var start_count := entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
 		match biomes[i]:
@@ -250,6 +255,7 @@ func spawn_all_into_world() -> Array[Node3D]:
 			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, points[i], spacing))
 			World.Biome.HFIL: result.append_array(HFILGen.populate(self, points[i], spacing))
 			World.Biome.TUNDRA: result.append_array(TundraGen.populate(self, points[i], spacing))
+	added_trees = entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count - start_count
 	
 	return result
 	
@@ -258,8 +264,15 @@ func despawn_all_from_world(world: Node3D) -> void:
 		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.free_particles()
 		entity_manager.free_enemy(habitant)
+	var start_count := entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count
 	for f in garden:
-		entity_manager.free_foliage(f.x, f.y)
+		var clr := Color(0, 0, 0)
+		entity_manager.buffer_foliage.set_albedo_blend(f.x, f.y, clr) 
+		entity_manager.buffer_foliage.remove(f.x, f.y)
+		entity_manager.buffer_foliage.free_static_body(f)
+	print(coord, " TREE_BRANCHED(added): ", added_trees)
+	var removed_count := entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count - start_count
+	print(coord, " TREE_BRANCHED(removed): ", removed_count)
 	for item in world_items:
 		entity_manager.free_world_item(item)
 	other_objects.clear()
@@ -268,7 +281,7 @@ func despawn_all_from_world(world: Node3D) -> void:
 	world_items.clear()
 	SignalBus.enemy_death.disconnect(mark_entity)
 
-func update_info() -> void:
+func update_info(world: Node3D) -> void:
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
 		var dist: float = habitant.position.distance_to(player.position) 
@@ -279,11 +292,20 @@ func update_info() -> void:
 		if habitant.is_node_ready():
 			habitant.animation_tree.active = dist < 50
 	
-	# FIXME: handle collisions
-	#for g: Vector2i in garden:
-		#var s: CollisionShape3D = g.get_node("./static/shape")
-		#if s != null and (g as Foliage).collision_is_active:
-			#s.disabled = g.position.distance_to(player.position) > 50
+	for g: Vector2i in garden:
+		var t := entity_manager.buffer_foliage.get_transform(g.x, g.y)
+		var s := entity_manager.buffer_foliage.get_collision_shape(g)
+		if t.origin.distance_to(player.position) > 50: # FIXME: use size of shape in condition
+			if s != null:
+				entity_manager.buffer_foliage.free_static_body(g)
+		else:
+			if s == null:
+				var body := entity_manager.buffer_foliage.make_static_body(g)
+				if body.get_parent() == null:
+					world.add_child(body)
+				s = body.get_node("shape") as CollisionShape3D
+			s.disabled = false
+
 			
 	for item in world_items:
 		if item is TargetShape:

@@ -47,7 +47,7 @@ script = ExtResource("1_4hs77")
 collision_layer = 512
 
 [node name="shape" type="CollisionShape3D" parent="static"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.314148, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.314, 0)
 shape = SubResource("CapsuleShape3D_rdedn")
 disabled = true
 
