@@ -64,10 +64,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
 		entity_manager.buffer_foliage.setup(kind, index, position, rng, current_biome_during_generation)
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
-		var rannum := RandomNumberGenerator.new()
-		rannum.seed = hash(coord)
-		var clr := Color(rannum.randf(), rannum.randf(), rannum.randf())
-		entity_manager.buffer_foliage.set_albedo_blend(kind, index, clr)
+		entity_manager.buffer_foliage.set_albedo_blend(kind, index, blender.color)
 		garden.append(Vector2i(kind, index))
 	return index
 	
@@ -236,7 +233,6 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 			indices[j] = temp
 	return indices
 	
-var added_trees := 0
 func spawn_all_into_world() -> Array[Node3D]:
 	const spacing = 16.0
 	rng.seed = hash(coord)
@@ -246,7 +242,6 @@ func spawn_all_into_world() -> Array[Node3D]:
 	
 	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
 	var result: Array[Node3D] = []
-	var start_count := entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count
 	for i in range(biomes.size()):
 		current_biome_during_generation = biomes[i]
 		match biomes[i]:
@@ -255,7 +250,6 @@ func spawn_all_into_world() -> Array[Node3D]:
 			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, points[i], spacing))
 			World.Biome.HFIL: result.append_array(HFILGen.populate(self, points[i], spacing))
 			World.Biome.TUNDRA: result.append_array(TundraGen.populate(self, points[i], spacing))
-	added_trees = entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count - start_count
 	
 	return result
 	
@@ -264,15 +258,11 @@ func despawn_all_from_world(world: Node3D) -> void:
 		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.free_particles()
 		entity_manager.free_enemy(habitant)
-	var start_count := entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count
 	for f in garden:
 		var clr := Color(0, 0, 0)
 		entity_manager.buffer_foliage.set_albedo_blend(f.x, f.y, clr) 
 		entity_manager.buffer_foliage.remove(f.x, f.y)
 		entity_manager.buffer_foliage.free_static_body(f)
-	print(coord, " TREE_BRANCHED(added): ", added_trees)
-	var removed_count := entity_manager.buffer_foliage.tree_branched_multimesh.multimesh.visible_instance_count - start_count
-	print(coord, " TREE_BRANCHED(removed): ", removed_count)
 	for item in world_items:
 		entity_manager.free_world_item(item)
 	other_objects.clear()
