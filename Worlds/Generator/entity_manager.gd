@@ -16,6 +16,25 @@ class EntityBuffer:
 		tag = k
 		for i in capacity:
 			buffer.append(allocater.call())
+			
+	func append(entity: Variant) -> void:
+		if high_watermark == buffer.size():
+			for i in mini(buffer.size(), 20):
+				buffer.append(allocater.call())
+		high_watermark += 1
+		buffer[high_watermark - 1] = entity
+		
+	func pop_back() -> Variant:
+		high_watermark -= 1
+		var temp: Variant = buffer[high_watermark]
+		deinit.call(temp)
+		return temp
+		
+	func is_empty() -> bool:
+		return high_watermark == 0
+		
+	func size() -> int:
+		return high_watermark
 		
 	func get_entity() -> Variant:
 		if high_watermark == buffer.size():
@@ -204,7 +223,7 @@ func _init() -> void:
 		var result := ScrollNote.make(); result.custom_free = free_world_item
 		return result
 	
-	buffer_target = EntityBuffer.new(10, make_target_shape, deinit_world_item, "TARGET")
+	buffer_target = EntityBuffer.new(20, make_target_shape, deinit_world_item, "TARGET")
 	buffer_artifact = EntityBuffer.new(10, make_artifact, deinit_world_item, "ARTIFACT")
 	buffer_coin = EntityBuffer.new(10, make_coin, deinit_world_item, "COIN")
 	buffer_key = EntityBuffer.new(10, make_key, deinit_world_item, "KEY")

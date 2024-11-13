@@ -120,7 +120,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 		_: push_error("Missing enemy")
 		
 	result.spell_caster = SpellCaster.new(result, SpellCaster.Entity.ENEMY)
-	result.still_path = PathStyle.still_path()
+	result.still_path = PathStyle.still_path_default
 	result.current_path = result.still_path
 	if not result.bounds:
 		result.bounds = Navigator.shape_bounds((result.get_node("Collision") as CollisionShape3D).shape)

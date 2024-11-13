@@ -27,6 +27,7 @@ func _init(_segments: Array[Segment] = [], _durations: Array[float] = [], _path_
 	calculate_distance()
 	calculate_total_duration()
 	
+static var empty_default := Pathway.empty()
 static func empty(default_speed: float = 0.0, default_duration: float = 1.0) -> Pathway:
 	var a := Segment.linear(Vector3.ZERO, Vector3.ZERO)
 	var result := Pathway.new([a], [default_duration], [Easing.linear])

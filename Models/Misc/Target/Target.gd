@@ -37,7 +37,7 @@ var spawner: ItemSpawner = null:
 		if spawner != null:
 			spawner.condition_met.connect(remove_when_done)
 
-var path := PathStyle.still_path()
+var path := PathStyle.still_path_default
 var start_position := Vector3(NAN, NAN, NAN)
 var target_position := Vector3.ZERO
 var bounds := Vector3(2, 2, 2)

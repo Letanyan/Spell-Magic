@@ -148,6 +148,8 @@ func _init() -> void:
 	var mushroom_pointed_index_map := PackedByteArray([]); mushroom_pointed_index_map.resize(mushroom_pointed_multi.instance_count); for i in mushroom_pointed_multi.instance_count: mushroom_pointed_multi.set_instance_transform(i, T.I.translated(Vec3.y(HIDEY))); mushroom_pointed_index_map.set(i, 0)
 	slot_markings[World.Foliage.MUSHROOM_POINTED] = mushroom_pointed_index_map
 	
+	for kind: World.Foliage in World.Foliage.values(): opened_slots[kind] = EntityManager.EntityBuffer.new(20, func() -> int: return -1, func(item: int) -> void: pass)
+	
 	var alloc_static_body := func(shape_template: Shape3D) -> Callable:
 		var fn := func() -> StaticBody3D:
 			var result := StaticBody3D.new()
@@ -224,21 +226,25 @@ func add_all_meshes(node: Node3D) -> void:
 	node.add_child(mushroom_pointed_multimesh)
 
 func make(kind: World.Foliage) -> int:
+	var result := -1
 	@warning_ignore("unsafe_method_access")
 	if opened_slots.has(kind) and not opened_slots[kind].is_empty():
 		@warning_ignore("unsafe_method_access")
-		var index := opened_slots[kind][opened_slots[kind].size() - 1] as int
-		@warning_ignore("unsafe_method_access")
-		opened_slots[kind].remove_at(opened_slots[kind].size() - 1)
+		var index := opened_slots[kind].pop_back() as int
 		slot_markings[kind][index] = 1
-		return index
+		result = index
 	else:
 		var markings := slot_markings[kind] as PackedByteArray
 		for i in markings.size():
 			if markings[i] == 0:
 				slot_markings[kind][i] = 1
-				return i
-	return -1
+				result = i
+				break
+	@warning_ignore("unsafe_method_access")
+	if opened_slots[kind].is_empty() and result < slot_markings[kind].size() - 1 and slot_markings[kind][result + 1] == 0:
+		@warning_ignore("unsafe_method_access")
+		opened_slots[kind].append(result + 1)
+	return result
 		
 func remove(kind: World.Foliage, index: int) -> void:
 	match kind:
@@ -264,7 +270,6 @@ func remove(kind: World.Foliage, index: int) -> void:
 		_: push_error("no such enum for foliage")
 	slot_markings[kind][index] = 0
 	# FIXME: speed up. use a buffered array like EntityBuffer but with packed storage
-	if not opened_slots.has(kind): opened_slots[kind] = PackedInt32Array([])
 	@warning_ignore("unsafe_method_access")
 	opened_slots[kind].append(index)
 	

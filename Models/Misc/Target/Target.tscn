@@ -228,6 +228,7 @@ collision_mask = 0
 
 [node name="shape" type="CollisionShape3D" parent="static"]
 shape = SubResource("BoxShape3D_hm6m2")
+disabled = true
 
 [node name="area" type="Area3D" parent="."]
 collision_layer = 1024
@@ -236,6 +237,7 @@ monitoring = false
 
 [node name="shape" type="CollisionShape3D" parent="area"]
 shape = SubResource("SphereShape3D_cbt3o")
+disabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

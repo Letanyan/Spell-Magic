@@ -63,7 +63,7 @@ func _init(_seed: int = randi(), _origin: Vector3 = Vector3.ZERO) -> void:
 	rng = RandomNumberGenerator.new()
 	rng.seed = _seed
 	origin_kind = OriginKind.ABSOLUTE
-	path = Pathway.empty()
+	path = Pathway.empty_default
 	
 func reset() -> void:
 	time = NAN
@@ -73,11 +73,12 @@ func reset() -> void:
 	me_start_position = null
 	stored_loops = loop_count_start
 		
+static var still_path_default := still_path()
 static func still_path() -> PathStyle:
 	var result := PathStyle.new()
 	result.origin_is_me()
 	result.align_y_to_origin()
-	result.path = Pathway.empty()
+	result.path = Pathway.empty_default
 	return result
 	
 func set_origin(o: Vector3) -> PathStyle: origin = o; return self
