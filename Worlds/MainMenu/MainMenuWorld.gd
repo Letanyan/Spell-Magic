@@ -91,6 +91,7 @@ func _ready() -> void:
 	(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("base_seed", randi_range(0, 1000000))
 	
 func _physics_process(delta: float) -> void:
+	update_terrain_queue()
 	daytime_tick += delta
 			
 	if daytime_tick >= 0.166667:
@@ -174,6 +175,10 @@ func build_terrain() -> void:
 	goal_position.y = player.position.y
 	if not goal_position.is_equal_approx(player.position):
 		player.look_at(goal_position)
+		
+func update_terrain_queue() -> void:
+	if chunker.backing.has_chunks_to_update():
+		chunker.backing.update_chunk_in_queue(Time.get_ticks_msec(), 3)
 
 func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)

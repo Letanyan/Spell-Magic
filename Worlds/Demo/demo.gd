@@ -192,6 +192,7 @@ func _process(delta: float) -> void:
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
 func _physics_process(delta: float) -> void:
+	update_terrain_queue()
 	update_population_spawning()
 	
 	if player.magic_book.settings.is_paused:
@@ -402,6 +403,9 @@ func build_terrain() -> void:
 	for chunk in chunks:
 		add_child(chunk)
 
+func update_terrain_queue() -> void:
+	if chunker.backing.has_chunks_to_update():
+		chunker.backing.update_chunk_in_queue(Time.get_ticks_msec(), 3)
 
 func update_terrain() -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
