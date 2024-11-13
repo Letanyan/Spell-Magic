@@ -1,21 +1,24 @@
 class_name JungleGen
 extends BiomeGenerator
 
-enum JUNGLE_STRUCTURES_KIND {
+enum JungleStructuresKind {
 	NONE,
 	TREE_BRANCHED, BUSH,
 	ELEVATOR, PLATFORM,
 	BIRD,
 }
 
-const JUNGLE_STRUCTURE = {
-	JUNGLE_STRUCTURES_KIND.NONE: 60,
-	JUNGLE_STRUCTURES_KIND.TREE_BRANCHED: 5,
-	JUNGLE_STRUCTURES_KIND.BUSH: 5,
-	JUNGLE_STRUCTURES_KIND.ELEVATOR: 0.075,
-	JUNGLE_STRUCTURES_KIND.PLATFORM: 0.01,
-	JUNGLE_STRUCTURES_KIND.BIRD: 0.1,
+var jungle_structure := {
+	JungleStructuresKind.NONE: 60,
+	JungleStructuresKind.TREE_BRANCHED: 5,
+	JungleStructuresKind.BUSH: 5,
+	JungleStructuresKind.ELEVATOR: 0.075,
+	JungleStructuresKind.PLATFORM: 0.01,
+	JungleStructuresKind.BIRD: 0.1,
 }
+
+func setup_state(pop: Population) -> void:
+	Rand.normalise_distribution(jungle_structure)
 
 func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
@@ -24,15 +27,15 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 		if exclusion.has(index):
 			index += 1
 			continue
-		var struct := Rand.entity_from_distribution(rng.randf(), JUNGLE_STRUCTURE) as JUNGLE_STRUCTURES_KIND
+		var struct := Rand.entity_from_non_relative_distribution(rng.randf(), jungle_structure) as JungleStructuresKind
 		
 		match struct:
-			JUNGLE_STRUCTURES_KIND.NONE:
+			JungleStructuresKind.NONE:
 				pass
-			JUNGLE_STRUCTURES_KIND.TREE_BRANCHED:
+			JungleStructuresKind.TREE_BRANCHED:
 				var pos := area[index]
 				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
-			JUNGLE_STRUCTURES_KIND.BUSH:
+			JungleStructuresKind.BUSH:
 				var pos := area[index]
 				var ratio := rng.randf()
 				if rng.randf() < 0.5:
@@ -48,7 +51,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
 						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing)
 					
-			JUNGLE_STRUCTURES_KIND.ELEVATOR:
+			JungleStructuresKind.ELEVATOR:
 				var pos := area[index]
 				var cursor := Vector3.ZERO
 				var direction := Vector3.UP
@@ -91,7 +94,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					reward.position = Vec3.xz(pos) + cursor # + Vec3.y(Navigator.get_world_height(FIXME, pos.x, pos.y))
 					result.append(reward)
 					
-			JUNGLE_STRUCTURES_KIND.PLATFORM:
+			JungleStructuresKind.PLATFORM:
 				var pos := area[index]
 				var spacing_radius := sqrt(2 * spacing ** 2)
 				var platform_size := rng.randf_range(spacing_radius, spacing_radius * 5)
@@ -160,7 +163,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 							result.append(p)
 						for q in points: exclusion[q] = true
 					
-			JUNGLE_STRUCTURES_KIND.BIRD:
+			JungleStructuresKind.BIRD:
 				var pos := area[index]
 				var p := pop.spawn_enemy(World.Enemy.BIRD, pos, spacing)
 				if p != null:

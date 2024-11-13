@@ -233,11 +233,13 @@ func setup_spawning_state(spacing: float = 16.0) -> void:
 	spawn_area_biomes = spawn_areas["biomes"]
 	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
 	spawn_cursor = Vector2i.ZERO
+	for b: World.Biome in World.Biome.values():
+		generators[b].setup_state(self) 
 	
 func is_spawning_complete() -> bool:
 	return spawn_cursor.x == spawn_area_biomes.size()
 	
-func spawn_into_world(limit: int = 50) -> Array[Node3D]:
+func spawn_into_world(limit: int) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var i := spawn_cursor.x
 	var j := Globals.Ref.new(spawn_cursor.y)

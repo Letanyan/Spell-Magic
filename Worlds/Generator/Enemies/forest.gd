@@ -1,7 +1,7 @@
 class_name ForestGen
 extends BiomeGenerator
 
-enum FOREST_STRUCTURES_KIND {
+enum ForestStructuresKind {
 	NONE, 
 	TREE_CHRISTMAS, TREE_PYRAMID,
 	
@@ -10,61 +10,56 @@ enum FOREST_STRUCTURES_KIND {
 	DENSE_BATTLEFIELD
 }
 
-const FOREST_STRUCTURES: Dictionary = {
-	FOREST_STRUCTURES_KIND.NONE: 15.0,
-	FOREST_STRUCTURES_KIND.TREE_CHRISTMAS: 0.125,
-	FOREST_STRUCTURES_KIND.TREE_PYRAMID: 0.25,
-	FOREST_STRUCTURES_KIND.UNDEAD_HORDE: 0.0001,
-	FOREST_STRUCTURES_KIND.BAT_HORDE: 0.0001,
-	FOREST_STRUCTURES_KIND.BAT: 0.1,
-	FOREST_STRUCTURES_KIND.MOLE: 0.005,
-	FOREST_STRUCTURES_KIND.UNDEAD: 0.05,
-	FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD: 0.0005,
+var forest_structures := {
+	ForestStructuresKind.NONE: 15.0,
+	ForestStructuresKind.TREE_CHRISTMAS: 0.125,
+	ForestStructuresKind.TREE_PYRAMID: 0.25,
+	ForestStructuresKind.UNDEAD_HORDE: 0.0001,
+	ForestStructuresKind.BAT_HORDE: 0.0001,
+	ForestStructuresKind.BAT: 0.1,
+	ForestStructuresKind.MOLE: 0.005,
+	ForestStructuresKind.UNDEAD: 0.05,
+	ForestStructuresKind.DENSE_BATTLEFIELD: 0.0005,
 }
+
+func setup_state(pop: Population) -> void:
+	forest_structures[ForestStructuresKind.TREE_PYRAMID] = pop.fit(0.25, 0.5)
+	forest_structures[ForestStructuresKind.TREE_CHRISTMAS] = pop.fit(0.125, 0.25)
+	Rand.normalise_distribution(forest_structures)
 
 func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := from.data as int
-	var forest_structures := FOREST_STRUCTURES
-	forest_structures[FOREST_STRUCTURES_KIND.TREE_PYRAMID] = pop.fit(0.25, 0.5)
-	forest_structures[FOREST_STRUCTURES_KIND.TREE_CHRISTMAS] = pop.fit(0.125, 0.25)
-	
-	# Shuffle area so DENSE_BATTLEFIELD can have more varied shapes
-	#for i in range(area.size()):
-		#var j := rng.randi_range(0, area.size() - 1)
-		#var t := area[i]
-		#area[i] = area[j]
-		#area[j] = t
 	
 	while index < area.size() and pop.current_iteration_spawn_count < limit:
-		var struct := Rand.entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
+		var struct := Rand.entity_from_non_relative_distribution(rng.randf(), forest_structures) as ForestStructuresKind
 		match struct:
-			FOREST_STRUCTURES_KIND.NONE:
+			ForestStructuresKind.NONE:
 				pass
-			FOREST_STRUCTURES_KIND.TREE_CHRISTMAS:
+			ForestStructuresKind.TREE_CHRISTMAS:
 				var pos := area[index] as Vector2
 				pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, pos, spacing)
-			FOREST_STRUCTURES_KIND.TREE_PYRAMID:
+			ForestStructuresKind.TREE_PYRAMID:
 				var pos := area[index] as Vector2
 				pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, spacing)
-			FOREST_STRUCTURES_KIND.BAT:
+			ForestStructuresKind.BAT:
 				var pos := area[index] as Vector2
 				var elite_prob := pop.fit(0.2, 0.8)
 				var p := pop.spawn_enemy(World.Enemy.BATTY if rng.randf() < elite_prob else World.Enemy.BAT, pos, spacing)
 				if p != null:
 					result.append(p)
-			FOREST_STRUCTURES_KIND.MOLE:
+			ForestStructuresKind.MOLE:
 				var pos := area[index]
 				var p := pop.spawn_enemy(World.Enemy.MOLE, pos, spacing)
 				if p != null:
 					result.append(p)
-			FOREST_STRUCTURES_KIND.UNDEAD:
+			ForestStructuresKind.UNDEAD:
 				var pos := area[index] as Vector2
 				var elite_prob := pop.fit(0.2, 0.8)
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD if rng.randf() < elite_prob else World.Enemy.UNDEAD_HEAD, pos, spacing)
 				if p != null:
 					result.append(p)	
-			FOREST_STRUCTURES_KIND.UNDEAD_HORDE:
+			ForestStructuresKind.UNDEAD_HORDE:
 				var pos := area[index]
 				var count := rng.randi_range(4, pop.fiti(6, 10))
 				var path := Pathway.new().random_points_in_disc(1, spacing * 0.5, spacing * 2, 0, count, Easing.linear, rng)
@@ -74,7 +69,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					var p := pop.spawn_enemy(World.Enemy.UNDEAD if rng.randf() < elite_prob else World.Enemy.UNDEAD_HEAD, ppos, spacing)
 					if p != null:
 						result.append(p)
-			FOREST_STRUCTURES_KIND.BAT_HORDE:
+			ForestStructuresKind.BAT_HORDE:
 				var pos := area[index]
 				var count := rng.randi_range(2, pop.fiti(4, 12))
 				var path := Pathway.new().random_points_in_sphere(1, 0, spacing / 2.0, count, Easing.linear, rng)
@@ -85,7 +80,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					if p != null:
 						result.append(p)
 					
-			FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD:
+			ForestStructuresKind.DENSE_BATTLEFIELD:
 				if area.size() - index < 100:
 					index += 1
 					continue

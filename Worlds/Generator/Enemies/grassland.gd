@@ -1,7 +1,7 @@
 class_name GrasslandGen
 extends BiomeGenerator
 
-enum GRASSLAND_STRUCTURES_KIND {
+enum GrasslandStructuresKind {
 	NONE,
 	TREE_ROUND, TREE_BRANCHED,
 	VILLAGE,
@@ -11,20 +11,22 @@ enum GRASSLAND_STRUCTURES_KIND {
 	HIVE, SLIMY, FLOCK, PETS, FISH
 }
 
-const GRASSLAND_STRUCTURE = {
-	GRASSLAND_STRUCTURES_KIND.NONE: 160,
-	GRASSLAND_STRUCTURES_KIND.TREE_ROUND: 5,
-	GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED: 0.5,
-	GRASSLAND_STRUCTURES_KIND.VILLAGE: 0.5,
-	GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE: 0.05,
-	GRASSLAND_STRUCTURES_KIND.HIVE: 0.1,
-	GRASSLAND_STRUCTURES_KIND.SLIMY: 0.05,
-	GRASSLAND_STRUCTURES_KIND.FLOCK: 0.1,
-	GRASSLAND_STRUCTURES_KIND.PETS: 0.05,
-	GRASSLAND_STRUCTURES_KIND.FISH: 0.1,
-	#GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE: 0.01
+var grassland_structure := {
+	GrasslandStructuresKind.NONE: 160,
+	GrasslandStructuresKind.TREE_ROUND: 5,
+	GrasslandStructuresKind.TREE_BRANCHED: 0.5,
+	GrasslandStructuresKind.VILLAGE: 0.5,
+	GrasslandStructuresKind.ABANDONED_VILLAGE: 0.05,
+	GrasslandStructuresKind.HIVE: 0.1,
+	GrasslandStructuresKind.SLIMY: 0.05,
+	GrasslandStructuresKind.FLOCK: 0.1,
+	GrasslandStructuresKind.PETS: 0.05,
+	GrasslandStructuresKind.FISH: 0.1,
+	#GrasslandStructuresKind.TARGET_PUZZLE: 0.01
 }
 
+func setup_state(pop: Population) -> void:
+	Rand.normalise_distribution(grassland_structure)
 
 func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
@@ -33,18 +35,18 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 		if exclusion.has(index):
 			index += 1
 			continue
-		var struct := Rand.entity_from_distribution(rng.randf(), GRASSLAND_STRUCTURE) as GRASSLAND_STRUCTURES_KIND
+		var struct := Rand.entity_from_non_relative_distribution(rng.randf(), grassland_structure) as GrasslandStructuresKind
 		match struct:
-			GRASSLAND_STRUCTURES_KIND.NONE:
+			GrasslandStructuresKind.NONE:
 				pass
-			GRASSLAND_STRUCTURES_KIND.TREE_ROUND:
+			GrasslandStructuresKind.TREE_ROUND:
 				var pos := area[index] as Vector2
 				pop.spawn_foliage(World.Foliage.TREE_ROUND, pos, spacing)
-			GRASSLAND_STRUCTURES_KIND.TREE_BRANCHED:
+			GrasslandStructuresKind.TREE_BRANCHED:
 				var pos := area[index] as Vector2
 				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
 					
-			GRASSLAND_STRUCTURES_KIND.FISH:
+			GrasslandStructuresKind.FISH:
 				var pos := area[index]
 				
 				if rng.randf() < pop.fit(0.8, 0.2):
@@ -55,7 +57,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					if p != null: result.append(p)
 				
 					
-			GRASSLAND_STRUCTURES_KIND.HIVE:
+			GrasslandStructuresKind.HIVE:
 				var pos := area[index]
 				var r := Rand.entity_from_distribution(rng.randf(), {3: pop.fit(0.05, 0.5), 2: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as float
 				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
@@ -82,7 +84,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 						result.append(p)
 						spawner.add_condition(p)
 				
-			GRASSLAND_STRUCTURES_KIND.SLIMY:
+			GrasslandStructuresKind.SLIMY:
 				var pos := area[index]
 				for i in rng.randi_range(5, 15):
 					pop.spawn_foliage(World.Foliage.ROCK_EGG, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
@@ -102,7 +104,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 							if q != null:
 								result.append(q)
 								
-			GRASSLAND_STRUCTURES_KIND.FLOCK:
+			GrasslandStructuresKind.FLOCK:
 				var pos := area[index]
 				var r := Rand.entity_from_distribution(rng.randf(), {10: pop.fit(0.05, 0.5), 5: pop.fit(0.15, 0.5), 3: pop.fit(0.8, 0.5)}) as int
 				const circle_points = 3
@@ -123,7 +125,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					if p != null:
 						result.append(p)
 						
-			GRASSLAND_STRUCTURES_KIND.PETS:
+			GrasslandStructuresKind.PETS:
 				var pos := area[index]
 				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as int
 				const circle_points = 3
@@ -145,19 +147,19 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 						result.append(p)
 						 
 				
-			GRASSLAND_STRUCTURES_KIND.UNDEAD:
+			GrasslandStructuresKind.UNDEAD:
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, pos, spacing)
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
-			GRASSLAND_STRUCTURES_KIND.MOLE:
+			GrasslandStructuresKind.MOLE:
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.MOLE, pos, spacing)
 				if p != null:
 					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
-			GRASSLAND_STRUCTURES_KIND.TARGET_PUZZLE:
+			GrasslandStructuresKind.TARGET_PUZZLE:
 				var pos := area[index] as Vector2
 				
 				var pos3 := Vector3.ZERO
@@ -176,7 +178,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					
 				spawner.position = pos3
 					
-			#GRASSLAND_STRUCTURES_KIND.VILLAGE:
+			#GrasslandStructuresKind.VILLAGE:
 				#if area.size() - index < 100:
 					#index += 1
 					#continue
@@ -209,7 +211,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					#if max_limit <= 0:
 						#break
 						#
-			#GRASSLAND_STRUCTURES_KIND.ABANDONED_VILLAGE:
+			#GrasslandStructuresKind.ABANDONED_VILLAGE:
 				#if area.size() - index < 100:
 					#index += 1
 					#continue

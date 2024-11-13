@@ -1,21 +1,24 @@
 class_name HFILGen
 extends BiomeGenerator
 
-enum HFIL_STRUCTURES_KIND {
+enum HFILStructuresKind {
 	NONE,
 	MUSHROOM_FIELD,
 	ENEMY_MIX,
 	MUSH_ENEMIES, SNOT_ENEMIES, HOT_DRAGONS
 }
 
-const HFIL_STRUCTURE = {
-	HFIL_STRUCTURES_KIND.NONE: 120,
-	HFIL_STRUCTURES_KIND.MUSHROOM_FIELD: 10,
-	HFIL_STRUCTURES_KIND.MUSH_ENEMIES: 0.1,
-	HFIL_STRUCTURES_KIND.SNOT_ENEMIES: 0.05,
-	HFIL_STRUCTURES_KIND.HOT_DRAGONS: 0.0125,
-	HFIL_STRUCTURES_KIND.ENEMY_MIX: 0.0125,
+var HFIL_structure := {
+	HFILStructuresKind.NONE: 120,
+	HFILStructuresKind.MUSHROOM_FIELD: 10,
+	HFILStructuresKind.MUSH_ENEMIES: 0.1,
+	HFILStructuresKind.SNOT_ENEMIES: 0.05,
+	HFILStructuresKind.HOT_DRAGONS: 0.0125,
+	HFILStructuresKind.ENEMY_MIX: 0.0125,
 }
+
+func setup_state(pop: Population) -> void:
+	Rand.normalise_distribution(HFIL_structure)
 
 func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
@@ -24,12 +27,12 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 		if exclusion.has(index):
 			index += 1
 			continue
-		var struct := Rand.entity_from_distribution(rng.randf(), HFIL_STRUCTURE) as HFIL_STRUCTURES_KIND
+		var struct := Rand.entity_from_non_relative_distribution(rng.randf(), HFIL_structure) as HFILStructuresKind
 		
 		match struct:
-			HFIL_STRUCTURES_KIND.NONE:
+			HFILStructuresKind.NONE:
 				pass
-			HFIL_STRUCTURES_KIND.MUSHROOM_FIELD:
+			HFILStructuresKind.MUSHROOM_FIELD:
 				var pos := area[index]
 				var ratio := rng.randf()
 				if rng.randf() < 0.5:
@@ -45,7 +48,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 						var kind := World.Foliage.MUSHROOM_POINTED if rng.randf() < ratio else World.Foliage.MUSHROOM_BULB
 						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing)
 						
-			HFIL_STRUCTURES_KIND.MUSH_ENEMIES:
+			HFILStructuresKind.MUSH_ENEMIES:
 				var pos := area[index]
 				var king := pop.spawn_enemy(World.Enemy.MUSHKING, pos, spacing) as Mushking
 				if king != null: result.append(king)
@@ -59,7 +62,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					if minion != null:
 						result.append(minion)
 					
-			HFIL_STRUCTURES_KIND.SNOT_ENEMIES:
+			HFILStructuresKind.SNOT_ENEMIES:
 				var pos := area[index]
 				var king := pop.spawn_enemy(World.Enemy.SNOT_BLOB, pos, spacing) as SnotBlob
 				if king != null: result.append(king)
@@ -73,7 +76,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					if minion != null:
 						result.append(minion)
 					
-			HFIL_STRUCTURES_KIND.HOT_DRAGONS:
+			HFILStructuresKind.HOT_DRAGONS:
 				var pos := area[index]
 				var king := pop.spawn_enemy(World.Enemy.DRAGON if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.DRAGOON, pos, spacing) as Enemy
 				if king != null: result.append(king)
@@ -86,7 +89,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					if minion != null:
 						result.append(minion)
 						
-			HFIL_STRUCTURES_KIND.ENEMY_MIX:
+			HFILStructuresKind.ENEMY_MIX:
 				var pos := area[index]
 				var king_count := Rand.entity_from_distribution(rng.randf(), { 4: pop.fit(1, 8), 3: pop.fit(2, 4), 2: pop.fit(4, 2), 1: pop.fit(8, 1)  }) as int
 				var radius := rng.randf_range(10.0, 15.0)
