@@ -25,7 +25,8 @@ var spawn_point_spacing: float = 16.0
 # x = index into current biome, y = index into current point in biome indexed by x. 
 # See spawn_areas: x indexes the top level of points and biomes, while y indexes the second level of points
 var spawn_cursor := Vector2i.ZERO
-var current_iteration_spawn_count: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
+var current_spawn_start_time_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
+var current_spawn_duration_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
 var generators: Array[BiomeGenerator] = [] 
 
 func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
@@ -69,7 +70,7 @@ func set_world_ground(pos: Vector2) -> Vector3:
 	return result
 	
 func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable) -> int:
-	current_iteration_spawn_count += 1
+	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if index != -1:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
 		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
@@ -90,7 +91,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 	return index
 	
 func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
-	current_iteration_spawn_count += 1
+	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
 		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
@@ -239,19 +240,18 @@ func setup_spawning_state(spacing: float = 16.0) -> void:
 func is_spawning_complete() -> bool:
 	return spawn_cursor.x == spawn_area_biomes.size()
 	
-func spawn_into_world(limit: int) -> Array[Node3D]:
+func spawn_into_world(start_time_ms: int, limit: int) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var i := spawn_cursor.x
 	var j := Globals.Ref.new(spawn_cursor.y)
-	current_iteration_spawn_count = 0
-	while i < spawn_area_biomes.size():
+	current_spawn_start_time_ms = start_time_ms
+	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
+	while i < spawn_area_biomes.size() and current_spawn_duration_ms < limit:
 		current_biome_during_generation = spawn_area_biomes[i]
 		result.append_array(generators[current_biome_during_generation].populate(self, spawn_area_points[i], j, limit, rng, spawn_point_spacing))
 		if j.data == spawn_area_points[i].size():
 			i += 1
 			j.data = 0
-		if current_iteration_spawn_count >= limit:
-			break
 			
 	spawn_cursor.x = i
 	spawn_cursor.y = j.data

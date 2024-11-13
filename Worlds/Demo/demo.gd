@@ -431,10 +431,11 @@ func update_population_at(locations: Array[Vector2]) -> void:
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}
+	var start_time_ms := Time.get_ticks_msec()
 	for loc: Vector2 in population:
 		var pop := population[loc] as Population
 		if not pop.is_spawning_complete():
-			items_to_add[pop] = pop.spawn_into_world(10)
+			items_to_add[pop] = pop.spawn_into_world(start_time_ms, 3)
 			
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:

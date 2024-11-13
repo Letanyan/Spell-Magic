@@ -31,7 +31,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 	var result: Array[Node3D] = []
 	var index := from.data as int
 	
-	while index < area.size() and pop.current_iteration_spawn_count < limit:
+	while index < area.size() and pop.current_spawn_duration_ms < limit:
 		var struct := Rand.entity_from_non_relative_distribution(rng.randf(), forest_structures) as ForestStructuresKind
 		match struct:
 			ForestStructuresKind.NONE:
