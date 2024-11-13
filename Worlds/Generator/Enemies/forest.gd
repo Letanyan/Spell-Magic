@@ -22,7 +22,7 @@ const FOREST_STRUCTURES: Dictionary = {
 	FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD: 0.0005,
 }
 
-func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
+func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := from.data as int
 	var forest_structures := FOREST_STRUCTURES

@@ -19,7 +19,7 @@ var current_biome_during_generation: World.Biome = World.Biome.WATER
 var current_fl_during_generation: float = 0.0
 #var spawn_areas: Dictionary ## {"points": [][]Vector2, "biomes": []World.Biome} // groups of points categoriesed by biomes
 var spawn_area_biomes: Array[World.Biome]
-var spawn_area_points: Array[PackedVector2Array]
+var spawn_area_points: Array[Array]
 var spawn_point_spacing: float = 16.0
 
 # x = index into current biome, y = index into current point in biome indexed by x. 
@@ -207,44 +207,10 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	return result
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
-	return GDNavigator.contains_neighbour_point(collection, point, spacing)
+	return GDTerrain.contains_neighbour_point(collection, point, spacing)
 	
 func group_spawn_points(spacing: float) -> Dictionary:
-	# FIXME: speed up
-	var result: Array[PackedVector2Array] = []
-	var biomes: Array[World.Biome] = []
-	var points := PackedVector2Array([])
-	var b := 0
-	var offsetv := coord * chunk_size
-	var biome_map := chunker.get_biomes_map(offsetv)
-	var point_offset := Vector2(chunker.height_map_scale * 0.5, chunker.height_map_scale * 0.5)
-	for vp in chunker.get_chunk_vertices():
-		var p := -Vec2.xz(vp) + point_offset + offsetv
-		points.append(p)
-		var biome := biome_map[b] as World.Biome
-		var found_subsets := PackedInt32Array([])
-		for i in range(result.size()):
-			if biomes[i] == biome and Population.contains_neighbour_point(result[i], p, spacing):
-				found_subsets.append(i)
-				break		
-		if found_subsets.is_empty():
-			result.append(PackedVector2Array([p]))
-			biomes.append(biome)
-		elif found_subsets.size() == 1:
-			result[found_subsets[0]].append(p)
-		else:
-			found_subsets.sort()
-			found_subsets.reverse()
-			var new_pack := PackedVector2Array([])
-			for subset in found_subsets:
-				new_pack.append_array(result[subset])
-				result.remove_at(subset)
-				biomes.remove_at(subset)
-			result.append(new_pack)
-			biomes.append(biome)
-		b += 1
-				
-	return {"points": result, "biomes": biomes}
+	return chunker.backing.group_spawn_points(coord, spacing)
 	
 static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, shuffler: RandomNumberGenerator) -> PackedInt64Array:
 	var indices: PackedInt64Array = []

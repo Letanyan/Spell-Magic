@@ -17,7 +17,7 @@ const TUNDRA_STRUCTURE = {
 	TUNDRA_STRUCTURES_KIND.RABBIT: 0.1,
 }
 
-func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
+func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := from.data as int
 	while index < area.size() and pop.current_iteration_spawn_count < limit:
