@@ -17,6 +17,16 @@ var other_objects: Array = []
 var world_items: Array[WorldItem] = []
 var current_biome_during_generation: World.Biome = World.Biome.WATER
 var current_fl_during_generation: float = 0.0
+#var spawn_areas: Dictionary ## {"points": [][]Vector2, "biomes": []World.Biome} // groups of points categoriesed by biomes
+var spawn_area_biomes: Array[World.Biome]
+var spawn_area_points: Array[PackedVector2Array]
+var spawn_point_spacing: float = 16.0
+
+# x = index into current biome, y = index into current point in biome indexed by x. 
+# See spawn_areas: x indexes the top level of points and biomes, while y indexes the second level of points
+var spawn_cursor := Vector2i.ZERO
+var current_iteration_spawn_count: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
+var generators: Array[BiomeGenerator] = [] 
 
 func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
 	rng = RandomNumberGenerator.new()
@@ -28,6 +38,14 @@ func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: Noi
 	entity_manager = _entity_manager
 	seed_location()
 	SignalBus.enemy_death.connect(mark_entity)
+	for b: World.Biome in World.Biome.values():
+		match b:
+			World.Biome.GRASSLAND: generators.append(GrasslandGen.new())
+			World.Biome.FOREST: generators.append(ForestGen.new())
+			World.Biome.HFIL: generators.append(HFILGen.new())
+			World.Biome.TUNDRA: generators.append(TundraGen.new())
+			World.Biome.JUNGLE: generators.append(JungleGen.new())
+			_: generators.append(BiomeGenerator.new())
 	
 func seed_location() -> void:
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])
@@ -51,6 +69,7 @@ func set_world_ground(pos: Vector2) -> Vector3:
 	return result
 	
 func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable) -> int:
+	current_iteration_spawn_count += 1
 	if index != -1:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
 		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
@@ -66,9 +85,12 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
 		entity_manager.buffer_foliage.set_albedo_blend(kind, index, blender.color)
 		garden.append(Vector2i(kind, index))
+		
+	#current_iteration_spawn_count += 1
 	return index
 	
 func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
+	current_iteration_spawn_count += 1
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
 		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
@@ -119,6 +141,8 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 					World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
 					World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
 					World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
+					
+	#current_iteration_spawn_count += 1
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
@@ -178,6 +202,8 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	if entity_name_is_marked(result.name):
 		return null
 		
+	# we don't increment the count becuase it isn't expensive
+	#current_iteration_spawn_count += 1
 	return result
 	
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
@@ -220,37 +246,47 @@ func group_spawn_points(spacing: float) -> Dictionary:
 				
 	return {"points": result, "biomes": biomes}
 	
-static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, rang: RandomNumberGenerator) -> PackedInt64Array:
+static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, shuffler: RandomNumberGenerator) -> PackedInt64Array:
 	var indices: PackedInt64Array = []
 	for i in range(offset, area.size()):
 		if point.distance_to(area[i]) < distance and not exluding.has(i):
 			indices.append(i)
-	if rang != null:
+	if shuffler != null:
 		for i in indices.size():
 			var temp := indices[i]
-			var j := rang.randi_range(0, indices.size() - 1)
+			var j := shuffler.randi_range(0, indices.size() - 1)
 			indices[i] = indices[j]
 			indices[j] = temp
 	return indices
 	
-func spawn_all_into_world() -> Array[Node3D]:
-	const spacing = 16.0
+func setup_spawning_state(spacing: float = 16.0) -> void:
+	spawn_point_spacing = spacing
 	rng.seed = hash(coord)
-	var areas := group_spawn_points(spacing)
-	var points: Array[PackedVector2Array] = areas["points"]
-	var biomes: Array[World.Biome] = areas["biomes"]
-	
+	var spawn_areas := group_spawn_points(spawn_point_spacing)
+	spawn_area_points = spawn_areas["points"]
+	spawn_area_biomes = spawn_areas["biomes"]
 	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
-	var result: Array[Node3D] = []
-	for i in range(biomes.size()):
-		current_biome_during_generation = biomes[i]
-		match biomes[i]:
-			World.Biome.GRASSLAND: result.append_array(GrasslandGen.populate(self, points[i], spacing))
-			World.Biome.FOREST: result.append_array(ForestGen.populate(self, points[i], spacing))
-			World.Biome.JUNGLE: result.append_array(JungleGen.populate(self, points[i], spacing))
-			World.Biome.HFIL: result.append_array(HFILGen.populate(self, points[i], spacing))
-			World.Biome.TUNDRA: result.append_array(TundraGen.populate(self, points[i], spacing))
+	spawn_cursor = Vector2i.ZERO
 	
+func is_spawning_complete() -> bool:
+	return spawn_cursor.x == spawn_area_biomes.size()
+	
+func spawn_into_world(limit: int = 50) -> Array[Node3D]:
+	var result: Array[Node3D] = []
+	var i := spawn_cursor.x
+	var j := Globals.Ref.new(spawn_cursor.y)
+	current_iteration_spawn_count = 0
+	while i < spawn_area_biomes.size():
+		current_biome_during_generation = spawn_area_biomes[i]
+		result.append_array(generators[current_biome_during_generation].populate(self, spawn_area_points[i], j, limit, rng, spawn_point_spacing))
+		if j.data == spawn_area_points[i].size():
+			i += 1
+			j.data = 0
+		if current_iteration_spawn_count >= limit:
+			break
+			
+	spawn_cursor.x = i
+	spawn_cursor.y = j.data
 	return result
 	
 func despawn_all_from_world(world: Node3D) -> void:

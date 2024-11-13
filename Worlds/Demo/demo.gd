@@ -192,6 +192,8 @@ func _process(delta: float) -> void:
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
 func _physics_process(delta: float) -> void:
+	update_population_spawning()
+	
 	if player.magic_book.settings.is_paused:
 		if get_window().has_focus():
 			if Input.get_joy_axis(0, JOY_AXIS_TRIGGER_RIGHT) > 0:
@@ -420,13 +422,20 @@ func update_terrain() -> void:
 	
 
 func update_population_at(locations: Array[Vector2]) -> void:
-	var items_to_add := {}
 	for loc: Vector2 in locations:
 		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
 		var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager)
-		items_to_add[pop] = pop.spawn_all_into_world()
+		pop.setup_spawning_state()
 		population[loc] = pop
-		
+		#items_to_add[pop] = pop.spawn_all_into_world()
+				
+func update_population_spawning() -> void:
+	var items_to_add := {}
+	for loc: Vector2 in population:
+		var pop := population[loc] as Population
+		if not pop.is_spawning_complete():
+			items_to_add[pop] = pop.spawn_into_world(10)
+			
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:
 			if item.get_parent() == null:

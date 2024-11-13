@@ -1,5 +1,5 @@
 class_name GrasslandGen
-
+extends BiomeGenerator
 
 enum GRASSLAND_STRUCTURES_KIND {
 	NONE,
@@ -26,13 +26,10 @@ const GRASSLAND_STRUCTURE = {
 }
 
 
-static func populate(pop: Population, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
+func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
-	var index := 0
-	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(pop.coord)
-	var exclusion := {}
-	while index < area.size() - 1:
+	var index := from.data as int
+	while index < area.size() and pop.current_iteration_spawn_count < limit:
 		if exclusion.has(index):
 			index += 1
 			continue
@@ -267,5 +264,6 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 						#break
 		index += 1
 					
+	from.data = index
 	return result
 					

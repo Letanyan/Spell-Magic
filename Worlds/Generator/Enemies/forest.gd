@@ -1,4 +1,5 @@
 class_name ForestGen
+extends BiomeGenerator
 
 enum FOREST_STRUCTURES_KIND {
 	NONE, 
@@ -21,23 +22,21 @@ const FOREST_STRUCTURES: Dictionary = {
 	FOREST_STRUCTURES_KIND.DENSE_BATTLEFIELD: 0.0005,
 }
 
-static func populate(pop: Population, area: PackedVector2Array, spacing: float) -> Array[Node3D]:
+func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
-	var index := 0
-	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(pop.coord)
+	var index := from.data as int
 	var forest_structures := FOREST_STRUCTURES
 	forest_structures[FOREST_STRUCTURES_KIND.TREE_PYRAMID] = pop.fit(0.25, 0.5)
 	forest_structures[FOREST_STRUCTURES_KIND.TREE_CHRISTMAS] = pop.fit(0.125, 0.25)
 	
 	# Shuffle area so DENSE_BATTLEFIELD can have more varied shapes
-	for i in range(area.size()):
-		var j := rng.randi_range(0, area.size() - 1)
-		var t := area[i]
-		area[i] = area[j]
-		area[j] = t
+	#for i in range(area.size()):
+		#var j := rng.randi_range(0, area.size() - 1)
+		#var t := area[i]
+		#area[i] = area[j]
+		#area[j] = t
 	
-	while index < area.size() - 1:
+	while index < area.size() and pop.current_iteration_spawn_count < limit:
 		var struct := Rand.entity_from_distribution(rng.randf(), FOREST_STRUCTURES) as FOREST_STRUCTURES_KIND
 		match struct:
 			FOREST_STRUCTURES_KIND.NONE:
@@ -115,5 +114,6 @@ static func populate(pop: Population, area: PackedVector2Array, spacing: float) 
 							result.append(p)
 		index += 1
 		
+	from.data = index
 	return result
 			
