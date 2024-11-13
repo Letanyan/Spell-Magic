@@ -553,17 +553,22 @@ static func print_world_environment(env: WorldEnvironment, sun: DirectionalLight
 	print("shader.set_shader_parameter(prefix + \"clouds_weight\", ", shader.get_shader_parameter("start_clouds_weight"), ")")
 	print("shader.set_shader_parameter(prefix + \"clouds_blur\", ", shader.get_shader_parameter("start_clouds_blur"), ")")
 
-func count_biomes(positions: Array[Vector2]) -> void:
-	var summary := {}
+func count_biomes(positions: Array[Vector2], summary: Dictionary, should_print: bool = false) -> int:
+	var sum := 0
 	for pos in positions:
 		back.compute_biome_map_stats(pos.x * 256, pos.y * 256, 16, 16, 16)
 		var dict := back.get_biomes_map()
+		sum += dict.size()
 		for p in dict:
 			if summary.has(p):
 				summary[p] += 1
 			else:
-				summary[p] = 0
+				summary[p] = 1
 				
-	print("-----------------------------------------")
-	for b: int in summary:
-		print(World.Biome.keys()[b + 1], ": ", summary[b])
+	if should_print:
+		print("-----------------------------------------")
+		for b: int in summary:
+			summary[b] /= float(sum)
+			print(World.Biome.keys()[b], ": ", summary[b])
+		
+	return sum

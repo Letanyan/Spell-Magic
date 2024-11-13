@@ -62,6 +62,9 @@ func _ready() -> void:
 	#Vector2(0, 2), Vector2(2, 0), \
 	#Vector2(0, -2), Vector2(-2, 0), Vector2(2, -2), \
 	#Vector2(-2, 2), Vector2(2, 2), Vector2(-2, -2), \
+	#Vector2(0, 100), Vector2(100, 0), \
+	#Vector2(0, -100), Vector2(-100, 0), Vector2(100, -100), \
+	#Vector2(-100, 100), Vector2(100, 100), Vector2(-100, -100), \
 	#Vector2(0, 200), Vector2(200, 0), \
 	#Vector2(0, -200), Vector2(-200, 0), Vector2(200, -200), \
 	#Vector2(-200, 200), Vector2(200, 200), Vector2(-200, -200), \

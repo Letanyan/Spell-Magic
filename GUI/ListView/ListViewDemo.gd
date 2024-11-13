@@ -20,5 +20,5 @@ func _ready() -> void:
 	list_view.setup(1000, 48, make, update)
 	
 func _process(delta: float) -> void:
-	$Label.text = str(Engine.get_frames_per_second())
+	($Label as Label).text = str(Engine.get_frames_per_second())
 		
