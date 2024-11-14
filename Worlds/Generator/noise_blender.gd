@@ -380,7 +380,6 @@ static func update_world_environment(env: WorldEnvironment, sun: DirectionalLigh
 			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.6499999854712)
 			shader.set_shader_parameter(prefix + "clouds_weight", 0)
 			shader.set_shader_parameter(prefix + "clouds_blur", 0)
-			# FIXME: white out
 			env.environment.fog_density = lerpf(0.0, 0.1, level / 100.0)
 			env.environment.fog_sky_affect = lerpf(0.1, 0.75, level / 100.0)
 			env.environment.fog_light_color = Color.WHITE

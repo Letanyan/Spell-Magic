@@ -30,7 +30,6 @@ func update_chunks_with_size(chunks: Array[Node3D], index: int, x: float, y: flo
 	return backing.update_chunks_with_size(chunks, index, x, y, cs, r, subdivide)
 	
 func update_chunks(x: float, y: float) -> Dictionary:
-	# FIXME: speed up
 	return backing.update_chunks(x, y)
 		
 func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> MeshInstance3D:

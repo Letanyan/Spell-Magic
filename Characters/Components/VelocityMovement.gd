@@ -62,7 +62,6 @@ func increment_ticks(delta: float) -> void:
 # result["impulse"] = impulse
 # result["direction"] = direction
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float, world_radius: float, chunker: Terrain) -> Dictionary:
-	# FIXME: speed up
 	var result := {}
 	increment_ticks(delta)
 		

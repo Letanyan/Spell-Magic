@@ -391,9 +391,6 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta
-	
-	#chunker.hide_water(player.position.y, false)
-	
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
 		update_terrain()
@@ -418,7 +415,6 @@ func update_terrain() -> void:
 		
 	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
 
-	await get_tree().physics_frame
 	update_population_at(updated_chunks)
 	
 	if updated_chunks.is_empty():

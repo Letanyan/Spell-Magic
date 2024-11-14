@@ -57,7 +57,7 @@ const forbidden_classes = {
 	
 	## these classes create parse errors on plugin load.
 	## With ClassDB.can_instantiate(..) in 4.3, they don't load anyway.
-	## TODO: Test whether these load in 4.2 and remove this list if not.
+	## T-O-D-O: Test whether these load in 4.2 and remove this list if not.
 	"AbstractPolygon2DEditor": null,
 	"AbstractPolygon2DEditorPlugin": null,
 	"ActionMapEditor": null,

@@ -453,7 +453,7 @@ func grounded_move(p_delta_t : float) -> void :
 			if detach_from_platform :
 				platform_velocity = platform_velocity.slide(prev_floor_normal) + prev_platform_velocity.dot(prev_floor_normal) * prev_floor_normal
 		
-		# FIXME : Because only one floor collider is taken into account,
+		# F-I-X-M-E : Because only one floor collider is taken into account,
 		# the transition between two floors with velocity can be jittery.
 		# To solve this, one needs to be definetively selected over the other, or their
 		# velocity need to be summed some way.

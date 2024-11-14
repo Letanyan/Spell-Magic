@@ -61,7 +61,7 @@ func on_flat_surface(distance: float) -> Callable:
 	return func(normal: Dictionary) -> Dictionary:
 		return {"valid": (normal.get("normal", Vector3.ZERO) as Vector3).angle_to(Vector3.UP) < distance, "y_offset": distance * -2}
 	
-func set_world_ground(pos: Vector2) -> Vector3:
+func get_ground_level(pos: Vector2) -> Vector3:
 	var result := Vector3(pos.x, 0, pos.y)
 	#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
 	var world_normal := chunker.terrain_normal(pos.x, pos.y)

@@ -184,7 +184,6 @@ func update_terrain() -> void:
 		pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
 
-	await get_tree().physics_frame
 	chunker.update_environment(player.position.x, player.position.z)
 
 	

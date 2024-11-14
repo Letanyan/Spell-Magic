@@ -91,7 +91,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
 				if reward != null:
 					reward.artifact = artifact
-					reward.position = Vec3.xz(pos) + cursor # + Vec3.y(Navigator.get_world_height(FIXME, pos.x, pos.y))
+					reward.position = Vec3.xz(pos) + cursor + Vec3.y(pop.get_ground_level(pos).y)
 					result.append(reward)
 					
 			JungleStructuresKind.PLATFORM:
@@ -115,7 +115,7 @@ func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: i
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
 					var platform := pop.spawn_world_item(World.Item.TARGET, center, spacing, config) as TargetShape
 					if platform != null:
-						platform.position.y = h.y #+ Navigator.get_world_height(FIXME, center.x, center.y)
+						platform.position.y = h.y + pop.get_ground_level(center).y
 						var caster_y := platform.position.y + platform.bounds.y + pop.player.bounds.y * 0.5
 						platform.caster_target_position = Vec3.xz(center) + Vec3.y(caster_y)
 						

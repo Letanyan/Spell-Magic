@@ -1,6 +1,7 @@
 class_name Foliage
 
 const HIDEY = -1000
+var T_HIDEY := T.I.translated(Vec3.y(HIDEY))
 
 const all_meshes = {
 	World.Foliage.TREE_PYRAMID: preload("res://Models/Nature/tree_pyramid.mesh") as ArrayMesh,
@@ -67,11 +68,10 @@ func _init() -> void:
 		markings.resize(multi_mesh.instance_count)
 		var transforms_array: Array[Transform3D] = []
 		transforms_array.resize(INS_COUNT)
+		transforms_array.fill(T_HIDEY)
 		for i in INS_COUNT:
-			var t := T.I.translated(Vec3.y(HIDEY))
-			multi_mesh.set_instance_transform(i, t); 
+			multi_mesh.set_instance_transform(i, T_HIDEY); 
 			markings.set(i, 0)
-			transforms_array[i] = t
 		slot_markings.append(markings)
 		opened_slots.append(EntityManager.EntityBuffer.new(20, func() -> int: return -1, func(item: int) -> void: pass))
 		transforms.append(transforms_array)
@@ -106,9 +106,9 @@ func make(kind: World.Foliage) -> int:
 	return result
 		
 func remove(kind: World.Foliage, index: int) -> void:
-	multi_meshes[kind].multimesh.set_instance_transform(index, T.I.translated(Vec3.y(HIDEY)))
+	multi_meshes[kind].multimesh.set_instance_transform(index, T_HIDEY)
+	transforms[kind][index] = T_HIDEY
 	slot_markings[kind][index] = 0
-	# FIXME: speed up. use a buffered array like EntityBuffer but with packed storage
 	@warning_ignore("unsafe_method_access")
 	opened_slots[kind].append(index)
 	
@@ -128,13 +128,11 @@ func setup(kind: World.Foliage, index: int, position: Vector3, rng: RandomNumber
 	multi_meshes[kind].multimesh.set_instance_transform(index, result)
 	transforms[kind][index] = result
 		
-	#collision_is_active = maxf(transform.x, maxf(transform.y, transform.z)) * s > 1.0
-		
 func set_albedo_blend(kind: World.Foliage, index: int, color: Color) -> void:
 	multi_meshes[kind].multimesh.set_instance_color(index, color)
 	
 func get_transform(kind: World.Foliage, index: int) -> Transform3D:
-	return multi_meshes[kind].multimesh.get_instance_transform(index)
+	return transforms[kind][index]
 		
 func make_static_body(g: Vector2i) -> StaticBody3D:
 	var body: StaticBody3D = static_bodies[g.x].get_entity()
@@ -143,7 +141,7 @@ func make_static_body(g: Vector2i) -> StaticBody3D:
 	var shape := body.get_node("shape") as CollisionShape3D
 	static_body_map[g] = body
 	body.transform = base.scaled_local(Vec3.a(1.0 / mesh_scales[g.x] as float))
-	shape.transform = T.I.translated(off.transform.origin) # FIXME: Apply `off` rotation
+	shape.transform = off.transform.orthonormalized()
 	return body
 		
 func free_static_body(g: Vector2i) -> void:
