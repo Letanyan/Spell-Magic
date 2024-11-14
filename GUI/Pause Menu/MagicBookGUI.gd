@@ -274,7 +274,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				else:
 					options = "Deactive a spell"
 				var popup := PopupDialog.display("Total active spells limit reached." + options, "Okay", "")
-				get_tree().root.add_child(popup)
+				popup.show_in_root(self)
 			else:
 				spell.is_active = true
 				reload_list()

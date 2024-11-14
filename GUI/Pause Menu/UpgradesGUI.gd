@@ -94,7 +94,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 		elif purchase_error == UpgradeSettings.PurchaseError.UPGRADE_IS_OVER_LIMIT:
 			message = "Max level reached. Can not upgrade furthur."
 		var popup := PopupDialog.display(message, "Okay", "")
-		get_tree().root.add_child(popup)
+		popup.show_in_root(self)
 		return
 	
 	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book())

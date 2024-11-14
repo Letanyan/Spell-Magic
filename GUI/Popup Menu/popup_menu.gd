@@ -37,3 +37,9 @@ func _on_confirm_pressed() -> void:
 	confirmed.emit()
 	if get_parent():
 		queue_free()
+
+func show_in_node(node: Node) -> void:
+	node.add_child(self)
+	
+func show_in_root(node: Node) -> void:
+	node.get_tree().root.add_child(self)

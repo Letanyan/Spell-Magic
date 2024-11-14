@@ -146,7 +146,7 @@ func _on_delete_pressed() -> void:
 			current_index = case.wands.size() - 1
 		reload_list()
 	)
-	get_tree().root.add_child(popup)
+	popup.show_in_root(self)
 	
 
 func _on_create_pressed() -> void:

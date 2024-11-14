@@ -119,7 +119,7 @@ func play_animation(animation: String, parameters: Dictionary = {}) -> void:
 	for path: StringName in parameters:
 		animation_tree.set(path, parameters[path])
 	var current := playback.get_current_node()
-	if current != "death" and current != animation:
+	if current != animation:
 		playback.travel(animation)
 
 func can_move() -> bool:

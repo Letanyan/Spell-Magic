@@ -57,4 +57,4 @@ func _on_delete_pressed() -> void:
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
 		list.remove_item(current_selected[0])
 	)
-	get_tree().root.add_child(popup)
+	popup.show_in_root(self)

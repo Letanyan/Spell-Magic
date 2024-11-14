@@ -128,9 +128,13 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	target_velocity.x *= friction
 	target_velocity.z *= friction
 	if (body is Enemy and (body as Enemy).pushed_with_impulse) or (body is Player):
-		var wn := chunker.terrain_normal(body.position.x, body.position.z)
-		var g := (wn["position"] as Vector3).y
-		# Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		var wn := 0.0
+		if chunker != null:
+			var det := chunker.terrain_normal(body.position.x, body.position.z)
+			wn = (det["position"] as Vector3).y
+		else:
+			wn = Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z)
+		var g := wn
 		var wb := water_bouyancy
 		var fa := fall_acceleration
 		var fl := 0.0

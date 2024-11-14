@@ -463,29 +463,58 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 		GameModeSettings.GameMode.RESPAWN:
 			if vitals.health.value > 0:
 				return
-			# FIXME: make it more obvious you have respawned. Notify player about lost spells, artifacts, upgrades if any.
-			# Show some death and respawn animation.
-			# FIXME: save deleted items to file immedietly.
+				
+			settings.is_paused = true
+			player.play_animation("death")
+			var subtitle_components := []
 			vitals.health.value = vitals.health.max_value
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
+				subtitle_components.append("Artifacts")
 				artifacts.reset_by_deleting_all_artifacts()
 				menu.artifacts.update_list_and_grid()
+				menu.artifacts.artifacts.save(settings.world_name)
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_UPGRADES == 0:
+				subtitle_components.append("Upgrades")
 				settings.upgrade_settings.reset_all_stats_to_default_values()
 				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+				menu.upgrades.settings.save()
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
+				subtitle_components.append("Spells")
 				book.reset_by_deleting_all_spells()
 				case.reset_by_deleting_all_wands()
 				wand = case.wands[0]
 				menu.magic_book.update_book_without_selection()
 				menu.wand_case.reload_wand_shelf_items(0)
+				menu.wand_case.case.save(settings.world_name)
+				menu.magic_book.book.save(settings.world_name)
+				
+			settings.save()
+				
+			var subtitle := ""
+			if subtitle_components.size() == 1:
+				subtitle = subtitle_components[0] + " have been removed"
+			elif subtitle_components.size() == 2:
+				subtitle = subtitle_components[0] + " and " + subtitle_components[1] + " have been removed"
+			elif subtitle_components.size() == 3:
+				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + " and " + subtitle_components[2] + " have been removed"
+			var overlay := OverlayScreen.display("DEATH", subtitle, "Respawn")
+			overlay.confirmed.connect(func() -> void:
+				player.play_animation("revive")
+				settings.is_paused = false
+			)
+			overlay.show_in_root(self)
 			
 		GameModeSettings.GameMode.PERMADEATH:
 			if vitals.health.value > 0:
 				return
 			
-			#FIXME: maybe delete save file? but definitly do something more
-			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
+			settings.is_paused = true
+			var overlay := OverlayScreen.display("GAME OVER", "Permadeath Mode Active\nSave File will be Deleted", "Main Menu")
+			overlay.confirmed.connect(func() -> void:
+				OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (settings.world_name)))
+				SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
+			)
+			overlay.show_in_root(self)
 
 func transition_to_biome(biome: World.Biome) -> void:
 	if biome_tween != null:

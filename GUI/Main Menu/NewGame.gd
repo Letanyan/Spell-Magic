@@ -152,7 +152,7 @@ func _on_worlds_list_item_activated(index: int) -> void:
 func _on_create_pressed() -> void:
 	if save_name.text.is_empty():
 		var popup := PopupDialog.display("Please provide a save name", "Okay", "")
-		get_tree().root.add_child(popup)
+		popup.show_in_root(self)
 		return
 	
 	if use_seed.button_pressed:

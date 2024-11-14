@@ -340,7 +340,7 @@ func attempt_delete_artifact() -> void:
 		update_list()
 		update_temporary_grid_tile()
 	)
-	get_tree().root.add_child(popup)
+	popup.show_in_root(self)
 	
 func _on_destroy_pressed() -> void:
 	if destroy_artifact.text == "Destroy":

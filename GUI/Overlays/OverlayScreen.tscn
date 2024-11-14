@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=3 uid="uid://dtsdkksqr4ciw"]
+
+[ext_resource type="Script" path="res://GUI/Overlays/overlay_screen.gd" id="1_aejrd"]
+[ext_resource type="StyleBox" uid="uid://22jnl8crj7cq" path="res://GUI/Popup Menu/empty_black_bg.tres" id="1_lan3q"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4jtkc"]
+font_size = 120
+
+[sub_resource type="LabelSettings" id="LabelSettings_rp4b1"]
+font_size = 36
+
+[node name="OverlayScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_aejrd")
+
+[node name="background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_lan3q")
+
+[node name="title" type="Label" parent="background"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 256.0
+offset_top = 96.0
+offset_right = -256.0
+offset_bottom = 288.0
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_4jtkc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="subtitle" type="Label" parent="background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = 320.0
+offset_right = -64.0
+offset_bottom = -136.0
+grow_horizontal = 2
+text = "Keys Found: 0"
+label_settings = SubResource("LabelSettings_rp4b1")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="confirm" type="Button" parent="background"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -96.0
+offset_right = 96.0
+offset_bottom = -48.0
+theme_override_font_sizes/font_size = 32
+text = "Main Menu"
+
+[connection signal="pressed" from="background/confirm" to="." method="_on_confirm_pressed"]

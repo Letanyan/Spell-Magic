@@ -75,9 +75,7 @@ func _ready() -> void:
 	
 	chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
 	build_terrain()
-	var space := get_world_3d().space
-	var state := PhysicsServer3D.space_get_direct_state(space)
-	update_terrain(state)
+	update_terrain()
 	
 	skybox = SkyBox.new(world_environment, sun, moon)
 	skybox.day_time = rng.randf_range(0.0, 24.0)
@@ -109,10 +107,7 @@ func _physics_process(delta: float) -> void:
 		settings.day_of_the_year = skybox.day_of_year
 		world_environment.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, settings.time_of_day, sun, moon)
 		sun.light_color = world_environment.environment.ambient_light_color
-		
-		var space := get_world_3d().space
-		var state := PhysicsServer3D.space_get_direct_state(space)
-		_on_player_moved(0.25, state)
+		_on_player_moved(0.25)
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
@@ -152,10 +147,10 @@ func _physics_process(delta: float) -> void:
 	player.position.y = maxf(player.position.y, blender.sea_level)
 				
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
+func _on_player_moved(delta: float) -> void:	
 	terrain_update_interval = 0
-	update_terrain(state)
-	var h := Navigator.get_world_height(state, player.position.x, player.position.z)
+	update_terrain()
+	var h := (chunker.terrain_normal(player.position.x, player.position.z)["position"] as Vector3).y
 	player_movement_direction.y = h - player.position.y
 	if player.position.y < h + 1.0:
 		player.position.y = lerpf(player.position.y, h + 1.0, 0.1)
@@ -180,7 +175,7 @@ func update_terrain_queue() -> void:
 	if chunker.backing.has_chunks_to_update():
 		chunker.backing.update_chunk_in_queue(Time.get_ticks_msec(), 3)
 
-func update_terrain(state: PhysicsDirectSpaceState3D) -> void:
+func update_terrain() -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
 	for loc: Vector2 in chunks.get("removed", []):
 		var pop : Population = population.get(loc, null)

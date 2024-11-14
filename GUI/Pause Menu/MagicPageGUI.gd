@@ -712,7 +712,7 @@ func _on_delete_pressed() -> void:
 		book.spells.remove_at(current_index)
 		delete_spell.emit(current_index)
 	)
-	get_tree().root.add_child(popup)
+	popup.show_in_root(self)
 	
 
 func _on_duplicate_pressed() -> void:

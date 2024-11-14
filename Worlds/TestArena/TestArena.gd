@@ -432,7 +432,7 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 				cast_spell_with_recusive_check_for_rapid_fire(ns, true)
 		)
 
-func _on_player_moved(delta: float, state: PhysicsDirectSpaceState3D) -> void:	
+func _on_player_moved(delta: float) -> void:	
 	pass
 
 
