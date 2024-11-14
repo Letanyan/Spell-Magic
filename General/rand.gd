@@ -64,49 +64,11 @@ static func id(length: int, rng: RandomNumberGenerator = null) -> String:
 # probs: [Variant]float|int
 # probs is a dictionary where each key has its 'value' as a value of being choosen relative to other siblings
 static func entity_from_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
-	# FIXME: speed up
-	#var keys := probs.keys()
-	#if keys.size() == 0:
-		#return default
-	#
-	#if keys.size() == 1:
-		#return keys[0]
-		#
-	#var sum := 0.0
-	#for n: float in probs.values():
-		#sum += n
-		#
-	#var base := 0.0
-	#for i: Variant in keys:
-		#var next_base: float = base + probs[i] / sum
-		#if r < next_base:
-			#return i
-		#base = next_base
-	#
-	#return default
 	return GDNavigator.rand_entity_from_distribution(r, probs, default)
 	
 # probs: [Variant]float
 # probs is a dictionary where each key has its 'value' as a value of being choosen. Sum of all values must equal 1.0
 static func entity_from_non_relative_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
-	#var keys := probs.keys()
-	#if keys.size() == 0:
-		#return default
-	#
-	#if keys.size() == 1:
-		#return keys[0]
-		#
-	#var base := 0.0
-	#for i: Variant in keys:
-		#var next_base : float = base + probs[i]
-		#if r < next_base:
-			#return i
-		#base = next_base
-		#
-	#if base != 1.0:
-		#push_error("sum of probs must equal 1.0")
-	#
-	#return default
 	return GDNavigator.rand_entity_from_non_relative_distribution(r, probs, default)
 	
 static func normalise_distribution(probs: Dictionary) -> void:

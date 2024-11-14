@@ -23,7 +23,7 @@ func _init(kind: int, x: float, y: float, z: float, transform: Transform3D) -> v
 
 @warning_ignore("shadowed_variable")
 static func sphere(radius: float, transform: Transform3D) -> ShapeTemplate:
-	return ShapeTemplate.new(SPHERE, radius, radius, radius, transform)
+	return ShapeTemplate.new(SPHERE, radius * 2.0, radius * 2.0, radius * 2.0, transform)
 	
 @warning_ignore("shadowed_variable")
 static func box(x: float, y: float, z: float, transform: Transform3D) -> ShapeTemplate:
@@ -31,25 +31,25 @@ static func box(x: float, y: float, z: float, transform: Transform3D) -> ShapeTe
 	
 @warning_ignore("shadowed_variable")
 static func cylinder(height: float, radius: float, transform: Transform3D) -> ShapeTemplate:
-	return ShapeTemplate.new(CYLINDER, radius, height, radius, transform)
+	return ShapeTemplate.new(CYLINDER, radius * 2.0, height, radius * 2.0, transform)
 	
 @warning_ignore("shadowed_variable")
 static func capsule(radius: float, height: float, transform: Transform3D) -> ShapeTemplate:
-	return ShapeTemplate.new(CAPSULE, radius, height, radius, transform)
+	return ShapeTemplate.new(CAPSULE, radius * 2.0, height, radius * 2.0, transform)
 
 func make_shape() -> Shape3D:
 	var result: Shape3D
 	match kind:
 		SPHERE: 
 			result = SphereShape3D.new()
-			(result as SphereShape3D).radius = x
+			(result as SphereShape3D).radius = x / 2.0
 		CAPSULE:
 			result = CapsuleShape3D.new()
-			(result as CapsuleShape3D).radius = x
+			(result as CapsuleShape3D).radius = x / 2.0
 			(result as CapsuleShape3D).height = y
 		CYLINDER:
 			result = CylinderShape3D.new()
-			(result as CylinderShape3D).radius = x
+			(result as CylinderShape3D).radius = x / 2.0
 			(result as CylinderShape3D).height = y
 		BOX:
 			result = BoxShape3D.new()

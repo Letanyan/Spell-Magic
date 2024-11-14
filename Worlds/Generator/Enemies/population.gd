@@ -289,7 +289,8 @@ func update_info(world: Node3D) -> void:
 	for g: Vector2i in garden:
 		var t := entity_manager.buffer_foliage.get_transform(g.x, g.y)
 		var s := entity_manager.buffer_foliage.get_collision_shape(g)
-		if t.origin.distance_to(player.position) > 50: # FIXME: use size of shape in condition
+		var mxb := entity_manager.buffer_foliage.get_shape_max_bound(g, t)
+		if t.origin.distance_to(player.position) > 50 + mxb:
 			if s != null:
 				entity_manager.buffer_foliage.free_static_body(g)
 		else:
