@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=38 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="8_7souk"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="11_0ki14"]
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="11_sslk6"]
 [ext_resource type="Shader" path="res://Worlds/MainMenu/env_fire.gdshader" id="11_u2pvt"]
 [ext_resource type="Texture2D" uid="uid://dgj6xbk5yv1vo" path="res://Worlds/Generator/Terrain/noise_texture.tres" id="12_hijy3"]
@@ -184,13 +185,23 @@ color = Color(0, 0.756863, 0, 1)
 color_ramp = SubResource("GradientTexture1D_nnvr5")
 emission_curve = SubResource("CurveTexture_uimdu")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qxkoo"]
-shading_mode = 0
-specular_mode = 1
-vertex_color_use_as_albedo = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jmmfe"]
+render_priority = 0
+shader = ExtResource("11_0ki14")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="SphereMesh" id="SphereMesh_3prl5"]
-material = SubResource("StandardMaterial3D_qxkoo")
+material = SubResource("ShaderMaterial_jmmfe")
 radius = 20.0
 height = 40.0
 radial_segments = 6

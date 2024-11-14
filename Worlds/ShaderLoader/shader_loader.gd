@@ -33,6 +33,18 @@ func _ready() -> void:
 	mat.shader = load("res://Worlds/SkyBox/water.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
+	mat.shader = load("res://Characters/Player/MainPlayer.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
+	mat.shader = load("res://Worlds/Generator/Terrain/biome_p.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
+	mat.shader = load("res://Worlds/MainMenu/env_fire.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
+	mat.shader = load("res://Worlds/SkyBox/sky.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
 	#SceneHandler.load_new_scene("res://Worlds/TestArena/TestArena.tscn", "blink_to", func(content: Node3D) -> void: print("loading test arena"))
 	SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "blink_to", func(content: Node3D) -> void: print("loading main menu world"), Quotes.random())
 

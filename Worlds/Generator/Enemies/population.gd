@@ -104,9 +104,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 			if is_enemy:
 				entity_manager.free_enemy(entity as Enemy)
 			else:
-				if entity is Buildings:
-					entity_manager.free_building(entity as Buildings)
-				elif entity is WorldItem:
+				if entity is WorldItem:
 					entity_manager.free_world_item(entity as WorldItem)
 			return null
 		entity.position.x = pos.x
@@ -167,7 +165,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 
 func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> int:
 	var pos := Vector3(p.x, 0, p.y)
-	var result := entity_manager.get_foliage(foliage)
+	var result := entity_manager.buffer_foliage.make(foliage)
 	pos.x += spacing * rng.randf_range(-0.5, 0.5)
 	pos.z += spacing * rng.randf_range(-0.5, 0.5)
 	return prepare_foliage(foliage, result, pos, user_info)
@@ -289,8 +287,8 @@ func update_info(world: Node3D) -> void:
 	for g: Vector2i in garden:
 		var t := entity_manager.buffer_foliage.get_transform(g.x, g.y)
 		var s := entity_manager.buffer_foliage.get_collision_shape(g)
-		var mxb := entity_manager.buffer_foliage.get_shape_max_bound(g, t)
-		if t.origin.distance_to(player.position) > 50 + mxb:
+		var mxb := entity_manager.buffer_foliage.get_scaled_shape_length(g, t)
+		if t.origin.distance_to(player.position) > maxf(50, mxb * 2.0):
 			if s != null:
 				entity_manager.buffer_foliage.free_static_body(g)
 		else:
@@ -312,7 +310,7 @@ func update_info(world: Node3D) -> void:
 			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
 		
 		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
-			item.is_active = item.position.distance_to(player.position) < maxf((item as TargetShape).bounds.length() * 1.25, 50) and not player.world_settings.is_paused
+			item.is_active = item.position.distance_to(player.position) < maxf((item as TargetShape).bounds.length() * 2.0, 50) and not player.world_settings.is_paused
 			if item.is_active:
 				player.watch_target(item as TargetShape)
 			else:

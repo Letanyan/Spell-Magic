@@ -27,13 +27,6 @@ enum Foliage {
 	NONE = 255,
 }
 
-enum Building {
-	# !! WARNING: When adding new cases ensure to update `spawn_building` in `Population` and add methods in entity_manager.gd
-	NONE,
-	FANTASY_VALLEY_SINGLE, FANTASY_VALLEY_DOUBLE,
-	FANTASY_WELL
-}
-
 enum Item {
 	# !! WARNING: When adding new cases ensure to update `spawn_world_item` in `Population` and add methods in entity_manager.gd
 	NONE,

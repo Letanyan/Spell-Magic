@@ -6,7 +6,7 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jcoew"]
 resource_local_to_scene = true
 height = 4.0
-radius = 0.25
+radius = 0.3
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_d2qww"]
 _surfaces = [{

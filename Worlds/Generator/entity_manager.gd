@@ -118,7 +118,6 @@ var buffer_frog: EntityBuffer
 var buffer_mushking: EntityBuffer
 var buffer_rabbit: EntityBuffer
 
-
 var buffer_bat: EntityBuffer
 var buffer_dragon: EntityBuffer
 var buffer_dragoon: EntityBuffer
@@ -129,10 +128,6 @@ var buffer_bee: EntityBuffer
 var buffer_bumble_bee: EntityBuffer
 var buffer_undead_head: EntityBuffer
 
-var buffer_house_single: EntityBuffer
-var buffer_house_double: EntityBuffer
-var buffer_well: EntityBuffer
-
 var buffer_target: EntityBuffer
 var buffer_artifact: EntityBuffer
 var buffer_coin: EntityBuffer
@@ -142,12 +137,6 @@ var buffer_health: EntityBuffer
 var buffer_note: EntityBuffer
 
 func _init() -> void:
-	# FIXME: foliage collisions
-	#var deinit_foliage := func(node: Foliage) -> void:
-		#node.position.y = -1000
-		#var s: CollisionShape3D = node.get_node("./static/shape")
-		#if s != null:
-			#s.disabled = true
 	var deinit_enemy := func(node: Enemy) -> void:
 		node.position.y = -1000
 		node.kind = World.Enemy.NONE
@@ -156,12 +145,7 @@ func _init() -> void:
 		col.disabled = true
 		area.disabled = col.disabled
 		if node.is_node_ready():
-			node.animation_tree.active = false 
-	var deinit_building := func(node: Buildings) -> void:
-		node.position.y = -1000
-		var s: CollisionShape3D = node.get_node("./static/shape")
-		if s != null:
-			s.disabled = true
+			node.animation_tree.active = false
 	var deinit_world_item := func(node: WorldItem) -> void:
 		node.position.y = -1000
 		node.is_active = false
@@ -195,11 +179,6 @@ func _init() -> void:
 	buffer_snot_spike = EntityBuffer.new(10, func() -> SnotSpike: return Enemy.make(World.Enemy.SNOT_SPIKE), deinit_enemy, "SNOT_SPIKE")
 	buffer_walker_head = EntityBuffer.new(10, func() -> WalkerHead: return Enemy.make(World.Enemy.WALKER_HEAD), deinit_enemy, "WALKER_HEAD")
 	buffer_wizard = EntityBuffer.new(10, func() -> Wizard: return Enemy.make(World.Enemy.WIZARD), deinit_enemy, "WIZARD")
-	
-	buffer_house_single = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_SINGLE), deinit_building, "single")
-	buffer_house_double = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_VALLEY_DOUBLE), deinit_building, "double")
-	buffer_well = EntityBuffer.new(10, func() -> Buildings: return Buildings.make(World.Building.FANTASY_WELL), deinit_building, "well")
-	
 
 	var make_target_shape := func() -> WorldItem:
 		var result := TargetShape.make(); result.custom_free = free_world_item
@@ -231,12 +210,6 @@ func _init() -> void:
 	buffer_health = EntityBuffer.new(10, make_health, deinit_world_item, "HEALTH")
 	buffer_note = EntityBuffer.new(10, make_note, deinit_world_item, "NOTE")
 
-
-func get_foliage(kind: World.Foliage) -> int:
-	return buffer_foliage.make(kind)
-
-func free_foliage(kind: World.Foliage, index: int) -> void:
-	buffer_foliage.remove(kind, index)
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
 	match kind:
@@ -298,19 +271,6 @@ func free_enemy(enemy: Enemy) -> void:
 		World.Enemy.SNOT_SPIKE: buffer_snot_spike.free_entity(enemy)
 		World.Enemy.WALKER_HEAD: buffer_walker_head.free_entity(enemy)
 		World.Enemy.WIZARD: buffer_wizard.free_entity(enemy)
-		
-func get_building(kind: World.Building) -> Buildings:
-	match kind:
-		World.Building.FANTASY_VALLEY_SINGLE: return buffer_house_single.get_entity()
-		World.Building.FANTASY_VALLEY_DOUBLE: return buffer_house_double.get_entity()
-		World.Building.FANTASY_WELL: return buffer_well.get_entity()
-	return buffer_undead.get_entity()
-
-func free_building(building: Buildings) -> void:
-	match building.entity_kind:
-		World.Building.FANTASY_VALLEY_SINGLE: buffer_house_single.free_entity(building)
-		World.Building.FANTASY_VALLEY_DOUBLE: buffer_house_double.free_entity(building)
-		World.Building.FANTASY_WELL: buffer_well.free_entity(building)
 		
 func get_world_item(kind: World.Item) -> WorldItem:
 	match kind:

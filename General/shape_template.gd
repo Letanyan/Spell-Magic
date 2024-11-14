@@ -7,18 +7,14 @@ enum {
 	CAPSULE
 }
 
-var x: float
-var y: float
-var z: float
+var size: Vector3
 var kind: int
 var transform: Transform3D
 
 @warning_ignore("shadowed_variable")
 func _init(kind: int, x: float, y: float, z: float, transform: Transform3D) -> void:
 	self.kind = kind
-	self.x = x
-	self.y = y
-	self.z = z
+	self.size = Vector3(x, y, z)
 	self.transform = transform
 
 @warning_ignore("shadowed_variable")
@@ -42,16 +38,16 @@ func make_shape() -> Shape3D:
 	match kind:
 		SPHERE: 
 			result = SphereShape3D.new()
-			(result as SphereShape3D).radius = x / 2.0
+			(result as SphereShape3D).radius = size.x / 2.0
 		CAPSULE:
 			result = CapsuleShape3D.new()
-			(result as CapsuleShape3D).radius = x / 2.0
-			(result as CapsuleShape3D).height = y
+			(result as CapsuleShape3D).radius = size.x / 2.0
+			(result as CapsuleShape3D).height = size.y
 		CYLINDER:
 			result = CylinderShape3D.new()
-			(result as CylinderShape3D).radius = x / 2.0
-			(result as CylinderShape3D).height = y
+			(result as CylinderShape3D).radius = size.x / 2.0
+			(result as CylinderShape3D).height = size.y
 		BOX:
 			result = BoxShape3D.new()
-			(result as BoxShape3D).size = Vector3(x, y, z)
+			(result as BoxShape3D).size = size
 	return result

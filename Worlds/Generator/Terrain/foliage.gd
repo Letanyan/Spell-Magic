@@ -77,7 +77,7 @@ func _init() -> void:
 		transforms.append(transforms_array)
 		
 		@warning_ignore("unsafe_call_argument")
-		static_bodies.append(EntityManager.EntityBuffer.new(8, alloc_static_body.call((base_shapes[World.Foliage.TREE_PYRAMID] as ShapeTemplate).make_shape()), deinit_static_body, World.Foliage.keys()[kind]))
+		static_bodies.append(EntityManager.EntityBuffer.new(8, alloc_static_body.call((base_shapes[kind] as ShapeTemplate).make_shape()), deinit_static_body, World.Foliage.keys()[kind]))
 	
 	
 func add_all_meshes(node: Node3D) -> void:
@@ -160,11 +160,10 @@ func get_collision_shape(g: Vector2i) -> CollisionShape3D:
 	var shape := body.get_node("shape") as CollisionShape3D
 	return shape
 	
-func get_shape_max_bound(g: Vector2i, t: Transform3D) -> float:
+func get_scaled_shape_length(g: Vector2i, t: Transform3D) -> float:
 	var shape := base_shapes[g.x] as ShapeTemplate
-	var max_dim := maxf(shape.x, maxf(shape.y, shape.z))
 	var scale := t.basis.get_scale().x
-	return max_dim * scale
+	return shape.size.length() * scale
 				
 static var base_shapes := {
 	World.Foliage.BUSH_ROUND: ShapeTemplate.capsule(0.65, 1.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.314))),
@@ -181,11 +180,11 @@ static var base_shapes := {
 	World.Foliage.ROCK_OVERHANG: ShapeTemplate.cylinder(1.6, 1.25, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vector3(0.026, 0.366, 0))),
 	World.Foliage.ROCK_SQUASHED: ShapeTemplate.cylinder(1.4, 1.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vector3(-0.005, 0.4, 0.039))),
 	World.Foliage.ROCK_TALL: ShapeTemplate.capsule(1.2, 2.8, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vector3(-0.073, 0.906, 0.016))),
-	World.Foliage.TREE_BRANCHED: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
-	World.Foliage.TREE_CHRISTMAS: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
-	World.Foliage.TREE_PYRAMID: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
-	World.Foliage.TREE_ROUND: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
-	World.Foliage.TREE_SAFARI: ShapeTemplate.cylinder(4.0, 0.25, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),	
+	World.Foliage.TREE_BRANCHED: ShapeTemplate.cylinder(4.0, 0.4, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
+	World.Foliage.TREE_CHRISTMAS: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
+	World.Foliage.TREE_PYRAMID: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
+	World.Foliage.TREE_ROUND: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
+	World.Foliage.TREE_SAFARI: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),	
 }
 
 const mesh_scales = {
