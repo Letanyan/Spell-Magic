@@ -18,7 +18,7 @@ var items_shown: int = 0
 var _visible_items: Dictionary = {} ## [int]int // [index]items.index
 
 func _ready() -> void:
-	get_tree().get_root().size_changed.connect(generate_items)
+	get_tree().get_root().size_changed.connect(generate_items.bind(true))
 
 func _process(delta: float) -> void:
 	pass
@@ -32,9 +32,9 @@ func setup(total: int, height: float, template: Callable, update: Callable, rel_
 	y_offset = 0
 	scroll_bar.value = 0
 	items_offset = 0
-	generate_items()
+	generate_items(false)
 
-func generate_items() -> void:
+func generate_items(full_update: bool) -> void:
 	if height_for_items <= 0:
 		return
 	
@@ -59,9 +59,9 @@ func generate_items() -> void:
 			items.append(item)
 			holder.add_child(item)
 			
-	update_y_offset()
+	update_y_offset(full_update)
 	
-func update_items() -> void:
+func update_items(full_update: bool) -> void:
 	var min_index := 0
 	var min_value := 999_999_999.0
 	for i in items.size():
@@ -73,21 +73,21 @@ func update_items() -> void:
 	for i in items.size():
 		var j := items_offset + posmod(i - min_index, items.size())
 		if j >= 0 and j < total_items:
-			if not _visible_items.has(j):
+			if full_update or not _visible_items.has(j):
 				update_item.call(items[i], j)
 			new_visible_items[j] = i
 			
 	for i in items.size():
 		var j := items_offset + posmod(i - min_index, items.size())
 		if j >= 0 and j < total_items:
-			if not _visible_items.has(j):
+			if full_update or not _visible_items.has(j):
 				var prev := posmod(i - 1, items.size())
 				var next := posmod(i + 1, items.size())
 				relative_update.call(items[i], items[prev], items[next])
 			
 	_visible_items = new_visible_items
 	
-func update_y_offset() -> void:
+func update_y_offset(full_update: bool) -> void:
 	var view_count := (total_items - items_shown + 1)
 	var x := (1.0 - scroll_bar.value)
 	var parent_height_correction := size.y - (items_shown - 1) * height_for_items
@@ -102,11 +102,11 @@ func update_y_offset() -> void:
 		item.position.y = fmod(virtual_y, items_shown * height_for_items) - height_for_items + (1 - x) * parent_height_correction
 		i += 1
 	
-	if items_offset != old_offset:
-		update_items()
+	if full_update or items_offset != old_offset:
+		update_items(full_update)
 
 func _on_scroll_bar_scrolling() -> void:
-	update_y_offset()
+	update_y_offset(false)
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -115,8 +115,8 @@ func _gui_input(event: InputEvent) -> void:
 			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_WHEEL_UP:
 				scroll_bar.value -= 0.75 / view_count
 				#scroll_bar.value -= height_for_items * 0.75 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
-				update_y_offset()
+				update_y_offset(false)
 			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_WHEEL_DOWN:
 				scroll_bar.value += 0.75 / view_count
 				#scroll_bar.value += height_for_items * 0.75 / ((total_items - items_shown + 1) * height_for_items + size.y - (items_shown - 1) * height_for_items)
-				update_y_offset()
+				update_y_offset(false)

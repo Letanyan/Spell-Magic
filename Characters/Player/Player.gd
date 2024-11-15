@@ -577,7 +577,7 @@ func transition_menu(is_open: bool) -> void:
 		screen_filter.visible = true
 		interface.visible = true
 		var tween := create_tween().set_parallel()
-		var D := 1.15
+		var D := 0.15
 		tween.tween_property(cam, "h_offset", 0.0, D)
 		tween.tween_property(cam_arm, "position", Vector3(0, -0.3, -0.6), D)
 		tween.tween_property(cam_arm, "spring_length", 0, D)
@@ -593,7 +593,7 @@ func transition_menu(is_open: bool) -> void:
 		screen_filter.visible = false
 		interface.visible = false
 		var tween := create_tween().set_parallel()
-		var D := 1.15
+		var D := 0.15
 		tween.tween_property(cam, "h_offset", 0.4, D)
 		tween.tween_property(cam_arm, "position", Vector3(0, 0, 0), D)
 		tween.tween_property(cam_arm, "spring_length", 1, D)
