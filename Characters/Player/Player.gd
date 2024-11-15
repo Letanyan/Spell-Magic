@@ -13,6 +13,7 @@ var projectile_indicator_scale: float = 1.0
 @onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 
 @onready var cam_animator: AnimationPlayer = $AnimationPlayer
 @onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
+@onready var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
 
 @onready var bg_audio: AudioStreamPlayer3D = $BGAudio
 @onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
@@ -70,6 +71,8 @@ var buff_crit_dmg := Vector2.ZERO
 var menu_callbacks_are_set: bool = false
 var on_menu_open: Callable = func() -> void: pass
 var on_menu_close: Callable = func() -> void: pass
+var cam_pivot_rotation_y: float = 0.0
+var cam_arm_rotation_x: float = 0.0
 
 func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
@@ -332,7 +335,6 @@ func set_current_biome_grass_color(color: Color) -> void:
 	(leaves.process_material as ParticleProcessMaterial).color = color
 
 func set_underwater(underwater: float = 0.5) -> float:
-	var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
 	var screen_mesh: Mesh = screen_filter.mesh
 	var screen_material: ShaderMaterial = screen_mesh.surface_get_material(0)
 	if position.y + 2.0 < world_settings.sea_level:
@@ -572,9 +574,35 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 		
 func transition_menu(is_open: bool) -> void:
 	if is_open:
-		cam_animator.play("OpenMenu")
-	else:		
-		cam_animator.play("CloseMenu")
+		screen_filter.visible = true
+		interface.visible = true
+		var tween := create_tween().set_parallel()
+		var D := 1.15
+		tween.tween_property(cam, "h_offset", 0.0, D)
+		tween.tween_property(cam_arm, "position", Vector3(0, -0.3, -0.6), D)
+		tween.tween_property(cam_arm, "spring_length", 0, D)
+		cam_pivot_rotation_y = cam_pivot.rotation.y
+		cam_arm_rotation_x = cam_arm.rotation.x
+		var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
+		tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, D)
+		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, -cam_arm.rotation.x)
+		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
+		tween.finished.connect(on_menu_open)
+		tween.play()
+	else:
+		screen_filter.visible = false
+		interface.visible = false
+		var tween := create_tween().set_parallel()
+		var D := 1.15
+		tween.tween_property(cam, "h_offset", 0.4, D)
+		tween.tween_property(cam_arm, "position", Vector3(0, 0, 0), D)
+		tween.tween_property(cam_arm, "spring_length", 1, D)
+		var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, cam_pivot_rotation_y + -body_pivot.rotation.y)
+		tween.tween_property(cam_pivot, "transform:basis", target_basis, D)
+		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)
+		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
+		tween.finished.connect(on_menu_close)
+		tween.play()
 		
 func change_reticule_visible(should_hide: bool) -> void:
 	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide

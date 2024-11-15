@@ -179,7 +179,7 @@ func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IS
 	
 	await RenderingServer.frame_post_draw
-	(player.interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
+	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("albedo_texture", sub_viewport.get_texture())
 	sub_viewport_container.visible = false
 
 func _ready() -> void:
@@ -352,7 +352,7 @@ func _input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative)
-		
+				
 	if not menu.is_showing:
 		GlobalData.controller.handle_input(event)
 		
