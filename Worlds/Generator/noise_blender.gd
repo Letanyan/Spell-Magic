@@ -247,196 +247,178 @@ static func walking_audio_for_biome(b: World.Biome) -> String:
 		World.Biome.HFIL: return "Grassland"
 		_: return "empty"
 
-static func update_world_environment(env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, level: float, b: World.Biome, is_start: bool) -> void:
-	var prefix := "start_" if is_start else "final_"
-	var shader := env.environment.sky.sky_material as ShaderMaterial
-	
-	env.environment.fog_density = 0.0
-	env.environment.fog_sky_affect = 0.0
+static func update_for_world_environment(result: Dictionary, env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, level: float, b: World.Biome, day_time: float) -> void:	
+	result["*fog_density"] = 0.0
+	result["*fog_sky_affect"] = 0.0
+	result["*fog_light_color"] = Color.GRAY
+	result["*ambient_light_color"] = NoiseBlender.environment_ambient_color(b, day_time, sun, moon)
 	match b:
 		World.Biome.GRASSLAND:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0.1, 0.6, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.43, 1, 0.8195, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.7085, 0.47, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.3667, 0.24, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0.02, 0, 0.039, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.0819, 0.2411, 0.39, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.702, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.941, 0.961, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.922, 0.922, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.831, 0.831, 0.941, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
-			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.6)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.27)
+			result["day_top_color"] = Color(0.1, 0.6, 1, 1)
+			result["day_bottom_color"] = Color(0.43, 1, 0.8195, 1)
+			result["sunset_top_color"] = Color(0.7085, 0.47, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 0.3667, 0.24, 1)
+			result["night_top_color"] = Color(0.02, 0, 0.039, 1)
+			result["night_bottom_color"] = Color(0.0819, 0.2411, 0.39, 1)
+			result["horizon_color"] = Color(0, 0.702, 0.8, 1)
+			result["horizon_blur"] = 0.05
+			result["clouds_edge_color"] = Color(0.941, 0.961, 1, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.922, 0.922, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.831, 0.831, 0.941, 1)
+			result["clouds_speed"] = 1.0
+			result["clouds_scale"] = 2.2
+			result["clouds_cutoff"] = 0.6
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.27
 		World.Biome.FOREST:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0, 0.3725, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4627, 1, 0.4275, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.702, 0.749, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.9176, 0.2353, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0.02, 0, 0.04, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.102, 0.4824, 0.2, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05000000074506)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
-			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.3)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.25)
+			result["day_top_color"] = Color(0, 0.3725, 1, 1)
+			result["day_bottom_color"] = Color(0.4627, 1, 0.4275, 1)
+			result["sunset_top_color"] = Color(0.702, 0.749, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 0.9176, 0.2353, 1)
+			result["night_top_color"] = Color(0.02, 0, 0.04, 1)
+			result["night_bottom_color"] = Color(0.102, 0.4824, 0.2, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05000000074506
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 1.0
+			result["clouds_scale"] = 2.2
+			result["clouds_cutoff"] = 0.3
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.25
 		World.Biome.TAIGA:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0.05, 0, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0, 0.8367, 0.9796, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.66, 0.9377, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.35, 0.5992, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0.02, 0, 0.04, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.1034, 0.1636, 0.22, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05000000074506)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 0.999999977648)
-			shader.set_shader_parameter(prefix + "clouds_scale", 2.27999994903744)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.43999999016512)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.78999998234192)
+			result["day_top_color"] = Color(0.05, 0, 1, 1)
+			result["day_bottom_color"] = Color(0, 0.8367, 0.9796, 1)
+			result["sunset_top_color"] = Color(0.66, 0.9377, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 0.35, 0.5992, 1)
+			result["night_top_color"] = Color(0.02, 0, 0.04, 1)
+			result["night_bottom_color"] = Color(0.1034, 0.1636, 0.22, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05000000074506
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 0.999999977648
+			result["clouds_scale"] = 2.27999994903744
+			result["clouds_cutoff"] = 0.43999999016512
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.78999998234192
 		World.Biome.JUNGLE:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0, 0.53, 0.1943, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0, 0.63, 0.567, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.5553, 0.42, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(0.368, 0.48, 0, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0.02, 0, 0.04, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.1269, 0.27, 0.2175, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05000000074506)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 0.999999977648)
-			shader.set_shader_parameter(prefix + "clouds_scale", 2.27999994903744)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.43999999016512)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0.3999999910592)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0)
+			result["day_top_color"] = Color(0, 0.53, 0.1943, 1)
+			result["day_bottom_color"] = Color(0, 0.63, 0.567, 1)
+			result["sunset_top_color"] = Color(0.5553, 0.42, 1, 1)
+			result["sunset_bottom_color"] = Color(0.368, 0.48, 0, 1)
+			result["night_top_color"] = Color(0.02, 0, 0.04, 1)
+			result["night_bottom_color"] = Color(0.1269, 0.27, 0.2175, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05000000074506
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 0.999999977648
+			result["clouds_scale"] = 2.27999994903744
+			result["clouds_cutoff"] = 0.43999999016512
+			result["clouds_weight"] = 0.3999999910592
+			result["clouds_blur"] = 0.0
 		World.Biome.DESERT:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0, 0.4833, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0, 0.9333, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.3667, 0, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.7, 0, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0, 0.136, 0.34, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.2162, 0.4031, 0.46, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05000000074506)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 0.73999998345952)
-			shader.set_shader_parameter(prefix + "clouds_scale", 3.999999910592)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.15999999642368)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.999999977648)
+			result["day_top_color"] = Color(0, 0.4833, 1, 1)
+			result["day_bottom_color"] = Color(0, 0.9333, 1, 1)
+			result["sunset_top_color"] = Color(0.3667, 0, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 0.7, 0, 1)
+			result["night_top_color"] = Color(0, 0.136, 0.34, 1)
+			result["night_bottom_color"] = Color(0.2162, 0.4031, 0.46, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05000000074506
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 0.73999998345952
+			result["clouds_scale"] = 3.999999910592
+			result["clouds_cutoff"] = 0.15999999642368
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.999999977648
 		World.Biome.SAVANNAH:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0.27, 0.562, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.81, 0.9683, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(1, 0.35, 0, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.55, 0, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0, 0.216, 0.54, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0, 0, 0, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 2.0499999541784)
-			shader.set_shader_parameter(prefix + "clouds_scale", 1.30999997071888)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.6999999843536)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0)
+			result["day_top_color"] = Color(0.27, 0.562, 1, 1)
+			result["day_bottom_color"] = Color(0.81, 0.9683, 1, 1)
+			result["sunset_top_color"] = Color(1, 0.35, 0, 1)
+			result["sunset_bottom_color"] = Color(1, 0.55, 0, 1)
+			result["night_top_color"] = Color(0, 0.216, 0.54, 1)
+			result["night_bottom_color"] = Color(0, 0, 0, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 2.0499999541784
+			result["clouds_scale"] = 1.30999997071888
+			result["clouds_cutoff"] = 0.6999999843536
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.0
 		World.Biome.TUNDRA:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0.51, 0.706, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.7958, 0.51, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0.7795, 0.51, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0, 0.12, 0.3, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0.2444, 0.4557, 0.52, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 5.86999986879376)
-			shader.set_shader_parameter(prefix + "clouds_scale", 3.999999910592)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.6499999854712)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0)
-			env.environment.fog_density = lerpf(0.0, 0.1, level / 100.0)
-			env.environment.fog_sky_affect = lerpf(0.1, 0.75, level / 100.0)
-			env.environment.fog_light_color = Color.WHITE
+			result["day_top_color"] = Color(0.51, 0.706, 1, 1)
+			result["day_bottom_color"] = Color(1, 1, 1, 1)
+			result["sunset_top_color"] = Color(0.7958, 0.51, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 0.7795, 0.51, 1)
+			result["night_top_color"] = Color(0, 0.12, 0.3, 1)
+			result["night_bottom_color"] = Color(0.2444, 0.4557, 0.52, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 5.86999986879376
+			result["clouds_scale"] = 3.999999910592
+			result["clouds_cutoff"] = 0.6499999854712
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.0
+			
+			result["*fog_density"] = lerpf(0.0, 0.1, level / 100.0)
+			result["*fog_sky_affect"] = lerpf(0.1, 0.75, level / 100.0)
+			result["*fog_light_color"] = Color.WHITE
 		World.Biome.OTHERWORLD:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0, 0.0167, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0, 0, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 0, 1, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0, 0, 1, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0, 0, 0, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 19.99999955296)
-			shader.set_shader_parameter(prefix + "clouds_scale", 0.43999999016512)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.31999999284736)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.999999977648)
+			result["day_top_color"] = Color(0, 1, 1, 1)
+			result["day_bottom_color"] = Color(0, 0.0167, 1, 1)
+			result["sunset_top_color"] = Color(0, 0, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 0, 1, 1)
+			result["night_top_color"] = Color(0, 0, 1, 1)
+			result["night_bottom_color"] = Color(0, 0, 0, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 19.99999955296
+			result["clouds_scale"] = 0.43999999016512
+			result["clouds_cutoff"] = 0.31999999284736
+			result["clouds_weight"] = 0.0
+			result["clouds_blur"] = 0.999999977648
 		World.Biome.HFIL:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(1, 0, 0, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(1, 0.0157, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(1, 0, 1, 1))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(1, 1, 0, 1))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(1, 0, 0, 1))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0, 0, 0, 1))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0, 0.7, 0.8, 1))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.8, 0.8, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.92, 0.92, 0.98, 1))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.83, 0.83, 0.94, 1))
-			shader.set_shader_parameter(prefix + "clouds_speed", 0)
-			shader.set_shader_parameter(prefix + "clouds_scale", 3.999999910592)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.499999988824)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0.999999977648)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.61999998614176)
-		_:
-			shader.set_shader_parameter(prefix + "day_top_color", Color(0.102, 0.594, 1))
-			shader.set_shader_parameter(prefix + "day_bottom_color", Color(0.4, 0.3, 0.557))
-			shader.set_shader_parameter(prefix + "sunset_top_color", Color(0.702, 0.449, 0.737))
-			shader.set_shader_parameter(prefix + "sunset_bottom_color", Color(0.718, 0.175, 0.384))
-			shader.set_shader_parameter(prefix + "night_top_color", Color(0.02, 0.637, 0.039))
-			shader.set_shader_parameter(prefix + "night_bottom_color", Color(0, 0.684, 0.169))
-			shader.set_shader_parameter(prefix + "horizon_color", Color(0.333, 0.139, 0.349))
-			shader.set_shader_parameter(prefix + "horizon_blur", 0.05)
-			shader.set_shader_parameter(prefix + "clouds_edge_color", Color(0.941, 0.961, 1))
-			shader.set_shader_parameter(prefix + "clouds_top_color", Color(1, 1, 1))
-			shader.set_shader_parameter(prefix + "clouds_middle_color", Color(0.922, 0.922, 0.98))
-			shader.set_shader_parameter(prefix + "clouds_bottom_color", Color(0.831, 0.831, 0.941))
-			shader.set_shader_parameter(prefix + "clouds_speed", 1.0)
-			shader.set_shader_parameter(prefix + "clouds_scale", 2.2)
-			shader.set_shader_parameter(prefix + "clouds_cutoff", 0.3)
-			shader.set_shader_parameter(prefix + "clouds_weight", 0)
-			shader.set_shader_parameter(prefix + "clouds_blur", 0.25)
+			result["day_top_color"] = Color(1, 0, 0, 1)
+			result["day_bottom_color"] = Color(1, 0.0157, 1, 1)
+			result["sunset_top_color"] = Color(1, 0, 1, 1)
+			result["sunset_bottom_color"] = Color(1, 1, 0, 1)
+			result["night_top_color"] = Color(1, 0, 0, 1)
+			result["night_bottom_color"] = Color(0, 0, 0, 1)
+			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
+			result["horizon_blur"] = 0.05
+			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
+			result["clouds_top_color"] = Color(1, 1, 1, 1)
+			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
+			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
+			result["clouds_speed"] = 0.0
+			result["clouds_scale"] = 3.999999910592
+			result["clouds_cutoff"] = 0.499999988824
+			result["clouds_weight"] = 0.999999977648
+			result["clouds_blur"] = 0.61999998614176
 	
 enum SkyColorKind { DAY_TOP, DAY_BOTTOM, SUNSET_TOP, SUNSET_BOTTOM, NIGHT_TOP, NIGHT_BOTTOM }
 static func sky_color(b: World.Biome, kind: SkyColorKind) -> Color:

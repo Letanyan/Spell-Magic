@@ -17,14 +17,17 @@ const CHUNK_SIZE = 256
 @onready var population: Dictionary = {} ## [Vector2]Population
 var entity_manager: EntityManager
 
+var last_last_biome: World.Biome = World.Biome.WATER
 var last_biome: World.Biome = World.Biome.WATER
 
 @onready var skybox: SkyBox
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
-var biome_tween_next := -1
-var biome_tween: Tween = null
+var biome_tick := 0.0
+var biome_transition_duration := 1.0
+var biome_start_settings := {}
+var biome_final_settings := {}
 
 var terrain_update_interval := 0.0
 var has_init_terrain_population := false
@@ -221,6 +224,7 @@ func _physics_process(delta: float) -> void:
 	daytime_tick += delta
 	environment_effect_tick += delta
 	
+	update_transition_to_biome(delta)
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
 
@@ -252,8 +256,6 @@ func _physics_process(delta: float) -> void:
 		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
-		world_environment.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, settings.time_of_day, sun, moon)
-		sun.light_color = world_environment.environment.ambient_light_color
 		
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	const MULT = 2.5
@@ -263,7 +265,8 @@ func _physics_process(delta: float) -> void:
 	if last_biome != b:
 		player.set_current_biome(b)
 		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
-		transition_to_biome(b)
+		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)
+		last_last_biome = last_biome
 		last_biome = b
 		
 	if environment_effect_tick >= 2.0:
@@ -512,28 +515,65 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			)
 			overlay.show_in_root(self)
 
-func transition_to_biome(biome: World.Biome) -> void:
-	if biome_tween != null:
-		biome_tween_next = biome
-		return
-	
+func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var env := get_node("WorldEnvironment") as WorldEnvironment
-	var update_world := func(a: float) -> void:
-		var shader := env.environment.sky.sky_material as ShaderMaterial
-		shader.set_shader_parameter("transition", a)
-		
-	biome_tween = get_tree().create_tween()
+	var shader := env.environment.sky.sky_material as ShaderMaterial
 	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius)
-	NoiseBlender.update_world_environment(env, sun, moon, lvl, biome, false)
-	biome_tween.tween_method(update_world, 0.0, 1.0, 0.5)
-	biome_tween.finished.connect(func() -> void:
-		NoiseBlender.update_world_environment(env, sun, moon, lvl, biome, true)
-		update_world.call(0.0)
-		if biome_tween_next != -1:
-			biome_tween = null
-			var b := biome_tween_next
-			biome_tween_next = -1
-			transition_to_biome(b)
+	if biome_final_settings.is_empty():
+		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_start_settings.merge(biome_final_settings, true)
+		biome_tick = biome_transition_duration
+		shader.set_shader_parameter("transition", 0.0)
+		for key: String in biome_final_settings: 
+			if not key.begins_with("*"): 
+				shader.set_shader_parameter("final_" + key, biome_final_settings[key])
+				shader.set_shader_parameter("start_" + key, biome_final_settings[key])
+	elif is_equal_approx(biome_tick, biome_transition_duration):
+		biome_tick = 0.0
+		shader.set_shader_parameter("transition", 0.0)
+		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
+		biome_transition_duration = duration
+	else:
+		var t := biome_tick / biome_transition_duration
+		var elapsed := biome_tick
+		biome_tick = 0.0
+		for key: String in biome_start_settings: 
+			var value: Variant = lerp(biome_start_settings[key], biome_final_settings[key], t)
+			biome_start_settings[key] = value
+			if not key.begins_with("*"):
+				shader.set_shader_parameter("start_" + key, value)
+				shader.set_shader_parameter("final_" + key, value)
+		shader.set_shader_parameter("transition", 0.0)
+		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
+		if last_last_biome == biome:
+			biome_transition_duration = elapsed
 		else:
-			biome_tween = null			
-	)
+			biome_transition_duration = duration - elapsed
+		
+func update_transition_to_biome(delta: float) -> void:
+	if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
+		return
+		
+	biome_tick += delta
+	var env := get_node("WorldEnvironment") as WorldEnvironment
+	var shader := env.environment.sky.sky_material as ShaderMaterial
+	if biome_tick > biome_transition_duration or is_equal_approx(biome_tick, biome_transition_duration):
+		biome_tick = biome_transition_duration
+		biome_start_settings.merge(biome_final_settings, true)
+		for key: String in biome_start_settings: if not key.begins_with("*"): shader.set_shader_parameter("start_" + key, biome_start_settings[key])
+		shader.set_shader_parameter("transition", 0.0)
+		env.environment.ambient_light_color = biome_start_settings["*ambient_light_color"]
+		sun.light_color = world_environment.environment.ambient_light_color
+		env.environment.fog_density = biome_start_settings["*fog_density"]
+		env.environment.fog_sky_affect = biome_start_settings["*fog_sky_affect"]
+		env.environment.fog_light_color = biome_start_settings["*fog_light_color"]
+	else:
+		var t := biome_tick / biome_transition_duration
+		shader.set_shader_parameter("transition", t)
+		env.environment.ambient_light_color = lerp(biome_start_settings["*ambient_light_color"], biome_final_settings["*ambient_light_color"], t)
+		sun.light_color = world_environment.environment.ambient_light_color
+		env.environment.fog_density = lerp(biome_start_settings["*fog_density"], biome_final_settings["*fog_density"], t)
+		env.environment.fog_sky_affect = lerp(biome_start_settings["*fog_sky_affect"], biome_final_settings["*fog_sky_affect"], t)
+		env.environment.fog_light_color = lerp(biome_start_settings["*fog_light_color"], biome_final_settings["*fog_light_color"], t)
