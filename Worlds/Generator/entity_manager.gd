@@ -97,7 +97,8 @@ class EntityBuffer:
 		buffer[high_watermark] = temp
 		deinit.call(temp)
 		
-var buffer_foliage: Foliage
+var buffer_foliage_lod0: Foliage
+var buffer_foliage_lod1: Foliage
 
 var buffer_fish: EntityBuffer
 var buffer_bird: EntityBuffer
@@ -151,7 +152,8 @@ func _init() -> void:
 		node.position.y = -1000
 		node.is_active = false
 	
-	buffer_foliage = Foliage.new()
+	buffer_foliage_lod0 = Foliage.new(0)
+	buffer_foliage_lod1 = Foliage.new(1)
 	
 	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "FISH")
 	buffer_bird = EntityBuffer.new(10, func() -> Bird: return Enemy.make(World.Enemy.BIRD), deinit_enemy, "BIRD")

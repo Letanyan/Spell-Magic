@@ -3,7 +3,7 @@ class_name Foliage
 const HIDEY = -1000
 var T_HIDEY := T.I.translated(Vec3.y(HIDEY))
 
-const all_meshes = {
+const lod0_meshes = {
 	World.Foliage.TREE_PYRAMID: preload("res://Models/Nature/tree_pyramid.mesh") as ArrayMesh,
 	World.Foliage.TREE_ROUND: preload("res://Models/Nature/tree_round.mesh") as ArrayMesh,
 	World.Foliage.TREE_CHRISTMAS: preload("res://Models/Nature/tree_christmas.mesh") as ArrayMesh,
@@ -25,6 +25,28 @@ const all_meshes = {
 	World.Foliage.MUSHROOM_POINTED: preload("res://Models/Nature/mushroom_pointed.mesh") as ArrayMesh,
 } 
 
+const lod1_meshes = {
+	World.Foliage.TREE_PYRAMID: preload("res://Models/Nature/tree_pyramid_lod1.mesh") as ArrayMesh,
+	World.Foliage.TREE_ROUND: preload("res://Models/Nature/tree_round_lod1.mesh") as ArrayMesh,
+	World.Foliage.TREE_CHRISTMAS: preload("res://Models/Nature/tree_christmas_lod1.mesh") as ArrayMesh,
+	World.Foliage.TREE_SAFARI: preload("res://Models/Nature/tree_safari_lod1.mesh") as ArrayMesh,
+	World.Foliage.TREE_BRANCHED: preload("res://Models/Nature/tree_branched_lod1.mesh") as ArrayMesh,
+	World.Foliage.ROCK_EGG: preload("res://Models/Nature/rock_egg.mesh") as ArrayMesh,
+	World.Foliage.ROCK_FLATTOP: preload("res://Models/Nature/rock_flattop.mesh") as ArrayMesh,
+	World.Foliage.ROCK_OVERHANG: preload("res://Models/Nature/rock_overhang.mesh") as ArrayMesh,
+	World.Foliage.ROCK_SQUASHED: preload("res://Models/Nature/rock_squashed.mesh") as ArrayMesh,
+	World.Foliage.ROCK_TALL: preload("res://Models/Nature/rock_tall.mesh") as ArrayMesh,
+	World.Foliage.BUSH_ROUND: preload("res://Models/Nature/bush_round_lod1.mesh") as ArrayMesh,
+	World.Foliage.BUSH_SPROUT: preload("res://Models/Nature/bush_sprout_lod1.mesh") as ArrayMesh,
+	World.Foliage.BUSH_TALL: preload("res://Models/Nature/bush_tall_lod1.mesh") as ArrayMesh,
+	World.Foliage.FLOWERS_SUN2: preload("res://Models/Nature/flowers_sun2_lod1.mesh") as ArrayMesh,
+	World.Foliage.FLOWERS_SUN3: preload("res://Models/Nature/flowers_sun3_lod1.mesh") as ArrayMesh,
+	World.Foliage.GRASS_REED: preload("res://Models/Nature/grass_reed_lod1.mesh") as ArrayMesh,
+	World.Foliage.GRASS_SHRUB: preload("res://Models/Nature/grass_shrub_lod1.mesh") as ArrayMesh,
+	World.Foliage.MUSHROOM_BULB: preload("res://Models/Nature/mushroom_bulb_lod1.mesh") as ArrayMesh,
+	World.Foliage.MUSHROOM_POINTED: preload("res://Models/Nature/mushroom_pointed_lod1.mesh") as ArrayMesh,
+} 
+
 var multi_meshes: Array[MultiMeshInstance3D] = [] ## [World.Foliage]MultMeshInstance3D
 var static_bodies: Array[EntityManager.EntityBuffer] = [] ## [World.Foliage]EntityManager.EntityBuffer
 var slot_markings: Array[PackedByteArray] = [] ## [World.Foliage]PackedByteArray
@@ -32,7 +54,7 @@ var opened_slots: Array[EntityManager.EntityBuffer] = [] ## [World.Foliage]Entit
 var transforms: Array[Array] = [] ## [World.Foliage][]Transform3D
 var static_body_map: Dictionary = {} ## [Vector2i]StaticBody3D
 
-func _init() -> void:
+func _init(lod_level: int) -> void:
 	var alloc_static_body := func(shape_template: Shape3D) -> Callable:
 		var fn := func() -> StaticBody3D:
 			var result := StaticBody3D.new()
@@ -48,10 +70,14 @@ func _init() -> void:
 		var shape := body.get_node("shape") as CollisionShape3D
 		shape.disabled = true
 	
+	var all_meshes := lod0_meshes
+	if lod_level == 1:
+		all_meshes = lod1_meshes
 	
 	const INS_COUNT := 1000
 	for kind: World.Foliage in World.Foliage.values():
 		if kind == World.Foliage.NONE: continue
+		
 		var multi_mesh := MultiMesh.new()
 		multi_mesh.mesh = all_meshes[kind]
 		var multi_mesh_ins := MultiMeshInstance3D.new()

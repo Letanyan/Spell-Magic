@@ -95,7 +95,8 @@ func setup(_settings: WorldSettings) -> void:
 #		artifacts.collection.append(artifact)
 	
 	entity_manager = EntityManager.new()
-	entity_manager.buffer_foliage.add_all_meshes(self)
+	entity_manager.buffer_foliage_lod0.add_all_meshes(self)
+	entity_manager.buffer_foliage_lod1.add_all_meshes(self)
 	
 	
 	GlobalData.game_settings.last_world = settings.world_name

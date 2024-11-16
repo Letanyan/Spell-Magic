@@ -6,6 +6,7 @@ var blender: NoiseBlender
 var player: Player
 var entity_manager: EntityManager
 var display_only: bool
+var foliage_manager: Foliage
 
 var coord: Vector2
 var chunk_size: float
@@ -39,6 +40,10 @@ func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: Noi
 	chunk_size = _chunk_size
 	entity_manager = _entity_manager
 	display_only = _display_only
+	if display_only:
+		foliage_manager = entity_manager.buffer_foliage_lod1
+	else:
+		foliage_manager = entity_manager.buffer_foliage_lod0
 	seed_location()
 	SignalBus.enemy_death.connect(mark_entity)
 	for b: World.Biome in World.Biome.values():
@@ -81,12 +86,12 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
 		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
-			entity_manager.buffer_foliage.remove(kind, index)
+			foliage_manager.remove(kind, index)
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
-		entity_manager.buffer_foliage.setup(kind, index, position, rng, current_biome_during_generation)
+		foliage_manager.setup(kind, index, position, rng, current_biome_during_generation)
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
-		entity_manager.buffer_foliage.set_albedo_blend(kind, index, blender.color)
+		foliage_manager.set_albedo_blend(kind, index, blender.color)
 		garden.append(Vector2i(kind, index))
 		
 	#current_iteration_spawn_count += 1
@@ -168,7 +173,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 
 func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> int:
 	var pos := Vector3(p.x, 0, p.y)
-	var result := entity_manager.buffer_foliage.make(foliage)
+	var result := foliage_manager.make(foliage)
 	pos.x += spacing * rng.randf_range(-0.5, 0.5)
 	pos.z += spacing * rng.randf_range(-0.5, 0.5)
 	return prepare_foliage(foliage, result, pos, user_info)
@@ -264,9 +269,9 @@ func despawn_all_from_world(world: Node3D) -> void:
 		entity_manager.free_enemy(habitant)
 	for f in garden:
 		var clr := Color(0, 0, 0)
-		entity_manager.buffer_foliage.set_albedo_blend(f.x, f.y, clr) 
-		entity_manager.buffer_foliage.remove(f.x, f.y)
-		entity_manager.buffer_foliage.free_static_body(f)
+		foliage_manager.set_albedo_blend(f.x, f.y, clr) 
+		foliage_manager.remove(f.x, f.y)
+		foliage_manager.free_static_body(f)
 	for item in world_items:
 		entity_manager.free_world_item(item)
 	other_objects.clear()
@@ -289,15 +294,15 @@ func update_info(world: Node3D) -> void:
 			habitant.animation_tree.active = dist < 50
 	
 	for g: Vector2i in garden:
-		var t := entity_manager.buffer_foliage.get_transform(g.x, g.y)
-		var s := entity_manager.buffer_foliage.get_collision_shape(g)
-		var mxb := entity_manager.buffer_foliage.get_scaled_shape_length(g, t)
-		if t.origin.distance_to(player.position) > maxf(50, mxb * 2.0):
+		var t := foliage_manager.get_transform(g.x, g.y)
+		var s := foliage_manager.get_collision_shape(g)
+		var mxb := foliage_manager.get_scaled_shape_length(g, t)
+		if t.origin.distance_to(player.position) > 50 + mxb * 2.0:
 			if s != null:
-				entity_manager.buffer_foliage.free_static_body(g)
+				foliage_manager.free_static_body(g)
 		else:
 			if s == null:
-				var body := entity_manager.buffer_foliage.make_static_body(g)
+				var body := foliage_manager.make_static_body(g)
 				if body.get_parent() == null:
 					world.add_child(body)
 				s = body.get_node("shape") as CollisionShape3D
@@ -307,14 +312,14 @@ func update_info(world: Node3D) -> void:
 	for item in world_items:
 		if item is TargetShape:
 			if (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
-				(item.get_node("./static/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > maxf((item as TargetShape).bounds.length() * 1.25, 50)
+				(item.get_node("./static/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > (item as TargetShape).bounds.length() * 1.25 + 50
 			else:
 				(item.get_node("./area/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
 		else:
 			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
 		
 		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
-			item.is_active = item.position.distance_to(player.position) < maxf((item as TargetShape).bounds.length() * 2.0, 50) and not player.world_settings.is_paused
+			item.is_active = item.position.distance_to(player.position) < (item as TargetShape).bounds.length() * 2.0 + 50 and not player.world_settings.is_paused
 			if item.is_active:
 				player.watch_target(item as TargetShape)
 			else:

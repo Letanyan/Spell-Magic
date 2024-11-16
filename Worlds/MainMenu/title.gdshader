@@ -55,19 +55,19 @@ vec4 radial_gradient(vec2 position, vec3 circle, vec4 start_color, vec4 end_colo
 
 vec3 make_circle(inout uint seed, float t) {
 	vec3 base = vec3(rand(seed), rand(seed), rand(seed) * 0.2);
-	
+
 	vec4 rot = vec4(rand(seed), rand(seed), rand(seed) * PI * 2.0 + t, rand(seed) * 0.3);
-	
+
 	base.x -= rot.x;
 	base.y -= rot.y;
-	
+
 	float c = cos(rot.z / 10.0);
 	float s = sin(rot.z / 10.0);
 	base.x = base.x * c - base.y * s + rot.x;
 	base.y = base.x * s + base.y * c + rot.y;
-	
+
 	base.z = base.z + rot.w * sin((t + rand(seed) * PI * 2.0) / 100.0);
-	
+
 	return base;
 }
 
@@ -77,7 +77,7 @@ void vertex() {
 
 void fragment() {
 	uint base = base_seed;
-	
+
 	vec4 final_color = vec4(ALBEDO, 1.0);
 	for (int i = 0; i < 100; i++) {
 		uint seed = hash(base + uint(i));
@@ -89,7 +89,7 @@ void fragment() {
 			final_color = paint(final_color, fg_color);
 		}
 	}
-	
+
 	ALBEDO = final_color.rgb;
 	ALPHA = final_color.a;
 }

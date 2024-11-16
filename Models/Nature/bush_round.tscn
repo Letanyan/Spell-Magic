@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=4 uid="uid://c664hgmq4agfu"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/foliage.gd" id="1_4hs77"]
-[ext_resource type="Material" uid="uid://bea4dl4060sxo" path="res://Models/Nature/Nature_Mat_01.tres" id="1_yiysa"]
+[ext_resource type="Material" uid="uid://caqq4eogbwxyh" path="res://Models/Nature/Nature_Mat_Shader.material" id="2_wk1en"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rdedn"]
 radius = 0.65
@@ -30,7 +30,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 240,
 "index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB/AIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUAlgCXAJgAmQCaAJsAnACdAJ4AnwCgAKEAogCjAKQApQCmAKcAqACpAKoAqwCsAK0ArgCvALAAsQCyALMAtAC1ALYAtwC4ALkAugC7ALwAvQC+AL8AwADBAMIAwwDEAMUAxgDHAMgAyQDKAMsAzADNAM4AzwDQANEA0gDTANQA1QDWANcA2ADZANoA2wDcAN0A3gDfAOAA4QDiAOMA5ADlAOYA5wDoAN0A6QDqAOsA7ADtAO4A"),
-"material": ExtResource("1_yiysa"),
+"material": ExtResource("2_wk1en"),
 "name": "Nature_Mat_01",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),

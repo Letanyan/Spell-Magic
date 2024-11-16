@@ -8,6 +8,6 @@ void fragment() {
 	float r = color.r;
 	float g = color.g;
 	float b = color.b;
-	
+
 	ALBEDO = vec3(r, g, b);
 }
