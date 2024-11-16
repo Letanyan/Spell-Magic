@@ -9,6 +9,7 @@ var water_noise := preload("res://Worlds/SkyBox/water_noise.tres") as NoiseTextu
 var water_ripples_noise := preload("res://Worlds/SkyBox/ripples_noise.tres") as NoiseTexture2D
 var noise_texture := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
 
+# FIXME: add HeightMap shape to medium chunks. add LOD1 foliage to medium chunks. Support population adding only foliage with no updates
 func _init(b: NoiseBlender, cs: float = 256, gs: float = cs * 0.5, r: float = 3, subdivide: float = 1.0 / 16.0, mcw: float = 18, find_bound_coords: bool = false) -> void:
 	backing = GDTerrain.new()
 	backing.init(b.back, cs, gs, r, subdivide, mcw, find_bound_coords)
@@ -20,68 +21,74 @@ func _init(b: NoiseBlender, cs: float = 256, gs: float = cs * 0.5, r: float = 3,
 	backing.set_noise_texture(noise_texture)
 	height_map_scale = cs / (cs * subdivide + 1.0)
 	
-func init_chunks_of_size(chunks: Array, index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> Array[Node3D]:
-	return backing.init_chunks_of_size(chunks, index, x, y, cs, r, subdivide)
+#func init_chunks_of_size(chunks: Array, index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> Array[Node3D]:
+	#return backing.init_chunks_of_size(chunks, index, x, y, cs, r, subdivide)
 	
 func init_chunks(x: float, y: float) -> Array[Node3D]:
 	return backing.init_chunks(x, y, load("res://Models/Grass/grassface.tres") as Mesh)
 	
-func update_chunks_with_size(chunks: Array[Node3D], index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> Dictionary:
-	return backing.update_chunks_with_size(chunks, index, x, y, cs, r, subdivide)
+#func update_chunks_with_size(chunks: Array[Node3D], index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> Dictionary:
+	#return backing.update_chunks_with_size(chunks, index, x, y, cs, r, subdivide)
 	
 func update_chunks(x: float, y: float) -> Dictionary:
 	return backing.update_chunks(x, y)
 		
-func create_mesh(x: float, y: float, size: float, r: float, subdivide: float) -> MeshInstance3D:
-	return backing.create_mesh(x, y, size, r, subdivide)
-	
-func create_water_mesh(x: float, y: float, size: float) -> MeshInstance3D:
-	return backing.create_water_mesh(x, y, size)
-		
-func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Node3D:
-	return backing.create_chunk_with_size(chunks, locations, x, y, cs, r, subdivide, is_water)
-
-func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float) -> void:
-	return backing.update_mesh(mi, x, y, size, r, subdivide)
-		
-func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float) -> void:
-	return backing.update_water_mesh(mi, x, y, size, r, subdivide)
-
-func update_chunk_with_size(node: Node3D, index: int, chunk_index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> void:
-	return backing.update_chunk_with_size(node, index, chunk_index, x, y, cs, r, subdivide)
+#func create_mesh(x: float, y: float, size: float, r: float, subdivide: float, index: int) -> MeshInstance3D:
+	#return backing.create_mesh(x, y, size, r, subdivide, index)
+	#
+#func create_water_mesh(x: float, y: float, size: float) -> MeshInstance3D:
+	#return backing.create_water_mesh(x, y, size)
+		#
+#func create_chunk_with_size(chunks: Array, locations: PackedVector2Array, x: float, y: float, cs: float, r: float, subdivide: float, is_water: bool) -> Node3D:
+	#return backing.create_chunk_with_size(chunks, locations, x, y, cs, r, subdivide, is_water)
+#
+#func update_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float, index: int) -> void:
+	#return backing.update_mesh(mi, x, y, size, r, subdivide, index)
+		#
+#func update_water_mesh(mi: MeshInstance3D, x: float, y: float, size: float, r: float, subdivide: float) -> void:
+	#return backing.update_water_mesh(mi, x, y, size, r, subdivide)
+#
+#func update_chunk_with_size(node: Node3D, index: int, chunk_index: int, x: float, y: float, cs: float, r: float, subdivide: float) -> void:
+	#return backing.update_chunk_with_size(node, index, chunk_index, x, y, cs, r, subdivide)
 
 func update_environment(x: float, y: float) -> void:
 	return backing.update_environment(x, y)
 
-func update_chunk_environment(node: Node3D) -> void:
-	backing.update_chunk_environment(node)
-
-func place_grass(delta: Vector2) -> void:
-	backing.place_grass(delta)
-	
-func init_grass() -> void:
-	backing.init_grass()
-
-func hide_water(y: float, force_update: bool) -> void:
-	push_warning("hide_water does nothing. Uncomment the below line for the effect to take place.")
-	#backing.hide_water(y, force_update)
-
-func set_player_coord_using_position(x: float, y: float, cs: float) -> void:
-	backing.set_player_coord_using_position(x, y, cs)
+#func update_chunk_environment(node: Node3D) -> void:
+	#backing.update_chunk_environment(node)
+#
+#func place_grass(delta: Vector2) -> void:
+	#backing.place_grass(delta)
+	#
+#func init_grass() -> void:
+	#backing.init_grass()
+#
+#func hide_water(y: float, force_update: bool) -> void:
+	#push_warning("hide_water does nothing. Uncomment the below line for the effect to take place.")
+	##backing.hide_water(y, force_update)
+#
+#func set_player_coord_using_position(x: float, y: float, cs: float) -> void:
+	#backing.set_player_coord_using_position(x, y, cs)
 	
 func convert_position_to_coord(x: float, y: float, cs: float) -> Vector2:
 	return backing.convert_position_to_coord(x, y, cs)
 
-func get_chunk_vertices() -> PackedVector3Array:
-	return backing.get_chunk_vertices()
-	
-func get_biomes_map(index: Vector2) -> PackedInt64Array:
-	return backing.get_biomes_map(index)
+#func get_chunk_vertices() -> PackedVector3Array:
+	#return backing.get_chunk_vertices()
+	#
+#func get_biomes_map(index: Vector2) -> PackedInt64Array:
+	#return backing.get_biomes_map(index)
 
 func get_noise_scale() -> float:
 	return backing.get_noise_scale()
 
-# Vector4 return: xyz = normal at point xz, w = y value height at point xz
+func get_loaded_chunks_location() -> PackedVector2Array:
+	return backing.get_loaded_chunks_location()
+	
+func get_medium_chunks_location() -> PackedVector2Array:
+	return backing.get_medium_chunks_location()
+
+## Vector4 return: xyz = normal at point xz, w = y value height at point xz
 func height_at_position(collision: CollisionShape3D, x: float, z: float) -> Vector4:
 	return backing.height_at_position(collision, x, z)
 	
@@ -90,8 +97,26 @@ func terrain_normal(x: float, z: float) -> Dictionary:
 	backing.terrain_normal(x, z, result)
 	return result
 	
-func get_loaded_chunks() -> Array[Node3D]:
-	return backing.get_loaded_chunks()
+func has_chunks_to_update() -> bool:
+	return backing.has_chunks_to_update()
+	
+func update_chunks_in_queue(start_time: int, limit: int) -> PackedVector2Array:
+	return backing.update_chunks_in_queue(start_time, limit)
+	
+func disable_height_map(coord: Vector2, is_medium: bool, disabled: bool) -> void:
+	backing.disable_height_map(coord, 1 if is_medium else 0, disabled)
+	
+#func get_loaded_chunks() -> Array[Node3D]:
+	#return backing.get_loaded_chunks()
+	
+func get_max_height_position() -> Vector3:
+	return backing.get_max_height_position()
+	
+func get_min_height_position() -> Vector3:
+	return backing.get_min_height_position()
+	
+func group_spawn_points(coord: Vector2, spacing: float, is_medium: bool, debug: bool) -> Dictionary:
+	return backing.group_spawn_points(coord, spacing, is_medium, debug)
 
 # xyz = normal of triangle, w = y value height at x,z parameters
 static func _height_at_position(collision: CollisionShape3D, x: float, z: float) -> Vector4:

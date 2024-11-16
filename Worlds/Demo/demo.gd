@@ -15,6 +15,7 @@ const CHUNK_SIZE = 256
 @onready var blender: NoiseBlender
 @onready var chunker: Terrain
 @onready var population: Dictionary = {} ## [Vector2]Population
+@onready var display_population: Dictionary = {} ## [Vector2]Population
 var entity_manager: EntityManager
 
 var last_last_biome: World.Biome = World.Biome.WATER
@@ -300,7 +301,10 @@ func _physics_process(delta: float) -> void:
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
-		update_population_at(chunker.backing.get_loaded_chunks_location())
+		for loc in chunker.get_loaded_chunks_location():
+			update_population_at(loc, false)
+		for loc in chunker.get_medium_chunks_location():
+			update_population_at(loc, true)
 		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
 		var platform_h := Navigator.get_platform_height(state, player.position.x, player.position.z)
 		if abs(player.position.y - world_h) < abs(player.position.y - platform_h):
@@ -404,33 +408,41 @@ func build_terrain() -> void:
 		add_child(chunk)
 
 func update_terrain_queue() -> void:
-	if chunker.backing.has_chunks_to_update():
-		chunker.backing.update_chunk_in_queue(Time.get_ticks_msec(), 3)
+	if chunker.has_chunks_to_update():
+		var locations := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
+		#print(locations)
+		for loc in locations:
+			update_population_at(loc, true)
 
 func update_terrain() -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
-	for loc: Vector2 in chunks.get("removed", []):
+	for loc: Vector2 in chunks.get("loaded_removed", []):
 		var pop := population.get(loc, null) as Population
-		if pop == null:
-			continue
+		if pop == null: continue
 		pop.despawn_all_from_world(get_node(".") as Node3D)
 		population.erase(loc)
 		
-	var updated_chunks := chunks.get("updated", []) as PackedVector2Array
-
-	update_population_at(updated_chunks)
+	for loc: Vector2 in chunks.get("medium_removed", []):
+		var pop := display_population.get(loc, null) as Population
+		if pop == null: continue
+		pop.despawn_all_from_world(get_node(".") as Node3D)
+		display_population.erase(loc)
+		
+	var updated_chunks := chunks.get("loaded_updated", []) as PackedVector2Array
+	for loc in updated_chunks:
+		update_population_at(loc, false)
 	
 	if updated_chunks.is_empty():
 		chunker.update_environment(player.position.x, player.position.z)
-	
 
-func update_population_at(locations: Array[Vector2]) -> void:
-	for loc: Vector2 in locations:
-		var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
-		var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager)
-		pop.setup_spawning_state()
+func update_population_at(loc: Vector2, display_only: bool) -> void:
+	var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
+	var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager, display_only)
+	pop.setup_spawning_state()
+	if display_only:
+		display_population[loc] = pop
+	else:
 		population[loc] = pop
-		#items_to_add[pop] = pop.spawn_all_into_world()
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}
@@ -439,6 +451,13 @@ func update_population_spawning() -> void:
 		var pop := population[loc] as Population
 		if not pop.is_spawning_complete():
 			items_to_add[pop] = pop.spawn_into_world(start_time_ms, 3)
+			
+	for loc: Vector2 in display_population:
+		var pop := display_population[loc] as Population
+		if not pop.is_spawning_complete():
+			items_to_add[pop] = pop.spawn_into_world(start_time_ms, 3)
+		else:
+			chunker.disable_height_map(loc, true, true)
 			
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:

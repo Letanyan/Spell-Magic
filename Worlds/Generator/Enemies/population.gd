@@ -5,6 +5,7 @@ var chunker: Terrain
 var blender: NoiseBlender
 var player: Player
 var entity_manager: EntityManager
+var display_only: bool
 
 var coord: Vector2
 var chunk_size: float
@@ -29,7 +30,7 @@ var current_spawn_start_time_ms: int = 0 # gets reset each generation cycle. Onl
 var current_spawn_duration_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
 var generators: Array[BiomeGenerator] = [] 
 
-func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager) -> void:
+func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
 	rng = RandomNumberGenerator.new()
 	coord = _coord
 	chunker = _chunker
@@ -37,6 +38,7 @@ func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: Noi
 	player = _player
 	chunk_size = _chunk_size
 	entity_manager = _entity_manager
+	display_only = _display_only
 	seed_location()
 	SignalBus.enemy_death.connect(mark_entity)
 	for b: World.Biome in World.Biome.values():
@@ -145,6 +147,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
+	if display_only: return null
 	var result := entity_manager.get_enemy(enemy)
 	var pos := Vector3(p.x, 0, p.y)
 	result.set_level(level_relative_to_position(rng, p.x, p.y))
@@ -171,6 +174,7 @@ func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info
 	return prepare_foliage(foliage, result, pos, user_info)
 	
 func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
+	if display_only: return null
 	var result := entity_manager.get_world_item(item) as WorldItem
 	var pos := Vector3(p.x, 0, p.y)
 	
@@ -181,6 +185,7 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 	return prepare_entity(result, pos, false, always_valid)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
+	if display_only: return null
 	var result: ItemSpawner
 	var world_normal := chunker.terrain_normal(p.x, p.y)
 	var wh: float = world_normal.get("position", Vector3.ZERO).y
@@ -208,9 +213,6 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 static func contains_neighbour_point(collection: PackedVector2Array, point: Vector2, spacing: float) -> bool:
 	return GDTerrain.contains_neighbour_point(collection, point, spacing)
 	
-func group_spawn_points(spacing: float) -> Dictionary:
-	return chunker.backing.group_spawn_points(coord, spacing)
-	
 static func points_around(point: Vector2, distance: float, offset: int, area: PackedVector2Array, exluding: Dictionary, shuffler: RandomNumberGenerator) -> PackedInt64Array:
 	var indices: PackedInt64Array = []
 	for i in range(offset, area.size()):
@@ -227,7 +229,7 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 func setup_spawning_state(spacing: float = 16.0) -> void:
 	spawn_point_spacing = spacing
 	rng.seed = hash(coord)
-	var spawn_areas := group_spawn_points(spawn_point_spacing)
+	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing, display_only, false)
 	spawn_area_points = spawn_areas["points"]
 	spawn_area_biomes = spawn_areas["biomes"]
 	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
@@ -274,6 +276,8 @@ func despawn_all_from_world(world: Node3D) -> void:
 	SignalBus.enemy_death.disconnect(mark_entity)
 
 func update_info(world: Node3D) -> void:
+	if display_only: return
+	
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
 		var dist: float = habitant.position.distance_to(player.position) 

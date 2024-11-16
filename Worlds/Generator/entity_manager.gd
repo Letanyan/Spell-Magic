@@ -49,16 +49,16 @@ class EntityBuffer:
 		var j := i
 		var found := false
 		
-		var min_bound := maxi(mini(last_index_check, high_watermark - last_index_check), 0)
+		var min_bound := maxi(mini(last_index_check, high_watermark - last_index_check - 1), 0)
 		var k := 0
-		var visited: Array[int] = []
+		#var visited: Array[int] = []
 		while k <= min_bound:
-			visited.append(i)
+			#visited.append(i)
 			if buffer[i] == node:
 				index = i
 				found = true
 				break
-			visited.append(j)
+			#visited.append(j)
 			if buffer[j] == node:
 				index = j
 				found = true
@@ -70,8 +70,8 @@ class EntityBuffer:
 		if not found:
 			if i == -1:
 				k = j
-				while k < high_watermark:
-					visited.append(k)
+				while k <= high_watermark:
+					#visited.append(k)
 					if buffer[k] == node:
 						index = k
 						break
@@ -79,13 +79,14 @@ class EntityBuffer:
 			else:
 				k = i
 				while k >= 0:
-					visited.append(k)
+					#visited.append(k)
 					if buffer[k] == node:
 						index = k
 						break
 					k -= 1
 		
 		if index == -1:
+			#print(visited)
 			push_error(tag + ": free node that does not exist: ", str(node))
 			return
 		

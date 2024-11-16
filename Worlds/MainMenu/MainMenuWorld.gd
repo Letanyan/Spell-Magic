@@ -163,20 +163,28 @@ func build_terrain() -> void:
 	var chunks := chunker.init_chunks(player.position.x, player.position.z)
 	for chunk in chunks:
 		add_child(chunk)
-	var heighest_pos := chunker.backing.get_max_height_position()
-	if heighest_pos.is_finite():
-		player.position = heighest_pos
+	
+	for loc in chunker.get_medium_chunks_location():
+		chunker.disable_height_map(loc, true, true)
+		
+	var highest_pos := chunker.get_max_height_position()
+	if highest_pos.is_finite():
+		player.position = highest_pos
 		player.position.y = maxf(player.position.y, blender.sea_level)
 	
-	var direction := player.position.direction_to(chunker.backing.get_min_height_position())
-	var goal_position := player.position + direction * 10.0
-	goal_position.y = player.position.y
-	if not goal_position.is_equal_approx(player.position):
-		player.look_at(goal_position)
+	var lowest_pos := chunker.get_min_height_position()
+	if lowest_pos.is_finite():
+		var direction := player.position.direction_to(chunker.get_min_height_position())
+		var goal_position := player.position + direction * 10.0
+		goal_position.y = player.position.y
+		if not goal_position.is_equal_approx(player.position):
+			player.look_at(goal_position)
 		
 func update_terrain_queue() -> void:
-	if chunker.backing.has_chunks_to_update():
-		chunker.backing.update_chunk_in_queue(Time.get_ticks_msec(), 3)
+	if chunker.has_chunks_to_update():
+		var locations := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
+		for loc in locations:
+			chunker.disable_height_map(loc, true, true)
 
 func update_terrain() -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
