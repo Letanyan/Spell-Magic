@@ -11,8 +11,16 @@ var lod_levels := {}
 var blender: NoiseBlender
 
 var vertex_indices := {} ## [Vector2i(coord)]int(LOD)
-var chunks := {} ## [Vector2i(coord)]MeshInstance
+var chunk_rids := {} ## [Vector2i(coord)]RID(instance)
+var mesh_rids := {} ## [Vector2i(coord)]RID(mesh)
+var mats := {} ## [Vector2i(coord)]ShaderMaterial
+var chunk_positions := {} ## [Vector2i(coord)]Vector2
+var bodies := {} ## [Vector2i(coord)]StaticBody
 var height_maps := {} ## [Vector2i(coord)]HeightMapShape3D
+
+var find_bound_coords: bool = false
+var min_height_position := Vector3.ZERO
+var max_height_position := Vector3.ZERO
 
 var player_position := Vector2.ZERO
 var player_coord := Vector2i.ZERO
@@ -30,7 +38,6 @@ func _init(_chunk_width: float, _chunk_resolution: float, _blender: NoiseBlender
 		lod_levels[level] = value
 		
 		print(level, ": res: ", res, " subdiv: ", res * chunk_width)
-		#var count := 1 << (value << 1)
 		for row in range(-value, value):
 			for col in range(-value, value):
 				var coord := Vector2i(col, row)
@@ -38,34 +45,43 @@ func _init(_chunk_width: float, _chunk_resolution: float, _blender: NoiseBlender
 					continue
 				vertex_indices[coord] = level
 				var chunk := create_mesh(chunk_width, res)
-				chunk.position = Vec3.xz(convert_coord_to_position(col, row))
-				chunks[coord] = chunk
+				var position := convert_coord_to_position(col, row)
+				chunk_rids[coord] = chunk[0]
+				mesh_rids[coord] = chunk[1]
+				var shader_mat := ShaderMaterial.new()
+				shader_mat.shader = biome_shader
+				mats[coord] = shader_mat
+				chunk_positions[coord] = position
 				var map := create_height_map_shape(chunk_width, res)
 				height_maps[coord] = map
 				if level == 0:
 					var body := create_static_body(chunk_width, res, map)
-					chunk.add_child(body)
-				update_chunk(chunk, chunk.position.x, chunk.position.z, res)
+					bodies[coord] = body
+				update_chunk(coord, position.x, position.y, res)
 				
-		#res *= 0.5
+		res *= 0.5
 		level += 1
+		
+func deinit() -> void:
+	for rid: RID in chunk_rids.values(): RenderingServer.free_rid(rid) 
+	for rid: RID in mesh_rids.values(): RenderingServer.free_rid(rid) 
+		
+func set_world(world: World3D) -> void:
+	for coord: Vector2i in chunk_rids:
+		var rid := chunk_rids[coord] as RID
+		RenderingServer.instance_set_scenario(rid, world.scenario)
 	
-func create_mesh(size: float, res: float) -> MeshInstance3D:
-	var mesh := ArrayMesh.new()
+func create_mesh(size: float, res: float) -> Array[RID]:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(size, size)
 	var subdivide := subdivisions(res)
 	plane.subdivide_depth = subdivide
 	plane.subdivide_width = subdivide
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
-	#mesh.surface_set_material(0, ShaderMaterial.new())
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(randf(), randf(), randf())
-	mesh.surface_set_material(0, mat)
-	var mi := MeshInstance3D.new()
-	mi.mesh = mesh
-	mi.name = "mesh"
-	return mi
+	var mesh := RenderingServer.mesh_create()
+	RenderingServer.mesh_add_surface_from_arrays(mesh, RenderingServer.PRIMITIVE_TRIANGLES, plane.get_mesh_arrays())
+	var rid := RenderingServer.instance_create()
+	RenderingServer.instance_set_base(rid, mesh)
+	return [rid, mesh]
 	
 func create_height_map_shape(size: float, res: float) -> HeightMapShape3D:
 	var subdivide := subdivisions(res)
@@ -86,94 +102,37 @@ func create_static_body(size: float, res: float, map: HeightMapShape3D) -> Stati
 	body.add_child(collision)
 	return body
 	
-func update_chunk(mi: MeshInstance3D, x: float, z: float, res: float, scale: float = 1.0) -> void:
-	#auto mesh = (ArrayMesh*)*mi->get_mesh();
-	#auto mesh_data = mi->get_mesh()->surface_get_arrays(0);
-	#auto vertices = (PackedVector3Array)mesh_data[Mesh::ArrayType::ARRAY_VERTEX];
-	#if (chunk_vertices.is_empty()) {
-		#auto positions = (PackedVector3Array)mesh_data[Mesh::ArrayType::ARRAY_VERTEX];
-		#for (int i = 0; i < positions.size(); i++) {
-			#chunk_vertices.append(positions[i]);
-		#}
-	#}
-	var mesh := mi.mesh as ArrayMesh
-	var mesh_data := mesh.surface_get_arrays(0)
+func update_chunk(coord: Vector2i, x: float, z: float, res: float) -> void:
+	var mesh := mesh_rids[coord] as RID
+	var mesh_data := RenderingServer.mesh_surface_get_arrays(mesh, 0)
 	var vertices := mesh_data[Mesh.ArrayType.ARRAY_VERTEX] as PackedVector3Array
-
-	#auto R = size / (float)((int)(size * subdivide));
-	#auto texture_size = size / R;
 	var subdivide := subdivisions(res)
 	var R := chunk_width / (subdivide + 1)
-	
-	#print(R, " ~ ", chunk_width / float(floori(chunk_width * res) - 1))
- 
-	#auto W = texture_size + 2;
-	#auto X = x / R - W / 2.0 + (x / R / R);
-	#auto Y = y / R - W / 2.0 + (y / R / R);
-	#X = UtilityFunctions::snappedf(X, 0.0001);
-	#Y = UtilityFunctions::snappedf(Y, 0.0001);
 	var W := subdivide + 2
-	#var X := x / R - W / 2.0 + (x / R / R)
-	#var Z := z / R - W / 2.0 + (z / R / R)
-	#var r := chunk_width / (subdivide + 1)
-	var X := x / R - W / 2.0 #+ (x / r / r)
-	var Z := z / R - W / 2.0 #+ (z / r / r)
+	var X := x / R - W / 2.0
+	var Z := z / R - W / 2.0
 	X = snappedf(X, 1.0000)
 	Z = snappedf(Z, 1.0000)
 	
-	#print(x, " / ", R, " - ", W, " / 2.0 + ", "(", x, " / ", R,  " / ", R, ")")
-	#print("(", x, ", ", z, ") => ", "(", X, ", ", Z, ") -> (", X+W, ", ", Z+W, ")")
-	# -512 / 32 - 9 / 2.0 + (-512 / 32 / 32)
-	# -256 / 32 - 9 / 2.0 + (-256 / 32 / 32)
-	#    0 / 32 - 9 / 2.0 + (   0 / 32 / 32)
-	#  256 / 32 - 9 / 2.0 + ( 256 / 32 / 32)
-	#  512 / 32 - 9 / 2.0 + ( 512 / 32 / 32)
-	
-	# (-512, -1024) => (-21   , -37.5) -> (-12  , -28.5)
-	# (-256, -1024) => (-12.75, -37.5) -> (-3.75, -28.5)
-	# (   0, -1024) => (-4.5  , -37.5) -> (4.5  , -28.5)
-	# ( 256, -1024) => ( 3.75 , -37.5) -> (12.75, -28.5)
-	# ( 512, -1024) => ( 12   , -37.5) -> (21   , -28.5)
-
-	#auto biome_x_texture = blender->biome_texture(X, Y, W, W, R, 0);
-	#auto biome_y_texture = blender->biome_texture(X, Y, W, W, R, 1);
 	var biome_x_texture := blender.back.biome_texture(X, Z, W, W, R, 0)
 	var biome_z_texture := blender.back.biome_texture(X, Z, W, W, R, 1)
 
-	#auto A = Vector3();
-	#auto ys = blender->height_map(X, Y, W, W, R);
-	#auto w = (size_t)W;
 	var A := Vector3.ZERO
 	var ys := blender.back.height_map(X, Z, W, W, R)
 	var w := floori(W)
 	var S := 0.0001
-	if mi.has_node("static"):
-	#if ((r <= radius || index == lciMED) && mi->has_node("static")) {
-		#auto static_body = mi->get_node<StaticBody3D>("static");
-		#auto collision_shape = static_body->get_node<CollisionShape3D>("collision");
-		#auto hmap = (HeightMapShape3D*)*collision_shape->get_shape();
-		#auto array = PackedFloat32Array();
-		#array.resize(hmap->get_map_data().size());
-		#auto coord = convert_position_to_coord(x, y, chunk_size);
-		#auto manhattan = UtilityFunctions::maxf(UtilityFunctions::absf(coord.x - player_coord.x), UtilityFunctions::absf(coord.y - player_coord.y));
-		#auto is_central = manhattan < 1;
-		var static_body := mi.get_node("static") as StaticBody3D
+	if bodies.has(coord):
+		var static_body := bodies[coord] as StaticBody3D
 		var collision_shape := static_body.get_node("collision") as CollisionShape3D
 		var hmap := collision_shape.shape as HeightMapShape3D
 		var array := PackedFloat32Array()
 		array.resize(hmap.map_data.size())
-		#var coord := convert_position_to_coord(x, z)
+		var manhattan := maxf(absf(coord.x - player_coord.x), absf(coord.y - player_coord.y))
+		var is_central := manhattan < 1
 		
 		for i in vertices.size():
-		#for (int i = 0; i < vertices.size(); i++) {
-			#A = vertices[i];
-			#size_t row = i / w;
-			#size_t col = i % w;
-			#size_t j = w * (w - row - 1) + (w - col - 1);
-			#A.y = ys[j];
-			#vertices[i].y = ys[j];
-			#array.set(i, A.y / collision_shape->get_scale().y);
 			A = vertices[i]
+			@warning_ignore("integer_division")
 			var row := i / w
 			var col := i % w
 			var j := w * (w - row - 1) + (w - col - 1)
@@ -181,66 +140,41 @@ func update_chunk(mi: MeshInstance3D, x: float, z: float, res: float, scale: flo
 			vertices[i].y = snappedf(ys[j], S)
 			array.set(i, A.y / collision_shape.scale.y)
  			
-			#if (find_bound_coords) {
-				#if (A.y > max_height_position.y && is_central && abs(A.x) < size * 0.9 && abs(A.z) < size * 0.9) {
-					#max_height_position = Vector3(A.x + x, A.y, A.z + y);
-				#}
-				#if (A.y < min_height_position.y) {
-					#min_height_position = Vector3(A.x + x, A.y, A.z + y);
-				#}
-			#}
-		#}
+			if find_bound_coords:
+				if A.y > max_height_position.y and is_central and absf(A.x) < chunk_width * 0.9 and absf(A.z) < chunk_width * 0.9:
+					max_height_position = Vector3(A.x + x, A.y, A.z + z)
+				if A.y < min_height_position.y:
+					min_height_position = Vector3(A.x + x, A.y, A.z + z)
+		
 		hmap.map_data = array
-		#hmap->set_map_data(array);
 	else:
-	#} else {
 		for i in vertices.size():
-		#for (int i = 0; i < vertices.size(); i++) {
-			#A = vertices[i];
-			#size_t r = i / w;
-			#size_t c = i % w;
-			#size_t j = w * (w - r - 1) + (w - c - 1);
-			#A.y = ys[j];
-			#vertices[i].y = ys[j];
 			A = vertices[i]
+			@warning_ignore("integer_division")
 			var row := i / w
 			var col := i % w
 			var j := w * (w - row - 1) + (w - col - 1)
 			A.y = snappedf(ys[j], S)
 			vertices[i].y = snappedf(ys[j], S)
-			#if (find_bound_coords) {
-				#if (A.y < min_height_position.y) {
-					#min_height_position = Vector3(A.x + x, A.y, A.z + y);
-				#}
-			#}
-		#}
-	#}
+			if find_bound_coords:
+				if A.y < min_height_position.y:
+					min_height_position = Vector3(A.x + x, A.y, A.z + z)
 	
-	#mesh->clear_surfaces();
-	#mesh_data[Mesh::ArrayType::ARRAY_VERTEX] = vertices;
-	#mesh->add_surface_from_arrays(Mesh::PrimitiveType::PRIMITIVE_TRIANGLES, mesh_data);
-	#mesh->surface_set_material(0, new ShaderMaterial());
-	mesh.clear_surfaces()
+	
+	RenderingServer.mesh_clear(mesh)
 	mesh_data[Mesh.ArrayType.ARRAY_VERTEX] = vertices
-	mesh.add_surface_from_arrays(Mesh.PrimitiveType.PRIMITIVE_TRIANGLES, mesh_data)
-	mesh.surface_set_material(0, ShaderMaterial.new())
+	RenderingServer.mesh_add_surface_from_arrays(mesh, RenderingServer.PRIMITIVE_TRIANGLES, mesh_data)
 	
-	#auto mat = (ShaderMaterial*)*mesh->surface_get_material(0);
-	#mat->set_shader(biome_shader);
-	#mat->set_shader_parameter("texture_width", texture_size);
-	#mat->set_shader_parameter("texture_depth", texture_size);
-	#mat->set_shader_parameter("biome_x", biome_x_texture);
-	#mat->set_shader_parameter("biome_y", biome_y_texture);
-	#mat->set_shader_parameter("noise", noise_texture);
-	#mat->set_shader_parameter("locations", blender->locations);
-	var mat := mesh.surface_get_material(0) as ShaderMaterial
-	mat.shader = biome_shader
+	var mat := mats[coord] as ShaderMaterial
 	mat.set_shader_parameter("texture_width", W)
 	mat.set_shader_parameter("texture_depth", W)
 	mat.set_shader_parameter("biome_x", biome_x_texture)
 	mat.set_shader_parameter("biome_y", biome_z_texture)
 	mat.set_shader_parameter("noise", noise_texture)
 	mat.set_shader_parameter("locations", blender.back.get_locations())
+	RenderingServer.mesh_surface_set_material(mesh, 0, mat)
+	
+	RenderingServer.instance_set_transform(chunk_rids[coord] as RID, T.I.translated(Vector3(x, 0, z)))
 	
 	
 func convert_position_to_coord(x: float, z: float) -> Vector2i:
