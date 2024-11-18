@@ -24,7 +24,7 @@ var max_height_position := Vector3.ZERO
 
 var player_position := Vector2.ZERO
 var player_coord := Vector2i.ZERO
-var chunk_update_queue: Array[Dictionary] = []
+var chunk_update_queue := RingBuffer.new()
 
 var chunk_width: float
 var chunk_resolution: float
@@ -109,11 +109,6 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 	var mesh := mesh_rids[coord] as RID
 	var mesh_data := RenderingServer.mesh_surface_get_arrays(mesh, 0)
 	var vertices := mesh_data[Mesh.ArrayType.ARRAY_VERTEX] as PackedVector3Array
-	if mesh_rids.has(new_coord):
-		var tmesh := mesh_rids[new_coord] as RID
-		var tmesh_data := RenderingServer.mesh_surface_get_arrays(tmesh, 0)
-		var tvertices := tmesh_data[Mesh.ArrayType.ARRAY_VERTEX] as PackedVector3Array
-		#print(res, ": ", coord, " -> ", new_coord, " __ ", vertices.size(), " -> ", tvertices.size())
 	var subdivide := subdivisions(res)
 	var R := chunk_width / (subdivide + 1)
 	var W := subdivide + 2
@@ -195,10 +190,11 @@ func has_chunks_to_update() -> bool:
 func update_chunks_in_queue(start: int, limit: int) -> Array[Vector3i]:
 	var result: Array[Vector3i] = []
 	var duration := Time.get_ticks_msec() - start
-	var index := chunk_update_queue.size() - 1
-	while duration < limit and index >= 0:
-		var params := chunk_update_queue[index]
-		index -= 1
+	var index := 0
+	
+	while duration < limit and index < chunk_update_queue.size():
+		var params := chunk_update_queue.pop_front() as Dictionary
+		index += 1
 		var coord0 := params["coord0"] as Vector2i
 		var coord1 := params["coord1"] as Vector2i
 		var res0 := params["res0"] as float
@@ -233,7 +229,7 @@ func update_chunks_in_queue(start: int, limit: int) -> Array[Vector3i]:
 		
 		duration = Time.get_ticks_msec() - start
 		
-	chunk_update_queue.resize(index + 1)
+	#chunk_update_queue.resize(index + 1)
 	return result	
 	
 func swap_keys(dict: Dictionary, key0: Variant, key1: Variant) -> void:
@@ -245,37 +241,16 @@ func move_key(dict: Dictionary, from: Variant, to: Variant) -> void:
 	dict[to] = dict[from]
 	dict.erase(from)
 	
-func queue_contains(vec: Vector2i) -> int:
-	for dict in chunk_update_queue:
-		if (dict["coord0"] as Vector2i) == vec:
-			return 0
-		if (dict["coord1"] as Vector2i) == vec:
-			return 1
-	return -1
-	
 func update_chunks(delta: Vector2i) -> void:
 	for lod in lod_levels.size():
 		var to_flip := edges_at_direction(lod, delta * -1)
 		var into := edges_at_direction(lod, delta)
-		var value := lod_levels[lod]
 		for i in to_flip.size():
 			if lod + 1 < lod_levels.size():
 				var dict := {"coord0": to_flip[i], "coord1": into[i] + delta, "res0": resoultion(lod) , "res1": resoultion(lod + 1)}
-				var find := queue_contains(to_flip[i])
-				if find != -1: 
-					print()
-				find = queue_contains(into[i] + delta)
-				if find != -1: 
-					print()
 				chunk_update_queue.append(dict)
 			else:
 				var dict := {"coord0": to_flip[i], "coord1": into[i] + delta, "res0": resoultion(lod)}
-				var find := queue_contains(to_flip[i])
-				if find != -1: 
-					print()
-				find = queue_contains(into[i] + delta)
-				if find != -1: 
-					print()
 				chunk_update_queue.append(dict)
 				
 	player_coord += delta
