@@ -122,6 +122,25 @@ shadow_blur = 4.0
 directional_shadow_blend_splits = true
 
 [node name="Player" parent="." instance=ExtResource("3_j80hc")]
+max_snap_length = null
+_floor_max_angle = null
+wall_slide_vertical_only_collision = null
+_wall_min_slide_angle = null
+slide_platform_motion = null
+platform_leave_action = null
+moving_wall_and_ceiling_layers = null
+platform_vertical_detach_threshold = null
+use_surface_normals = null
+max_step_height = null
+interact_with_rigid_bodies = null
+mass = null
+physics_material_bounce = null
+rigid_body_platform_central_impulse_threshold = null
+rigid_body_platform_counter_torque_factor = null
+rigid_body_platform_horizontal_stick_threshold = null
+rigid_body_platform_friction_strength = null
+rigid_body_platform_vertical_stick_threshold = null
+snap_safe_margin = null
 
 [node name="FPS" type="Label" parent="."]
 anchors_preset = 1

@@ -12,7 +12,7 @@ var player_rotation_direction := 0.0
 var requested_player_height := 0.0
 
 @onready var blender: NoiseBlender
-@onready var chunker: Terrain
+@onready var chunker: Chunker
 @onready var population: Dictionary = {}
 
 var last_last_biome: World.Biome = World.Biome.WATER
@@ -38,6 +38,9 @@ var daytime_tick: float
 
 var settings: WorldSettings
 
+func _exit_tree() -> void:
+	chunker.deinit()
+
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
 
@@ -48,6 +51,7 @@ func _ready() -> void:
 	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	
+	# FIXME: VERSION: -1, WORLD SEED: 5825589, RNG SEED: 5825589
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
@@ -76,7 +80,8 @@ func _ready() -> void:
 	#Vector2(-2000, 2000), Vector2(2000, 2000), Vector2(-2000, -2000), \
 	#])
 	
-	chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
+	#chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
+	chunker = Chunker.new(256, 0.0625, blender, [2, 8], true)
 	build_terrain()
 	update_terrain()
 	
@@ -160,12 +165,14 @@ func _on_player_moved(delta: float) -> void:
 		
 		
 func build_terrain() -> void:
-	var chunks := chunker.init_chunks(player.position.x, player.position.z)
-	for chunk in chunks:
-		add_child(chunk)
+	#var chunks := chunker.init_chunks(player.position.x, player.position.z)
+	#for chunk in chunks:
+		#add_child(chunk)
+	chunker.init_chunks(player.position.x, player.position.z)
+	chunker.set_world(self)
 	
-	for loc in chunker.get_medium_chunks_location():
-		chunker.disable_height_map(loc, true, true)
+	#for loc in chunker.get_medium_chunks_location():
+		#chunker.disable_height_map(loc, true, true)
 		
 	var highest_pos := chunker.get_max_height_position()
 	if highest_pos.is_finite():
@@ -174,7 +181,7 @@ func build_terrain() -> void:
 	
 	var lowest_pos := chunker.get_min_height_position()
 	if lowest_pos.is_finite():
-		var direction := player.position.direction_to(chunker.get_min_height_position())
+		var direction := player.position.direction_to(lowest_pos)
 		var goal_position := player.position + direction * 10.0
 		goal_position.y = player.position.y
 		if not goal_position.is_equal_approx(player.position):
@@ -182,13 +189,13 @@ func build_terrain() -> void:
 		
 func update_terrain_queue() -> void:
 	if chunker.has_chunks_to_update():
-		var locations := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
-		for loc in locations:
-			chunker.disable_height_map(loc, true, true)
+		chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
+		#for loc in locations:
+			#chunker.disable_height_map(loc, true, true)
 
 func update_terrain() -> void:
 	var chunks := chunker.update_chunks(player.position.x, player.position.z)
-	for loc: Vector2 in chunks.get("removed", []):
+	for loc: Vector2 in chunks:
 		var pop : Population = population.get(loc, null)
 		if pop == null:
 			continue

@@ -49,7 +49,7 @@ var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 var camera_bounce_direction := 0
-var chunker: Terrain
+var chunker: Chunker
 
 signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)

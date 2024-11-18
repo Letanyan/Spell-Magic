@@ -1,14 +1,14 @@
 class_name Population
 
 var rng: RandomNumberGenerator
-var chunker: Terrain
+var chunker: Chunker
 var blender: NoiseBlender
 var player: Player
 var entity_manager: EntityManager
 var display_only: bool
 var foliage_manager: Foliage
 
-var coord: Vector2
+var coord: Vector2i
 var chunk_size: float
 
 var is_ready := false
@@ -31,7 +31,7 @@ var current_spawn_start_time_ms: int = 0 # gets reset each generation cycle. Onl
 var current_spawn_duration_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
 var generators: Array[BiomeGenerator] = [] 
 
-func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
+func _init(_coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
 	rng = RandomNumberGenerator.new()
 	coord = _coord
 	chunker = _chunker
@@ -87,6 +87,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
 		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
 			foliage_manager.remove(kind, index)
+			#print(info, " or (", below_sea_level, " and ", not_hfil, ") or ", world_normal)
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
 		foliage_manager.setup(kind, index, position, rng, current_biome_during_generation)
@@ -234,7 +235,7 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 func setup_spawning_state(spacing: float = 16.0) -> void:
 	spawn_point_spacing = spacing
 	rng.seed = hash(coord)
-	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing, display_only, false)
+	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing)
 	spawn_area_points = spawn_areas["points"]
 	spawn_area_biomes = spawn_areas["biomes"]
 	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0

@@ -222,7 +222,7 @@ mesh = SubResource("BoxMesh_hcdbc")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="rigid_block"]
-transform = Transform3D(14, 0, 0, 0, 14, 0, 0, 0, 14, -39.0616, 0, -257.019)
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, -39.0616, 0, -257.019)
 shape = SubResource("HeightMapShape3D_vftdr")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
