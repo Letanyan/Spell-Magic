@@ -58,10 +58,10 @@ func init_chunks(x: float, z: float) -> void:
 				shader_mat.shader = biome_shader
 				mats[coord] = shader_mat
 				chunk_positions[coord] = position
-				var map := create_height_map_shape(chunk_width, res)
+				var map := create_height_map_shape(chunk_width, chunk_resolution if track_full_biomes_for_lod_levels.has(level) else res)
 				height_maps[coord] = map
 				if level == 0:
-					var body := create_static_body(chunk_width, res, map)
+					var body := create_static_body(chunk_width, chunk_resolution, map)
 					bodies[coord] = body
 				update_chunk(coord, coord, res)
 				
@@ -133,14 +133,20 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 
 	var A := Vector3.ZERO
 	var ys := blender.back.height_map(X, Z, W, W, R)
+	var yss := PackedFloat32Array([])
 	var lod := chunk_lods[coord] as int
+	#if not biome_maps.has(new_coord) or (biome_maps[new_coord] as PackedInt32Array).is_empty():
 	if lod == 0:
 		biome_maps[coord] = blender.back.get_biomes_map()
 	elif track_full_biomes_for_lod_levels.get(lod, false):
 		var newS := subdivisions(resoultion(0))
 		var newR := chunk_width / (newS + 1)
 		var newW := newS + 2
-		blender.back.compute_biome_map_stats(X, Z, newW, newW, newR)
+		var newX := x / newR - newW / 2.0
+		var newZ := z / newR - newW / 2.0
+		newX = snappedf(newX, 1.0)
+		newZ = snappedf(newZ, 1.0)
+		yss = blender.back.height_map(newX, newZ, newW, newW, newR)
 		biome_maps[coord] = blender.back.get_biomes_map()
 	else:
 		biome_maps[coord] = PackedInt32Array([])
@@ -148,7 +154,7 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 	var S := 0.0001
 	var pos := convert_coord_to_position(new_coord.x, new_coord.y)
 	var hmap := height_maps[coord] as HeightMapShape3D
-	var hmap_scale := height_map_scale(chunk_lods[coord] as int)
+	var hmap_scale := height_map_scale(lod)
 	var array := PackedFloat32Array()
 	array.resize(hmap.map_data.size())
 	var manhattan := maxf(absf(coord.x - player_coord.x), absf(coord.y - player_coord.y))
@@ -162,13 +168,25 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 		var j := w * (w - row - 1) + (w - col - 1)
 		A.y = snappedf(ys[j], S)
 		vertices[i].y = snappedf(ys[j], S)
-		array.set(i, A.y / hmap_scale)
-
+		if lod == 0 or not track_full_biomes_for_lod_levels.has(lod):
+			array.set(i, A.y / hmap_scale)
 		if find_bound_coords:
 			if A.y > max_height_position.y and is_central and absf(A.x) < chunk_width * 0.9 and absf(A.z) < chunk_width * 0.9:
 				max_height_position = Vector3(A.x + x, A.y, A.z + z)
 			if A.y < min_height_position.y:
 				min_height_position = Vector3(A.x + x, A.y, A.z + z)
+	
+	if lod != 0 and track_full_biomes_for_lod_levels.has(lod):
+		hmap_scale = height_map_scale(0)
+		var newS := subdivisions(resoultion(0))
+		var newR := chunk_width / (newS + 1)
+		w = newS + 2
+		for i in array.size():
+			@warning_ignore("integer_division")
+			var row := i / w
+			var col := i % w
+			var j := w * (w - row - 1) + (w - col - 1)
+			array.set(i, snappedf(yss[j], S) / hmap_scale)
 	
 	hmap.map_data = array
 	
@@ -196,8 +214,9 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 func has_chunks_to_update() -> bool:
 	return not chunk_update_queue.is_empty()
 	
-func update_chunks_in_queue(start: int, limit: int) -> Array[Vector3i]:
-	var result: Array[Vector3i] = []
+func update_chunks_in_queue(start: int, limit: int) -> Dictionary:
+	var updated: Array[Vector4i] = []
+	var removed: Array[Vector4i] = []
 	var duration := Time.get_ticks_msec() - start
 	var index := 0
 	
@@ -208,12 +227,14 @@ func update_chunks_in_queue(start: int, limit: int) -> Array[Vector3i]:
 		var coord1 := params["coord1"] as Vector2i
 		var res0 := params["res0"] as float
 		update_chunk(coord0, coord1, res0)
-		result.append(Vector3i(coord1.x, coord1.y, roundi(chunk_resolution / res0 - 1)))
 		
 		if params.has("res1"):
 			var res1 := params["res1"] as float
 			update_chunk(coord1, coord0, res1)
-			result.append(Vector3i(coord0.x, coord0.y, roundi(chunk_resolution / res1 - 1)))
+			updated.append(Vector4i(coord1.x, coord1.y, roundi(chunk_resolution / res0 - 1), roundi(chunk_resolution / res1 - 1)))
+			removed.append(Vector4i(coord0.x, coord0.y, roundi(chunk_resolution / res0 - 1), roundi(chunk_resolution / res1 - 1)))
+			updated.append(Vector4i(coord0.x, coord0.y, roundi(chunk_resolution / res1 - 1), roundi(chunk_resolution / res0 - 1)))
+			removed.append(Vector4i(coord1.x, coord1.y, roundi(chunk_resolution / res1 - 1), roundi(chunk_resolution / res0 - 1)))
 			swap_keys(chunk_lods, coord0, coord1)
 			swap_keys(chunk_rids, coord0, coord1)
 			swap_keys(mesh_rids, coord0, coord1)
@@ -228,6 +249,8 @@ func update_chunks_in_queue(start: int, limit: int) -> Array[Vector3i]:
 			swap_keys(height_maps, coord0, coord1)
 			swap_keys(biome_maps, coord0, coord1)
 		else:
+			updated.append(Vector4i(coord1.x, coord1.y, roundi(chunk_resolution / res0 - 1), -1))
+			removed.append(Vector4i(coord0.x, coord0.y, roundi(chunk_resolution / res0 - 1), -1))
 			move_key(chunk_lods, coord0, coord1)
 			move_key(chunk_rids, coord0, coord1)
 			move_key(mesh_rids, coord0, coord1)
@@ -240,7 +263,7 @@ func update_chunks_in_queue(start: int, limit: int) -> Array[Vector3i]:
 		
 		duration = Time.get_ticks_msec() - start
 		
-	return result	
+	return {"updated": updated, "removed": removed}	
 	
 func swap_keys(dict: Dictionary, key0: Variant, key1: Variant) -> void:
 	var temp: Variant = dict[key0]
@@ -320,8 +343,11 @@ func get_min_height_position() -> Vector3:
 
 # xyz = normal of triangle, w = y value height at x,z parameters
 func height_at_position(coord: Vector2i, x: float, z: float) -> Vector4:
+	if not height_maps.has(coord):
+		return Vector4(NAN, NAN, NAN, NAN)
 	var hmap := height_maps[coord] as HeightMapShape3D
-	var scale := height_map_scale(chunk_lods[coord] as int)
+	var lod := chunk_lods[coord] as int
+	var scale := height_map_scale(0 if track_full_biomes_for_lod_levels.has(lod) else lod)
 	var pos := chunk_positions[coord] as Vector2
 	
 	var w := (hmap.map_width - 1) * scale

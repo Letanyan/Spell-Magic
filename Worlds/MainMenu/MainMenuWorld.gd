@@ -158,6 +158,7 @@ func _physics_process(delta: float) -> void:
 func _on_player_moved(delta: float) -> void:	
 	terrain_update_interval = 0
 	update_terrain()
+	# FIXME: problem when player.position == zero. why is it zero though? is reseting to zero some fallback when an error occurs?
 	var h := (chunker.terrain_normal(player.position.x, player.position.z)["position"] as Vector3).y
 	player_movement_direction.y = h - player.position.y
 	if player.position.y < h + 1.0:
