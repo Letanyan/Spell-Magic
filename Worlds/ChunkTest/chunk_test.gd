@@ -8,7 +8,7 @@ var chunker: Chunker
 
 func _ready() -> void:
 	var blender := NoiseBlender.version1(0)
-	chunker = Chunker.new(256, 0.0625, blender, [2, 8], true)
+	chunker = Chunker.new(256, 0.0625, 120.0, blender, [3, 8, 16, 24], true)
 	chunker.init_chunks(0, 0)
 	chunker.set_world(self)
 

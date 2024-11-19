@@ -81,7 +81,7 @@ func _ready() -> void:
 	#])
 	
 	#chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
-	chunker = Chunker.new(256, 0.0625, blender, [2, 8], true)
+	chunker = Chunker.new(256, 0.0625, 0, blender, [2, 8], true)
 	build_terrain()
 	update_terrain()
 	

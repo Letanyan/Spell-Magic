@@ -15,6 +15,9 @@ var chunk_lods := {} ## [Vector2i(coord)]int(LOD)
 var chunk_rids := {} ## [Vector2i(coord)]RID(instance)
 var mesh_rids := {} ## [Vector2i(coord)]RID(mesh)
 var mats := {} ## [Vector2i(coord)]ShaderMaterial
+var water_chunk_rids := {} ## [Vector2i(coord)]RID(instance)
+var water_mesh_rids := {} ## [Vector2i(coord)]RID(mesh)
+var water_mats := {} ## [Vector2i(coord)]ShaderMaterial
 var chunk_positions := {} ## [Vector2i(coord)]Vector2
 var bodies := {} ## [Vector2i(coord)]StaticBody
 var height_maps := {} ## [Vector2i(coord)]HeightMapShape3D
@@ -30,10 +33,12 @@ var chunk_update_queue := RingBuffer.new()
 
 var chunk_width: float
 var chunk_resolution: float
+var sea_level: float
 
-func _init(_chunk_width: float, _chunk_resolution: float, _blender: NoiseBlender, lods: Array[int], _find_bound_coords: bool) -> void:
+func _init(_chunk_width: float, _chunk_resolution: float, _sea_level: float, _blender: NoiseBlender, lods: Array[int], _find_bound_coords: bool) -> void:
 	chunk_width = _chunk_width
 	chunk_resolution = _chunk_resolution
+	sea_level = _sea_level
 	lod_levels = lods
 	blender = _blender
 	find_bound_coords = _find_bound_coords
@@ -57,13 +62,25 @@ func init_chunks(x: float, z: float) -> void:
 				var shader_mat := ShaderMaterial.new()
 				shader_mat.shader = biome_shader
 				mats[coord] = shader_mat
+				
+				var water_chunk := create_mesh(chunk_width, res * 0.5)
+				water_chunk_rids[coord] = water_chunk[0]
+				water_mesh_rids[coord] = water_chunk[1]
+				var water_shader_mat := ShaderMaterial.new()
+				water_shader_mat.shader = water_shader
+				water_mats[coord] = water_shader_mat
+				water_shader_mat.set_shader_parameter("noise", water_noise)
+				water_shader_mat.set_shader_parameter("water_ripples_noise", water_ripples_noise)
+				RenderingServer.mesh_surface_set_material(water_chunk[1], 0, water_shader_mat)
+				
 				chunk_positions[coord] = position
 				var map := create_height_map_shape(chunk_width, chunk_resolution if track_full_biomes_for_lod_levels.has(level) else res)
 				height_maps[coord] = map
 				if level == 0:
 					var body := create_static_body(chunk_width, chunk_resolution, map)
 					bodies[coord] = body
-				update_chunk(coord, coord, res)
+				update_chunk(coord, coord, res, player_coord)
+				update_water_chunk(coord, coord)
 				
 		res *= 0.5
 		level += 1
@@ -71,11 +88,15 @@ func init_chunks(x: float, z: float) -> void:
 func deinit() -> void:
 	for rid: RID in chunk_rids.values(): RenderingServer.free_rid(rid) 
 	for rid: RID in mesh_rids.values(): RenderingServer.free_rid(rid) 
+	for rid: RID in water_chunk_rids.values(): RenderingServer.free_rid(rid) 
+	for rid: RID in water_mesh_rids.values(): RenderingServer.free_rid(rid) 
 		
 func set_world(world: Node3D) -> void:
 	for coord: Vector2i in chunk_rids:
 		var rid := chunk_rids[coord] as RID
 		RenderingServer.instance_set_scenario(rid, world.get_world_3d().scenario)
+		var wid := water_chunk_rids[coord] as RID
+		RenderingServer.instance_set_scenario(wid, world.get_world_3d().scenario)
 		if bodies.has(coord):
 			var body := bodies[coord] as StaticBody3D
 			world.add_child(body)
@@ -111,7 +132,7 @@ func create_static_body(size: float, res: float, map: HeightMapShape3D) -> Stati
 	body.add_child(collision)
 	return body
 	
-func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
+func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float, saved_player_coord: Vector2i) -> void:
 	var mesh := mesh_rids[coord] as RID
 	var mesh_data := RenderingServer.mesh_surface_get_arrays(mesh, 0)
 	var vertices := mesh_data[Mesh.ArrayType.ARRAY_VERTEX] as PackedVector3Array
@@ -157,17 +178,38 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 	var hmap_scale := height_map_scale(lod)
 	var array := PackedFloat32Array()
 	array.resize(hmap.map_data.size())
-	var manhattan := maxf(absf(coord.x - player_coord.x), absf(coord.y - player_coord.y))
+	var manhattan := maxf(absf(coord.x - saved_player_coord.x), absf(coord.y - saved_player_coord.y))
 	var is_central := manhattan < 1
 	
+	var edges := edges_part_of_transition(coord, new_coord, saved_player_coord)
+	var is_internal_chunk := lod < lod_levels.size() - 1
 	for i in vertices.size():
 		A = vertices[i]
 		@warning_ignore("integer_division")
 		var row := i / w
 		var col := i % w
-		var j := w * (w - row - 1) + (w - col - 1)
-		A.y = snappedf(ys[j], S)
-		vertices[i].y = snappedf(ys[j], S)
+		
+		if (row == 0 and edges.y == 1) or (row == w - 1 and edges.y == -1):
+			if col % 2 == 1 and is_internal_chunk:
+				var oj := w * (w - row - 1) + (w - (col - 1) - 1)
+				var nj := w * (w - row - 1) + (w - (col + 1) - 1)
+				A.y = snappedf((ys[oj] + ys[nj]) / 2.0, S)
+			else:
+				var j := w * (w - row - 1) + (w - col - 1)
+				A.y = snappedf(ys[j], S)
+		elif (col == 0 and edges.x == 1) or (col == w - 1 and edges.x == -1):
+			if row % 2 == 1 and is_internal_chunk:
+				var oj := w * (w - (row - 1) - 1) + (w - col - 1)
+				var nj := w * (w - (row + 1) - 1) + (w - col - 1)
+				A.y = snappedf((ys[oj] + ys[nj]) / 2.0, S)
+			else:
+				var j := w * (w - row - 1) + (w - col - 1)
+				A.y = snappedf(ys[j], S)
+		else:
+			var j := w * (w - row - 1) + (w - col - 1)
+			A.y = snappedf(ys[j], S)
+
+		vertices[i].y = A.y
 		if lod == 0 or not track_full_biomes_for_lod_levels.has(lod):
 			array.set(i, A.y / hmap_scale)
 		if find_bound_coords:
@@ -179,7 +221,6 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 	if lod != 0 and track_full_biomes_for_lod_levels.has(lod):
 		hmap_scale = height_map_scale(0)
 		var newS := subdivisions(resoultion(0))
-		var newR := chunk_width / (newS + 1)
 		w = newS + 2
 		for i in array.size():
 			@warning_ignore("integer_division")
@@ -211,6 +252,12 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float) -> void:
 	var rid := chunk_rids[coord] as RID
 	RenderingServer.instance_set_transform(rid, T.I.translated(Vector3(x, 0, z)))
 	
+func update_water_chunk(coord: Vector2i, new_coord: Vector2i) -> void:
+	var x := new_coord.x * chunk_width
+	var z := new_coord.y * chunk_width
+	var rid := water_chunk_rids[coord] as RID
+	RenderingServer.instance_set_transform(rid, T.I.translated(Vector3(x, sea_level, z)))
+	
 func has_chunks_to_update() -> bool:
 	return not chunk_update_queue.is_empty()
 	
@@ -226,15 +273,21 @@ func update_chunks_in_queue(start: int, limit: int) -> Dictionary:
 		var coord0 := params["coord0"] as Vector2i
 		var coord1 := params["coord1"] as Vector2i
 		var res0 := params["res0"] as float
-		update_chunk(coord0, coord1, res0)
+		var saved_player_coord := params["saved_player_coord"] as Vector2i
+		update_chunk(coord0, coord1, res0, saved_player_coord)
+		update_water_chunk(coord0, coord1)
 		
 		if params.has("res1"):
 			var res1 := params["res1"] as float
-			update_chunk(coord1, coord0, res1)
+			update_chunk(coord1, coord0, res1, saved_player_coord)
+			update_water_chunk(coord1, coord0)
 			updated.append(Vector4i(coord1.x, coord1.y, roundi(chunk_resolution / res0 - 1), roundi(chunk_resolution / res1 - 1)))
 			removed.append(Vector4i(coord0.x, coord0.y, roundi(chunk_resolution / res0 - 1), roundi(chunk_resolution / res1 - 1)))
 			updated.append(Vector4i(coord0.x, coord0.y, roundi(chunk_resolution / res1 - 1), roundi(chunk_resolution / res0 - 1)))
 			removed.append(Vector4i(coord1.x, coord1.y, roundi(chunk_resolution / res1 - 1), roundi(chunk_resolution / res0 - 1)))
+			var delta := params["delta"] as Vector2i
+			update_chunk(coord0 + delta, coord0 + delta, resoultion(chunk_lods[coord0 + delta]), saved_player_coord)
+			update_chunk(coord1 - delta, coord1 - delta, resoultion(chunk_lods[coord0 + delta]), saved_player_coord)
 			swap_keys(chunk_lods, coord0, coord1)
 			swap_keys(chunk_rids, coord0, coord1)
 			swap_keys(mesh_rids, coord0, coord1)
@@ -298,12 +351,12 @@ func update_chunks_impl(delta: Vector2i) -> Array[Vector2i]:
 			if track_full_biomes_for_lod_levels.has(lod):
 				result.append(to_flip[i])
 			if lod + 1 < lod_levels.size():
-				var dict := {"coord0": to_flip[i], "coord1": into[i] + delta, "res0": resoultion(lod) , "res1": resoultion(lod + 1)}
+				var dict := {"coord0": to_flip[i], "coord1": into[i] + delta, "res0": resoultion(lod) , "res1": resoultion(lod + 1), "delta": delta, "saved_player_coord": player_coord + delta}
 				if track_full_biomes_for_lod_levels.has(lod + 1):
 					result.append(into[i] + delta)
 				chunk_update_queue.append(dict)
 			else:
-				var dict := {"coord0": to_flip[i], "coord1": into[i] + delta, "res0": resoultion(lod)}
+				var dict := {"coord0": to_flip[i], "coord1": into[i] + delta, "res0": resoultion(lod), "saved_player_coord": player_coord + delta}
 				chunk_update_queue.append(dict)
 	return result
 	
@@ -318,6 +371,20 @@ func edges_at_direction(lod: int, direction: Vector2i) -> Array[Vector2i]:
 		for i in range(-value, value): result.append(Vector2i(i + player_coord.x, -value + player_coord.y))
 	if direction.y == 1:
 		for i in range(-value, value): result.append(Vector2i(i + player_coord.x, value - 1 + player_coord.y))
+	return result
+	
+func edges_part_of_transition(old_coord: Vector2i, new_coord: Vector2i, saved_player_coord: Vector2i) -> Vector2i:
+	var lod := chunk_lods[old_coord] as int
+	var value := lod_levels[lod] as int
+	var result := Vector2i.ZERO
+	if new_coord.x == -value + saved_player_coord.x:
+		result.x = -1
+	elif new_coord.x == value - 1 + saved_player_coord.x:
+		result.x = 1
+	if new_coord.y == -value + saved_player_coord.y:
+		result.y = -1
+	elif new_coord.y == value - 1 + saved_player_coord.y:
+		result.y = 1
 	return result
 	
 func convert_position_to_coord(x: float, z: float) -> Vector2i:
