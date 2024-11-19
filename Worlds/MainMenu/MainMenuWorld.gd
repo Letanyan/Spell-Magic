@@ -81,7 +81,7 @@ func _ready() -> void:
 	#])
 	
 	#chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
-	chunker = Chunker.new(256, 0.0625, 0, blender, [2, 8], true)
+	chunker = Chunker.new(256, 0.0625, blender, [2, 8], true)
 	build_terrain()
 	update_terrain()
 	
@@ -159,10 +159,12 @@ func _on_player_moved(delta: float) -> void:
 	terrain_update_interval = 0
 	update_terrain()
 	# FIXME: problem when player.position == zero. why is it zero though? is reseting to zero some fallback when an error occurs?
-	var h := (chunker.terrain_normal(player.position.x, player.position.z)["position"] as Vector3).y
-	player_movement_direction.y = h - player.position.y
-	if player.position.y < h + 1.0:
-		player.position.y = lerpf(player.position.y, h + 1.0, 0.1)
+	var res := chunker.terrain_normal(player.position.x, player.position.z)
+	if not res.is_empty():
+		var h := (res["position"] as Vector3).y
+		player_movement_direction.y = h - player.position.y
+		if player.position.y < h + 1.0:
+			player.position.y = lerpf(player.position.y, h + 1.0, 0.1)
 		
 		
 func build_terrain() -> void:
@@ -195,14 +197,7 @@ func update_terrain_queue() -> void:
 			#chunker.disable_height_map(loc, true, true)
 
 func update_terrain() -> void:
-	var chunks := chunker.update_chunks(player.position.x, player.position.z)
-	for loc: Vector2 in chunks:
-		var pop : Population = population.get(loc, null)
-		if pop == null:
-			continue
-		pop.despawn_all_from_world(get_node(".") as Node3D)
-		population.erase(loc)
-
+	chunker.update_chunks(player.position.x, player.position.z)
 	chunker.update_environment(player.position.x, player.position.z)
 
 	

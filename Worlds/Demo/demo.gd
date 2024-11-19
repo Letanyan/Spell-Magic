@@ -156,7 +156,7 @@ func run_on_ready() -> void:
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
 	#chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
-	chunker = Chunker.new(CHUNK_SIZE, 0.0625, 0, blender, [3, 8, 12], false)
+	chunker = Chunker.new(CHUNK_SIZE, 0.0625, blender, [3, 8, 12], false)
 	build_terrain()
 	update_terrain()
 	
@@ -305,7 +305,7 @@ func _physics_process(delta: float) -> void:
 		has_init_terrain_population = true
 		for coord: Vector2i in chunker.chunk_lods:
 			var lod := chunker.chunk_lods[coord] as int
-			if chunker.track_full_biomes_for_lod_levels.has(lod):
+			if lod < chunker.track_biomes_upto_lod:
 				update_population_at(coord, lod != 0)
 		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
 		var platform_h := Navigator.get_platform_height(state, player.position.x, player.position.z)
@@ -446,7 +446,7 @@ func update_terrain_queue() -> void:
 					population.erase(removed)
 				
 		for updated in updated_coords:
-			if chunker.track_full_biomes_for_lod_levels.has(updated.z):
+			if updated.z < chunker.track_biomes_upto_lod:
 				if updated.z == 0:
 					var pop := population.get(Vector2i(updated.x, updated.y), null) as Population
 					if pop != null:
@@ -455,7 +455,7 @@ func update_terrain_queue() -> void:
 					update_population_at(Vector2i(updated.x, updated.y), updated.z != 0)
 
 func update_terrain() -> void:
-	var chunks := chunker.update_chunks(player.position.x, player.position.z)
+	chunker.update_chunks(player.position.x, player.position.z)
 	chunker.update_environment(player.position.x, player.position.z)
 
 func update_population_at(coord: Vector2i, display_only: bool) -> void:

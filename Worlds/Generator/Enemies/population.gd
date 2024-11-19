@@ -22,7 +22,7 @@ var current_biome_during_generation: World.Biome = World.Biome.WATER
 var current_fl_during_generation: float = 0.0
 #var spawn_areas: Dictionary ## {"points": [][]Vector2, "biomes": []World.Biome} // groups of points categoriesed by biomes
 var spawn_area_biomes: Array[World.Biome]
-var spawn_area_points: Array[Array]
+var spawn_area_points: Array[PackedVector2Array]
 var spawn_point_spacing: float = 16.0
 
 # x = index into current biome, y = index into current point in biome indexed by x. 

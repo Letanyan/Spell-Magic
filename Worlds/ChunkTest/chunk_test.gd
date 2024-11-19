@@ -4,11 +4,12 @@ extends Node3D
 @onready var info: Label = $info
 @onready var camera: DebugCam = $camera
 
+var blender: NoiseBlender
 var chunker: Chunker
 
 func _ready() -> void:
-	var blender := NoiseBlender.version1(0)
-	chunker = Chunker.new(256, 0.0625, 120.0, blender, [3, 8, 16, 24], true)
+	blender = NoiseBlender.version1(0)
+	chunker = Chunker.new(256, 0.0625, blender, [3, 8, 16, 24], true)
 	chunker.init_chunks(0, 0)
 	chunker.set_world(self)
 
@@ -17,14 +18,14 @@ func _physics_process(delta: float) -> void:
 	
 	if chunker.has_chunks_to_update():
 		var updated := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 5)
-		print(updated)
+		#print(updated)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ev := event as InputEventKey
 		if not ev.is_released():
 			return
-		var player_pos := chunker.convert_coord_to_position(chunker.player_coord.x, chunker.player_coord.y)
+		var player_pos := chunker.player_coord * chunker.chunk_width
 		match ev.keycode:
 			KEY_UP: chunker.update_chunks(player_pos.x, player_pos.y + chunker.chunk_width)
 			KEY_DOWN: chunker.update_chunks(player_pos.x, player_pos.y - chunker.chunk_width)
