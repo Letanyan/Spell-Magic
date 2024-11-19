@@ -9,7 +9,7 @@ var chunker: Chunker
 
 func _ready() -> void:
 	blender = NoiseBlender.version1(0)
-	chunker = Chunker.new(256, 0.0625, blender, [3, 8, 16, 24], true)
+	chunker = Chunker.new(256, 0.0625, 128, blender, [3, 8, 16, 24], true)
 	chunker.init_chunks(0, 0)
 	chunker.set_world(self)
 
@@ -17,7 +17,7 @@ func _physics_process(delta: float) -> void:
 	info.text = "%.1v" % camera.position
 	
 	if chunker.has_chunks_to_update():
-		var updated := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 5)
+		chunker.update_chunks_in_queue(Time.get_ticks_msec(), 5)
 		#print(updated)
 
 func _input(event: InputEvent) -> void:

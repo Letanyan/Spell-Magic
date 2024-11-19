@@ -7,15 +7,17 @@ var water_shader := preload("res://Worlds/SkyBox/water.gdshader") as Shader
 var water_noise := preload("res://Worlds/SkyBox/water_noise.tres") as NoiseTexture2D
 var water_ripples_noise := preload("res://Worlds/SkyBox/ripples_noise.tres") as NoiseTexture2D
 var noise_texture := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
+var grass_mesh := preload("res://Models/Grass/grassface.tres") as Mesh
 
-func _init(_chunk_width: float, chunk_resolution: float, blender: NoiseBlender, lods: Array[int], find_bound_coords: bool) -> void:
+func _init(_chunk_width: float, chunk_resolution: float, grass_size: float, blender: NoiseBlender, lods: Array[int], find_bound_coords: bool) -> void:
 	back = GDChunker.new()
-	back.init(_chunk_width, chunk_resolution, blender.sea_level, blender.back, lods, find_bound_coords)
+	back.init(_chunk_width, chunk_resolution, blender.sea_level, grass_size, blender.back, lods, find_bound_coords)
 	back.set_biome_shader(biome_shader)
 	back.set_water_shader(water_shader)
 	back.set_water_noise(water_noise)
 	back.set_water_ripples_noise(water_ripples_noise)
 	back.set_noise_texture(noise_texture)
+	back.set_grass_mesh(grass_mesh)
 	
 func deinit() -> void:
 	back.deinit()
