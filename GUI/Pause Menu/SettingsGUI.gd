@@ -17,6 +17,8 @@ extends Control
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
 @onready var distance_slider: HSlider = $Tabs/Camera/Distance/Slider as HSlider
 @onready var distance_value: Label = $Tabs/Camera/Distance/Value as Label
+@onready var render_slider: HSlider = $"Tabs/Camera/Render Distance/Slider"
+@onready var render_value: Label = $"Tabs/Camera/Render Distance/Value"
 
 @onready var scaling_options: OptionButton = $"Tabs/Graphics/Scaling Mode/Options"
 @onready var scaling_slider: HSlider = $Tabs/Graphics/Scaling/Slider
@@ -86,6 +88,8 @@ func update_controls() -> void:
 	fov_value.text = str(int(world_settings.camera_settings.fov))
 	distance_slider.value = int(world_settings.camera_settings.distance)
 	distance_value.text = str(int(world_settings.camera_settings.distance))
+	render_slider.value = world_settings.camera_settings.render_distance
+	render_value.text = str(int(world_settings.camera_settings.render_distance)) + "m"
 	
 	scaling_options.selected = world_settings.graphics_settings.scaling_mode
 	sharpness_slider.value = world_settings.graphics_settings.sharpness * 100
@@ -180,6 +184,11 @@ func _on_fov_slider_value_changed(value: float) -> void:
 func _on_distance_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.distance = int(value)
 	distance_value.text = str(int(value))
+	settings_changed.emit(world_settings)
+	
+func _on_render_distance_slider_value_changed(value: float) -> void:
+	world_settings.camera_settings.render_distance = value
+	render_value.text = str(int(value)) + "m"
 	settings_changed.emit(world_settings)
 	
 func _on_auto_distance_toggled(toggled_on: bool) -> void:
