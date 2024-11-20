@@ -8,7 +8,7 @@ var noise_texture := preload("res://Worlds/Generator/Terrain/noise_texture.tres"
 
 # keys are the LOD level. 1 << (value << 1) - (sum of all previous number of chunks) represents the number of chunks for this LOD level
 var lod_levels: Array[int]
-var track_biomes_upto_lod # lods below will have full hi-res biome maps
+var track_biomes_upto_lod: int # lods below will have full hi-res biome maps
 var blender: NoiseBlender
 
 var chunk_lods := {} ## [Vector2i(coord)]int(LOD)
@@ -293,8 +293,8 @@ func update_chunks_in_queue(start: int, limit: int) -> Dictionary:
 			updated.append(Vector4i(coord0.x, coord0.y, roundi(chunk_resolution / res1 - 1), roundi(chunk_resolution / res0 - 1)))
 			removed.append(Vector4i(coord1.x, coord1.y, roundi(chunk_resolution / res1 - 1), roundi(chunk_resolution / res0 - 1)))
 			var delta := params["delta"] as Vector2i
-			update_chunk(coord0 + delta, coord0 + delta, resoultion(chunk_lods[coord0 + delta]), saved_player_coord)
-			update_chunk(coord1 - delta, coord1 - delta, resoultion(chunk_lods[coord0 + delta]), saved_player_coord)
+			update_chunk(coord0 + delta, coord0 + delta, resoultion(chunk_lods[coord0 + delta] as int), saved_player_coord)
+			update_chunk(coord1 - delta, coord1 - delta, resoultion(chunk_lods[coord0 + delta] as int), saved_player_coord)
 			swap_keys(chunk_lods, coord0, coord1)
 			swap_keys(chunk_rids, coord0, coord1)
 			swap_keys(mesh_rids, coord0, coord1)
