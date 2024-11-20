@@ -251,8 +251,6 @@ func _physics_process(delta: float) -> void:
 	
 	projectile_indicator_scale = 1.0 + (spring_extension / 10.0) * 2.0
 	update_projectile_indicators()
-	
-	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
@@ -577,7 +575,6 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 		
 func transition_menu(is_open: bool) -> void:
 	if is_open:
-		#screen_filter.visible = false
 		interface.visible = true
 		var tween := create_tween().set_parallel()
 		var D := 0.15
@@ -596,8 +593,7 @@ func transition_menu(is_open: bool) -> void:
 		)
 		tween.play()
 	else:
-		#screen_filter.visible = false
-		interface.visible = false
+		interface.visible = true
 		var tween := create_tween().set_parallel()
 		var D := 0.15
 		tween.tween_property(cam, "h_offset", 0.4, D)
@@ -608,7 +604,7 @@ func transition_menu(is_open: bool) -> void:
 		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)
 		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
 		tween.finished.connect(func() -> void:
-			interface.visible = true
+			interface.visible = false
 			on_menu_close.call()
 		)
 		tween.play()

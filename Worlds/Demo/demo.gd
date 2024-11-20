@@ -182,7 +182,7 @@ func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IS
 	
 	await RenderingServer.frame_post_draw
-	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("albedo_texture", sub_viewport.get_texture())
+	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
 	sub_viewport_container.visible = true
 
 func _ready() -> void:
