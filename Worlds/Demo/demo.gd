@@ -183,7 +183,7 @@ func run_on_ready() -> void:
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("albedo_texture", sub_viewport.get_texture())
-	sub_viewport_container.visible = false
+	sub_viewport_container.visible = true
 
 func _ready() -> void:
 	if ready_state == GameSettings.ReadyState.NOT:
@@ -319,6 +319,7 @@ func _physics_process(delta: float) -> void:
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false
+	sub_viewport_container.visible = false
 	menu.close()
 	hud.show()
 	
@@ -339,6 +340,9 @@ func open_menu_for_player() -> void:
 func toggle_menu() -> void:
 	if not player.menu_callbacks_are_set:
 		player.setup_menu_transition(open_menu_for_player, close_menu_for_player)
+		
+	if player.vitals.health.value < 0:
+		return
 	
 	settings.is_paused = true
 	sub_viewport_container.visible = false
@@ -350,16 +354,16 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 		
-	if not menu.is_showing and event.is_action_pressed("RT"):
+	if not settings.is_paused and event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			
-	if not menu.is_showing:
+	if not settings.is_paused:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative)
 				
-	if not menu.is_showing:
+	if not settings.is_paused:
 		if event is InputEventKey:
 			var ev := event as InputEventKey
 			if ev.is_released() and ev.keycode == KEY_1:
@@ -379,7 +383,7 @@ func _input(event: InputEvent) -> void:
 								y = 250.0
 							DebugDraw3D.draw_sphere(Vector3(p.x, y, p.y), 2.0, Color.RED, 5)
 				
-	if not menu.is_showing:
+	if not settings.is_paused:
 		GlobalData.controller.handle_input(event)
 		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
@@ -494,9 +498,9 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				return
 				
 			settings.is_paused = true
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			player.play_animation("death")
 			var subtitle_components := []
-			vitals.health.value = vitals.health.max_value
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
 				subtitle_components.append("Artifacts")
 				artifacts.reset_by_deleting_all_artifacts()
@@ -526,12 +530,15 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				subtitle = subtitle_components[0] + " and " + subtitle_components[1] + " have been removed"
 			elif subtitle_components.size() == 3:
 				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + " and " + subtitle_components[2] + " have been removed"
-			var overlay := OverlayScreen.display("DEATH", subtitle, "Respawn")
+			var overlay := OverlayScreen.display("DEATH", subtitle, "Revive")
 			overlay.confirmed.connect(func() -> void:
 				player.play_animation("revive")
 				settings.is_paused = false
+				vitals.health.value = vitals.health.max_value
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			)
 			overlay.show_in_root(self)
+			
 			
 		GameModeSettings.GameMode.PERMADEATH:
 			if vitals.health.value > 0:

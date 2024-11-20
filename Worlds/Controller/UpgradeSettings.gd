@@ -208,8 +208,8 @@ func purchase_v() -> PurchaseError:
 var level_mana := 1:
 	set(value):
 		level_mana = clampi(value, 1, level_max_mana)
-const level_max_mana := 100
-func max_mana(x: int = level_mana) -> float: return x * 10.0
+const level_max_mana := 20
+func max_mana(x: int = level_mana) -> float: return x * 50.0
 func upgrade_mana() -> float: return max_mana(level_mana + 1) - max_mana(level_mana)
 func cost_mana() -> int: return level_mana * 5
 var buff_mana := 0.0
@@ -230,8 +230,8 @@ func purchase_mana() -> PurchaseError:
 var level_health := 1:
 	set(value):
 		level_health = clampi(value, 1, level_max_health)
-const level_max_health := 100
-func max_health(x: int = level_health) -> float: return x * 10.0
+const level_max_health := 20
+func max_health(x: int = level_health) -> float: return x * 50.0
 func upgrade_health() -> float: return max_health(level_health + 1) - max_health(level_health)
 func cost_health() -> int: return level_health * 5
 var buff_health := 0.0

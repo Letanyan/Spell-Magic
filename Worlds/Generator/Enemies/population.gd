@@ -266,6 +266,7 @@ func spawn_into_world(start_time_ms: int, limit: int) -> Array[Node3D]:
 	spawn_cursor.y = j.data
 	if is_spawning_complete():
 		spawn_enemies_in_display_only = false
+		display_only = false
 	return result
 	
 func despawn_all_from_world(world: Node3D) -> void:
@@ -292,7 +293,7 @@ func update_info(world: Node3D) -> void:
 	
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
-		var dist: float = habitant.position.distance_to(player.position) 
+		var dist: float = habitant.global_position.distance_to(player.global_position) 
 		var col: CollisionShape3D = habitant.get_node("./Collision")
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
 		col.disabled = dist > 50
