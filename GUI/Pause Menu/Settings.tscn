@@ -291,6 +291,35 @@ text = "Adjust camera distance to try and fit all active enemies in your field o
 horizontal_alignment = 3
 autowrap_mode = 2
 
+[node name="Render Distance" type="Label" parent="Tabs/Camera"]
+layout_mode = 0
+offset_left = 264.0
+offset_top = 191.0
+offset_right = 393.0
+offset_bottom = 223.0
+text = "Render Distance: "
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="Tabs/Camera/Render Distance"]
+layout_mode = 0
+offset_left = 152.0
+offset_right = 512.0
+offset_bottom = 32.0
+min_value = 1000.0
+max_value = 8000.0
+step = 100.0
+value = 4000.0
+
+[node name="Value" type="Label" parent="Tabs/Camera/Render Distance"]
+layout_mode = 0
+offset_left = 520.0
+offset_right = 592.0
+offset_bottom = 32.0
+text = "2000m"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Graphics" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
@@ -855,6 +884,7 @@ bbcode_enabled = true
 [connection signal="value_changed" from="Tabs/Camera/FOV Label/Slider" to="." method="_on_fov_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Camera/Distance/Slider" to="." method="_on_distance_slider_value_changed"]
 [connection signal="toggled" from="Tabs/Camera/Auto Distance/Check" to="." method="_on_auto_distance_toggled"]
+[connection signal="value_changed" from="Tabs/Camera/Render Distance/Slider" to="." method="_on_render_distance_slider_value_changed"]
 [connection signal="item_selected" from="Tabs/Graphics/Scaling Mode/Options" to="." method="_on_scaling_mode_options_item_selected"]
 [connection signal="drag_ended" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_drag_ended"]
 [connection signal="value_changed" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_value_changed"]

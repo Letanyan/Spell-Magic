@@ -17,7 +17,7 @@ void fragment( )
 {
 	float scale = (sin(TIME * scale_speed) / 2.0 * 0.5 + 0.5 + 0.5);
 	vec2 base = (UV - 0.5 * (scale - 1.0)) * scale + TIME * movement_speed;
-	
+
 	float noise = texture(noise_tex, base).r;
 	vec4 color = mix( bg_color, fg_color, noise);
 

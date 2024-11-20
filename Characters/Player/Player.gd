@@ -49,7 +49,7 @@ var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 var camera_bounce_direction := 0
-var chunker: Terrain
+var chunker: Chunker
 
 signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
@@ -251,8 +251,6 @@ func _physics_process(delta: float) -> void:
 	
 	projectile_indicator_scale = 1.0 + (spring_extension / 10.0) * 2.0
 	update_projectile_indicators()
-	
-	#(interface.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = sub_viewport.get_texture()
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
@@ -334,10 +332,13 @@ func set_current_biome(biome: World.Biome) -> void:
 func set_current_biome_grass_color(color: Color) -> void:
 	(leaves.process_material as ParticleProcessMaterial).color = color
 
+func check_is_underwater() -> bool:
+	return position.y + 2.0 < world_settings.sea_level
+
 func set_underwater(underwater: float = 0.5) -> float:
 	var screen_mesh: Mesh = screen_filter.mesh
 	var screen_material: ShaderMaterial = screen_mesh.surface_get_material(0)
-	if position.y + 2.0 < world_settings.sea_level:
+	if check_is_underwater():
 		screen_filter.visible = true
 		screen_material.set_shader_parameter("underwater", underwater)
 		var meters_below_sea := world_settings.sea_level - (position.y + 2.0)
@@ -574,7 +575,6 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 		
 func transition_menu(is_open: bool) -> void:
 	if is_open:
-		screen_filter.visible = true
 		interface.visible = true
 		var tween := create_tween().set_parallel()
 		var D := 0.15
@@ -587,11 +587,13 @@ func transition_menu(is_open: bool) -> void:
 		tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, D)
 		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, -cam_arm.rotation.x)
 		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
-		tween.finished.connect(on_menu_open)
+		tween.finished.connect(func() -> void:
+			interface.visible = false
+			on_menu_open.call()
+		)
 		tween.play()
 	else:
-		screen_filter.visible = false
-		interface.visible = false
+		interface.visible = true
 		var tween := create_tween().set_parallel()
 		var D := 0.15
 		tween.tween_property(cam, "h_offset", 0.4, D)
@@ -601,7 +603,10 @@ func transition_menu(is_open: bool) -> void:
 		tween.tween_property(cam_pivot, "transform:basis", target_basis, D)
 		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)
 		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
-		tween.finished.connect(on_menu_close)
+		tween.finished.connect(func() -> void:
+			interface.visible = false
+			on_menu_close.call()
+		)
 		tween.play()
 		
 func change_reticule_visible(should_hide: bool) -> void:

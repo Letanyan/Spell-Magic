@@ -13,9 +13,8 @@ var noise_image: Image
 
 const CHUNK_SIZE = 256
 @onready var blender: NoiseBlender
-@onready var chunker: Terrain
-@onready var population: Dictionary = {} ## [Vector2]Population
-@onready var display_population: Dictionary = {} ## [Vector2]Population
+@onready var chunker: Chunker
+@onready var population: Dictionary = {} ## [Vector2i]Population
 var entity_manager: EntityManager
 
 var last_last_biome: World.Biome = World.Biome.WATER
@@ -156,8 +155,10 @@ func run_on_ready() -> void:
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
-	chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
+	#chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
+	chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
 	build_terrain()
+	update_terrain()
 	
 	SignalBus.enemy_death.connect(enemy_dies)
 	
@@ -181,15 +182,15 @@ func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IS
 	
 	await RenderingServer.frame_post_draw
-	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("albedo_texture", sub_viewport.get_texture())
-	sub_viewport_container.visible = false
+	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
+	sub_viewport_container.visible = true
 
 func _ready() -> void:
 	if ready_state == GameSettings.ReadyState.NOT:
 		run_on_ready()
 
 func _exit_tree() -> void:
-	pass
+	chunker.deinit()
 	
 func _process(delta: float) -> void:
 	if OS.is_debug_build():
@@ -232,7 +233,7 @@ func _physics_process(delta: float) -> void:
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
-		for loc: Vector2 in population:
+		for loc: Vector2i in population:
 			var pop := population[loc] as Population
 			pop.update_info(self)
 			
@@ -302,10 +303,10 @@ func _physics_process(delta: float) -> void:
 		var space := get_world_3d().space
 		var state := PhysicsServer3D.space_get_direct_state(space)
 		has_init_terrain_population = true
-		for loc in chunker.get_loaded_chunks_location():
-			update_population_at(loc, false)
-		for loc in chunker.get_medium_chunks_location():
-			update_population_at(loc, true)
+		for coord: Vector2i in chunker.chunk_lods:
+			var lod := chunker.chunk_lods[coord] as int
+			if lod < chunker.track_biomes_upto_lod:
+				update_population_at(coord, lod != 0)
 		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
 		var platform_h := Navigator.get_platform_height(state, player.position.x, player.position.z)
 		if abs(player.position.y - world_h) < abs(player.position.y - platform_h):
@@ -318,12 +319,13 @@ func _physics_process(delta: float) -> void:
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false
+	sub_viewport_container.visible = false
 	menu.close()
 	hud.show()
 	
 func open_menu_for_player() -> void:
 	settings.is_paused = true
-	for loc: Vector2 in population:
+	for loc: Vector2i in population:
 		var pop := population[loc] as Population
 		pop.update_info(self)
 	sub_viewport_container.visible = true
@@ -338,6 +340,9 @@ func open_menu_for_player() -> void:
 func toggle_menu() -> void:
 	if not player.menu_callbacks_are_set:
 		player.setup_menu_transition(open_menu_for_player, close_menu_for_player)
+		
+	if player.vitals.health.value < 0:
+		return
 	
 	settings.is_paused = true
 	sub_viewport_container.visible = false
@@ -349,16 +354,36 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 		
-	if not menu.is_showing and event.is_action_pressed("RT"):
+	if not settings.is_paused and event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			
-	if not menu.is_showing:
+	if not settings.is_paused:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative)
 				
-	if not menu.is_showing:
+	if not settings.is_paused:
+		if event is InputEventKey:
+			var ev := event as InputEventKey
+			if ev.is_released() and ev.keycode == KEY_1:
+				for loc: Vector2i in population:
+					var pop := population[loc] as Population
+					if pop == null: continue
+					if pop.display_only: continue
+					var y := 0.0
+					print(pop.coord)
+					for i in pop.spawn_area_biomes.size():
+						for p: Vector2 in pop.spawn_area_points[i]:
+							p += pop.coord * chunker.chunk_width
+							var res := chunker.terrain_normal(p.x, p.y)
+							if not res.is_empty():
+								y = (res["position"] as Vector3).y
+							else:
+								y = 250.0
+							DebugDraw3D.draw_sphere(Vector3(p.x, y, p.y), 2.0, Color.RED, 5)
+				
+	if not settings.is_paused:
 		GlobalData.controller.handle_input(event)
 		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
@@ -404,67 +429,56 @@ func _on_player_moved(delta: float) -> void:
 		update_terrain()
 		
 func build_terrain() -> void:
-	var chunks := chunker.init_chunks(player.position.x, player.position.z)
-	for chunk in chunks:
-		add_child(chunk)
+	chunker.init_chunks(player.position.x, player.position.z)
+	chunker.set_world(self)
 
 func update_terrain_queue() -> void:
 	if chunker.has_chunks_to_update():
-		var locations := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
-		#print(locations)
-		for loc in locations:
-			update_population_at(loc, true)
+		var coords := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
+		var updated_coords := coords["updated"] as Array[Vector4i]
+		var removed_coords := coords["removed"] as Array[Vector4i]
+		for _removed in removed_coords:
+			var removed := Vector2i(_removed.x, _removed.y)
+			if _removed.z == 0:
+				var pop := population.get(removed, null) as Population
+				if pop != null:
+					pop.habitant_set_display_only(true)
+			elif _removed.z == 1 and _removed.w > 1:
+				var pop := population.get(removed, null) as Population
+				if pop != null:
+					pop.despawn_all_from_world(get_node(".") as Node3D)
+					population.erase(removed)
+				
+		for updated in updated_coords:
+			if updated.z < chunker.track_biomes_upto_lod:
+				if updated.z == 0:
+					var pop := population.get(Vector2i(updated.x, updated.y), null) as Population
+					if pop != null:
+						pop.habitant_set_display_only(false)
+				elif updated.z == 1 and updated.w > 1:
+					update_population_at(Vector2i(updated.x, updated.y), updated.z != 0)
 
 func update_terrain() -> void:
-	var chunks := chunker.update_chunks(player.position.x, player.position.z)
-	for loc: Vector2 in chunks.get("loaded_removed", []):
-		var pop := population.get(loc, null) as Population
-		if pop == null: continue
-		pop.despawn_all_from_world(get_node(".") as Node3D)
-		population.erase(loc)
-		
-	for loc: Vector2 in chunks.get("medium_removed", []):
-		var pop := display_population.get(loc, null) as Population
-		if pop == null: continue
-		pop.despawn_all_from_world(get_node(".") as Node3D)
-		display_population.erase(loc)
-		
-	var updated_chunks := chunks.get("loaded_updated", []) as PackedVector2Array
-	for loc in updated_chunks:
-		update_population_at(loc, false)
-	
-	if updated_chunks.is_empty():
-		chunker.update_environment(player.position.x, player.position.z)
+	chunker.update_chunks(player.position.x, player.position.z)
+	chunker.update_environment(player.position.x, player.position.z)
 
-func update_population_at(loc: Vector2, display_only: bool) -> void:
-	var coord := chunker.convert_position_to_coord(loc.x, loc.y, CHUNK_SIZE)
-	var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager, display_only)
-	pop.setup_spawning_state()
-	if display_only:
-		display_population[loc] = pop
-	else:
-		population[loc] = pop
+func update_population_at(coord: Vector2i, display_only: bool) -> void:
+	var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager, true)
+	pop.setup_spawning_state(not display_only)
+	population[coord] = pop
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}
 	var start_time_ms := Time.get_ticks_msec()
-	for loc: Vector2 in population:
+	for loc: Vector2i in population:
 		var pop := population[loc] as Population
 		if not pop.is_spawning_complete():
 			items_to_add[pop] = pop.spawn_into_world(start_time_ms, 3)
-			
-	for loc: Vector2 in display_population:
-		var pop := display_population[loc] as Population
-		if not pop.is_spawning_complete():
-			items_to_add[pop] = pop.spawn_into_world(start_time_ms, 3)
-		else:
-			chunker.disable_height_map(loc, true, true)
 			
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:
 			if item.get_parent() == null:
 				add_child(item)
-				#call_deferred("add_child", item)
 
 func enemy_dies(enemy: Enemy) -> void:
 	var enemy_kind := enemy.world_enemy_enum()
@@ -484,9 +498,9 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				return
 				
 			settings.is_paused = true
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			player.play_animation("death")
 			var subtitle_components := []
-			vitals.health.value = vitals.health.max_value
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
 				subtitle_components.append("Artifacts")
 				artifacts.reset_by_deleting_all_artifacts()
@@ -516,12 +530,15 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				subtitle = subtitle_components[0] + " and " + subtitle_components[1] + " have been removed"
 			elif subtitle_components.size() == 3:
 				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + " and " + subtitle_components[2] + " have been removed"
-			var overlay := OverlayScreen.display("DEATH", subtitle, "Respawn")
+			var overlay := OverlayScreen.display("DEATH", subtitle, "Revive")
 			overlay.confirmed.connect(func() -> void:
 				player.play_animation("revive")
 				settings.is_paused = false
+				vitals.health.value = vitals.health.max_value
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			)
 			overlay.show_in_root(self)
+			
 			
 		GameModeSettings.GameMode.PERMADEATH:
 			if vitals.health.value > 0:

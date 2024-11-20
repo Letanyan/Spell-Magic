@@ -354,6 +354,7 @@ func update_settings(settings: WorldSettings) -> void:
 	stats_view.visible = not hud_settings.hide_stats_view
 	
 	player.cam.fov = settings.camera_settings.fov
+	player.cam.far = settings.camera_settings.render_distance
 	
 	player.change_reticule_visible(hud_settings.hide_reticule)
 	

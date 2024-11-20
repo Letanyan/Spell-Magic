@@ -132,6 +132,8 @@ func make(kind: World.Foliage) -> int:
 	return result
 		
 func remove(kind: World.Foliage, index: int) -> void:
+	if index > 1000:
+		print("hm")
 	multi_meshes[kind].multimesh.set_instance_transform(index, T_HIDEY)
 	transforms[kind][index] = T_HIDEY
 	slot_markings[kind][index] = 0

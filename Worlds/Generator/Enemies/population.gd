@@ -1,14 +1,15 @@
 class_name Population
 
 var rng: RandomNumberGenerator
-var chunker: Terrain
+var chunker: Chunker
 var blender: NoiseBlender
 var player: Player
 var entity_manager: EntityManager
 var display_only: bool
+var spawn_enemies_in_display_only: bool
 var foliage_manager: Foliage
 
-var coord: Vector2
+var coord: Vector2i
 var chunk_size: float
 
 var is_ready := false
@@ -21,7 +22,7 @@ var current_biome_during_generation: World.Biome = World.Biome.WATER
 var current_fl_during_generation: float = 0.0
 #var spawn_areas: Dictionary ## {"points": [][]Vector2, "biomes": []World.Biome} // groups of points categoriesed by biomes
 var spawn_area_biomes: Array[World.Biome]
-var spawn_area_points: Array[Array]
+var spawn_area_points: Array[PackedVector2Array]
 var spawn_point_spacing: float = 16.0
 
 # x = index into current biome, y = index into current point in biome indexed by x. 
@@ -31,7 +32,7 @@ var current_spawn_start_time_ms: int = 0 # gets reset each generation cycle. Onl
 var current_spawn_duration_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
 var generators: Array[BiomeGenerator] = [] 
 
-func _init(_coord: Vector2, _chunk_size: float, _chunker: Terrain, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
+func _init(_coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
 	rng = RandomNumberGenerator.new()
 	coord = _coord
 	chunker = _chunker
@@ -87,6 +88,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
 		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
 			foliage_manager.remove(kind, index)
+			#print(info, " or (", below_sea_level, " and ", not_hfil, ") or ", world_normal)
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
 		foliage_manager.setup(kind, index, position, rng, current_biome_during_generation)
@@ -152,7 +154,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
-	if display_only: return null
+	if display_only and not spawn_enemies_in_display_only: return null
 	var result := entity_manager.get_enemy(enemy)
 	var pos := Vector3(p.x, 0, p.y)
 	result.set_level(level_relative_to_position(rng, p.x, p.y))
@@ -172,6 +174,7 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 
 
 func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> int:
+	if not display_only: return -1
 	var pos := Vector3(p.x, 0, p.y)
 	var result := foliage_manager.make(foliage)
 	pos.x += spacing * rng.randf_range(-0.5, 0.5)
@@ -231,10 +234,11 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 			indices[j] = temp
 	return indices
 	
-func setup_spawning_state(spacing: float = 16.0) -> void:
+func setup_spawning_state(spawn_enemies: bool = false, spacing: float = 16.0) -> void:
+	spawn_enemies_in_display_only = spawn_enemies
 	spawn_point_spacing = spacing
 	rng.seed = hash(coord)
-	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing, display_only, false)
+	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing)
 	spawn_area_points = spawn_areas["points"]
 	spawn_area_biomes = spawn_areas["biomes"]
 	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
@@ -260,6 +264,9 @@ func spawn_into_world(start_time_ms: int, limit: int) -> Array[Node3D]:
 			
 	spawn_cursor.x = i
 	spawn_cursor.y = j.data
+	if is_spawning_complete():
+		spawn_enemies_in_display_only = false
+		display_only = false
 	return result
 	
 func despawn_all_from_world(world: Node3D) -> void:
@@ -278,6 +285,7 @@ func despawn_all_from_world(world: Node3D) -> void:
 	inhabitants.clear()
 	garden.clear()
 	world_items.clear()
+	spawn_cursor.x = spawn_area_biomes.size()
 	SignalBus.enemy_death.disconnect(mark_entity)
 
 func update_info(world: Node3D) -> void:
@@ -285,7 +293,7 @@ func update_info(world: Node3D) -> void:
 	
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
-		var dist: float = habitant.position.distance_to(player.position) 
+		var dist: float = habitant.global_position.distance_to(player.global_position) 
 		var col: CollisionShape3D = habitant.get_node("./Collision")
 		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
 		col.disabled = dist > 50
@@ -312,21 +320,31 @@ func update_info(world: Node3D) -> void:
 	for item in world_items:
 		if item is TargetShape:
 			if (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
-				(item.get_node("./static/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > (item as TargetShape).bounds.length() * 1.25 + 50
+				(item.get_node("./static/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > (item as TargetShape).bounds.length() * 1.25 + 50
 			else:
-				(item.get_node("./area/shape") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
+				(item.get_node("./area/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50
 		else:
-			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = item.position.distance_to(player.position) > 50
+			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50
 		
 		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
-			item.is_active = item.position.distance_to(player.position) < (item as TargetShape).bounds.length() * 2.0 + 50 and not player.world_settings.is_paused
+			item.is_active = not display_only and item.position.distance_to(player.position) < (item as TargetShape).bounds.length() * 2.0 + 50 and not player.world_settings.is_paused
 			if item.is_active:
 				player.watch_target(item as TargetShape)
 			else:
 				player.ignore_target(item as TargetShape)
 		else:
-			item.is_active = item.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
+			item.is_active = not display_only and item.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
 			
+			
+func habitant_set_display_only(only_display: bool) -> void:
+	display_only = only_display
+	if display_only:
+		for habitant_index: int in inhabitants:
+			var habitant: Enemy = inhabitants[habitant_index]
+			habitant.spell_caster.free_particles()
+			entity_manager.free_enemy(habitant)
+	else:
+		setup_spawning_state()
 
 func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 	if index <= -1:

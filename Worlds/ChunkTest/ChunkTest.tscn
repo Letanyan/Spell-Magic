@@ -1,0 +1,130 @@
+[gd_scene load_steps=19 format=3 uid="uid://dgev34do3cale"]
+
+[ext_resource type="Script" path="res://Worlds/ChunkTest/chunk_test.gd" id="1_r3b1l"]
+[ext_resource type="Script" path="res://Worlds/ChunkTest/debug_cam.gd" id="2_rqm61"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ntqfd"]
+
+[sub_resource type="Sky" id="Sky_7fdr6"]
+sky_material = SubResource("ProceduralSkyMaterial_ntqfd")
+
+[sub_resource type="Environment" id="Environment_6vfd4"]
+background_mode = 2
+sky = SubResource("Sky_7fdr6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u4y45"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_r01su"]
+material = SubResource("StandardMaterial3D_u4y45")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0luyx"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_q5vut"]
+material = SubResource("StandardMaterial3D_0luyx")
+radius = 25.0
+height = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4aqdb"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_25wxb"]
+material = SubResource("StandardMaterial3D_4aqdb")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p4uxa"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_mr3hs"]
+material = SubResource("StandardMaterial3D_p4uxa")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_xesbu"]
+map_width = 17
+map_depth = 17
+map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6g740"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0yncd"]
+material = SubResource("StandardMaterial3D_6g740")
+size = Vector2(256, 256)
+subdivide_width = 15
+subdivide_depth = 15
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xolp4"]
+size = Vector2(256, 256)
+subdivide_width = 7
+subdivide_depth = 7
+
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_x0llp"]
+map_width = 9
+map_depth = 9
+map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[node name="ChunkTest" type="Node3D"]
+script = ExtResource("1_r3b1l")
+
+[node name="camera" type="Camera3D" parent="."]
+transform = Transform3D(-0.707107, 0.241845, -0.664463, 0, 0.939693, 0.34202, 0.707107, 0.241845, -0.664463, 0, 500, 1.759)
+far = 8000.0
+script = ExtResource("2_rqm61")
+default_velocity = 500.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6vfd4")
+
+[node name="PosX" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 100, 0)
+mesh = SubResource("SphereMesh_r01su")
+
+[node name="NegX" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 100, 0)
+mesh = SubResource("SphereMesh_q5vut")
+skeleton = NodePath("../PosZ")
+
+[node name="PosZ" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 1000)
+mesh = SubResource("SphereMesh_25wxb")
+skeleton = NodePath("../NegZ")
+
+[node name="NegZ" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, -1000)
+mesh = SubResource("SphereMesh_mr3hs")
+
+[node name="info" type="Label" parent="."]
+offset_left = 960.0
+offset_top = 8.0
+offset_right = 1144.0
+offset_bottom = 29.0
+text = "(0, 0, 0)"
+horizontal_alignment = 2
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 133.868, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 170, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(16, 0, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0)
+shape = SubResource("HeightMapShape3D_xesbu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 170, 0)
+mesh = SubResource("PlaneMesh_0yncd")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 170, -256)
+mesh = SubResource("PlaneMesh_xolp4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
+transform = Transform3D(32, 0, 0, 0, 32, 0, 0, 0, 32, 0, 0, 0)
+shape = SubResource("HeightMapShape3D_x0llp")

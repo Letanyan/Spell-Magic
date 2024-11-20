@@ -28,7 +28,7 @@ var grassland_structure := {
 func setup_state(pop: Population) -> void:
 	Rand.normalise_distribution(grassland_structure)
 
-func populate(pop: Population, area: Array[Vector2], from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
+func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
 	var result: Array[Node3D] = []
 	var index := from.data as int
 	while index < area.size() and pop.current_spawn_duration_ms < limit:
