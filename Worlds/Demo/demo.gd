@@ -259,6 +259,9 @@ func _physics_process(delta: float) -> void:
 		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
+		if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
+			var env := get_node("WorldEnvironment") as WorldEnvironment
+			env.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
 		
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	const MULT = 2.5

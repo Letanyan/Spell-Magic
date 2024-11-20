@@ -115,6 +115,9 @@ func _physics_process(delta: float) -> void:
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
 		_on_player_moved(0.25)
+		if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
+			var env := get_node("WorldEnvironment") as WorldEnvironment
+			env.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
