@@ -487,11 +487,10 @@ func update_population_spawning() -> void:
 				add_child(item)
 
 func enemy_dies(enemy: Enemy) -> void:
-	var enemy_kind := enemy.world_enemy_enum()
-	if settings.enemies_killed.has(enemy_kind):
-		settings.enemies_killed[enemy_kind] += 1
+	if settings.enemies_killed.has(enemy.kind):
+		settings.enemies_killed[enemy.kind] += 1
 	else:
-		settings.enemies_killed[enemy_kind] = 1
+		settings.enemies_killed[enemy.kind] = 1
 	entity_manager.free_enemy(enemy)
 
 func _on_player_vital_update(vitals: Vitals) -> void:

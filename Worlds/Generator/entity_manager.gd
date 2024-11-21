@@ -100,35 +100,7 @@ class EntityBuffer:
 var buffer_foliage_lod0: Foliage
 var buffer_foliage_lod1: Foliage
 
-var buffer_fish: EntityBuffer
-var buffer_bird: EntityBuffer
-var buffer_fungi: EntityBuffer
-var buffer_hot_blob: EntityBuffer
-var buffer_mushroom: EntityBuffer
-var buffer_snot_blob: EntityBuffer
-var buffer_snot_spike: EntityBuffer
-var buffer_walker_head: EntityBuffer
-var buffer_wizard: EntityBuffer
-
-var buffer_undead: EntityBuffer
-var buffer_mole: EntityBuffer
-var buffer_walker: EntityBuffer
-var buffer_birdman: EntityBuffer
-var buffer_fishman: EntityBuffer
-var buffer_bluemon: EntityBuffer
-var buffer_frog: EntityBuffer
-var buffer_mushking: EntityBuffer
-var buffer_rabbit: EntityBuffer
-
-var buffer_bat: EntityBuffer
-var buffer_dragon: EntityBuffer
-var buffer_dragoon: EntityBuffer
-var buffer_ghost: EntityBuffer
-var buffer_ghostly: EntityBuffer
-var buffer_batty: EntityBuffer
-var buffer_bee: EntityBuffer
-var buffer_bumble_bee: EntityBuffer
-var buffer_undead_head: EntityBuffer
+var buffer_enemies: Array[EntityBuffer] = []
 
 var buffer_target: EntityBuffer
 var buffer_artifact: EntityBuffer
@@ -155,33 +127,10 @@ func _init() -> void:
 	buffer_foliage_lod0 = Foliage.new(0)
 	buffer_foliage_lod1 = Foliage.new(1)
 	
-	buffer_fish = EntityBuffer.new(10, func() -> Fish: return Enemy.make(World.Enemy.FISH), deinit_enemy, "FISH")
-	buffer_bird = EntityBuffer.new(10, func() -> Bird: return Enemy.make(World.Enemy.BIRD), deinit_enemy, "BIRD")
-	buffer_fungi = EntityBuffer.new(10, func() -> Fungi: return Enemy.make(World.Enemy.FUNGI), deinit_enemy, "FUNGI")
-	buffer_hot_blob = EntityBuffer.new(10, func() -> HotBlob: return Enemy.make(World.Enemy.HOT_BLOB), deinit_enemy, "HOT_BLOB")
-	buffer_mushroom = EntityBuffer.new(10, func() -> Mushroom: return Enemy.make(World.Enemy.MUSHROOM), deinit_enemy, "MUSHROOM")
-	buffer_undead = EntityBuffer.new(10, func() -> Undead: return Enemy.make(World.Enemy.UNDEAD), deinit_enemy, "UNDEAD")
-	buffer_mole = EntityBuffer.new(10, func() -> Mole: return Enemy.make(World.Enemy.MOLE), deinit_enemy, "MOLE")
-	buffer_walker = EntityBuffer.new(10, func() -> Walker: return Enemy.make(World.Enemy.WALKER), deinit_enemy, "WALKER")
-	buffer_birdman = EntityBuffer.new(10, func() -> Birdman: return Enemy.make(World.Enemy.BIRDMAN), deinit_enemy, "BIRDMAN")
-	buffer_fishman = EntityBuffer.new(10, func() -> Fishman: return Enemy.make(World.Enemy.FISHMAN), deinit_enemy, "FISHMAN")
-	buffer_bluemon = EntityBuffer.new(10, func() -> Bluemon: return Enemy.make(World.Enemy.BLUEMON), deinit_enemy, "BLUEMON")
-	buffer_frog = EntityBuffer.new(10, func() -> Frog: return Enemy.make(World.Enemy.FROG), deinit_enemy, "FROG")
-	buffer_mushking = EntityBuffer.new(10, func() -> Mushking: return Enemy.make(World.Enemy.MUSHKING), deinit_enemy, "MUSHKING")
-	buffer_rabbit = EntityBuffer.new(10, func() -> Rabbit: return Enemy.make(World.Enemy.RABBIT), deinit_enemy, "RABBIT")
-	buffer_bat = EntityBuffer.new(10, func() -> Bat: return Enemy.make(World.Enemy.BAT), deinit_enemy, "BAT")
-	buffer_dragon = EntityBuffer.new(10, func() -> Dragon: return Enemy.make(World.Enemy.DRAGON), deinit_enemy, "DRAGON")
-	buffer_dragoon = EntityBuffer.new(10, func() -> Dragoon: return Enemy.make(World.Enemy.DRAGOON), deinit_enemy, "DRAGOON")
-	buffer_ghost = EntityBuffer.new(10, func() -> Ghost: return Enemy.make(World.Enemy.GHOST), deinit_enemy, "GHOST")
-	buffer_ghostly = EntityBuffer.new(10, func() -> Ghostly: return Enemy.make(World.Enemy.GHOSTLY), deinit_enemy, "GHOSTLY")
-	buffer_batty = EntityBuffer.new(10, func() -> Batty: return Enemy.make(World.Enemy.BATTY), deinit_enemy, "BATTY")
-	buffer_bee = EntityBuffer.new(10, func() -> Bee: return Enemy.make(World.Enemy.BEE), deinit_enemy, "BEE")
-	buffer_bumble_bee = EntityBuffer.new(10, func() -> BumbleBee: return Enemy.make(World.Enemy.BUMBLE_BEE), deinit_enemy, "BUMBLE_BEE")
-	buffer_undead_head = EntityBuffer.new(10, func() -> UndeadHead: return Enemy.make(World.Enemy.UNDEAD_HEAD), deinit_enemy, "UNDEAD_HEAD")
-	buffer_snot_blob = EntityBuffer.new(10, func() -> SnotBlob: return Enemy.make(World.Enemy.SNOT_BLOB), deinit_enemy, "SNOT_BLOB")
-	buffer_snot_spike = EntityBuffer.new(10, func() -> SnotSpike: return Enemy.make(World.Enemy.SNOT_SPIKE), deinit_enemy, "SNOT_SPIKE")
-	buffer_walker_head = EntityBuffer.new(10, func() -> WalkerHead: return Enemy.make(World.Enemy.WALKER_HEAD), deinit_enemy, "WALKER_HEAD")
-	buffer_wizard = EntityBuffer.new(10, func() -> Wizard: return Enemy.make(World.Enemy.WIZARD), deinit_enemy, "WIZARD")
+	for kind: World.Enemy in World.Enemy.values():
+		if kind == World.Enemy.NONE: continue
+		var buffer := EntityBuffer.new(10, func() -> Enemy: return Enemy.make(kind), deinit_enemy, str(World.Enemy.keys()[kind]))
+		buffer_enemies.append(buffer)
 
 	var make_target_shape := func() -> WorldItem:
 		var result := TargetShape.make(); result.custom_free = free_world_item
@@ -215,65 +164,10 @@ func _init() -> void:
 
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
-	match kind:
-		World.Enemy.FISH: return buffer_fish.get_entity()
-		World.Enemy.UNDEAD: return buffer_undead.get_entity()
-		World.Enemy.MOLE: return buffer_mole.get_entity()
-		World.Enemy.WALKER: return buffer_walker.get_entity()
-		World.Enemy.BIRDMAN: return buffer_birdman.get_entity()
-		World.Enemy.FISHMAN: return buffer_fishman.get_entity()
-		World.Enemy.BLUEMON: return buffer_bluemon.get_entity()
-		World.Enemy.FROG: return buffer_frog.get_entity()
-		World.Enemy.MUSHKING: return buffer_mushking.get_entity()
-		World.Enemy.RABBIT: return buffer_rabbit.get_entity()
-		World.Enemy.BAT: return buffer_bat.get_entity()
-		World.Enemy.DRAGON: return buffer_dragon.get_entity()
-		World.Enemy.DRAGOON: return buffer_dragoon.get_entity()
-		World.Enemy.GHOST: return buffer_ghost.get_entity()
-		World.Enemy.GHOSTLY: return buffer_ghostly.get_entity()
-		World.Enemy.BIRD: return buffer_bird.get_entity()
-		World.Enemy.FUNGI: return buffer_fungi.get_entity()
-		World.Enemy.HOT_BLOB: return buffer_hot_blob.get_entity()
-		World.Enemy.MUSHROOM: return buffer_mushroom.get_entity()
-		World.Enemy.BATTY: return buffer_batty.get_entity()
-		World.Enemy.BEE: return buffer_bee.get_entity()
-		World.Enemy.BUMBLE_BEE: return buffer_bumble_bee.get_entity()
-		World.Enemy.UNDEAD_HEAD: return buffer_undead_head.get_entity()
-		World.Enemy.SNOT_BLOB: return buffer_snot_blob.get_entity()
-		World.Enemy.SNOT_SPIKE: return buffer_snot_spike.get_entity()
-		World.Enemy.WALKER_HEAD: return buffer_walker_head.get_entity()
-		World.Enemy.WIZARD: return buffer_wizard.get_entity()
-	return buffer_undead.get_entity()
+	return buffer_enemies[kind].get_entity()
 
 func free_enemy(enemy: Enemy) -> void:
-	match enemy.kind:
-		World.Enemy.FISH: buffer_fish.free_entity(enemy)
-		World.Enemy.UNDEAD: buffer_undead.free_entity(enemy)
-		World.Enemy.MOLE: buffer_mole.free_entity(enemy)
-		World.Enemy.WALKER: buffer_walker.free_entity(enemy)
-		World.Enemy.BIRDMAN: buffer_birdman.free_entity(enemy)
-		World.Enemy.FISHMAN: buffer_fishman.free_entity(enemy)
-		World.Enemy.BLUEMON: buffer_bluemon.free_entity(enemy)
-		World.Enemy.FROG: buffer_frog.free_entity(enemy)
-		World.Enemy.MUSHKING: buffer_mushking.free_entity(enemy)
-		World.Enemy.RABBIT: buffer_rabbit.free_entity(enemy)
-		World.Enemy.BAT: buffer_bat.free_entity(enemy)
-		World.Enemy.DRAGON: buffer_dragon.free_entity(enemy)
-		World.Enemy.DRAGOON: buffer_dragoon.free_entity(enemy)
-		World.Enemy.GHOST: buffer_ghost.free_entity(enemy)
-		World.Enemy.GHOSTLY: buffer_ghostly.free_entity(enemy)
-		World.Enemy.BIRD: buffer_bird.free_entity(enemy)
-		World.Enemy.FUNGI: buffer_fungi.free_entity(enemy)
-		World.Enemy.HOT_BLOB: buffer_hot_blob.free_entity(enemy)
-		World.Enemy.MUSHROOM: buffer_mushroom.free_entity(enemy)
-		World.Enemy.BATTY: buffer_batty.free_entity(enemy)
-		World.Enemy.BEE: buffer_bee.free_entity(enemy)
-		World.Enemy.BUMBLE_BEE: buffer_bumble_bee.free_entity(enemy)
-		World.Enemy.UNDEAD_HEAD: buffer_undead_head.free_entity(enemy)
-		World.Enemy.SNOT_BLOB: buffer_snot_blob.free_entity(enemy)
-		World.Enemy.SNOT_SPIKE: buffer_snot_spike.free_entity(enemy)
-		World.Enemy.WALKER_HEAD: buffer_walker_head.free_entity(enemy)
-		World.Enemy.WIZARD: buffer_wizard.free_entity(enemy)
+	buffer_enemies[enemy.kind].free_entity(enemy)
 		
 func get_world_item(kind: World.Item) -> WorldItem:
 	match kind:

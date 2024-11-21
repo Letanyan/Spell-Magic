@@ -68,6 +68,9 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 static func encode_v3(v: Vector3) -> String:
 	return "%.v" % v
 	
+static func dampen(source: float, target: float, rate: float, delta: float) -> float:
+	return lerpf(source, target, 1 - pow(rate, delta))
+	
 static func replace_ranges_in_string(source: String, ranges: Array, what: String) -> String:
 	var result := ""
 	var source_offset := 0

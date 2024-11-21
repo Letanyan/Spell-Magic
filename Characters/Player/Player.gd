@@ -215,19 +215,19 @@ func _physics_process(delta: float) -> void:
 				camera_bounce_direction *= -1
 		else:
 			camera_bounce_direction = floori(signf(y_mult))
-		cam.v_offset = lerpf(cam.v_offset, camera_bounce_direction * (0.2 + vratio * 0.3), damping)
+		cam.v_offset = Globals.dampen(cam.v_offset, camera_bounce_direction * (0.2 + vratio * 0.3), damping, delta)
 	else:
 		camera_bounce_direction = 0
 		if not is_zero_approx(cam.v_offset):
-			cam.v_offset = lerpf(cam.v_offset, 0.0, 0.05)
+			cam.v_offset = Globals.dampen(cam.v_offset, 0.0, 0.5, delta)
 		
-	var rate := 0.05 if velocity.length() == 0 else 0.01
-	camera_target_velocity = lerp(camera_target_velocity, clamp(velocity.length(), 0.0, 3.0), rate)
+	var rate := 0.5 if velocity.length() == 0 else 0.1
+	camera_target_velocity = Globals.dampen(camera_target_velocity, clampf(velocity.length(), 0.0, 3.0), rate, delta)
 	var cam_distance_ratio := (1 + (world_settings.camera_settings.distance - 5) / 5.0)
 	var spring_extension := 0.0
 	if world_settings.camera_settings.auto_distance:
 		cam_arm.spring_length = 1.0 * cam_distance_ratio # set it to min here so `compute_max_watched_enemies_distance` is consistent
-		max_watched_enemies_distance = lerp(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate)
+		max_watched_enemies_distance = Globals.dampen(max_watched_enemies_distance, compute_max_watched_enemies_distance(), rate, delta)
 		spring_extension = minf(max_watched_enemies_distance / 5.0, 10.0)
 	cam_arm.spring_length = (1.0 + spring_extension) * cam_distance_ratio
 	
@@ -236,7 +236,7 @@ func _physics_process(delta: float) -> void:
 		if is_zero_approx(intensity):
 			shake_intensity = 0.0
 		else:
-			shake_intensity = clampf(lerpf(shake_intensity, 0.0, 0.05), 0.0, 1.0)
+			shake_intensity = clampf(Globals.dampen(shake_intensity, 0.0, 0.05, delta), 0.0, 1.0)
 		var t := fmod(Time.get_unix_time_from_system(), 1000000)
 		var dx := camera_shake_noise.get_noise_3d(t, 0, 0)
 		var dy := camera_shake_noise.get_noise_3d(0, t, 0)

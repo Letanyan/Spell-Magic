@@ -7,16 +7,17 @@ enum Biome {
 }
 
 enum Enemy {
-	# !! WARNING: When adding new cases ensure `world_enemy_enum` and `make` method on `Enemy` 
-	# is updated to reflect new case added here. 
-	# As well as `generate_enemy` and `spawn_enemy`, in population.gd
-	NONE, UNDEAD, MOLE, WALKER, BIRDMAN, FISHMAN, BLUEMON, FROG, MUSHKING, RABBIT,
-	BAT, DRAGON, DRAGOON, GHOST, GHOSTLY, BATTY, BEE, BUMBLE_BEE, UNDEAD_HEAD,
-	FISH, BIRD, FUNGI, HOT_BLOB, MUSHROOM, SNOT_BLOB, SNOT_SPIKE, WALKER_HEAD, WIZARD,
+	# !! WARNING: When adding new cases ensure `make` and `setup` methods on `Enemy` 
+	# are updated to reflect new case added here. 
+	UNDEAD, MOLE, WALKER, BIRDMAN, FISHMAN, BLUEMON, FROG, MUSHKING, RABBIT, ORC, ORC_DEAD,
+	BAT, DRAGON, DRAGOON, GHOST, GHOSTLY, BATTY, BEE, BUMBLE_BEE, UNDEAD_HEAD, REDMON, PINKMON, FLYGEON, GOBLIN, GOBLIN_KING,
+	FISH, BIRD, FUNGI, HOT_BLOB, MUSHROOM, SNOT_BLOB, SNOT_SPIKE, WALKER_HEAD, WIZARD, BOUGEON,
+	
+	NONE = 255,
 }
 
 enum Foliage {
-	# !! WARNING: When adding new cases ensure to update `spawn_foliage` in `Population` and add methods in entity_manager.gd
+	# !! WARNING: When adding new cases ensure to update foliage.gd
 	TREE_PYRAMID, TREE_ROUND, TREE_CHRISTMAS, TREE_SAFARI, TREE_BRANCHED,
 	ROCK_EGG, ROCK_FLATTOP, ROCK_OVERHANG, ROCK_SQUASHED, ROCK_TALL,
 	BUSH_ROUND, BUSH_SPROUT, BUSH_TALL, 

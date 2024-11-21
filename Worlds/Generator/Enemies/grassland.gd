@@ -5,7 +5,6 @@ enum GrasslandStructuresKind {
 	NONE,
 	TREE_ROUND, TREE_BRANCHED,
 	VILLAGE,
-	UNDEAD, MOLE,
 	ABANDONED_VILLAGE,
 	TARGET_PUZZLE,
 	HIVE, SLIMY, FLOCK, PETS, FISH
@@ -15,8 +14,6 @@ var grassland_structure := {
 	GrasslandStructuresKind.NONE: 160,
 	GrasslandStructuresKind.TREE_ROUND: 5,
 	GrasslandStructuresKind.TREE_BRANCHED: 0.5,
-	GrasslandStructuresKind.VILLAGE: 0.5,
-	GrasslandStructuresKind.ABANDONED_VILLAGE: 0.05,
 	GrasslandStructuresKind.HIVE: 0.1,
 	GrasslandStructuresKind.SLIMY: 0.05,
 	GrasslandStructuresKind.FLOCK: 0.1,
@@ -136,17 +133,6 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					if p != null:
 						result.append(p)
 						 
-				
-			GrasslandStructuresKind.UNDEAD:
-				var pos := area[index] as Vector2
-				var p := pop.spawn_enemy(World.Enemy.UNDEAD, pos, spacing)
-				if p != null:
-					result.append(p)
-			GrasslandStructuresKind.MOLE:
-				var pos := area[index] as Vector2
-				var p := pop.spawn_enemy(World.Enemy.MOLE, pos, spacing)
-				if p != null:
-					result.append(p)
 			GrasslandStructuresKind.TARGET_PUZZLE:
 				var pos := area[index] as Vector2
 				
@@ -165,93 +151,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						result.append(p)				
 					
 				spawner.position = pos3
-					
-			#GrasslandStructuresKind.VILLAGE:
-				#if area.size() - index < 100:
-					#index += 1
-					#continue
-				#var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
-				#
-				#var w: Buildings
-				#for i in range(0, candidates.size()):
-					#var j := candidates[i]
-					#var pos := area[j] as Vector2
-					#w = pop.spawn_building(World.Building.FANTASY_WELL, pos.x, pos.y, spacing)
-					#if w != null:
-						#exclusion[j] = true
-						#result.append(w)
-						#candidates.remove_at(i)
-						#break
-				#
-				#var max_limit := rng.randi_range(1, 10)
-				#for i in range(0, candidates.size()):
-					#var j := candidates[i]
-					#var pos := area[j] as Vector2
-					#var p: Node3D
-					#if rng.randf() < 0.7:
-						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, pos.x, pos.y, spacing)
-					#else:
-						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, pos.x, pos.y, spacing)
-					#if p != null:
-						#max_limit -= 1
-						#exclusion[j] = true
-						#result.append(p)
-					#if max_limit <= 0:
-						#break
-						#
-			#GrasslandStructuresKind.ABANDONED_VILLAGE:
-				#if area.size() - index < 100:
-					#index += 1
-					#continue
-				#var candidates := Population.points_around(area[index], 100.0, index, area, exclusion, rng)
-				#
-				#var w: Buildings
-				#for i in range(0, candidates.size()):
-					#var j := candidates[i]
-					#var pos := area[j] as Vector2
-					#w = pop.spawn_building(World.Building.FANTASY_WELL, pos.x, pos.y, spacing)
-					#if w != null:
-						#exclusion[j] = true
-						#result.append(w)
-						#candidates.remove_at(i)
-						#break
-				#
-				#var max_limit := rng.randi_range(1, 10)
-				#for i in range(0, candidates.size()):
-					#var j := candidates[i]
-					#var pos := area[j] as Vector2
-					#var p: Node3D
-					#var house_size := 0
-					#if rng.randf() < 0.7:
-						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_SINGLE, pos.x, pos.y, spacing)
-						#house_size = Rand.entity_from_distribution(rng.randf(), {1: 0.4, 2: 0.05})
-					#else:
-						#p = pop.spawn_building(World.Building.FANTASY_VALLEY_DOUBLE, pos.x, pos.y, spacing)
-						#house_size = Rand.entity_from_distribution(rng.randf(), {1: 0.1, 2: 0.3, 3: 0.1, 4: 0.05})
-					#if p != null:
-						#max_limit -= 1
-						#exclusion[j] = true
-						#result.append(p)
-						#var spawner := pop.spawn_spawner(World.Item.KEY, pos, 2)
-						#if spawner != null:
-							#SignalBus.enemy_death.connect(spawner.remove_node)
-						#for k in house_size:
-							#if rng.randf() < 0.2:
-								#var n: Bat = pop.spawn_enemy(World.Enemy.BAT, pos.x, pos.y, spacing)
-								#if n != null:
-									#n.velocity_movement.current_biome = World.Biome.GRASSLAND
-									#result.append(n)
-									#if spawner != null:
-										#spawner.add_condition(n)
-							#else:
-								#var n: Undead = pop.spawn_enemy(World.Enemy.UNDEAD, pos.x, pos.y, spacing)
-								#if n != null:
-									#n.velocity_movement.current_biome = World.Biome.GRASSLAND
-									#result.append(n)
-									#if spawner != null:
-										#spawner.add_condition(n)
-					#if max_limit <= 0:
-						#break
+		
 		index += 1
 					
 	from.data = index

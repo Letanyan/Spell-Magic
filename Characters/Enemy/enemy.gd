@@ -60,15 +60,18 @@ func _ready() -> void:
 	
 static func make(_kind: World.Enemy) -> Enemy:
 	var result: Enemy
+
+	
 	const fish = preload("res://Characters/Enemy/Blob/Fish/fish.tscn") as PackedScene
-	const bird = preload("res://Characters/Enemy/Blob/Bird/Bird.tscn") as PackedScene
-	const fungi = preload("res://Characters/Enemy/Blob/Fungi/Fungi.tscn") as PackedScene
-	const hot_blob = preload("res://Characters/Enemy/Blob/HotBlob/HotBlob.tscn") as PackedScene
-	const mushroom = preload("res://Characters/Enemy/Blob/Mushroom/Mushroom.tscn") as PackedScene
+	const bird = preload("res://Characters/Enemy/Blob/Bird/bird.tscn") as PackedScene
+	const fungi = preload("res://Characters/Enemy/Blob/Fungi/fungi.tscn") as PackedScene
+	const hot_blob = preload("res://Characters/Enemy/Blob/HotBlob/hot_blob.tscn") as PackedScene
+	const mushroom = preload("res://Characters/Enemy/Blob/Mushroom/mushroom.tscn") as PackedScene
 	const snot_blob = preload("res://Characters/Enemy/Blob/SnotBlob/snot_blob.tscn") as PackedScene
 	const snot_spike = preload("res://Characters/Enemy/Blob/SnotSpike/snot_spike.tscn") as PackedScene
 	const walker_head = preload("res://Characters/Enemy/Blob/WalkerHead/walker_head.tscn") as PackedScene
 	const wizard = preload("res://Characters/Enemy/Blob/Wizard/wizard.tscn") as PackedScene
+	const bougeon = preload("res://Characters/Enemy/Blob/Bougeon/bougeon.tscn") as PackedScene
 
 	const undead = preload("res://Characters/Enemy/Tall/Undead/undead.tscn") as PackedScene
 	const mole = preload("res://Characters/Enemy/Tall/Mole/mole.tscn") as PackedScene
@@ -79,16 +82,23 @@ static func make(_kind: World.Enemy) -> Enemy:
 	const frog = preload("res://Characters/Enemy/Tall/Frog/frog.tscn") as PackedScene
 	const mushking = preload("res://Characters/Enemy/Tall/MushKing/mushking.tscn") as PackedScene
 	const rabbit = preload("res://Characters/Enemy/Tall/Rabbit/rabbit.tscn") as PackedScene
+	const orc = preload("res://Characters/Enemy/Tall/Orc/orc.tscn") as PackedScene
+	const orc_dead = preload("res://Characters/Enemy/Tall/OrcDead/orc_dead.tscn") as PackedScene
 
 	const bat = preload("res://Characters/Enemy/Flying/Bat/bat.tscn") as PackedScene
-	const dragon = preload("res://Characters/Enemy/Flying/Dragon/Dragon.tscn") as PackedScene
-	const dragoon = preload("res://Characters/Enemy/Flying/Dragoon/Dragoon.tscn") as PackedScene
-	const ghost = preload("res://Characters/Enemy/Flying/Ghost/Ghost.tscn") as PackedScene
-	const ghostly = preload("res://Characters/Enemy/Flying/Ghostly/Ghostly.tscn") as PackedScene
+	const dragon = preload("res://Characters/Enemy/Flying/Dragon/dragon.tscn") as PackedScene
+	const dragoon = preload("res://Characters/Enemy/Flying/Dragoon/dragoon.tscn") as PackedScene
+	const ghost = preload("res://Characters/Enemy/Flying/Ghost/ghost.tscn") as PackedScene
+	const ghostly = preload("res://Characters/Enemy/Flying/Ghostly/ghostly.tscn") as PackedScene
 	const batty = preload("res://Characters/Enemy/Flying/Batty/batty.tscn") as PackedScene
 	const bee = preload("res://Characters/Enemy/Flying/Bee/bee.tscn") as PackedScene
 	const bumble_bee = preload("res://Characters/Enemy/Flying/BumbleBee/bumble_bee.tscn") as PackedScene
 	const undead_head = preload("res://Characters/Enemy/Flying/UndeadHead/undead_head.tscn") as PackedScene
+	const redmon = preload("res://Characters/Enemy/Flying/Redmon/redmon.tscn") as PackedScene
+	const pinkmon = preload("res://Characters/Enemy/Flying/Pinkmon/pinkmon.tscn") as PackedScene
+	const flygeon = preload("res://Characters/Enemy/Flying/Flygeon/flygeon.tscn") as PackedScene
+	const goblin = preload("res://Characters/Enemy/Flying/Goblin/goblin.tscn") as PackedScene
+	const goblin_king = preload("res://Characters/Enemy/Flying/GoblinKing/goblin_king.tscn") as PackedScene
 	match _kind:
 		World.Enemy.UNDEAD: result = undead.instantiate()
 		World.Enemy.MOLE: result = mole.instantiate()
@@ -101,6 +111,9 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.DRAGOON: result = dragoon.instantiate()
 		World.Enemy.GHOST: result = ghost.instantiate()
 		World.Enemy.GHOSTLY: result = ghostly.instantiate()
+		World.Enemy.REDMON: result = redmon.instantiate()
+		World.Enemy.PINKMON: result = pinkmon.instantiate()
+		World.Enemy.FLYGEON: result = flygeon.instantiate()
 		World.Enemy.BIRD: result = bird.instantiate() 
 		World.Enemy.FUNGI: result = fungi.instantiate()
 		World.Enemy.HOT_BLOB: result = hot_blob.instantiate() 
@@ -113,10 +126,15 @@ static func make(_kind: World.Enemy) -> Enemy:
 		World.Enemy.BEE: result = bee.instantiate() 
 		World.Enemy.BUMBLE_BEE: result = bumble_bee.instantiate()
 		World.Enemy.UNDEAD_HEAD: result = undead_head.instantiate()
+		World.Enemy.ORC: result = orc.instantiate()
+		World.Enemy.ORC_DEAD: result = orc_dead.instantiate()
+		World.Enemy.GOBLIN: result = goblin.instantiate()
+		World.Enemy.GOBLIN_KING: result = goblin_king.instantiate()
 		World.Enemy.SNOT_BLOB: result = snot_blob.instantiate()
 		World.Enemy.SNOT_SPIKE: result = snot_spike.instantiate()
 		World.Enemy.WALKER_HEAD: result = walker_head.instantiate()
 		World.Enemy.WIZARD: result = wizard.instantiate()
+		World.Enemy.BOUGEON: result = bougeon.instantiate()
 		_: push_error("Missing enemy")
 		
 	result.spell_caster = SpellCaster.new(result, SpellCaster.Entity.ENEMY)
@@ -137,11 +155,13 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		World.Enemy.MOLE, World.Enemy.MUSHKING, World.Enemy.RABBIT, World.Enemy.UNDEAD, World.Enemy.WALKER: 
 			frame_count = Vector2(30, 17)
 		World.Enemy.BIRD, World.Enemy.FISH, World.Enemy.FUNGI, World.Enemy.HOT_BLOB, World.Enemy.MUSHROOM, \
-		World.Enemy.SNOT_BLOB, World.Enemy.SNOT_SPIKE, World.Enemy.WALKER_HEAD, World.Enemy.WIZARD: 
+		World.Enemy.SNOT_BLOB, World.Enemy.SNOT_SPIKE, World.Enemy.WALKER_HEAD, World.Enemy.WIZARD, World.Enemy.BOUGEON: 
 			frame_count = Vector2(13, 13)
 		World.Enemy.BAT, World.Enemy.BATTY, World.Enemy.BEE, World.Enemy.BUMBLE_BEE, World.Enemy.DRAGON, \
-		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD: 
+		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD, World.Enemy.FLYGEON, \
+		World.Enemy.PINKMON, World.Enemy.REDMON: 
 			frame_count = Vector2(35, 25)
+		_: push_error("missing enemy kind")
 	
 func set_level(lvl: float) -> void:
 	level = lvl
@@ -513,58 +533,6 @@ func drop_note() -> String:
 		if not GlobalData.game_settings.unlocked_notes.has(key):
 			return key
 	return ""
-	
-
-func world_enemy_enum() -> World.Enemy:
-	var n := get_node(".")
-	if n is Undead:
-		return World.Enemy.UNDEAD
-	elif n is Mole:
-		return World.Enemy.MOLE
-	elif n is Walker:
-		return World.Enemy.WALKER
-	elif n is Bat:
-		return World.Enemy.BAT
-	elif n is Fish:
-		return World.Enemy.FISH
-	elif n is Birdman:
-		return World.Enemy.BIRDMAN
-	elif n is Fishman:
-		return World.Enemy.FISHMAN
-	elif n is Bird:
-		return World.Enemy.BIRD
-	elif n is Fungi:
-		return World.Enemy.FUNGI
-	elif n is HotBlob:
-		return World.Enemy.HOT_BLOB
-	elif n is Mushroom:
-		return World.Enemy.MUSHROOM
-	elif n is Bluemon:
-		return World.Enemy.BLUEMON
-	elif n is Frog:
-		return World.Enemy.FROG
-	elif n is Mushking:
-		return World.Enemy.MUSHKING
-	elif n is Rabbit:
-		return World.Enemy.RABBIT
-	elif n is Batty:
-		return World.Enemy.BATTY
-	elif n is Bee:
-		return World.Enemy.BEE
-	elif n is BumbleBee:
-		return World.Enemy.BUMBLE_BEE
-	elif n is UndeadHead:
-		return World.Enemy.UNDEAD_HEAD
-	elif n is SnotBlob:
-		return World.Enemy.SNOT_BLOB 
-	elif n is SnotSpike:
-		return World.Enemy.SNOT_SPIKE 
-	elif n is WalkerHead:
-		return World.Enemy.WALKER_HEAD 
-	elif n is Wizard:
-		return World.Enemy.WIZARD
-	
-	return World.Enemy.NONE
 
 func play_walking_audio(stream: String) -> void:
 	pass

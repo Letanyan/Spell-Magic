@@ -1,4 +1,4 @@
-class_name Bird
+class_name Bougeon
 extends Enemy
 
 var none_pattern: AttackPatterns
@@ -30,7 +30,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	var attack_pathway := Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10 + 1, 0 * fit(10,20), 0), runs(10), Easing.out_quart) \
+		.line_to(Vector3(10, fit(10,20)+10, 0), runs(10), Easing.out_quart) \
 		.wait(10) \
 		.line_to(Vector3(10, 0, 0), runs(15), Easing.out_quart) \
 		.wait(4)
