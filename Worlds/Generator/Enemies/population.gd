@@ -91,9 +91,9 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 			#print(info, " or (", below_sea_level, " and ", not_hfil, ") or ", world_normal)
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
-		foliage_manager.setup(kind, index, position, rng, current_biome_during_generation)
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
 		foliage_manager.set_albedo_blend(kind, index, blender.color)
+		foliage_manager.setup(kind, index, position, rng, current_biome_during_generation)
 		garden.append(Vector2i(kind, index))
 		
 	#current_iteration_spawn_count += 1

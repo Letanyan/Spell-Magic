@@ -48,7 +48,7 @@ func setup(_settings: WorldSettings) -> void:
 func _ready() -> void:
 	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
-	_settings.sed = Time.get_ticks_usec()
+	_settings.sed = 6326706 # Time.get_ticks_usec()
 	setup(_settings)
 	
 	# FIXME: VERSION: -1, WORLD SEED: 5825589, RNG SEED: 5825589
@@ -81,7 +81,10 @@ func _ready() -> void:
 	#])
 	
 	#chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
-	chunker = Chunker.new(256, 0.0625, 128 * settings.graphics_settings.grass_size, blender, [2, 8, 16, 24], true)
+	if OS.is_debug_build():
+		chunker = Chunker.new(256, 0.0625, 128 * settings.graphics_settings.grass_size, blender, [2, 3], true)
+	else:
+		chunker = Chunker.new(256, 0.0625, 128 * settings.graphics_settings.grass_size, blender, [2, 8, 16, 24], true)
 	build_terrain()
 	update_terrain()
 	
@@ -102,15 +105,14 @@ func _physics_process(delta: float) -> void:
 	update_transition_to_biome(delta)
 			
 	if daytime_tick >= 0.166667:
-		const DAY_TICK = 0.000277783
-		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
-			skybox.day_time = 0.0
+		const DAY_TICK = 0.000277778
+		skybox.day_time += DAY_TICK
+		if skybox.day_time >= SkyBox.HOURS_IN_DAY:
+			skybox.day_time = fmod(skybox.day_time, SkyBox.HOURS_IN_DAY)
 			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
 				skybox.day_of_year = 1
 			else:
 				skybox.day_of_year += 1
-		else:
-			skybox.day_time += DAY_TICK
 		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
@@ -118,6 +120,7 @@ func _physics_process(delta: float) -> void:
 		if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
 			var env := get_node("WorldEnvironment") as WorldEnvironment
 			env.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
+		RenderingServer.global_shader_parameter_set("tick_time_s", float(Time.get_ticks_msec()) / 1000.0)
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
@@ -237,6 +240,11 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 			if not key.begins_with("*"): 
 				shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 				shader.set_shader_parameter("start_" + key, biome_final_settings[key])
+		env.environment.ambient_light_color = biome_start_settings["*ambient_light_color"]
+		sun.light_color = world_environment.environment.ambient_light_color
+		env.environment.fog_density = biome_start_settings["*fog_density"]
+		env.environment.fog_sky_affect = biome_start_settings["*fog_sky_affect"]
+		env.environment.fog_light_color = biome_start_settings["*fog_light_color"]
 	elif is_equal_approx(biome_tick, biome_transition_duration):
 		biome_tick = 0.0
 		shader.set_shader_parameter("transition", 0.0)

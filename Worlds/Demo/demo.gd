@@ -156,7 +156,10 @@ func run_on_ready() -> void:
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
 	#chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
-	chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
+	if OS.is_debug_build():
+		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 4, 6, 8], false)
+	else:
+		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
 	build_terrain()
 	update_terrain()
 	
@@ -248,20 +251,20 @@ func _physics_process(delta: float) -> void:
 			
 	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
-		if skybox.day_time + DAY_TICK >= SkyBox.HOURS_IN_DAY:
-			skybox.day_time = 0
+		skybox.day_time += DAY_TICK
+		if skybox.day_time >= SkyBox.HOURS_IN_DAY:
+			skybox.day_time = fmod(skybox.day_time, SkyBox.HOURS_IN_DAY)
 			if skybox.day_of_year + 1 > SkyBox.DAYS_IN_YEAR:
 				skybox.day_of_year = 1
 			else:
 				skybox.day_of_year += 1
-		else:
-			skybox.day_time += DAY_TICK
 		daytime_tick = 0.0
 		settings.time_of_day = skybox.day_time
 		settings.day_of_the_year = skybox.day_of_year
 		if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
 			var env := get_node("WorldEnvironment") as WorldEnvironment
 			env.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
+		RenderingServer.global_shader_parameter_set("tick_time_s", float(Time.get_ticks_msec()) / 1000.0)
 		
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	const MULT = 2.5
@@ -568,6 +571,11 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 			if not key.begins_with("*"): 
 				shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 				shader.set_shader_parameter("start_" + key, biome_final_settings[key])
+		env.environment.ambient_light_color = biome_start_settings["*ambient_light_color"]
+		sun.light_color = world_environment.environment.ambient_light_color
+		env.environment.fog_density = biome_start_settings["*fog_density"]
+		env.environment.fog_sky_affect = biome_start_settings["*fog_sky_affect"]
+		env.environment.fog_light_color = biome_start_settings["*fog_light_color"]
 	elif is_equal_approx(biome_tick, biome_transition_duration):
 		biome_tick = 0.0
 		shader.set_shader_parameter("transition", 0.0)

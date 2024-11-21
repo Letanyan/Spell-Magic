@@ -248,3 +248,10 @@ locale/translations=PackedStringArray("res://Translations/translations.en.transl
 [rendering]
 
 scaling_3d/fsr_sharpness=0.2
+
+[shader_globals]
+
+tick_time_s={
+"type": "float",
+"value": 0.0
+}

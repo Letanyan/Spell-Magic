@@ -38,6 +38,8 @@ varying float debug_wind;
 
 varying vec4 instance_custom;
 
+global uniform float tick_time_s;
+
 void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	instance_custom = INSTANCE_CUSTOM;
@@ -54,6 +56,8 @@ void vertex() {
 
 	VERTEX.x += normalized_wind_direction.x * 0.001 * displacement_affect * wind_speed;
 	VERTEX.z += normalized_wind_direction.y * 0.001 * displacement_affect * wind_speed;
+	
+	//COLOR.a = 1.0;
 
 	/*
 	// At the moment the blades are pushed away in a perfectly circular manner.
@@ -81,9 +85,9 @@ void vertex() {
 
 void fragment() {
 	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	albedo_tex = mix(instance_custom, instance_custom * 1.5, 1.0 - UV.y);
+	vec3 albedo_tex = mix(instance_custom.rgb, instance_custom.rgb * 1.5, 1.0 - UV.y);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	ALPHA = clamp(abs(COLOR.a - tick_time_s), 0.0, 1.0);
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
