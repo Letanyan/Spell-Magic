@@ -37,16 +37,18 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var ratio := rng.randf()
 				if rng.randf() < 0.5:
 					var radius := rng.randf_range(5, 15)
-					for i in Rand.roll(8, 4, 2, rng, Rand.Accum.AVG):
-						var kind := World.Foliage.MUSHROOM_POINTED if rng.randf() < ratio else World.Foliage.MUSHROOM_BULB
-						pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), spacing)
+					var point_count := Rand.roll(8, 4, 2, rng, Rand.Accum.AVG)
+					var path := Pathway.new().random_points_in_disc(1, 0, radius, 0, point_count)
+					path.apply_transform(T.translated(Vec3.xz(pos)))
+					spawn_foliage_randomly(pop, point_count, path, {World.Foliage.MUSHROOM_POINTED: 1 - ratio, World.Foliage.MUSHROOM_BULB: ratio}, rng, spacing)
 				else:
 					var w := rng.randf_range(5, 15)
 					var h := rng.randf_range(5, 15)
 					var r := rng.randf_range(-PI, PI)
-					for i in Rand.roll(8, 4, 2, rng, Rand.Accum.AVG):
-						var kind := World.Foliage.MUSHROOM_POINTED if rng.randf() < ratio else World.Foliage.MUSHROOM_BULB
-						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing)
+					var point_count := Rand.roll(8, 4, 2, rng, Rand.Accum.AVG)
+					var path := Pathway.new().random_points_in_rect(1, w, 0, h, point_count)
+					path.apply_transform(T.rotated(Vector3.UP, r).translated(Vec3.xz(pos)))
+					spawn_foliage_randomly(pop, point_count, path, {World.Foliage.MUSHROOM_POINTED: 1 - ratio, World.Foliage.MUSHROOM_BULB: ratio}, rng, spacing)
 						
 			HFILStructuresKind.MUSH_ENEMIES:
 				var pos := area[index]
@@ -56,11 +58,8 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
-				path.apply_transform(T.rotated(Vector3.UP, angle_offset))
-				for c in path.sample_points_xz(minion_count):
-					var minion := pop.spawn_enemy(World.Enemy.MUSHROOM if rng.randf() < 0.5 else World.Enemy.FUNGI, pos + c, spacing) as Mushroom
-					if minion != null:
-						result.append(minion)
+				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
+				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.MUSHROOM: 1, World.Enemy.FUNGI: 1}, rng, spacing)
 					
 			HFILStructuresKind.SNOT_ENEMIES:
 				var pos := area[index]
@@ -70,11 +69,8 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
-				path.apply_transform(T.rotated(Vector3.UP, angle_offset))
-				for c in path.sample_points_xz(minion_count):
-					var minion := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, pos + c, spacing) as SnotSpike
-					if minion != null:
-						result.append(minion)
+				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
+				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.SNOT_SPIKE: 1}, rng, spacing)
 					
 			HFILStructuresKind.HOT_DRAGONS:
 				var pos := area[index]
@@ -83,21 +79,18 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
-				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear, rng).apply_transform(T.rotated(Vector3.UP, angle_offset))
-				for c in path.sample_points_xz(minion_count):
-					var minion := pop.spawn_enemy(World.Enemy.HOT_BLOB, pos + c, spacing) as HotBlob
-					if minion != null:
-						result.append(minion)
+				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear, rng)
+				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
+				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.HOT_BLOB: 1}, rng, spacing)
 						
 			HFILStructuresKind.ENEMY_MIX:
 				var pos := area[index]
 				var king_count := Rand.entity_from_distribution(rng.randf(), { 4: pop.fit(1, 8), 3: pop.fit(2, 4), 2: pop.fit(4, 2), 1: pop.fit(8, 1)  }) as int
 				var radius := rng.randf_range(10.0, 15.0)
-				var king_path := Pathway.new().ngon(1, king_count, radius, Easing.linear, rng).apply_transform(T.rotated(Vector3.UP, rng.randf() * 2 * PI))
+				var king_path := Pathway.new().ngon(1, king_count, radius, Easing.linear, rng)
+				king_path.apply_transform(T.rotated(Vector3.UP, rng.randf() * 2 * PI).translated(Vec3.xz(pos)))
 				var king_ratio := { World.Enemy.SNOT_SPIKE: rng.randf(), World.Enemy.MUSHKING: rng.randf(), World.Enemy.DRAGOON: rng.randf() }
-				for c in king_path.sample_points_xz(king_count):
-					var king := pop.spawn_enemy(Rand.entity_from_distribution(rng.randf(), king_ratio) as World.Enemy, pos + c, spacing)
-					if king != null: result.append(king)
+				spawn_enemies_randomly(result, pop, king_count, king_path, king_ratio, rng, spacing)
 					
 				var minion_layers := Rand.entity_from_distribution(rng.randf(), { 1: pop.fit(20, 5), 2: 10, 3: pop.fit(5, 20)}) as int
 				
@@ -105,10 +98,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var minion_count := king_count + Rand.entity_from_distribution(rng.randf(), { 6: 1, 5: 2, 4: 4, 3: 8, 2: 16, 1: 32  }) as int
 					radius += rng.randf_range(10.0, 15.0)
 					var minion_path := Pathway.new().random_points_in_disc(1, radius, radius + rng.randf_range(10, 15), 0, 8, Easing.linear, rng)
+					minion_path.apply_transform(T.translated(Vec3.xz(pos)))
 					var minion_ratio := { World.Enemy.SNOT_BLOB: rng.randf(), World.Enemy.MUSHROOM: rng.randf(), World.Enemy.DRAGON: rng.randf(), World.Enemy.FUNGI: rng.randf() }
-					for c in minion_path.sample_points_xz(minion_count):
-						var minion := pop.spawn_enemy(Rand.entity_from_distribution(rng.randf(), minion_ratio) as World.Enemy, pos + c, spacing)
-						if minion != null: result.append(minion)
+					spawn_enemies_randomly(result, pop, minion_count, minion_path, minion_ratio, rng, spacing)
 				
 				
 		index += 1

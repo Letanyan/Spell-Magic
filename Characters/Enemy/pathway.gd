@@ -230,26 +230,28 @@ func random_points_in_disc(speed: float, min_r: float, max_r: float, h: float, c
 	if rng == null:
 		rng = RandomNumberGenerator.new()
 		rng.seed = Time.get_ticks_usec()
-	var p := Vector3(rng.randf() * 2.0 - 1.0, h, rng.randf() * 2.0 - 1.0) * rng.randf_range(min_r, max_r) + Vector3(0, h, 0) + cursor
+	var pivot := cursor
+	var p := Vector3(rng.randf() * 2.0 - 1.0, h, rng.randf() * 2.0 - 1.0) * rng.randf_range(min_r, max_r) + Vector3(0, h, 0) + pivot
 	add_with_speed(Segment.linear(cursor, p), speed, m)
 	for i in range(count - 1):
-		var q := Vector3(rng.randf() * 2.0 - 1.0, 0, rng.randf() * 2.0 - 1.0).normalized() * rng.randf_range(min_r, max_r) + Vector3(0, h, 0) + cursor
+		var q := Vector3(rng.randf() * 2.0 - 1.0, 0, rng.randf() * 2.0 - 1.0).normalized() * rng.randf_range(min_r, max_r) + Vector3(0, h, 0) + pivot
 		add_with_speed(Segment.linear(p, q), speed, m)
 		p = q
-	add_with_speed(Segment.linear(p, cursor), speed, m)
+	add_with_speed(Segment.linear(p, pivot), speed, m)
 	return self
 	
 func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: int, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
 	if rng == null:
 		rng = RandomNumberGenerator.new()
 		rng.seed = Time.get_ticks_usec()
-	var p := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r) + cursor
+	var pivot := cursor
+	var p := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r) + pivot
 	add_with_speed(Segment.linear(cursor, p), speed, m)
 	for i in range(count - 1):
-		var q := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r) + cursor
+		var q := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r) + pivot
 		add_with_speed(Segment.linear(p, q), speed, m)
 		p = q
-	add_with_speed(Segment.linear(p, cursor), speed, m)
+	add_with_speed(Segment.linear(p, pivot), speed, m)
 	return self
 	
 func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
@@ -262,6 +264,20 @@ func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear, r
 	for i in range(sides):
 		p = p.rotated(Vector3.UP, angle_step)
 		line_to(p, speed, m)
+	return self
+	
+func random_points_in_rect(speed: float, w: float, h: float, d: float, count: int, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.seed = Time.get_ticks_usec()
+	var pivot := cursor
+	var p := Vector3(rng.randf() * w, rng.randf() * h, rng.randf() * d) + pivot
+	add_with_speed(Segment.linear(cursor, p), speed, m)
+	for i in range(count - 1):
+		var q := Vector3(rng.randf() * w, rng.randf() * h, rng.randf() * d) + pivot
+		add_with_speed(Segment.linear(p, q), speed, m)
+		p = q
+	add_with_speed(Segment.linear(p, pivot), speed, m)
 	return self
 	
 func to_and_back(speed: float, to: Vector3, m: Segment = Easing.linear) -> Pathway:

@@ -66,23 +66,18 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				if bee_count <= 0 and bumble_count <= 0:
 					continue
 					
-				var radius := rng.randf_range(15.0, 30.0) 
-				var angle_offset := rng.randf_range(0.0, 2 * PI)
-				for i in 6:
-					var p := pos + Vector2(radius, 0).rotated(PI * 2 * (float(i) / 6.0) + angle_offset)
-					pop.spawn_foliage(World.Foliage.TREE_BRANCHED, p, 0.0, pop.always_valid)
+				var radius := rng.randf_range(15.0, 30.0)
+				var tree_path := Pathway.new().circle(radius, 0, 1)
+				tree_path.apply_transform(T.rotated(Vector3.UP, 2 * PI * rng.randf()).translated(Vec3.xz(pos)))
+				spawn_foliage_randomly(pop, 6, tree_path, {World.Foliage.TREE_BRANCHED: 1}, rng, spacing)
 					
 				var spawner := pop.spawn_spawner(World.Item.ARTIFACT, pos, art)
-				for i in bee_count:
-					var p := pop.spawn_enemy(World.Enemy.BEE, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
-					if p != null and spawner != null:
-						result.append(p)
-						spawner.add_condition(p)
-				for i in bumble_count:
-					var p := pop.spawn_enemy(World.Enemy.BUMBLE_BEE, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
-					if p != null and spawner != null:
-						result.append(p)
-						spawner.add_condition(p)
+				var bee_path := Pathway.new().random_points_in_disc(1, 0, spacing * 2.0, 0, bee_count)
+				bee_path.apply_transform(T.rotated(Vector3.UP, rng.randf() * PI).translated(Vec3.xz(pos)))
+				spawn_enemies_randomly(result, pop, bee_count, bee_path, {World.Enemy.BEE: 1}, rng, spacing, spawner)
+				var bumble_path := Pathway.new().random_points_in_disc(1, 0, spacing * 2.0, 0, bumble_count)
+				bumble_path.apply_transform(T.rotated(Vector3.UP, rng.randf() * PI).translated(Vec3.xz(pos)))
+				spawn_enemies_randomly(result, pop, bumble_count, bumble_path, {World.Enemy.BUMBLE_BEE: 1}, rng, spacing, spawner)
 				
 			GrasslandStructuresKind.SLIMY:
 				var pos := area[index]
@@ -92,13 +87,13 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 2: pop.fit(0.8, 0.5)}) as int
 				var spike_count := rng.randi_range(1, r)
 				var path := Pathway.new().random_points_in_disc(1, 0, spacing / 2.0, 0, spike_count, Easing.linear, rng)
-				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)))
+				path.apply_transform(T.translated(Vec3.xz(pos)))
 				for spike_pos in path.sample_points_xz(spike_count):
 					var p := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, spike_pos, spacing)
 					if p != null:
 						result.append(p)
 						var subpath := Pathway.new().random_points_in_disc(1, 0, spacing, 0, rng.randi_range(2,3), Easing.linear, rng)
-						subpath.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(spike_pos)))
+						subpath.apply_transform(T.translated(Vec3.xz(spike_pos)))
 						for sp in subpath.sample_points_xz(rng.randi_range(2,3)):
 							var q := pop.spawn_enemy(World.Enemy.SNOT_BLOB, sp, spacing)
 							if q != null:
@@ -111,19 +106,16 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
-				path.apply_transform(Transform3D.IDENTITY.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
-				for p in path.sample_points_xz(r * circle_points):
-					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
-					pop.spawn_foliage(kind, p, 0, pop.always_valid)
+				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
+				spawn_foliage_randomly(pop, r * circle_points, path, {World.Foliage.ROCK_TALL: pop.fit(1, 10), World.Foliage.ROCK_EGG: pop.fit(1, 2), World.Foliage.TREE_ROUND: pop.fit(1, 10)}, rng, spacing)
 					
 				var mini_count := rng.randi_range(1, r)
 				var boss := pop.spawn_enemy(World.Enemy.BIRDMAN, pos, spacing)
 				if boss != null:
 					result.append(boss)
-				for i in mini_count:
-					var p := pop.spawn_enemy(World.Enemy.BIRD, pos + Rand.point_in_circle_2d(r * 4, rng), spacing)
-					if p != null:
-						result.append(p)
+				var mini_path := Pathway.new().circle(r * 4, 0, 1)
+				mini_path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
+				spawn_enemies_randomly(result, pop, mini_count, mini_path, {World.Enemy.BIRD: 1}, rng, spacing)
 						
 			GrasslandStructuresKind.PETS:
 				var pos := area[index]
@@ -132,10 +124,8 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
-				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)).rotated(Vector3.UP, angle_offset))
-				for p in path.sample_points_xz(r * circle_points):
-					var kind := Rand.entity_from_distribution(rng.randf(), {World.Foliage.ROCK_TALL: 10, World.Foliage.ROCK_EGG: 2, World.Foliage.TREE_ROUND: 10}) as World.Foliage
-					pop.spawn_foliage(kind, p, 0, pop.always_valid)
+				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
+				spawn_foliage_randomly(pop, r * circle_points, path, {World.Foliage.ROCK_TALL: pop.fit(1, 10), World.Foliage.ROCK_EGG: pop.fit(1, 2), World.Foliage.TREE_ROUND: pop.fit(1, 10)}, rng, spacing)
 					
 				var mini_count := rng.randi_range(1, r)
 				for i in mini_count:
@@ -151,13 +141,11 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.UNDEAD, pos, spacing)
 				if p != null:
-					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GrasslandStructuresKind.MOLE:
 				var pos := area[index] as Vector2
 				var p := pop.spawn_enemy(World.Enemy.MOLE, pos, spacing)
 				if p != null:
-					p.velocity_movement.current_biome = World.Biome.GRASSLAND
 					result.append(p)
 			GrasslandStructuresKind.TARGET_PUZZLE:
 				var pos := area[index] as Vector2

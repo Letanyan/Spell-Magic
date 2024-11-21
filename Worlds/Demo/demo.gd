@@ -157,7 +157,7 @@ func run_on_ready() -> void:
 	settings.world_radius = blender.world_radius
 	#chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
 	if OS.is_debug_build():
-		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 4, 6, 8], false)
+		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
 	else:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
 	build_terrain()
