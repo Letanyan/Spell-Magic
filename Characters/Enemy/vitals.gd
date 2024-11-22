@@ -159,6 +159,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
+			source.amount_ratio = burning.value
 			(source.process_material as ParticleProcessMaterial).scale_min = burning.value
 			(source.process_material as ParticleProcessMaterial).scale_max = burning.value
 		
@@ -168,6 +169,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
+			source.amount_ratio = stun.value
 			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
 			mat.set_shader_parameter("len", 2.5 * stun.value)
 			
@@ -177,6 +179,8 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
+			source.amount_ratio = wetness.value
+			(source.process_material as ParticleProcessMaterial).scale_min = wetness.value
 			(source.process_material as ParticleProcessMaterial).scale_max = wetness.value
 			
 	effect = body.find_child("freeze_effect", false, false)
@@ -185,26 +189,22 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 			effect.queue_free()
 		else:
 			var source := effect.get_node("source") as GPUParticles3D
-			source.amount = int(freeze.value * 100)
+			source.amount_ratio = freeze.value
+			(source.process_material as ParticleProcessMaterial).scale_min = freeze.value
+			(source.process_material as ParticleProcessMaterial).scale_max = freeze.value
 				
 	return result
 
 func wetness_scale() -> float:
 	return 1 + wetness.value
 
-static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Spell.Element, show_label: bool, show_exp: bool, locations: Array[Vector3], r: float = 0, v: Vector3 = Vector3.ZERO) -> void:
+static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Spell.Element, show_label: bool, show_exp: bool, locations: Array[Vector3], r: float = 0, v: Vector3 = Vector3.ZERO, vitals: Vitals = null) -> void:
 	amount = clampi(int(amount), 0, 100)
-	if show_label:	
+	if show_label:
 		var lbl := (preload("res://Projectiles/explosion/BodyMessage.tscn") as PackedScene).instantiate() as BodyMessage
 		var collision: CollisionShape3D = body.get_node("Collision")
-		if collision.shape is BoxShape3D:
-			lbl.position.y = (collision.shape as BoxShape3D).size.y
-		elif collision.shape is SphereShape3D:
-			lbl.position.y = (collision.shape as SphereShape3D).radius
-		elif collision.shape is CylinderShape3D:
-			lbl.position.y = (collision.shape as CylinderShape3D).height
-		elif collision.shape is CapsuleShape3D:
-			lbl.position.y = (collision.shape as CapsuleShape3D).height
+		var height := Navigator.shape_height(collision.shape)
+		lbl.position = body.to_local(collision.global_position + Vec3.y(height / 2 + 0.5))
 		body.add_child(lbl)
 		lbl.text = str(int(amount))
 		var clr := Spell.color_from_element(element)
@@ -214,7 +214,7 @@ static func apply_damage(world: Node3D, body: Node3D, amount: float, element: Sp
 	
 	if show_exp:
 		for location in locations:
-			build_explosion(world, body, int(amount), element, location, r, v, false)
+			build_explosion(world, body, int(amount), element, location, r, v, false, vitals)
 
 const steam_exp = preload("res://Projectiles/explosion/steam_exp.tscn") as PackedScene
 const fire_exp = preload("res://Projectiles/explosion/fire_exp.tscn") as PackedScene
@@ -224,10 +224,10 @@ const air_exp = preload("res://Projectiles/explosion/air_exp.tscn") as PackedSce
 const rock_exp = preload("res://Projectiles/explosion/rock_exp.tscn") as PackedScene
 const electric_exp = preload("res://Projectiles/explosion/electric_exp.tscn") as PackedScene
 
-static func build_explosion(world: Node3D, body: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3, is_alternate: bool) -> void:
+static func build_explosion(world: Node3D, body: Node3D, amount: int, element: Spell.Element, location: Vector3, r: float, v: Vector3, is_alternate: bool, vitals: Vitals) -> void:
 	if element == Spell.Element.VOID:
 		return
-	if amount <= 0:
+	if amount <= 0 and location.is_finite():
 		return
 	
 	var explosion: Node3D
@@ -237,114 +237,136 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 	var visual_source: GPUParticles3D = null
 	match element:
 		Spell.Element.FIRE:
-			if not is_alternate:
-				explosion = fire_exp.instantiate()
-				source = explosion.get_node("source")
-				(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-				(source.process_material as ParticleProcessMaterial).scale_min = r * 2
-				(source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				(source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
-				source.amount = amount
-			else:
-				explosion = steam_exp.instantiate()
-				source = explosion.get_node("source")
-				(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-				(source.process_material as ParticleProcessMaterial).scale_min = r * 2
-				(source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				source.amount = 20 + roundi(80 * (amount / 100.0))
+			if location.is_finite():
+				if not is_alternate:
+					explosion = fire_exp.instantiate()
+					source = explosion.get_node("source")
+					(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
+					(source.process_material as ParticleProcessMaterial).scale_min = r * 2
+					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
+					(source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
+					source.amount = amount
+				else:
+					explosion = steam_exp.instantiate()
+					source = explosion.get_node("source")
+					(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
+					(source.process_material as ParticleProcessMaterial).scale_min = r * 2
+					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
+					source.amount = 20 + roundi(80 * (amount / 100.0))
 			
-			if not body.has_node("burn_effect"):
+			if vitals != null and not body.has_node("burn_effect"):
 				visual_effect = fire_exp.instantiate()
 				visual_effect.name = "burn_effect"
 				visual_source = visual_effect.get_node("source")
-				(visual_source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-				(visual_source.process_material as ParticleProcessMaterial).scale_min = r * 2
-				(visual_source.process_material as ParticleProcessMaterial).scale_max = r * 2
+				(visual_source.process_material as ParticleProcessMaterial).emission_sphere_radius = 1
+				(visual_source.process_material as ParticleProcessMaterial).scale_min = vitals.burning.value * 0.5
+				(visual_source.process_material as ParticleProcessMaterial).scale_max = vitals.burning.value
 				(visual_source.process_material as ParticleProcessMaterial).initial_velocity_max = 0
-				visual_source.amount = amount
+				visual_source.amount = 25
+				visual_source.amount_ratio = vitals.burning.value
 		Spell.Element.WATER:
-			if not is_alternate:
-				explosion = water_exp.instantiate()
-				source = explosion.get_node("source")
-				(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-				(source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
-				(source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				source.amount = amount
-			else:
-				explosion = steam_exp.instantiate()
-				source = explosion.get_node("source")
-				(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
-				(source.process_material as ParticleProcessMaterial).scale_min = r * 2
-				(source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				source.amount = 20 + roundi(80 * (amount / 100.0))
+			if location.is_finite():
+				if not is_alternate:
+					explosion = water_exp.instantiate()
+					source = explosion.get_node("source")
+					(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
+					(source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
+					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
+					source.amount = amount
+				else:
+					explosion = steam_exp.instantiate()
+					source = explosion.get_node("source")
+					(source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
+					(source.process_material as ParticleProcessMaterial).scale_min = r * 2
+					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
+					source.amount = 20 + roundi(80 * (amount / 100.0))
 			
-			if not body.has_node("wet_effect"):
+			if vitals != null and not body.has_node("wet_effect"):
 				visual_effect = water_exp.instantiate()
 				visual_effect.name = "wet_effect"
 				visual_source = visual_effect.get_node("source")
-				(visual_source.process_material as ParticleProcessMaterial).emission_sphere_radius = r
+				(visual_source.process_material as ParticleProcessMaterial).emission_sphere_radius = 1
 				(visual_source.process_material as ParticleProcessMaterial).initial_velocity_max = 0
-				(visual_source.process_material as ParticleProcessMaterial).scale_max = r * 2
-				visual_source.amount = amount
+				(visual_source.process_material as ParticleProcessMaterial).scale_min = vitals.wetness.value * 0.5
+				(visual_source.process_material as ParticleProcessMaterial).scale_max = vitals.wetness.value
+				visual_source.amount = 25
+				visual_source.amount_ratio = vitals.wetness.value
 		Spell.Element.ROCK:
-			explosion = rock_exp.instantiate()
-			source = explosion.get_node("source")
-			(source.draw_pass_1 as BoxMesh).size.x = r * 0.1
-			(source.draw_pass_1 as BoxMesh).size.y = r * 0.1
-			(source.draw_pass_1 as BoxMesh).size.z = r * 0.1
-			source.amount = amount
+			if location.is_finite():
+				explosion = rock_exp.instantiate()
+				source = explosion.get_node("source")
+				(source.draw_pass_1 as BoxMesh).size.x = r * 0.1
+				(source.draw_pass_1 as BoxMesh).size.y = r * 0.1
+				(source.draw_pass_1 as BoxMesh).size.z = r * 0.1
+				source.amount = amount
 		Spell.Element.AIR:
-			explosion = air_exp.instantiate()
-			source = explosion.get_node("source")
-			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", r / 10.0)
-			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", r)
-			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", r / 2)
-			((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", r / 4)
-			(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
-			(source.process_material as ParticleProcessMaterial).direction = v.normalized()
-			source.amount = int(float(amount) / 10.0) + 1
+			if location.is_finite():
+				explosion = air_exp.instantiate()
+				source = explosion.get_node("source")
+				((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", r / 10.0)
+				((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", r)
+				((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", r / 2)
+				((source.draw_pass_1 as Mesh).surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", r / 4)
+				(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
+				(source.process_material as ParticleProcessMaterial).direction = v.normalized()
+				source.amount = int(float(amount) / 10.0) + 1
 		Spell.Element.ICE:
-			explosion = ice_exp.instantiate()
-			source = explosion.get_node("source")
-			(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
-			source.amount = amount
+			if location.is_finite():
+				explosion = ice_exp.instantiate()
+				source = explosion.get_node("source")
+				(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
+				source.amount = amount
 			
-			if not body.has_node("freeze_effect"):
+			if vitals != null and not body.has_node("freeze_effect"):
 				visual_effect = ice_exp.instantiate()
 				visual_effect.name = "freeze_effect"
 				visual_source = visual_effect.get_node("source")
-				(visual_source.process_material as ParticleProcessMaterial).emission_ring_radius = r
-				visual_source.amount = amount
+				(visual_source.process_material as ParticleProcessMaterial).emission_ring_radius = 1
+				(visual_source.process_material as ParticleProcessMaterial).scale_min = vitals.freeze.value * 0.5
+				(visual_source.process_material as ParticleProcessMaterial).scale_max = vitals.freeze.value
+				visual_source.amount = 25
+				visual_source.amount_ratio = vitals.freeze.value
 		Spell.Element.ELECTRIC:
-			explosion = electric_exp.instantiate()
-			source = explosion.get_node("source")
-			var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
-			mat.set_shader_parameter("len", r * 1.2)
-			(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
-			@warning_ignore("integer_division")
-			source.amount = clampi(amount / 10, 1, 100)
+			if location.is_finite():
+				explosion = electric_exp.instantiate()
+				source = explosion.get_node("source")
+				var mat: ShaderMaterial = source.draw_pass_1.surface_get_material(0)
+				mat.set_shader_parameter("len", r * 1.2)
+				(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
+				@warning_ignore("integer_division")
+				source.amount = clampi(amount / 10, 1, 100)
 			
-			if not body.has_node("stun_effect"):
+			if vitals != null and not body.has_node("stun_effect"):
 				visual_effect = electric_exp.instantiate()
 				visual_effect.name = "stun_effect"
 				visual_source = visual_effect.get_node("source")
 				var visual_mat: ShaderMaterial = visual_source.draw_pass_1.surface_get_material(0)
-				visual_mat.set_shader_parameter("len", r * 1.2)
-				(visual_source.process_material as ParticleProcessMaterial).emission_ring_radius = r
+				visual_mat.set_shader_parameter("len", vitals.stun.value * 1.2)
+				(visual_source.process_material as ParticleProcessMaterial).emission_ring_radius = 1
 				@warning_ignore("integer_division")
-				visual_source.amount = clampi(amount / 10, 1, 100)
+				visual_source.amount = 25
+				visual_source.amount_ratio = vitals.stun.value
 			
 			
-	if visual_effect != null and (body is CharacterBody):
+	if vitals != null and visual_effect != null and (body is CharacterBody):
 		visual_effect.position = Vector3(0, (body as CharacterBody).bounds.y / 4, 0) # body.to_local(location)
 		visual_source.one_shot = false
 		visual_source.explosiveness = 0.0
 		visual_source.emitting = true
 		body.add_child(visual_effect)
 			
-	explosion.position = world.to_local(location)
-	world.add_child(explosion)
-	source.emitting = true
-	await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
-	world.remove_child(explosion)
-	explosion.queue_free()
+	if location.is_finite():
+		explosion.position = world.to_local(location)
+		world.add_child(explosion)
+		source.emitting = true
+		await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
+		world.remove_child(explosion)
+		explosion.queue_free()
+
+func amount_of_particles_for_effects(element: Spell.Element) -> int:
+	match element:
+		Spell.Element.FIRE: return ceili(burning.value * 25)
+		Spell.Element.WATER: return ceili(wetness.value * 25)
+		Spell.Element.ICE: return ceili(freeze.value * 25)
+		Spell.Element.ELECTRIC: return ceili(stun.value * 25)
+		_: return 0

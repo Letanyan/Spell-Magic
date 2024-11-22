@@ -232,7 +232,7 @@ func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area
 		projectile.lose_control(projectile, area, {"dmg": dmg, "el": projectile.spell.element})
 	else:
 		projectile.expire_now(projectile, area, {"dmg": dmg, "el": projectile.spell.element})
-	Vitals.apply_damage(projectile.get_parent() as Node3D, area, dmg, projectile.spell.element, false, true, contact_points, projectile.most_recent_radius.length(), projectile.velocity)
+	Vitals.apply_damage(projectile.get_parent() as Node3D, area, dmg, projectile.spell.element, false, true, contact_points, projectile.most_recent_radius.length(), projectile.velocity, vitals)
 		
 
 func set_is_down() -> void:

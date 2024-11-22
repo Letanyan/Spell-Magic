@@ -73,7 +73,7 @@ func explode_after(p: Node3D, q: CollisionObject3D, t: float, is_alternate: bool
 			SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
 		expired = true
 		var amount := clampi(int(spell.damage(caster_vitals)), 0, 100)
-		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius.length(), velocity, is_alternate)
+		Vitals.build_explosion(get_parent() as Node3D, p, amount, spell.element, p.position, most_recent_radius.length(), velocity, is_alternate, null)
 	)
 	
 func is_active() -> bool:
@@ -258,25 +258,30 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(_body):
 			on_hit_casts[_body] = true
 			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
-		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity)
-		if is_player and spell.element != Spell.Element.VOID:
-			var body := _body as Player
-			body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
-			body.invunerable = INVUNERABLE_DURATION
-			if dmg["dmg"] > 0:
-				body.play_animation("on_hit")
-			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
-			body.emit_vitals_update()
-		if is_enemy and spell.element != Spell.Element.VOID:
-			var body := _body as Enemy
-			body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
-			if body.vitals.health.value <= body.vitals.health.min_value:
-				body.vital_update.emit(body.index_in_population, body.vitals)
-				body.die()
-			else:
+		if spell.element != Spell.Element.VOID:
+			if is_player:
+				var body := _body as Player
+				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
+				body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
 				body.invunerable = INVUNERABLE_DURATION
 				if dmg["dmg"] > 0:
 					body.play_animation("on_hit")
+				body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
+				body.emit_vitals_update()
+			elif is_enemy:
+				var body := _body as Enemy
+				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
+				body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+				if body.vitals.health.value <= body.vitals.health.min_value:
+					body.vital_update.emit(body.index_in_population, body.vitals)
+					body.die()
+				else:
+					body.invunerable = INVUNERABLE_DURATION
+					if dmg["dmg"] > 0:
+						body.play_animation("on_hit")
+			else:
+				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, null)
+				
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	var _body := area.get_parent_node_3d() as CollisionObject3D
