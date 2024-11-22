@@ -50,7 +50,7 @@ func setup(_settings: WorldSettings) -> void:
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
-	player.set_current_biome(World.Biome.TUNDRA)
+	player.set_current_biome(World.Biome.WATER)
 	
 	case = WandCase.new()
 	case.read(settings.world_name)

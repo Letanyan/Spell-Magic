@@ -128,6 +128,15 @@ orbit-xz: projectiles spin around a point
 	or ; projectile offset
 	r ; radius
 	
+plane-linear: fires N projectiles along a circle on a plane
+	d ; offset
+	s ; speed
+	ox, oy, oz ; direction of offset
+	dx, dy, dz ; direction of projectiles
+	a ; angle offset
+	R ; radius
+	
+	
 scatter shot: fires multiple projectiles in range defined by harc and varc
 	harc ; horizontal arc range
 	varc ; vertical arc range

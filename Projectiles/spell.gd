@@ -324,6 +324,10 @@ func build_expressions() -> void:
 			time_dependent_vars.append(k)
 		elif expr.contains_variable("trI") or expr.contains_variable("trJ") or expr.contains_variable("trK"):
 			time_dependent_vars.append(k)
+		else:
+			for variable in time_dependent_vars:
+				if expr.contains_variable(variable):
+					time_dependent_vars.append(k)
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	# FIXME: speed up

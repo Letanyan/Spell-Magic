@@ -304,7 +304,7 @@ func _on_r_text_changed(new_text: String) -> void:
 	var raw: float = new_text.to_float()
 	book.spells[current_index].radius = raw
 	if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
-		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
+		errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
 	else:
 		errors_list.erase("r")
 	update_cooldown()
