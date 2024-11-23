@@ -19,7 +19,11 @@ var current_path: PathStyle:
 			current_path.time = NAN
 var still_path: PathStyle
 var current_attack: AttackPatterns
-var level: float # Use float so it's easy to use in expressions. However, should only be whole numbers.
+var level: float: # Use float so it's easy to use in expressions. However, should only be whole numbers.
+	set(value):
+		level = value
+		if level_text != null:
+			level_text.text = str(int(level))
 var fl: float:
 	get:
 		return level / 100.0
@@ -165,8 +169,6 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 func set_level(lvl: float) -> void:
 	level = lvl
-	if level_text != null:
-		level_text.text = str(int(level))
 		
 func separation_multiplier() -> float:
 	return 1.05
@@ -591,6 +593,9 @@ func power(cls: int) -> float:
 	
 func radius(cls: int) -> float:
 	return fit(0.1, minf(cls * cls / 80.0 + 0.875, 5.0))
+	
+func ea(cls: int) -> float:
+	return fit(0, (cls + 5) * 3)
 
 func res(per_cls: int, flat_cls: int) -> Vector2:
 	return Vector2(fit(0.0, per_cls / 20.0), fit(0.0, flat_cls * 5.0))

@@ -23,6 +23,16 @@ static func point_in_circle_2d(r: float, rng: RandomNumberGenerator = null) -> V
 	else:
 		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
 	return p
+
+static func point_in_disc(inner: float, outer: float, h: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	if rng == null:
+		p = Vector3(randf() * 2.0 - 1.0, h, randf() * 2.0 - 1.0).normalized()
+		p = (p * inner).lerp(p * outer, randf())
+	else:
+		p = Vector3(rng.randf() * 2.0 - 1.0, h, rng.randf() * 2.0 - 1.0).normalized()
+		p = (p * inner).lerp(p * outer, rng.randf())
+	return p
 	
 static func point_in_disc_2d(inner: float, outer: float, rng: RandomNumberGenerator = null) -> Vector2:
 	var p: Vector2
@@ -32,6 +42,14 @@ static func point_in_disc_2d(inner: float, outer: float, rng: RandomNumberGenera
 	else:
 		p = Vector2(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized()
 		p = (p * inner).lerp(p * outer, rng.randf())
+	return p
+
+static func point_in_rect(w: float, h: float, d: float, r: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	if rng == null:
+		p = Vector3(randf() * w, randf() * h, randf() * d).rotated(Vector3.UP, r)
+	else:
+		p = Vector3(rng.randf() * w, rng.randf() * h, rng.randf() * d).rotated(Vector3.UP, r)
 	return p
 	
 static func point_in_rect_2d(w: float, h: float, r: float, rng: RandomNumberGenerator = null) -> Vector2:

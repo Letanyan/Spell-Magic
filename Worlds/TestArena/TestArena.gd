@@ -60,12 +60,11 @@ func setup(_settings: WorldSettings) -> void:
 	
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void: e.queue_free(); print(e, " died"))
 	
-	#const pX = 100
-	#const pY = 100
-	#const LVL = 1
-	#var undead := Population.generate_enemy(World.Enemy.BOUGEON, player, pX / 10.0, 1000, pY / 10.0)
-	#undead.level = LVL
-	#add_enemy(undead)
+	const pX = 100
+	const pY = 100
+	const LVL = 100
+	var undead := Population.generate_enemy(World.Enemy.BOUGEON, player, pX / 10.0, 1000, pY / 10.0, LVL)
+	add_enemy(undead)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -pX, 1000, -pY)

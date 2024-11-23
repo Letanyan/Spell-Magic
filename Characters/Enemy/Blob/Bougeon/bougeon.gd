@@ -10,55 +10,56 @@ var idle_path: PathStyle
 var attack_path: PathStyle
 
 var air_small_fast := GlobalData.magic_book.copy_spell("linear")
-var air_med_fast := GlobalData.magic_book.copy_spell("linear")
-var air_large_fast := GlobalData.magic_book.copy_spell("linear")
-var air_small_med := GlobalData.magic_book.copy_spell("linear")
 var air_med_med := GlobalData.magic_book.copy_spell("linear")
-var air_large_med := GlobalData.magic_book.copy_spell("linear")
-var air_small_slow := GlobalData.magic_book.copy_spell("linear")
-var air_med_slow := GlobalData.magic_book.copy_spell("linear")
 var air_large_slow := GlobalData.magic_book.copy_spell("linear")
+var air_ring := GlobalData.magic_book.copy_spell("plane-slice")
+var air_flurry := GlobalData.magic_book.copy_spell("plane-linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
 	
-	var idle_pathway := Pathway.new() \
-		.move_to(Vector3(0, 0, 0)) \
-		.line_to(Vector3(0, 20, 0), runs(16), Easing.out_quart) \
-		.line_to(Vector3(0, 0, 0), runs(14), Easing.out_quart)
+	var idle_pathway := Pathway.new().random_points_in_disc(runs(12), 3, 8, 0, 5, Easing.in_out_quad)
 	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
-	var attack_pathway := Pathway.new() \
-		.move_to(Vector3(10, 0, 0)) \
-		.line_to(Vector3(10, fit(10,20)+10, 0), runs(10), Easing.out_quart) \
-		.wait(10) \
-		.line_to(Vector3(10, 0, 0), runs(15), Easing.out_quart) \
-		.wait(4)
+	var attack_pathway := Pathway.new()
+	var starting_point := Rand.point_in_disc(fit(3, 6), fit(4, 10), 0)
+	attack_pathway.move_to(starting_point)
+	var last_point := starting_point
+	for i in fiti(3, 4):
+		var np := Rand.point_in_disc(fit(3, 6), fit(4, 10), 0)
+		var mid := last_point.lerp(np, 0.5)
+		mid.y = fit(0, 10)
+		attack_pathway.line_to(mid, runs(13), Easing.rising)
+		attack_pathway.line_to(np, runs(13), Easing.falling)
+		last_point = np
+	var mid := last_point.lerp(starting_point, 0.5)
+	mid.y = fit(0, 10)
+	attack_pathway.line_to(mid, runs(13), Easing.rising)
+	attack_pathway.line_to(starting_point, runs(13), Easing.falling)
+	
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\
 		.origin_is_player()\
-		.player_vision_is_camera(0, 10.0, 10.0, 20.0)\
-		.look_at_player_xz()
+		.player_vision_is_camera(0, 0.0, 1.0, 2.0)\
+		.look_at_player()\
+		.initial_position_can_update_on_ground()
 	
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	air_small_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(2), 1, 25, 100, 50)
-	air_med_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(3), 1, 25, 100, 50)
-	air_large_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(4), 1, 25, 100, 50)
-	air_small_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(2), 1, 25, 100, 50)
-	air_med_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, 50)
-	air_large_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(4), 1, 25, 100, 50)
-	air_small_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(2), 1, 25, 100, 50)
-	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(3), 1, 25, 100, 50)
-	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, 50)
+	air_small_fast.configure({"s":atks(5,15), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(4), radius(2), 1, 25, 100, ea(8))
+	air_med_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, ea(10))
+	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, ea(15))
+	air_flurry.configure({"s":atks(5,17), "d":"Br*2", "R":fits(1,5)+"*rn0+rn1", "off":"uvw", "dir":"uvw", "a":"rn0*2*pi"}, Spell.Element.AIR, fit(3,6), power(12), radius(7), fiti(2, 10), 40, 60, ea(12), null, "n*"+fits(3, 0.3))
+	air_ring.configure({"s": atks(2,6), "d":"Br*2+"+fits(2,8), "R":fits(2,8), "off": "uvw", "dir":"uvw", "a":"(n/N*2*pi)+t"}, Spell.Element.AIR, fit(5,10), power(15), radius(5), fiti(4, 12), 30, 90, ea(14))
+	
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
 			air_small_fast,
-			air_small_med,
-			air_small_slow,
+			air_med_med,
+			air_large_slow,
 		],
 		AttackPatterns.choose_from_distribution(fit(10, 3), [ 5, 5, 7 ], -1)
 	)
@@ -66,28 +67,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	attack_pattern2 = AttackPatterns.new(
 		[
 			air_small_fast,
-			air_small_med,
-			air_small_slow,
-			air_med_fast,
 			air_med_med,
-			air_med_slow,
+			air_large_slow,
+			air_flurry,
+			air_ring,
 		],
-		AttackPatterns.choose_from_distribution(fit(7, 2), [ 2, 2, 3, 5, 5, 7 ], -1)
+		AttackPatterns.choose_from_distribution(fit(7, 2), [ 5, 5, 7, 2, 1 ], -1)
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
 		[
 			AttackPatterns.new(
-				[air_small_slow, air_small_fast],
-				AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 1 ]), 1)
+				[air_flurry, air_large_slow, air_large_slow, air_flurry],
+				AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 1, 0.5, 2 ]), 1)
 			),
 			AttackPatterns.new(
-				[air_med_slow, air_med_fast],
-				AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3]), 1)
+				[air_ring, air_med_med, air_med_med, air_ring, air_ring],
+				AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3, 2, 2, 1 ]), 1)
 			),
 			AttackPatterns.new(
-				[air_large_slow, air_large_fast],
-				AttackPatterns.choose_in_sequence(fitas(0.25, [ 5, 5 ]), 1)
+				[air_flurry, air_small_fast, air_small_fast, air_small_fast, air_small_fast, air_small_fast],
+				AttackPatterns.choose_in_sequence(fitas(0.25, [ 5, 5, 4, 3, 2, 1 ]), 1)
 			),
 		],
 		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)

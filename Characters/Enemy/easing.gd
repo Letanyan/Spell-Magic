@@ -33,3 +33,6 @@ static var in_out_circ := Segment.easing(0.85, 0, 0.15, 1)
 static var in_back := Segment.easing(0.36, 0, 0.66, -0.56)
 static var out_back := Segment.easing(0.34, 1.56, 0.64, 1)
 static var in_out_back := Segment.easing(0.68, -0.6, 0.32, 1.6)
+
+static var falling := Segment.easing(0.33, 0, 0.66, 0.33)
+static var rising := Segment.easing(0.33, 0.66, 0.66, 1)

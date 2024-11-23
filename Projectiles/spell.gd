@@ -149,7 +149,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	return result
 	
 @warning_ignore("shadowed_variable")
-func configure(constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float, chain: Spell = null) -> void:
+func configure(constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float, chain: Spell = null, delay: String = "") -> void:
 	self.element = element
 	if not is_nan(radius):
 		self.radius = radius
@@ -168,6 +168,8 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 		ignore_cooldown_when_calculating_elemental_application = true
 	if chain != null:
 		self.chain = chain
+	if not delay.is_empty():
+		self.delay = delay
 	calculate_cooldown()
 	overwrite_expressions(constants)
 	

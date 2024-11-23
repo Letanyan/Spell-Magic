@@ -187,20 +187,20 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			player_start_vision_rotation = 0.0
 	var temp_origin := origin
 	if origin_kind == OriginKind.PLAYER or origin_kind == OriginKind.VISION:
-		temp_origin += player_start_position
+		temp_origin += Vec3.xz_y(player_start_position as Vector3, 0)
 	elif origin_kind == OriginKind.ME:
-		temp_origin += me_start_position
+		temp_origin += Vec3.xz_y(me_start_position as Vector3, 0)
 	
 	var transform := Transform3D.IDENTITY
 	if origin_kind == OriginKind.VISION:
 		var ang := player_start_vision_rotation as float + player_vision_offset.x
 		var off: Vector3 = Vector3(0, 0, -player_vision_offset.y).rotated(Vector3.UP, ang)
-		var rel_off := off + (player_start_position as Vector3)
+		var rel_off := off + Vec3.xz_y(player_start_position as Vector3, 0)
 		var dist := me_pos.distance_to(rel_off)
 		if dist > player_vision_offset.w + 0.1:
-			off = rel_off.lerp(me_pos, player_vision_offset.w / dist) - player_start_position
+			off = rel_off.lerp(me_pos, player_vision_offset.w / dist) - Vec3.xz_y(player_start_position as Vector3, 0)
 		elif dist < player_vision_offset.z + 0.1:
-			off = rel_off.lerp(me_pos, player_vision_offset.z / dist) - player_start_position
+			off = rel_off.lerp(me_pos, player_vision_offset.z / dist) - Vec3.xz_y(player_start_position as Vector3, 0)
 		#temp_origin += off
 		transform = transform.translated(Vector3(0, 0, -off.length())).rotated(Vector3.UP, ang)
 		
@@ -251,8 +251,6 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			e.y = next_y_position(me, v.x, v.y - temp_origin.y, v.z, (player as Player).get_world_3d().direct_space_state)
 			DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
 			DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)
-		
-	
 	return old_position
 
 func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_state: PhysicsDirectSpaceState3D) -> float:

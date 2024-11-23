@@ -128,14 +128,23 @@ orbit-xz: projectiles spin around a point
 	or ; projectile offset
 	r ; radius
 	
-plane-linear: fires N projectiles along a circle on a plane
+plane-linear: fires N projectiles in dir driection on the plane defined by dir
 	d ; offset
 	s ; speed
-	ox, oy, oz ; direction of offset
-	dx, dy, dz ; direction of projectiles
-	a ; angle offset
 	R ; radius
+	off:vec ; direction of offset
+	dir:vec ; direction of projectiles
+	a ; angle offset
+	c:vec ; unscaled offset
 	
+plane-slice: fires N projectiles in dir direction on the plane defined bas the projection of the up vector on to plane defined by dir
+	d ; offset
+	s ; speed
+	R ; radius
+	off:vec ; direction of offset
+	dir:vec ; direction of projectiles
+	a ; angle offset
+	c:vec ; unscaled offset
 	
 scatter shot: fires multiple projectiles in range defined by harc and varc
 	harc ; horizontal arc range

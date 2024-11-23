@@ -579,7 +579,7 @@ _data = {
 "Yes": SubResource("Animation_i40f8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ed03v"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_12dq2"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -595,7 +595,7 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qcdjj"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yuv6i"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
@@ -720,7 +720,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gw3ry"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_ed03v")
+states/attack/node = SubResource("AnimationNodeAnimation_12dq2")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -730,7 +730,7 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(618, 202)
-states/on_hit/node = SubResource("AnimationNodeAnimation_qcdjj")
+states/on_hit/node = SubResource("AnimationNodeAnimation_yuv6i")
 states/on_hit/position = Vector2(464, 282)
 states/run/node = SubResource("AnimationNodeBlendTree_8uqqi")
 states/run/position = Vector2(283, 403)
@@ -740,10 +740,10 @@ transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition
 graph_offset = Vector2(-152, 37)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_c3ajy"]
-size = Vector3(2, 1.7, 2)
+size = Vector3(2, 1.8, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mudrx"]
-size = Vector3(2, 1.7, 2)
+size = Vector3(2, 1.8, 2)
 
 [node name="Bougeon" type="CharacterBody3D"]
 collision_layer = 4
@@ -765,7 +765,7 @@ bones/1/name = "Head"
 bones/1/parent = -1
 bones/1/rest = Transform3D(1, 3.8726e-17, -3.40311e-18, -3.8726e-17, 0.984674, -0.174406, -3.40311e-18, 0.174406, 0.984674, 0, 0.472872, 0)
 bones/1/enabled = true
-bones/1/position = Vector3(0, 0.472872, 0)
+bones/1/position = Vector3(0, 0.483194, 0)
 bones/1/rotation = Quaternion(0, 0, 0, 1)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Head2"
@@ -780,7 +780,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(1, 1.65436e-24, -2.06795e-25, -1.65436e-24, 1, 0, 2.06795e-25, 0, 1, -1.65436e-24, 0.390075, -7.45058e-09)
 bones/3/enabled = true
 bones/3/position = Vector3(-1.65436e-24, 0.390075, -7.45058e-09)
-bones/3/rotation = Quaternion(0, 0, 0, 1)
+bones/3/rotation = Quaternion(4.52368e-36, 3.54715e-10, -0.00264005, 0.999997)
 bones/3/scale = Vector3(1, 1, 1)
 
 [node name="Pigeon_Blob_Eyes" type="MeshInstance3D" parent="CharacterArmature/Skeleton3D"]
