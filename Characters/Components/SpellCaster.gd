@@ -110,6 +110,7 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			track = get_direction_to_tracking(body, p, cdir)
 			result["l"] = 100
 			result["fl"] = 1.0
+			result["Bxyz"] = body.bounds
 			result["Bx"] = body.bounds.x
 			result["By"] = body.bounds.y
 			result["Bz"] = body.bounds.z
@@ -121,6 +122,7 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			cdir = ((body as Enemy).player.global_position - body.global_position).normalized() # direction to player
 			result["l"] = body.level
 			result["fl"] = body.level / 100.0
+			result["Bxyz"] = body.bounds
 			result["Bx"] = body.bounds.x
 			result["By"] = body.bounds.y
 			result["Bz"] = body.bounds.z
@@ -136,18 +138,21 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 				var hit_on := (body.position - p.position).normalized()
 				track = get_direction_to_tracking(body, p, hit_on)
 			if s.element == Spell.Element.ROCK:
+				result["Bxyz"] = body.most_recent_radius
 				result["Bx"] = body.most_recent_radius.x
 				result["By"] = body.most_recent_radius.y
 				result["Bz"] = body.most_recent_radius.z
 				result["Br"] = maxf(body.most_recent_radius.x, maxf(body.most_recent_radius.y, body.most_recent_radius.z))
 			elif s.element == Spell.Element.ICE:
 				var rl := body.most_recent_radius.length()
+				result["Bxyz"] = Vector3(rl, 0.2, rl)
 				result["Bx"] = rl
 				result["By"] = 0.2
 				result["Bz"] = rl
 				result["Br"] = maxf(rl, 0.2)
 			else:
 				var rl := body.most_recent_radius.length()
+				result["Bxyz"] = Vector3(rl, rl, rl)
 				result["Bx"] = rl
 				result["By"] = rl
 				result["Bz"] = rl
@@ -158,27 +163,31 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 			var pos := body.get_caster_target_position()
 			result[prefix + "C"] = body.caster_position.distance_to(pos)
 			cdir = (pos - body.caster_position).normalized() # direction to player
+			result["Bxyz"] = body.bounds
 			result["Bx"] = body.bounds.x
 			result["By"] = body.bounds.y
 			result["Bz"] = body.bounds.z
 			result["Br"] = maxf(body.bounds.x, maxf(body.bounds.y, body.bounds.z))
 	
 	# direction to camera
+	result[prefix + "uvw"] = cdir
 	result[prefix + "u"] = cdir.x
 	result[prefix + "v"] = cdir.y
 	result[prefix + "w"] = cdir.z
-	result[prefix + "ru"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-	result[prefix + "rv"] = cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-	result[prefix + "rw"] = Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	var ruvw := Vector3(Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+	result[prefix + "ru"] = ruvw.x
+	result[prefix + "rv"] = ruvw.y
+	result[prefix + "rw"] = ruvw.z
 	
 	
 	# direction to homing target
 	result[prefix + "U"] = track.x
 	result[prefix + "V"] = track.y
 	result[prefix + "W"] = track.z
-	result[prefix + "rU"] = Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-	result[prefix + "rV"] = track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-	result[prefix + "rW"] = Vector3(track.x, 0, track.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	var rUVW := Vector3(Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(track.x, 0, track.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+	result[prefix + "rU"] = rUVW.x
+	result[prefix + "rV"] = rUVW.y
+	result[prefix + "rW"] = rUVW.z
 	
 	var c := Vector3.ZERO # character facing direction
 	match entity:
@@ -191,12 +200,14 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 		Entity.TARGET:
 			c = cdir
 			
+	result[prefix + "ijk"] = c
 	result[prefix + "i"] = c.x
 	result[prefix + "j"] = c.y
 	result[prefix + "k"] = c.z
-	result[prefix + "ri"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-	result[prefix + "rj"] = c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-	result[prefix + "rk"] = Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+	var rijk := Vector3(Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+	result[prefix + "ri"] = rijk.x
+	result[prefix + "rj"] = rijk.y
+	result[prefix + "rk"] = rijk.z
 		
 	
 	if s.player_is_origin:
@@ -243,12 +254,14 @@ func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVari
 		else:
 			origin = old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
 		
+		result[prefix + "IJK"] = origin
 		result[prefix + "I"] = origin.x
 		result[prefix + "J"] = origin.y
 		result[prefix + "K"] = origin.z
-		result[prefix + "rI"] = Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP)
-		result[prefix + "rJ"] = origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP)
-		result[prefix + "rK"] = Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP)
+		var rIJK := Vector3(Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+		result[prefix + "rI"] = rIJK.x
+		result[prefix + "rJ"] = rIJK.y
+		result[prefix + "rK"] = rIJK.z
 		
 	return result
 	

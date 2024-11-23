@@ -198,7 +198,7 @@ func _on_create_pressed() -> void:
 
 func duplicate_spell_at_index(index: int) -> void:
 	var spell: Spell = book.spells[index].duplicate()
-	spell.name += " (Copy)"
+	spell.name += "-copy"
 	add_spell(spell)
 
 func view_new_spell(spell_name: String) -> void:

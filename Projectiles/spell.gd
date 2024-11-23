@@ -66,7 +66,7 @@ var ignore_cooldown_when_calculating_elemental_application: bool = false
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
-var time_dependent_vars: Array[String] = []
+var time_dependent_vars: Dictionary = {}
 		
 var id: int = -1
 
@@ -138,7 +138,9 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 		result.expression_strings.merge(override_expr, true)
 	# use build_expressions() if override_expr adds new vars. But we do this copy 
 	# for performance reasons
-	result.build_expressions()
+	result.expressions.merge(expressions, true)
+	result.time_dependent_vars.merge(time_dependent_vars, true)
+	#result.build_expressions()
 	#result.expressions = expressions 
 	result.elemental_application = elemental_application
 	result.cooldown = cooldown
@@ -175,25 +177,25 @@ func configure_using_parameter_collection(parameters: Dictionary, vars: Dictiona
 		element = Element.keys().find((params["element"] as String).to_upper()) as Element
 		params.erase("element")
 	if params.has("r"):
-		radius = Expr.new(params["r"] as String).compute(vars)
+		radius = Expr.new(params["r"] as String).compute_value(vars)
 		params.erase("r")
 	if params.has("P"):
-		power = Expr.new(params["P"] as String).compute(vars)
+		power = Expr.new(params["P"] as String).compute_value(vars)
 		params.erase("P")
 	if params.has("T"):
-		duration = Expr.new(params["T"] as String).compute(vars)
+		duration = Expr.new(params["T"] as String).compute_value(vars)
 		params.erase("T")
 	if params.has("N"):
-		count = roundi(Expr.new(params["N"] as String).compute(vars))
+		count = roundi(Expr.new(params["N"] as String).compute_value(vars))
 		params.erase("N")
 	if params.has("CR"):
-		crit_rate = Expr.new(params["CR"] as String).compute(vars)
+		crit_rate = Expr.new(params["CR"] as String).compute_value(vars)
 		params.erase("CR")
 	if params.has("CD"):
-		crit_dmg = Expr.new(params["CD"] as String).compute(vars)
+		crit_dmg = Expr.new(params["CD"] as String).compute_value(vars)
 		params.erase("CD")
 	if params.has("M"):
-		mana_cost = Expr.new(params["M"] as String).compute(vars)
+		mana_cost = Expr.new(params["M"] as String).compute_value(vars)
 		params.erase("M")
 	calculate_cooldown()
 	overwrite_expressions(params)
@@ -216,9 +218,9 @@ func set_z(z_: String) -> void:
 	
 func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	var sphere := Vector3.ZERO
-	sphere.x = x_expr.compute(vars)
-	sphere.y = y_expr.compute(vars)
-	sphere.z = z_expr.compute(vars)
+	sphere.x = x_expr.compute_value(vars)
+	sphere.y = y_expr.compute_value(vars)
+	sphere.z = z_expr.compute_value(vars)
 	
 	var result := Vector3.ZERO
 	if spherical_coords:
@@ -289,7 +291,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 
 	
 func calculate_delay(vars: Dictionary) -> float:
-	var result := clampf(d_expr.compute(vars), 0, UpgradeSettings.LIMIT_T)
+	var result := clampf(d_expr.compute_value(vars), 0, UpgradeSettings.LIMIT_T)
 	return result
 	
 func _mass() -> float:
@@ -299,6 +301,7 @@ func _mass() -> float:
 	
 func build_expressions() -> void:
 	expressions.clear()
+	time_dependent_vars.clear()
 	for k: String in expression_strings:
 		var expr: Expr
 		if (expression_strings[k] as String).contains(";"):
@@ -307,27 +310,27 @@ func build_expressions() -> void:
 			expr = Expr.new(expression_strings[k] as String)
 		expressions[k] = expr
 		if expr.contains_variable("t"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("tu") or expr.contains_variable("tv") or expr.contains_variable("tw"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("tru") or expr.contains_variable("trv") or expr.contains_variable("trw"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("tU") or expr.contains_variable("tV") or expr.contains_variable("tW"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("trU") or expr.contains_variable("trV") or expr.contains_variable("trW"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("ti") or expr.contains_variable("tj") or expr.contains_variable("tk"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("tri") or expr.contains_variable("trj") or expr.contains_variable("trk"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("tI") or expr.contains_variable("tJ") or expr.contains_variable("tK"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		elif expr.contains_variable("trI") or expr.contains_variable("trJ") or expr.contains_variable("trK"):
-			time_dependent_vars.append(k)
+			time_dependent_vars[k] = true
 		else:
-			for variable in time_dependent_vars:
+			for variable: String in time_dependent_vars:
 				if expr.contains_variable(variable):
-					time_dependent_vars.append(k)
+					time_dependent_vars[k] = true
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	# FIXME: speed up
@@ -338,13 +341,12 @@ func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrid
 	var temp := {}
 	temp.merge(fvars)
 	temp.merge(additional)
-	
-	for k: String in (time_dependent_vars if only_time_dependent else expressions.keys()):
+	for k: String in (time_dependent_vars if only_time_dependent else expressions):
 		var e := expressions[k] as Expr
 		if overrides.has(k):
 			fvars[k] = overrides[k]
 			temp[k] = fvars[k]
-		elif e.contains_variable(k):
+		elif e.contains_variable(k): # handle recursion by placing value in temp storage
 			if fvars.has("~" + k):
 				temp[k] = fvars["~" + k]
 				fvars[k] = e.compute(temp)
@@ -445,7 +447,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	fixed_vars["n"] = float(n)
 	fixed_vars.merge(fvars, true)
 	compute_expressions(fixed_vars, {}, overrides)
-	fixed_vars["D"] = d_expr.compute(fixed_vars)
+	fixed_vars["D"] = d_expr.compute_value(fixed_vars)
 	
 	
 	var p: SpellBody
@@ -520,6 +522,9 @@ func basic_fixed_vars() -> Dictionary:
 	fixed_vars["r"] = radius
 	fixed_vars["CR"] = crit_rate
 	fixed_vars["CD"] = crit_dmg
+	fixed_vars["x"] = 0
+	fixed_vars["y"] = 1
+	fixed_vars["z"] = 2
 	return fixed_vars
 	
 func global_constant_variables() -> Dictionary:

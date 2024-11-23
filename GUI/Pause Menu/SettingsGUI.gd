@@ -365,8 +365,9 @@ func update_notes() -> void:
 		notes_keys.sort_custom(func(a: String, b: String) -> bool: return a < b)
 	
 	for note: String in notes_keys:
-		content += "[font_size=16][b][u]" + highlight.call(note) + "[/u][/b][/font_size]\n"
-		content += tag_t.call(GlobalData.game_settings.notes[note]) + "\n\n"
+		if GlobalData.game_settings.notes.has(note):
+			content += "[font_size=16][b][u]" + highlight.call(note) + "[/u][/b][/font_size]\n"
+			content += tag_t.call(GlobalData.game_settings.notes[note]) + "\n\n"
 	
 	note_content.text = content
 
