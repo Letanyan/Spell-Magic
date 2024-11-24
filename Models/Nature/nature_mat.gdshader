@@ -39,11 +39,11 @@ void fragment() {
 	} else if (base_uv.y < 0.0625) { // mix brown
 		albedo_tex = mix(albedo_tex, mix(vec4(COLOR.rgb, 1.0), vec4(0.125, 0.0625, 0.0, 1.0), 0.5), 0.9);
 	}
-	
+
 	vec3 temp_color = rgb2hsv(albedo.rgb * albedo_tex.rgb);
 	temp_color.b = 1.0 - pow(1.0 - temp_color.b, 2.0);
 	ALBEDO = hsv2rgb(temp_color);
-	
+
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);

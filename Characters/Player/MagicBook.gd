@@ -8,6 +8,8 @@ enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS,
 
 var settings: WorldSettings # set by the world
 
+signal spell_was_updated(spell: Spell)
+
 func save(world_name: String) -> void:
 	save_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
 	

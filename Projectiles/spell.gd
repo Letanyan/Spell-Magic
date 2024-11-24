@@ -215,6 +215,9 @@ func configure_using_parameter_collection(parameters: Dictionary, vars: Dictiona
 		params.erase("M")
 	calculate_cooldown()
 	overwrite_expressions(params)
+	if chain != null:
+		if not configuration_parameters_for_chain.is_empty():
+			chain.configure_using_parameter_collection(configuration_parameters_for_chain, global_constant_variables())
 	
 func set_delay(d: String) -> void:
 	delay = d

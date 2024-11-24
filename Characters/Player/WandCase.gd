@@ -10,7 +10,7 @@ func save(world_name: String) -> void:
 		data.append(w.save_dict())
 	file.store_var({"wands": data, "selected": selected_wand})
 	
-func read(world_name: String) -> void:
+func read(world_name: String, book: MagicBook) -> void:
 	var file := FileAccess.open("user://worlds/%s/wand_case.json" % (world_name), FileAccess.READ)
 	if not file:
 		wands = [Wand.basic()]
@@ -23,7 +23,7 @@ func read(world_name: String) -> void:
 		return
 	for d: Dictionary in data["wands"]:
 		var w := Wand.new()
-		w.load_dict(d)
+		w.load_dict(d, book)
 		wands.append(w)
 	selected_wand = data["selected"]
 	
@@ -41,3 +41,7 @@ func remove(i: int) -> void:
 
 func current_wand() -> Wand:
 	return wands[selected_wand]
+
+func spell_was_updated(spell: Spell) -> void:
+	for wand: Wand in wands:
+		wand.spell_was_updated(spell)

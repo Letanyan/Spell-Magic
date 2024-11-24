@@ -226,6 +226,7 @@ func update_cooldown() -> void:
 		mana_cost.text = ""
 	
 func _on_preview_image_pressed() -> void:
+	# FIXME: make closing this better
 	preview_selector.visible = preview_image.button_pressed
 	prev_thumbnail.grab_focus()
 	
@@ -401,41 +402,33 @@ func _on_chain_text_changed(new_text: String) -> void:
 	
 	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell)
 	var option := Wand.Option.new()
-	option.parse_spells(n)
+	option.parse_spells(n, book)
 	
 	if n == "":
 		spell.chain = null
 		errors_list.erase("chain")
-	elif option.spell.size() != 1:
+	elif option.spell_names.size() != 1:
 		spell.chain = null
 		errors_list["chain"] = "Only one spell is allowed to be chained"
-	elif option.next_spell() == spell.name:
+	elif option.get_spell() == null:
+		spell.chain = null
+		errors_list["chain"] = "'%s' does not exists" % option.get_spell_name()
+	elif option.get_spell().name == spell.name:
 		errors_list["chain"] = "'%s' can not chain to itself" % spell.name
 	else:
-		var new_spell := option.next_spell()
-		var problem_chain := book.find_recursive_spell_chain(spell, new_spell)
+		var new_spell := option.get_spell()
+		var problem_chain := book.find_recursive_spell_chain(spell, new_spell.name)
 		if not problem_chain.is_empty():
 			var message := "'%s' can not exist in a recursive spell chain " % new_spell
 			for s in problem_chain:
 				message += s + "->"
 			errors_list["chain"] = message.trim_suffix("->")
 		else:
-			spell.chain = null
-			for s in book.spells:
-				if s.name == new_spell:
-					if option.parameters.is_empty():
-						spell.chain = s
-					else:
-						var ns := s.duplicate()
-						var params := option.parameters[0]
-						ns.configure_using_parameter_collection(params, spell.global_constant_variables())
-						spell.chain = ns
-						spell.configuration_parameters_for_chain = params
-					break
-			if spell.chain == null:
-				errors_list["chain"] = "'%s' does not exists" % new_spell
-			else:
-				errors_list.erase("chain")
+			spell.chain = new_spell
+			if not option.parameters.is_empty():
+				spell.chain.configure_using_parameter_collection(option.parameters[0], spell.global_constant_variables())
+				spell.configuration_parameters_for_chain = option.parameters[0]
+			errors_list.erase("chain")
 				
 	old_chain_text = n
 	update_cooldown()
@@ -490,6 +483,8 @@ func update_spells_that_chain_to_current_spell() -> void:
 		error_label.text = "%s: %s" % [last_key, last_error]
 	else:
 		error_label.text = ""
+		var spell := book.spells[current_index]
+		book.spell_was_updated.emit(spell)
 	book.rebuild_spell_chains()
 	
 func _on_view_chain_button_pressed() -> void:
@@ -671,15 +666,11 @@ func check_all_errors() -> void:
 	text = chain_edit.text
 	if not text.is_empty():
 		var option := Wand.Option.new()
-		option.parse_spells(text)
-		if option.spell.size() != 1:
+		option.parse_spells(text, book)
+		if option.spells.size() != 1:
 			errors_list["chain"] = "Only one spell is allowed to be chained"
 		else:
-			var found := false
-			for s in book.spells:
-				if s.name == option.next_spell():
-					found = true
-					break
+			var found := option.next_spell() != null
 			if not found:
 				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
 			

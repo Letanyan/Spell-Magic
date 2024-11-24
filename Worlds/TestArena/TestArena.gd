@@ -53,7 +53,8 @@ func setup(_settings: WorldSettings) -> void:
 	player.set_current_biome(World.Biome.WATER)
 	
 	case = WandCase.new()
-	case.read(settings.world_name)
+	case.read(settings.world_name, book)
+	book.spell_was_updated.connect(case.spell_was_updated)
 	
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)

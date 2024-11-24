@@ -46,14 +46,13 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 	for w: PackedStringArray in wand.keys:
 		var spell_changed := func(item: WandCaseShelfItem, text: String, ignore_signals: bool) -> void:
 			var option := wand.keys[w] as Wand.Option
-			option.parse_spells(text)
+			option.parse_spells(text, book)
 			var missing_errors := []
 			var not_active_errors := []
-			for i in range(option.spell.size()):
-				var n := option.spell[i]
-				var s := book.find_spell(n)
+			for i in range(option.spells.size()):
+				var s := option.spells[i]
 				if s == null:
-					missing_errors.append("'[b]" + n + "[/b]'")
+					missing_errors.append("'[b]" + option.spell_names[i] + "[/b]'")
 				elif not s.is_active:
 					not_active_errors.append("'[b]" + s.name + "[/b]'")
 
@@ -100,7 +99,7 @@ func update_wand_shelf_item(widx: int = current_index) -> Callable:
 		var w := wand.keys.keys()[index] as PackedStringArray
 		item.store_key.assign(w)
 		item.store_action = wand.keys[w].kind
-		item.store_spell.assign(wand.keys[w].spell as Array[String])
+		item.store_spell.assign(wand.keys[w].spell_names as Array[String])
 		item.store_params.assign(wand.keys[w].parameters as Array[Dictionary])
 		item.spell_changed = spell_change_callables[index]
 		item.action_changed = action_change_callables[index]
