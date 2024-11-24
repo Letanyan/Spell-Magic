@@ -226,9 +226,9 @@ func update_cooldown() -> void:
 		mana_cost.text = ""
 	
 func _on_preview_image_pressed() -> void:
-	# FIXME: make closing this better
-	preview_selector.visible = preview_image.button_pressed
-	prev_thumbnail.grab_focus()
+	preview_selector.visible = not preview_selector.visible
+	if preview_selector.visible:
+		prev_thumbnail.grab_focus()
 	
 func _on_name_edit_text_changed(new_text: String) -> void:
 	if current_index < 0:
@@ -871,3 +871,7 @@ func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
 	(get_node(btn) as Button).set_pressed_no_signal(true)
 	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
 	preview_image.button_pressed = false
+
+
+func _on_control_focus_entered() -> void:
+	preview_selector.visible = false
