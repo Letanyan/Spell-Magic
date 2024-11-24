@@ -184,7 +184,6 @@ func call_with_parameter_collection_description() -> String:
 	result += "CD=" + str(crit_dmg) + ","
 	result += "M=" + str(mana_cost) + ","
 	for v: String in expression_strings:
-		print(v, " = ", expression_strings[v])
 		result += v + "=" + expression_strings[v] + ","
 	return result.substr(0, result.length() - 1) + ")"
 	
@@ -351,9 +350,33 @@ func build_expressions() -> void:
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	# FIXME: speed up
+	time_dependent_vars.clear()
 	for k: String in mappings:
 		expression_strings[k] = mappings[k]
-		expressions[k] = Expr.new(mappings[k] as String)
+		var expr := Expr.new(mappings[k] as String)
+		expressions[k] = expr
+		if expr.contains_variable("t"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("tu") or expr.contains_variable("tv") or expr.contains_variable("tw"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("tru") or expr.contains_variable("trv") or expr.contains_variable("trw"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("tU") or expr.contains_variable("tV") or expr.contains_variable("tW"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("trU") or expr.contains_variable("trV") or expr.contains_variable("trW"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("ti") or expr.contains_variable("tj") or expr.contains_variable("tk"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("tri") or expr.contains_variable("trj") or expr.contains_variable("trk"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("tI") or expr.contains_variable("tJ") or expr.contains_variable("tK"):
+			time_dependent_vars[k] = true
+		elif expr.contains_variable("trI") or expr.contains_variable("trJ") or expr.contains_variable("trK"):
+			time_dependent_vars[k] = true
+		else:
+			for variable: String in time_dependent_vars:
+				if expr.contains_variable(variable):
+					time_dependent_vars[k] = true
 	
 func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrides: Dictionary = {}, only_time_dependent: bool = false) -> void:
 	var temp := {}

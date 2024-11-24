@@ -216,7 +216,8 @@ func _physics_process(delta: float) -> void:
 	var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
 	velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
 	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings.sea_level, player.world_settings.world_radius, player.chunker)
-	vital_update.emit(index_in_population, vitals)
+	if vitals.did_update_on_tick:
+		vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
 		die()
 	update_vitals_display()

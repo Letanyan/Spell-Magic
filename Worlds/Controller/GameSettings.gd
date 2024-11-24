@@ -138,6 +138,8 @@ static var notes := {
 	"func sinh, cosh, tanh": "{sinh(x)}, {cosh(x)} and {tanh(x)} returns the hyperbolic sine, cosine and tangent of {x}",
 	"func atan2": "{atan2(y,x)} returns the angle between the line from (0,0) to (x,y) and the positive x-axis.",
 	"func vec": "{vec(x,y,z)} returns a 3 dimensional vector. You can access each component using the {'.'} operator. The {.} operator take a vector on the left side ({lhs}) and a number on the right ({rhs}). The result will be the {rhs}th component of {lhs} (components are 0 indexed). Example {vec(101, 202, 303).0} will return {101}, {vec(101, 202, 303).1} will return {202} and {vec(101, 202, 303).2} will return {303}",
+	"func perp": "{perp(v)} returns some vector that is perpendicular to {v}",
+	"func perp_x, perp_y, perp_z": "{perp_#(v)} returns the {#} component of some vector that is perpendicular to {v}",
 	
 	"artifact pattern": "Each artifact has either a {circle}, {square} or {triangle} on each of the 4 sides of the artifact. Artifacts can only join on to other artifacts that have the same shape between the connecting edges.",
 	"artifact connections": "An artifact can either have an event or effect on each of the 4 sides. Connecting artifact edges must be one event and the other an effect.",

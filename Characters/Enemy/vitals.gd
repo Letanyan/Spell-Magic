@@ -20,21 +20,22 @@ class Stat:
 	func set_value(amount: float) -> void:
 		value = clampf(amount, min_value, max_value)
 		
-	func apply_ignoring_resistance(amount: float) -> void:
+	func apply_ignoring_resistance(amount: float) -> float:
+		var old_value := value
 		value = clampf(value + amount, min_value, max_value)
+		return value - old_value
 		
-	func apply(p: float) -> void:
-		apply_ignoring_resistance(amount_of_change(p))
+	func apply(p: float) -> float:
+		return apply_ignoring_resistance(amount_of_change(p))
 		
-	func apply_by_percentage_on_max(p: float) -> void:
-		apply_ignoring_resistance(amount_of_change(p * max_value))
+	func apply_by_percentage_on_max(p: float) -> float:
+		return apply_ignoring_resistance(amount_of_change(p * max_value))
 		
-	func apply_by_percentage_on_value(p: float) -> void:
-		apply_ignoring_resistance(amount_of_change(p * value))
+	func apply_by_percentage_on_value(p: float) -> float:
+		return apply_ignoring_resistance(amount_of_change(p * value))
 		
 	func update_per_tick() -> float:
-		apply_ignoring_resistance(change_per_tick)
-		return change_per_tick
+		return apply_ignoring_resistance(change_per_tick)
 		
 	func percentage() -> float:
 		return value / (max_value - min_value)
@@ -59,6 +60,8 @@ var stun: Stat
 var perception: Stat
 
 var damage_resistance: Dictionary # Artifact.Element -> Vector2 (flat, percentage)
+
+var did_update_on_tick: bool = false
 
 
 func _init(_health: Stat, _mana: Stat) -> void:
@@ -135,15 +138,17 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool 
 
 # we assume this is called once per second everywhere
 func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](float, Spell.Element)
-	freeze.update_per_tick()
-	wetness.update_per_tick()
-	burning.update_per_tick()
-	stun.update_per_tick()
+	did_update_on_tick = false
+	did_update_on_tick = did_update_on_tick or freeze.update_per_tick() != 0.0
+	did_update_on_tick = did_update_on_tick or wetness.update_per_tick() != 0.0
+	did_update_on_tick = did_update_on_tick or burning.update_per_tick() != 0.0
+	did_update_on_tick = did_update_on_tick or stun.update_per_tick() != 0.0
 	var h := health.update_per_tick()
+	did_update_on_tick = did_update_on_tick or h != 0.0
 	var result: Array[Dictionary] = []
 	if h > 0.0:
 		result.append([{"dmg": h, "el": Spell.Element.VOID}])
-	mana.update_per_tick()
+	did_update_on_tick = did_update_on_tick or mana.update_per_tick() != 0.0
 	if burning.value > 0:
 		var burn_damage := int(burning.value * health.max_value * 0.05)
 		health.apply_ignoring_resistance(-burn_damage)
@@ -193,6 +198,7 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 			(source.process_material as ParticleProcessMaterial).scale_min = freeze.value
 			(source.process_material as ParticleProcessMaterial).scale_max = freeze.value
 				
+	did_update_on_tick = did_update_on_tick or not result.is_empty()
 	return result
 
 func wetness_scale() -> float:
