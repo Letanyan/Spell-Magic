@@ -173,6 +173,21 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 	calculate_cooldown()
 	overwrite_expressions(constants)
 	
+func call_with_parameter_collection_description() -> String:
+	var result := name + "("
+	result += "element=" + Element.keys()[element] + ","
+	result += "r=" + str(radius) + ","
+	result += "P=" + str(power) + ","
+	result += "T=" + str(duration) + ","
+	result += "N=" + str(count) + ","
+	result += "CR=" + str(crit_rate) + ","
+	result += "CD=" + str(crit_dmg) + ","
+	result += "M=" + str(mana_cost) + ","
+	for v: String in expression_strings:
+		print(v, " = ", expression_strings[v])
+		result += v + "=" + expression_strings[v] + ","
+	return result.substr(0, result.length() - 1) + ")"
+	
 func configure_using_parameter_collection(parameters: Dictionary, vars: Dictionary) -> void:
 	var params := parameters.duplicate()
 	if params.has("element"):
@@ -337,6 +352,7 @@ func build_expressions() -> void:
 func overwrite_expressions(mappings: Dictionary) -> void:
 	# FIXME: speed up
 	for k: String in mappings:
+		expression_strings[k] = mappings[k]
 		expressions[k] = Expr.new(mappings[k] as String)
 	
 func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrides: Dictionary = {}, only_time_dependent: bool = false) -> void:

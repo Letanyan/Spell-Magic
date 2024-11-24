@@ -106,7 +106,7 @@ func impulse() -> Vector3:
 			return velocity * (amp)
 		Spell.Element.AIR:
 			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
-			return velocity * (amp + clampf(spell.elemental_application, 0.0, 1.0)) * 100
+			return velocity * (amp + clampf(spell.elemental_application, 0.0, 1.0) * 50)
 		Spell.Element.FIRE:
 			var amp := lifetime_velocity / (spell.limit_v + spell.buff_v)
 			return velocity * (amp * 4)
@@ -437,18 +437,18 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(source.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			(source.process_material as ParticleProcessMaterial).emission_ring_radius = rl
 			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", rl / 10.0)
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
-			source.amount = roundi(160 * rl)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl / 2)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 4)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl * 2)
+			source.amount = roundi(100 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			(trail.process_material as ParticleProcessMaterial).emission_ring_radius = rl
 			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", rl / 10.0)
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl)
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 2)
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl / 4)
-			trail.amount = roundi(160 * rl)
+			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl / 2)
+			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 4)
+			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl * 2)
+			trail.amount = roundi(100 * rl)
 			
 		Spell.Element.ICE:
 			(get_shape_cast().shape as BoxShape3D).size.x = rl * 2

@@ -29,6 +29,12 @@ static func invf(v: float) -> float:
 	else:
 		return 1.0 / v
 	
+static func fract(x: float) -> float:
+	if x > 0:
+		return x - int(x)
+	else:
+		return x - (int(x) + 1)
+	
 static func project_point_onto_sphere(point: Vector3, radius: float, center: Vector3 = Vector3.ZERO) -> Vector3:
 	var P := point - center
 	var Q := radius / P.length() * P

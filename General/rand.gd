@@ -68,6 +68,32 @@ static func point_in_sphere(r: float, rng: RandomNumberGenerator = null) -> Vect
 		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r
 	return p 
 	
+static func point_in_sphere_shell(min_r: float, max_r: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	var r := max_r - min_r
+	if rng == null:
+		p = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, randf() * 2.0 - 1.0).normalized() * r + Vector3(min_r, min_r, min_r)
+	else:
+		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0, rng.randf() * 2.0 - 1.0).normalized() * r + Vector3(min_r, min_r, min_r)
+	return p 
+	
+static func point_in_hemisphere(r: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	if rng == null:
+		p = Vector3(randf() * 2.0 - 1.0, randf(), randf() * 2.0 - 1.0).normalized() * r
+	else:
+		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf(), rng.randf() * 2.0 - 1.0).normalized() * r
+	return p 
+	
+static func point_in_hemisphere_shell(min_r: float, max_r: float, rng: RandomNumberGenerator = null) -> Vector3:
+	var p: Vector3
+	var r := max_r - min_r
+	if rng == null:
+		p = Vector3(randf() * 2.0 - 1.0, randf(), randf() * 2.0 - 1.0).normalized() * r + Vector3(min_r, min_r, min_r)
+	else:
+		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf(), rng.randf() * 2.0 - 1.0).normalized() * r + Vector3(min_r, min_r, min_r)
+	return p 
+	
 static func id(length: int, rng: RandomNumberGenerator = null) -> String:
 	var result := ""
 	var source := "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"

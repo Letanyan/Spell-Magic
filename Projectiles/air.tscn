@@ -92,7 +92,6 @@ collision_mask = 1558
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 cast_shadow = 0
 amount = 80
-lifetime = 4.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_0lwgo")
 draw_pass_1 = SubResource("PlaneMesh_40ex8")
@@ -101,7 +100,6 @@ draw_pass_1 = SubResource("PlaneMesh_40ex8")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 cast_shadow = 0
 amount = 80
-lifetime = 4.0
 process_material = SubResource("ParticleProcessMaterial_icj0f")
 draw_pass_1 = SubResource("PlaneMesh_40ex8")
 

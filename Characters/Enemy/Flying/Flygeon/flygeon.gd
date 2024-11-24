@@ -8,63 +8,78 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
-var fire1 := GlobalData.magic_book.copy_spell("linear")
-var fire2 := GlobalData.magic_book.copy_spell("linear")
-var fire3 := GlobalData.magic_book.copy_spell("linear")
-var fire_down1 := GlobalData.magic_book.copy_spell("top-down")
-var fire_down2 := GlobalData.magic_book.copy_spell("top-down")
-var fire_down3 := GlobalData.magic_book.copy_spell("top-down")
-var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
-var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
-var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
+var air_small_fast := GlobalData.magic_book.copy_spell("linear")
+var air_med_med := GlobalData.magic_book.copy_spell("linear")
+var air_large_slow := GlobalData.magic_book.copy_spell("linear")
+var air_ring := GlobalData.magic_book.copy_spell("plane-slice")
+var air_flurry := GlobalData.magic_book.copy_spell("plane-linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
-	vitals = Vitals.enemy(hp(10), mana(18), mana_regen(20), percep(2,4), atk(12), def(16), {Artifact.Element.FIRE: res(15, 5)})
+	vitals = Vitals.enemy(hp(8), mana(18), mana_regen(20), percep(4,7), atk(11), def(12), {Artifact.Element.AIR: res(15, 5)})
 	
-	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
-	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
+	var idle_pathway := Pathway.new().random_points_in_sphere(runs(12), 3, 8, 5, Easing.in_out_quad).apply_transform(T.translated(Vec3.y(10)))
+	idle_path = PathStyle.new(0, position).origin_is_me().follow_path(idle_pathway).align_y_to_air()
 	
-	attack_path = PathStyle.new(randi(), position).towards_player(fit(1,4), 1, 2).align_y_to_ground().look_at_player()
+	var attack_pathway := Pathway.new()
+	var attack_pathway_min_radius := fit(3, 7)
+	var attack_pathway_max_radius := fit(7, 14)
+	var starting_point := Rand.point_in_hemisphere_shell(attack_pathway_min_radius, attack_pathway_max_radius)
+	attack_pathway.move_to(starting_point)
+	var last_point := starting_point
+	for i in fiti(3, 4):
+		var np := Rand.point_in_hemisphere_shell(attack_pathway_min_radius, attack_pathway_max_radius)
+		var mid := Globals.midpoint_tangent1(last_point, np)
+		var easing := Easing.rising if np.y > last_point.y else Easing.falling
+		attack_pathway.line_to(mid, runs(16), easing)
+		attack_pathway.line_to(np, runs(16), easing)
+		last_point = np
+	var easing := Easing.rising if starting_point.y > last_point.y else Easing.falling
+	var mid := Globals.midpoint_tangent1(last_point, starting_point)
+	attack_pathway.line_to(mid, runs(16), easing)
+	attack_pathway.line_to(starting_point, runs(16), easing)
+	
+	attack_path = PathStyle.new().follow_path(attack_pathway)\
+		.align_y_to_air()\
+		.origin_is_player()\
+		.player_vision_is_camera(0, 0.0, 1.0, 2.0)\
+		.look_at_player()
 	
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	fire1.configure({"s": atks(1,12), "d": "2"}, Spell.Element.FIRE, 10.0, power(10), radius(2), 1, 50, 50, 55)
-	fire2.configure({"s": atks(1,15), "d": "2"}, Spell.Element.FIRE, 8.0, power(12), radius(2), 1, 50, 50, 65)
-	fire3.configure({"s": atks(1,18), "d": "2"}, Spell.Element.FIRE, 6.0, power(18), radius(2), 1, 50, 50, 75)
-	fire_down1.configure({"H": "10"}, Spell.Element.FIRE, fit(10, 5), power(8), radius(3), 1, 75, 25, 55)
-	fire_down2.configure({"H": "20"}, Spell.Element.FIRE, fit(8, 4), power(10), radius(3), 1, 75, 50, 65)
-	fire_down3.configure({"H": "30"}, Spell.Element.FIRE, fit(6, 3), power(12), radius(3), 1, 75, 75, 75)
-	fire_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, fit(5, 10), power(5), radius(5), fiti(4, 15), 33, 66, 25)
-	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, fit(7, 14), power(9), radius(7), fiti(2, 8), 75, 120, 50)
-	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, fit(5, 10), power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	air_small_fast.configure({"s":atks(5,15), "d":"Br*2"}, Spell.Element.AIR, 5, power(4), radius(2), 1, 25, 100, ea(8))
+	air_med_med.configure({"s":atks(3,10), "d":"Br*2"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, ea(10))
+	air_large_slow.configure({"s":atks(1,5), "d":"Br*2"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, ea(15))
+	air_flurry.configure({"s":atks(5,17), "d":"C", "c":"vec(0,0,0)", "R":fits(1,5)+"*rn0+rn1", "off":"vec(u, lerp(0.5, v, 1), w)", "dir":"vec(0,-1,0)", "a":"rn0*2*pi"}, Spell.Element.AIR, fit(3,6), power(12), radius(7), fiti(2, 10), 40, 60, ea(12), null, "n*"+fits(3, 0.3))
+	air_ring.configure({"s":atks(2, 6), "d":"Br*2+"+fits(2,8), "c":"vec(0,0,0)", "R":fits(2,8), "off": "uvw", "dir":"uvw", "a":"(n/N*2*pi)+t"}, Spell.Element.AIR, fit(5,10), power(15), radius(5), fiti(4, 12), 30, 90, ea(14))
+	
+	print(air_flurry.call_with_parameter_collection_description())
+	print(air_ring.call_with_parameter_collection_description())
+	
 	
 	random_pattern = AttackPatterns.new(
 		[
-			fire_mine1,
-			fire_mine2,
-			fire_mine3,
+			air_flurry,
+			air_ring,
+			air_small_fast,
 		],
-		AttackPatterns.choose_from_distribution(fit(5,2), [ 10, 5, 2 ], -1)
+		AttackPatterns.choose_from_distribution(atkd(5), [ 10, 5, 2 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			fire1,
-			fire2,
-			fire3,
-			fire_down1,
-			fire3,
-			fire2,
-			fire1,
-			fire_down2,
-			fire2,
-			fire1,
-			fire3,
-			fire_down3,
+			air_flurry,
+			air_med_med,
+			air_large_slow,
+			air_small_fast,
+			air_ring,
+			air_small_fast,
+			air_large_slow,
+			air_med_med,
+			air_flurry,
 		],
-		AttackPatterns.choose_in_sequence(fitas(0.6, [ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ]), -1)
+		AttackPatterns.choose_in_sequence(atkds([5, 12, 17, 12, 5, 12, 17, 12, 5]), -1)
 	)
 	
 	animation_map["attack"] = "Headbutt"

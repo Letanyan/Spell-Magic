@@ -616,6 +616,17 @@ func runs(cls: int) -> float:
 func dst(cls: int, x1: float, y1: float, z1: float, x2: float, y2: float, z2: float) -> Vector3:
 	return Vector3(x1, y1, z1).normalized().lerp(Vector3(x2, y2, z2).normalized(), fit(1, cls * 10))
 
+func atkd(cls: int) -> float:
+	var base := 5.0 - cls / 5.0
+	return fit(base, base / (cls + 1))
+
+func atkds(clses: Array[int]) -> Array[float]:
+	var result: Array[float] = []
+	result.resize(clses.size())
+	for i in clses.size():
+		result[i] = atkd(clses[i])
+	return result
+
 func timing(cls: int, value: float) -> float:
 	var ratio := 1.0 - float(cls) / 20.0
 	return fit(value, value * (1.0 + ratio))
