@@ -44,9 +44,12 @@ bomb-disc-scatter: places N projectiles in circle with radius R in center `d*C`.
 	
 bomb-linear: places N projectiles in line at start `d*C-R` to end `d*C+R`. set off after S time in s interval.  
 	d ; offset multiplied by C
+	a ; angle offset
 	R ; line width of bombs placed
 	S ; minimum wait time
 	s ; interval between bombs
+	LC ; number of horizontal lines
+	LR ; radius between first and last line 
 
 bomb-sphere-scatter: places N projectiles in sphere with radius R in center `d*C`. set off after S time in s interval.  
 	d ; offset multiplied by C
