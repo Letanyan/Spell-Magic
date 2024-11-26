@@ -50,9 +50,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	air_small_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(2), 1, 25, 100, 50)
 	air_med_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, 50)
 	air_large_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(4), 1, 25, 100, 50)
-	air_small_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(2), 1, 25, 100, 50)
-	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(3), 1, 25, 100, 50)
-	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, 50)
+	air_small_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.FIRE, 5, power(10), radius(2), 1, 25, 100, 50)
+	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.WATER, 5, power(10), radius(3), 1, 25, 100, 50)
+	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.ELECTRIC, 5, power(10), radius(4), 1, 25, 100, 50)
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -75,22 +75,39 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(fit(7, 2), [ 2, 2, 3, 5, 5, 7 ], -1)
 	)
 	
+	#attack_pattern3 = AttackPatterns.new(
+		#[
+			#AttackPatterns.new(
+				#[air_small_slow, air_small_fast],
+				#AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 1 ]), 1)
+			#),
+			#AttackPatterns.new(
+				#[air_med_slow, air_med_fast],
+				#AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3]), 1)
+			#),
+			#AttackPatterns.new(
+				#[air_large_slow, air_large_fast],
+				#AttackPatterns.choose_in_sequence(fitas(0.25, [ 5, 5 ]), 1)
+			#),
+		#],
+		#AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)
+	#)
 	attack_pattern3 = AttackPatterns.new(
 		[
 			AttackPatterns.new(
-				[air_small_slow, air_small_fast],
-				AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 1 ]), 1)
+				[air_small_slow, air_med_slow],
+				AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 2 ]), 1)
 			),
 			AttackPatterns.new(
-				[air_med_slow, air_med_fast],
-				AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3]), 1)
+				[air_med_slow, air_small_slow],
+				AttackPatterns.choose_in_sequence(fitas(0.5, [ 3, 3 ]), 1)
 			),
 			AttackPatterns.new(
-				[air_large_slow, air_large_fast],
+				[air_large_slow, air_small_slow],
 				AttackPatterns.choose_in_sequence(fitas(0.25, [ 5, 5 ]), 1)
 			),
 		],
-		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)
+		AttackPatterns.choose_from_distribution(1, [ 2, 2, 2 ], -1)
 	)
 	
 	animation_map["attack"] = "Bite_Front"
@@ -98,25 +115,16 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	super.setup(seedling, biome)
 	
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() > 0.5:
-		return attack_pattern1
-	elif vitals.health.percentage() > 0.25:
-		return attack_pattern2
-	else:
-		return attack_pattern3
-
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		attack_pattern1.reset()
-		attack_pattern2.reset()
-		attack_pattern3.reset()
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
+	elif vitals.health.percentage() > 0.5:
+		set_path_and_attack(attack_path, attack_pattern3)
+	elif vitals.health.percentage() > 0.25:
+		set_path_and_attack(attack_path, attack_pattern2)
 	else:
-		current_path = attack_path
+		set_path_and_attack(attack_path, attack_pattern3)
 
 
 func drop_artifact() -> Artifact:

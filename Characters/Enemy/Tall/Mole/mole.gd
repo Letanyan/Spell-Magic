@@ -107,22 +107,12 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.MOLE
 	super.setup(seedling, biome)
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() >= 0.5:
-		return random_pattern
-	else:
-		return none_pattern
-
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
-		attack_sequence = null
+		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() >= 0.5:
-		attack_sequence = null
-		current_path = attack_path
+		set_path_and_attack(attack_path, random_pattern)
 	else:
-		attack_sequence = hide_and_attack
+		set_attack_sequence(hide_and_attack)

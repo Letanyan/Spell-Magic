@@ -8,65 +8,73 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
-var rock_attack_small := GlobalData.magic_book.copy_spell("linear")
-var rock_attack_medium := GlobalData.magic_book.copy_spell("linear")
-var rock_attack_large := GlobalData.magic_book.copy_spell("linear")
+var electric_attack_small := GlobalData.magic_book.copy_spell("linear")
+var electric_attack_medium := GlobalData.magic_book.copy_spell("linear")
+var electric_attack_large := GlobalData.magic_book.copy_spell("linear")
+var electric_boomerang := GlobalData.magic_book.copy_spell("plane-slice")
+var electric_boomerang_wave := GlobalData.magic_book.copy_spell("plane-slice")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(8), mana(1), mana_regen(1), percep(1,2), atk(7), def(3), {Artifact.Element.ROCK: res(1, 0)})
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
-	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
-	attack_path = PathStyle.new(0, position).towards_player(fit(2,4), 1, 2).look_at_player_xz().align_y_to_ground()
+	idle_path = PathStyle.new(seedling).follow_path(circle_path).align_y_to_ground()
+	attack_path = PathStyle.new(0).towards_player(fit(5,9), 3, 5).look_at_player_xz().align_y_to_ground()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
-	rock_attack_small.configure({"d": "Br", "s": atks(1,2)}, Spell.Element.ROCK, fit(2,3), power(5), radius(2), 1, 0, 0, 0)
-	rock_attack_medium.configure({"d": "Br*2", "s": atks(1,3)}, Spell.Element.ROCK, fit(2,4), power(6), radius(2), 1, 0, 0, 0)
-	rock_attack_large.configure({"d": "Br*2.5", "s": atks(1,4)}, Spell.Element.ROCK, fit(2,5), power(7), radius(2), 1, 0, 0, 0)
+	electric_attack_small.configure({"d": "Br", "s": atks(1,12)}, Spell.Element.ELECTRIC, fit(2,3), power(5), radius(2), 1, 0, 0, ea(5))
+	electric_attack_medium.configure({"d": "Br*2", "s": atks(1,13)}, Spell.Element.ELECTRIC, fit(2,4), power(6), radius(2), 1, 0, 0, ea(9))
+	electric_attack_large.configure({"d": "Br*2.5", "s": atks(1,14)}, Spell.Element.ELECTRIC, fit(2,5), power(7), radius(2), 1, 0, 0, ea(13))
+	electric_boomerang.configure({
+		"d": "Br", "s": atks(5,10), "R":fits(5, 15),
+		"off": "uvw", "dir": "uvw",
+		"a": "n/N*pi+t*"+fits(1, 5), "c": "vec(0, 0, 0)",
+	}, Spell.Element.ELECTRIC, fit(4,9), power(7), radius(4), fiti(3, 14), 0, 0, ea(8))
+	electric_boomerang_wave.configure({
+		"d": "Br", "s": atks(5,10), "R":fits(5, 15),
+		"off": "uvw", "dir": "uvw",
+		"a": "n/N*pi+t*"+fits(1, 5), "c": "vec(0, (sin(t*%s)*0.5+0.5)*%s, 0)" % [fits(1,4), fits(0,3)],
+	}, Spell.Element.ELECTRIC, fit(4,9), power(7), radius(4), fiti(3, 14), 0, 0, ea(8))
 	
 	random_pattern = AttackPatterns.new(
 		[
-			rock_attack_small,
-			rock_attack_medium,
-			rock_attack_large,
+			electric_attack_small,
+			electric_attack_medium,
+			electric_attack_large,
+			electric_boomerang,
 		],
-		AttackPatterns.choose_from_distribution(fit(5,3), [ 10, 3, 1 ], -1)
+		AttackPatterns.choose_from_distribution(atkd(10), [ 30, 24, 20, 1 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			rock_attack_small,
-			rock_attack_medium,
-			rock_attack_small,
-			rock_attack_large,
-			rock_attack_small,
+			electric_boomerang,
+			electric_attack_small,
+			electric_attack_medium,
+			electric_attack_large,
+			electric_boomerang_wave,
+			electric_attack_medium,
+			electric_attack_small,
+			electric_attack_large,
 		],
-		AttackPatterns.choose_in_sequence(fitas(0.75, [ 2, 5, 2, 4, 2 ]), -1)
+		AttackPatterns.choose_in_sequence(atkds([9, 15, 12, 20, 9, 12, 15, 20]), -1)
 	)
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.ORC
 	super.setup(seedling, biome)
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() >= 0.5:
-		return random_pattern
-	else:
-		return sequence_pattern
-
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() >= 0.5:
-		current_path = attack_path
+		set_path_and_attack(attack_path, random_pattern)
 	else:
-		current_path = attack_path
+		set_path_and_attack(attack_path, sequence_pattern)
 
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

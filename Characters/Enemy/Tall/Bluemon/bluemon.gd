@@ -91,26 +91,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.BLUEMON
 	super.setup(seedling, biome)
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() > 0.75:
-		return none_pattern
-	elif vitals.health.percentage() > 0.5:
-		return attack_pattern2
-	else:
-		return none_pattern
-
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() > 0.5:
-		#current_path = attack_path
-		attack_sequence = cover_and_attack_sequence
+		set_path_and_attack(attack_path, attack_pattern2)
 	else:
-		attack_sequence = cover_and_attack_sequence
+		set_attack_sequence(cover_and_attack_sequence)
 		
 
 func drop_artifact() -> Artifact:

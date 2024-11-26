@@ -54,10 +54,6 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	air_flurry.configure({"s":atks(5,17), "d":"C", "c":"vec(0,0,0)", "R":fits(1,5)+"*rn0+rn1", "off":"vec(u, lerp(0.5, v, 1), w)", "dir":"vec(0,-1,0)", "a":"rn0*2*pi"}, Spell.Element.AIR, fit(3,6), power(12), radius(7), fiti(2, 10), 40, 60, ea(12), null, "n*"+fits(3, 0.3))
 	air_ring.configure({"s":atks(2, 6), "d":"Br*2+"+fits(2,8), "c":"vec(0,0,0)", "R":fits(2,8), "off": "uvw", "dir":"uvw", "a":"(n/N*2*pi)+t"}, Spell.Element.AIR, fit(5,10), power(15), radius(5), fiti(4, 12), 30, 90, ea(14))
 	
-	print(air_flurry.call_with_parameter_collection_description())
-	print(air_ring.call_with_parameter_collection_description())
-	
-	
 	random_pattern = AttackPatterns.new(
 		[
 			air_flurry,
@@ -87,21 +83,14 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	super.setup(seedling, biome)
 	
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() > 0.5:
-		return sequence_pattern
-	else:
-		return random_pattern
-
-
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
+	elif vitals.health.percentage() >= 0.5:
+		set_path_and_attack(attack_path, sequence_pattern)
 	else:
-		current_path = attack_path
+		set_path_and_attack(attack_path, random_pattern)
 
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

@@ -82,22 +82,16 @@ func _physics_process(delta: float) -> void:
 	if current_path != idle_path:
 		ice_wall_timer += 1
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	else:
-		if ice_wall_timer == 0 or ice_wall_timer > 60 * 10:
-			ice_wall_timer = 1
-			return defence_pattern
-		elif vitals.health.percentage() >= 0.5:
-			return default_pattern
-		else:
-			return sequence_pattern
-
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
 	else:
-		current_path = attack_path
+		if ice_wall_timer == 0 or ice_wall_timer > 60 * 10:
+			ice_wall_timer = 1
+			set_path_and_attack(attack_path, defence_pattern)
+		elif vitals.health.percentage() >= 0.5:
+			set_path_and_attack(attack_path, default_pattern)
+		else:
+			set_path_and_attack(attack_path, sequence_pattern)

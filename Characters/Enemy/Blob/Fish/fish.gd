@@ -107,24 +107,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.FISH
 	super.setup(seedling, biome)
 	
-
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() > 0.2:
-		return basic_pattern
-	else:
-		return flopping_pattern
-
-
+	
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() >= 0.25:
-		current_path = attack_jump_circle_path
+		set_path_and_attack(attack_jump_circle_path, basic_pattern)
 	else:
-		current_path = attack_jump_over_path
+		set_path_and_attack(attack_jump_over_path, flopping_pattern)
 			
 
 func create_attack_jump_path() -> void:

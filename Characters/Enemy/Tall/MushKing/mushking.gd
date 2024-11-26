@@ -93,25 +93,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.MUSHKING
 	super.setup(seedling, biome)
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() > 0.75:
-		return basic_pattern
-	else:
-		return none_pattern
-
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
-		attack_sequence = null
+		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() >= 0.75:
-		current_path = basic_path
-		attack_sequence = null
+		set_path_and_attack(basic_path, basic_pattern)
 	else:
-		attack_sequence = angry_sequence
+		set_attack_sequence(angry_sequence)
 			
 
 func drop_artifact() -> Artifact:

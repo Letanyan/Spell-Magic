@@ -104,29 +104,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.BIRDMAN
 	super.setup(seedling, biome)
 
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	elif vitals.health.percentage() > 0.5:
-		return attack_pattern1
-	elif vitals.health.percentage() > 0.25:
-		return attack_pattern2
-	else:
-		return attack_pattern3
-
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		attack_pattern1.reset()
-		attack_pattern2.reset()
-		attack_pattern3.reset()
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
+	elif vitals.health.percentage() > 0.5:
+		set_path_and_attack(attack_path, attack_pattern1)
+	elif vitals.health.percentage() > 0.25:
+		set_path_and_attack(attack_path, attack_pattern2)
 	else:
-		current_path = attack_path
+		set_path_and_attack(attack_path, attack_pattern3)
 			
-
-
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
 	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

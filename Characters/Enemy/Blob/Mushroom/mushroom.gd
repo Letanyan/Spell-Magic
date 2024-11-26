@@ -57,18 +57,14 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.MUSHROOM
 	super.setup(seedling, biome)
-	
-
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	else:
-		return basic_pattern
 
 
 func update_behaviour() -> void:
 	super.update_behaviour()
-	current_path = idle_path
+	if is_idle:
+		set_path_and_attack(idle_path, none_pattern)
+	else:
+		set_path_and_attack(idle_path, basic_pattern)
 
 func drop_artifact() -> Artifact:
 	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

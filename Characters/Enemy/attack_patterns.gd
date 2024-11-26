@@ -109,6 +109,8 @@ static func choose_in_sequence(intervals: Array[float], repeat: int = 1) -> Call
 				repeat_count.data -= 1
 				for i in completed.size():
 					completed[i] = false
+			if repeat_count.data == 0:
+				is_done.data = true
 			if repeat_count.data <= 0:
 				repeat_count.data = repeat_count.storage
 				should_reset.data = true

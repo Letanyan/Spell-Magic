@@ -54,20 +54,14 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.FISHMAN
 	super.setup(seedling, biome)
-
-func attack_state() -> AttackPatterns:
-	if is_idle:
-		return none_pattern
-	else:
-		return default_pattern
-
+	
 
 func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
-		current_path = idle_path
+		set_path_and_attack(idle_path, none_pattern)
 	else:
-		current_path = attack_direct_path
+		set_path_and_attack(attack_direct_path, default_pattern)
 
 func drop_artifact() -> Artifact:
 	#var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))

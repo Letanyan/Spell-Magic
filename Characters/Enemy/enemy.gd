@@ -156,14 +156,14 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	rotation.y = randf() * 2 * PI
 	match kind:
 		World.Enemy.BIRDMAN, World.Enemy.BLUEMON, World.Enemy.FISHMAN, World.Enemy.FROG, \
-		World.Enemy.MOLE, World.Enemy.MUSHKING, World.Enemy.RABBIT, World.Enemy.UNDEAD, World.Enemy.WALKER: 
+		World.Enemy.MOLE, World.Enemy.MUSHKING, World.Enemy.RABBIT, World.Enemy.UNDEAD, World.Enemy.WALKER, World.Enemy.ORC, World.Enemy.ORC_DEAD: 
 			frame_count = Vector2(30, 17)
 		World.Enemy.BIRD, World.Enemy.FISH, World.Enemy.FUNGI, World.Enemy.HOT_BLOB, World.Enemy.MUSHROOM, \
 		World.Enemy.SNOT_BLOB, World.Enemy.SNOT_SPIKE, World.Enemy.WALKER_HEAD, World.Enemy.WIZARD, World.Enemy.BOUGEON: 
 			frame_count = Vector2(13, 13)
 		World.Enemy.BAT, World.Enemy.BATTY, World.Enemy.BEE, World.Enemy.BUMBLE_BEE, World.Enemy.DRAGON, \
 		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD, World.Enemy.FLYGEON, \
-		World.Enemy.PINKMON, World.Enemy.REDMON: 
+		World.Enemy.PINKMON, World.Enemy.REDMON, World.Enemy.GOBLIN, World.Enemy.GOBLIN_KING: 
 			frame_count = Vector2(35, 25)
 		_: push_error("missing enemy kind")
 	
@@ -200,9 +200,16 @@ func can_move() -> bool:
 #	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 #	var current := playback.get_current_node()
 	return is_zero_approx(invunerable) # and (current == "idle" or current == "walk" or current == "run")
-
-func attack_state() -> AttackPatterns:
-	return AttackPatterns.none()
+	
+func set_path_and_attack(path: PathStyle, attack: AttackPatterns) -> void:
+	attack_sequence = null
+	current_path = path
+	current_attack = attack
+	
+func set_attack_sequence(atk_seq: AttackSequence) -> void:
+	current_path = null
+	current_attack = null
+	attack_sequence = atk_seq
 
 func _physics_process(delta: float) -> void:
 	if kind == World.Enemy.NONE or player.magic_book.settings.is_paused:
@@ -341,7 +348,7 @@ func _physics_process(delta: float) -> void:
 			if attack_sequence.last_attack:
 				spell = current_attack.choose_spell(vitals)
 		else:
-			spell = attack_state().choose_spell(vitals)
+			spell = current_attack.choose_spell(vitals)
 		spell_tick = 0
 		if spell != null:
 			play_animation("attack")
