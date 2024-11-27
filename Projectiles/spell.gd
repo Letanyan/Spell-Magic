@@ -353,11 +353,14 @@ func build_expressions() -> void:
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	# FIXME: speed up
-	time_dependent_vars.clear()
 	for k: String in mappings:
 		expression_strings[k] = mappings[k]
 		var expr := Expr.new(mappings[k] as String)
 		expressions[k] = expr
+		
+	time_dependent_vars.clear()
+	for k: String in expressions:
+		var expr := expressions[k] as Expr
 		if expr.contains_variable("t"):
 			time_dependent_vars[k] = true
 		elif expr.contains_variable("tu") or expr.contains_variable("tv") or expr.contains_variable("tw"):

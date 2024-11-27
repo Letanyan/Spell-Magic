@@ -92,9 +92,11 @@ class Option:
 			var s := spells[i]
 			if s == null: continue
 			if s.name != spell.name: continue
-			spells[i] = spell.duplicate()
-			if not parameters.is_empty():
+			if not parameters[i].is_empty():
+				spells[i] = spell.duplicate()
 				spells[i].configure_using_parameter_collection(parameters[i], {})
+			else:
+				spells[i] = spell
 			
 	func parse_spells(text: String, book: MagicBook) -> void:
 		const SPELL_NAME = 0

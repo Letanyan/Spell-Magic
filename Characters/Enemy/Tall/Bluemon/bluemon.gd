@@ -10,6 +10,9 @@ var cover_and_attack_sequence: AttackSequence
 var idle_path: PathStyle
 var attack_path: PathStyle
 
+var water_bomb_small := GlobalData.magic_book.copy_spell("plane-slice")
+var water_bomb_medium := GlobalData.magic_book.copy_spell("plane-slice")
+var water_bomb_large := GlobalData.magic_book.copy_spell("plane-slice")
 var water_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
 var water_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
 var water_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
@@ -29,6 +32,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
+	water_bomb_small.configure({
+		"d": "C", "s": "0", "R": "rn0*%s+lerp(t/T, %s, %s)" % [fits(6,2), fits(8,4), fits(4,2)],
+		"off": "uvw", "dir": "uvw", "a": "n/N*pi*2",
+	}, Spell.Element.WATER, fit(7,14), power(5), radius(2), fiti(8,16), 5, 100, ea(10), null, fits(4,2)+"+n*"+fits(1.5, 0.25))
+	water_bomb_medium.configure({
+		"d": "C", "s": "0", "R": "rn0*%s+lerp(t/T, %s, %s)" % [fits(8,4), fits(10,5), fits(6,3)],
+		"off": "uvw", "dir": "uvw", "a": "n/N*pi*2",
+	}, Spell.Element.WATER, fit(5,10), power(6), radius(4), fiti(7,14), 3, 200, ea(13), null, fits(4,2)+"+n*"+fits(1.5, 0.25))
+	water_bomb_large.configure({
+		"d": "C", "s": "0", "R": "rn0*%s+lerp(t/T, %s, %s)" % [fits(10,5), fits(12,6), fits(8,4)],
+		"off": "uvw", "dir": "uvw", "a": "n/N*pi*2",
+	}, Spell.Element.WATER, fit(3,6), power(7), radius(6), fiti(6,12), 1, 300, ea(16), null, fits(4,2)+"+n*"+fits(1.5, 0.25))
 	water_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.WATER, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
 	water_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.WATER, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
 	water_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.WATER, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
@@ -37,13 +52,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	fire_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
 	rock_wall.configure({"d": "0.2","S":"0","s":"0","rx":"5","ry":"5","rz":"0.1","ra":"0"}, Spell.Element.ROCK, fit(10,20), power(0), 1.5, 1, 0, 0, 0)
 	
+	print(water_bomb_small.call_with_parameter_collection_description())
+	
 	attack_pattern1 = AttackPatterns.new(
 		[
-			water_attack1,
-			water_attack2,
-			water_attack3,
+			water_bomb_small,
+			water_bomb_medium,
+			water_bomb_large,
 		],
-		AttackPatterns.choose_from_distribution(fit(7,3), [ 15, 10, 5 ], -1)
+		AttackPatterns.choose_from_distribution(atkd(9), [ 15, 10, 5 ], -1)
 	)
 	
 	attack_pattern2 = AttackPatterns.new(
@@ -51,8 +68,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			fire_attack1,
 			fire_attack2,
 			fire_attack3,
+			water_attack1,
+			water_attack2,
+			water_attack3,
 		],
-		AttackPatterns.choose_from_distribution(fit(7,3), [ 15, 10, 5 ], -1)
+		AttackPatterns.choose_from_distribution(atkd(12), [ 15, 10, 5, 3, 5, 10 ], -1)
 	)
 	
 	attack_pattern3 = AttackPatterns.new(
@@ -64,7 +84,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			water_attack2,
 			water_attack3,
 		],
-		AttackPatterns.choose_from_distribution(0.5, [ 15, 10, 5, 15, 10, 5 ], 1)
+		AttackPatterns.choose_from_distribution(atkd(16), [ 15, 10, 5, 15, 10, 5 ], 1)
 	)
 	
 	var cover_and_attack_path := PathStyle.new().follow_path(
@@ -96,7 +116,9 @@ func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
 		set_path_and_attack(idle_path, none_pattern)
-	elif vitals.health.percentage() > 0.5:
+	elif vitals.health.percentage() > 0.7:
+		set_path_and_attack(attack_path, attack_pattern1)
+	elif vitals.health.percentage() > 0.4:
 		set_path_and_attack(attack_path, attack_pattern2)
 	else:
 		set_attack_sequence(cover_and_attack_sequence)
