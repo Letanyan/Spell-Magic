@@ -47,6 +47,7 @@ var pushed_with_impulse := false
 
 var index_in_population: int = -1
 signal vital_update(index_in_population: int, vitals: Vitals)
+signal spell_was_cast(spell: Spell)
 @onready var health_bar: MeshInstance3D = $HealthBar/Bar
 @onready var level_text: Label3D = $HealthBar/Level
 @onready var effects_mesh: MeshInstance3D = $HealthBar/Effects
@@ -388,6 +389,7 @@ func _physics_process(delta: float) -> void:
 
 
 func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellReason:
+	spell_was_cast.emit(next_spell)
 	return spell_caster.cast_spell(self, vitals, insert, next_spell)
 
 

@@ -6,7 +6,7 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwdgd"]
 resource_local_to_scene = true
-size = Vector3(1, 0.2, 1)
+size = Vector3(1, 1, 0.2)
 
 [sub_resource type="Gradient" id="Gradient_k3a7i"]
 interpolation_color_space = 2
@@ -22,7 +22,7 @@ resource_local_to_scene = true
 particle_flag_align_y = true
 particle_flag_rotate_y = true
 emission_shape = 3
-emission_box_extents = Vector3(1, 0.2, 1)
+emission_box_extents = Vector3(1, 1, 0.2)
 angle_max = 360.0
 direction = Vector3(0, 1, 0)
 spread = 0.0
@@ -62,7 +62,7 @@ resource_local_to_scene = true
 particle_flag_align_y = true
 particle_flag_rotate_y = true
 emission_shape = 3
-emission_box_extents = Vector3(1, 0.2, 1)
+emission_box_extents = Vector3(1, 1, 0.2)
 angle_max = 360.0
 direction = Vector3(0, 1, 0)
 spread = 0.0
@@ -77,27 +77,24 @@ hue_variation_max = 0.02
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_c1na5"]
 resource_local_to_scene = true
-size = Vector3(1, 0.2, 1)
+size = Vector3(1, 1, 0.2)
 
 [node name="ice" type="Node3D"]
 script = ExtResource("1_gw4hd")
 
 [node name="shape_cast" type="ShapeCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_hwdgd")
 target_position = Vector3(0, 0, 0)
 collision_mask = 1566
 collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 amount = 50
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_p7bpa")
 draw_pass_1 = SubResource("SphereMesh_b25tq")
 
 [node name="source_trail" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 amount = 50
 process_material = SubResource("ParticleProcessMaterial_6vpyv")
 draw_pass_1 = SubResource("SphereMesh_b25tq")
@@ -112,5 +109,4 @@ collision_mask = 0
 monitoring = false
 
 [node name="collision" type="CollisionShape3D" parent="area"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_c1na5")

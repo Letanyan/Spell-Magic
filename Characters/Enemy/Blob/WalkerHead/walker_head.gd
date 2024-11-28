@@ -9,7 +9,8 @@ var defence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
-var ice_wall_timer: int = 0
+var ice_wall_duration := 10.0
+var ice_wall_timer := 0.0
 
 var water_small := GlobalData.magic_book.copy_spell("linear")
 var water_medium := GlobalData.magic_book.copy_spell("linear")
@@ -33,7 +34,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_small.configure({"d": "Br", "s": atks(4,15)}, Spell.Element.ICE, fit(2,10), power(12), radius(2), 1, 80, 80, fl*50)
 	ice_medium.configure({"d": "Br*2", "s": atks(3,11)}, Spell.Element.ICE, fit(5,15), power(10), radius(3), 1, 80, 80, fl*60)
 	ice_large.configure({"d": "Br*3", "s": atks(2,11)}, Spell.Element.ICE, fit(10,20), power(10), radius(4), 1, 80, 80, fl*75)
-	ice_wall.configure({"size":"vec(0.495, 0.495, 0.01)"}, Spell.Element.ICE, 10, 0, 2, 4, 0, 0, 0)
+	ice_wall.configure({"size":"vec(0.495, 0.495, 0.01)"}, Spell.Element.ICE, ice_wall_duration, 0, 1, 4, 0, 0, 0)
 	ice_wall.follow = true
 	
 	none_pattern = AttackPatterns.none()
@@ -68,6 +69,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.7, [ 2, 2, 2, 2, 6, 6, 6, 6, 4, 4, 4 ]), -1)
 	)
 	
+	ice_wall_timer = ice_wall_duration
 	defence_pattern = AttackPatterns.new(
 		[ice_wall],
 		AttackPatterns.choose_in_sequence([ 0 ], -1)
@@ -80,7 +82,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 	if current_path != idle_path:
-		ice_wall_timer += 1
+		ice_wall_timer += delta
 
 
 func update_behaviour() -> void:
@@ -89,9 +91,12 @@ func update_behaviour() -> void:
 		set_path_and_attack(idle_path, none_pattern)
 	else:
 		if ice_wall_timer == 0 or ice_wall_timer > 60 * 10:
-			ice_wall_timer = 1
 			set_path_and_attack(attack_path, defence_pattern)
 		elif vitals.health.percentage() >= 0.5:
 			set_path_and_attack(attack_path, default_pattern)
 		else:
 			set_path_and_attack(attack_path, sequence_pattern)
+
+func spell_was_cast_impl(spell: Spell) -> void:
+	if spell.name == "wall":
+		ice_wall_timer = 0.0001

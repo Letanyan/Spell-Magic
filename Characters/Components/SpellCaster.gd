@@ -353,13 +353,6 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		p.tracking_target = node_to_track
 		p.caster_vitals = vitals
 		p.complexity_id = cid
-		var look_at_dir := p.position + body.position.direction_to(p.position) * 10.0
-		if look_at_dir.is_equal_approx(Vector3.UP):
-			p.look_at_from_position(p.position, Vector3.UP, Vector3.BACK)
-		elif Vector3.UP.cross(look_at_dir - p.position).is_zero_approx():
-			p.look_at_from_position(p.position, Vector3.UP, Vector3.BACK)
-		else:
-			p.look_at_from_position(p.position, look_at_dir)
 		particles.append(p)
 		tracking_node[p.name] = node_to_track
 		tracking_position[p.name] = cdir

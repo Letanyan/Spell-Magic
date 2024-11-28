@@ -549,13 +549,10 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
-	if element == Element.ROCK:
-		var origin: Vector3 = fixed_vars.get("~~abs_pos", Vector3.ZERO)
-		var dir: Vector3 = origin.direction_to(p.position)
-		var rot_axis := dir.cross(Vector3.BACK).normalized()
-		var rot_angle := dir.angle_to(Vector3.BACK)
-		if not rot_axis.is_zero_approx():
-			p.rotate_object_local(rot_axis, rot_angle if is_nan(p.rotation_angle) else p.rotation_angle)
+	fixed_vars["t"] = 0.5
+	var dir: Vector3 = calculate_location(fixed_vars) - p.position
+	fixed_vars["t"] = 0.0
+	p.look_at_from_position(p.position, p.position + dir)
 	
 	return p
 		

@@ -65,8 +65,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var minion_count := Rand.roll(floori(6 * pop.fit(1, 1.5)), 2, king_count, rng, Rand.Accum.AVG)
 				for c in minion_count:
 					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing) as WalkerHead
-					if minion != null:
-						result.append(minion)
+					if minion != null: result.append(minion)
 				
 			
 				

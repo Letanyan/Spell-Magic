@@ -88,6 +88,10 @@ func lose_control(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 			body.apply_central_impulse(velocity)
 			if q != null:
 				SignalBus.projectile_hit.emit(origin_node, q, spell, Time.get_unix_time_from_system(), p, damage)
+		var timer := get_tree().create_timer(spell.duration - time_stamp)
+		timer.timeout.connect(func() -> void:
+			expired = true
+		)
 
 func nothing(p: Node3D, q: CollisionObject3D, damage: Dictionary) -> void:
 	if q != null:
