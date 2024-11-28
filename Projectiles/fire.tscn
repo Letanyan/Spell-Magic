@@ -73,6 +73,7 @@ scale_curve = SubResource("CurveTexture_drmjp")
 color_ramp = SubResource("GradientTexture1D_lctcp")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_jx1nk"]
+resource_local_to_scene = true
 
 [node name="fire" type="Node3D"]
 script = ExtResource("1_ku5ha")

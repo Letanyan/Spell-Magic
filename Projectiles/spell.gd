@@ -170,6 +170,7 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 		self.chain = chain
 	if not delay.is_empty():
 		self.delay = delay
+		self.d_expr = Expr.new(delay)
 	calculate_cooldown()
 	overwrite_expressions(constants)
 	
@@ -177,6 +178,7 @@ func call_with_parameter_collection_description() -> String:
 	var result := name + "("
 	result += "element=" + Element.keys()[element] + ","
 	result += "r=" + str(radius) + ","
+	result += "D=" + delay + ","
 	result += "P=" + str(power) + ","
 	result += "T=" + str(duration) + ","
 	result += "N=" + str(count) + ","
@@ -195,6 +197,9 @@ func configure_using_parameter_collection(parameters: Dictionary, vars: Dictiona
 	if params.has("r"):
 		radius = Expr.new(params["r"] as String).compute_value(vars)
 		params.erase("r")
+	if params.has("D"):
+		delay = params["D"] as String
+		d_expr = Expr.new(delay)
 	if params.has("P"):
 		power = Expr.new(params["P"] as String).compute_value(vars)
 		params.erase("P")
@@ -514,13 +519,22 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.override_vars = overrides
 	compute_expressions(p.expression_vars, fixed_vars, p.override_vars)
 	p.spell = self
+	p.rotation_angle = clampf(fixed_vars.get("spinrate", NAN) as float, -2 * PI, 2 * PI)
 	p.position = calculate_location(fixed_vars)
-	if element == Element.ROCK:
-		var nr := Vector3(fixed_vars.get("rx", 0.1) as float, fixed_vars.get("ry", 0.1) as float, fixed_vars.get("rz", 0.1) as float).normalized()
-		p.update_shape(nr * radius, true)
+	
+	var nr := Vector3(1, 1, 1)
+	if element == Element.ICE:
+		nr = Vector3(1, 0.2, 1)
+	nr = nr.normalized()
+	if fixed_vars.has("size"):
+		var temp_nr: Variant = fixed_vars["size"]
+		if temp_nr is Vector3:
+			nr = (temp_nr as Vector3).normalized() * radius
+		elif temp_nr is float or temp_nr is int:
+			nr = nr * radius * clampf(temp_nr as float, 0, 1)
 	else:
-		p.update_shape(Vector3(1, 1, 1).normalized() * radius, true)
-	p.rotation_angle = clampf(fixed_vars.get("ra", NAN) as float, -2 * PI, 2 * PI)
+		nr = nr * radius
+	p.update_shape(nr, true)
 	
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
@@ -532,6 +546,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 		var rot_angle := dir.angle_to(Vector3.BACK)
 		if not rot_axis.is_zero_approx():
 			p.rotate_object_local(rot_axis, rot_angle if is_nan(p.rotation_angle) else p.rotation_angle)
+	
 	
 	return p
 		

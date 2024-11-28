@@ -5,7 +5,7 @@ enum TundraStructuresKind {
 	NONE,
 	FLAT_ROCK,
 	LONE_HEAD, LONE_WALKER, HOARD,
-	RABBIT,
+	BLUEMON,
 }
 
 const tundra_structure := {
@@ -14,7 +14,7 @@ const tundra_structure := {
 	TundraStructuresKind.LONE_HEAD: 0.5,
 	TundraStructuresKind.LONE_WALKER: 0.025,
 	TundraStructuresKind.HOARD: 0.0125,
-	TundraStructuresKind.RABBIT: 0.1,
+	TundraStructuresKind.BLUEMON: 0.1,
 }
 
 func setup_state(pop: Population) -> void:
@@ -41,30 +41,30 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			TundraStructuresKind.LONE_HEAD:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos, spacing)
+				var p := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos, spacing) as WalkerHead
 				if p != null: result.append(p)
 				
 			TundraStructuresKind.LONE_WALKER:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.WALKER, pos, spacing)
+				var p := pop.spawn_enemy(World.Enemy.WALKER, pos, spacing) as Walker
 				if p != null: result.append(p)
 				
-			TundraStructuresKind.RABBIT:
+			TundraStructuresKind.BLUEMON:
 				var pos := area[index]
 				var count := Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: pop.fit(1, 10)}) as int
 				for i in count:
-					var p := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_circle_2d(10, rng), spacing)
+					var p := pop.spawn_enemy(World.Enemy.BLUEMON, pos + Rand.point_in_circle_2d(10, rng), spacing)
 					if p != null: result.append(p)
 					
 			TundraStructuresKind.HOARD:
 				var pos := area[index]
 				var king_count := Rand.entity_from_distribution(rng.randf(), {1: pop.fit(15, 5), 2: pop.fit(10, 5), 3: pop.fit(5, 3)}) as int
 				for i in king_count:
-					var king := pop.spawn_enemy(World.Enemy.WALKER, pos, spacing) as Mushking
+					var king := pop.spawn_enemy(World.Enemy.WALKER if rng.randf() < pop.fit(0.9, 0.1) else World.Enemy.BLUEMON, pos, spacing)
 					if king != null: result.append(king)
 				var minion_count := Rand.roll(floori(6 * pop.fit(1, 1.5)), 2, king_count, rng, Rand.Accum.AVG)
 				for c in minion_count:
-					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing) as Mushroom
+					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing) as WalkerHead
 					if minion != null:
 						result.append(minion)
 				

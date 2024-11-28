@@ -71,6 +71,7 @@ scale_curve = SubResource("CurveTexture_58u4p")
 color_ramp = SubResource("GradientTexture1D_a2dhw")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cbplr"]
+resource_local_to_scene = true
 
 [node name="water" type="Node3D"]
 script = ExtResource("1_dkd3k")

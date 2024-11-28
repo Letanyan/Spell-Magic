@@ -187,8 +187,8 @@ static var notes := {
 	"variable P": "The base damage multipler for all projectiles of the spell.",
 	"variable M": "The base mana cost for this spell",
 	"variable C": "The charge time in seconds. Spell must be set to a {Charged Cast} on the {Wand}.",
-	"variable rx, ry, rz": "These describe the width, height and depth of {Rock} projectile. The actual size is given as the vector {(rx,ry,rz)} normalised then scaled by {r}. {These values can only be set in the variables field of each spell.}",
-	"variable ra": "{ra} describe the rotation angle speed of {Rock} spells. Limited to {2*pi}.",
+	"variable size": "{size} is either a vector or number that describes the ratio of the total size of each projectile. When {size} is a vector it describes the ratio, {(a normalized vector)}, of {width},{height} and {depth} respectivly. When {size} is just a number it describes the ratio, {([0, 1])}, of each projectile in all dimensions. {size} only takes effect when each projectile is cast. {size} can only be set in the variables field of the spell.",
+	"variable spinrate": "{spinrate} describe the rotation speed of {Rock} spells. Limited to {[-2*pi, 2*pi]}.",
 	"variable x, y, z": "These are typically used with the {'.'} operator. Since {x=0},{y=1} and {z=2} you can use them to get the corrosponding component of a vector.",
 	
 	"wand Cast": "Casts the assigned spell immediatly once keys are released.",

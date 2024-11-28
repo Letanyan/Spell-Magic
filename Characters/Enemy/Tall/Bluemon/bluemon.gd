@@ -16,9 +16,9 @@ var water_bomb_large := GlobalData.magic_book.copy_spell("plane-slice")
 var water_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
 var water_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
 var water_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
-var fire_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
-var fire_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
-var fire_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
+var ice_attack1 := GlobalData.magic_book.copy_spell("linear-arc")
+var ice_attack2 := GlobalData.magic_book.copy_spell("linear-arc")
+var ice_attack3 := GlobalData.magic_book.copy_spell("linear-arc")
 var rock_wall := GlobalData.magic_book.copy_spell("bomb")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
@@ -47,12 +47,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.WATER, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
 	water_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.WATER, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
 	water_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.WATER, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
-	fire_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.FIRE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
-	fire_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.FIRE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
-	fire_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.FIRE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
+	ice_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.ICE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
+	ice_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.ICE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
+	ice_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.ICE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
 	rock_wall.configure({"d": "0.2","S":"0","s":"0","rx":"5","ry":"5","rz":"0.1","ra":"0"}, Spell.Element.ROCK, fit(10,20), power(0), 1.5, 1, 0, 0, 0)
-	
-	print(water_bomb_small.call_with_parameter_collection_description())
 	
 	attack_pattern1 = AttackPatterns.new(
 		[
@@ -65,9 +63,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	attack_pattern2 = AttackPatterns.new(
 		[
-			fire_attack1,
-			fire_attack2,
-			fire_attack3,
+			ice_attack1,
+			ice_attack2,
+			ice_attack3,
 			water_attack1,
 			water_attack2,
 			water_attack3,
@@ -77,9 +75,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	attack_pattern3 = AttackPatterns.new(
 		[
-			fire_attack1,
-			fire_attack2,
-			fire_attack3,
+			ice_attack1,
+			ice_attack2,
+			ice_attack3,
 			water_attack1,
 			water_attack2,
 			water_attack3,

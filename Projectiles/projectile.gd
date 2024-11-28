@@ -451,16 +451,18 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			trail.amount = roundi(100 * rl)
 			
 		Spell.Element.ICE:
-			(get_shape_cast().shape as BoxShape3D).size.x = rl * 2
-			(get_shape_cast().shape as BoxShape3D).size.z = rl * 2
-			(get_area_collision().shape as BoxShape3D).size.x = rl * 2
-			(get_area_collision().shape as BoxShape3D).size.z = rl * 2
+			(get_shape_cast().shape as BoxShape3D).size = r * 2
+			(get_area_collision().shape as BoxShape3D).size = r * 2
 			
 			var source: GPUParticles3D = get_node("source")
-			(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
+			(source.process_material as ParticleProcessMaterial).emission_box_extents = r
+			(source.process_material as ParticleProcessMaterial).scale_max = rl
+			(source.process_material as ParticleProcessMaterial).scale_min = rl / 3.0
 			source.amount = roundi(100 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
-			(trail.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(rl, 0.2, rl)
+			(trail.process_material as ParticleProcessMaterial).emission_box_extents = r
+			(trail.process_material as ParticleProcessMaterial).scale_max = rl
+			(trail.process_material as ParticleProcessMaterial).scale_min = rl / 3.0
 			trail.amount = roundi(100 * rl)
 			
 			#source.local_coords = spell.follow
@@ -585,12 +587,15 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
+			
 			var v : Vector3 = velocity.normalized()
 			if v != Vector3.ZERO:
 				if v == Vector3.UP:
+					# FIXME: better up vector. find other places as well
 					v = Vector3(0.1, 0.9, 0.1).normalized()
 				var dir : Vector3 = global_position + v * 10
 				look_at(dir)
+				
 			
 		Spell.Element.ELECTRIC:
 			position = p

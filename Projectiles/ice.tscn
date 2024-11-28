@@ -76,6 +76,7 @@ color_ramp = SubResource("GradientTexture1D_gddqt")
 hue_variation_max = 0.02
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_c1na5"]
+resource_local_to_scene = true
 size = Vector3(1, 0.2, 1)
 
 [node name="ice" type="Node3D"]
