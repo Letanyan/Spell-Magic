@@ -217,6 +217,12 @@ func update_cooldown() -> void:
 	if current_index < 0:
 		return
 	book.spells[current_index].calculate_cooldown()
+		
+	var raw_radius := book.spells[current_index].radius_cache
+	if raw_radius > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
+		errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw_radius) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
+	else:
+		errors_list.erase("r")
 	
 	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " + Globals.format_number_nearest_place(book.spells[current_index].cooldown) + "s[/font_size][/left]"
 	element_application.text = book.spells[current_index].elemental_application_description()

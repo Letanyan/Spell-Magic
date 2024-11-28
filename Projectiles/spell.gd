@@ -49,6 +49,7 @@ var x_expr: Expr
 var y_expr: Expr
 var z_expr: Expr
 var r_expr: Expr
+var radius_cache: float # WARNING: fragile. only use after ensuring a call to basic_fixed_variables first
 var d_expr: Expr
 
 var follow: bool
@@ -531,7 +532,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.rotation_angle = clampf(fixed_vars.get("spinrate", NAN) as float, -2 * PI, 2 * PI)
 	p.position = calculate_location(fixed_vars)
 	
-	var nr := Vector3(1, 0.2 if element == Element.ICE else 1, 1).normalized()
+	var nr := Vector3(1, 0.2 if element == Element.ICE else 1.0, 1).normalized()
 	var radius := fixed_vars["r"] as float
 	if fixed_vars.has("size"):
 		var temp_nr: Variant = fixed_vars["size"]
@@ -542,7 +543,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	else:
 		nr = nr * radius
 	if is_zero_approx(nr.length()):
-		nr = Vector3(1, 0.2 if element == Element.ICE else 1, 1).normalized() * 0.1
+		nr = Vector3(1, 0.2 if element == Element.ICE else 1.0, 1).normalized() * 0.1
 	p.update_shape(nr, true)
 	
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
@@ -594,7 +595,8 @@ func basic_fixed_vars() -> Dictionary:
 	fixed_vars["x"] = 0
 	fixed_vars["y"] = 1
 	fixed_vars["z"] = 2
-	fixed_vars["r"] = r_expr.compute_value(fixed_vars)
+	radius_cache = r_expr.compute_value(fixed_vars)
+	fixed_vars["r"] = radius_cache
 	return fixed_vars
 	
 func global_constant_variables() -> Dictionary:

@@ -33,7 +33,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_small.configure({"d": "Br", "s": atks(4,18)}, Spell.Element.ICE, fit(2,10), power(15), radius(2), 1, 80, 80, fl*50)
 	ice_medium.configure({"d": "Br*2", "s": atks(3,14)}, Spell.Element.ICE, fit(5,15), power(12), radius(4), 1, 80, 80, fl*60)
 	ice_large.configure({"d": "Br*3", "s": atks(2,14)}, Spell.Element.ICE, fit(10,20), power(10), radius(6), 1, 80, 80, fl*75)
-	ice_wall.configure({}, Spell.Element.ICE, 10, 0, 6, 4, 0, 0, 0)
+	ice_wall.configure({"size":"vec(0.249, 0.5, 0.01)"}, Spell.Element.ICE, 10, 0, 4, 4, 0, 0, 0)
 	ice_wall.follow = true
 	
 	none_pattern = AttackPatterns.none()
