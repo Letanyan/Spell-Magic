@@ -116,9 +116,10 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 	elif spell.power > settings.upgrade_settings.LIMIT_P:
 		return DisallowSpellReason.POWER
 		
-	if spell.radius > settings.upgrade_settings.max_r() + settings.upgrade_settings.buff_r:
+	var radius := spell.basic_fixed_vars()["r"] as float
+	if radius > settings.upgrade_settings.max_r() + settings.upgrade_settings.buff_r:
 		return DisallowSpellReason.RADIUS
-	elif spell.radius > settings.upgrade_settings.LIMIT_r:
+	elif radius > settings.upgrade_settings.LIMIT_r:
 		return DisallowSpellReason.RADIUS
 		
 	if spell.actual_mana_cost() > settings.upgrade_settings.max_mana() + settings.upgrade_settings.buff_mana:

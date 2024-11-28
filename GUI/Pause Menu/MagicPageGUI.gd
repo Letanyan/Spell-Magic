@@ -160,7 +160,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	x_edit.text = spell.x
 	y_edit.text = spell.y
 	z_edit.text = spell.z
-	r_edit.text = Globals.format_number_nearest_place(spell.radius)
+	r_edit.text = spell.r
 		
 	power_edit.text = "%d" % spell.power
 	duration_edit.text = Globals.format_number_nearest_place(spell.duration)
@@ -298,16 +298,17 @@ func _on_z_text_changed(new_text: String) -> void:
 func _on_r_text_changed(new_text: String) -> void:
 	if current_index < 0:
 		return
-	if not new_text.is_valid_float():
-		errors_list["r"] = "'%s' is not a valid number" % new_text
+	book.spells[current_index].r = new_text
+	var e := Expr.new(new_text)
+	book.spells[current_index].r_expr = e
+	if e.error.length() > 0:
+		errors_list["r"] = e.error
 	else:
-		errors_list.erase("r")
-	var raw: float = new_text.to_float()
-	book.spells[current_index].radius = raw
-	if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
-		errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
-	else:
-		errors_list.erase("r")
+		var raw := book.spells[current_index].basic_fixed_vars()["r"] as float
+		if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
+			errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
+		else:
+			errors_list.erase("r")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
@@ -605,6 +606,8 @@ func _on_expressions_text_changed() -> void:
 	update_spells_that_chain_to_current_spell()
 
 func check_all_errors() -> void:
+	if current_index < 0:
+		return
 	errors_list.clear()
 	
 	var e := Expr.new(x_edit.text)
@@ -619,15 +622,15 @@ func check_all_errors() -> void:
 	e = Expr.new(delay_edit.text)
 	if e.error.length() > 0:
 		errors_list["D"] = e.error
+	e = Expr.new(r_edit.text)
+	if e.error.length() > 0:
+		errors_list["r"] = e.error
 		
-	var text := r_edit.text
-	if not text.is_valid_float():
-		errors_list["r"] = "'%s' is not a valid number" % text
-	var raw: float = text.to_float()
+	var raw: float = book.spells[current_index].basic_fixed_vars()["r"] as float
 	if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
 		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
 		
-	text = power_edit.text
+	var text := power_edit.text
 	if not text.is_valid_float():
 		errors_list["P"] = "'%s' is not a valid number" % text
 	raw = text.to_float()

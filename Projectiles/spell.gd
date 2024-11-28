@@ -24,9 +24,7 @@ enum PreviewFlags {
 var x: String
 var y: String
 var z: String
-var radius: float:
-	set(value):
-		radius = clamp(value, 0, UpgradeSettings.LIMIT_r)
+var r: String
 var power: float:
 	set(value):
 		power = clamp(value, 0, UpgradeSettings.LIMIT_P)
@@ -50,6 +48,7 @@ var chain: Spell = null:
 var x_expr: Expr
 var y_expr: Expr
 var z_expr: Expr
+var r_expr: Expr
 var d_expr: Expr
 
 var follow: bool
@@ -79,11 +78,11 @@ var buff_defence: float = 0.0
 
 var configuration_parameters_for_chain: Dictionary = {}
 
-func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _radius: float = 0.1, _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false, no_comp: bool = false) -> void:
+func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String = "0", _r: String = "0.1", _power: float = 1, _duration: float = 1.0, _el: Element = Spell.Element.FIRE, _N: int = 1, _delay: String = "0", _is_bomb: bool = false, _mana: float = 0.0, _player_is_origin: bool = false, no_comp: bool = false) -> void:
 	x = _x
 	y = _y
 	z = _z
-	radius = _radius
+	r = _r
 	power = _power
 	duration = _duration
 	element = _el
@@ -109,13 +108,15 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 		y_expr = Expr.new(y)
 		z_expr = Expr.new(z)
 		d_expr = Expr.new(delay)
+		r_expr = Expr.new(r)
 		
 	
 func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spell:
-	var result := Spell.new(follow, x, y, z, radius, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin, true)
+	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin, true)
 	result.x_expr = x_expr
 	result.y_expr = y_expr
 	result.z_expr = z_expr
+	result.r_expr = r_expr
 	result.d_expr = d_expr
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
@@ -152,7 +153,8 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 func configure(constants: Dictionary, element: Spell.Element, duration: float, power: float, radius: float, count: int, crit_rate: float, crit_dmg: float, mana: float, chain: Spell = null, delay: String = "") -> void:
 	self.element = element
 	if not is_nan(radius):
-		self.radius = radius
+		self.r = str(radius)
+		self.r_expr = Expr.new(self.r)
 	if not is_nan(power):
 		self.power = power
 	if not is_nan(duration):
@@ -177,7 +179,7 @@ func configure(constants: Dictionary, element: Spell.Element, duration: float, p
 func call_with_parameter_collection_description() -> String:
 	var result := name + "("
 	result += "element=" + Element.keys()[element] + ","
-	result += "r=" + str(radius) + ","
+	result += "r=" + r + ","
 	result += "D=" + delay + ","
 	result += "P=" + str(power) + ","
 	result += "T=" + str(duration) + ","
@@ -195,11 +197,13 @@ func configure_using_parameter_collection(parameters: Dictionary, vars: Dictiona
 		element = Element.keys().find((params["element"] as String).to_upper()) as Element
 		params.erase("element")
 	if params.has("r"):
-		radius = Expr.new(params["r"] as String).compute_value(vars)
+		r = params["r"] as String
+		r_expr = Expr.new(r)
 		params.erase("r")
 	if params.has("D"):
 		delay = params["D"] as String
 		d_expr = Expr.new(delay)
+		params.erase("D")
 	if params.has("P"):
 		power = Expr.new(params["P"] as String).compute_value(vars)
 		params.erase("P")
@@ -239,6 +243,10 @@ func set_y(y_: String) -> void:
 func set_z(z_: String) -> void:
 	z = z_
 	z_expr = Expr.new(z)
+	
+func set_r(r_: String) -> void:
+	r = r_
+	r_expr = Expr.new(r)
 	
 func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	var sphere := Vector3.ZERO
@@ -427,6 +435,7 @@ func calculate_cooldown() -> float:
 	if element == Element.VOID:
 		basic_cost = 0.0
 	else:
+		var radius := basic_fixed_vars()["r"] as float
 		var no_crit_hit := power / UpgradeSettings.LIMIT_P
 		var crit_hit := no_crit_hit * (1.0 + crit_dmg / 100.0)
 		var rate := clampf(crit_rate / 100.0, 0.0, 1.0)
@@ -522,10 +531,8 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.rotation_angle = clampf(fixed_vars.get("spinrate", NAN) as float, -2 * PI, 2 * PI)
 	p.position = calculate_location(fixed_vars)
 	
-	var nr := Vector3(1, 1, 1)
-	if element == Element.ICE:
-		nr = Vector3(1, 0.2, 1)
-	nr = nr.normalized()
+	var nr := Vector3(1, 0.2 if element == Element.ICE else 1, 1).normalized()
+	var radius := fixed_vars["r"] as float
 	if fixed_vars.has("size"):
 		var temp_nr: Variant = fixed_vars["size"]
 		if temp_nr is Vector3:
@@ -534,6 +541,8 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 			nr = nr * radius * clampf(temp_nr as float, 0, 1)
 	else:
 		nr = nr * radius
+	if is_zero_approx(nr.length()):
+		nr = Vector3(1, 0.2 if element == Element.ICE else 1, 1).normalized() * 0.1
 	p.update_shape(nr, true)
 	
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
@@ -546,7 +555,6 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 		var rot_angle := dir.angle_to(Vector3.BACK)
 		if not rot_axis.is_zero_approx():
 			p.rotate_object_local(rot_axis, rot_angle if is_nan(p.rotation_angle) else p.rotation_angle)
-	
 	
 	return p
 		
@@ -581,12 +589,12 @@ func basic_fixed_vars() -> Dictionary:
 	fixed_vars["L"] = charge
 	fixed_vars["T"] = duration
 	fixed_vars["P"] = power
-	fixed_vars["r"] = radius
 	fixed_vars["CR"] = crit_rate
 	fixed_vars["CD"] = crit_dmg
 	fixed_vars["x"] = 0
 	fixed_vars["y"] = 1
 	fixed_vars["z"] = 2
+	fixed_vars["r"] = r_expr.compute_value(fixed_vars)
 	return fixed_vars
 	
 func global_constant_variables() -> Dictionary:
@@ -616,6 +624,7 @@ func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
 			
 	p.position = calculate_location(fixed_vars)
 	
+	var radius := fixed_vars["r"] as float
 	var mesh: MeshInstance3D = p.get_node("outer") as MeshInstance3D
 	var ring: TorusMesh = mesh.mesh as TorusMesh
 	ring.inner_radius = radius
@@ -643,7 +652,7 @@ func save_dict() -> Dictionary:
 	pimages.assign(preview_image)
 	pflags.assign(preview_flags)
 	return {
-		"x": x, "y": y, "z": z, "r": radius,
+		"x": x, "y": y, "z": z, "r": r,
 		"power": power, "duration": duration, "count": count, "delay": delay,
 		"chain": chain.save_dict() if chain else {}, "is_bomb": is_bomb,
 		"is_rel": follow, "el": element, "chain_cast_kind": chain_cast_kind,
@@ -670,8 +679,7 @@ func load_dict(dict: Dictionary) -> void:
 	x = dict["x"] as String
 	y = dict["y"] as String
 	z = dict["z"] as String
-	var temp_r: Variant = dict["r"]
-	radius = temp_r if temp_r is float else (temp_r as String).to_float()
+	r = str(dict["r"])
 	power = dict["power"]
 	duration = dict["duration"]
 	element = dict["el"]
@@ -698,6 +706,7 @@ func load_dict(dict: Dictionary) -> void:
 	y_expr = Expr.new(y)
 	z_expr = Expr.new(z)
 	d_expr = Expr.new(delay)
+	r_expr = Expr.new(r)
 	build_expressions()
 	
 	if dict["chain"] != {}:
@@ -774,7 +783,7 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """ % [
 	chain_creation,
 	variable_name, repr.call(follow), repr.call(x), repr.call(y), repr.call(z),
-	repr.call(radius), repr.call(power), repr.call(duration), repr_element.call(element), 
+	repr.call(r), repr.call(power), repr.call(duration), repr_element.call(element), 
 	repr.call(count), repr.call(delay), repr.call(is_bomb), repr.call(mana_cost), 
 	repr.call(player_is_origin),
 	variable_name, chain_name,	
@@ -858,7 +867,8 @@ func bake(new_name: String) -> Spell:
 	var by := GDExpr.bake(y, expression_strings)
 	var bz := GDExpr.bake(z, expression_strings)
 	var bd := GDExpr.bake(delay, expression_strings)
-	var result := Spell.new(follow, bx, by, bz, radius, power, duration, element, count, bd, is_bomb, mana_cost, player_is_origin)
+	var br := GDExpr.bake(r, expression_strings)
+	var result := Spell.new(follow, bx, by, bz, br, power, duration, element, count, bd, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.name = new_name

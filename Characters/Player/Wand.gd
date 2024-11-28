@@ -29,7 +29,7 @@ class Option:
 			else:
 				if not parameters[i].is_empty():
 					s = s.duplicate()
-					s.configure_using_parameter_collection(parameters[i], {})
+					s.configure_using_parameter_collection(parameters[i], s.basic_fixed_vars())
 				spells.append(s)
 		
 	func save_dict() -> Dictionary:
@@ -94,7 +94,7 @@ class Option:
 			if s.name != spell.name: continue
 			if not parameters[i].is_empty():
 				spells[i] = spell.duplicate()
-				spells[i].configure_using_parameter_collection(parameters[i], {})
+				spells[i].configure_using_parameter_collection(parameters[i], spells[i].basic_fixed_vars())
 			else:
 				spells[i] = spell
 			
@@ -311,7 +311,7 @@ func get_spell(opt: Option, book: MagicBook) -> Spell:
 					return s
 				else:
 					var ns := s.duplicate()
-					ns.configure_using_parameter_collection(picked_parameters, {})
+					ns.configure_using_parameter_collection(picked_parameters, ns.basic_fixed_vars())
 					return ns
 		return null
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
@@ -334,7 +334,7 @@ func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 					return s
 				else:
 					var ns := s.duplicate()
-					ns.configure_using_parameter_collection(picked_parameters, {})
+					ns.configure_using_parameter_collection(picked_parameters, ns.basic_fixed_vars())
 					return ns
 		return null
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:

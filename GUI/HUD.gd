@@ -135,7 +135,8 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -
 		MagicBook.DisallowSpellReason.DURATION:
 			show_notification(bbcode_error("'%s' requires T %.1f upgrade" % [spell.name, spell.duration]), 5)
 		MagicBook.DisallowSpellReason.RADIUS:
-			show_notification(bbcode_error("'%s' requires r %.1f upgrade" % [spell.name, spell.radius]), 5)
+			var r := spell.basic_fixed_vars()["r"] as float
+			show_notification(bbcode_error("'%s' requires r %.1f upgrade" % [spell.name, r]), 5)
 		MagicBook.DisallowSpellReason.ACTIVE:
 			show_notification(bbcode_error("'%s' is not active in magic book" % [spell.name]), 5)
 		# We don't disallow spells from being cast because of velocity. We just limit the velocity and notify the player.
