@@ -4,7 +4,7 @@ extends BiomeGenerator
 enum HFILStructuresKind {
 	NONE,
 	MUSHROOM_FIELD,
-	ENEMY_MIX,
+	ENEMY_MIX, SLIMY,
 	MUSH_ENEMIES, SNOT_ENEMIES, HOT_DRAGONS
 }
 
@@ -13,6 +13,7 @@ var HFIL_structure := {
 	HFILStructuresKind.MUSHROOM_FIELD: 10,
 	HFILStructuresKind.MUSH_ENEMIES: 0.1,
 	HFILStructuresKind.SNOT_ENEMIES: 0.05,
+	HFILStructuresKind.SLIMY: 0.025,
 	HFILStructuresKind.HOT_DRAGONS: 0.0125,
 	HFILStructuresKind.ENEMY_MIX: 0.0125,
 }
@@ -71,6 +72,26 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.SNOT_SPIKE: 1}, rng, spacing)
+				
+			HFILStructuresKind.SLIMY:
+				var pos := area[index]
+				for i in rng.randi_range(5, 15):
+					pop.spawn_foliage(World.Foliage.ROCK_EGG, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
+				
+				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 2: pop.fit(0.8, 0.5)}) as int
+				var spike_count := rng.randi_range(1, r)
+				var path := Pathway.new().random_points_in_disc(1, 0, spacing / 2.0, 0, spike_count, Easing.linear, rng)
+				path.apply_transform(T.translated(Vec3.xz(pos)))
+				for spike_pos in path.sample_points_xz(spike_count):
+					var p := pop.spawn_enemy(World.Enemy.SNOT_SPIKE, spike_pos, spacing)
+					if p != null:
+						result.append(p)
+						var subpath := Pathway.new().random_points_in_disc(1, 0, spacing, 0, rng.randi_range(2,3), Easing.linear, rng)
+						subpath.apply_transform(T.translated(Vec3.xz(spike_pos)))
+						for sp in subpath.sample_points_xz(rng.randi_range(2,3)):
+							var q := pop.spawn_enemy(World.Enemy.SNOT_BLOB, sp, spacing)
+							if q != null:
+								result.append(q)
 					
 			HFILStructuresKind.HOT_DRAGONS:
 				var pos := area[index]

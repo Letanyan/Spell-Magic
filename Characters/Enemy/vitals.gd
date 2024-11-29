@@ -139,16 +139,16 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool 
 # we assume this is called once per second everywhere
 func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](float, Spell.Element)
 	did_update_on_tick = false
-	did_update_on_tick = did_update_on_tick or freeze.update_per_tick() != 0.0
-	did_update_on_tick = did_update_on_tick or wetness.update_per_tick() != 0.0
-	did_update_on_tick = did_update_on_tick or burning.update_per_tick() != 0.0
-	did_update_on_tick = did_update_on_tick or stun.update_per_tick() != 0.0
+	did_update_on_tick = freeze.update_per_tick() != 0.0 or did_update_on_tick
+	did_update_on_tick = wetness.update_per_tick() != 0.0 or did_update_on_tick
+	did_update_on_tick = burning.update_per_tick() != 0.0 or did_update_on_tick
+	did_update_on_tick = stun.update_per_tick() != 0.0 or did_update_on_tick
 	var h := health.update_per_tick()
 	did_update_on_tick = did_update_on_tick or h != 0.0
 	var result: Array[Dictionary] = []
 	if h > 0.0:
 		result.append([{"dmg": h, "el": Spell.Element.VOID}])
-	did_update_on_tick = did_update_on_tick or mana.update_per_tick() != 0.0
+	did_update_on_tick = mana.update_per_tick() != 0.0 or did_update_on_tick
 	if burning.value > 0:
 		var burn_damage := int(burning.value * health.max_value * 0.05)
 		health.apply_ignoring_resistance(-burn_damage)

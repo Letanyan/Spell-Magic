@@ -39,6 +39,15 @@ static func project_point_onto_sphere(point: Vector3, radius: float, center: Vec
 	var P := point - center
 	var Q := radius / P.length() * P
 	return Q + center
+	
+static func look_at(p: Node3D, dir: Vector3) -> void:
+	if dir != Vector3.ZERO:
+		var origin := p.position
+		var target := p.position + dir * 100000
+		if Vector3.UP.cross((target - origin).normalized()).is_zero_approx():
+			p.look_at_from_position(origin, p.position + Vector3.UP, Vector3.BACK)
+		else:
+			p.look_at_from_position(origin, target)
 
 static func form_arc_in_circle(s: Vector3, e: Vector3, h: float, rng: RandomNumberGenerator = null) -> Segment:
 	var a := s.x

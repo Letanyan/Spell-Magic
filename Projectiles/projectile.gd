@@ -544,7 +544,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
-			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
+			Globals.look_at(self, velocity)
 		
 		Spell.Element.ROCK:
 			position = p
@@ -558,7 +558,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
-			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
+			Globals.look_at(self, velocity)
 			var biome := World.Biome.WATER
 			var world_radius := 10000.0
 			if origin_node is Player:
@@ -577,15 +577,14 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var source: GPUParticles3D = get_node("source_trail")
 			(source.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(source.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
-			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
+			Globals.look_at(self, velocity)
 			
 		Spell.Element.ICE:
 			position = p
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
-			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
-				
+			Globals.look_at(self, velocity)
 			
 		Spell.Element.ELECTRIC:
 			position = p
@@ -606,6 +605,7 @@ func update_spell(delta: float, vars: Dictionary) -> MagicBook.DisallowSpellReas
 	return MagicBook.DisallowSpellReason.VELOCITY if exceeds.data else MagicBook.DisallowSpellReason.NONE
 
 func stop_emitting() -> void:
+	# FIXME: reduce amount of audio sources
 	const AUDIO_FADE_OUT = 0.7
 	is_emitting = false
 	match spell.element:

@@ -93,6 +93,7 @@ func update(body: Node3D, delta: float) -> Dictionary:
 
 enum SpellVariableKind { FIXED, TIMED, BOMB }
 func spell_variables(result: Dictionary, _body: Node3D, variable_kind: SpellVariableKind, p: SpellBody, s: Spell) -> Dictionary:
+	# FIXME: perf
 	var prefix := ""
 	match variable_kind:
 		SpellVariableKind.TIMED: prefix = "t" # values at the current time

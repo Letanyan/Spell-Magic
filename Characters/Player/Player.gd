@@ -685,9 +685,7 @@ func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color
 	if projectile_indicators.has(body):
 		var mi := projectile_indicators[body] as Node3D
 		mi.scale = Vector3(pi_size, pi_size, pi_size)
-		if body.position != mi.position:
-			if not Vector3.UP.cross(body.position - mi.global_position).is_zero_approx():
-				mi.look_at(body.position)
+		Globals.look_at(mi, body.position)
 	else:
 		var mi: ProjectileIndicator
 		if projectile_indicator_store.is_empty():

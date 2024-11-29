@@ -8,18 +8,15 @@ var sequence_pattern: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
-var fire1 := GlobalData.magic_book.copy_spell("linear")
-var fire2 := GlobalData.magic_book.copy_spell("linear")
-var fire3 := GlobalData.magic_book.copy_spell("linear")
-var water_down1 := GlobalData.magic_book.copy_spell("top-down")
-var water_down2 := GlobalData.magic_book.copy_spell("top-down")
-var water_down3 := GlobalData.magic_book.copy_spell("top-down")
-var water_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
-var water_mine2 := GlobalData.magic_book.copy_spell("bomb")
-var water_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
-var fire_mine1 := GlobalData.magic_book.copy_spell("bomb-sphere-scatter")
-var fire_mine2 := GlobalData.magic_book.copy_spell("bomb")
-var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
+var water_spout1 := GlobalData.magic_book.copy_spell("plane-slice")
+var water_spout2 := GlobalData.magic_book.copy_spell("plane-slice")
+var water_spout3 := GlobalData.magic_book.copy_spell("plane-slice")
+var water_down1 := GlobalData.magic_book.copy_spell("plane-linear")
+var water_down2 := GlobalData.magic_book.copy_spell("plane-linear")
+var water_down3 := GlobalData.magic_book.copy_spell("plane-linear")
+var water_spiral1 := GlobalData.magic_book.copy_spell("plane-slice")
+var water_spiral2 := GlobalData.magic_book.copy_spell("plane-slice")
+var water_spiral3 := GlobalData.magic_book.copy_spell("plane-slice")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(18), mana(5), mana_regen(10), percep(1,4), atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
@@ -33,48 +30,74 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	none_pattern = AttackPatterns.none()
 	
-	fire1.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 10.0, power(10), radius(2), 1, 50, 50, 55)
-	fire2.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 8.0, power(12), radius(2), 1, 50, 50, 65)
-	fire3.configure({"s": atks(3,13), "d": "2"}, Spell.Element.FIRE, 6.0, power(18), radius(2), 1, 50, 50, 75)
-	water_down1.configure({"H": "10"}, Spell.Element.WATER, fit(15,1), power(8), radius(13), 1, 75, 25, 55)
-	water_down2.configure({"H": "20"}, Spell.Element.WATER, fit(20,2), power(10), radius(13), 1, 75, 50, 65)
-	water_down3.configure({"H": "30"}, Spell.Element.WATER, fit(25,3), power(12), radius(13), 1, 75, 75, 75)
-	water_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.WATER, fit(5, 20), power(5), radius(5), fiti(4, 15), 33, 66, 25)
-	water_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.WATER, fit(5, 15), power(9), radius(7), fiti(2, 8), 75, 120, 50)
-	water_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.WATER, fit(10, 20), power(15), radius(3), fiti(5, 10), 70, 180, 60)
-	fire_mine1.configure({"d": "1", "Rmin": "4", "Rmax": "8", "S":"1", "s":"0"}, Spell.Element.FIRE, fit(5, 20), power(5), radius(5), fiti(4, 15), 33, 66, 25)
-	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, fit(5, 15), power(9), radius(7), fiti(2, 8), 75, 120, 50)
-	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, fit(10, 20), power(15), radius(3), fiti(5, 10), 70, 180, 60)
+	water_spout1.configure({
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi", "c": "vec(0,0,0)"
+	}, Spell.Element.WATER, fit(4,8), power(10), radius(5), fiti(5, 20), 33, 99, ea(12))
+	water_spout1.follow = true
+	water_spout2.configure({
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi", "c": "vec(0,1,0)"
+	}, Spell.Element.WATER, fit(4,8), power(12), radius(5), fiti(5, 20), 66, 66, ea(15), water_spout1)
+	water_spout2.follow = true
+	water_spout2.chain_cast_kind = Spell.ChainCastKind.START
+	water_spout3.configure({
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi", "c": "vec(0,2,0)"
+	}, Spell.Element.WATER, fit(4,8), power(14), radius(5), fiti(5, 20), 99, 33, ea(18), water_spout2)
+	water_spout3.follow = true
+	water_spout3.chain_cast_kind = Spell.ChainCastKind.START
+	
+	water_down1.configure({
+		"d": "8", "s":atks(6,12), "R":fits(8,14), "off":"vec(0,1,0)", "dir":"vec(0,-1,0)", "a":"0", "c":"vec(0,0,0)"
+	}, Spell.Element.WATER, fit(4,8), power(10), radius(6), fiti(3,15), 40, 80, ea(13))
+	water_down1.follow = true
+	water_down2.configure({
+		"d": "8", "s":atks(7,13), "R":fits(6,12), "off":"vec(0,1,0)", "dir":"vec(0,-1,0)", "a":"0", "c":"vec(0,0,0)"
+	}, Spell.Element.WATER, fit(4,8), power(12), radius(5), fiti(3,12), 60, 100, ea(16), water_down1)
+	water_down2.follow = true
+	water_down2.chain_cast_kind = Spell.ChainCastKind.END
+	water_down3.configure({
+		"d": "8", "s":atks(8,14), "R":fits(4,10), "off":"vec(0,1,0)", "dir":"vec(0,-1,0)", "a":"0", "c":"vec(0,0,0)"
+	}, Spell.Element.WATER, fit(4,8), power(14), radius(4), fiti(3,9), 80, 120, ea(19), water_down2)
+	water_down3.follow = true
+	water_down3.chain_cast_kind = Spell.ChainCastKind.END
+	
+	water_spiral1.configure({
+		"d": "Br*2", "s": "0", "R":fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(6,12), "c": "vec(0,0,0)" 
+	}, Spell.Element.WATER, fit(5, 10), power(12), radius(5), fiti(3,15), 33, 99, ea(14))
+	water_spiral1.follow = true
+	water_spiral2.configure({
+		"d": "Br*2", "s": "0", "R":fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(7,14), "c": "vec(0,0,0)" 
+	}, Spell.Element.WATER, fit(5, 10), power(15), radius(4), fiti(3,15), 66, 122, ea(17), water_spiral1)
+	water_spiral2.follow = true
+	water_spiral2.chain_cast_kind = Spell.ChainCastKind.START
+	water_spiral3.configure({
+		"d": "Br*2", "s": "0", "R":fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(8,16), "c": "vec(0,0,0)" 
+	}, Spell.Element.WATER, fit(5, 10), power(17), radius(3), fiti(3,15), 99, 155, ea(20), water_spiral2)
+	water_spiral3.follow = true
+	water_spiral3.chain_cast_kind = Spell.ChainCastKind.START
 	
 	
 	random_pattern = AttackPatterns.new(
 		[
-			water_mine1,
-			water_mine2,
-			water_mine3,
-			fire_mine1,
-			fire_mine2,
-			fire_mine3,
+			water_spout1,
+			water_spout2,
+			water_spout3,
+			water_down1,
+			water_down2,
+			water_down3,
 		],
-		AttackPatterns.choose_from_distribution(fit(5, 1), [ 10, 5, 2 ], -1)
+		AttackPatterns.choose_from_distribution(fit(6,10), [ 12, 10, 8, 6, 4, 2 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(
 		[
-			fire1,
-			fire2,
-			fire3,
+			water_spiral1,
 			water_down1,
-			fire3,
-			fire2,
-			fire1,
+			water_spiral2,
 			water_down2,
-			fire2,
-			fire1,
-			fire3,
+			water_spiral3,
 			water_down3,
 		],
-		AttackPatterns.choose_in_sequence(fitas(0.3, [ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ]), -1)
+		AttackPatterns.choose_in_sequence(fita([4, 5, 4, 5, 4, 5], [8, 10, 8, 10, 8, 10]), -1)
 	)
 	
 	animation_map["attack"] = "Bite_Front"

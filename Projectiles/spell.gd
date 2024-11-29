@@ -555,8 +555,7 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	var next_pos := calculate_cartesian_point(fixed_vars)
 	fixed_vars["t"] = 0.0
 	var dir: Vector3 = next_pos - base_pos
-	if dir != Vector3.ZERO:
-		p.look_at_from_position(p.position, p.position + dir * 100000)
+	Globals.look_at(p, dir)
 	
 	return p
 		
