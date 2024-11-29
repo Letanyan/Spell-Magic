@@ -543,6 +543,7 @@ func _on_expressions_caret_changed() -> void:
 	selected_variables["y"] = []
 	selected_variables["z"] = []
 	selected_variables["D"] = []
+	selected_variables["r"] = []
 	var regex := RegEx.new()
 	regex.compile("(?<=\\b)" + selected + "(?=\\b)")
 	for find in regex.search_all(x_edit.text):
@@ -553,6 +554,8 @@ func _on_expressions_caret_changed() -> void:
 		(selected_variables["z"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
 	for find in regex.search_all(delay_edit.text):
 		(selected_variables["D"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
+	for find in regex.search_all(r_edit.text):
+		(selected_variables["r"] as Array).append(Vector2i(find.get_start(), find.get_end() - find.get_start()))
 	for line_number in expressions.get_line_count():
 		if line_number == selected_variables_origin_line:
 			continue
@@ -579,10 +582,21 @@ func _on_expressions_text_changed() -> void:
 	
 	if selected_variables_origin_line > -1 and selected_variables_origin_line < result.size() and not selected_variables.is_empty():
 		var new_word := result.keys()[selected_variables_origin_line] as String
-		x_edit.text = Globals.replace_ranges_in_string(x_edit.text, selected_variables["x"] as Array, new_word)
-		y_edit.text = Globals.replace_ranges_in_string(y_edit.text, selected_variables["y"] as Array, new_word)
-		z_edit.text = Globals.replace_ranges_in_string(z_edit.text, selected_variables["z"] as Array, new_word)
-		delay_edit.text = Globals.replace_ranges_in_string(delay_edit.text, selected_variables["D"] as Array, new_word)
+		if not (selected_variables["x"] as Array).is_empty():
+			x_edit.text = Globals.replace_ranges_in_string(x_edit.text, selected_variables["x"] as Array, new_word)
+			_on_x_text_changed(x_edit.text)
+		if not (selected_variables["y"] as Array).is_empty():
+			y_edit.text = Globals.replace_ranges_in_string(y_edit.text, selected_variables["y"] as Array, new_word)
+			_on_y_text_changed(y_edit.text)
+		if not (selected_variables["z"] as Array).is_empty():
+			z_edit.text = Globals.replace_ranges_in_string(z_edit.text, selected_variables["z"] as Array, new_word)
+			_on_z_text_changed(z_edit.text)
+		if not (selected_variables["D"] as Array).is_empty():
+			delay_edit.text = Globals.replace_ranges_in_string(delay_edit.text, selected_variables["D"] as Array, new_word)
+			_on_D_text_changed(delay_edit.text)
+		if not (selected_variables["r"] as Array).is_empty():
+			r_edit.text = Globals.replace_ranges_in_string(r_edit.text, selected_variables["r"] as Array, new_word)
+			_on_r_text_changed(r_edit.text)
 		for line_number in expressions.get_line_count():
 			if line_number == selected_variables_origin_line:
 				continue
@@ -599,14 +613,19 @@ func _on_expressions_text_changed() -> void:
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
 	
-	#for k: String in book.spells[current_index].expressions:
-		#var e: Expr = book.spells[current_index].expressions[k]
-		#if e.contains_variable(k):
-			#e.error = "Recursive variable definition"
-		#if e.error.length() > 0:
-			#errors_list["constant " + k] = e.error
-		#else:
-			#errors_list.erase("constant " + k)
+	for k: String in Spell.fixed_var_list:
+		errors_list.erase("warning: expression " + k)
+	
+	for k: String in book.spells[current_index].expressions:
+		var expr: Expr = book.spells[current_index].expressions[k]
+		if expr.contains_variable(k):
+			expr.error = "Recursive variable definition"
+		if Spell.fixed_var_list.has(k):
+			errors_list["warning: expression " + k] = "Overwrite of variable"
+		if expr.error.length() > 0:
+			errors_list["expression " + k] = expr.error
+		else:
+			errors_list.erase("expression " + k)
 	
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
@@ -683,14 +702,16 @@ func check_all_errors() -> void:
 			if not found:
 				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
 			
-	#for k: String in book.spells[current_index].expressions:
-		#var expr: Expr = book.spells[current_index].expressions[k]
-		#if expr.contains_variable(k):
-			#expr.error = "Recursive variable definition"
-		#if expr.error.length() > 0:
-			#errors_list["constant " + k] = expr.error
-		#else:
-			#errors_list.erase("constant " + k)
+	for k: String in book.spells[current_index].expressions:
+		var expr: Expr = book.spells[current_index].expressions[k]
+		if expr.contains_variable(k):
+			expr.error = "Recursive variable definition"
+		if Spell.fixed_var_list.has(k):
+			errors_list["warning: expression " + k] = "Overwrite of variable"
+		if expr.error.length() > 0:
+			errors_list["expression " + k] = expr.error
+		else:
+			errors_list.erase("expression " + k)
 			
 	if not errors_list.is_empty():
 		var last_error : String = errors_list.values()[errors_list.size() - 1]

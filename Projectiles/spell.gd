@@ -269,8 +269,8 @@ func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 func calculate_location(vars: Dictionary, only_delta: bool = false, velocity_exceeds_limit: Globals.Ref = null) -> Vector3:
 	var result := calculate_cartesian_point(vars)
 	
-	if vars.has("~old_pos") and not only_delta:
-		var old_pos := vars["~old_pos"] as Vector3
+	if vars.has("~~old_pos") and not only_delta:
+		var old_pos := vars["~~old_pos"] as Vector3
 		var frame_time := vars.get("~~frame_time", 0.0166667) as float
 		var velocity := (result - old_pos)
 		if not velocity.is_zero_approx():
@@ -549,10 +549,14 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
-	fixed_vars["t"] = 0.5
-	var dir: Vector3 = calculate_location(fixed_vars) - p.position
 	fixed_vars["t"] = 0.0
-	p.look_at_from_position(p.position, p.position + dir)
+	var base_pos := calculate_cartesian_point(fixed_vars)
+	fixed_vars["t"] = 0.016667
+	var next_pos := calculate_cartesian_point(fixed_vars)
+	fixed_vars["t"] = 0.0
+	var dir: Vector3 = next_pos - base_pos
+	if dir != Vector3.ZERO:
+		p.look_at_from_position(p.position, p.position + dir * 100000)
 	
 	return p
 		
@@ -567,6 +571,10 @@ func get_particles(fvars: Dictionary, exvars: Dictionary, overrides: Dictionary)
 		p.spell = self
 		result.append(p)
 	return result
+	
+const fixed_var_list = [
+	"pi", "N", "M", "C", "L", "T", "P", "CR", "CD", "x", "y", "z", "r", "n", "D",
+]
 	
 func basic_fixed_vars() -> Dictionary:
 	var fixed_vars := {}

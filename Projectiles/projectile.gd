@@ -542,7 +542,6 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.FIRE:
 			position = p
 			var particles: GPUParticles3D = get_node("source_trail")
-			(particles.process_material as ParticleProcessMaterial).direction = (velocity + Vector3.UP * 0.15).normalized()
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
 		
@@ -556,7 +555,6 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.WATER:
 			position = p
 			var particles: GPUParticles3D = get_node("source_trail")
-			(particles.process_material as ParticleProcessMaterial).direction = (velocity + Vector3.DOWN * 0.15).normalized()
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
 			var biome := World.Biome.WATER
