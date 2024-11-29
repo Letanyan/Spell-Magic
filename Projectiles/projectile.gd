@@ -544,6 +544,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
+			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
 		
 		Spell.Element.ROCK:
 			position = p
@@ -557,6 +558,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
+			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
 			var biome := World.Biome.WATER
 			var world_radius := 10000.0
 			if origin_node is Player:
@@ -575,28 +577,14 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var source: GPUParticles3D = get_node("source_trail")
 			(source.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(source.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
-			
-			var v := velocity.normalized()
-			if v != Vector3.ZERO:
-				if v == Vector3.UP:
-					v = Vector3(0.1, 0.9, 0.1).normalized()
-				var dir : Vector3 = global_position + v * 10
-				if not Vector3.UP.cross(dir - global_position).is_zero_approx():
-					look_at(dir)
+			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
 			
 		Spell.Element.ICE:
 			position = p
 			var particles: GPUParticles3D = get_node("source_trail")
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
 			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
-			
-			var v : Vector3 = velocity.normalized()
-			if v != Vector3.ZERO:
-				if v == Vector3.UP:
-					# FIXME: better up vector. find other places as well
-					v = Vector3(0.1, 0.9, 0.1).normalized()
-				var dir : Vector3 = global_position + v * 10
-				look_at(dir)
+			if velocity != Vector3.ZERO: look_at_from_position(position, position + velocity * 100000)
 				
 			
 		Spell.Element.ELECTRIC:
