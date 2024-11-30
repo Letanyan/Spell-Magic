@@ -249,6 +249,11 @@ func set_r(r_: String) -> void:
 	r = r_
 	r_expr = Expr.new(r)
 	
+func update_r() -> void:
+	var vars := basic_fixed_vars()
+	vars["r"] = 0.0
+	radius_cache = r_expr.compute(vars)
+	
 func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	var sphere := Vector3.ZERO
 	sphere.x = x_expr.compute_value(vars)
@@ -433,10 +438,11 @@ func find_chain_list(include_self: bool) -> PackedStringArray:
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
 	var basic_cost: float 
+	update_r()
 	if element == Element.VOID:
 		basic_cost = 0.0
 	else:
-		var radius := basic_fixed_vars()["r"] as float
+		var radius := radius_cache
 		var no_crit_hit := power / UpgradeSettings.LIMIT_P
 		var crit_hit := no_crit_hit * (1.0 + crit_dmg / 100.0)
 		var rate := clampf(crit_rate / 100.0, 0.0, 1.0)
@@ -461,6 +467,7 @@ func calculate_cooldown() -> float:
 		cooldown = basic_cost + chain_cost - mana_cost
 	if cooldown < 0.0:
 		cooldown = 0.0
+	
 	return cooldown
 	
 func actual_mana_cost() -> float:
@@ -599,7 +606,6 @@ func basic_fixed_vars() -> Dictionary:
 	fixed_vars["x"] = 0
 	fixed_vars["y"] = 1
 	fixed_vars["z"] = 2
-	radius_cache = r_expr.compute_value(fixed_vars)
 	fixed_vars["r"] = radius_cache
 	return fixed_vars
 	

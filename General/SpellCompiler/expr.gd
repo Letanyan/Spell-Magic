@@ -106,11 +106,7 @@ func compute_value(vars: Dictionary, display: bool = false) -> float:
 	# FIXME: perf
 	if not back.error.is_empty():
 		return 0.0
-	var result: Variant = back.compute(vars, GlobalData.game_settings.user_functions, display)
-	if result is Vector3:
-		return 0.0
-	else:
-		return result
+	return back.compute_value(vars, GlobalData.game_settings.user_functions, display)
 	
 #	var tape: PackedFloat64Array = [] 
 #	var tape_index := 0

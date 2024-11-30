@@ -608,6 +608,14 @@ func stop_emitting() -> void:
 	# FIXME: reduce amount of audio sources
 	const AUDIO_FADE_OUT = 0.7
 	is_emitting = false
+	print("--------------------------")
+	spell.x_expr.back.print_profiling()
+	spell.y_expr.back.print_profiling()
+	spell.z_expr.back.print_profiling()
+	for k: String in spell.expressions:
+		var e := spell.expressions[k] as Expr
+		print(k)
+		e.back.print_profiling()
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")

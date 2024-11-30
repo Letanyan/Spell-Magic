@@ -116,7 +116,7 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 	elif spell.power > settings.upgrade_settings.LIMIT_P:
 		return DisallowSpellReason.POWER
 		
-	var radius := spell.basic_fixed_vars()["r"] as float
+	var radius := spell.radius_cache
 	if radius > settings.upgrade_settings.max_r() + settings.upgrade_settings.buff_r:
 		return DisallowSpellReason.RADIUS
 	elif radius > settings.upgrade_settings.LIMIT_r:
