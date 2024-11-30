@@ -192,7 +192,7 @@ func call_with_parameter_collection_description() -> String:
 		result += v + "=" + expression_strings[v] + ","
 	return result.substr(0, result.length() - 1) + ")"
 	
-func configure_using_parameter_collection(parameters: Dictionary, vars: Dictionary) -> void:
+func configure_using_parameter_collection(parameters: Dictionary, vars: Vars) -> void:
 	var params := parameters.duplicate()
 	if params.has("element"):
 		element = Element.keys().find((params["element"] as String).to_upper()) as Element
@@ -251,10 +251,10 @@ func set_r(r_: String) -> void:
 	
 func update_r() -> void:
 	var vars := basic_fixed_vars()
-	vars["r"] = 0.0
+	vars.set_value(Vars.r, 0.0)
 	radius_cache = r_expr.compute(vars)
 	
-func calculate_cartesian_point(vars: Dictionary) -> Vector3:
+func calculate_cartesian_point(vars: Vars) -> Vector3:
 	var sphere := Vector3.ZERO
 	sphere.x = x_expr.compute_value(vars)
 	sphere.y = y_expr.compute_value(vars)
@@ -271,12 +271,12 @@ func calculate_cartesian_point(vars: Dictionary) -> Vector3:
 	return result
 	
 	
-func calculate_location(vars: Dictionary, only_delta: bool = false, velocity_exceeds_limit: Globals.Ref = null) -> Vector3:
+func calculate_location(vars: Vars, only_delta: bool = false, velocity_exceeds_limit: Globals.Ref = null) -> Vector3:
 	var result := calculate_cartesian_point(vars)
 	
-	if vars.has("~~old_pos") and not only_delta:
-		var old_pos := vars["~~old_pos"] as Vector3
-		var frame_time := vars.get("~~frame_time", 0.0166667) as float
+	if vars.has_vector(Vars.old_pos) and not only_delta:
+		var old_pos := vars.get_vector(Vars.old_pos)
+		var frame_time := vars.get_value(Vars.frame_time)
 		var velocity := (result - old_pos)
 		if not velocity.is_zero_approx():
 			var limit := (limit_v + buff_v) * frame_time
@@ -287,20 +287,21 @@ func calculate_location(vars: Dictionary, only_delta: bool = false, velocity_exc
 			result = temp
 		else:
 			result = old_pos
-		vars["~~old_pos"] = result
+		vars.set_vector(Vars.old_pos, result)
 	else:
-		vars["~~old_pos"] = result
+		vars.set_vector(Vars.old_pos, result)
 	
 	if not only_delta:
-		result += (vars["~~rel_pos"] if follow else vars["~~abs_pos"])
+		result += (vars.get_vector(Vars.rel_pos) if follow else vars.get_vector(Vars.abs_pos))
 	
 	return result
 	
-func approximate_distance_traveled_at_time(vars: Dictionary, time: float, samples: int = 29) -> float:
+func approximate_distance_traveled_at_time(vars: Vars, time: float, samples: int = 29) -> float:
 	var ft := Vector3.ZERO
 	var ftp := Vector3.ZERO
-	var temp_vars := vars.duplicate()
-	temp_vars["t"] = 0.0
+	var temp_vars := Vars.new()
+	temp_vars.copy_from(vars)
+	temp_vars.set_value(Vars.t, 0.0)
 	ftp = calculate_cartesian_point(temp_vars)
 	
 	var fixed_step_result := 0.0
@@ -310,7 +311,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	
 	# calculate distance 
 	while t <= time + step:
-		temp_vars["t"] = t
+		temp_vars.set_value(Vars.t, t)
 		ft = calculate_cartesian_point(temp_vars)
 		fixed_step_result += ftp.distance_to(ft)
 		t += step
@@ -319,7 +320,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	t = 0.0
 	step = time / 60.0 * randf_range(samples - 5, samples + 5)
 	while t <= time + step:
-		temp_vars["t"] = t
+		temp_vars.set_value(Vars.t, t)
 		ft = calculate_cartesian_point(temp_vars)
 		frame_step_result += ftp.distance_to(ft)
 		t += step
@@ -328,7 +329,7 @@ func approximate_distance_traveled_at_time(vars: Dictionary, time: float, sample
 	return (fixed_step_result + frame_step_result) / 2.0
 
 	
-func calculate_delay(vars: Dictionary) -> float:
+func calculate_delay(vars: Vars) -> float:
 	var result := clampf(d_expr.compute_value(vars), 0, UpgradeSettings.LIMIT_T)
 	return result
 	
@@ -403,27 +404,28 @@ func overwrite_expressions(mappings: Dictionary) -> void:
 				if expr.contains_variable(variable):
 					time_dependent_vars[k] = true
 	
-func compute_expressions(fvars: Dictionary, additional: Dictionary = {}, overrides: Dictionary = {}, only_time_dependent: bool = false) -> void:
-	var temp := {}
-	temp.merge(fvars)
-	temp.merge(additional)
+func compute_expressions(fvars: Vars, additional: Vars = null, only_time_dependent: bool = false) -> void:
+	var temp := Vars.new()
+	temp.copy_from(fvars)
+	if additional != null:
+		temp.merge(additional, false)
 	for k: String in (time_dependent_vars if only_time_dependent else expressions):
 		var e := expressions[k] as Expr
-		if overrides.has(k):
-			fvars[k] = overrides[k]
-			temp[k] = fvars[k]
-		elif e.contains_variable(k): # handle recursion by placing value in temp storage
+		if e.contains_variable(k): # handle recursion by placing value in temp storage
 			if fvars.has("~" + k):
-				temp[k] = fvars["~" + k]
-				fvars[k] = e.compute(temp)
-				temp[k] = fvars[k]
+				temp.set_raw(k, fvars.get_raw_now("~" + k))
+				var val: Variant = e.compute(temp)
+				fvars.set_raw(k, val)
+				temp.set_raw(k, val)
 			else:
-				fvars[k] = e.compute(temp)
-				temp[k] = fvars[k]
-				temp["~" + k] = fvars[k]
+				var val: Variant = e.compute(temp)
+				fvars.set_raw(k, val)
+				temp.set_raw(k, val)
+				temp.set_raw("~" + k, val)
 		else:
-			fvars[k] = e.compute(temp)
-			temp[k] = fvars[k]
+			var val: Variant = e.compute(temp)
+			fvars.set_raw(k, val)
+			temp.set_raw(k, val)
 			
 func find_chain_list(include_self: bool) -> PackedStringArray:
 	var result := PackedStringArray([])
@@ -501,22 +503,22 @@ const _void = preload("res://Projectiles/void.tscn")
 const turret = preload("res://Projectiles/turret/turret.tscn")
 const turret_mat = preload("res://Projectiles/turret/turret.tres")
 	
-func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dictionary) -> SpellBody:
-	var fixed_vars := {}
-	fixed_vars["rn0"] = randf()
-	fixed_vars["rn1"] = randf()
-	fixed_vars["rn2"] = randf()
-	fixed_vars["rn3"] = randf()
-	fixed_vars["rn4"] = randf()
-	fixed_vars["rn5"] = randf()
-	fixed_vars["rn6"] = randf()
-	fixed_vars["rn7"] = randf()
-	fixed_vars["rn8"] = randf()
-	fixed_vars["rn9"] = randf()
-	fixed_vars["n"] = float(n)
-	fixed_vars.merge(fvars, true)
-	compute_expressions(fixed_vars, {}, overrides)
-	fixed_vars["D"] = d_expr.compute_value(fixed_vars)
+func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
+	var fixed_vars := Vars.new()
+	fixed_vars.copy_from(fvars)
+	fixed_vars.set_value(Vars.rn0, randf())
+	fixed_vars.set_value(Vars.rn1, randf())
+	fixed_vars.set_value(Vars.rn2, randf())
+	fixed_vars.set_value(Vars.rn3, randf())
+	fixed_vars.set_value(Vars.rn4, randf())
+	fixed_vars.set_value(Vars.rn5, randf())
+	fixed_vars.set_value(Vars.rn6, randf())
+	fixed_vars.set_value(Vars.rn7, randf())
+	fixed_vars.set_value(Vars.rn8, randf())
+	fixed_vars.set_value(Vars.rn9, randf())
+	fixed_vars.set_value(Vars.n, float(n))
+	compute_expressions(fixed_vars)
+	fixed_vars.set_value(Vars.D, d_expr.compute_value(fixed_vars))
 	
 	
 	var p: SpellBody
@@ -531,18 +533,17 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 		_: p = fire.instantiate()
 			
 	p.fixed_vars = fixed_vars
-	p.expression_vars = {}
-	p.expression_vars.merge(exvars, true)
-	p.override_vars = overrides
-	compute_expressions(p.expression_vars, fixed_vars, p.override_vars)
+	p.expression_vars = Vars.new()
+	p.expression_vars.copy_from(exvars)
+	compute_expressions(p.expression_vars, fixed_vars)
 	p.spell = self
-	p.rotation_angle = clampf(fixed_vars.get("spinrate", NAN) as float, -2 * PI, 2 * PI)
+	p.rotation_angle = clampf(fixed_vars.get_value(Vars.spinrate), -2 * PI, 2 * PI)
 	p.position = calculate_location(fixed_vars)
 	
 	var nr := Vector3(1, 0.2 if element == Element.ICE else 1.0, 1).normalized()
-	var radius := fixed_vars["r"] as float
+	var radius := fixed_vars.get_value(Vars.r)
 	if fixed_vars.has("size"):
-		var temp_nr: Variant = fixed_vars["size"]
+		var temp_nr: Variant = fixed_vars.get_raw_now("size")
 		if temp_nr is Vector3:
 			nr = (temp_nr as Vector3).normalized() * radius
 		elif temp_nr is float or temp_nr is int:
@@ -556,23 +557,23 @@ func get_particle(n: int, fvars: Dictionary, exvars: Dictionary, overrides: Dict
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
-	fixed_vars["t"] = 0.0
+	fixed_vars.set_value(Vars.t, 0.0)
 	var base_pos := calculate_cartesian_point(fixed_vars)
-	fixed_vars["t"] = 0.016667
+	fixed_vars.set_value(Vars.t, 0.016667)
 	var next_pos := calculate_cartesian_point(fixed_vars)
-	fixed_vars["t"] = 0.0
+	fixed_vars.set_value(Vars.t, 0.0)
 	var dir: Vector3 = next_pos - base_pos
 	Globals.look_at(p, dir)
 	
 	return p
 		
-func get_particles(fvars: Dictionary, exvars: Dictionary, overrides: Dictionary) -> Array[SpellBody]:
+func get_particles(fvars: Vars, exvars: Vars) -> Array[SpellBody]:
 	var result: Array[SpellBody] = []
 	var fixed_vars := basic_fixed_vars()
 	charge = 0.0
 	fixed_vars.merge(fvars, true)
 	for i in range(count):
-		var p := get_particle(i, fixed_vars, exvars, overrides)
+		var p := get_particle(i, fixed_vars, exvars)
 		p.n = i
 		p.spell = self
 		result.append(p)
@@ -582,61 +583,61 @@ const fixed_var_list = [
 	"pi", "N", "M", "C", "L", "T", "P", "CR", "CD", "x", "y", "z", "r", "n", "D",
 ]
 	
-func basic_fixed_vars() -> Dictionary:
-	var fixed_vars := {}
-	fixed_vars["r0"] = randf()
-	fixed_vars["r1"] = randf()
-	fixed_vars["r2"] = randf()
-	fixed_vars["r3"] = randf()
-	fixed_vars["r4"] = randf()
-	fixed_vars["r5"] = randf()
-	fixed_vars["r6"] = randf()
-	fixed_vars["r7"] = randf()
-	fixed_vars["r8"] = randf()
-	fixed_vars["r9"] = randf()
-	fixed_vars["pi"] = PI
-	fixed_vars["N"] = float(count)
-	fixed_vars["M"] = mana_cost
-	fixed_vars["C"] = charge
-	fixed_vars["L"] = charge
-	fixed_vars["T"] = duration
-	fixed_vars["P"] = power
-	fixed_vars["CR"] = crit_rate
-	fixed_vars["CD"] = crit_dmg
-	fixed_vars["x"] = 0
-	fixed_vars["y"] = 1
-	fixed_vars["z"] = 2
-	fixed_vars["r"] = radius_cache
+func basic_fixed_vars() -> Vars:
+	var fixed_vars := Vars.new()
+	fixed_vars.set_value(Vars.r0, randf())
+	fixed_vars.set_value(Vars.r1, randf())
+	fixed_vars.set_value(Vars.r2, randf())
+	fixed_vars.set_value(Vars.r3, randf())
+	fixed_vars.set_value(Vars.r4, randf())
+	fixed_vars.set_value(Vars.r5, randf())
+	fixed_vars.set_value(Vars.r6, randf())
+	fixed_vars.set_value(Vars.r7, randf())
+	fixed_vars.set_value(Vars.r8, randf())
+	fixed_vars.set_value(Vars.r9, randf())
+	fixed_vars.set_value(Vars.pi, PI)
+	fixed_vars.set_value(Vars.N, float(count))
+	fixed_vars.set_value(Vars.M, mana_cost)
+	fixed_vars.set_value(Vars.C, charge)
+	fixed_vars.set_value(Vars.L, charge)
+	fixed_vars.set_value(Vars.T, duration)
+	fixed_vars.set_value(Vars.P, power)
+	fixed_vars.set_value(Vars.CR, crit_rate)
+	fixed_vars.set_value(Vars.CD, crit_dmg)
+	fixed_vars.set_value(Vars.x, 0)
+	fixed_vars.set_value(Vars.y, 1)
+	fixed_vars.set_value(Vars.z, 2)
+	fixed_vars.set_value(Vars.r, radius_cache)
 	return fixed_vars
 	
-func global_constant_variables() -> Dictionary:
+func global_constant_variables() -> Vars:
 	var result := basic_fixed_vars()
 	for key: String in expressions:
-		result[key] = (expressions[key] as Expr).compute(result)
+		result.set_raw(key, (expressions[key] as Expr).compute(result))
 	return result
 	
-func get_turret(n: int, fvars: Dictionary, overrides: Dictionary) -> Node3D:
-	var fixed_vars := {}
-	fixed_vars["rn0"] = randf()
-	fixed_vars["rn1"] = randf()
-	fixed_vars["rn2"] = randf()
-	fixed_vars["rn3"] = randf()
-	fixed_vars["rn4"] = randf()
-	fixed_vars["rn5"] = randf()
-	fixed_vars["rn6"] = randf()
-	fixed_vars["rn7"] = randf()
-	fixed_vars["rn8"] = randf()
-	fixed_vars["rn9"] = randf()
-	fixed_vars["n"] = float(n)
+func get_turret(n: int, fvars: Vars) -> Node3D:
+	var fixed_vars := Vars.new()
+	fixed_vars.set_value(Vars.rn0, randf())
+	fixed_vars.set_value(Vars.rn1, randf())
+	fixed_vars.set_value(Vars.rn2, randf())
+	fixed_vars.set_value(Vars.rn3, randf())
+	fixed_vars.set_value(Vars.rn4, randf())
+	fixed_vars.set_value(Vars.rn5, randf())
+	fixed_vars.set_value(Vars.rn6, randf())
+	fixed_vars.set_value(Vars.rn7, randf())
+	fixed_vars.set_value(Vars.rn8, randf())
+	fixed_vars.set_value(Vars.rn9, randf())
+	fixed_vars.set_value(Vars.n, float(n))
 	fixed_vars.merge(fvars, true)
-	compute_expressions(fixed_vars, {}, overrides)
-	fixed_vars["D"] = d_expr.compute(fixed_vars)
+	compute_expressions(fixed_vars)
+	fixed_vars.set_value(Vars.D, d_expr.compute_value(fixed_vars))
 	
 	var p := turret.instantiate() as Node3D
 			
 	p.position = calculate_location(fixed_vars)
 	
-	var radius := fixed_vars["r"] as float
+	var radius := fixed_vars.get_value(Vars.r)
 	var mesh: MeshInstance3D = p.get_node("outer") as MeshInstance3D
 	var ring: TorusMesh = mesh.mesh as TorusMesh
 	ring.inner_radius = radius
@@ -907,17 +908,18 @@ func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, 
 	var ft := Vector3.ZERO
 	var step := duration / samples
 	
-	var ps := get_particles(vars, {}, {})
+	var ps := get_particles(vars, null)
 	for p in ps:
 		var t := 0.0
 		var minv := Vector3(INF, INF, INF)
 		var maxv := Vector3(-INF, -INF, -INF)
 		var coords := PackedVector3Array([])
-		var temp_vars := p.fixed_vars.duplicate()
-		temp_vars["C"] = 5.0
+		var temp_vars := Vars.new()
+		temp_vars.copy_from(p.fixed_vars)
+		temp_vars.set_value(Vars.C, 5.0)
 		while t <= duration + step:
-			temp_vars["t"] = t
-			compute_expressions(temp_vars, {}, {}, true)
+			temp_vars.set_value(Vars.t, t)
+			compute_expressions(temp_vars, null, true)
 			ft = calculate_cartesian_point(temp_vars)
 			t += step
 			coords.append(ft)

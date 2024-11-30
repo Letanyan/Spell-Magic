@@ -165,6 +165,7 @@ func _on_player_moved(delta: float) -> void:
 	terrain_update_interval = 0
 	update_terrain()
 	# FIXME: problem when player.position == zero. why is it zero though? is reseting to zero some fallback when an error occurs?
+	# YES, when we can't find a min_height or max_height
 	var res := chunker.terrain_normal(player.position.x, player.position.z)
 	if not res.is_empty():
 		var h := (res["position"] as Vector3).y

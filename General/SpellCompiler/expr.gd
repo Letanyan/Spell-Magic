@@ -96,13 +96,13 @@ func operator_precedes(op1: Token, op2: Token) -> bool:
 	
 	return false
 
-func compute(vars: Dictionary, display: bool = false) -> Variant:
+func compute(vars: Vars, display: bool = false) -> Variant:
 	# FIXME: perf
 	if not back.error.is_empty():
 		return 0.0
 	return back.compute(vars, GlobalData.game_settings.user_functions, display)
 	
-func compute_value(vars: Dictionary, display: bool = false) -> float:
+func compute_value(vars: Vars, display: bool = false) -> float:
 	# FIXME: perf
 	if not back.error.is_empty():
 		return 0.0

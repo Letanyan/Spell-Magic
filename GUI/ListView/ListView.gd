@@ -47,7 +47,6 @@ func generate_items(full_update: bool) -> void:
 	else:
 		scroll_bar.visible = true
 	
-	# FIXME: update all items on size change
 	if items_shown < items.size():
 		for i in items.size() - items_shown:
 			var item := items.pop_back() as Control

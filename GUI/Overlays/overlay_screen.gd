@@ -24,9 +24,6 @@ func _ready() -> void:
 	title_label.text = title_text
 	subtitle_label.text = subtitle_text
 	confirm_label.text = confirm_text
-	
-	var result := Expr.new("cross(dir, vec(1, 0, 0)) * R * 0.5")
-	print(result.compute({"dir": Vector3(0, -1, 0), "R": "3"}))
 
 func _on_confirm_pressed() -> void:
 	confirmed.emit()

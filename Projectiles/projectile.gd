@@ -23,9 +23,8 @@ var caster_vitals: Vitals
 var spell_caster: SpellCaster
 var on_hit_casts := {}
 
-var fixed_vars: Dictionary
-var expression_vars: Dictionary
-var override_vars: Dictionary
+var fixed_vars: Vars
+var expression_vars: Vars
 
 var to_remove := false
 var origin_node: Node3D = null
@@ -493,11 +492,11 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 #			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
 			
 
-func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
-	var next_pos : Vector3 = p - (vars["~~rel_pos"] if spell.follow else vars["~~abs_pos"])
+func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
+	var next_pos : Vector3 = p - (vars.get_vector(Vars.rel_pos) if spell.follow else vars.get_vector(Vars.abs_pos))
 	var velocity_maintained_distance := velocity
 	if started:
-		var fr := vars.get("~~frame_time", 0.0166667) as float
+		var fr := vars.get_value(Vars.frame_time)
 		old_velocity = velocity
 		velocity_maintained_distance = (next_pos - old_pos) / fr
 		if spell.element == Spell.Element.ROCK:
@@ -551,7 +550,7 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 			var rot_axis := Vector3.UP.cross(velocity).normalized()
 			var rot_ang := Vector3.UP.angle_to(velocity) if is_nan(rotation_angle) else rotation_angle
 			if rot_axis and rot_ang:
-				rotate(rot_axis, rot_ang * vars.get("~~frame_time", 0.0166667) as float)
+				rotate(rot_axis, rot_ang * vars.get_value(Vars.frame_time))
 				
 		Spell.Element.WATER:
 			position = p
@@ -592,13 +591,13 @@ func update_movement(p: Vector3, instance: bool, vars: Dictionary) -> void:
 		Spell.Element.VOID:
 			position = p
 			
-func update_spell(delta: float, vars: Dictionary) -> MagicBook.DisallowSpellReason:
+func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 	if not is_active():
 		return MagicBook.DisallowSpellReason.NONE
 	time_stamp += delta
-	fixed_vars["t"] = time_stamp
-	vars["~~frame_time"] = delta
-	spell.compute_expressions(vars, expression_vars, override_vars, true)
+	fixed_vars.set_value(Vars.t, time_stamp)
+	vars.set_value(Vars.frame_time, delta)
+	spell.compute_expressions(vars, expression_vars, true)
 	var exceeds := Globals.Ref.new(false)
 	var p := spell.calculate_location(vars, false, exceeds)
 	update_movement(p, false, vars)
