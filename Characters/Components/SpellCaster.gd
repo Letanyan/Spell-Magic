@@ -7,10 +7,6 @@ var entity: Entity
 var particles: Array[SpellBody] = []
 var ignore_mana_cost: bool
 
-var tracking_node: Dictionary = {} # [String]Node3D
-var tracking_position: Dictionary = {} # [String]Vector3
-var tracking_offset: Dictionary = {} # [String]Vector3
-
 var complexity_tracker := {} ## [int]{count: float, mean: float, M2: float}
 
 func _init(o: Node3D, e: Entity) -> void:
@@ -19,6 +15,7 @@ func _init(o: Node3D, e: Entity) -> void:
 	ignore_mana_cost = true
 	
 func update(body: Node3D, delta: float) -> Dictionary:
+	#FIXME: perf: dynamic update for particles based on distance from player and possibly more criteria.
 	var should_remove := []
 	var should_halt := []
 	var limit_reasons := {}
@@ -31,7 +28,7 @@ func update(body: Node3D, delta: float) -> Dictionary:
 		if p.is_active() and not p.has_expired():
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
-				tracking_offset[p.name] = get_spell_tracking_offset(p.spell, p.fixed_vars)
+				p.tracking_offset = get_spell_tracking_offset(p.spell, p.fixed_vars)
 			var reason := p.update_spell(delta, p.fixed_vars)
 			if reason != MagicBook.DisallowSpellReason.NONE:
 				limit_reasons[p.spell] = reason
@@ -48,7 +45,6 @@ func update(body: Node3D, delta: float) -> Dictionary:
 			if p.is_emitting and p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
 				can_remove = false
 				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
-			tracking_node.erase(p.name)
 			if can_remove:
 				should_remove.append(i)
 			elif p.is_emitting:
@@ -90,50 +86,30 @@ func update(body: Node3D, delta: float) -> Dictionary:
 				
 	return limit_reasons
 		
-
 enum SpellVariableKind { FIXED, TIMED, BOMB }
 func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKind, p: SpellBody, s: Spell) -> void:
-	# FIXME: perf
-	var prefix := ""
-	var _C := Vars.C
-	var _uvw := Vector3i.ZERO
-	var _ruvw := Vector3i.ZERO
-	var _UVW := Vector3i.ZERO
-	var _rUVW := Vector3i.ZERO
-	var _ijk := Vector3i.ZERO
-	var _rijk := Vector3i.ZERO
-	var _IJK := Vector3i.ZERO
-	var _rIJK := Vector3i.ZERO
-	var __uvw := Vars.uvw
-	var __ruvw := Vars.ruvw
-	var __UVW := Vars.UVW
-	var __rUVW := Vars.rUVW
-	var __ijk := Vars.ijk
-	var __rijk := Vars.rijk
-	var __IJK := Vars.IJK
-	var __rIJK := Vars.rIJK
+	var _C := Vars.tC
+	var _uvw := Vector3i(Vars.tu, Vars.tv, Vars.tw)
+	var _ruvw := Vector3i(Vars.tru, Vars.trv, Vars.trw)
+	var _UVW := Vector3i(Vars.tU, Vars.tV, Vars.tW)
+	var _rUVW := Vector3i(Vars.trU, Vars.trV, Vars.trW)
+	var _ijk := Vector3i(Vars.ti, Vars.tj, Vars.tk)
+	var _rijk := Vector3i(Vars.tri, Vars.trj, Vars.trk)
+	var _IJK := Vector3i(Vars.tI, Vars.tJ, Vars.tK)
+	var _rIJK := Vector3i(Vars.trI, Vars.trJ, Vars.trK)
+	var __uvw := Vars.tuvw
+	var __ruvw := Vars.truvw
+	var __UVW := Vars.tUVW
+	var __rUVW := Vars.trUVW
+	var __ijk := Vars.tijk
+	var __rijk := Vars.trijk
+	var __IJK := Vars.tIJK
+	var __rIJK := Vars.trIJK
+	var is_timed := false
 	match variable_kind:
-		SpellVariableKind.TIMED: 
-			prefix = "t" # values at the current time
-			_C = Vars.tC
-			_uvw = Vector3i(Vars.tu, Vars.tv, Vars.tw)
-			_ruvw = Vector3i(Vars.tru, Vars.trv, Vars.trw)
-			_UVW = Vector3i(Vars.tU, Vars.tV, Vars.tW)
-			_rUVW = Vector3i(Vars.trU, Vars.trV, Vars.trW)
-			_ijk = Vector3i(Vars.ti, Vars.tj, Vars.tk)
-			_rijk = Vector3i(Vars.tri, Vars.trj, Vars.trk)
-			_IJK = Vector3i(Vars.tI, Vars.tJ, Vars.tK)
-			_rIJK = Vector3i(Vars.trI, Vars.trJ, Vars.trK)
-			__uvw = Vars.tuvw
-			__ruvw = Vars.truvw
-			__UVW = Vars.tUVW
-			__rUVW = Vars.trUVW
-			__ijk = Vars.tijk
-			__rijk = Vars.trijk
-			__IJK = Vars.tIJK
-			__rIJK = Vars.trIJK
-		SpellVariableKind.BOMB: 
-			prefix = "T" # values after projectile delay
+		SpellVariableKind.TIMED: # values at the current time
+			is_timed = true
+		SpellVariableKind.BOMB: # values after projectile delay
 			_C = Vars.TC
 			_uvw = Vector3i(Vars.Tu, Vars.Tv, Vars.Tw)
 			_ruvw = Vector3i(Vars.Tru, Vars.Trv, Vars.Trw)
@@ -151,8 +127,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			__rijk = Vars.Trijk
 			__IJK = Vars.TIJK
 			__rIJK = Vars.TrIJK
-		SpellVariableKind.FIXED: 
-			prefix = "" # values when the spell is cast
+		SpellVariableKind.FIXED: # values when the spell is cast
 			_uvw = Vector3i(Vars.u, Vars.v, Vars.w)
 			_ruvw = Vector3i(Vars.ru, Vars.rv, Vars.rw)
 			_UVW = Vector3i(Vars.U, Vars.V, Vars.W)
@@ -161,121 +136,158 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			_rijk = Vector3i(Vars.ri, Vars.rj, Vars.rk)
 			_IJK = Vector3i(Vars.I, Vars.J, Vars.K)
 			_rIJK = Vector3i(Vars.rI, Vars.rJ, Vars.rK)
-
-	var cdir := Vector3.ZERO
-	var track := Vector3.ZERO # direction to enemy that was hit by raycast 
-	match entity:
-		Entity.PLAYER:
-			var body := _body as Player
-			var port := body.get_viewport()
-			var pos := port.get_visible_rect().size / 2.0
-			cdir = port.get_camera_3d().project_ray_normal(pos)
-			track = get_direction_to_tracking(body, p, cdir)
-			result.set_value(Vars.l, 100)
-			result.set_value(Vars.fl, 1.0)
-			result.set_vector(Vars.Bxyz, body.bounds)
-			result.set_value(Vars.Bx, body.bounds.x)
-			result.set_value(Vars.By, body.bounds.y)
-			result.set_value(Vars.Bz, body.bounds.z)
-			result.set_value(Vars.Br, sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2))
-			
-		Entity.ENEMY:
+			__uvw = Vars.uvw
+			__ruvw = Vars.ruvw
+			__UVW = Vars.UVW
+			__rUVW = Vars.rUVW
+			__ijk = Vars.ijk
+			__rijk = Vars.rijk
+			__IJK = Vars.IJK
+			__rIJK = Vars.rIJK
+	
+	
+	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.C] != 0:
+		if entity == Entity.ENEMY:
 			var body := _body as Enemy
-			result[prefix + "C"] = (body as Enemy).player.global_position.distance_to(body.global_position)
-			cdir = ((body as Enemy).player.global_position - body.global_position).normalized() # direction to player
-			result.set_value(Vars.l, body.level)
-			result.set_value(Vars.fl, body.level / 100.0)
-			result.set_vector(Vars.Bxyz, body.bounds)
-			result.set_value(Vars.Bx, body.bounds.x)
-			result.set_value(Vars.By, body.bounds.y)
-			result.set_value(Vars.Bz, body.bounds.z)
-			result.set_value(Vars.Br, sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2))
-			
-		Entity.PROJECTILE:
-			var body := _body as SpellBody
-			#cdir = -body.velocity.normalized()
-			var port := body.get_viewport()
-			var pos := port.get_visible_rect().size / 2.0
-			cdir = port.get_camera_3d().project_ray_normal(pos)
-			if p != null:
-				var hit_on := (body.position - p.position).normalized()
-				track = get_direction_to_tracking(body, p, hit_on)
-			if s.element == Spell.Element.ROCK:
-				result.set_vector(Vars.Bxyz, body.most_recent_radius)
-				result.set_value(Vars.Bx, body.most_recent_radius.x)
-				result.set_value(Vars.By, body.most_recent_radius.y)
-				result.set_value(Vars.Bz, body.most_recent_radius.z)
-				result.set_value(Vars.Br, maxf(body.most_recent_radius.x, maxf(body.most_recent_radius.y, body.most_recent_radius.z)))
-			elif s.element == Spell.Element.ICE:
-				var rl := body.most_recent_radius.length()
-				result.set_vector(Vars.Bxyz, Vector3(rl, 0.2, rl))
-				result.set_value(Vars.Bx, rl)
-				result.set_value(Vars.By, 0.2)
-				result.set_value(Vars.Bz, rl)
-				result.set_value(Vars.Br, maxf(rl, 0.2))
-			else:
-				var rl := body.most_recent_radius.length()
-				result.set_vector(Vars.Bxyz, Vector3(rl, rl, rl))
-				result.set_value(Vars.Bx, rl)
-				result.set_value(Vars.By, rl)
-				result.set_value(Vars.Bz, rl)
-				result.set_value(Vars.Br, rl)
-				
-		Entity.TARGET:
+			result.set_value(_C, (body as Enemy).player.global_position.distance_to(body.global_position))
+		elif entity == Entity.TARGET:
 			var body := _body as TargetShape
 			var pos := body.get_caster_target_position()
 			result.set_value(_C, body.caster_position.distance_to(pos))
-			cdir = (pos - body.caster_position).normalized() # direction to player
-			result.set_vector(Vars.Bxyz, body.bounds)
-			result.set_value(Vars.Bx, body.bounds.x)
-			result.set_value(Vars.By, body.bounds.y)
-			result.set_value(Vars.Bz, body.bounds.z)
-			result.set_value(Vars.Br, maxf(body.bounds.x, maxf(body.bounds.y, body.bounds.z)))
 	
-	# direction to camera
-	result.set_vector(__uvw, cdir)
-	result.set_value(_uvw.x, cdir.x)
-	result.set_value(_uvw.y, cdir.y)
-	result.set_value(_uvw.z, cdir.z)
-	var ruvw := Vector3(Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
-	result.set_vector(__ruvw, ruvw)
-	result.set_value(_ruvw.x, ruvw.x)
-	result.set_value(_ruvw.y, ruvw.y)
-	result.set_value(_ruvw.z, ruvw.z)
-	
-	
-	# direction to homing target
-	result.set_vector(__UVW, track)
-	result.set_value(_UVW.x, track.x)
-	result.set_value(_UVW.y, track.y)
-	result.set_value(_UVW.z, track.z)
-	var rUVW := Vector3(Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(track.x, 0, track.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
-	result.set_vector(__rUVW, rUVW)
-	result.set_value(_rUVW.x, rUVW.x)
-	result.set_value(_rUVW.y, rUVW.y)
-	result.set_value(_rUVW.z, rUVW.z)
-	
-	var c := Vector3.ZERO # character facing direction
-	match entity:
-		Entity.PLAYER:
-			c = (_body as CharacterBody).velocity.normalized()
-		Entity.ENEMY:
-			c = (_body as CharacterBody).velocity.normalized()
-		Entity.PROJECTILE:
-			c = (_body as SpellBody).velocity.normalized()
-		Entity.TARGET:
-			c = cdir
-			
-	result.set_vector(__ijk, c)
-	result.set_value(_ijk.x, c.x)
-	result.set_value(_ijk.y, c.y)
-	result.set_value(_ijk.z, c.z)
-	var rijk := Vector3(Vector3(c.x, 0, c.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), c.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(c.x, 0, c.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
-	result.set_vector(__rijk, rijk)
-	result.set_value(_rijk.x, rijk.x)
-	result.set_value(_rijk.y, rijk.y)
-	result.set_value(_rijk.z, rijk.z)
+	var cdir := Vector3.ZERO
+	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.uvw] != 0 or s.variable_update_set[Spell.VariableUpdateSet.ruvw] != 0:
+		match entity:
+			Entity.PLAYER:
+				var body := _body as Player
+				var port := body.get_viewport()
+				var pos := port.get_visible_rect().size / 2.0
+				cdir = port.get_camera_3d().project_ray_normal(pos)
+				if variable_kind == SpellVariableKind.FIXED:
+					result.set_value(Vars.l, 100)
+					result.set_value(Vars.fl, 1.0)
+					result.set_vector(Vars.Bxyz, body.bounds)
+					result.set_value(Vars.Bx, body.bounds.x)
+					result.set_value(Vars.By, body.bounds.y)
+					result.set_value(Vars.Bz, body.bounds.z)
+					result.set_value(Vars.Br, sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2))
+					
+			Entity.ENEMY:
+				var body := _body as Enemy
+				result.set_value(_C, (body as Enemy).player.global_position.distance_to(body.global_position))
+				cdir = ((body as Enemy).player.global_position - body.global_position).normalized() # direction to player
+				if variable_kind == SpellVariableKind.FIXED:
+					result.set_value(Vars.l, body.level)
+					result.set_value(Vars.fl, body.level / 100.0)
+					result.set_vector(Vars.Bxyz, body.bounds)
+					result.set_value(Vars.Bx, body.bounds.x)
+					result.set_value(Vars.By, body.bounds.y)
+					result.set_value(Vars.Bz, body.bounds.z)
+					result.set_value(Vars.Br, sqrt((body.bounds.x / 2) ** 2 + (body.bounds.z / 2) ** 2))
+					
+			Entity.PROJECTILE:
+				var body := _body as SpellBody
+				#cdir = -body.velocity.normalized()
+				var port := body.get_viewport()
+				var pos := port.get_visible_rect().size / 2.0
+				cdir = port.get_camera_3d().project_ray_normal(pos)
+				if variable_kind == SpellVariableKind.FIXED:
+					if s.element == Spell.Element.ROCK:
+						result.set_vector(Vars.Bxyz, body.most_recent_radius)
+						result.set_value(Vars.Bx, body.most_recent_radius.x)
+						result.set_value(Vars.By, body.most_recent_radius.y)
+						result.set_value(Vars.Bz, body.most_recent_radius.z)
+						result.set_value(Vars.Br, maxf(body.most_recent_radius.x, maxf(body.most_recent_radius.y, body.most_recent_radius.z)))
+					elif s.element == Spell.Element.ICE:
+						var rl := body.most_recent_radius.length()
+						result.set_vector(Vars.Bxyz, Vector3(rl, 0.2, rl))
+						result.set_value(Vars.Bx, rl)
+						result.set_value(Vars.By, 0.2)
+						result.set_value(Vars.Bz, rl)
+						result.set_value(Vars.Br, maxf(rl, 0.2))
+					else:
+						var rl := body.most_recent_radius.length()
+						result.set_vector(Vars.Bxyz, Vector3(rl, rl, rl))
+						result.set_value(Vars.Bx, rl)
+						result.set_value(Vars.By, rl)
+						result.set_value(Vars.Bz, rl)
+						result.set_value(Vars.Br, rl)
+						
+			Entity.TARGET:
+				var body := _body as TargetShape
+				var pos := body.get_caster_target_position()
+				cdir = (pos - body.caster_position).normalized() # direction to player
+				if variable_kind == SpellVariableKind.FIXED:
+					result.set_vector(Vars.Bxyz, body.bounds)
+					result.set_value(Vars.Bx, body.bounds.x)
+					result.set_value(Vars.By, body.bounds.y)
+					result.set_value(Vars.Bz, body.bounds.z)
+					result.set_value(Vars.Br, maxf(body.bounds.x, maxf(body.bounds.y, body.bounds.z)))
 		
+		# direction to camera
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.uvw] != 0:
+			result.set_vector(__uvw, cdir)
+			result.set_value(_uvw.x, cdir.x)
+			result.set_value(_uvw.y, cdir.y)
+			result.set_value(_uvw.z, cdir.z)
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.ruvw] != 0:
+			var ruvw := Vector3(Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+			result.set_vector(__ruvw, ruvw)
+			result.set_value(_ruvw.x, ruvw.x)
+			result.set_value(_ruvw.y, ruvw.y)
+			result.set_value(_ruvw.z, ruvw.z)
+				
+	var track := Vector3.ZERO
+	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.UVW] != 0 or s.variable_update_set[Spell.VariableUpdateSet.rUVW] != 0:
+		match entity:
+			Entity.PLAYER:
+				var body := _body as Player
+				track = get_direction_to_tracking(body, p, cdir)
+			Entity.PROJECTILE:
+				if p != null:
+					var body := _body as SpellBody
+					var hit_on := (body.position - p.position).normalized()
+					track = get_direction_to_tracking(body, p, hit_on)
+				
+		# direction to homing target	
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.UVW] != 0:
+			result.set_vector(__UVW, track)
+			result.set_value(_UVW.x, track.x)
+			result.set_value(_UVW.y, track.y)
+			result.set_value(_UVW.z, track.z)
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.rUVW] != 0:
+			var rUVW := Vector3(Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(track.x, 0, track.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+			result.set_vector(__rUVW, rUVW)
+			result.set_value(_rUVW.x, rUVW.x)
+			result.set_value(_rUVW.y, rUVW.y)
+			result.set_value(_rUVW.z, rUVW.z)
+	
+	
+	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.ijk] != 0 or s.variable_update_set[Spell.VariableUpdateSet.rijk] != 0:
+		var c := Vector3.ZERO # character facing direction
+		match entity:
+			Entity.PLAYER:
+				c = (_body as CharacterBody).velocity.normalized()
+			Entity.ENEMY:
+				c = (_body as CharacterBody).velocity.normalized()
+			Entity.PROJECTILE:
+				c = (_body as SpellBody).velocity.normalized()
+			Entity.TARGET:
+				c = cdir
+		var cxz := Vector3(c.x, 0, c.z)
+				
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.ijk] != 0:
+			result.set_vector(__ijk, c)
+			result.set_value(_ijk.x, c.x)
+			result.set_value(_ijk.y, c.y)
+			result.set_value(_ijk.z, c.z)
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.rijk] != 0:
+			var rijk := Vector3(cxz.signed_angle_to(Vector3.RIGHT, Vector3.UP), c.signed_angle_to(Vector3.UP, Vector3.UP), cxz.signed_angle_to(Vector3.BACK, Vector3.UP))
+			result.set_vector(__rijk, rijk)
+			result.set_value(_rijk.x, rijk.x)
+			result.set_value(_rijk.y, rijk.y)
+			result.set_value(_rijk.z, rijk.z)
+	
 	
 	if s.player_is_origin:
 		if variable_kind == SpellVariableKind.FIXED:
@@ -283,7 +295,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 				result.set_vector(Vars.abs_pos, Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position()))
 			else:
 				result.set_vector(Vars.abs_pos, _body.position)
-		elif variable_kind == SpellVariableKind.TIMED:
+		elif s.follow and variable_kind == SpellVariableKind.TIMED:
 			if entity == Entity.PLAYER or entity == Entity.ENEMY:
 				result.set_vector(Vars.rel_pos, Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position()))
 			else:
@@ -295,25 +307,26 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			var dist: SpringArm3D = _body.get_node("./CamPivot/Arm")
 			if variable_kind == SpellVariableKind.FIXED:
 				result.set_vector(Vars.abs_pos, port.get_camera_3d().project_position(pos, dist.spring_length))
-			elif variable_kind == SpellVariableKind.TIMED:
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
 				result.set_vector(Vars.rel_pos, port.get_camera_3d().project_position(pos, dist.spring_length))
 		elif entity == Entity.ENEMY:
 			if variable_kind == SpellVariableKind.FIXED:
 				result.set_vector(Vars.abs_pos, _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4)
-			elif variable_kind == SpellVariableKind.TIMED:
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
 				result.set_vector(Vars.rel_pos, _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4)
 		elif entity == Entity.PROJECTILE:
 			if variable_kind == SpellVariableKind.FIXED:
 				result.set_vector(Vars.abs_pos, _body.position + cdir)
-			elif variable_kind == SpellVariableKind.TIMED:
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
 				result.set_vector(Vars.rel_pos, _body.position + cdir)
 		elif entity == Entity.TARGET:
 			if variable_kind == SpellVariableKind.FIXED:
 				result.set_vector(Vars.abs_pos, (_body as TargetShape).caster_position + cdir)
-			elif variable_kind == SpellVariableKind.TIMED:
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
 				result.set_vector(Vars.rel_pos, (_body as TargetShape).caster_position + cdir)
 	
-	if p != null: # direction from character to spell
+	
+	if p != null and (not is_timed or s.variable_update_set[Spell.VariableUpdateSet.IJK] != 0 or s.variable_update_set[Spell.VariableUpdateSet.rIJK] != 0): # direction from character to spell
 		var old_origin := Vector3(result.get_value(_IJK.x), result.get_value(_IJK.y), result.get_value(_IJK.z))
 		var origin: Vector3
 		if entity == Entity.TARGET:
@@ -321,36 +334,32 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 		else:
 			origin = old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
 		
-		result.set_vector(__IJK, origin)
-		result.set_value(_IJK.x, origin.x)
-		result.set_value(_IJK.y, origin.y)
-		result.set_value(_IJK.z, origin.z)
-		var rIJK := Vector3(Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
-		result.set_vector(__rIJK, rIJK)
-		result.set_value(_rIJK.x, rIJK.x)
-		result.set_value(_rIJK.y, rIJK.y)
-		result.set_value(_rIJK.z, rIJK.z)
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.IJK] != 0:
+			result.set_vector(__IJK, origin)
+			result.set_value(_IJK.x, origin.x)
+			result.set_value(_IJK.y, origin.y)
+			result.set_value(_IJK.z, origin.z)
+		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.rIJK] != 0:
+			var rIJK := Vector3(Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
+			result.set_vector(__rIJK, rIJK)
+			result.set_value(_rIJK.x, rIJK.x)
+			result.set_value(_rIJK.y, rIJK.y)
+			result.set_value(_rIJK.z, rIJK.z)
 	
 func get_direction_to_tracking(body: Node3D, p: SpellBody, default: Vector3) -> Vector3:
-	if p == null:
+	if p == null or p.tracking_target == null:
 		return default
-	if tracking_node == null:
+		
+	var t: Node3D = p.tracking_target
+	if !p.is_inside_tree() or !t.is_inside_tree():
 		return default
-	else:
-		var t: Variant = tracking_node.get(p.name, null)
-		var position := tracking_position.get(p.name, Vector3.ZERO) as Vector3
-		var offset := tracking_offset.get(p.name, Vector3.ZERO) as Vector3
-		if t == null or !p.is_inside_tree():
-			return default
-		if t is Node3D and (t as Node3D).is_inside_tree():
-			var vec: Vector3 = (((t as Node3D).global_position + offset) - p.global_position).normalized()
-			var dir: Vector3 = position.lerp(vec, 0.0166667).normalized()
-			tracking_position[p.name] = dir
-			return dir
-		elif t is Vector3:
-			return t
-		else:
-			return default
+		
+	var position := p.tracking_position
+	var offset := p.tracking_offset
+	var vec: Vector3 = ((t.position + offset) - p.position).normalized()
+	var dir: Vector3 = position.lerp(vec, 0.0166667).normalized()
+	p.tracking_position = dir
+	return dir
 			
 	
 func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Vars:
@@ -359,14 +368,14 @@ func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Vars:
 	spell_variables(result, body, SpellVariableKind.TIMED, p, spell)
 	return result
 
-func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Variant = null, inherited_vars: Vars = null) -> MagicBook.DisallowSpellReason:
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Vars = null) -> MagicBook.DisallowSpellReason:
 	if vitals != null:
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
 			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
 		else:
 			return MagicBook.DisallowSpellReason.MANA
 			
-	var node_to_track: Variant = null
+	var node_to_track: Node3D = null
 	var cdir := Vector3.ZERO
 	if entity == Entity.PLAYER:
 		var port := body.get_viewport()
@@ -378,8 +387,6 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		elif body is SpellBody:
 			#node_to_track = GlobalData.nav.get_ray_intersection((body as SpellBody).get_collision_object(), coord, coord + cdir * 500)
 			node_to_track = Navigator.get_ray_intersection_from_spell_body((body as SpellBody), coord, coord + cdir * 500)
-		if node_to_track == null:
-			node_to_track = cdir
 	elif entity == Entity.PROJECTILE:
 		node_to_track = target
 			
@@ -409,12 +416,11 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		p.name += str(randi())
 		p.origin_node = origin_node
 		p.tracking_target = node_to_track
+		p.tracking_position = cdir
+		p.tracking_offset = spell_offset
 		p.caster_vitals = vitals
 		p.complexity_id = cid
 		particles.append(p)
-		tracking_node[p.name] = node_to_track
-		tracking_position[p.name] = cdir
-		tracking_offset[p.name] = spell_offset
 		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 		var delay := spell.calculate_delay(p.fixed_vars)
 		start_particle(delay, body, p, insert)
@@ -428,7 +434,6 @@ func get_spell_tracking_offset(spell: Spell, vars: Vars) -> Vector3:
 	var temp_tU := vars.get_value(Vars.tU)
 	var temp_tV := vars.get_value(Vars.tV)
 	var temp_tW := vars.get_value(Vars.tW)
-	
 	vars.set_value(Vars.U, 0.0)
 	vars.set_value(Vars.V, 0.0)
 	vars.set_value(Vars.W, 0.0)
@@ -442,7 +447,6 @@ func get_spell_tracking_offset(spell: Spell, vars: Vars) -> Vector3:
 	vars.set_value(Vars.tU, temp_tU)
 	vars.set_value(Vars.tV, temp_tV)
 	vars.set_value(Vars.tW, temp_tW)
-	
 	return result
 	
 

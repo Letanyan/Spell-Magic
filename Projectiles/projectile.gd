@@ -28,7 +28,9 @@ var expression_vars: Vars
 
 var to_remove := false
 var origin_node: Node3D = null
-var tracking_target: Variant = null
+var tracking_target: Node3D = null
+var tracking_position := Vector3.ZERO
+var tracking_offset := Vector3.ZERO
 var origin_spell_caster: SpellCaster = null
 
 const INVUNERABLE_DURATION: float = 0.5
@@ -607,14 +609,22 @@ func stop_emitting() -> void:
 	# FIXME: reduce amount of audio sources
 	const AUDIO_FADE_OUT = 0.7
 	is_emitting = false
-	print("--------------------------")
-	spell.x_expr.back.print_profiling()
-	spell.y_expr.back.print_profiling()
-	spell.z_expr.back.print_profiling()
-	for k: String in spell.expressions:
-		var e := spell.expressions[k] as Expr
-		print(k)
-		e.back.print_profiling()
+	#print("--------------------------")
+	#spell.x_expr.back.print_profiling()
+	#spell.y_expr.back.print_profiling()
+	#spell.z_expr.back.print_profiling()
+	#for k: String in spell.expressions:
+		#var e := spell.expressions[k] as Expr
+		#print(k)
+		#e.back.print_profiling()
+	#if origin_spell_caster != null:
+		#print("-------------------------")
+		#prints(origin_spell_caster.prof_1.seconds(), origin_spell_caster.prof_2.seconds(), origin_spell_caster.prof_3.seconds(), origin_spell_caster.prof_4.seconds(), origin_spell_caster.prof_5.seconds())
+		#origin_spell_caster.prof_1.reset()
+		#origin_spell_caster.prof_2.reset()
+		#origin_spell_caster.prof_3.reset()
+		#origin_spell_caster.prof_4.reset()
+		#origin_spell_caster.prof_5.reset()
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")

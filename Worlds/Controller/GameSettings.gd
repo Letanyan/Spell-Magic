@@ -162,7 +162,7 @@ static var notes := {
 	"spell Elemental Application": "Certain elements have additional effects. Namely {Fire} applies {Burn}, {Water} applies {Wet}, {Ice} applies {Freeze}, {Electric} applies {Stun} and {Wind} applies {Feather}.",
 	"spell Cooldown": "The time before the spell can be cast again.",
 	"spell Variables": "A list of your variables which can be used in the x, y, z and D expressions. You can use these variables to simplify your other expressions.",
-	"spell chain ^": "If you use ^ at the start of a variable name, all chained spells following will inherit and/or override their same named variables.",
+	#"spell chain ^": "If you use ^ at the start of a variable name, all chained spells following will inherit and/or override their same named variables.",
 	"spell mana return": "Spells that have complicated movement will return some amount of mana back to the player. The amount returned is proportional to the complexity of the spells movement. The complexity of a spell is vaguely defined as how different it is from a spell which travels in a straight line.",
 	
 	"variable uvw, u, v, w": "A unit vector {(u,v,w)} describing the direction from the player to the camera aim. {uvw} is the vector combination.",
@@ -211,7 +211,7 @@ static var notes := {
 	"upgrades Max T": "The maximum duration a spell can have.",
 	"upgrades Max N": "The maximum number of projectiles a spell can cast.",
 	"upgrades Max Speed": "The speed a player can move.",
-	"upgrades Max P": "The maximum base damage multipler can have.",
+	"upgrades Max P": "The maximum base damage multipler a spell can have.",
 	"upgrades Auto M Regeneration": "The rate at which the players mana regenerates each second.",
 	"upgrades Max Active Spells": "The total number of spells which can be assigned to a Wand.",
 	"upgrades Elements": "The elements which can be assigned to a spell.",
