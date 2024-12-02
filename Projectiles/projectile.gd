@@ -619,7 +619,6 @@ func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 	return MagicBook.DisallowSpellReason.VELOCITY if exceeds.data else MagicBook.DisallowSpellReason.NONE
 
 func stop_emitting() -> void:
-	# FIXME: reduce amount of audio sources
 	# FIXME: reduce amount of light sources
 	is_emitting = false
 	#print("--------------------------")
@@ -655,12 +654,17 @@ func stop_emitting() -> void:
 			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ROCK:
+			var particles: GPUParticles3D = get_node("source")
+			(particles.process_material as ParticleProcessMaterial).scale_min = most_recent_radius.length() * 0.125
+			(particles.process_material as ParticleProcessMaterial).scale_max = most_recent_radius.length() * 0.25
+			(particles.process_material as ParticleProcessMaterial).emission_box_extents = most_recent_radius
+			particles.emitting = true
 			var body: RigidBody3D = get_node("body")
 			body.visible = false
 			body.collision_mask = 0
 			get_shape_cast().enabled = false
 			(get_node("body/shape") as CollisionShape3D).disabled = true
-			free_after(0.1)
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.WATER:
 			var particles: GPUParticles3D = get_node("source")
@@ -692,6 +696,12 @@ func stop_emitting() -> void:
 		Spell.Element.ELECTRIC:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
+			var tween := create_tween()
+			var light: OmniLight3D = get_node("light")
+			var fade_light := func(t: float) -> void:
+				light.omni_range = lerpf(5.0, 0.0, t)
+			tween.tween_method(fade_light, 0, 1, 0.2)
+			tween.play()
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
 			var body := get_node("body") as MeshInstance3D

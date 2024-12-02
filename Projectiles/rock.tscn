@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bs31awp6oeunh"]
+[gd_scene load_steps=17 format=3 uid="uid://bs31awp6oeunh"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_1st15"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_xq7ee"]
@@ -59,6 +59,41 @@ shader_parameter/texture_normal = SubResource("NoiseTexture2D_j0l14")
 resource_local_to_scene = true
 material = SubResource("ShaderMaterial_82sog")
 
+[sub_resource type="Curve" id="Curve_aonxu"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.745583, 0.513669), -2.30524, -2.30524, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_yxvw0"]
+width = 64
+curve = SubResource("Curve_aonxu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ceqq4"]
+emission_shape = 3
+emission_box_extents = Vector3(0.5, 0.5, 0.5)
+scale_min = 0.13
+scale_max = 0.25
+scale_curve = SubResource("CurveTexture_yxvw0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g26sh"]
+render_priority = 0
+shader = ExtResource("2_xq7ee")
+shader_parameter/albedo = Color(0.717647, 0.352941, 0.141176, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = 0.500001
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_o07gf")
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_j0l14")
+
+[sub_resource type="BoxMesh" id="BoxMesh_0gtmn"]
+material = SubResource("ShaderMaterial_g26sh")
+
 [node name="rock" type="Node3D"]
 script = ExtResource("1_1st15")
 
@@ -79,3 +114,11 @@ shape = SubResource("BoxShape3D_3hxed")
 [node name="mesh" type="MeshInstance3D" parent="body"]
 mesh = SubResource("BoxMesh_i7rb6")
 skeleton = NodePath("../..")
+
+[node name="source" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 32
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_ceqq4")
+draw_pass_1 = SubResource("BoxMesh_0gtmn")
