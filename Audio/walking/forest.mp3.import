@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/forest.mp3-60fd136fbc1a1bca3d15f270eab1a001.m
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

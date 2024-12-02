@@ -154,10 +154,10 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor:
 			if velocity.length() < 0.166667:
-				play_walking_audio(NoiseBlender.walking_audio_for_biome(velocity_movement.current_biome))
+				play_walking_audio(NoiseBlender.walking_audio_for_biome(World.Biome.WATER if is_underwater else velocity_movement.current_biome))
 				play_animation("walk")
 			else:
-				play_walking_audio(NoiseBlender.walking_audio_for_biome(velocity_movement.current_biome))
+				play_walking_audio(NoiseBlender.walking_audio_for_biome(World.Biome.WATER if is_underwater else velocity_movement.current_biome))
 				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
 				var direction_angle := Vector3(direction.x, 0, direction.z).signed_angle_to(pivot_vector, Vector3.UP)
 				var is_forward := absf(direction_angle) < PI / 2
