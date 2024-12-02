@@ -13,11 +13,13 @@ const audio_streams: Array[AudioStreamMP3] = [
 	preload("res://Audio/projectile/explosion/water.mp3") as AudioStreamMP3,
 	preload("res://Audio/projectile/explosion/wind.mp3") as AudioStreamMP3,
 	preload("res://Audio/projectile/explosion/ice.mp3") as AudioStreamMP3,
+	preload("res://Audio/projectile/explosion/steam.mp3") as AudioStreamMP3,
 ]
+
 
 enum AudioStreamKind {
 	FIRE, ROCK, ELECTRIC, WATER, AIR, ICE,
-	FIRE_EXPLOSION, ROCK_EXPLOSION, ELECTRIC_EXPLOSION, WATER_EXPLOSION, AIR_EXPLOSION, ICE_EXPLOSION,
+	FIRE_EXPLOSION, ROCK_EXPLOSION, ELECTRIC_EXPLOSION, WATER_EXPLOSION, AIR_EXPLOSION, ICE_EXPLOSION, STEAM_EXPLOSION,
 }
 
 class FadeParam:
@@ -26,61 +28,84 @@ class FadeParam:
 	var start_value: float
 	var final_value: float
 	
+class Stereo:
+	var left_dist: float = INF
+	var left_player: AudioStreamPlayer3D
+	var left_stop_time: float = 0.0
+	var right_dist: float = INF
+	var right_player: AudioStreamPlayer3D
+	var right_stop_time: float = 0.0
+	
+	func _init(stream: AudioStream) -> void:
+		left_player = AudioStreamPlayer3D.new()
+		left_player.stream = stream
+		right_player = AudioStreamPlayer3D.new()
+		right_player.stream = stream
+	
+var streams: Array[Stereo] = []
 var fade_params: Dictionary = {} ## [AudioStreamPlayer3D]FadeParam
 	
-
+var camera: Camera3D = null
 var world: Node3D = null: # set in Demo._ready and TestArena._ready
 	set(value):
 		if value == world:
 			return
-		if world != null:
-			for players: Array in audio_players:
-				for player: AudioStreamPlayer3D in players:
-					world.remove_child(player)
-					if value != null:
-						value.add_child(player)
+		for stream in streams:
+			if world != null:
+				world.remove_child(stream.left_player)
+				world.remove_child(stream.right_player)
+			if value != null:
+				value.add_child(stream.left_player)
+				value.add_child(stream.right_player)
 		world = value
-var audio_players: Array[Array] = [] # [(AudioStreamKind)][(int)]AudioStreamPlayers
 
 func _ready() -> void:
 	for i in AudioStreamKind.size():
-		audio_players.append([])
+		streams.append(Stereo.new(audio_streams[i]))
 
-func play(kind: AudioStreamKind, positions: PackedVector3Array) -> void:
-	var current: Array[AudioStreamPlayer3D] = []
-	current.assign(audio_players[kind])
-	while current.size() < positions.size():
-		var player := AudioStreamPlayer3D.new()
-		player.stream = audio_streams[kind]
-		player.autoplay = false
-		world.add_child(player)
-		current.append(player)
-	audio_players[kind] = current
+func play(kind: AudioStreamKind, position: Vector3, stop_time: float, reset: bool) -> void:	
+	var cam_dir := camera.global_transform.basis.z
+	var rel_pos := position - camera.global_position
+	var cam_right := cam_dir.cross(Vector3.UP)
+	var is_right := rel_pos.dot(cam_right) > 0
+	var stream := streams[kind]
+	var dist := position.distance_squared_to(camera.global_position)
+	var player: AudioStreamPlayer3D = null
 	
-	for i in range(positions.size(), current.size()):
-		if not fade_params.has(current[i]) and current[i].playing:
-			fade_audio(current[i], -40, 0.7)
-		
-	for i in positions.size():
-		var pos := positions[i]
-		var player := current[i]
-		if not pos.is_finite(): 
-			if player.playing and not fade_params.has(player):
-				fade_audio(player, -40, 0.7)
-			continue
-		player.position = pos
-		if fade_params.has(player):
-			player.volume_db = 0
-			fade_params.erase(player)
-		if not player.playing:
-			player.volume_db = 0
-			player.play()
+	if is_right:
+		if dist < stream.right_dist:
+			stream.right_dist = dist
+			if is_nan(stop_time):
+				stream.right_stop_time = Time.get_unix_time_from_system() + stream.right_player.stream.get_length()
+			else:
+				stream.right_stop_time = stop_time
+			player = stream.right_player
+	else:
+		if dist < stream.left_dist:
+			stream.left_dist = dist
+			if is_nan(stop_time):
+				stream.left_stop_time = Time.get_unix_time_from_system() + stream.left_player.stream.get_length()
+			else:
+				stream.left_stop_time = stop_time
+			player = stream.left_player
 			
+	if player == null:
+		return
+			
+	player.position = position
+	if fade_params.has(player):
+		player.volume_db = 0
+		fade_params.erase(player)
+	if not player.playing:
+		player.volume_db = 0
+		player.play()
+	if reset:
+		player.seek(0.0)
 	
 func stop_all(kind: AudioStreamKind) -> void:
-	for players: Array in audio_players[kind]:
-		for player: AudioStreamPlayer3D in players:
-			player.stop()
+	for stream: Stereo in streams:
+		stream.left_player.stop()
+		stream.right_player.stop()
 	
 func fade_audio(player: AudioStreamPlayer3D, final: float, duration: float) -> void:
 	var params := FadeParam.new()
@@ -102,5 +127,16 @@ func update(delta: float) -> void:
 			player.volume_db = lerpf(param.start_value, param.final_value, param.time_stamp / param.duration)
 		
 	for player in to_remove:
-		fade_params.erase(player) 
+		fade_params.erase(player)
 		
+	var current_time := Time.get_unix_time_from_system()
+	for stream in streams:
+		if stream.left_player.playing and (is_inf(stream.left_dist) or stream.left_stop_time <= current_time) and not fade_params.has(stream.left_player):
+			fade_audio(stream.left_player, -40, 0.7)
+			stream.left_stop_time = INF
+		stream.left_dist = INF
+		
+		if stream.right_player.playing and (is_inf(stream.right_dist) or stream.right_stop_time <= current_time) and not fade_params.has(stream.right_player):
+			fade_audio(stream.right_player, -40, 0.7)
+			stream.right_stop_time = INF
+		stream.right_dist = INF

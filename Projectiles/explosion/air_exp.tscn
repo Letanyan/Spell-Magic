@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://ctt3p522qggex"]
+[gd_scene load_steps=9 format=3 uid="uid://ctt3p522qggex"]
 
 [ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="1_cpkdh"]
-[ext_resource type="AudioStream" uid="uid://c3qj5cmeu4t02" path="res://Audio/projectile/explosion/wind.mp3" id="2_vo8px"]
 
 [sub_resource type="Gradient" id="Gradient_ukcei"]
 interpolation_color_space = 2
@@ -66,7 +65,3 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_up2ua")
 draw_pass_1 = SubResource("PlaneMesh_xna2q")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_vo8px")
-autoplay = true

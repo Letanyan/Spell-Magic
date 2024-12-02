@@ -241,6 +241,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 	
 	var visual_effect: Node3D = null
 	var visual_source: GPUParticles3D = null
+	var audio_stream_kind := AudioManager.AudioStreamKind.AIR
 	match element:
 		Spell.Element.FIRE:
 			if location.is_finite():
@@ -252,6 +253,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
 					(source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
 					source.amount = amount
+					audio_stream_kind = AudioManager.AudioStreamKind.FIRE_EXPLOSION
 				else:
 					explosion = steam_exp.instantiate()
 					source = explosion.get_node("source")
@@ -259,6 +261,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 					(source.process_material as ParticleProcessMaterial).scale_min = r * 2
 					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
 					source.amount = 20 + roundi(80 * (amount / 100.0))
+					audio_stream_kind = AudioManager.AudioStreamKind.STEAM_EXPLOSION
 			
 			if vitals != null and not body.has_node("burn_effect"):
 				visual_effect = fire_exp.instantiate()
@@ -279,6 +282,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 					(source.process_material as ParticleProcessMaterial).initial_velocity_max = r * 2
 					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
 					source.amount = amount
+					audio_stream_kind = AudioManager.AudioStreamKind.WATER_EXPLOSION
 				else:
 					explosion = steam_exp.instantiate()
 					source = explosion.get_node("source")
@@ -286,6 +290,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 					(source.process_material as ParticleProcessMaterial).scale_min = r * 2
 					(source.process_material as ParticleProcessMaterial).scale_max = r * 2
 					source.amount = 20 + roundi(80 * (amount / 100.0))
+					audio_stream_kind = AudioManager.AudioStreamKind.STEAM_EXPLOSION
 			
 			if vitals != null and not body.has_node("wet_effect"):
 				visual_effect = water_exp.instantiate()
@@ -305,6 +310,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				(source.draw_pass_1 as BoxMesh).size.y = r * 0.1
 				(source.draw_pass_1 as BoxMesh).size.z = r * 0.1
 				source.amount = amount
+				audio_stream_kind = AudioManager.AudioStreamKind.ROCK_EXPLOSION
 		Spell.Element.AIR:
 			if location.is_finite():
 				explosion = air_exp.instantiate()
@@ -316,12 +322,14 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
 				(source.process_material as ParticleProcessMaterial).direction = v.normalized()
 				source.amount = int(float(amount) / 10.0) + 1
+				audio_stream_kind = AudioManager.AudioStreamKind.AIR_EXPLOSION
 		Spell.Element.ICE:
 			if location.is_finite():
 				explosion = ice_exp.instantiate()
 				source = explosion.get_node("source")
 				(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
 				source.amount = amount
+				audio_stream_kind = AudioManager.AudioStreamKind.ICE_EXPLOSION
 			
 			if vitals != null and not body.has_node("freeze_effect"):
 				visual_effect = ice_exp.instantiate()
@@ -341,6 +349,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 				(source.process_material as ParticleProcessMaterial).emission_ring_radius = r
 				@warning_ignore("integer_division")
 				source.amount = clampi(amount / 10, 1, 100)
+				audio_stream_kind = AudioManager.AudioStreamKind.ELECTRIC_EXPLOSION
 			
 			if vitals != null and not body.has_node("stun_effect"):
 				visual_effect = electric_exp.instantiate()
@@ -364,6 +373,7 @@ static func build_explosion(world: Node3D, body: Node3D, amount: int, element: S
 	if location.is_finite():
 		explosion.position = world.to_local(location)
 		world.add_child(explosion)
+		AudioManager.play(audio_stream_kind, explosion.position, NAN, true)
 		source.emitting = true
 		await world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout
 		world.remove_child(explosion)

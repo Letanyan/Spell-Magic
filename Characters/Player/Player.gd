@@ -40,7 +40,6 @@ var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_sy
 var projectile_indicators: Dictionary = {} ## [Node3D]ProjectileIndicator|EnemyIndicator
 var projectile_indicator_store: Array[ProjectileIndicator] = []
 var enemy_indicator_store: Array[EnemyIndicator] = []
-var projectile_audio_locations: Array[PackedVector3Array] = [] ## [(AudioManager.AudioStreamKind)][(int)]Vector3
 var max_watched_enemies_distance := 0.0
 var indicator_update_tick := 0.0
 const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
@@ -89,8 +88,6 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_red_cross.connect(on_pick_up_red_cross)
 	SignalBus.pick_up_world_item_scroll_note.connect(on_pick_up_scroll_note)
 	animation_tree.active = true
-	for i in AudioManager.AudioStreamKind.size():
-		projectile_audio_locations.append(PackedVector3Array([Vector3(NAN, NAN, NAN), Vector3(NAN, NAN, NAN)]))
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 	
@@ -711,22 +708,7 @@ func update_projectile_update_tick(body: SpellBody, updated_spell_bodies: Dictio
 		body.update_tick = clampf((body.position.distance_squared_to(position) - MIN) / MAX, 0.0,  1.0)
 		
 	if body.spell.element != Spell.Element.VOID:
-		var locations := projectile_audio_locations[body.spell.element - 1]
-		var cam_dir := cam.global_transform.basis.z
-		var rel_pos := body.position - cam.global_position
-		var cam_right := cam_dir.cross(Vector3.UP)
-		var is_right := rel_pos.dot(cam_right) > 0
-		
-		if is_right:
-			if not locations[1].is_finite():
-				locations[1] = body.position
-			elif body.position.distance_squared_to(position) < (locations[1] as Vector3).distance_squared_to(position):
-				locations[1] = body.position
-		else:
-			if not locations[0].is_finite():
-				locations[0] = body.position
-			elif body.position.distance_squared_to(position) < (locations[0] as Vector3).distance_squared_to(position):
-				locations[0] = body.position
+		AudioManager.play(body.spell.element - 1, body.position, Time.get_unix_time_from_system() + body.spell.duration - body.time_stamp, false)
 
 ## updated_spell_bodies: [SpellBody]bool
 func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
@@ -738,9 +720,6 @@ func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictiona
 func update_projectile_indicators() -> void:
 	var updated_spell_bodies := {} ## [SpellBody]bool
 	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
-	for i in AudioManager.AudioStreamKind.size(): 
-		projectile_audio_locations[i][0] = Vector3(NAN, NAN, NAN)
-		projectile_audio_locations[i][1] = Vector3(NAN, NAN, NAN)
 	if pis > 0:
 		for enemy: Enemy in enemies_in_range:
 			var dist := clampf(1.0 - enemy.position.distance_to(position) / 20.0, 0.0, 1.0)
@@ -758,11 +737,6 @@ func update_projectile_indicators() -> void:
 			if target.spell_caster == null:
 				continue
 			target.spell_caster.apply_to_all_particles(update_projectile_update_tick, updated_spell_bodies)
-		
-	var location_index := 0
-	for locations in projectile_audio_locations:
-		AudioManager.play(location_index as AudioManager.AudioStreamKind, locations)
-		location_index += 1 
 		
 	for body: Node3D in projectile_indicators:
 		if not updated_spell_bodies.get(body, false) as bool:

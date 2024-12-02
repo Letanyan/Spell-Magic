@@ -266,6 +266,7 @@ func _ready() -> void:
 	hud.update_settings(settings)
 	
 	AudioManager.world = self
+	AudioManager.camera = player.cam
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -273,6 +274,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	AudioManager.world = null
+	AudioManager.camera = null
 
 func _process(delta: float) -> void:
 	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())

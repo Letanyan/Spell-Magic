@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://df8aixqk2yst4"]
+[gd_scene load_steps=7 format=3 uid="uid://df8aixqk2yst4"]
 
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="1_dnew8"]
-[ext_resource type="AudioStream" uid="uid://dqhlkeg7tm03x" path="res://Audio/projectile/explosion/ice.mp3" id="2_omoie"]
 
 [sub_resource type="Gradient" id="Gradient_m6p20"]
 interpolation_color_space = 2
@@ -57,7 +56,3 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_1xe54")
 draw_pass_1 = SubResource("SphereMesh_dcne6")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_omoie")
-autoplay = true

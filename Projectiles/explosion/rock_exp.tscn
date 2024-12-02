@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3nif5h2enne2"]
+[gd_scene load_steps=12 format=3 uid="uid://b3nif5h2enne2"]
 
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="1_v4pw8"]
-[ext_resource type="AudioStream" uid="uid://d3pgpejbts1vq" path="res://Audio/projectile/explosion/rock.mp3" id="2_d76x7"]
 
 [sub_resource type="Curve" id="Curve_4phsl"]
 _data = [Vector2(0, 0.881818), 0.0, 0.0, 0, 0, Vector2(0.145631, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -79,7 +78,3 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_1126x")
 draw_pass_1 = SubResource("BoxMesh_wsgmk")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_d76x7")
-autoplay = true

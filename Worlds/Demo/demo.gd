@@ -182,6 +182,7 @@ func run_on_ready() -> void:
 	hud.update_settings(settings)
 	
 	AudioManager.world = self
+	AudioManager.camera = player.cam
 	
 	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 	theme.change_tint_color(Color(0, 0.533, 0.8))
@@ -198,6 +199,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	chunker.deinit()
 	AudioManager.world = null
+	AudioManager.camera = null
 	
 func _process(delta: float) -> void:
 	if OS.is_debug_build():
