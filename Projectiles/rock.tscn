@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://bs31awp6oeunh"]
+[gd_scene load_steps=12 format=3 uid="uid://bs31awp6oeunh"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_1st15"]
-[ext_resource type="AudioStream" uid="uid://wcb3hh0ub7ig" path="res://Audio/projectile/rock.mp3" id="2_7ob7x"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_xq7ee"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ikdw0"]
@@ -80,7 +79,3 @@ shape = SubResource("BoxShape3D_3hxed")
 [node name="mesh" type="MeshInstance3D" parent="body"]
 mesh = SubResource("BoxMesh_i7rb6")
 skeleton = NodePath("../..")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_7ob7x")
-autoplay = true

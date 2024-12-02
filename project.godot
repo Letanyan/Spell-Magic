@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 GlobalData="*res://General/globals.gd"
 SignalBus="*res://General/SignalBus.gd"
 SceneHandler="*res://GUI/Main Menu/SceneHandler.gd"
+AudioManager="*res://Worlds/Generator/audio_manager.gd"
 
 [debug]
 

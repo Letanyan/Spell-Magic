@@ -621,7 +621,6 @@ func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 func stop_emitting() -> void:
 	# FIXME: reduce amount of audio sources
 	# FIXME: reduce amount of light sources
-	const AUDIO_FADE_OUT = 0.7
 	is_emitting = false
 	#print("--------------------------")
 	#spell.x_expr.back.print_profiling()
@@ -653,8 +652,7 @@ func stop_emitting() -> void:
 			tween.play()
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
-			fade_audio(-40, AUDIO_FADE_OUT, false)
-			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ROCK:
 			var body: RigidBody3D = get_node("body")
@@ -662,8 +660,7 @@ func stop_emitting() -> void:
 			body.collision_mask = 0
 			get_shape_cast().enabled = false
 			(get_node("body/shape") as CollisionShape3D).disabled = true
-			fade_audio(-40, AUDIO_FADE_OUT, false)
-			free_after(max(0.1, AUDIO_FADE_OUT))
+			free_after(0.1)
 			
 		Spell.Element.WATER:
 			var particles: GPUParticles3D = get_node("source")
@@ -672,8 +669,7 @@ func stop_emitting() -> void:
 			trail.emitting = false
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
-			fade_audio(-40, AUDIO_FADE_OUT, false)
-			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.AIR:
 			var particles: GPUParticles3D = get_node("source")
@@ -682,8 +678,7 @@ func stop_emitting() -> void:
 			trail.emitting = false
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
-			fade_audio(-40, AUDIO_FADE_OUT, false)
-			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ICE:
 			var particles: GPUParticles3D = get_node("source")
@@ -692,8 +687,7 @@ func stop_emitting() -> void:
 			trail.emitting = false
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
-			fade_audio(-40, AUDIO_FADE_OUT, false)
-			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.ELECTRIC:
 			var particles: GPUParticles3D = get_node("source")
@@ -702,26 +696,14 @@ func stop_emitting() -> void:
 			get_area_collision().disabled = true
 			var body := get_node("body") as MeshInstance3D
 			body.visible = false
-			fade_audio(-40, AUDIO_FADE_OUT, false)
-			free_after(maxf(Globals.particle_system_lifetime(particles), AUDIO_FADE_OUT))
+			free_after(Globals.particle_system_lifetime(particles))
 			
 		Spell.Element.VOID:
-			#fade_audio(-40, AUDIO_FADE_OUT, false)
 			get_area_collision().disabled = true
-			free_after(maxf(0.1, AUDIO_FADE_OUT + 0.1))
+			free_after(0.1)
 			
 func free_after(duration: float) -> void:
 	free_when_ready = duration
-		
-func fade_audio(final: float, duration: float, is_in: bool) -> void:
-	var audio: AudioStreamPlayer3D = get_node("audio")
-	var tween := get_tree().create_tween()
-	if is_in:
-		audio.volume_db = -40
-		audio.play(0)
-	tween.tween_property(audio, "volume_db", final, duration)
-	if not is_in:
-		tween.tween_callback(audio.stop)
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	await get_tree().physics_frame

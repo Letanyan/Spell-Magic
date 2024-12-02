@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://ci5156f25r5no"]
+[gd_scene load_steps=13 format=3 uid="uid://ci5156f25r5no"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_dkd3k"]
-[ext_resource type="AudioStream" uid="uid://blus3u8usi3fc" path="res://Audio/projectile/water.mp3" id="2_7rwhp"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_p4jf5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ygggg"]
@@ -95,10 +94,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0652502)
 amount = 80
 process_material = SubResource("ParticleProcessMaterial_us730")
 draw_pass_1 = SubResource("SphereMesh_37v5l")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_7rwhp")
-autoplay = true
 
 [node name="area" type="Area3D" parent="."]
 collision_layer = 32

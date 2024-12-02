@@ -1,9 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://8p44w2bikis2"]
+[gd_scene load_steps=13 format=3 uid="uid://8p44w2bikis2"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_pf3b3"]
 [ext_resource type="Shader" path="res://Projectiles/electirc_current.gdshader" id="2_2xrdn"]
 [ext_resource type="Shader" path="res://Projectiles/electric.gdshader" id="3_8dbc8"]
-[ext_resource type="AudioStream" uid="uid://bmehreux588ha" path="res://Audio/projectile/electric.mp3" id="4_gu14i"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_htuie"]
 resource_local_to_scene = true
@@ -91,10 +90,6 @@ draw_pass_1 = SubResource("BoxMesh_a4wuh")
 [node name="body" type="MeshInstance3D" parent="."]
 cast_shadow = 0
 mesh = SubResource("SphereMesh_sdaq3")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("4_gu14i")
-autoplay = true
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 

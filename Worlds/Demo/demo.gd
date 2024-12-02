@@ -181,6 +181,8 @@ func run_on_ready() -> void:
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
 	
+	AudioManager.world = self
+	
 	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 	theme.change_tint_color(Color(0, 0.533, 0.8))
 	ready_state = GameSettings.ReadyState.IS
@@ -195,6 +197,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	chunker.deinit()
+	AudioManager.world = null
 	
 func _process(delta: float) -> void:
 	if OS.is_debug_build():
@@ -234,6 +237,8 @@ func _physics_process(delta: float) -> void:
 	update_transition_to_biome(delta)
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
+	
+	AudioManager.update(delta)
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0

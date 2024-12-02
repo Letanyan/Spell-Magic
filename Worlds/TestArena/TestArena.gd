@@ -265,9 +265,14 @@ func _ready() -> void:
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
 	
+	AudioManager.world = self
+	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
 	sub_viewport_container.visible = true
+
+func _exit_tree() -> void:
+	AudioManager.world = null
 
 func _process(delta: float) -> void:
 	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
@@ -301,6 +306,7 @@ func _physics_process(delta: float) -> void:
 
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
+	AudioManager.update(delta)
 			
 	if daytime_tick >= 1.0:
 		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:

@@ -1,8 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://kjdhhq3p1a5m"]
+[gd_scene load_steps=11 format=3 uid="uid://kjdhhq3p1a5m"]
 
 [ext_resource type="Script" path="res://Projectiles/projectile.gd" id="1_gw4hd"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="2_a6nxg"]
-[ext_resource type="AudioStream" uid="uid://mnk2xn0q2pnw" path="res://Audio/projectile/ice.mp3" id="3_7ubeh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwdgd"]
 resource_local_to_scene = true
@@ -98,10 +97,6 @@ draw_pass_1 = SubResource("SphereMesh_b25tq")
 amount = 50
 process_material = SubResource("ParticleProcessMaterial_6vpyv")
 draw_pass_1 = SubResource("SphereMesh_b25tq")
-
-[node name="audio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("3_7ubeh")
-autoplay = true
 
 [node name="area" type="Area3D" parent="."]
 collision_layer = 128
