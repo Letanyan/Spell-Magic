@@ -64,8 +64,9 @@ func play(kind: AudioStreamKind, positions: PackedVector3Array) -> void:
 	for i in positions.size():
 		var pos := positions[i]
 		var player := current[i]
-		if not pos.is_finite():
-			fade_audio(player, -40, 0.7)
+		if not pos.is_finite(): 
+			if player.playing and not fade_params.has(player):
+				fade_audio(player, -40, 0.7)
 			continue
 		player.position = pos
 		if fade_params.has(player):
