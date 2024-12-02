@@ -77,7 +77,7 @@ var cam_arm_rotation_x: float = 0.0
 func _ready() -> void:
 	velocity_movement = VelocityMovement.new()
 	vitals = Vitals.new(Vitals.Stat.new(100, 0, 100), Vitals.Stat.new(50, 0, 50, 0.5))
-	spell_caster = SpellCaster.new(get_node(".") as Node3D, SpellCaster.Entity.PLAYER)
+	spell_caster = SpellCaster.new(self, SpellCaster.Entity.PLAYER)
 	emit_vitals_update()
 	velocity = Vector3.ZERO
 	SignalBus.projectile_hit.connect(give_back_mana_after_hit)
@@ -643,7 +643,7 @@ func on_pick_up_scroll_note(note_id: String, message: String) -> void:
 func save_name_generator() -> void:
 	name_generator.save(world_settings.world_name)
 
-func update_enemy_indicator(pivot: Node, pi_size: float, body: Node3D) -> bool:
+func update_enemy_indicator(pivot: Node, pi_size: float, body: Enemy) -> bool:
 	if not body.is_inside_tree():
 		return false
 	if cam.is_position_in_frustum(body.global_position):
@@ -676,7 +676,7 @@ func update_enemy_indicator(pivot: Node, pi_size: float, body: Node3D) -> bool:
 		
 	return true		
 
-func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color) -> bool:
+func update_projectile(pivot: Node3D, pi_size: float, body: SpellBody, color: Color) -> bool:
 	if not body.is_inside_tree():
 		return false
 	if cam.is_position_in_frustum(body.global_position):
@@ -701,11 +701,18 @@ func update_projectile(pivot: Node3D, pi_size: float, body: Node3D, color: Color
 		
 	return true
 
+func update_projectile_update_tick(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
+	if body.update_tick <= 0.0:
+		const MIN = 20.0 * 20.0
+		const MAX = 30.0 * 30.0
+		body.update_tick = clampf((body.position.distance_squared_to(position) - MIN) / MAX, 0.0,  1.0)
+
 ## updated_spell_bodies: [SpellBody]bool
 func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
 	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
 	var dist := clampf(1.0 - body.position.distance_to(position) / 20.0, 0.0, 1.0)
 	updated_spell_bodies[body] = update_projectile(body_pivot, pis * (1.0 + dist * dist), body, Spell.color_from_element(body.spell.element))
+	update_projectile_update_tick(body, updated_spell_bodies)
 
 func update_projectile_indicators() -> void:
 	var updated_spell_bodies := {} ## [SpellBody]bool
@@ -720,6 +727,13 @@ func update_projectile_indicators() -> void:
 				continue
 			target.spell_caster.apply_to_all_particles(update_projectile_indicator, updated_spell_bodies)
 		spell_caster.apply_to_all_particles(update_projectile_indicator, updated_spell_bodies)
+	else:
+		for enemy: Enemy in enemies_in_range:
+			enemy.spell_caster.apply_to_all_particles(update_projectile_update_tick, updated_spell_bodies)
+		for target: TargetShape in targets_in_range:
+			if target.spell_caster == null:
+				continue
+			target.spell_caster.apply_to_all_particles(update_projectile_update_tick, updated_spell_bodies)
 		
 	for body: Node3D in projectile_indicators:
 		if not updated_spell_bodies.get(body, false) as bool:

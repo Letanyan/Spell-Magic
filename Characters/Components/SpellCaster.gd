@@ -2,12 +2,13 @@ class_name SpellCaster
 
 enum Entity { PLAYER, ENEMY, PROJECTILE, TARGET }
 
-var origin_node: Node3D = null
+var origin_node: Node3D
 var entity: Entity
 var particles: Array[SpellBody] = []
 var ignore_mana_cost: bool
 
 var complexity_tracker := {} ## [int]{count: float, mean: float, M2: float}
+var update_index := 0
 
 func _init(o: Node3D, e: Entity) -> void:
 	origin_node = o
@@ -15,15 +16,28 @@ func _init(o: Node3D, e: Entity) -> void:
 	ignore_mana_cost = true
 	
 func update(body: Node3D, delta: float) -> Dictionary:
-	#FIXME: perf: dynamic update for particles based on distance from player and possibly more criteria.
 	var should_remove := []
 	var should_halt := []
 	var limit_reasons := {}
-	for i in range(particles.size()):
-		var p: SpellBody = particles[i]
+	var time_spent := 0
+	if update_index >= particles.size():
+		update_index = 0
+	while update_index < particles.size():
+		var time_start := Time.get_ticks_usec()
+		var p: SpellBody = particles[update_index]
 		if p == null:
-			should_remove.append(i)
+			should_remove.append(update_index)
+			update_index += 1
 			continue
+			
+		if p.update_tick - delta > 0:
+			p.update_tick -= delta
+			p.prepare_update_spell(delta)
+			update_index += 1
+			#print("wait for: ", update_index, " remaining: ", p.update_tick)
+			continue
+		else:
+			p.update_tick = 0.0
 		
 		if p.is_active() and not p.has_expired():
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
@@ -32,6 +46,7 @@ func update(body: Node3D, delta: float) -> Dictionary:
 			var reason := p.update_spell(delta, p.fixed_vars)
 			if reason != MagicBook.DisallowSpellReason.NONE:
 				limit_reasons[p.spell] = reason
+			
 			
 		var can_remove := false
 		if p.spell_caster != null:
@@ -46,9 +61,21 @@ func update(body: Node3D, delta: float) -> Dictionary:
 				can_remove = false
 				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
 			if can_remove:
-				should_remove.append(i)
+				should_remove.append(update_index)
 			elif p.is_emitting:
-				should_halt.append(i)
+				should_halt.append(update_index)
+				
+		update_index += 1
+		time_spent += Time.get_ticks_usec() - time_start
+		if time_spent > 5000:
+			print("break at: ", update_index, " < ", particles.size(), " after: ", time_spent)
+			break
+			
+	for i in range(update_index, particles.size()):
+		var p := particles[i]
+		if p.update_tick - delta > 0:
+			p.update_tick -= delta
+		p.prepare_update_spell(delta)
 				
 	var idx := should_halt.size() - 1
 	while idx >= 0:

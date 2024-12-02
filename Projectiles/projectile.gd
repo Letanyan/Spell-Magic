@@ -4,6 +4,7 @@ extends Node3D
 var spell: Spell
 var n: int
 var time_stamp: float = -1.0
+var update_tick: float = 0.0
 var expired: bool = false
 var is_emitting: bool = true
 var started: bool = false
@@ -520,9 +521,14 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 	started = true
 
 	var shape_cast := get_shape_cast()
-	var target := p - position
-	if target.length() > 1.0 or target.distance_to(shape_cast.target_position) > 1.0:
-		shape_cast.target_position = target
+	var target := position - p
+	if target.length() > 1 or target.distance_squared_to(shape_cast.target_position) > 1.0:
+		if spell.element == Spell.Element.ROCK:
+			shape_cast.target_position = position - p
+		else:
+			shape_cast.target_position = Vector3.BACK * (position - p).length()
+	elif shape_cast.target_position != Vector3.ZERO:
+		shape_cast.target_position = Vector3.ZERO
 	var count := shape_cast.get_collision_count()
 	for i in range(count):
 		var obj := shape_cast.get_collider(i)
@@ -589,9 +595,16 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 			
 		Spell.Element.ELECTRIC:
 			position = p
+			Globals.look_at(self, velocity)
 			
 		Spell.Element.VOID:
 			position = p
+			Globals.look_at(self, velocity)
+			
+func prepare_update_spell(delta: float) -> void:
+	if not is_active():
+		return
+	time_stamp += delta
 			
 func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 	if not is_active():
@@ -607,6 +620,7 @@ func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 
 func stop_emitting() -> void:
 	# FIXME: reduce amount of audio sources
+	# FIXME: reduce amount of light sources
 	const AUDIO_FADE_OUT = 0.7
 	is_emitting = false
 	#print("--------------------------")
