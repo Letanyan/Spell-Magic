@@ -15,8 +15,12 @@ var projectile_indicator_scale: float = 1.0
 @onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
 @onready var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
 
-@onready var bg_audio: AudioStreamPlayer3D = $BGAudio
-@onready var walking_audio: AudioStreamPlayer3D = $MovementAudio
+var bg_audio_state: AudioState
+@onready var bg_audio1: AudioStreamPlayer3D = $BGAudio1
+@onready var bg_audio2: AudioStreamPlayer3D = $BGAudio2
+var walking_audio_state: AudioState
+@onready var walking_audio1: AudioStreamPlayer3D = $MovementAudio1
+@onready var walking_audio2: AudioStreamPlayer3D = $MovementAudio2
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
@@ -88,6 +92,8 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_red_cross.connect(on_pick_up_red_cross)
 	SignalBus.pick_up_world_item_scroll_note.connect(on_pick_up_scroll_note)
 	animation_tree.active = true
+	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
+	walking_audio_state = AudioState.new(walking_audio1, walking_audio2)
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 	
@@ -154,10 +160,10 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor:
 			if velocity.length() < 0.166667:
-				play_walking_audio(NoiseBlender.walking_audio_for_biome(World.Biome.WATER if is_underwater else velocity_movement.current_biome))
+				play_walking_audio(World.Biome.WATER if is_underwater else velocity_movement.current_biome)
 				play_animation("walk")
 			else:
-				play_walking_audio(NoiseBlender.walking_audio_for_biome(World.Biome.WATER if is_underwater else velocity_movement.current_biome))
+				play_walking_audio(World.Biome.WATER if is_underwater else velocity_movement.current_biome)
 				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
 				var direction_angle := Vector3(direction.x, 0, direction.z).signed_angle_to(pivot_vector, Vector3.UP)
 				var is_forward := absf(direction_angle) < PI / 2
@@ -185,7 +191,7 @@ func _physics_process(delta: float) -> void:
 			play_animation("swim")
 	else:
 		if is_on_floor:
-			play_walking_audio("empty")
+			play_walking_audio(World.Biome.WATER, true)
 			if enemies_in_range.is_empty():
 				play_animation("idle")
 			else:
@@ -559,9 +565,9 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					
 	vitals.damage_resistance = damage_resistance
 	
-func transition_bg_audio(clip: String) -> void:
-	if bg_audio["parameters/switch_to_clip"] != clip:
-		bg_audio["parameters/switch_to_clip"] = clip
+func play_bg_audio(biome: World.Biome, is_empty: bool = false) -> void:
+	var stream := null if is_empty else NoiseBlender.bg_audio_for_biome(biome)
+	bg_audio_state.play(stream)
 		
 func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_open = open
@@ -613,9 +619,10 @@ func transition_menu(is_open: bool) -> void:
 func change_reticule_visible(should_hide: bool) -> void:
 	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide
 
-func play_walking_audio(clip: String) -> void:
-	if walking_audio["parameters/switch_to_clip"] != clip:
-		walking_audio["parameters/switch_to_clip"] = clip
+func play_walking_audio(biome: World.Biome, is_empty: bool = false) -> void:
+	var stream := null if is_empty else NoiseBlender.walking_audio_for_biome(biome)
+	walking_audio_state.play(stream)
+	walking_audio_state.pitch_scale = NoiseBlender.walking_audio_tempo_factor(biome)
 		
 func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
 	artifacts.save(world_settings.world_name)

@@ -281,7 +281,7 @@ func _physics_process(delta: float) -> void:
 	var b := blender.biome
 	if last_biome != b:
 		player.set_current_biome(b)
-		player.transition_bg_audio(NoiseBlender.audio_for_biome(b))
+		player.play_bg_audio(b)
 		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)
 		last_last_biome = last_biome
 		last_biome = b

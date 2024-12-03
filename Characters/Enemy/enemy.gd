@@ -34,6 +34,7 @@ var is_dead: bool = false
 var kind: World.Enemy = World.Enemy.NONE
 var is_idle := true
 var is_idle_is_set := false
+var spell_drop_probs := {}
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
@@ -525,7 +526,10 @@ func drop_artifact() -> Artifact:
 	return null
 	
 func drop_spell() -> Spell:
-	return null
+	var result := Rand.entity_from_distribution(randf(), spell_drop_probs, null) as Spell
+	var new_name := player.name_generator.latin_names.generate(12, 2)
+	result.duplicate({}, false).bake(new_name)
+	return result
 	
 func drop_key() -> int:
 	return 0

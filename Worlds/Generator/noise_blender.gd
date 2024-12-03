@@ -21,6 +21,12 @@ var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevati
 var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
 
 const grassland_walking: AudioStream = preload("res://Audio/walking/grassland.mp3")
+const forest_walking: AudioStream = preload("res://Audio/walking/forest.mp3")
+const water_walking: AudioStream = preload("res://Audio/walking/water.mp3")
+
+const grasslang_bg: AudioStream = preload("res://Audio/biome/grassland.mp3")
+const forest_bg: AudioStream = preload("res://Audio/biome/forest.mp3")
+const water_bg: AudioStream = preload("res://Audio/biome/lake.mp3")
 
 """
 	WATER,
@@ -219,33 +225,47 @@ func shuffle_biome_locations(rng: RandomNumberGenerator) -> PackedVector2Array:
 	return result
 		
 
-static func audio_for_biome(b: World.Biome) -> String:
+static func bg_audio_for_biome(b: World.Biome) -> AudioStream:
 	match b:
-		World.Biome.WATER: return "Lake"
-		World.Biome.TAIGA: return "Lake"
-		World.Biome.GRASSLAND: return "Grassland"
-		World.Biome.FOREST: return "Forest"
-		World.Biome.DESERT: return "Lake"
-		World.Biome.JUNGLE: return "Lake"
-		World.Biome.SAVANNAH: return "Lake"
-		World.Biome.TUNDRA: return "Lake"
-		World.Biome.OTHERWORLD: return "Lake"
-		World.Biome.HFIL: return "Lake"
-		_: return "Lake"
+		World.Biome.WATER: return water_bg
+		World.Biome.TAIGA: return water_bg
+		World.Biome.GRASSLAND: return grasslang_bg
+		World.Biome.FOREST: return forest_bg
+		World.Biome.DESERT: return water_bg
+		World.Biome.JUNGLE: return water_bg
+		World.Biome.SAVANNAH: return water_bg
+		World.Biome.TUNDRA: return water_bg
+		World.Biome.OTHERWORLD: return water_bg
+		World.Biome.HFIL: return water_bg
+		_: return null
 		
-static func walking_audio_for_biome(b: World.Biome) -> String:
+static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
 	match b:
-		World.Biome.WATER: return "Water"
-		World.Biome.TAIGA: return "Grassland"
-		World.Biome.GRASSLAND: return "Grassland"
-		World.Biome.FOREST: return "Forest"
-		World.Biome.DESERT: return "Grassland"
-		World.Biome.JUNGLE: return "Grassland"
-		World.Biome.SAVANNAH: return "Grassland"
-		World.Biome.TUNDRA: return "Grassland"
-		World.Biome.OTHERWORLD: return "Grassland"
-		World.Biome.HFIL: return "Grassland"
-		_: return "empty"
+		World.Biome.WATER: return water_walking
+		World.Biome.TAIGA: return water_walking
+		World.Biome.GRASSLAND: return grassland_walking
+		World.Biome.FOREST: return forest_walking
+		World.Biome.DESERT: return water_walking
+		World.Biome.JUNGLE: return water_walking
+		World.Biome.SAVANNAH: return water_walking
+		World.Biome.TUNDRA: return water_walking
+		World.Biome.OTHERWORLD: return water_walking
+		World.Biome.HFIL: return water_walking
+		_: return null
+		
+static func walking_audio_tempo_factor(b: World.Biome) -> float:
+	match b:
+		World.Biome.WATER: return 1.0
+		World.Biome.TAIGA: return 1.0
+		World.Biome.GRASSLAND: return 0.5
+		World.Biome.FOREST: return 1.0
+		World.Biome.DESERT: return 1.0
+		World.Biome.JUNGLE: return 1.0
+		World.Biome.SAVANNAH: return 1.0
+		World.Biome.TUNDRA: return 1.0
+		World.Biome.OTHERWORLD: return 1.0
+		World.Biome.HFIL: return 1.0
+		_: return 1.0
 
 static func update_for_world_environment(result: Dictionary, env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, level: float, b: World.Biome, day_time: float) -> void:	
 	result["*fog_density"] = 0.0

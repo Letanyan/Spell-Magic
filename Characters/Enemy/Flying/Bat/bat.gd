@@ -50,6 +50,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	elec_arc2.configure({"R": "pi/2", "s": atks(3,9)}, Spell.Element.ELECTRIC, 8.0, power(10), radius(3), fiti(1, 6), 75, 50, 0)
 	elec_arc3.configure({"R": "pi/4", "s": atks(4,10)}, Spell.Element.ELECTRIC, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 0)
 	
+	spell_drop_probs = {
+		elec1: fit(10, 100),
+		elec2: fit(100, 500),
+		elec3: fit(500, 1000),
+		elec_arc1: fit(1, 10),
+		elec_arc2: fit(10, 50),
+		elec_arc3: fit(10, 50),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			elec1,
@@ -91,8 +100,3 @@ func drop_artifact() -> Artifact:
 	var b := Artifact.Option.make_random()
 	var r := Artifact.Option.make_random()
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
-	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := elec1.duplicate({}, false).bake(new_name)
-	return spell

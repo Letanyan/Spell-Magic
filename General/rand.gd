@@ -115,8 +115,9 @@ static func entity_from_distribution(r: float, probs: Dictionary, default: Varia
 static func entity_from_non_relative_distribution(r: float, probs: Dictionary, default: Variant = 0) -> Variant:
 	return GDNavigator.rand_entity_from_non_relative_distribution(r, probs, default)
 	
-static func normalise_distribution(probs: Dictionary) -> void:
+static func normalise_distribution(probs: Dictionary) -> Dictionary:
 	GDNavigator.normalise_distribution(probs)
+	return probs
 
 static func roll(sides: int, count: int, constant: int, rng: RandomNumberGenerator = null, accum: Accum = Accum.SUM, clamping: Vector2i = Vector2i(1, sides * count)) -> int:
 	var result := 0

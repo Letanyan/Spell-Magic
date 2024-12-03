@@ -66,8 +66,3 @@ func drop_artifact() -> Artifact:
 	var b := Artifact.Option.make_random()
 	var r := Artifact.Option.make_random()
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
-	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := rock_attack_small.duplicate().bake(new_name)
-	return spell

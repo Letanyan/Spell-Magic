@@ -1,12 +1,10 @@
-[gd_scene load_steps=165 format=4 uid="uid://cs66h1r8861hy"]
+[gd_scene load_steps=163 format=4 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_kw0nn"]
 [ext_resource type="Shader" path="res://Characters/Player/MainPlayer.gdshader" id="2_nairg"]
 [ext_resource type="Texture2D" uid="uid://o3cab8bv33d" path="res://GUI/Images/circle.png" id="2_y1bhm"]
 [ext_resource type="Texture2D" uid="uid://c7buo0xdor3it" path="res://Worlds/Generator/Terrain/caustic_texture.tres" id="3_en07u"]
-[ext_resource type="AudioStream" uid="uid://d2l4v4uaejwcg" path="res://Audio/biome/ambience.tres" id="5_ql3oh"]
-[ext_resource type="AudioStream" uid="uid://efnlhhufuwhw" path="res://Audio/walking/walking.tres" id="6_4wfaj"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="8_ak60u"]
 [ext_resource type="Shader" path="res://Projectiles/air_trail.gdshader" id="9_l817d"]
 
@@ -15005,15 +15003,15 @@ offset_bottom = 8.0
 texture = ExtResource("2_y1bhm")
 stretch_mode = 3
 
-[node name="BGAudio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("5_ql3oh")
-max_distance = 50.0
+[node name="BGAudio1" type="AudioStreamPlayer3D" parent="."]
 bus = &"BG"
 
-[node name="MovementAudio" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("6_4wfaj")
-autoplay = true
-max_distance = 50.0
+[node name="BGAudio2" type="AudioStreamPlayer3D" parent="."]
+bus = &"BG"
+
+[node name="MovementAudio1" type="AudioStreamPlayer3D" parent="."]
+
+[node name="MovementAudio2" type="AudioStreamPlayer3D" parent="."]
 
 [node name="Rain" type="GPUParticles3D" parent="."]
 process_mode = 4

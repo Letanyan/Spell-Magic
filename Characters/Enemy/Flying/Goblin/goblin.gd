@@ -26,6 +26,12 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	rock_attack_medium.configure({"d": "Br*2", "s": atks(1,3)}, Spell.Element.ROCK, fit(2,4), power(6), radius(2), 1, 0, 0, 0)
 	rock_attack_large.configure({"d": "Br*2.5", "s": atks(1,3)}, Spell.Element.ROCK, fit(2,5), power(7), radius(2), 1, 0, 0, 0)
 	
+	spell_drop_probs = {
+		rock_attack_large: fit(1, 10),
+		rock_attack_medium: fit(10, 50),
+		rock_attack_small: fit(50, 100),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			rock_attack_small,
@@ -66,8 +72,3 @@ func drop_artifact() -> Artifact:
 	var b := Artifact.Option.make_random()
 	var r := Artifact.Option.make_random()
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
-	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := rock_attack_small.duplicate().bake(new_name)
-	return spell

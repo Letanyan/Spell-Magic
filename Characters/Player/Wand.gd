@@ -44,7 +44,7 @@ class Option:
 		else:
 			spell_names.assign(s as Array[String])
 		parameters.assign(dict.get("parameters", []) as Array[Dictionary])
-		while parameters.size() < spells.size():
+		while parameters.size() < spell_names.size():
 			parameters.append({})
 		set_spells_with_names(book)
 		spell_index = spell_names.size() - 1

@@ -292,11 +292,15 @@ horizontal_alignment = 3
 autowrap_mode = 2
 
 [node name="Render Distance" type="Label" parent="Tabs/Camera"]
-layout_mode = 0
-offset_left = 264.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -304.0
 offset_top = 191.0
-offset_right = 393.0
+offset_right = -175.0
 offset_bottom = 223.0
+grow_horizontal = 2
 text = "Render Distance: "
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -606,11 +610,15 @@ popup/item_1/text = "Disabled"
 popup/item_1/id = 1
 
 [node name="Grass Size" type="Label" parent="Tabs/Graphics"]
-layout_mode = 0
-offset_left = 424.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -144.0
 offset_top = 447.0
-offset_right = 500.0
+offset_right = -68.0
 offset_bottom = 471.0
+grow_horizontal = 2
 text = "Grass Size"
 
 [node name="Slider" type="HSlider" parent="Tabs/Graphics/Grass Size"]
@@ -636,11 +644,15 @@ layout_mode = 2
 metadata/_tab_index = 3
 
 [node name="Master" type="Label" parent="Tabs/Sound"]
-layout_mode = 0
-offset_left = 372.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -196.0
 offset_top = 45.0
-offset_right = 423.0
+offset_right = -145.0
 offset_bottom = 66.0
+grow_horizontal = 2
 text = "Master"
 
 [node name="Slider" type="HSlider" parent="Tabs/Sound/Master"]
@@ -659,11 +671,15 @@ offset_bottom = 21.0
 text = "100%"
 
 [node name="Music" type="Label" parent="Tabs/Sound"]
-layout_mode = 0
-offset_left = 372.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -196.0
 offset_top = 85.0
-offset_right = 415.0
+offset_right = -153.0
 offset_bottom = 106.0
+grow_horizontal = 2
 text = "Music"
 
 [node name="Slider" type="HSlider" parent="Tabs/Sound/Music"]
@@ -682,11 +698,15 @@ offset_bottom = 21.0
 text = "100%"
 
 [node name="SFX" type="Label" parent="Tabs/Sound"]
-layout_mode = 0
-offset_left = 372.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -196.0
 offset_top = 125.0
-offset_right = 412.0
+offset_right = -156.0
 offset_bottom = 146.0
+grow_horizontal = 2
 text = "SFX"
 
 [node name="Slider" type="HSlider" parent="Tabs/Sound/SFX"]
@@ -790,19 +810,26 @@ popup/item_2/text = "None"
 popup/item_2/id = 2
 
 [node name="SortNotesLabel" type="Label" parent="Tabs/Notes"]
-layout_mode = 0
-offset_left = 952.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -184.0
 offset_top = -1.0
-offset_right = 992.0
+offset_right = -144.0
 offset_bottom = 55.0
+grow_horizontal = 0
 text = "Sort: "
 vertical_alignment = 1
 
 [node name="SortNotes" type="OptionButton" parent="Tabs/Notes"]
-layout_mode = 0
-offset_left = 992.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.007
+anchor_right = 1.007
+offset_left = -151.952
 offset_top = 15.0
-offset_right = 1116.0
+offset_right = -27.9521
 offset_bottom = 40.0
 selected = 0
 item_count = 2
