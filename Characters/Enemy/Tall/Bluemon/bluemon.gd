@@ -25,8 +25,8 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
 	
 	var circle_path := Pathway.new().move_to(Vector3.ZERO).circle(fit(10,15), 0, runs(19))
-	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
-	attack_path = PathStyle.new(0, Vector3.ZERO).follow_path(circle_path).align_y_to_ground().look_at_player_xz().origin_is_player()
+	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
+	attack_path = PathStyle.new(seedling).follow_path(circle_path).align_y_to_ground().look_at_player_xz().origin_is_player()
 	
 	current_path = idle_path
 	
@@ -85,7 +85,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(atkd(16), [ 15, 10, 5, 15, 10, 5 ], 1)
 	)
 	
-	var cover_and_attack_path := PathStyle.new().follow_path(
+	var cover_and_attack_path := PathStyle.new(seedling).follow_path(
 		Pathway.new() \
 			.move_to(Vector3(0, 0, 0))
 			.line_to(Vector3(5, 0, 0), runs(15)) \

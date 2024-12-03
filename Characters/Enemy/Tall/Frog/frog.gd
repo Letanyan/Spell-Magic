@@ -25,10 +25,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), runs(10), Easing.out_quart) \
 		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), runs(10), Easing.out_quart)
 		
-	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air() \
+	idle_path = PathStyle.new(seedling, position).follow_path(idle_pathway).align_y_to_ground_and_air() \
 		.initial_position_can_update_on_ground()
 	
-	attack_path = PathStyle.new().follow_path(idle_pathway)\
+	attack_path = PathStyle.new(seedling).follow_path(idle_pathway)\
 		.align_y_to_ground_and_air()\
 		.origin_is_player() \
 		.player_vision_is_body_rotation(0, 0, 10.0)\

@@ -1,30 +1,12 @@
-[gd_scene load_steps=11 format=4 uid="uid://d1hniedkjckp"]
+[gd_scene load_steps=9 format=4 uid="uid://d1hniedkjckp"]
 
 [ext_resource type="Script" path="res://Worlds/Generator/Terrain/foliage.gd" id="1_v4ejs"]
-[ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_625ls"]
-[ext_resource type="Texture2D" uid="uid://bp2erx00grov7" path="res://Models/Nature/NaturePackLite_Texture_01.png" id="3_kryls"]
+[ext_resource type="Material" uid="uid://caqq4eogbwxyh" path="res://Models/Nature/Nature_Mat_Shader.material" id="2_rswio"]
 [ext_resource type="Material" uid="uid://bea4dl4060sxo" path="res://Models/Nature/Nature_Mat_01.tres" id="4_u1eea"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6t16s"]
 height = 4.0
 radius = 0.3
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bft8p"]
-resource_name = "Nature_Mat_01"
-render_priority = 0
-shader = ExtResource("2_625ls")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = null
-shader_parameter/normal_scale = null
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/texture_albedo = ExtResource("3_kryls")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_hcjnt"]
 _surfaces = [{
@@ -49,7 +31,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 1278,
 "index_data": PackedByteArray("AAACAAEAAwAFAAQABgAIAAcACQALAAoADAAOAA0ADwARABAAEgAUABMAFQAXABYAGAAaABkAGwAdABwAHgAgAB8AIQAjACIAJAAmACUAJwApACgAKgAsACsALQAvAC4AMAAyADEAMwA1ADQAMwA2ADUANwA5ADgAOgA8ADsAOgA7AD0APgBAAD8AQQBDAEIARABGAEUARwBJAEgASgBMAEsATQBPAE4AUABSAFEAUABTAFIAVABWAFUAVwBZAFgAWgBcAFsAXQBfAF4AYABiAGEAYgBjAGEAZABmAGUAZABlAGcAaABqAGkAawBnAGUAbABuAG0AbABtAG8AcAByAHEAcwB1AHQAcwB0AHYAdwB5AHgAegB8AHsAegB7AH0AfgCAAH8AgQCDAIIAgQCEAIMAgQCFAIQAhgCIAIcAhgCJAIgAigCMAIsAjQCPAI4AkACSAJEAkwCVAJQAlgCYAJcAmQCbAJoAnACeAJ0AnwChAKAAogCkAKMApQCnAKYAqACqAKkAqwCtAKwArgCwAK8AsQCzALIAswC0ALIAtQC3ALYAuAC6ALkAuwC9ALwAvgDAAL8AwQDDAMIAwwDEAMIAxQDHAMYAyADKAMkAywDNAMwAzgDQAM8A0QDTANIA1ADWANUA1wDZANgA2gDcANsA3QDfAN4A4ADiAOEA4wDlAOQA5gDoAOcA6QDrAOoA7ADuAO0A7wDxAPAA8gD0APMA9QD3APYA9wD4APYA+QD7APoA/AD+AP0A/wABAQABAgEEAQMBBQEHAQYBCAEKAQkBCwENAQwBDgEQAQ8BEQETARIBFAEWARUBFwEZARgBGgEcARsBHQEfAR4BIAEiASEBIwElASQBJgEoAScBKQErASoBLAEuAS0BLAEtAS8BMAEyATEBMwE1ATQBNgE4ATcBNgE3ATkBOgE8ATsBPQE/AT4BQAFCAUEBQwFFAUQBRgFIAUcBSQFLAUoBTAFOAU0BTwFRAVABUgFUAVMBVQFXAVYBWAFaAVkBWwFdAVwBXQFeAVwBXwFhAWABYgFkAWMBZQFnAWYBaAFqAWkBawFtAWwBbgFwAW8BcQFzAXIBdAF2AXUBdwF5AXgBegF8AXsBegF7AX0BfgGAAX8BgQGDAYIBgQGCAYQBhQGHAYYBhQGGAYgBiQGLAYoBjAGOAY0BjAGNAY8BkAGSAZEBkwGMAY8BlAGWAZUBlwGZAZgBmgGcAZsBnQGfAZ4BoAGiAaEBowGlAaQBpgGoAacBqQGrAaoBrAGuAa0BrAGvAa4BsAGyAbEBswG1AbQBtgG4AbcBuQG7AboBvAG+Ab0BvwHBAcABvwHAAcIBwwHFAcQBxgHIAccBxgHJAcgBygHMAcsBygHNAcwBzgHQAc8B0QHTAdIB1AHWAdUB1wHZAdgB2gHcAdsB3QHfAd4B4AHiAeEB4wHlAeQB5gHoAecB6QHrAeoB7AHuAe0B7wHxAfAB8gH0AfMB9QH3AfYB+AH6AfkB+wH9AfwB/gEAAv8BAQIDAgICBAIGAgUCBwIJAggCCgIMAgsCDQIPAg4CEAISAhECEwIVAhQCFgIYAhcCGQIbAhoCHAIeAh0CHwIhAiACIgIkAiMCJQInAiYCKAIqAikCKwItAiwCLgIwAi8CMQIzAjICNAI2AjUCNwI5AjgCOgI8AjsCPQI/Aj4CQAJCAkECQwJFAkQCRgJIAkcCSQJLAkoCTAJOAk0CTwJRAlACUgJUAlMCVQJXAlYCWAJaAlkCWAJZAlsCXAJeAl0CXwJhAmACYgJkAmMCYgJjAmUCZgJoAmcCaQJrAmoCbAJuAm0CbwJxAnACcgJ0AnMCdQJ3AnYCeAJ6AnkCewJ9AnwCfgKAAn8CgQKDAoIChAKGAoUChwKJAogCiQKKAogCiwKNAowCjgKQAo8CkQKTApIClAKWApUClwKZApgCmgKcApsCnQKfAp4CoAKiAqECowKlAqQCpgKnAqICpgKiAqACqAKqAqkCqwKtAqwCqwKsAq4CrwKxArACrwKwArICswK1ArQCtgK4ArcCtgK3ArkCugK8ArsCvQK2ArkCvgLAAr8CwQLDAsICxALGAsUCxwLJAsgCygLMAssCzQLPAs4C0ALSAtEC0wLVAtQC1gLYAtcC1gLZAtgC2gLcAtsC3QLfAt4C4ALiAuEC4wLlAuQC5gLoAucC6QLrAuoC6QLqAuwC7QLvAu4C8ALyAvEC8ALzAvIC9AL2AvUC9AL3AvYC+AL6AvkC+wL9AvwC/gIAA/8CAQMDAwIDBAMGAwUDBwMJAwgDCgMMAwsDDQMPAw4DEAMSAxEDEwMVAxQDFgMYAxcDGQMbAxoDHAMeAx0DHwMhAyADIgMkAyMDJQMnAyYDKAMqAykDKwMtAywDLgMwAy8DMQMzAzIDNAM2AzUDNwM5AzgDOgM8AzsDPQM/Az4DQANCA0EDQwNFA0QDRgNIA0cDSQNLA0oDTANOA00DTwNRA1ADUgNUA1MDVQNXA1YDWANaA1kDWwNdA1wDXgNgA18DYQNjA2IDZANmA2UDZwNpA2gDagNsA2sDbQNvA24DcANyA3EDcwN1A3QDdgN4A3cDeQN7A3oDfAN+A30DfwOBA4ADggOEA4MDggODA4UDhgOIA4cDiQOLA4oDjAOOA40DjwORA5ADjwOTA5IDjwOQA5MDlAOWA5UDlwOZA5gDmgOcA5sDnQOfA54DoAOiA6EDoAOhA6MDpAOmA6UDpwOpA6gDqgOsA6sDrQOvA64DsAOyA7EDswO1A7QDtgO4A7cDuQO7A7oDvAO+A70DvwPBA8ADwgPEA8MDxQPHA8YDyAPKA8kDywPNA8wDzgPQA88D0QPTA9ID1APWA9UD1wPZA9gD2gPcA9sD3QPfA94D4APiA+ED4wPlA+QD5gPoA+cD6QPrA+oD6QPqA+wD7QPvA+4D8APyA/ED8APxA/MD9AP2A/UD9AP3A/YD+AP6A/kD+wP9A/wD/gMABP8DAQQDBAIEBAQGBAUEBwQJBAgECgQMBAsEDQQPBA4EEAQSBBEEEwQVBBQEFgQYBBcEGQQbBBoEHAQeBB0EHwQhBCAEIgQkBCMEJQQnBCYEKAQqBCkEKwQtBCwELgQwBC8EMQQzBDIENAQ2BDUENAQ3BDYEOAQ6BDkEOwQ9BDwEPgRABD8EQQRDBEIERARGBEUERwRJBEgESgRMBEsETQRPBE4EUARSBFEEUwRVBFQEVgRYBFcEWQRbBFoEXAReBF0EXwRhBGAEYgRkBGMEZQTWA9QDZgRoBGcEaQRrBGoEbARuBG0EbwRxBHAEcgR0BHMEdQR3BHYEeAR6BHkEewR9BHwEfgSABH8EgQSDBIIEhASGBIUEhwSJBIgEigSMBIsEjQSPBI4EkASSBJEEkwSVBJQElgSYBJcEmQSbBJoE"),
-"material": SubResource("ShaderMaterial_bft8p"),
+"material": ExtResource("2_rswio"),
 "name": "Nature_Mat_01",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -106,12 +88,11 @@ disabled = true
 [node name="MeshNode" type="Node3D" parent="."]
 
 [node name="mesh" type="MeshInstance3D" parent="MeshNode"]
-visibility_range_end = 50.0
-visibility_range_end_margin = 1.0
 mesh = SubResource("ArrayMesh_1qlkh")
 skeleton = NodePath("")
 
 [node name="mesh_1" type="MeshInstance3D" parent="MeshNode"]
+visible = false
 visibility_range_begin = 50.0
 visibility_range_begin_margin = 1.0
 mesh = SubResource("ArrayMesh_p3pkv")

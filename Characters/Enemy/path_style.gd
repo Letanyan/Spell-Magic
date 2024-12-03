@@ -103,7 +103,6 @@ func initial_position_can_update_always() -> PathStyle: when_initial_position_ca
 func initial_position_can_update_at_start() -> PathStyle: when_initial_position_can_update = InitialPositionCanUpdate.AT_START; return self
 
 func origin_is_absolute(o: Vector3) -> PathStyle: origin_kind = OriginKind.ABSOLUTE; origin = o; return self
-func origin_is_zero() -> PathStyle: origin_kind = OriginKind.ABSOLUTE; origin = Vector3.ZERO; return self
 func origin_is_player() -> PathStyle: origin_kind = OriginKind.PLAYER; return self
 func origin_is_me() -> PathStyle: origin_kind = OriginKind.ME; return self
 	
@@ -244,11 +243,13 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	old_origin = temp_origin
 	
 	if player is Player:
+		if Vector3(v.x, 0, v.z).length() < 5:
+			print("hhmmmm")
 		DebugDraw3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, delta)
 		for segment: Segment in path.segments:
-			var s := segment.position_at_time_with_transform(0.0, transform) + temp_origin
+			var s := segment.position_at_time_with_transform(0.0, transform) + Vec3.xz_y(temp_origin, 0)
 			s.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y)
-			var e := segment.position_at_time_with_transform(1.0, transform) + temp_origin
+			var e := segment.position_at_time_with_transform(1.0, transform) + Vec3.xz_y(temp_origin, 0)
 			e.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y)
 			DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
 			DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)

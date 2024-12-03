@@ -28,8 +28,8 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(16), mana(4), mana_regen(12), percep(1,4), atk(8), def(18), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
-	idle_path = PathStyle.new().follow_path(circle_path).set_origin(position).align_y_to_ground()
-	attack_path = PathStyle.new().follow_path(Pathway.empty(fit(2,6))).player_vision_is_body_rotation(2, 0, 10).look_at_player().align_y_to_ground()
+	idle_path = PathStyle.new(seedling).follow_path(circle_path).set_origin(position).align_y_to_ground()
+	attack_path = PathStyle.new(seedling).follow_path(Pathway.empty(fit(2,6))).player_vision_is_body_rotation(2, 0, 10).look_at_player().align_y_to_ground()
 	current_path = idle_path
 	
 	water_small.configure({"d": "Br", "s": atks(4,18)}, Spell.Element.WATER, fit(2,10), power(15), radius(2), 1, 80, 80, fl*50)

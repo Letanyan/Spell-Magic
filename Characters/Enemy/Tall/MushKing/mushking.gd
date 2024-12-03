@@ -24,8 +24,8 @@ var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), percep(4,8), atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})
 	
-	idle_path = PathStyle.new(0, position).follow_path(Pathway.empty(1))
-	basic_path = PathStyle.new(0, position).towards_player(1, 3, 4).player_vision_is_camera(PI, 0, 2, 3).look_at_player_xz().align_y_to_ground()
+	idle_path = PathStyle.new(seedling, position).follow_path(Pathway.empty(1))
+	basic_path = PathStyle.new(seedling, position).towards_player(1, 3, 4).player_vision_is_camera(PI, 0, 2, 3).look_at_player_xz().align_y_to_ground()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
@@ -83,9 +83,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.line_to(Vector3(0, U, 0), runs(12), Easing.linear) \
 		.wait(fit(2,8))
 	angry_sequence = AttackSequence.new(true, [
-		PathStyle.new().follow_path(down_pathway).origin_is_me().look_at_player_xz().align_y_to_ground_and_dirt(),
-		PathStyle.new().follow_path(Pathway.empty(5)).player_vision_is_body_rotation(0, 2, 1, 1).align_y_to_ground_air_and_dirt(),
-		PathStyle.new().follow_path(up_pathway).origin_is_me().look_at_player_xz().align_y_to_ground_and_dirt(),
+		PathStyle.new(seedling).follow_path(down_pathway).origin_is_me().look_at_player_xz().align_y_to_ground_and_dirt(),
+		PathStyle.new(seedling).follow_path(Pathway.empty(5)).player_vision_is_body_rotation(0, 2, 1, 1).align_y_to_ground_air_and_dirt(),
+		PathStyle.new(seedling).follow_path(up_pathway).origin_is_me().look_at_player_xz().align_y_to_ground_and_dirt(),
 		basic_pattern_sequence,
 	])
 	

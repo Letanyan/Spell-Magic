@@ -19,7 +19,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
 	
 	var idle_pathway := Pathway.new().random_points_in_disc(runs(12), 3, 8, 0, 5, Easing.in_out_quad)
-	idle_path = PathStyle.new().follow_path(idle_pathway).align_y_to_ground_and_air()
+	idle_path = PathStyle.new(seedling, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
 	var attack_pathway := Pathway.new()
 	var starting_point := Rand.point_in_disc(fit(3, 6), fit(4, 10), 0)
@@ -94,7 +94,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	)
 	
 	animation_map["attack"] = "Bite_Front"
-	kind = World.Enemy.BIRD
+	kind = World.Enemy.BOUGEON
 	super.setup(seedling, biome)
 	
 

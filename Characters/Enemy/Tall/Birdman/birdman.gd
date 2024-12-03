@@ -28,7 +28,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.move_to(Vector3(0, -4, 0)) \
 		.line_to(Vector3(0, 20, 0), runs(16), Easing.out_quart) \
 		.line_to(Vector3(0, -4, 0), runs(18), Easing.out_quart)
-	idle_path = PathStyle.new(0, position).follow_path(idle_pathway).align_y_to_ground_and_air()
+	idle_path = PathStyle.new(seedling, position).follow_path(idle_pathway).align_y_to_ground_and_air()
 	
 	var attack_pathway := Pathway.new() \
 		.move_to(Vector3(10, 0, 0)) \

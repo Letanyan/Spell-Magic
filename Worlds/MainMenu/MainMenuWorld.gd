@@ -48,7 +48,7 @@ func setup(_settings: WorldSettings) -> void:
 func _ready() -> void:
 	var _settings := WorldSettings.new(get_viewport())
 	_settings.world_name = "empty"
-	_settings.sed = 6326706 # Time.get_ticks_usec()
+	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	
 	# FIXME: VERSION: -1, WORLD SEED: 5825589, RNG SEED: 5825589

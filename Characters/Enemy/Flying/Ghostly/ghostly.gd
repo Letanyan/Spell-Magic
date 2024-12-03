@@ -25,7 +25,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(3), mana(8), mana_regen(20), percep(4,6), atk(12), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(5, 1)})
 	
 	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
-	idle_path = PathStyle.new(0, position).follow_path(sphere_path).align_y_to_air()
+	idle_path = PathStyle.new(seedling, position).follow_path(sphere_path).align_y_to_air()
 	
 	const idle_r := 20.0
 	const idle_h := 10.0
@@ -42,7 +42,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3) + Vector3(0, 10, 0), true, runs(8), Easing.linear) \
 		.arc_to(a  + Vector3(0, 40, 0), true, runs(8), Easing.linear)
 	
-	attack_path = PathStyle.new(randi()).follow_path(rotate_path).align_y_to_air().origin_is_player().look_at_player()
+	attack_path = PathStyle.new(seedling).follow_path(rotate_path).align_y_to_air().origin_is_player().look_at_player()
 	
 	current_path = idle_path
 	

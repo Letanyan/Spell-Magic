@@ -22,9 +22,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(10), mana(18), mana_regen(20), percep(2,4), atk(12), def(16), {Artifact.Element.FIRE: res(15, 5)})
 	
 	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
-	idle_path = PathStyle.new(0, position).follow_path(circle_path).align_y_to_ground()
+	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
 	
-	attack_path = PathStyle.new(randi(), position).towards_player(fit(1,4), 1, 2).align_y_to_ground().look_at_player()
+	attack_path = PathStyle.new(seedling, position).towards_player(fit(1,4), 1, 2).align_y_to_ground().look_at_player()
 	
 	current_path = idle_path
 	
