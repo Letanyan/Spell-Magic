@@ -651,3 +651,6 @@ func timings(cls: int, array: Array[float]) -> Array[float]:
 
 func health_drop(cls: int) -> float:
 	return float(cls) / 20.0
+	
+func spell_drop(tier: int) -> float:
+	return 1.0 / fit(tier, tier ** 2)

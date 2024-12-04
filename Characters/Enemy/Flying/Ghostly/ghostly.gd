@@ -61,6 +61,21 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_back2.configure({"sx":"C*u*4", "sy":"C*v*4", "sz":"C*w*4", "ex":"-C*u*4", "ey":"-C*v*4", "ez":"-C*w*4"}, Spell.Element.ICE, fit(7, 2.5), power(12), radius(5), 1, 50, 100, 50)
 	ice_back3.configure({"sx":"C*u*5", "sy":"C*v*5", "sz":"C*w*5", "ex":"-C*u*5", "ey":"-C*v*5", "ez":"-C*w*5"}, Spell.Element.ICE, fit(6, 2), power(10), radius(5), 1, 50, 100, 70)
 	
+	spell_drop_probs = {
+		ice1: spell_drop(1),
+		ice2: spell_drop(2),
+		ice3: spell_drop(3),
+		ice_arc1: spell_drop(4),
+		ice_arc2: spell_drop(5),
+		ice_arc3: spell_drop(6),
+		ice_scatter1: spell_drop(7),
+		ice_scatter2: spell_drop(8),
+		ice_scatter3: spell_drop(9),
+		ice_back1: spell_drop(2),
+		ice_back2: spell_drop(3),
+		ice_back3: spell_drop(4),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			ice1,
@@ -103,7 +118,3 @@ func drop_artifact() -> Artifact:
 	var r := Artifact.Option.make_random()
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
 	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := ice1.duplicate().bake(new_name)
-	return spell

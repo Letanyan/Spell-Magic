@@ -48,6 +48,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, fit(7,21), power(9), radius(7), fiti(2, 8), 75, 120, 50)
 	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, fit(5,10), power(15), radius(3), fiti(5, 10), 70, 180, 60)
 	
+	spell_drop_probs = {
+		elec1: spell_drop(1),
+		elec2: spell_drop(2),
+		elec3: spell_drop(3),
+		fire_mine1: spell_drop(15),
+		fire_mine2: spell_drop(10),
+		fire_mine3: spell_drop(12),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			elec1,
@@ -92,8 +101,3 @@ func drop_artifact() -> Artifact:
 	var b := Artifact.Option.make_random()
 	var r := Artifact.Option.make_random()
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
-	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := elec1.duplicate().bake(new_name)
-	return spell

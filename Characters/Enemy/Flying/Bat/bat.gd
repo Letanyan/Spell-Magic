@@ -51,12 +51,12 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	elec_arc3.configure({"R": "pi/4", "s": atks(4,10)}, Spell.Element.ELECTRIC, 6.0, power(12), radius(3), fiti(1, 4), 75, 75, 0)
 	
 	spell_drop_probs = {
-		elec1: fit(10, 100),
-		elec2: fit(100, 500),
-		elec3: fit(500, 1000),
-		elec_arc1: fit(1, 10),
-		elec_arc2: fit(10, 50),
-		elec_arc3: fit(10, 50),
+		elec1: spell_drop(2),
+		elec2: spell_drop(3),
+		elec3: spell_drop(4),
+		elec_arc1: spell_drop(10),
+		elec_arc2: spell_drop(11),
+		elec_arc3: spell_drop(12),
 	}
 	
 	random_pattern = AttackPatterns.new(

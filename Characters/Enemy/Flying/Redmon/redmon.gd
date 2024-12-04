@@ -40,6 +40,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	fire_mine2.configure({"d":"1", "S":"1", "s":"0.5"}, Spell.Element.FIRE, fit(7, 14), power(9), radius(7), fiti(2, 8), 75, 120, 50)
 	fire_mine3.configure({"d": "1", "R": "10", "S":"1.5-fl", "s":"lerp(fl, 2, 0.1)"}, Spell.Element.FIRE, fit(5, 10), power(15), radius(3), fiti(5, 10), 70, 180, 60)
 	
+	spell_drop_probs = {
+		fire1: spell_drop(1),
+		fire2: spell_drop(2),
+		fire3: spell_drop(3),
+		fire_down1: spell_drop(6),
+		fire_down2: spell_drop(7),
+		fire_down3: spell_drop(8),
+		fire_mine1: spell_drop(10),
+		fire_mine2: spell_drop(11),
+		fire_mine3: spell_drop(12),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			fire_mine1,

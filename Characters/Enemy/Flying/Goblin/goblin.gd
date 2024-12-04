@@ -27,9 +27,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	rock_attack_large.configure({"d": "Br*2.5", "s": atks(1,3)}, Spell.Element.ROCK, fit(2,5), power(7), radius(2), 1, 0, 0, 0)
 	
 	spell_drop_probs = {
-		rock_attack_large: fit(1, 10),
-		rock_attack_medium: fit(10, 50),
-		rock_attack_small: fit(50, 100),
+		rock_attack_small: spell_drop(1),
+		rock_attack_medium: spell_drop(2),
+		rock_attack_large: spell_drop(3),
 	}
 	
 	random_pattern = AttackPatterns.new(

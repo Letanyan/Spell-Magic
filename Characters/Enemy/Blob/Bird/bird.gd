@@ -54,6 +54,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.WATER, 5, power(10), radius(3), 1, 25, 100, 50)
 	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.ELECTRIC, 5, power(10), radius(4), 1, 25, 100, 50)
 	
+	spell_drop_probs = {
+		air_small_slow: spell_drop(1),
+		air_med_slow: spell_drop(2),
+		air_large_slow: spell_drop(3),		
+		air_small_med: spell_drop(4),
+		air_med_med: spell_drop(5),
+		air_large_med: spell_drop(6),
+		air_small_fast: spell_drop(7),
+		air_med_fast: spell_drop(8),
+		air_large_fast: spell_drop(9),
+	}
+	
 	attack_pattern1 = AttackPatterns.new(
 		[
 			air_small_fast,

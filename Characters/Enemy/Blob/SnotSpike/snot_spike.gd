@@ -75,6 +75,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_spiral3.follow = true
 	water_spiral3.chain_cast_kind = Spell.ChainCastKind.START
 	
+	spell_drop_probs = {
+		water_spout1: spell_drop(1),
+		water_spout2: spell_drop(2),
+		water_spout3: spell_drop(3),
+		water_down1: spell_drop(5),
+		water_down2: spell_drop(6),
+		water_down3: spell_drop(7),
+		water_spiral1: spell_drop(10),
+		water_spiral2: spell_drop(11),
+		water_spiral3: spell_drop(12),
+	}
+	
 	
 	random_pattern = AttackPatterns.new(
 		[

@@ -54,6 +54,14 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	air_flurry.configure({"s":atks(5,17), "d":"C", "c":"vec(0,0,0)", "R":fits(1,5)+"*rn0+rn1", "off":"vec(u, lerp(0.5, v, 1), w)", "dir":"vec(0,-1,0)", "a":"rn0*2*pi"}, Spell.Element.AIR, fit(3,6), power(12), radius(7), fiti(2, 10), 40, 60, ea(12), null, "n*"+fits(3, 0.3))
 	air_ring.configure({"s":atks(2, 6), "d":"Br*2+"+fits(2,8), "c":"vec(0,0,0)", "R":fits(2,8), "off": "uvw", "dir":"uvw", "a":"(n/N*2*pi)+t"}, Spell.Element.AIR, fit(5,10), power(15), radius(5), fiti(4, 12), 30, 90, ea(14))
 	
+	spell_drop_probs = {
+		air_small_fast: spell_drop(3),
+		air_med_med: spell_drop(2),
+		air_large_slow: spell_drop(1),
+		air_flurry: spell_drop(8),
+		air_ring: spell_drop(10),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			air_flurry,

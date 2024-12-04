@@ -46,6 +46,15 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_attack2.configure({"s":atks(2,10)}, Spell.Element.WATER, fit(3,15), power(4), radius(3), 1, 10, 200, fit(50,75))
 	water_attack3.configure({"s":atks(3,10)}, Spell.Element.WATER, fit(3,15), power(2), radius(2), 1, 10, 300, fit(50,75))
 	
+	spell_drop_probs = {
+		water_flurry1: spell_drop(7),
+		water_flurry2: spell_drop(8),
+		water_flurry3: spell_drop(9),
+		water_attack1: spell_drop(1),
+		water_attack2: spell_drop(2),
+		water_attack3: spell_drop(3),
+	}
+	
 	attack_pattern1 = AttackPatterns.new(
 		[
 			water_flurry1,
@@ -91,8 +100,3 @@ func drop_artifact() -> Artifact:
 	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
 	var new_name := player.name_generator.french_names.generate(8, 2)
 	return Artifact.new(new_name, t, r, b, l)
-
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := water_attack1.duplicate().bake(new_name)
-	return water_para

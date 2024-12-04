@@ -57,6 +57,12 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	elec2.configure({"s": atks(2,10), "d": "5"}, Spell.Element.ELECTRIC, fit(6,12), power(10), radius(4), 1, 25, 150, 40)
 	elec3.configure({"s": atks(1,5), "d": "5"}, Spell.Element.ELECTRIC, fit(5,10), power(13), radius(5), 1, 25, 150, 50)
 	
+	spell_drop_probs = {
+		elec1: spell_drop(1),
+		elec2: spell_drop(2),
+		elec3: spell_drop(3),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			elec1,

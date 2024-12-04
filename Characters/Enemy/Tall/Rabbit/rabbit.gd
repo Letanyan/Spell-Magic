@@ -56,6 +56,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	air_med_slow.configure({"Rx":fits(PI/8,PI/2)+"*if(eq(mod(n,2),0),-1,1)", "Ry":fits(PI/8,PI/2), "Dn":fits(10,2), "dz":fits(1,2), "d":"Br*2+C-dz*N/2"}, Spell.Element.AIR, fit(20,6), power(20), radius(5), fiti(1,10), 25, 100, 50)
 	air_large_slow.configure({"Rx":fits(PI/8,PI/2)+"*if(eq(mod(n,2),0),-1,1)", "Ry":fits(PI/8,PI/2), "Dn":fits(10,2), "dz":fits(1,2), "d":"Br*2+C-dz*N/2"}, Spell.Element.AIR, fit(20,6), power(20), radius(5), fiti(1,10), 25, 100, 50)
 	
+	spell_drop_probs = {
+		air_small_slow: spell_drop(1),
+		air_med_slow: spell_drop(2),
+		air_large_slow: spell_drop(3),		
+		air_small_med: spell_drop(4),
+		air_med_med: spell_drop(5),
+		air_large_med: spell_drop(6),
+		air_small_fast: spell_drop(7),
+		air_med_fast: spell_drop(8),
+		air_large_fast: spell_drop(9),
+	}
+	
 	attack_pattern1 = AttackPatterns.new(
 		[
 			air_small_fast,
@@ -120,8 +132,3 @@ func drop_artifact() -> Artifact:
 	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
 	var new_name := player.name_generator.japanese_names.generate(8, 2)
 	return Artifact.new(new_name, t, r, b, l)
-
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := air_large_med.duplicate().bake(new_name)
-	return water_para

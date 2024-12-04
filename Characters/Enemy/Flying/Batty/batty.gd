@@ -54,6 +54,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	elec_swipe2.configure({"Rx":fits(PI/8,PI/2), "Ry":"0", "Dn":fits(8,1), "dz":fits(2,4), "d":"Br*2+C-dz*N/2"}, Spell.Element.ELECTRIC, fit(12,4), power(12), radius(5), fiti(1,10), 50, 150, 20)
 	elec_swipe3.configure({"Rx":fits(PI/8,PI/2), "Ry":"0", "Dn":fits(8,1), "dz":fits(2,4), "d":"Br*2+C-dz*N/2"}, Spell.Element.ELECTRIC, fit(16,6), power(12), radius(5), fiti(1,10), 75, 200, 30)
 	
+	spell_drop_probs = {
+		elec1: spell_drop(1),
+		elec2: spell_drop(2),
+		elec3: spell_drop(3),
+		elec_arc1: spell_drop(6),
+		elec_arc2: spell_drop(7),
+		elec_arc3: spell_drop(8),
+		elec_swipe1: spell_drop(10),
+		elec_swipe2: spell_drop(11),
+		elec_swipe3: spell_drop(12),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			elec1,
@@ -101,8 +113,3 @@ func drop_artifact() -> Artifact:
 	var b := Artifact.Option.make_random()
 	var r := Artifact.Option.make_random()
 	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
-	
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var spell := elec1.duplicate().bake(new_name)
-	return spell

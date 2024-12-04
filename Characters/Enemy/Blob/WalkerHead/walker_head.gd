@@ -37,6 +37,17 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_wall.configure({"size":"vec(0.495, 0.495, 0.01)"}, Spell.Element.ICE, ice_wall_duration, 0, 1, 4, 0, 0, 0)
 	ice_wall.follow = true
 	
+	spell_drop_probs = {
+		water_small: spell_drop(1),
+		water_medium: spell_drop(2),
+		water_large: spell_drop(3),
+		ice_small: spell_drop(5),
+		ice_medium: spell_drop(6),
+		ice_large: spell_drop(7),
+		ice_wall: spell_drop(10),
+	}
+	
+	
 	none_pattern = AttackPatterns.none()
 	
 	default_pattern = AttackPatterns.new(

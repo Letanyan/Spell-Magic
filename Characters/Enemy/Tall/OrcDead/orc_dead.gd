@@ -40,6 +40,13 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		"LC": "2", "LR": "pi*0.5"
 	}, Spell.Element.ELECTRIC, fit(2, 10), power(5), radius(3), fiti(4,10), 10, 50, ea(10))
 	
+	spell_drop_probs = {
+		electric_attack_small: spell_drop(1),
+		electric_attack_medium: spell_drop(2),
+		electric_attack_large: spell_drop(3),
+		electric_attack_lines: spell_drop(6),
+	}
+	
 	random_pattern = AttackPatterns.new(
 		[
 			electric_attack_lines,

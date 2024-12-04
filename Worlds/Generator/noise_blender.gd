@@ -24,9 +24,16 @@ const grassland_walking: AudioStream = preload("res://Audio/walking/grassland.mp
 const forest_walking: AudioStream = preload("res://Audio/walking/forest.mp3")
 const water_walking: AudioStream = preload("res://Audio/walking/water.mp3")
 
-const grasslang_bg: AudioStream = preload("res://Audio/biome/grassland.mp3")
+const grassland_bg: AudioStream = preload("res://Audio/biome/grassland.mp3")
 const forest_bg: AudioStream = preload("res://Audio/biome/forest.mp3")
 const water_bg: AudioStream = preload("res://Audio/biome/lake.mp3")
+const desert_bg: AudioStream = preload("res://Audio/biome/desert.mp3")
+const hfil_bg: AudioStream = preload("res://Audio/biome/hfil.mp3")
+const jungle_bg: AudioStream = preload("res://Audio/biome/jungle.mp3")
+const otherworld_bg: AudioStream = preload("res://Audio/biome/otherworld.mp3")
+const savannah_bg: AudioStream = preload("res://Audio/biome/savannah.mp3")
+const taiga_bg: AudioStream = preload("res://Audio/biome/taiga.mp3")
+const tundra_bg: AudioStream = preload("res://Audio/biome/tundra.mp3")
 
 """
 	WATER,
@@ -228,15 +235,15 @@ func shuffle_biome_locations(rng: RandomNumberGenerator) -> PackedVector2Array:
 static func bg_audio_for_biome(b: World.Biome) -> AudioStream:
 	match b:
 		World.Biome.WATER: return water_bg
-		World.Biome.TAIGA: return water_bg
-		World.Biome.GRASSLAND: return grasslang_bg
+		World.Biome.TAIGA: return taiga_bg
+		World.Biome.GRASSLAND: return grassland_bg
 		World.Biome.FOREST: return forest_bg
-		World.Biome.DESERT: return water_bg
-		World.Biome.JUNGLE: return water_bg
-		World.Biome.SAVANNAH: return water_bg
-		World.Biome.TUNDRA: return water_bg
-		World.Biome.OTHERWORLD: return water_bg
-		World.Biome.HFIL: return water_bg
+		World.Biome.DESERT: return desert_bg
+		World.Biome.JUNGLE: return jungle_bg
+		World.Biome.SAVANNAH: return savannah_bg
+		World.Biome.TUNDRA: return tundra_bg
+		World.Biome.OTHERWORLD: return otherworld_bg
+		World.Biome.HFIL: return hfil_bg
 		_: return null
 		
 static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
@@ -255,14 +262,14 @@ static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
 		
 static func walking_audio_tempo_factor(b: World.Biome) -> float:
 	match b:
-		World.Biome.WATER: return 1.0
-		World.Biome.TAIGA: return 1.0
-		World.Biome.GRASSLAND: return 0.5
-		World.Biome.FOREST: return 1.0
-		World.Biome.DESERT: return 1.0
-		World.Biome.JUNGLE: return 1.0
-		World.Biome.SAVANNAH: return 1.0
-		World.Biome.TUNDRA: return 1.0
+		World.Biome.WATER: return 1.0 #
+		World.Biome.TAIGA: return 1.0 # 
+		World.Biome.GRASSLAND: return 0.5 #
+		World.Biome.FOREST: return 1.0 #
+		World.Biome.DESERT: return 1.0 # 
+		World.Biome.JUNGLE: return 1.0 # 
+		World.Biome.SAVANNAH: return 1.0 #
+		World.Biome.TUNDRA: return 1.0 # 
 		World.Biome.OTHERWORLD: return 1.0
 		World.Biome.HFIL: return 1.0
 		_: return 1.0

@@ -12,7 +12,6 @@ var in_queue_should_stop: bool
 
 var pitch_scale: float:
 	set(value):
-		print("set pitch for state: ", PlayerState.keys()[state])
 		match state:
 			PlayerState.MUTE:
 				player1.pitch_scale = value
@@ -40,10 +39,8 @@ func fade_in(player: AudioStreamPlayer3D, tween: Tween, duration: float) -> void
 	
 func fade_out(player: AudioStreamPlayer3D, tween: Tween, duration: float) -> void:
 	tween.tween_property(player, "volume_db", -40, duration)
-	print("starting fade")
 	tween.tween_method(func(should_stop: float) -> void: 
-		if is_zero_approx(should_stop): 
-			print("stopping: ", should_stop)
+		if is_zero_approx(should_stop):
 			player.stop()
 	, 1.0, 0.0, duration)
 	
@@ -120,5 +117,3 @@ func play(stream: AudioStream, fade_time: float = 0.5) -> void:
 			else:
 				in_queue = stream
 				in_queue_fade = fade_time
-				
-	print("current state: ", PlayerState.keys()[state])

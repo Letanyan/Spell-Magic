@@ -29,6 +29,13 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_shower.configure({"sx":"u*Br","sy":"v*Br","sz":"w*Br","ex":"u*C","ey":"C*v","ez":"C*w"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower_chain)
 	water_shower_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": fits(4,10)}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
+	spell_drop_probs = {
+		water_para: spell_drop(3),
+		water_line: spell_drop(1),
+		water_arc: spell_drop(2),
+		water_shower: spell_drop(7),
+	}
+	
 	default_pattern = AttackPatterns.new(
 		[
 			AttackPatterns.new(

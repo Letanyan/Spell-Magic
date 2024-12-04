@@ -52,6 +52,19 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.ICE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
 	rock_wall.configure({"d": "0.2","S":"0","s":"0","rx":"5","ry":"5","rz":"0.1","ra":"0"}, Spell.Element.ROCK, fit(10,20), power(0), 1.5, 1, 0, 0, 0)
 	
+	spell_drop_probs = {
+		water_bomb_small: spell_drop(5),
+		water_bomb_medium: spell_drop(6),
+		water_bomb_large: spell_drop(7),
+		water_attack1: spell_drop(1),
+		water_attack2: spell_drop(2),
+		water_attack3: spell_drop(3),
+		ice_attack1: spell_drop(1),
+		ice_attack2: spell_drop(2),
+		ice_attack3: spell_drop(3),
+		rock_wall: spell_drop(10),
+	}
+	
 	attack_pattern1 = AttackPatterns.new(
 		[
 			water_bomb_small,
@@ -129,8 +142,3 @@ func drop_artifact() -> Artifact:
 	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
 	var new_name := player.name_generator.indian_names.generate(8, 2)
 	return Artifact.new(new_name, t, r, b, l)
-
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := water_attack1.duplicate().bake(new_name)
-	return water_para

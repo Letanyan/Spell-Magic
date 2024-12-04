@@ -55,6 +55,21 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_circle_line.configure({"sx":"0","sy":"0","sz":"0","ex":"C*u","ey":"C*v","ez":"C*w"}, Spell.Element.ICE, fit(5,2), power(18), radius(7), fiti(3,15), 70, 150, 75)
 	ice_circle_line.set_delay("n*"+fits(2,0.5))
 	
+	spell_drop_probs = {
+		fire_circle: spell_drop(6),
+		fire_circle_line: spell_drop(3),
+		water_circle: spell_drop(6),
+		water_circle_line: spell_drop(3),
+		elec_circle: spell_drop(6),
+		elec_circle_line: spell_drop(3),
+		ice_circle: spell_drop(6),
+		ice_circle_line: spell_drop(3),
+		fire1: spell_drop(2),
+		water1: spell_drop(2),
+		elec1: spell_drop(2),
+		ice1: spell_drop(2),
+	}
+	
 	random_pattern1 = AttackPatterns.new(
 		[
 			fire1,

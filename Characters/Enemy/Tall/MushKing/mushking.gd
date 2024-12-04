@@ -42,6 +42,19 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_shower1.configure({"sx":"u*Br","sy":"v*Br","sz":"w*Br","ex":"u*C","ey":"C*v","ez":"C*w"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
 	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
+	spell_drop_probs = {
+		water_para1: spell_drop(1),
+		water_para2: spell_drop(2),
+		water_para3: spell_drop(3),
+		water_line1: spell_drop(4),
+		water_line2: spell_drop(5),
+		water_line3: spell_drop(6),
+		water_flurry1: spell_drop(7),
+		water_flurry2: spell_drop(8),
+		water_flurry3: spell_drop(9),
+		water_shower1: spell_drop(10),
+	}
+	
 	basic_pattern = AttackPatterns.new(
 		[
 			water_line1,
@@ -111,8 +124,3 @@ func drop_artifact() -> Artifact:
 	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
 	var new_name := player.name_generator.italian_names.generate(8, 2)
 	return Artifact.new(new_name, t, r, b, l)
-
-func drop_spell() -> Spell:
-	var new_name := player.name_generator.latin_names.generate(6, 2)
-	var water_para := GlobalData.magic_book.copy_and_configure_spell("loop-shot", {"H":"4", "speed":"4"}, Spell.Element.AIR, 3, 5, 0.1, 1, 0, 0, 0).bake(new_name)
-	return water_para
