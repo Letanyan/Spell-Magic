@@ -100,6 +100,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"NE": {
+			"is_effect": 0.75,
+			"event": { Artifact.Event.RECEIVE: 2, Artifact.Event.DEAL: 10 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 10 },
+			"ev_element": { Artifact.Element.AIR: 10 },
+			"ef_element": { Artifact.Element.AIR: 10, Artifact.Element.HEALTH_BUMP: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 10, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(8),
+		},
+		"WS": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 10 },
+			"ev_element": { Artifact.Element.AIR: 10, },
+			"ef_element": { Artifact.Element.AIR: 10, Artifact.Element.HEALTH_BUMP: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 2, Artifact.Pattern.CIRCLE: 10 },
+			"tier": artier(8),
+		}
+	}
+	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.BOUGEON
 	super.setup(seedling, biome)
@@ -115,12 +136,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, attack_pattern1)
 	else:
 		set_path_and_attack(attack_path, attack_pattern3)
-
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.cumbria_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

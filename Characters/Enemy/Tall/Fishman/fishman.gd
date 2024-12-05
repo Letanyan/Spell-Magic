@@ -58,6 +58,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(3.5, [ 10, 3 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"all": {
+			"is_effect": 0.66,
+			"event": { Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.BOOST_FLAT: 5 },
+			"ev_element": { Artifact.Element.WATER: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.HEALTH_BUMP: 5, Artifact.Element.DURATION: 5, Artifact.Element.HEALTH: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 5, Artifact.Pattern.TRIANGLE: 10 },
+			"tier": artier(16),
+		}
+	}
+	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.FISHMAN
 	super.setup(seedling, biome)
@@ -70,18 +82,6 @@ func update_behaviour() -> void:
 	else:
 		set_path_and_attack(attack_direct_path, default_pattern)
 
-func drop_artifact() -> Artifact:
-	#var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	#var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	#var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	#var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	
-	var t := Artifact.Option.make_random(1.0, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.CRIT_RATE: 0.5, Artifact.Element.CRIT_DMG: 0.2}, Vector2i(2, 5))
-	var r := Artifact.Option.make_random(1.0, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.CRIT_RATE: 0.5, Artifact.Element.CRIT_DMG: 0.2}, Vector2i(2, 5))
-	var b := Artifact.Option.make_random(1.0, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.CRIT_RATE: 0.5, Artifact.Element.CRIT_DMG: 0.2}, Vector2i(2, 5))
-	var l := Artifact.Option.make_random(1.0, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.CRIT_RATE: 0.5, Artifact.Element.CRIT_DMG: 0.2}, Vector2i(2, 5))
-	
-	return Artifact.new(player.name_generator.chinese_names.generate(8, 1), t, r, b, l)
 
 func drop_coins() -> Array[int]:
 	return [1, 5, 10, 5, 5, 10, 1, 1, 1, 1]

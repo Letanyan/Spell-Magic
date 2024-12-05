@@ -109,6 +109,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		random_pattern,
 	])
 	
+	artifact_drop_probs = {
+		"NEW": {
+			"is_effect": 0.75,
+			"event": { Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 10, },
+			"ev_element": { Artifact.Element.ELECTRIC: 10, Artifact.Element.ROCK: 10 },
+			"ef_element": { Artifact.Element.ELECTRIC: 10, Artifact.Element.ROCK: 10, Artifact.Element.MANA: 5, Artifact.Element.MANA_BUMP: 5, },
+			"pattern": { Artifact.Pattern.CIRCLE: 4, Artifact.Pattern.TRIANGLE: 2 },
+			"tier": artier(14),
+		},
+		"S": {
+			"is_effect": 0.25,
+			"event": { Artifact.Event.RECEIVE: 2, Artifact.Event.DEAL: 10 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 10, },
+			"ev_element": { Artifact.Element.ELECTRIC: 10, Artifact.Element.ROCK: 10 },
+			"ef_element": { Artifact.Element.ELECTRIC: 10, Artifact.Element.ROCK: 10, Artifact.Element.MANA: 5, Artifact.Element.MANA_BUMP: 5, },
+			"pattern": { Artifact.Pattern.CIRCLE: 4, Artifact.Pattern.TRIANGLE: 2 },
+			"tier": artier(14),
+		}
+	}
+	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.MOLE
 	super.setup(seedling, biome)

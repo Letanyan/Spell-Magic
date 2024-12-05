@@ -52,6 +52,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.6, [ 2, 5, 2, 4, 2 ]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"NW": {
+			"is_effect": 0.25,
+			"event": {Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 1, },
+			"effect": { Artifact.Effect.BOOST_FLAT: 10, },
+			"ef_element": { Artifact.Element.ROCK: 10, Artifact.Element.RUNNING_SPEED: 10, Artifact.Element.HEALTH: 1,  },
+			"ev_element": { Artifact.Element.ROCK: 10 },
+			"pattern": { Artifact.Pattern.SQUARE: 2 },
+			"tier": artier(8),
+		},
+		"SE": {
+			"is_effect": 0.1,
+			"event": {Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 1, },
+			"effect": { Artifact.Effect.BOOST_FLAT: 10, },
+			"ef_element": { Artifact.Element.ROCK: 10, Artifact.Element.RUNNING_SPEED: 10, Artifact.Element.HEALTH: 1,  },
+			"ev_element": { Artifact.Element.ROCK: 10 },
+			"pattern": { Artifact.Pattern.SQUARE: 2 },
+			"tier": artier(8),
+		},
+	}
+	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.GOBLIN
 	super.setup(seedling, biome)
@@ -65,10 +86,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, random_pattern)
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random()
-	var l := Artifact.Option.make_random()
-	var b := Artifact.Option.make_random()
-	var r := Artifact.Option.make_random()
-	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)

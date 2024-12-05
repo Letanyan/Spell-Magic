@@ -102,6 +102,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		basic_pattern_sequence,
 	])
 	
+	artifact_drop_probs = {
+		"NW": {
+			"is_effect": 0.9,
+			"event": { Artifact.Event.RECEIVE: 15, Artifact.Event.DEAL: 5 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 10 },
+			"ev_element": { Artifact.Element.WATER: 10, },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.DEFENCE: 5, Artifact.Element.HEALTH_BUMP: 5, },
+			"pattern": { Artifact.Pattern.SQUARE: 4, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(11),
+		},
+		"SE": {
+			"is_effect": 0.9,
+			"event": { Artifact.Event.RECEIVE: 15, Artifact.Event.DEAL: 5 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 10 },
+			"ev_element": { Artifact.Element.WATER: 10, },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.DEFENCE: 5, Artifact.Element.HEALTH_BUMP: 5, },
+			"pattern": { Artifact.Pattern.SQUARE: 4, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(11),
+		}
+	}
+	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.MUSHKING
 	super.setup(seedling, biome)
@@ -116,11 +137,3 @@ func update_behaviour() -> void:
 	else:
 		set_attack_sequence(angry_sequence)
 			
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.italian_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

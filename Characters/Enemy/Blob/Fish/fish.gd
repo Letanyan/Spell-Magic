@@ -113,6 +113,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence([ 1, 5 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"all": {
+			"is_effect": 0.33,
+			"event": { Artifact.Event.RECEIVE: 2 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.BOOST_PERCENTAGE: 5 },
+			"ev_element": { Artifact.Element.WATER: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.HEALTH_BUMP: 5, Artifact.Element.DURATION: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 10, Artifact.Pattern.TRIANGLE: 2 },
+			"tier": artier(6),
+		}
+	}
+	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.FISH
 	super.setup(seedling, biome)
@@ -138,12 +150,3 @@ func create_attack_jump_path() -> void:
 	#DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
 	#DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
 	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).origin_is_player().align_y_to_ground_air_and_dirt().look_at_player()
-
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.capital_cities.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

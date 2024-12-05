@@ -24,7 +24,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
 	
-	attack_path = PathStyle.new(seedling, position).towards_player(fit(2,10), 1, 2).origin_is_player().align_y_to_ground().look_at_player()
+	attack_path = PathStyle.new(seedling, position).towards_player(fit(2,10), 1, 2).align_y_to_ground().look_at_player()
 	
 	current_path = idle_path
 	
@@ -112,6 +112,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fita([4, 5, 4, 5, 4, 5], [8, 10, 8, 10, 8, 10]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"NE": {
+			"is_effect": 0.4,
+			"event": { Artifact.Event.DEAL: 2, Artifact.Event.RECEIVE: 5 },
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 20, Artifact.Effect.RESISTANCE_PERCENTAGE: 5 },
+			"ev_element": { Artifact.Element.WATER: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.MANA: 10, Artifact.Element.MANA_BUMP: 5, },
+			"pattern": { Artifact.Pattern.SQUARE: 4, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(11),
+		},
+		"SW": {
+			"is_effect": 0.6,
+			"event": { Artifact.Event.RECEIVE: 2, Artifact.Event.DEAL: 5 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 20, Artifact.Effect.BOOST_FLAT: 5 },
+			"ev_element": { Artifact.Element.WATER: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.ROCK: 10, Artifact.Element.DEFENCE: 10, Artifact.Element.COUNT: 10, Artifact.Element.CRIT_RATE: 10 },
+			"pattern": { Artifact.Pattern.CIRCLE: 2, Artifact.Pattern.TRIANGLE: 4 },
+			"tier": artier(12),
+		}
+	}
+	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.SNOT_SPIKE
 	super.setup(seedling, biome)
@@ -125,11 +146,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, sequence_pattern)
 	else:
 		set_path_and_attack(attack_path, random_pattern)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.spanish_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

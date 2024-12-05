@@ -104,6 +104,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.1, [3, 25]))
 	)
 	
+	artifact_drop_probs = {
+		"all": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 20, Artifact.Effect.BOOST_PERCENTAGE: 20, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.FIRE: 10, Artifact.Element.ELECTRIC: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.FIRE: 10, Artifact.Element.ELECTRIC: 10 },
+			"pattern": { Artifact.Pattern.CIRCLE: 4 },
+			"tier": artier(15),
+		},
+	}
+	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.WIZARD
 	super.setup(seedling, biome)
@@ -117,11 +129,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, random_pattern1)
 	else:
 		set_path_and_attack(attack_path, random_pattern2)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.constellations.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

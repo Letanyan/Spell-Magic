@@ -79,6 +79,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.6, [ 1, 1, 1, 5, 1, 1, 1, 5, 1, 1, 1, 5  ]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"NS": {
+			"is_effect": 0.8,
+			"event": {Artifact.Event.DEAL: 4, Artifact.Event.RECEIVE: 1, },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 15, },
+			"ev_element": { Artifact.Element.FIRE: 10 },
+			"ef_element": { Artifact.Element.FIRE: 10, Artifact.Element.ATTACK: 10, Artifact.Element.DEFENCE: 1,  },
+			"pattern": { Artifact.Pattern.CIRCLE: 4, Artifact.Pattern.SQUARE: 2 },
+			"tier": artier(17),
+		},
+		"EW": {
+			"is_effect": 0.6,
+			"event": {Artifact.Event.DEAL: 4, Artifact.Event.RECEIVE: 1, },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 10, },
+			"ev_element": { Artifact.Element.FIRE: 10 },
+			"ef_element": { Artifact.Element.FIRE: 10, Artifact.Element.ATTACK: 10, Artifact.Element.DEFENCE: 1,  },
+			"pattern": { Artifact.Pattern.SQUARE: 4, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(17),
+		},
+	}
+	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.REDMON
 	super.setup(seedling, biome)
@@ -92,11 +113,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, sequence_pattern)
 	else:
 		set_path_and_attack(attack_path, random_pattern)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.chinese_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

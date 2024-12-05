@@ -51,63 +51,28 @@ class Option:
 		return Option.new(ef, Event.NONE, el, effect_amount_at_tier(tier, ef, el), pt)
 		
 	static func make_random(
-		is_ef: float = 0.5, 
-		ef_prob: Dictionary = {Effect.BOOST_PERCENTAGE: 0.1, Effect.BOOST_FLAT: 0.1, Effect.RESISTANCE_PERCENTAGE: 0.1, Effect.RESISTANCE_FLAT: 0.1}, 
-		ev_prob: Dictionary = {Event.RECEIVE: 0.1, Event.DEAL: 0.1}, 
-		el_prob: Dictionary = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
-		Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.MANA: 0.1, Element.HEALTH: 0.1, Element.ANY: 0.1,
-		Element.POWER: 0.1, Element.COUNT: 0.1, Element.DURATION: 0.1, Element.MANA_BUMP: 0.1, Element.ATTACK: 0.1,
-		Element.SPELL_VELOCITY: 0.1, Element.SPELL_RADIUS: 0.1, Element.DEFENCE: 0.1, Element.RUNNING_SPEED: 0.1, Element.HEALTH_BUMP: 0.1, 
-		Element.CRIT_RATE: 0.1, Element.CRIT_DMG: 0.1}, 
-		tier_range: Variant = Vector2i(-10, 10), 
-		pt_prob: Dictionary = {Pattern.CIRCLE: 0.1, Pattern.SQUARE: 0.1, Pattern.TRIANGLE: 0.1}) -> Option:
+		is_ef: float, 
+		ef_prob: Dictionary, ## [Effect]float 
+		ev_prob: Dictionary, ## [Event]float 
+		ef_el_prob: Dictionary, ## [Element]float 
+		ev_el_prob: Dictionary, ## [Element]float 
+		pt_prob: Dictionary, ## [Pattern]float
+		tier_range: Vector2i 
+	) -> Option:
 		var flip := Rand.entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
 		var ef := Rand.entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
 		var ev := Rand.entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
+		var tier := Rand.roll((tier_range as Vector2i).x, (tier_range as Vector2i).y, 0, null, Rand.Accum.MAX, Vector2i(-10, 10))
 		var el: Element
-		if el_prob.size() == 21:
-			if flip:
-				el = Rand.entity_from_distribution(randf(), el_prob, Element.ANY) as Element
-			else:
-				el_prob = {Element.FIRE: 0.1, Element.WATER: 0.1, Element.ROCK: 0.1, Element.AIR: 0.1, 
-				Element.ICE: 0.1, Element.ELECTRIC: 0.1, Element.ANY: 0.1}
-				el = Rand.entity_from_distribution(randf(), el_prob, Element.ANY) as Element
-		else:
-			el = Rand.entity_from_distribution(randf(), el_prob, Element.ANY) as Element
-		var tier := 0
-		if tier_range is Vector2i:
-			tier = randi_range((tier_range as Vector2i).x, (tier_range as Vector2i).y)
-		elif tier_range is Dictionary:
-			tier = Rand.entity_from_distribution(randf(), tier_range as Dictionary) as int
 		var am: int
 		if not flip: # is event
+			el = Rand.entity_from_distribution(randf(), ev_el_prob, Element.ANY)
 			am = event_amount_at_tier(absi(tier), ev, el)
 		else:
+			el = Rand.entity_from_distribution(randf(), ef_el_prob, Element.ANY)
 			am = effect_amount_at_tier(tier, ef, el)
 		var pt := Rand.entity_from_distribution(randf(), pt_prob, Pattern.CIRCLE) as Pattern
 		return Option.new(Effect.NONE if not flip else ef, Event.NONE if flip else ev, el, am, pt)
-	
-	static func make_random_event(ev_prob: Dictionary, el_prob: Dictionary, tier_range: Variant, pt_prob: Dictionary) -> Option:
-		var ev := Rand.entity_from_distribution(randf(), ev_prob) as Event
-		var el := Rand.entity_from_distribution(randf(), el_prob) as Element
-		var pt := Rand.entity_from_distribution(randf(), pt_prob) as Pattern
-		var ti := 0
-		if tier_range is Vector2i:
-			ti = randi_range((tier_range as Vector2i).x, (tier_range as Vector2i).y)
-		elif tier_range is Dictionary:
-			ti = Rand.entity_from_distribution(randf(), tier_range as Dictionary) as int
-		return Option.new(Effect.NONE, ev, el, ti, pt)
-		
-	static func make_random_effect(ef_prob: Dictionary, el_prob: Dictionary, tier_range: Variant, pt_prob: Dictionary) -> Option:
-		var ef := Rand.entity_from_distribution(randf(), ef_prob) as Effect
-		var el := Rand.entity_from_distribution(randf(), el_prob) as Element
-		var pt := Rand.entity_from_distribution(randf(), pt_prob) as Pattern
-		var ti := 0
-		if tier_range is Vector2i:
-			ti = randi_range((tier_range as Vector2i).x, (tier_range as Vector2i).y)
-		elif tier_range is Dictionary:
-			ti = Rand.entity_from_distribution(randf(), tier_range as Dictionary) as int
-		return Option.new(ef, Event.NONE, el, ti, pt)
 	
 	# tier between [1,10]
 	static func event_amount_at_tier(tier: int, ev: Event, el: Element) -> int:
@@ -390,19 +355,14 @@ func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b:
 	bottom = b
 	left = l
 	
-static func random(n: String, is_effect: float, effect: Dictionary, event: Dictionary, element: Dictionary, tier: Variant, pattern: Dictionary) -> Artifact:
-	var result := Artifact.new(n)
-	result.top = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	result.right = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	result.bottom = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	result.left = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	return result
+static func nulled(n: String) -> Artifact:
+	return Artifact.new(n, null, null, null, null)
 	
-func fill(spots: Array[Vector2i], is_effect: float, effect: Dictionary, event: Dictionary, element: Dictionary, tier: Variant, pattern: Dictionary) -> void:
-	if spots.has(Vector2i.UP): top = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	if spots.has(Vector2i.LEFT): left = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	if spots.has(Vector2i.RIGHT): right = Option.make_random(is_effect, effect, event, element, tier, pattern)
-	if spots.has(Vector2i.DOWN): bottom = Option.make_random(is_effect, effect, event, element, tier, pattern)
+func fill(spots: Array[Vector2i], is_effect: float, effect: Dictionary, event: Dictionary, ef_element: Dictionary, ev_element: Dictionary, pattern: Dictionary, tier: Vector2i) -> void:
+	if spots.has(Vector2i.UP): top = Option.make_random(is_effect, effect, event, ef_element, ev_element, pattern, tier)
+	if spots.has(Vector2i.LEFT): left = Option.make_random(is_effect, effect, event, ef_element, ev_element, pattern, tier)
+	if spots.has(Vector2i.RIGHT): right = Option.make_random(is_effect, effect, event, ef_element, ev_element, pattern, tier)
+	if spots.has(Vector2i.DOWN): bottom = Option.make_random(is_effect, effect, event, ef_element, ev_element, pattern, tier)
 
 func save_dict() -> Dictionary:
 	return {"name": name, "top": top.save_dict(), "left": left.save_dict(), 

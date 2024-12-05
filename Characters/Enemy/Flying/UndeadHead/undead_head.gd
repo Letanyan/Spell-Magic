@@ -52,6 +52,18 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.6, [ 2, 5, 2, 4, 2 ]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"all": {
+			"is_effect": 0.5,
+			"event": {Artifact.Event.DEAL: 2, Artifact.Event.RECEIVE: 2, },
+			"effect": { Artifact.Effect.BOOST_FLAT: 10, Artifact.Effect.BOOST_PERCENTAGE: 10, },
+			"ev_element": { Artifact.Element.ROCK: 10 },
+			"ef_element": { Artifact.Element.ROCK: 10, Artifact.Element.HEALTH_BUMP: 10,  },
+			"pattern": { Artifact.Pattern.SQUARE: 2, Artifact.Pattern.TRIANGLE: 6, },
+			"tier": artier(6),
+		},
+	}
+	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.UNDEAD_HEAD
 	super.setup(seedling, biome)
@@ -66,10 +78,4 @@ func update_behaviour() -> void:
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)
 
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random()
-	var l := Artifact.Option.make_random()
-	var b := Artifact.Option.make_random()
-	var r := Artifact.Option.make_random()
-	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
 	

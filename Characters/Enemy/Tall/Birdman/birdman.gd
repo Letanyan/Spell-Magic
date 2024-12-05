@@ -38,7 +38,6 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.wait(fit(4,8))
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_ground_and_air()\
-		.origin_is_player()\
 		.player_vision_is_body_rotation(0, 0, 10.0)\
 		.look_at_player_xz()
 	
@@ -112,6 +111,21 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(1, [ 2, 3, 5 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"NS": {
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 2, Artifact.Effect.BOOST_FLAT: 10 },
+			"element": { Artifact.Element.AIR: 10, Artifact.Element.RUNNING_SPEED: 2 },
+			"pattern": { Artifact.Pattern.TRIANGLE: 10, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(14),
+		},
+		"WE": {
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 2 },
+			"element": { Artifact.Element.AIR: 10 },
+			"pattern": { Artifact.Pattern.TRIANGLE: 2, Artifact.Pattern.CIRCLE: 10 },
+			"tier": artier(14),
+		}
+	}
+	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.BIRDMAN
 	super.setup(seedling, biome)
@@ -127,11 +141,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, attack_pattern2)
 	else:
 		set_path_and_attack(attack_path, attack_pattern3)
-			
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.swiss_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

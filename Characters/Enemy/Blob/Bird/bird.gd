@@ -122,6 +122,21 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(1, [ 2, 2, 2 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"NS": {
+			"event": { Artifact.Event.RECEIVE: 2, Artifact.Event.DEAL: 10 },
+			"element": { Artifact.Element.AIR: 10 },
+			"pattern": { Artifact.Pattern.TRIANGLE: 10, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(10),
+		},
+		"WE": {
+			"event": { Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 2 },
+			"element": { Artifact.Element.AIR: 10 },
+			"pattern": { Artifact.Pattern.TRIANGLE: 2, Artifact.Pattern.CIRCLE: 10 },
+			"tier": artier(10),
+		}
+	}
+	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.BIRD
 	super.setup(seedling, biome)
@@ -137,12 +152,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, attack_pattern2)
 	else:
 		set_path_and_attack(attack_path, attack_pattern3)
-
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.cumbria_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

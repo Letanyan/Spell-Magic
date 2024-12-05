@@ -473,6 +473,12 @@ func timings(cls: int, array: Array[float]) -> Array[float]:
 
 func health_drop(cls: int) -> float:
 	return float(cls) / 20.0
+	
+func artier(cls: int) -> Vector2i:
+	var p := cls / 20.0
+	var s := fiti(1, 10) * (1 if randf() < p else -1)
+	var c := roundi(p * 9) + 1
+	return Vector2i(s, c)
 
 func arttv(mn: int, mx: int) -> Vector2i:
 	return Vector2i(fiti(0, mn), fiti(0, mx))

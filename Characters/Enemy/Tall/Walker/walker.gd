@@ -91,6 +91,36 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence([ 0 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"EW": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 20, Artifact.Effect.RESISTANCE_PERCENTAGE: 15, Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5 },
+			"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.CRIT_DMG: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 4, Artifact.Pattern.CIRCLE: 4 },
+			"tier": artier(14),
+		},
+		"N": {
+			"is_effect": 0.75,
+			"event": { Artifact.Event.DEAL: 5 },
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 20, Artifact.Effect.RESISTANCE_PERCENTAGE: 15 },
+			"ev_element": { Artifact.Element.WATER: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.CRIT_RATE: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 4 },
+			"tier": artier(14),
+		},
+		"S": {
+			"is_effect": 0.25,
+			"event": { Artifact.Event.RECEIVE: 5 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5 },
+			"ev_element": { Artifact.Element.ICE: 10 },
+			"ef_element": { Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.CRIT_DMG: 5 },
+			"pattern": { Artifact.Pattern.CIRCLE: 4 },
+			"tier": artier(14),
+		}
+	}
+	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.WALKER
 	super.setup(seedling, biome)

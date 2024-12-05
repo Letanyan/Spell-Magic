@@ -117,6 +117,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		cover_and_attack_path,	
 	])
 	
+	artifact_drop_probs = {
+		"NS": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.RECEIVE: 2, Artifact.Event.DEAL: 10 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.ATTACK: 5, },
+			"pattern": { Artifact.Pattern.TRIANGLE: 4, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(17),
+		},
+		"WE": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.ATTACK: 5, },
+			"pattern": { Artifact.Pattern.TRIANGLE: 4, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(17),
+		}
+	}
+	
 	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.BLUEMON
@@ -134,11 +155,3 @@ func update_behaviour() -> void:
 	else:
 		set_attack_sequence(cover_and_attack_sequence)
 		
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.indian_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

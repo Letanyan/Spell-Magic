@@ -89,6 +89,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.4, [ 1, 5, 3, 6, 2, 7 ]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"NS": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.DEAL: 15, Artifact.Event.RECEIVE: 1 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 20, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.FIRE: 10, },
+			"ef_element": { Artifact.Element.FIRE: 10, Artifact.Element.CRIT_DMG: 5, Artifact.Element.SPELL_RADIUS: 5, },
+			"pattern": { Artifact.Pattern.SQUARE: 4, Artifact.Pattern.TRIANGLE: 1 },
+			"tier": artier(16),
+		},
+		"WE": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.DEAL: 1, Artifact.Event.RECEIVE: 5 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 20, Artifact.Effect.BOOST_FLAT: 5 },
+			"ev_element": { Artifact.Element.FIRE: 10, },
+			"ef_element": { Artifact.Element.FIRE: 10, Artifact.Element.CRIT_DMG: 10, Artifact.Element.SPELL_RADIUS: 10, },
+			"pattern": { Artifact.Pattern.SQUARE: 1, Artifact.Pattern.TRIANGLE: 4 },
+			"tier": artier(12),
+		},
+	}
+	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.DRAGON
 	super.setup(seedling, biome)
@@ -102,10 +123,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, random_pattern)
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random()
-	var l := Artifact.Option.make_random()
-	var b := Artifact.Option.make_random()
-	var r := Artifact.Option.make_random()
-	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)

@@ -67,6 +67,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(atkd(14), [2, 5, 4, 3], -1)
 	)
 	
+	artifact_drop_probs = {
+		"NEW": {
+			"is_effect": 0.9,
+			"event": { Artifact.Event.RECEIVE: 5, Artifact.Event.DEAL: 15 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.ELECTRIC: 10, },
+			"ef_element": { Artifact.Element.ELECTRIC: 10, Artifact.Element.ATTACK: 5, Artifact.Element.CRIT_DMG: 2, Artifact.Element.POWER: 2, },
+			"pattern": { Artifact.Pattern.TRIANGLE: 2, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(17),
+		},
+		"S": {
+			"is_effect": 0.9,
+			"event": { Artifact.Event.RECEIVE: 5, Artifact.Event.DEAL: 15 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.ELECTRIC: 10, },
+			"ef_element": { Artifact.Element.ELECTRIC: 10, Artifact.Element.ATTACK: 5, Artifact.Element.CRIT_DMG: 2, Artifact.Element.POWER: 2, },
+			"pattern": { Artifact.Pattern.TRIANGLE: 2, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(17),
+		}
+	}
+	
 	animation_map["attack"] = "Weapon"
 	kind = World.Enemy.ORC_DEAD
 	super.setup(seedling, biome)
@@ -81,13 +102,6 @@ func update_behaviour() -> void:
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)
 
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.dutch_names.generate(7, 2)
-	return Artifact.new(new_name, t, r, b, l)
 
 func drop_health() -> float:
 	return health_drop(1)

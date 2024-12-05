@@ -67,6 +67,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_from_distribution(fit(6,1.5), [ 20, 18, 16,  14, 12, 10,  8, 6, 4 ], -1)
 	)
 	
+	artifact_drop_probs = {
+		"N": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.RECEIVE: 2 },
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.BOOST_PERCENTAGE: 5 },
+			"ev_element": { Artifact.Element.WATER: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.MANA: 10, Artifact.Element.MANA_BUMP: 5, },
+			"pattern": { Artifact.Pattern.TRIANGLE: 2 },
+			"tier": artier(12),
+		},
+		"WSE": {
+			"is_effect": 0.8,
+			"event": { Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 15 },
+			"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.ROCK: 10 },
+			"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.ROCK: 10, Artifact.Element.HEALTH: 10, Artifact.Element.HEALTH_BUMP: 10 },
+			"pattern": { Artifact.Pattern.CIRCLE: 2, Artifact.Pattern.SQUARE: 4 },
+			"tier": artier(14),
+		}
+	}
+	
 	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.MUSHROOM
 	super.setup(seedling, biome)
@@ -78,11 +99,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(idle_path, none_pattern)
 	else:
 		set_path_and_attack(idle_path, basic_pattern)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.italian_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

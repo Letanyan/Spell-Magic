@@ -97,6 +97,33 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(fitas(0.5, [ 1, 1, 3, 1, 5, 1 ]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"N": {
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
+			"element": { Artifact.Element.ICE: 5, Artifact.Element.SPELL_RADIUS: 10, Artifact.Element.ANY: 1,  },
+			"pattern": { Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(12),
+		},
+		"E": {
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
+			"element": { Artifact.Element.ICE: 5, Artifact.Element.DURATION: 10, Artifact.Element.ANY: 1,  },
+			"pattern": { Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(12),
+		},
+		"S": {
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
+			"element": { Artifact.Element.ICE: 5, Artifact.Element.COUNT: 10, Artifact.Element.ANY: 1,  },
+			"pattern": { Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(12),
+		},
+		"W": {
+			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
+			"element": { Artifact.Element.ICE: 5, Artifact.Element.POWER: 10, Artifact.Element.ANY: 1,  },
+			"pattern": { Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(12),
+		},
+	}
+	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.GHOSTLY
 	super.setup(seedling, biome)
@@ -111,10 +138,4 @@ func update_behaviour() -> void:
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)
 
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random()
-	var l := Artifact.Option.make_random()
-	var b := Artifact.Option.make_random()
-	var r := Artifact.Option.make_random()
-	return Artifact.new(player.name_generator.irish_names.generate(5, 3), t, l, b, r)
 	

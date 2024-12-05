@@ -48,6 +48,15 @@ static func look_at(p: Node3D, dir: Vector3) -> void:
 			p.look_at_from_position(origin, p.position + Vector3.UP, Vector3.BACK)
 		else:
 			p.look_at_from_position(origin, target)
+			
+static func looking_at(p: Node3D, target: Vector3) -> Transform3D:
+	var origin := p.position
+	var result := T.I
+	if Vector3.UP.cross((target - origin).normalized()).is_zero_approx():
+		result = p.global_transform.looking_at(origin + Vector3.UP, Vector3.BACK)
+	else:
+		result = p.global_transform.looking_at(target)
+	return result
 
 static func form_arc_in_circle(s: Vector3, e: Vector3, h: float, rng: RandomNumberGenerator = null) -> Segment:
 	var a := s.x

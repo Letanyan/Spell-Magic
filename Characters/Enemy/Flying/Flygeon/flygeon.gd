@@ -40,7 +40,6 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	attack_path = PathStyle.new().follow_path(attack_pathway)\
 		.align_y_to_air()\
-		.origin_is_player()\
 		.player_vision_is_camera(0, 0.0, 1.0, 2.0)\
 		.look_at_player()
 	
@@ -86,6 +85,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		AttackPatterns.choose_in_sequence(atkds([5, 12, 17, 12, 5, 12, 17, 12, 5]), -1)
 	)
 	
+	artifact_drop_probs = {
+		"NE": {
+			"is_effect": 0.25,
+			"event": { Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.AIR: 10 },
+			"ef_element": { Artifact.Element.AIR: 10, Artifact.Element.HEALTH: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 10, Artifact.Pattern.CIRCLE: 2 },
+			"tier": artier(8),
+		},
+		"WS": {
+			"is_effect": 0.5,
+			"event": { Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 2 },
+			"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 10 },
+			"ev_element": { Artifact.Element.AIR: 10, },
+			"ef_element": { Artifact.Element.AIR: 10, Artifact.Element.HEALTH: 5 },
+			"pattern": { Artifact.Pattern.SQUARE: 2, Artifact.Pattern.CIRCLE: 10 },
+			"tier": artier(8),
+		}
+	}
+	
 	animation_map["attack"] = "Headbutt"
 	kind = World.Enemy.FLYGEON
 	super.setup(seedling, biome)
@@ -99,11 +119,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, sequence_pattern)
 	else:
 		set_path_and_attack(attack_path, random_pattern)
-
-func drop_artifact() -> Artifact:
-	var t := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var r := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var b := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var l := Artifact.Option.make_random(0.5, {Artifact.Effect.BOOST_FLAT: 0.5, Artifact.Effect.BOOST_PERCENTAGE: 0.5}, {Artifact.Event.DEAL: 0.5}, {Artifact.Element.ROCK: 0.5, Artifact.Element.WATER: 0.2}, Vector2i(1, 3))
-	var new_name := player.name_generator.chinese_names.generate(8, 2)
-	return Artifact.new(new_name, t, r, b, l)

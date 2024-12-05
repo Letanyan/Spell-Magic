@@ -35,6 +35,7 @@ var kind: World.Enemy = World.Enemy.NONE
 var is_idle := true
 var is_idle_is_set := false
 var spell_drop_probs := {}
+var artifact_drop_probs := {}
 
 var behavior_tick: float = 0
 var spell_tick: float = 0
@@ -284,15 +285,19 @@ func _physics_process(delta: float) -> void:
 					position += Vector3(v.x, v.y + t.y, v.z) + group_positioning_adjustment * delta * speed_for_current_behaviour_tick
 					
 			if current_path.lookat == PathStyle.LookAt.PLAYER:
-				var goal_position := position + velocity * 10
-				var looking_at := player.position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0))
-				Globals.look_at(self, looking_at)
+				var t := Globals.looking_at(self, player.transform.origin)
+				var v := maxf(velocity.length(), delta)
+				global_transform.basis.y = global_transform.basis.y.slerp(t.basis.y, v)
+				global_transform.basis.x = global_transform.basis.x.slerp(t.basis.x, v)
+				global_transform.basis.z = global_transform.basis.z.slerp(t.basis.z, v)
 			elif current_path.lookat == PathStyle.LookAt.PLAYER_XZ:
-				var goal_position := position + velocity * 10
-				var player_position := player.position
-				player_position.y = position.y
-				var looking_at := player_position.lerp(goal_position, clampf(velocity.length() / 100.0, 0.0, 1.0))
-				Globals.look_at(self, looking_at)
+				var player_transform := player.transform
+				player_transform.translated(Vector3(0, -player.global_position.y + global_position.y, 0))
+				var t := Globals.looking_at(self, player_transform.origin)
+				var v := maxf(velocity.length(), delta)
+				global_transform.basis.y = global_transform.basis.y.slerp(t.basis.y, v)
+				global_transform.basis.x = global_transform.basis.x.slerp(t.basis.x, v)
+				global_transform.basis.z = global_transform.basis.z.slerp(t.basis.z, v)
 		
 
 	var reset_spell_tick := false
@@ -523,6 +528,41 @@ func update_vitals_display() -> void:
 	effects_shader.set_shader_parameter("burning_progress", vitals.burning.percentage())
 
 func drop_artifact() -> Artifact:
+	if artifact_drop_probs.is_empty():
+		return null
+	var n := player.name_generator.constellations.generate(12, 2)
+	var result := Artifact.nulled(n)
+	
+	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
+		var tier := probs["tier"] as Vector2i
+		var pattern := probs["pattern"] as Dictionary
+		if probs.has("is_effect"):
+			var is_effect := probs["is_effect"] as float
+			var ev_element := probs["ev_element"] as Dictionary
+			var ef_element := probs["ef_element"] as Dictionary
+			var effect := probs["effect"] as Dictionary
+			var event := probs["event"] as Dictionary
+			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], is_effect, effect, event, ef_element, ev_element, pattern, tier)
+		elif probs.has("effect"):
+			var element := probs["element"] as Dictionary
+			var effect := probs["effect"] as Dictionary
+			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, effect, {}, element, {}, pattern, tier)
+		elif probs.has("event"):
+			var element := probs["element"] as Dictionary
+			var event := probs["event"] as Dictionary
+			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, {}, event, {}, element, pattern, tier)
+		
+	
+	if artifact_drop_probs.has("all"):
+		fill_with.call([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], artifact_drop_probs["all"])
+	else:
+		for key: String in artifact_drop_probs:
+			var probs := artifact_drop_probs[key] as Dictionary
+			if key.contains("W"): fill_with.call([Vector2i.LEFT], probs)
+			if key.contains("E"): fill_with.call([Vector2i.RIGHT], probs)
+			if key.contains("N"): fill_with.call([Vector2i.UP], probs)
+			if key.contains("S"): fill_with.call([Vector2i.DOWN], probs)
+	
 	return null
 	
 func drop_spell() -> Spell:
@@ -654,3 +694,9 @@ func health_drop(cls: int) -> float:
 	
 func spell_drop(tier: int) -> float:
 	return 1.0 / fit(tier, tier ** 2)
+	
+func artier(cls: int) -> Vector2i:
+	var p := cls / 20.0
+	var s := fiti(1, 10) * (1 if randf() < p else -1)
+	var c := roundi(p * 9) + 1
+	return Vector2i(s, c)
