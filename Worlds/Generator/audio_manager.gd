@@ -122,7 +122,7 @@ func update(delta: float) -> void:
 	for player: AudioStreamPlayer3D in fade_params:
 		var param := fade_params[player] as FadeParam
 		param.time_stamp += delta
-		if param.time_stamp > param.duration:
+		if param.time_stamp > param.duration + param.time_delay:
 			player.stop()
 			to_remove.append(player)
 		elif param.time_stamp >= param.time_delay:

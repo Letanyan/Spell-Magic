@@ -65,13 +65,13 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,15), 33, 99, ea(12))
 	water_spiral1.follow = true
 	water_spiral2.configure({
-		"d": "Br*2", "s": "0", "R":fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,15), 66, 122, ea(14), water_spiral1)
+		"d": "Br*2", "s": "0", "R":fits(8,14), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,10), 66, 122, ea(14), water_spiral1)
 	water_spiral2.follow = true
 	water_spiral2.chain_cast_kind = Spell.ChainCastKind.START
 	water_spiral3.configure({
-		"d": "Br*2", "s": "0", "R":fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,15), 99, 155, ea(16), water_spiral2)
+		"d": "Br*2", "s": "0", "R":fits(10,16), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,5), 99, 155, ea(16), water_spiral2)
 	water_spiral3.follow = true
 	water_spiral3.chain_cast_kind = Spell.ChainCastKind.START
 	
@@ -142,7 +142,6 @@ func update_behaviour() -> void:
 	if is_idle:
 		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() > 0.5:
-		set_path_and_attack(attack_path, none_pattern)
-		#set_path_and_attack(attack_path, sequence_pattern)
+		set_path_and_attack(attack_path, sequence_pattern)
 	else:
 		set_path_and_attack(attack_path, random_pattern)

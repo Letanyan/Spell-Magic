@@ -749,7 +749,7 @@ func update_projectile_indicators() -> void:
 				continue
 			target.spell_caster.apply_to_all_particles(update_projectile_update_tick, updated_spell_bodies)
 		
-	for body: Node3D in projectile_indicators:
+	for body: Node3D in projectile_indicators.keys():
 		if not updated_spell_bodies.get(body, false) as bool:
 			var mi := projectile_indicators[body] as Node
 			if mi is Node3D:
