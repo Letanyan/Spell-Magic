@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/otherworld.mp3-bdc1daf2cde75a96851a322d62759d
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

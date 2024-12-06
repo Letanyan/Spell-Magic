@@ -258,6 +258,10 @@ func _physics_process(delta: float) -> void:
 	
 	projectile_indicator_scale = 1.0 + (spring_extension / 10.0) * 2.0
 	update_projectile_indicators()
+	
+func update_audio_state(delta: float) -> void:
+	bg_audio_state.update(delta)
+	walking_audio_state.update(delta)
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
@@ -567,7 +571,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 	
 func play_bg_audio(biome: World.Biome, is_empty: bool = false) -> void:
 	var stream := null if is_empty else NoiseBlender.bg_audio_for_biome(biome)
-	bg_audio_state.play(stream)
+	bg_audio_state.play(stream, 5.0, 2.0)
 		
 func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_open = open
@@ -621,7 +625,7 @@ func change_reticule_visible(should_hide: bool) -> void:
 
 func play_walking_audio(biome: World.Biome, is_empty: bool = false) -> void:
 	var stream := null if is_empty else NoiseBlender.walking_audio_for_biome(biome)
-	walking_audio_state.play(stream)
+	walking_audio_state.play(stream, 0.5, 0.0)
 	walking_audio_state.pitch_scale = NoiseBlender.walking_audio_tempo_factor(biome)
 		
 func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
@@ -692,7 +696,7 @@ func update_projectile(pivot: Node3D, pi_size: float, body: SpellBody, color: Co
 	if projectile_indicators.has(body):
 		var mi := projectile_indicators[body] as Node3D
 		mi.scale = Vector3(pi_size, pi_size, pi_size)
-		Globals.look_at(mi, body.position)
+		Globals.look_at_point(mi, body.position)
 	else:
 		var mi: ProjectileIndicator
 		if projectile_indicator_store.is_empty():

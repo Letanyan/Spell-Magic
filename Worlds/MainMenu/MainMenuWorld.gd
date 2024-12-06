@@ -194,7 +194,7 @@ func build_terrain() -> void:
 		var direction := player.position.direction_to(lowest_pos)
 		var goal_position := player.position + direction * 10.0
 		goal_position.y = player.position.y
-		Globals.look_at(player, goal_position)
+		Globals.look_at_point(player, goal_position)
 		
 func update_terrain_queue() -> void:
 	if chunker.has_chunks_to_update():

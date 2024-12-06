@@ -131,12 +131,12 @@ func _physics_process(delta: float) -> void:
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:
 		var actual_goal := focus_point
-		Globals.look_at(self, actual_goal)
+		Globals.look_at_point(self, actual_goal)
 	elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
 		var player_position := focus_point
 		player_position.y = position.y
 		var target := player_position
-		Globals.look_at(self, target)
+		Globals.look_at_point(self, target)
 	elif path.lookat == PathStyle.LookAt.VELOCITY:
 		velocity = velocity.normalized()
 		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)

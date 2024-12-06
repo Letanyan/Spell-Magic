@@ -24,6 +24,7 @@ enum AudioStreamKind {
 
 class FadeParam:
 	var time_stamp: float
+	var time_delay: float
 	var duration: float
 	var start_value: float
 	var final_value: float
@@ -110,6 +111,7 @@ func stop_all(kind: AudioStreamKind) -> void:
 func fade_audio(player: AudioStreamPlayer3D, final: float, duration: float) -> void:
 	var params := FadeParam.new()
 	params.time_stamp = 0.0
+	params.time_delay = 0.0
 	params.duration = duration
 	params.start_value = player.volume_db
 	params.final_value = final
@@ -123,8 +125,8 @@ func update(delta: float) -> void:
 		if param.time_stamp > param.duration:
 			player.stop()
 			to_remove.append(player)
-		else:
-			player.volume_db = lerpf(param.start_value, param.final_value, param.time_stamp / param.duration)
+		elif param.time_stamp >= param.time_delay:
+			player.volume_db = lerpf(param.start_value, param.final_value, (param.time_stamp - param.time_delay) / param.duration)
 		
 	for player in to_remove:
 		fade_params.erase(player)

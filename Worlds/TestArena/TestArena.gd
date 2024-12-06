@@ -282,6 +282,9 @@ func _process(delta: float) -> void:
 	
 	
 func _physics_process(delta: float) -> void:
+	AudioManager.update(delta)
+	player.update_audio_state(delta)
+	
 	if player.magic_book.settings.is_paused:
 		if get_window().has_focus():
 			if Input.get_joy_axis(0, JOY_AXIS_TRIGGER_RIGHT) > 0:
@@ -307,9 +310,9 @@ func _physics_process(delta: float) -> void:
 	knowledge_tick += delta
 	daytime_tick += delta
 
+	#player.play_bg_audio(World.Biome.TUNDRA)
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
-	AudioManager.update(delta)
 			
 	if daytime_tick >= 1.0:
 		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:

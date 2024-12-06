@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/savannah.mp3-4d18b4b8f2d2e524df7b9de2db31701e
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

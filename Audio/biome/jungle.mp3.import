@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/jungle.mp3-82cc371533b4c3fb368f7c4ddd0469cc.m
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/hfil.mp3-cc0498cb1408e4a28a78db14ca5930fa.mp3
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

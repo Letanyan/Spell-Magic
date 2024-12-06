@@ -6,9 +6,9 @@ var state: PlayerState
 var player1: AudioStreamPlayer3D
 var player2: AudioStreamPlayer3D
 var current_stream: AudioStream
-var in_queue: AudioStream
-var in_queue_fade: float
-var in_queue_should_stop: bool
+
+var fade_player1: AudioManager.FadeParam
+var fade_player2: AudioManager.FadeParam
 
 var pitch_scale: float:
 	set(value):
@@ -32,88 +32,133 @@ func _init(p1: AudioStreamPlayer3D, p2: AudioStreamPlayer3D) -> void:
 	player1.stop()
 	player2.stop()
 	
-func fade_in(player: AudioStreamPlayer3D, tween: Tween, duration: float) -> void:
-	player.volume_db = -40
-	player.play()
-	tween.tween_property(player, "volume_db", 0, duration)
+func fade_player(player: AudioStreamPlayer3D, from: float, to: float, duration: float, delay: float) -> void:
+	var is_for_player_1 := true
+	if player == player2:
+		is_for_player_1 = false
 	
-func fade_out(player: AudioStreamPlayer3D, tween: Tween, duration: float) -> void:
-	tween.tween_property(player, "volume_db", -40, duration)
-	tween.tween_method(func(should_stop: float) -> void: 
-		if is_zero_approx(should_stop):
-			player.stop()
-	, 1.0, 0.0, duration)
-	
-func transition_done(done_state: PlayerState) -> Callable:
-	var result := func() -> void:
-		if in_queue_should_stop:
-			in_queue_should_stop = false
-			stop(in_queue_fade)
+	var fade_param := AudioManager.FadeParam.new()
+	fade_param.start_value = from
+	fade_param.final_value = to
+	if is_nan(duration) or is_nan(delay):
+		if is_for_player_1 and fade_player1 != null:
+			fade_param.duration = fade_player1.duration
+			fade_param.time_stamp = fade_player1.time_stamp
+			fade_param.time_delay = fade_player1.time_delay
+		elif fade_player2 != null:
+			fade_param.duration = fade_player2.duration
+			fade_param.time_stamp = fade_player2.time_stamp
+			fade_param.time_delay = fade_player2.time_delay
 		else:
-			state = done_state
-			if in_queue != null:
-				play(in_queue, in_queue_fade)
-				in_queue = null
-	return result
+			fade_param.duration = 0.5
+			fade_param.time_stamp = 0.0
+			fade_param.time_delay = 0.0
+	else:
+		fade_param.duration = duration
+		fade_param.time_delay = delay
+		fade_param.time_stamp = 0
+	
+	if is_for_player_1: 
+		fade_player1 = fade_param
+		if not player1.playing:
+			player1.play()
+	else: 
+		fade_player2 = fade_param
+		if not player2.playing:
+			player2.play()
+
+func fade_in(player: AudioStreamPlayer3D, duration: float, delay: float) -> void:
+	fade_player(player, player.volume_db, 0, duration, delay)
 		
-func stop(fade_time: float = 0.5) -> void:
+func fade_out(player: AudioStreamPlayer3D, duration: float, delay: float) -> void:
+	fade_player(player, player.volume_db, -40, duration, delay)
+		
+func stop(fade_duration: float) -> void:
+	current_stream = null
 	match state:
 		PlayerState.PLAYING_1:
-			var tween := player1.get_tree().create_tween().set_parallel()
-			fade_out(player1, tween, fade_time)
-			tween.finished.connect(transition_done(PlayerState.MUTE))
+			fade_out(player1, fade_duration, 0.0)
 			state = PlayerState.IN_TRANSITION_TO_2
-			current_stream = null
 			
 		PlayerState.PLAYING_2:
-			var tween := player2.get_tree().create_tween().set_parallel()
-			fade_out(player2, tween, fade_time)
-			tween.finished.connect(transition_done(PlayerState.MUTE))
+			fade_out(player2, fade_duration, 0.0)
 			state = PlayerState.IN_TRANSITION_TO_1
-			current_stream = null
 			
-		PlayerState.IN_TRANSITION_TO_1, PlayerState.IN_TRANSITION_TO_2:
-			in_queue_should_stop = true
-			in_queue_fade = fade_time
+		PlayerState.IN_TRANSITION_TO_1:
+			fade_out(player1, NAN, NAN)
+			state = PlayerState.IN_TRANSITION_TO_2
+			
+		PlayerState.IN_TRANSITION_TO_2:
+			fade_out(player2, NAN, NAN)
+			state = PlayerState.IN_TRANSITION_TO_1
 	
-func play(stream: AudioStream, fade_time: float = 0.5) -> void:
+func play(stream: AudioStream, fade_duration: float, fade_delay: float) -> void:
 	if stream == current_stream:
 		return
 		
 	if stream == null:
-		stop(fade_time)
+		stop(fade_duration)
 		return
 		
+	current_stream = stream
 	match state:
 		PlayerState.MUTE:
 			player1.stream = stream
-			current_stream = stream
-			var tween := player1.get_tree().create_tween().set_parallel()
-			fade_in(player1, tween, fade_time)
+			fade_in(player1, fade_duration, fade_delay)
 			state = PlayerState.IN_TRANSITION_TO_1
-			tween.finished.connect(transition_done(PlayerState.PLAYING_1))
 			
 		PlayerState.PLAYING_1:
 			player2.stream = stream
-			current_stream = stream
-			var tween := player2.get_tree().create_tween().set_parallel()
-			fade_in(player2, tween, fade_time)
-			fade_out(player1, tween, fade_time)
+			fade_in(player2, fade_duration, fade_delay)
+			fade_out(player1, fade_duration, 0.0)
 			state = PlayerState.IN_TRANSITION_TO_2
-			tween.finished.connect(transition_done(PlayerState.PLAYING_2))
 			
 		PlayerState.PLAYING_2:
 			player1.stream = stream
-			current_stream = stream
-			var tween := player1.get_tree().create_tween().set_parallel()
-			fade_in(player1, tween, fade_time)
-			fade_out(player2, tween, fade_time)
+			fade_in(player1, fade_duration, fade_delay)
+			fade_out(player2, fade_duration, 0.0)
 			state = PlayerState.IN_TRANSITION_TO_1
-			tween.finished.connect(transition_done(PlayerState.PLAYING_1))
 		
-		PlayerState.IN_TRANSITION_TO_1, PlayerState.IN_TRANSITION_TO_2:
-			if current_stream == stream:
-				in_queue = null
-			else:
-				in_queue = stream
-				in_queue_fade = fade_time
+		PlayerState.IN_TRANSITION_TO_1:
+			player2.stream = stream
+			fade_out(player1, NAN, NAN)
+			fade_in(player2, NAN, NAN)
+			state = PlayerState.IN_TRANSITION_TO_2
+			
+		PlayerState.IN_TRANSITION_TO_2:
+			player1.stream = stream
+			fade_in(player1, NAN, NAN)
+			fade_out(player2, NAN, NAN)
+			state = PlayerState.IN_TRANSITION_TO_1
+
+func update(delta: float) -> void:
+	var playing_state_changed := false
+	
+	if fade_player1 != null:
+		fade_player1.time_stamp += delta
+		if fade_player1.time_stamp > fade_player1.duration:
+			if player1.volume_db <= -40:
+				player1.stop()
+			fade_player1 = null
+			playing_state_changed = true
+		elif fade_player1.time_stamp >= fade_player1.time_delay:
+			player1.volume_db = lerpf(fade_player1.start_value, fade_player1.final_value, (fade_player1.time_stamp - fade_player1.time_delay) / fade_player1.duration)
+		
+	if fade_player2 != null:
+		fade_player2.time_stamp += delta
+		if fade_player2.time_stamp > fade_player2.duration:
+			if player2.volume_db <= -40:
+				player2.stop()
+			fade_player2 = null
+			playing_state_changed = true
+		elif fade_player2.time_stamp >= fade_player2.time_delay:
+			player2.volume_db = lerpf(fade_player2.start_value, fade_player2.final_value, (fade_player2.time_stamp - fade_player2.time_delay) / fade_player2.duration)
+		
+	if playing_state_changed:
+		if not player1.playing and not player2.playing:
+			state = PlayerState.MUTE
+		elif player1.playing:
+			state = PlayerState.PLAYING_1
+		elif player2.playing:
+			state = PlayerState.PLAYING_2
+		print(PlayerState.keys()[state])

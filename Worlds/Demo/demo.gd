@@ -210,6 +210,9 @@ func _physics_process(delta: float) -> void:
 	update_terrain_queue()
 	update_population_spawning()
 	
+	AudioManager.update(delta)
+	player.update_audio_state(delta)
+	
 	if player.magic_book.settings.is_paused:
 		if get_window().has_focus():
 			if Input.get_joy_axis(0, JOY_AXIS_TRIGGER_RIGHT) > 0:
@@ -239,8 +242,6 @@ func _physics_process(delta: float) -> void:
 	update_transition_to_biome(delta)
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
-	
-	AudioManager.update(delta)
 
 	if knowledge_tick >= Globals.knowledge_tick() and has_init_terrain_population:
 		knowledge_tick = 0.0
