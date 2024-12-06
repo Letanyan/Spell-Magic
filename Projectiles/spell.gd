@@ -526,16 +526,6 @@ func damage(vitals: Vitals) -> float:
 		Element.VOID    : return 0.0
 	return 0.0
 	
-const fire = preload("res://Projectiles/fire.tscn")
-const rock = preload("res://Projectiles/rock.tscn")
-const water = preload("res://Projectiles/water.tscn")
-const air = preload("res://Projectiles/air.tscn")
-const ice = preload("res://Projectiles/ice.tscn")
-const electric = preload("res://Projectiles/electric.tscn")
-const _void = preload("res://Projectiles/void.tscn")
-const turret = preload("res://Projectiles/turret/turret.tscn")
-const turret_mat = preload("res://Projectiles/turret/turret.tres")
-	
 func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	var fixed_vars := Vars.new()
 	fixed_vars.copy_from(fvars)
@@ -554,16 +544,7 @@ func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	fixed_vars.set_value(Vars.D, d_expr.compute_value(fixed_vars))
 	
 	
-	var p: SpellBody
-	match element:
-		Element.FIRE: p = fire.instantiate()
-		Element.ROCK: p = rock.instantiate()
-		Element.WATER: p = water.instantiate()
-		Element.AIR: p = air.instantiate()
-		Element.ICE: p = ice.instantiate()
-		Element.ELECTRIC: p = electric.instantiate()
-		Element.VOID: p = _void.instantiate()
-		_: p = fire.instantiate()
+	var p: SpellBody = SpellBuffer.get_projectile(element)
 			
 	p.fixed_vars = fixed_vars
 	p.expression_vars = Vars.new()
@@ -666,7 +647,7 @@ func get_turret(n: int, fvars: Vars) -> Node3D:
 	compute_expressions(fixed_vars)
 	fixed_vars.set_value(Vars.D, d_expr.compute_value(fixed_vars))
 	
-	var p := turret.instantiate() as Node3D
+	var p := SpellBuffer.get_turret()
 			
 	p.position = calculate_location(fixed_vars)
 	

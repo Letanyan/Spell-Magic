@@ -428,7 +428,7 @@ func _input(event: InputEvent) -> void:
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:
-	player.cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_child", p), s)
+	player.cast_spell(insert_spell, s)
 	if is_down:
 		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func() -> void: 
 			var is_rapid_fire := Globals.Ref.new(false)
@@ -436,6 +436,14 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 			if ns != null and is_rapid_fire.data:
 				cast_spell_with_recusive_check_for_rapid_fire(ns, true)
 		)
+
+func insert_spell(p: Node3D) -> void:
+	if p == null:
+		return
+	if p.get_parent() == null:
+		add_child(p)
+	if p is SpellBody:
+		(p as SpellBody).setup()
 
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta

@@ -154,7 +154,7 @@ func _physics_process(delta: float) -> void:
 		if current_attack != null:
 			var spell := current_attack.choose_spell(vitals)
 			if spell != null:
-				cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell)
+				cast_spell(insert_spell, spell)
 			
 	vital_tick -= delta
 	if vital_tick <= 0.0:
@@ -218,7 +218,7 @@ func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area
 		
 	if projectile.spell.chain_cast_kind == Spell.ChainCastKind.HIT and projectile.spell.chain != null and not projectile.on_hit_casts.has(area):
 		projectile.on_hit_casts[area] = true
-		projectile.cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), projectile.spell.chain)
+		projectile.cast_spell(insert_spell, projectile.spell.chain)
 	var dmg := projectile.spell.damage(caster_vitals)
 	if is_rock:
 		projectile.lose_control(projectile, area, {"dmg": dmg, "el": projectile.spell.element})
@@ -375,3 +375,11 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if spell_caster == null:
 		return
 	spell_caster.cast_spell(self, vitals, insert, next_spell)
+
+func insert_spell(p: Node3D) -> void:
+	if p == null:
+		return
+	if p.get_parent() == null:
+		add_sibling(p)
+	if p is SpellBody:
+		(p as SpellBody).setup()

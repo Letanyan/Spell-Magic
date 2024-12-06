@@ -32,11 +32,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	water_spout1.configure({
 		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(3,9), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi", "c": "vec(0,0,0)"
-	}, Spell.Element.WATER, fit(8,16), power(10), radius(3), fiti(3, 15), 33, 99, ea(10))
+	}, Spell.Element.WATER, fit(8,16), power(10), radius(3), fiti(3, 5), 33, 99, ea(10))
 	water_spout1.follow = true
 	water_spout2.configure({
 		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(3,9), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi", "c": "vec(0,1,0)"
-	}, Spell.Element.WATER, fit(8,16), power(12), radius(3), fiti(3, 15), 66, 66, ea(12), water_spout1)
+	}, Spell.Element.WATER, fit(8,16), power(12), radius(3), fiti(3, 10), 66, 66, ea(12), water_spout1)
 	water_spout2.follow = true
 	water_spout2.chain_cast_kind = Spell.ChainCastKind.START
 	water_spout3.configure({
@@ -47,33 +47,29 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	water_down1.configure({
 		"d": "8", "s":atks(4,10), "R":fits(6,12), "off":"vec(0,1,0)", "dir":"vec(0,-1,0)", "a":"n/N*2*pi", "c":"vec(0,0,0)"
-	}, Spell.Element.WATER, fit(4,8), power(10), radius(3), fiti(3,15), 40, 80, ea(11))
+	}, Spell.Element.WATER, fit(4,8), power(10), radius(3), fiti(3,9), 40, 80, ea(11))
 	water_down1.follow = true
 	water_down2.configure({
 		"d": "8", "s":atks(4,10), "R":fits(5,10), "off":"vec(0,1,0)", "dir":"vec(0,-1,0)", "a":"n/N*2*pi", "c":"vec(0,0,0)"
-	}, Spell.Element.WATER, fit(4,8), power(12), radius(3), fiti(3,12), 60, 100, ea(13), water_down1)
+	}, Spell.Element.WATER, fit(4,8), power(12), radius(3), fiti(3,12), 60, 100, ea(13))
 	water_down2.follow = true
-	water_down2.chain_cast_kind = Spell.ChainCastKind.END
 	water_down3.configure({
 		"d": "8", "s":atks(4,10), "R":fits(4,8), "off":"vec(0,1,0)", "dir":"vec(0,-1,0)", "a":"n/N*2*pi", "c":"vec(0,0,0)"
-	}, Spell.Element.WATER, fit(4,8), power(14), radius(3), fiti(3,9), 80, 120, ea(15), water_down2)
+	}, Spell.Element.WATER, fit(4,8), power(14), radius(3), fiti(3,15), 80, 120, ea(15))
 	water_down3.follow = true
-	water_down3.chain_cast_kind = Spell.ChainCastKind.END
 	
 	water_spiral1.configure({
 		"d": "Br*2", "s": "0", "R":fits(6,12), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,15), 33, 99, ea(12))
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,5), 33, 99, ea(12))
 	water_spiral1.follow = true
 	water_spiral2.configure({
 		"d": "Br*2", "s": "0", "R":fits(8,14), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,10), 66, 122, ea(14), water_spiral1)
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,10), 66, 122, ea(14))
 	water_spiral2.follow = true
-	water_spiral2.chain_cast_kind = Spell.ChainCastKind.START
 	water_spiral3.configure({
 		"d": "Br*2", "s": "0", "R":fits(10,16), "off":"vec(0,0,0)", "dir":"vec(1,0,0)", "a":"n/N*2*pi+t/T*2*pi*"+atks(4,10), "c": "vec(0,0,0)" 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,5), 99, 155, ea(16), water_spiral2)
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,15), 99, 155, ea(16))
 	water_spiral3.follow = true
-	water_spiral3.chain_cast_kind = Spell.ChainCastKind.START
 	
 	spell_drop_probs = {
 		water_spout1: spell_drop(1),

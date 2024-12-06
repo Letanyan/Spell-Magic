@@ -3,51 +3,71 @@ extends Node3D
 
 var spell: Spell
 var n: int
-var time_stamp: float = -1.0
-var update_tick: float = 0.0
-var expired: bool = false
-var is_emitting: bool = true
-var started: bool = false
-var in_control: bool = true
-var free_when_ready := NAN
-var velocity: Vector3 = Vector3.ZERO
-var old_velocity := Vector3.ZERO
-var lifetime_velocity: float = 0.0 
-var old_pos: Vector3 = Vector3.ZERO
-var most_recent_radius: Vector3 = Vector3.ZERO
-var rotation_angle: float = NAN
+var time_stamp: float
+var update_tick: float
+var expired: bool
+var is_emitting: bool
+var started: bool
+var in_control: bool
+var free_when_ready: float
+var velocity: Vector3
+var old_velocity: Vector3
+var lifetime_velocity: float
+var old_pos: Vector3
+var most_recent_radius: Vector3
+var rotation_angle: float
 var rng: RandomNumberGenerator
 
-var complexity_id: int = 0
+var complexity_id: int
 
 var caster_vitals: Vitals
 var spell_caster: SpellCaster
-var on_hit_casts := {}
+var on_hit_casts: Dictionary
 
 var fixed_vars: Vars
 var expression_vars: Vars
 
-var to_remove := false
-var origin_node: Node3D = null
-var tracking_target: Node3D = null
-var tracking_position := Vector3.ZERO
-var tracking_offset := Vector3.ZERO
-var origin_spell_caster: SpellCaster = null
+var to_remove: bool
+var origin_node: Node3D
+var tracking_target: Node3D
+var tracking_position: Vector3
+var tracking_offset: Vector3
+var origin_spell_caster: SpellCaster
 
 const INVUNERABLE_DURATION: float = 0.5
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	rng = RandomNumberGenerator.new()
+		
+func setup() -> void:
+	update_tick = 0.0
+	expired = false
+	is_emitting = true
+	started = false
+	in_control = true
+	free_when_ready = NAN
+	velocity = Vector3.ZERO
+	old_velocity = Vector3.ZERO
+	old_pos = Vector3.ZERO
+	rotation_angle = NAN
+	on_hit_casts = {}
+
+	to_remove = false
+	
 	spell_caster = SpellCaster.new(origin_node, SpellCaster.Entity.PROJECTILE)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
-		cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
-	rng = RandomNumberGenerator.new()
+		cast_spell(insert_spell, spell.chain)
 	rng.seed = hash(spell.name)
 	if origin_node is Player:
 		origin_spell_caster = (origin_node as Player).spell_caster
 	elif origin_node is Enemy:
 		origin_spell_caster = (origin_node as Enemy).spell_caster
+	else:
+		origin_spell_caster = null
 		
+		
+	start_emitting()
 
 func _physics_process(delta: float) -> void:
 	if not is_nan(free_when_ready):
@@ -56,7 +76,7 @@ func _physics_process(delta: float) -> void:
 			if not spell_caster.particles.is_empty():
 				free_when_ready = max(free_when_ready, 2)
 			else:
-				queue_free()
+				SpellBuffer.free_projectile(self)
 
 func has_expired() -> bool:
 	if time_stamp < 0:
@@ -184,7 +204,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	
 	if is_enemy and (origin_node is Enemy or origin_node is TargetShape):
 		return
-	
+		
 	var is_world_object : int = _body.collision_layer & Globals.Layer.OBJECT != 0
 	var is_fire    : int = _body.collision_layer & Globals.Layer.FIRE != 0
 	var is_rock    : int = _body.collision_layer & Globals.Layer.ROCK != 0
@@ -263,7 +283,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(_body):
 			on_hit_casts[_body] = true
-			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
+			cast_spell(insert_spell, spell.chain)
 		if spell.element != Spell.Element.VOID:
 			if is_player:
 				var body := _body as Player
@@ -354,7 +374,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 	if not invunerable and dmg != {}:
 		if spell.chain_cast_kind == Spell.ChainCastKind.HIT and spell.chain != null and not on_hit_casts.has(area):
 			on_hit_casts[area] = true
-			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell.chain)
+			cast_spell(insert_spell, spell.chain)
 		Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity)
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Player
@@ -517,19 +537,20 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 			origin_spell_caster.update_complexity(complexity_id, complexity_angle)
 			
 	old_pos = next_pos
-	
-	started = true
-
+	var count: int = 0
 	var shape_cast := get_shape_cast()
-	var target := position - p
-	if target.length() > 1 or target.distance_squared_to(shape_cast.target_position) > 1.0:
-		if spell.element == Spell.Element.ROCK:
-			shape_cast.target_position = position - p
-		else:
-			shape_cast.target_position = Vector3.BACK * (position - p).length()
-	elif shape_cast.target_position != Vector3.ZERO:
-		shape_cast.target_position = Vector3.ZERO
-	var count := shape_cast.get_collision_count()
+	if started:
+		var target := position - p
+		if target.length() > 1 or target.distance_squared_to(shape_cast.target_position) > 1.0:
+			if spell.element == Spell.Element.ROCK:
+				shape_cast.target_position = position - p
+			else:
+				shape_cast.target_position = Vector3.BACK * (position - p).length()
+		elif shape_cast.target_position != Vector3.ZERO:
+			shape_cast.target_position = Vector3.ZERO
+		count = shape_cast.get_collision_count()
+		
+	started = true
 	for i in range(count):
 		var obj := shape_cast.get_collider(i)
 		var point := shape_cast.get_collision_point(i)
@@ -617,6 +638,62 @@ func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 	var p := spell.calculate_location(vars, false, exceeds)
 	update_movement(p, false, vars)
 	return MagicBook.DisallowSpellReason.VELOCITY if exceeds.data else MagicBook.DisallowSpellReason.NONE
+
+func start_emitting() -> void:
+	match spell.element:
+		Spell.Element.FIRE:
+			var particles: GPUParticles3D = get_node("source")
+			particles.emitting = true
+			var trail: GPUParticles3D = get_node("source_trail")
+			trail.emitting = true
+			var light: OmniLight3D = get_node("light")
+			light.omni_range = 5.0
+			get_shape_cast().enabled = true
+			get_area_collision().disabled = false
+			
+		Spell.Element.ROCK:
+			var body: RigidBody3D = get_node("body")
+			body.visible = true
+			body.collision_mask = 0b11_1111_1111
+			get_shape_cast().enabled = true
+			(get_node("body/shape") as CollisionShape3D).disabled = false
+			
+		Spell.Element.WATER:
+			var particles: GPUParticles3D = get_node("source")
+			particles.emitting = true
+			var trail: GPUParticles3D = get_node("source_trail")
+			trail.emitting = true
+			get_shape_cast().enabled = true
+			get_area_collision().disabled = false
+			
+		Spell.Element.AIR:
+			var particles: GPUParticles3D = get_node("source")
+			particles.emitting = true
+			var trail: GPUParticles3D = get_node("source_trail")
+			trail.emitting = true
+			get_shape_cast().enabled = true
+			get_area_collision().disabled = false
+			
+		Spell.Element.ICE:
+			var particles: GPUParticles3D = get_node("source")
+			particles.emitting = true
+			var trail: GPUParticles3D = get_node("source_trail")
+			trail.emitting = true
+			get_shape_cast().enabled = true
+			get_area_collision().disabled = false
+			
+		Spell.Element.ELECTRIC:
+			var particles: GPUParticles3D = get_node("source")
+			particles.emitting = true
+			var light: OmniLight3D = get_node("light")
+			light.omni_range = 5.0
+			get_shape_cast().enabled = true
+			get_area_collision().disabled = false
+			var body := get_node("body") as MeshInstance3D
+			body.visible = true
+			
+		Spell.Element.VOID:
+			get_area_collision().disabled = false
 
 func stop_emitting() -> void:
 	# FIXME: reduce amount of light sources
@@ -719,10 +796,18 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	await get_tree().physics_frame
 	spell_caster.cast_spell(self, caster_vitals, insert, next_spell, tracking_target, fixed_vars)
 
+func insert_spell(p: Node3D) -> void:
+	if p == null:
+		return
+	if p.get_parent() == null:
+		add_sibling(p)
+	if p is SpellBody:
+		(p as SpellBody).setup()
+
 func free_particle() -> void:
 	if spell_caster != null:
 		spell_caster.free_particles()
-	queue_free()
+	SpellBuffer.free_projectile(self)
 
 func calculate_overall_complexity() -> float:
 	if origin_spell_caster != null:

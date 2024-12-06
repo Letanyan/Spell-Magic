@@ -359,7 +359,7 @@ func _physics_process(delta: float) -> void:
 			play_animation("attack")
 			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"] as StringName).length / 2.0).timeout
 			await get_tree().physics_frame
-			cast_spell(func(p: Node3D) -> void: if p != null: call_deferred("add_sibling", p), spell)
+			cast_spell(insert_spell, spell)
 		
 
 	spell_caster.update(self, delta)
@@ -396,6 +396,14 @@ func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellR
 	spell_was_cast.emit(next_spell)
 	return spell_caster.cast_spell(self, vitals, insert, next_spell)
 
+func insert_spell(p: Node3D) -> void:
+	if p == null:
+		return
+	if p.get_parent() == null:
+		add_sibling(p)
+	if p is SpellBody:
+		(p as SpellBody).setup()
+		
 
 func update_behaviour() -> void:
 	var old_is_idle := is_idle

@@ -34,7 +34,6 @@ func update(body: Node3D, delta: float) -> Dictionary:
 			p.update_tick -= delta
 			p.prepare_update_spell(delta)
 			update_index += 1
-			#print("wait for: ", update_index, " remaining: ", p.update_tick)
 			continue
 		else:
 			p.update_tick = 0.0
@@ -59,7 +58,14 @@ func update(body: Node3D, delta: float) -> Dictionary:
 		if p.has_expired():
 			if p.is_emitting and p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
 				can_remove = false
-				p.cast_spell(func(np: Node3D) -> void: if np != null: p.call_deferred("add_sibling", np), p.spell.chain)
+				var insert_func := func(np: Node3D) -> void:
+					if np == null:
+						return
+					if np.get_parent() == null:
+						p.add_sibling(np)
+					if np is SpellBody:
+						(np as SpellBody).setup()
+				p.cast_spell(insert_func, p.spell.chain)
 			if can_remove:
 				should_remove.append(update_index)
 			elif p.is_emitting:
@@ -492,14 +498,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 	#p.fixed_vars.print_values()
 	insert.call(p)
 	if q and q.get_parent():
-		q.queue_free()
-	
-func set_up_collision(world: Node3D, p: SpellBody) -> void:
-	var new_agent_rid: RID = NavigationServer3D.agent_create()
-	var default_3d_map_rid: RID = world.get_world_3d().get_navigation_map()
-	NavigationServer3D.agent_set_map(new_agent_rid, default_3d_map_rid)
-	NavigationServer3D.agent_set_radius(new_agent_rid, 5)
-	NavigationServer3D.agent_set_position(new_agent_rid, p.global_position)
+		SpellBuffer.free_turrent(q)
 
 func free_particles() -> void:
 	for p: SpellBody in particles:

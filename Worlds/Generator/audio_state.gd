@@ -4,10 +4,7 @@ enum PlayerState { MUTE, PLAYING_1, PLAYING_2, IN_TRANSITION_TO_1, IN_TRANSITION
 const MIN_VOLUME_DB = -80
 const MAX_VOLUME_DB = 0
 
-var state: PlayerState:
-	set(value):
-		print("state: ", PlayerState.keys()[state], " -> ", PlayerState.keys()[value])
-		state = value
+var state: PlayerState
 var player1: AudioStreamPlayer3D
 var player2: AudioStreamPlayer3D
 var current_stream: AudioStream
