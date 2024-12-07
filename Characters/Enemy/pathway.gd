@@ -27,6 +27,20 @@ func _init(_segments: Array[Segment] = [], _durations: Array[float] = [], _path_
 	calculate_distance()
 	calculate_total_duration()
 	
+func duplicate() -> Pathway:
+	var result := Pathway.new()
+	for seg in segments:
+		result.segments.append(seg.duplicate())
+	result.durations = durations.duplicate()
+	for mod in path_modifiers:
+		result.path_modifiers.append(mod.duplicate())
+	result.distance = distance
+	result.total_duration = total_duration
+	result.movement_speed = movement_speed.duplicate()
+	result.cursor = cursor
+	return result
+	
+	
 static var empty_default := Pathway.empty()
 static func empty(default_speed: float = 0.0, default_duration: float = 1.0) -> Pathway:
 	var a := Segment.linear(Vector3.ZERO, Vector3.ZERO)

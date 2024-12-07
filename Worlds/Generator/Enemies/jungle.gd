@@ -56,20 +56,24 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var cursor := Vector3.ZERO
 				var direction := Vector3.UP
 				var distance := 0.0
+				const MAX_DIST := 20.0
+				const MIN_DIST := 10.0
 				for i in rng.randi_range(1, pop.fiti(1, 5)) * 2:
-					distance = rng.randf_range(10, 20)
+					distance = rng.randf_range(MIN_DIST, MAX_DIST)
 					var dest := cursor + direction * distance
 					var pathway: Pathway
 					if i % 2 == 0:
-						pathway = Pathway.new().from_to_and_back(pop.runs(10), cursor, dest, Easing.in_out_quad)
+						pathway = Pathway.new().from_to_and_back(pop.runs(10) * distance / MIN_DIST, cursor, dest, Easing.linear)
 					else:
-						pathway = Pathway.new().from_to_and_back(pop.runs(10), dest, cursor, Easing.in_out_quad)
-					var path := PathStyle.new(0, Vec3.xz(pos)).follow_path(pathway).align_y_to_ground_and_air().look_at_nothing()
+						pathway = Pathway.new().from_to_and_back(pop.runs(10) * distance / MIN_DIST, dest, cursor, Easing.linear)
+					var path := PathStyle.new(0, Vec3.xz__y(pos, 0)).follow_path(pathway).align_y_to_origin().look_at_nothing()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
 					var p := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 					if p != null:
 						result.append(p)
-						var offset_dir := Rand.entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
+						var offset_dir: Vector2 = -Vec2.xz(direction)
+						while offset_dir.is_equal_approx(-Vec2.xz(direction)):
+							offset_dir = Rand.entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
 						if cursor.y > 20 and rng.randf() < 0.5:
 							var op := pop.spawn_enemy(World.Enemy.BIRD, pos + Vec2.xz(cursor) + Rand.point_in_circle_2d(spacing, rng), spacing) as Bird
 							if op != null:
@@ -77,7 +81,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 								op.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
 								op.position.y += cursor.y
 								result.append(op)
-						cursor += (direction * distance) * 0.95 + Vec3.xz(offset_dir) * p.bounds
+						cursor += (direction * distance) + Vec3.xz(offset_dir) * p.bounds
 						direction = Rand.entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
 				var artifact := Artifact.nulled(pop.player.name_generator.spanish_names.generate(9))
 				artifact.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], \
@@ -100,7 +104,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var spacing_radius := sqrt(2 * spacing ** 2)
 				var platform_size := rng.randf_range(spacing_radius, spacing_radius * 5)
 				var points := Population.points_around(pos, platform_size, index, area, exclusion, null)
-				if points.size() > spacing:
+				if points.size() > sqrt(spacing):
 					var minv := Vector2(INF, INF)
 					var maxv := Vector2(-INF, -INF)
 					for p in points:
@@ -111,14 +115,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var center := minv.lerp(maxv, 0.5)
 					var platform_scale := sqrt(platform_size ** 2 / 2)
 					var h := Vec3.y(rng.randf_range(50, 100) + platform_scale) 
-					var pathway := Pathway.new().wait(1.0).apply_transform(Transform3D.IDENTITY.translated(h))
-					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_ground_air_and_dirt().look_at_nothing()
+					var pathway := Pathway.new().wait(1.0, h)
+					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
 					var platform := pop.spawn_world_item(World.Item.TARGET, center, spacing, config) as TargetShape
 					if platform != null:
-						platform.position.y = h.y + pop.get_ground_level(center).y
-						var caster_y := platform.position.y + platform.bounds.y + pop.player.bounds.y * 0.5
-						platform.caster_target_position = Vec3.xz(center) + Vec3.y(caster_y)
+						platform.caster_target_offset = Vec3.y(1.0)
 						
 						var arc := GlobalData.magic_book.copy_spell("arc")
 						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 5, 0, 0.5, 8, 0, 0, 30)
@@ -133,35 +135,35 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							AttackSequence.ASCondition.probability_jump({"arc": 5, "line": 2}),
 							
 							AttackSequence.ASLabel.new("arc"),
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI / 4))).align_y_to_origin().origin_is_player(),
 							arc_pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4 + PI / 2))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI / 4 + PI / 2))).align_y_to_origin().origin_is_player(),
 							arc_pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4 + PI))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI / 4 + PI))).align_y_to_origin().origin_is_player(),
 							arc_pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 4 + PI / 2 * 3))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI / 4 + PI / 2 * 3))).align_y_to_origin().origin_is_player(),
 							arc_pattern,
 							AttackSequence.ASCondition.jump("choose"),
 							
 							AttackSequence.ASLabel.new("line"),
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, 0))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, 0))).align_y_to_origin().origin_is_player(),
 							linear_pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 2))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI / 2))).align_y_to_origin().origin_is_player(),
 							linear_pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI / 2 * 3))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI / 2 * 3))).align_y_to_origin().origin_is_player(),
 							linear_pattern,
-							PathStyle.new(0, platform.caster_target_position).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale, PI  * 2))).align_y_to_origin(),
+							PathStyle.new(0).follow_path(Pathway.new().wait(0.1, Vec3.polar(platform_scale * 0.5, PI  * 2))).align_y_to_origin().origin_is_player(),
 							linear_pattern,
 							AttackSequence.ASCondition.jump("choose"),
 						])
 						result.append(platform)
-						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing) as Birdman
-						if p != null:
-							var y_offset := h.y + platform.bounds.y + p.bounds.y
-							p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
-							p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
-							p.position.y += y_offset
-							result.append(p)
+						#var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing) as Birdman
+						#if p != null:
+							#var y_offset := h.y + platform.bounds.y + p.bounds.y
+							#p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
+							#p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
+							#p.position.y += y_offset
+							#result.append(p)
 						for q in points: exclusion[q] = true
 					
 			JungleStructuresKind.BIRD:

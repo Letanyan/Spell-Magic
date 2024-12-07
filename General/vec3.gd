@@ -17,6 +17,9 @@ static func xyz(v: Vector4) -> Vector3: return Vector3(v.x, v.y, v.z)
 
 static func xz_y(vxz: Vector3, vy: float) -> Vector3:
 	return Vector3(vxz.x, vy, vxz.z)
+	
+static func xz__y(vxz: Vector2, vy: float) -> Vector3:
+	return Vector3(vxz.x, vy, vxz.y)
 
 static func polar(radius: float, angle: float, height: float = 0.0) -> Vector3:
 	return Vector3(radius, 0, 0).rotated(Vector3.UP, angle) + Vec3.y(height)

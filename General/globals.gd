@@ -50,7 +50,7 @@ static func look_at(p: Node3D, dir: Vector3) -> void:
 			p.look_at_from_position(origin, target)
 			
 static func look_at_point(p: Node3D, target: Vector3) -> void:
-	var origin := p.position
+	var origin := p.global_position
 	if origin != target:
 		if Vector3.UP.cross((target - origin).normalized()).is_zero_approx():
 			p.look_at_from_position(origin, p.position + Vector3.UP, Vector3.BACK)

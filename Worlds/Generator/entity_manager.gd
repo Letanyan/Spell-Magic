@@ -166,8 +166,11 @@ func _init() -> void:
 func get_enemy(kind: World.Enemy) -> Enemy:
 	return buffer_enemies[kind].get_entity()
 
-func free_enemy(enemy: Enemy) -> void:
-	buffer_enemies[enemy.kind].free_entity(enemy)
+func free_enemy(enemy: Enemy, kind: World.Enemy = World.Enemy.NONE) -> void:
+	if kind == World.Enemy.NONE:
+		buffer_enemies[enemy.kind].free_entity(enemy)
+	else:
+		buffer_enemies[kind].free_entity(enemy)
 		
 func get_world_item(kind: World.Item) -> WorldItem:
 	match kind:

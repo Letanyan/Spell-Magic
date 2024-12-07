@@ -175,6 +175,9 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			player_start_position.y -= (player as Player).bounds.y / 2.0
 		elif player is Vector3:
 			player_start_position = player
+		elif player is TargetShape:
+			player_start_position = (player as TargetShape).position
+			#player_start_position.y += (player as TargetShape).bounds.y / 2.0
 	if origin_kind == OriginKind.VISION and player_start_vision_rotation == null:
 		if player is Player:
 			if player_vision_angle == PlayerVisionAngle.CAMERA:
@@ -186,12 +189,15 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		else:
 			player_start_vision_rotation = 0.0
 	var temp_origin := Vector3.ZERO
+	var ignore_ground := true
 	if origin_kind == OriginKind.PLAYER or origin_kind == OriginKind.VISION:
 		temp_origin = player_start_position as Vector3
 	elif origin_kind == OriginKind.ME:
 		temp_origin = me_start_position as Vector3
 	elif origin_kind == OriginKind.ABSOLUTE:
 		temp_origin = origin
+		ignore_ground = false
+		
 	
 	var transform := Transform3D.IDENTITY
 	if origin_kind == OriginKind.VISION:
@@ -223,9 +229,9 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	var index := Globals.Ref.new(0)
 	var v := path.position_at_time_with_transform(duration, transform, index) + Vec3.xz_y(temp_origin, 0)
 	if direct_space_state != null:
-		y = next_y_position(me, v.x, v.y, v.z, direct_space_state, temp_origin.y)
+		y = next_y_position(me, v.x, v.y, v.z, direct_space_state, temp_origin.y, ignore_ground)
 	else:
-		y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y)
+		y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
 	if time_was_up and (when_initial_position_can_update & InitialPositionCanUpdate.WHEN_LOOP != 0):
 		player_start_vision_rotation = null
 		player_start_position = null
@@ -246,14 +252,14 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		DebugDraw3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, delta)
 		for segment: Segment in path.segments:
 			var s := segment.position_at_time_with_transform(0.0, transform) + Vec3.xz_y(temp_origin, 0)
-			s.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y)
+			s.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
 			var e := segment.position_at_time_with_transform(1.0, transform) + Vec3.xz_y(temp_origin, 0)
-			e.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y)
+			e.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
 			DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
 			DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)
 	return old_position
 
-func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_state: PhysicsDirectSpaceState3D, origin_offset: float) -> float:
+func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_state: PhysicsDirectSpaceState3D, origin_offset: float, ignore_ground: bool) -> float:
 	var me_y := me.w
 		
 	var result := 0.0
@@ -265,7 +271,7 @@ func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_sta
 			actual_y = 0.0
 		CoordY.GROUND_AND_DIRT:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - g
+			var off := origin_offset - (0.0 if ignore_ground else g)
 			if y + off > 0:
 				result = g
 				actual_y = 0.0
@@ -273,7 +279,7 @@ func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_sta
 				result = g + y + off
 		CoordY.GROUND_AND_AIR:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - g
+			var off := origin_offset - (0.0 if ignore_ground else g)
 			if y + off < 0:
 				result = g
 				actual_y = 0.0
@@ -281,18 +287,19 @@ func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_sta
 				result = g + y + off
 		CoordY.GROUND_AIR_AND_DIRT: 
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - g
+			var off := origin_offset - (0.0 if ignore_ground else g)
 			result = g + y + off
 		CoordY.AIR:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - g
+			var off := origin_offset - (0.0 if ignore_ground else g)
 			if y + off <= me_y / 2.0:
 				result = g + me_y / 2.0
 				actual_y = me_y / 2.0
 			else:
 				result = g + y + off
 		CoordY.ORIGIN:
-			result = y + origin_offset
+			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
+			result = y + origin_offset + (0.0 if ignore_ground else g)
 
 	if actual_y > 0.001:
 		can_update_initial_position_now = when_initial_position_can_update & InitialPositionCanUpdate.IN_AIR != 0

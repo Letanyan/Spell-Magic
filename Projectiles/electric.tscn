@@ -91,7 +91,7 @@ draw_pass_1 = SubResource("BoxMesh_a4wuh")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_sdaq3")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
+[node name="light" type="OmniLight3D" parent="."]
 
 [node name="area" type="Area3D" parent="."]
 collision_layer = 256

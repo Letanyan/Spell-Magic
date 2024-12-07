@@ -100,7 +100,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 	#current_iteration_spawn_count += 1
 	return index
 	
-func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Callable) -> Node3D:
+func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_info: Callable) -> Node3D:
 	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -109,10 +109,10 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 		var info: Dictionary = user_info.call(world_normal)
 		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
 		var not_hfil := current_biome_during_generation != World.Biome.HFIL
-		var is_fish := is_enemy and (entity is Fish or entity is Fishman)
+		var is_fish := (is_enemy != World.Enemy.NONE) and (entity is Fish or entity is Fishman)
 		if not info.get("valid", true) or (below_sea_level and not_hfil and not is_fish) or is_nan(wh):
-			if is_enemy:
-				entity_manager.free_enemy(entity as Enemy)
+			if is_enemy != World.Enemy.NONE:
+				entity_manager.free_enemy(entity as Enemy, is_enemy)
 			else:
 				if entity is WorldItem:
 					entity_manager.free_world_item(entity as WorldItem)
@@ -120,7 +120,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: bool, user_info: Cal
 		entity.position.x = pos.x
 		entity.position.y = wh + info.get("y_offset", 0.0)
 		entity.position.z = pos.z
-		if is_enemy:
+		if is_enemy != World.Enemy.NONE:
 			(entity as Enemy).player = player
 			(entity as Enemy).index_in_population = inhabitants.size()
 			(entity as Enemy).is_dead = false
@@ -162,7 +162,7 @@ func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
-	return prepare_entity(result, pos, true, always_valid)
+	return prepare_entity(result, pos, enemy, always_valid)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float, lvl: int = 1) -> Enemy:
 	var result := Enemy.make(enemy)
@@ -191,7 +191,7 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 		var temp := result as TargetShape
 		temp.configure(config)
 	
-	return prepare_entity(result, pos, false, always_valid)
+	return prepare_entity(result, pos, World.Enemy.NONE, always_valid)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	if display_only: return null
@@ -344,6 +344,7 @@ func habitant_set_display_only(only_display: bool) -> void:
 			var habitant: Enemy = inhabitants[habitant_index]
 			habitant.spell_caster.free_particles()
 			entity_manager.free_enemy(habitant)
+		inhabitants.clear()
 	else:
 		setup_spawning_state()
 

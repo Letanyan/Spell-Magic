@@ -9,6 +9,8 @@ enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID
 @onready var health_bar_level: Label3D = $HealthBar/Level
 @onready var health_bar_mesh: MeshInstance3D = $HealthBar/Bar
 @onready var static_body: StaticBody3D = $static
+@onready var coin: MeshInstance3D = $coin
+@onready var platform: MeshInstance3D = $platform
 
 var puzzle_kind: PuzzleKind = PuzzleKind.DAMAGE
 
@@ -24,6 +26,7 @@ var element: Spell.Element = Spell.Element.VOID
 var spell_caster: SpellCaster = null
 var caster_position := Vector3.ZERO
 var caster_target_position := Vector3(NAN, NAN, NAN)
+var caster_target_offset := Vector3.ZERO
 var vitals: Vitals = null
 var current_attack: AttackPatterns = null
 var attack_sequence: AttackSequence = null
@@ -68,9 +71,9 @@ func set_feet_position(y: float) -> void:
 	
 func get_caster_target_position() -> Vector3:
 	if is_nan(caster_target_position.x):
-		return global_position if player == null else player.global_position
+		return (global_position if player == null else player.global_position) + caster_target_offset
 	else:
-		return caster_target_position
+		return caster_target_position + caster_target_offset
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
@@ -131,12 +134,22 @@ func _physics_process(delta: float) -> void:
 	var velocity := (target_position - start_position)
 	if path.lookat == PathStyle.LookAt.PLAYER:
 		var actual_goal := focus_point
-		Globals.look_at_point(self, actual_goal)
+		if platform.visible:
+			Globals.look_at_point(platform, actual_goal)
+			Globals.look_at_point(static_body, actual_goal)
+		elif coin.visible:
+			Globals.look_at_point(coin, actual_goal)
+			Globals.look_at_point(area_3d, actual_goal)
 	elif path.lookat == PathStyle.LookAt.PLAYER_XZ:
 		var player_position := focus_point
 		player_position.y = position.y
 		var target := player_position
-		Globals.look_at_point(self, target)
+		if platform.visible:
+			Globals.look_at_point(platform, target)
+			Globals.look_at_point(static_body, target)
+		elif coin.visible:
+			Globals.look_at_point(coin, target)
+			Globals.look_at_point(area_3d, target)
 	elif path.lookat == PathStyle.LookAt.VELOCITY:
 		velocity = velocity.normalized()
 		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), 0.05)
@@ -230,7 +243,8 @@ func _on_area_3d_area_entered(projectile: SpellBody, caster_vitals: Vitals, area
 func set_is_down() -> void:
 	is_down = true
 	respawn_ticks = 0.0
-	spawner.remove_node(self)
+	if spawner != null:
+		spawner.remove_node(self)
 	animation_player.play("set_down")
 	($static/shape as CollisionShape3D).disabled = true
 	($area/shape as CollisionShape3D).disabled = true
@@ -239,6 +253,9 @@ func set_down() -> void:
 	hide()
 	
 func unset_down() -> void:
+	health.value = health.max_value
+	gauge.value = gauge.min_value
+	update_health_bar()
 	show()
 	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
 	($area/shape as CollisionShape3D).disabled = false

@@ -19,6 +19,9 @@ func _init(s: Vector3, e: Vector3, cc1: Vector3, cc2: Vector3, k: BezierKind, d:
 		distance = d
 	else:
 		calculate_distance()
+		
+func duplicate() -> Segment:
+	return Segment.new(start, end, c1, c2, kind, distance)
 
 # we must provide a distance for speed and duration calculations used later
 static func point(a: Vector3, d: float) -> Segment:

@@ -50,9 +50,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	air_small_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(2), 1, 25, 100, 50)
 	air_med_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(3), 1, 25, 100, 50)
 	air_large_med.configure({"s":atks(3,10), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(7), radius(4), 1, 25, 100, 50)
-	air_small_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.FIRE, 5, power(10), radius(2), 1, 25, 100, 50)
-	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.WATER, 5, power(10), radius(3), 1, 25, 100, 50)
-	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.ELECTRIC, 5, power(10), radius(4), 1, 25, 100, 50)
+	air_small_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(2), 1, 25, 100, 50)
+	air_med_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(3), 1, 25, 100, 50)
+	air_large_slow.configure({"s":atks(1,5), "d":"Br*2+r"}, Spell.Element.AIR, 5, power(10), radius(4), 1, 25, 100, 50)
 	
 	spell_drop_probs = {
 		air_small_slow: spell_drop(1),

@@ -714,8 +714,8 @@ func update_projectile(pivot: Node3D, pi_size: float, body: SpellBody, color: Co
 
 func update_projectile_update_tick(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
 	if body.update_tick <= 0.0:
-		const MIN = pow(40.0, 2.0)
-		const MAX = pow(60.0, 2.0)
+		const MIN = pow(80.0, 2.0)
+		const MAX = pow(20.0, 2.0)
 		body.update_tick = clampf((body.position.distance_squared_to(position) - MIN) / MAX, 0.0,  1.0)
 		
 	if body.spell.element != Spell.Element.VOID:

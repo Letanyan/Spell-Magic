@@ -87,6 +87,9 @@ static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: 
 	result.perception = Stat.new(percep.x, percep.x, percep.y)
 	result.damage_resistance = res
 	return result
+	
+static func default_ea(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(0, 0, high, rate)
+static func default_health(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(high, 0, high, rate)
 
 func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool = true) -> Dictionary:
 	match kind:

@@ -62,6 +62,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void: e.queue_free(); print(e, " died"))
 	
+	make_targets()
+	
 	const pX = 100
 	const pY = 100
 	const LVL = 50
@@ -159,13 +161,13 @@ func setup(_settings: WorldSettings) -> void:
 	#arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 2, 0, 0.5, 8, 0, 0, 0)
 	#var pattern := AttackPatterns.new([arc], AttackPatterns.choose_from_distribution(5, [1], 1))
 	#platform.attack_sequence = AttackSequence.new(true, [
-		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+		#PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
 		#pattern,
-		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
+		#PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, platform_scale))).align_y_to_origin(),
 		#pattern,
-		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
+		#PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(-platform_scale, h.y + platform.bounds.y, 0))).align_y_to_origin(),
 		#pattern,
-		#PathStyle.new(0, Vec3.xz(center) + Vec3.y(wh)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
+		#PathStyle.new(0, Vec3.xz(center)).follow_path(Pathway.new().wait(0.1, Vector3(0, h.y + platform.bounds.y, -platform_scale))).align_y_to_origin(),
 		#pattern,
 	#])
 	#
@@ -204,6 +206,33 @@ func setup(_settings: WorldSettings) -> void:
 	#var target4 := TargetShape.make()
 	#target4.configure(TargetShape.config_for_platform(Spell.Element.ROCK, 5, path4))
 	#add_child(target4)
+	
+func make_targets() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	var pos := Vector2(20, 20)
+	var cursor := Vector3.ZERO
+	var direction := Vector3.UP
+	var distance := 0.0
+	for i in rng.randi_range(1, 2) * 2:
+		distance = rng.randf_range(10, 20)
+		var dest := cursor + direction * distance
+		var pathway: Pathway
+		if i % 2 == 0:
+			pathway = Pathway.new().from_to_and_back(distance * 0.5, cursor, dest, Easing.in_out_quad)
+		else:
+			pathway = Pathway.new().from_to_and_back(distance * 0.5, dest, cursor, Easing.in_out_quad)
+		var path := PathStyle.new(0, Vec3.xz__y(pos, 0)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+		var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
+		var p := TargetShape.make()
+		p.configure(config)
+		if p != null:
+			add_child(p)
+			var offset_dir: Vector2 = -Vec2.xz(direction)
+			while offset_dir.is_equal_approx(-Vec2.xz(direction)):
+				offset_dir = Rand.entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
+			cursor += (direction * distance) + Vec3.xz(offset_dir) * p.bounds
+			direction = Rand.entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
 	
 
 func add_enemy(enemy: Enemy) -> void:
