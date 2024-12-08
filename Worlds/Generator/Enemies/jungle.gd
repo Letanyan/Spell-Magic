@@ -13,7 +13,7 @@ var jungle_structure := {
 	JungleStructuresKind.TREE_BRANCHED: 5,
 	JungleStructuresKind.BUSH: 5,
 	JungleStructuresKind.ELEVATOR: 0.075,
-	JungleStructuresKind.PLATFORM: 0.01,
+	JungleStructuresKind.PLATFORM: 0.5,
 	JungleStructuresKind.BIRD: 0.1,
 }
 
@@ -157,13 +157,13 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							AttackSequence.ASCondition.jump("choose"),
 						])
 						result.append(platform)
-						#var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing) as Birdman
-						#if p != null:
-							#var y_offset := h.y + platform.bounds.y + p.bounds.y
-							#p.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
-							#p.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(y_offset)))
-							#p.position.y += y_offset
-							#result.append(p)
+						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing) as Birdman
+						if p != null:
+							var y_offset := h.y + platform.bounds.y + p.bounds.y
+							p.idle_path.path.apply_transform(T.translated(Vec3.y(y_offset)))
+							p.attack_path.path.apply_transform(T.translated(Vec3.y(y_offset)))
+							p.position.y += y_offset
+							result.append(p)
 						for q in points: exclusion[q] = true
 					
 			JungleStructuresKind.BIRD:

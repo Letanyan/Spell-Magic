@@ -118,8 +118,15 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool 
 				power = power * 0.25
 			burning.apply_ignoring_resistance(-amount)
 		Spell.Element.ELECTRIC:
-			var amount := stun.amount_of_change(maxf(wetness.value, burning.value) * gauge)
+			var amount := stun.amount_of_change(maxf(maxf(wetness.value, freeze.value), burning.value) * gauge)
+			if wetness.value > 0:
+				wetness.apply_ignoring_resistance(-amount)
+			if freeze.value > 0:
+				freeze.apply_ignoring_resistance(-amount)
+			if burning.value > 0:
+				burning.apply_ignoring_resistance(-amount)
 			stun.apply_ignoring_resistance(amount)
+					
 		Spell.Element.AIR:
 			pass
 		Spell.Element.VOID:

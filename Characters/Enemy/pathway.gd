@@ -209,7 +209,7 @@ func quad_to(end: Vector3, c1: Vector3, speed: float, m: Segment = Easing.linear
 	return self
 	
 func arc_to(end: Vector3, clockwise: bool, speed: float, m: Segment = Easing.linear) -> Pathway:
-	add_with_speed(Segment.arc_between_of_points(cursor, end), speed, m)
+	add_with_speed(Segment.arc_between_points(cursor, end, clockwise), speed, m)
 	cursor = end
 	return self
 	

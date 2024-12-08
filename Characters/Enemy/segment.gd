@@ -52,15 +52,11 @@ static func arc(radius: float, angle_start: float, angle_end: float, h: float) -
 	
 	return Segment.new(a, b, c, d, BezierKind.CUBIC)
 	
-static func arc_between_of_points(a: Vector3, b: Vector3) -> Segment:
-	var q1 := a.x * a.x + a.z * a.z
-	var q2 := q1 + a.x * b.x + a.z * b.z
-	var k2 := (4.0 / 3.0) * (sqrt(2 * q1 * q2) - q2) / (a.x * b.z - a.z * b.x)
-
-	var c := Vector3(a.x - k2 * a.z, lerpf(a.y, b.y, 0.33), a.z + k2 * a.x)
-	var d := Vector3(b.x + k2 * b.z, lerpf(a.y, b.y, 0.66), b.z - k2 * b.x)
-	
-	return Segment.new(a, b, c, d, BezierKind.CUBIC)
+static func arc_between_points(a: Vector3, b: Vector3, clockwise: bool) -> Segment:
+	var t := Globals.midpoint_tangent2(a, b) if clockwise else Globals.midpoint_tangent2(a, b)
+	var P1 := a + t
+	var P2 := b + t
+	return Segment.new(a, b, P1, P2, BezierKind.CUBIC)
 	
 func calculate_distance(interval: float = 0.05) -> void:
 	if kind == BezierKind.LINEAR:

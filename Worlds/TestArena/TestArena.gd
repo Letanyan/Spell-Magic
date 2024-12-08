@@ -62,7 +62,8 @@ func setup(_settings: WorldSettings) -> void:
 	
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void: e.queue_free(); print(e, " died"))
 	
-	make_targets()
+	#make_targets()
+	make_line_targets()
 	
 	const pX = 100
 	const pY = 100
@@ -234,6 +235,26 @@ func make_targets() -> void:
 			cursor += (direction * distance) + Vec3.xz(offset_dir) * p.bounds
 			direction = Rand.entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
 	
+func make_line_targets() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	var pos := Vector2(20, 20)
+	var pos3d := Vec3.xz__y(pos, 2)
+	var dist := 10.0 # pop.fit(1, pop.fit(5, 15))
+	var path := Pathway.new().line_to(Vector3(dist, 0, 0), 1).line_to(Vector3(dist, 0, dist), 1).line_to(Vector3(0, 0, dist), 1).line_to(Vector3(0, 0, 0), 1).apply_transform(T.translated(Vector3(dist, 0, dist) * -0.5))
+	var count := 10 # pop.fiti(2, 20)
+	var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
+	#var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), [10, 5, 10, 5, 10])
+	for p in path.sample_points(count):
+		var s := p.length() * 2 * PI * 0.1
+		var subpath := Pathway.new().move_to(p).arc_to(p.rotated(Vector3.UP, PI), true, s).arc_to(p, true, s)
+		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_origin().look_at_player()
+		var config := TargetShape.config_for_gauge(el, null, 2.0, Vitals.default_ea(0.1, 0), path_style)
+		var target := TargetShape.make()
+		target.configure(config)
+		target.focus_point = pos3d + Vec3.y(999999)
+		add_child(target)
+		#spawner.add_condition(target)
 
 func add_enemy(enemy: Enemy) -> void:
 	inhabitants.append(enemy)
