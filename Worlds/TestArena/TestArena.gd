@@ -245,14 +245,41 @@ func make_line_targets() -> void:
 	var count := 10 # pop.fiti(2, 20)
 	var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
 	#var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), [10, 5, 10, 5, 10])
+	var focus_point: Vector3
+	const UP = 0
+	const CENTER = 1
+	const HORZ = 2
+	var facing_tangent := rng.randf() * 2 * PI
+	var is_horz := false # rng.randf() < pop.fit(0.0, 0.9)
+	var tform: Transform3D
+	if is_horz:
+		tform = T.I
+	else:
+		tform = T.rotated(Vector3.FORWARD.rotated(Vector3.UP, facing_tangent), PI * 0.5).translated(Vec3.y(dist * 0.5))
+	var kind := CENTER # Rand.entity_from_distribution(rng.randf(), {UP: 1, CENTER: 1, HORZ: 1}) as int
+	if kind == UP:
+		focus_point = pos3d + Vec3.y(999_999)
+	elif kind == CENTER:
+		focus_point = pos3d + tform * Vector3.ZERO
+	elif kind == HORZ:
+		focus_point = pos3d + Vec3.polar(999_999, facing_tangent)
+	var make_circle_path := func(pos: Vector3, speed: float) -> Pathway:
+		return Pathway.new().move_to(pos).arc_to(pos.rotated(Vector3.UP, PI), true, speed).arc_to(pos, true, speed)
+	var make_still_path := func(pos: Vector3, speed: float) -> Pathway:
+		return Pathway.new().wait(5, pos)
+	var moving_path := Rand.entity_from_distribution(rng.randf(), {make_circle_path: 0, make_still_path: 10}) as Callable
+		
 	for p in path.sample_points(count):
 		var s := p.length() * 2 * PI * 0.1
-		var subpath := Pathway.new().move_to(p).arc_to(p.rotated(Vector3.UP, PI), true, s).arc_to(p, true, s)
-		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_origin().look_at_player()
+		var subpath := moving_path.call(p, s) as Pathway
+		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_origin().look_at_player().transform_path(tform)
 		var config := TargetShape.config_for_gauge(el, null, 2.0, Vitals.default_ea(0.1, 0), path_style)
 		var target := TargetShape.make()
 		target.configure(config)
-		target.focus_point = pos3d + Vec3.y(999999)
+		if kind == CENTER:
+			target.focus_point = focus_point + Vec3.y(1000.0) # Vec3.y(pos.get_ground_level(focus_point).y)
+		else:
+			target.focus_point = focus_point
 		add_child(target)
 		#spawner.add_condition(target)
 

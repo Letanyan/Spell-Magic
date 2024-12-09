@@ -55,6 +55,7 @@ func _init(_coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: No
 			World.Biome.TUNDRA: generators.append(TundraGen.new())
 			World.Biome.JUNGLE: generators.append(JungleGen.new())
 			World.Biome.SAVANNAH: generators.append(SavannahGen.new())
+			World.Biome.TAIGA: generators.append(TaigaGen.new())
 			_: generators.append(BiomeGenerator.new())
 	
 func seed_location() -> void:
