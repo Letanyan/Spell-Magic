@@ -213,10 +213,11 @@ func arc_to(end: Vector3, clockwise: bool, speed: float, m: Segment = Easing.lin
 	cursor = end
 	return self
 	
-func sample_points(count: int) -> PackedVector3Array:
+## step_offset: shifts points by the distance between each time step. value must be in range [0, 1].
+func sample_points(count: int, step_offset: float = 0.0) -> PackedVector3Array:
 	var result := PackedVector3Array([])
-	var t := 0.0
 	var step := total_duration / float(count)
+	var t := step_offset * step
 	var index := Globals.Ref.new(0)
 	var i := 0
 	while i < count:
@@ -268,16 +269,25 @@ func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: in
 	add_with_speed(Segment.linear(p, pivot), speed, m)
 	return self
 	
-func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:
-	if rng == null:
-		rng = RandomNumberGenerator.new()
-		rng.seed = Time.get_ticks_usec()
+func ngon(speed: float, sides: int, radius: float, m: Segment = Easing.linear) -> Pathway:
 	var angle_step := (2.0 * PI) / sides
 	var p := Vector3(radius, 0.0, 0.0)
 	move_to(p)
 	for i in range(sides):
 		p = p.rotated(Vector3.UP, angle_step)
 		line_to(p, speed, m)
+	return self
+	
+func grid(speed: float, cols: int, rows: int, width: float, height: float, m: Segment = Easing.linear) -> Pathway:
+	var row_step := height / float(rows)
+	var col_step := width / float(cols)
+	var final_cursor := cursor
+	for r in rows:
+		for c in cols:
+			var p := Vector3(-width * 0.5 + c * col_step, 0, -height * 0.5 + r * row_step)
+			wait(1, cursor + p)
+			final_cursor = p
+	cursor = final_cursor
 	return self
 	
 func random_points_in_rect(speed: float, w: float, h: float, d: float, count: int, m: Segment = Easing.linear, rng: RandomNumberGenerator = null) -> Pathway:

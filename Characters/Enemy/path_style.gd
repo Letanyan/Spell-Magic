@@ -149,7 +149,7 @@ func follow_path(pathway: Pathway) -> PathStyle:
 func transform_path(transform: Variant) -> PathStyle:
 	if transform is Transform3D:
 		path.apply_transform(transform as Transform3D)
-	elif transform is Array[Transform3D]:
+	elif transform is Array:
 		for t: Transform3D in (transform as Array):
 			path.apply_transform(t)
 	else:

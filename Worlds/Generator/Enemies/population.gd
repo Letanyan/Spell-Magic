@@ -184,7 +184,7 @@ func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info
 	return prepare_foliage(foliage, result, pos, user_info)
 	
 func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
-	if display_only: return null
+	if display_only and not spawn_enemies_in_display_only: return null
 	var result := entity_manager.get_world_item(item) as WorldItem
 	var pos := Vector3(p.x, 0, p.y)
 	
@@ -195,7 +195,7 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 	return prepare_entity(result, pos, World.Enemy.NONE, always_valid)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
-	if display_only: return null
+	if display_only and not spawn_enemies_in_display_only: return null
 	var result: ItemSpawner
 	var world_normal := chunker.terrain_normal(p.x, p.y)
 	var wh: float = world_normal.get("position", Vector3.ZERO).y
@@ -345,7 +345,11 @@ func habitant_set_display_only(only_display: bool) -> void:
 			var habitant: Enemy = inhabitants[habitant_index]
 			habitant.spell_caster.free_particles()
 			entity_manager.free_enemy(habitant)
+		for item in world_items:
+			entity_manager.free_world_item(item)
 		inhabitants.clear()
+		world_items.clear()
+		other_objects.clear()
 	else:
 		setup_spawning_state()
 
@@ -491,3 +495,11 @@ func arttd(probs: Dictionary) -> Dictionary:
 		probs.erase(t)
 		probs[fiti(0, t)] = val
 	return probs	
+
+# cls = [1,5]
+func cns(cls: int) -> Array[int]:
+	var count := Rand.roll(3, fiti(1, cls), 0, rng)
+	var result: Array[int] = []
+	for i in count:
+		result.append(Rand.roll(10, fiti(1, cls * 2), 0, rng))
+	return result

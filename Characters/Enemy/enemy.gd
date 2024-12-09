@@ -708,3 +708,11 @@ func artier(cls: int) -> Vector2i:
 	var s := fiti(1, 10) * (1 if randf() < p else -1)
 	var c := roundi(p * 9) + 1
 	return Vector2i(s, c)
+	
+# cls = [1,5]
+func cns(cls: int) -> Array[int]:
+	var count := Rand.roll(3, fiti(1, cls), 0)
+	var result: Array[int] = []
+	for i in count:
+		result.append(Rand.roll(10, fiti(1, cls * 2), 0))
+	return result

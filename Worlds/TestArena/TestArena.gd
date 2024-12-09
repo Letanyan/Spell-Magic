@@ -250,7 +250,7 @@ func make_line_targets() -> void:
 	const CENTER = 1
 	const HORZ = 2
 	var facing_tangent := rng.randf() * 2 * PI
-	var is_horz := false # rng.randf() < pop.fit(0.0, 0.9)
+	var is_horz := true # rng.randf() < pop.fit(0.0, 0.9)
 	var tform: Transform3D
 	if is_horz:
 		tform = T.I

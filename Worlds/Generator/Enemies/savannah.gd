@@ -69,7 +69,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
-				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear, rng)
+				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				var probs := {World.Enemy.BOUGEON: rng.randf_range(2, pop.fit(4, 10)), World.Enemy.FLYGEON: rng.randf_range(5, pop.fit(3, 10))}
 				spawn_enemies_randomly(result, pop, minion_count, path, probs, rng, spacing)

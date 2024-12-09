@@ -35,18 +35,16 @@ func update_mesh_color() -> void:
 	var bronze := Color(0.78, 0.325, 0)
 	if amount == 0.0:
 		update_mesh_with_color(Color.BLACK)
-	if amount == 10.0:
+	if amount == 1:
 		update_mesh_with_color(bronze)
-	elif amount == 50.0:
+	elif amount == 5:
 		update_mesh_with_color(silver)
-	elif amount == 100.0:
+	elif amount == 10:
 		update_mesh_with_color(gold)
-	elif 0.0 < amount and amount < 10.0:
-		update_mesh_with_color(Color.BLACK.lerp(bronze, (amount - 10.0) / 40.0))
-	elif 10.0 < amount and amount < 50.0:
-		update_mesh_with_color(bronze.lerp(silver, (amount - 10.0) / 40.0))
-	elif 50.0 < amount and amount < 100.0:
-		update_mesh_with_color(silver.lerp(gold, (amount - 50.0) / 50.0))
+	elif 1 < amount and amount < 5:
+		update_mesh_with_color(bronze.lerp(silver, (amount - 1) / 4.0))
+	elif 5 < amount and amount < 10:
+		update_mesh_with_color(silver.lerp(gold, (amount - 5) / 5.0))
 	else:
 		update_mesh_with_color(gold.lerp(Color(gold.r * 10, gold.g * 10, gold.b * 10), (amount - 100.0) / 100.0))
 		

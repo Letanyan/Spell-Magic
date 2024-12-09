@@ -100,7 +100,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
-				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear, rng)
+				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.HOT_BLOB: 1}, rng, spacing)
 						
@@ -108,7 +108,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var pos := area[index]
 				var king_count := Rand.entity_from_distribution(rng.randf(), { 4: pop.fit(1, 8), 3: pop.fit(2, 4), 2: pop.fit(4, 2), 1: pop.fit(8, 1)  }) as int
 				var radius := rng.randf_range(10.0, 15.0)
-				var king_path := Pathway.new().ngon(1, king_count, radius, Easing.linear, rng)
+				var king_path := Pathway.new().ngon(1, king_count, radius, Easing.linear)
 				king_path.apply_transform(T.rotated(Vector3.UP, rng.randf() * 2 * PI).translated(Vec3.xz(pos)))
 				var king_ratio := { World.Enemy.SNOT_SPIKE: rng.randf(), World.Enemy.MUSHKING: rng.randf(), World.Enemy.DRAGOON: rng.randf() }
 				spawn_enemies_randomly(result, pop, king_count, king_path, king_ratio, rng, spacing)
