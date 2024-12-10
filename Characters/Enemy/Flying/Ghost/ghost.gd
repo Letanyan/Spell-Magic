@@ -23,6 +23,7 @@ var ice_back3 := GlobalData.magic_book.copy_spell("line")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(1), mana(8), mana_regen(20), percep(4,5), atk(10), def(5), {Artifact.Element.ELECTRIC: res(5, 1), Artifact.Element.ICE: res(7, 3)})
+	class_level = 3
 	
 	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(seedling, position).follow_path(sphere_path).align_y_to_air()

@@ -26,6 +26,7 @@ func _ready() -> void:
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(16), mana(4), mana_regen(12), percep(1,4), atk(8), def(18), {Artifact.Element.WATER: res(7, 1), Artifact.Element.ICE: res(9, 2)})
+	class_level = 17
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
 	idle_path = PathStyle.new(seedling).follow_path(circle_path).set_origin(position).align_y_to_ground()

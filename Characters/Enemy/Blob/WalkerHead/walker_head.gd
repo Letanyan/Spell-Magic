@@ -22,6 +22,7 @@ var ice_wall := GlobalData.magic_book.copy_spell("wall")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(14), mana(2), mana_regen(10), percep(1,4), atk(5), def(12), {Artifact.Element.WATER: res(5, 1), Artifact.Element.ICE: res(7, 2)})
+	class_level = 14
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 10, 0, 10)
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()

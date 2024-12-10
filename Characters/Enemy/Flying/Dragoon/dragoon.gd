@@ -20,6 +20,7 @@ var fire_mine3 := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(19), mana_regen(20), percep(3,6), atk(17), def(17), {Artifact.Element.FIRE: res(12, 7)})
+	class_level = 20
 	
 	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(seedling, position).follow_path(sphere_path).align_y_to_air()

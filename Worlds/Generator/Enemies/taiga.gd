@@ -79,8 +79,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			TaigaStructuresKind.HORZ_CIRCLE_PUZZLE:
 				var pos := area[index]
 				var pos3d := Vec3.xz__y(pos, 1)
-				var count := pop.fiti(2, 20)
-				var radius := pop.fit(5, 25)
+				var count := rng.randi_range(2, pop.fiti(2, 20))
+				var size := rng.randf_range(pop.fit(4.0, 1.0), 5.0)
+				var radius := rng.randf_range(size, size + pop.fit(1, 5)) * count
 				var is_rotating := rng.randf() < pop.fit(0.0, 0.9)
 				var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
 				var is_horz := rng.randf() < pop.fit(0.0, 0.9)
@@ -110,6 +111,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						var a := float(i) / float(count) * 2.0 * PI
 						var path_style := PathStyle.new(0, pos3d).follow_path(path.duplicate()).align_y_to_origin().look_at_player().transform_path([T.rotated(Vector3.UP, a), transform])
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
+						config["size"] = size
 						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 						if target != null:
 							if kind == CENTER:
@@ -124,6 +126,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					for p in path.sample_points(count):
 						var path_style := PathStyle.new(0, pos3d).follow_path(Pathway.new().wait(5, p)).align_y_to_origin().look_at_player()
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
+						config["size"] = size
 						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 						if target != null:
 							if kind == CENTER:
@@ -136,8 +139,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			TaigaStructuresKind.LINE_PUZZLE:
 				var pos := area[index]
 				var pos3d := Vec3.xz__y(pos, 2)
-				var count := pop.fiti(2, 20)
-				var distance := pop.fit(1, pop.fit(10, 25))
+				var count := rng.randi_range(2, pop.fiti(2, 20))
+				var size := rng.randf_range(pop.fit(4.0, 1.0), 5.0)
+				var distance := rng.randf_range(size, size + pop.fit(1, 5)) * count
 				var is_shifting := rng.randf() < pop.fit(0.0, 0.9)
 				var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
 				var angle := rng.randf() * 2 * PI
@@ -186,7 +190,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			TaigaStructuresKind.ROTATING_PUZZLE:
 				var pos := area[index]
 				var pos3d := Vec3.xz__y(pos, 2)
-				var dist := pop.fit(1, pop.fit(5, 15))
+				var count := rng.randi_range(2, pop.fiti(2, 20))
+				var size := rng.randf_range(pop.fit(4.0, 1.0), 5.0)
+				var dist := rng.randf_range(size, size + pop.fit(1, 5)) * count
 				
 				const NGON = 0
 				const GRID = 1
@@ -202,7 +208,6 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					coin_cls += 1
 				elif shape_kind == LINE:
 					path = Pathway.new().line_to(Vec3.polar(dist, 2 * PI * rng.randf(), 0), 1).apply_transform(T.translated(Vector3(dist, 0, dist) * -0.5))
-				var count := pop.fiti(2, 20)
 				var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
 				var focus_point: Vector3
 				const UP = 0
@@ -240,6 +245,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var subpath := moving_path.call(p, s) as Pathway
 					var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_origin().look_at_player().transform_path(transform)
 					var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
+					config["size"] = size
 					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 					if target != null:
 						if layout_kind == CENTER:

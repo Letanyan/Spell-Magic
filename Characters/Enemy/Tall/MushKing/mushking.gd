@@ -23,6 +23,7 @@ var water_shower1_chain := GlobalData.magic_book.copy_spell("linear-flurry")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(16), percep(4,8), atk(14), def(8), {Artifact.Element.WATER: res(16, 0), Artifact.Element.ROCK: res(16,0)})
+	class_level = 16
 	
 	idle_path = PathStyle.new(seedling, position).follow_path(Pathway.empty(1))
 	basic_path = PathStyle.new(seedling, position).towards_player(1, 3, 4).player_vision_is_camera(PI, 0, 2, 3).look_at_player_xz().align_y_to_ground()

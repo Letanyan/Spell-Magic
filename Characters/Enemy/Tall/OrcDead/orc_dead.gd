@@ -15,6 +15,7 @@ var electric_attack_lines := GlobalData.magic_book.copy_spell("bomb-linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(18), mana(16), mana_regen(10), percep(4,6), atk(14), def(13), {Artifact.Element.ELECTRIC: res(3, 1)})
+	class_level = 17
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()

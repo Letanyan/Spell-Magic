@@ -17,6 +17,7 @@ var water_attack3 := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(8), percep(1,2), atk(7), def(6), {Artifact.Element.WATER: res(15, 5)})
+	class_level = 12
 	
 	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \

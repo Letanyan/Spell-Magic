@@ -17,6 +17,7 @@ var air_flurry := GlobalData.magic_book.copy_spell("plane-linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
+	class_level = 12
 	
 	var idle_pathway := Pathway.new().random_points_in_disc(runs(12), 3, 8, 0, 5, Easing.in_out_quad)
 	idle_path = PathStyle.new(seedling, position).follow_path(idle_pathway).align_y_to_ground_and_air()

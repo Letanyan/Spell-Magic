@@ -16,6 +16,7 @@ var electric_boomerang_wave := GlobalData.magic_book.copy_spell("plane-slice")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(8), mana(1), mana_regen(1), percep(1,2), atk(7), def(3), {Artifact.Element.ROCK: res(1, 0)})
+	class_level = 16
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
 	idle_path = PathStyle.new(seedling).follow_path(circle_path).align_y_to_ground()

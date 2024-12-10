@@ -23,6 +23,7 @@ var rock_wall := GlobalData.magic_book.copy_spell("bomb")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(19), mana(18), mana_regen(15), percep(1,4), atk(17), def(16), {Artifact.Element.WATER: res(8, 4), Artifact.Element.FIRE: res(8, 4)})
+	class_level = 20
 	
 	var circle_path := Pathway.new().move_to(Vector3.ZERO).circle(fit(10,15), 0, runs(19))
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()

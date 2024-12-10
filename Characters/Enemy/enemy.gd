@@ -19,6 +19,7 @@ var current_path: PathStyle:
 			current_path.time = NAN
 var still_path: PathStyle
 var current_attack: AttackPatterns
+var class_level: int = 10 # [1, 20]
 var level: float: # Use float so it's easy to use in expressions. However, should only be whole numbers.
 	set(value):
 		level = value
@@ -582,8 +583,9 @@ func drop_spell() -> Spell:
 func drop_key() -> int:
 	return 0
 	
-func drop_coins() -> Array[int]: # values must be in range [1, 10]
-	return []
+## values must be in range [1, 100]
+func drop_coins() -> Array[int]: 
+	return cns(class_level)
 	
 func drop_health() -> float:
 	return 0.0

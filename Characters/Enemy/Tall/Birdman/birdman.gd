@@ -23,6 +23,7 @@ var air_mine := GlobalData.magic_book.copy_spell("bomb-disc-scatter")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(17), mana(16), mana_regen(10), percep(4,6), atk(17), def(8), {Artifact.Element.AIR: res(5, 2)})
+	class_level = 14
 	
 	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, -4, 0)) \

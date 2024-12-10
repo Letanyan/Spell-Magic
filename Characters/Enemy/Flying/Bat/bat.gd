@@ -17,6 +17,7 @@ var elec_arc3 := GlobalData.magic_book.copy_spell("arc")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(5), mana(8), mana_regen(20), percep(2,5), atk(8), def(5), {Artifact.Element.ELECTRIC: res(5, 1)})
+	class_level = 9
 	
 	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(seedling, position).follow_path(sphere_path).align_y_to_air()

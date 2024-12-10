@@ -21,6 +21,7 @@ var air_large_slow := GlobalData.magic_book.copy_spell("linear")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(13), mana(12), mana_regen(6), percep(3,7), atk(10), def(4), {Artifact.Element.AIR: res(5, 2)})
+	class_level = 16
 	
 	var idle_pathway := Pathway.new() \
 		.move_to(Vector3(0, 0, 0)) \

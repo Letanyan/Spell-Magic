@@ -20,6 +20,7 @@ var water_spiral3 := GlobalData.magic_book.copy_spell("plane-slice")
 	
 func setup(seedling: int, biome: World.Biome) -> void:
 	vitals = Vitals.enemy(hp(18), mana(5), mana_regen(10), percep(1,4), atk(15), def(10), {Artifact.Element.WATER: res(10, 0)})
+	class_level = 15
 	
 	var circle_path := Pathway.new().random_points_in_disc(1, 0, 2, 0, 3)
 	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
