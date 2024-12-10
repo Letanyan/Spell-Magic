@@ -32,7 +32,7 @@ var current_spawn_start_time_ms: int = 0 # gets reset each generation cycle. Onl
 var current_spawn_duration_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
 var generators: Array[BiomeGenerator] = [] 
 
-func _init(_coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
+func _init(version: int, _coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
 	rng = RandomNumberGenerator.new()
 	coord = _coord
 	chunker = _chunker
@@ -47,6 +47,12 @@ func _init(_coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: No
 		foliage_manager = entity_manager.buffer_foliage_lod0
 	seed_location()
 	SignalBus.enemy_death.connect(mark_entity)
+	match version:
+		1: build_generators_version1()
+		_: build_generators_version1()
+	
+			
+func build_generators_version1() -> void:
 	for b: World.Biome in World.Biome.values():
 		match b:
 			World.Biome.GRASSLAND: generators.append(GrasslandGen.new())
@@ -56,7 +62,9 @@ func _init(_coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: No
 			World.Biome.JUNGLE: generators.append(JungleGen.new())
 			World.Biome.SAVANNAH: generators.append(SavannahGen.new())
 			World.Biome.TAIGA: generators.append(TaigaGen.new())
+			World.Biome.DESERT: generators.append(DesertGen.new())
 			_: generators.append(BiomeGenerator.new())
+	
 	
 func seed_location() -> void:
 	rng.seed = hash("%f,%f" % [coord.x, coord.y])

@@ -201,7 +201,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var path: Pathway
 				var coin_cls := 1
 				if shape_kind == NGON:
-					path = Pathway.new().ngon(1, rng.randi_range(3, pop.fiti(4, 8)), dist).apply_transform(T.translated(Vector3(dist, 0, dist) * -0.5))
+					path = Pathway.new().ngon(1, rng.randi_range(3, pop.fiti(4, 8)), dist * 0.5).apply_transform(T.translated(Vector3(dist, 0, dist) * -0.5))
 					coin_cls += 2
 				elif shape_kind == GRID:
 					path = Pathway.new().grid(1, rng.randi_range(2, pop.fiti(2, 8)), rng.randi_range(2, pop.fiti(2, 8)), dist, dist)

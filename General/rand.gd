@@ -135,3 +135,18 @@ static func roll(sides: int, count: int, constant: int, rng: RandomNumberGenerat
 		result = roundi(result / float(count))
 	return clampi(result + constant, clamping.x, clamping.y)
 	
+class CheapRNG:
+	const UINT32_MAX = 4294967295
+	var seed: int
+	
+	func next() -> int:
+		var x := seed
+		x ^= x << 13
+		x ^= x >> 17
+		x ^= x << 5
+		seed = x
+		return seed
+		
+	func randf() -> float:
+		var value := next()
+		return value / float(UINT32_MAX)

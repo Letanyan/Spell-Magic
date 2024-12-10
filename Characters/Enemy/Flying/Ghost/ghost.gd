@@ -28,18 +28,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	var sphere_path := Pathway.new().move_to(Vector3(0, 10, 0)).random_points_in_sphere(4, 0, 10, 7)
 	idle_path = PathStyle.new(seedling, position).follow_path(sphere_path).align_y_to_air()
 	
-	const idle_r := 20.0
-	const idle_h := 10.0
-		
-	var a: Vector3 = Rand.point_in_circle(idle_r, idle_h)
-	var rotate_path := Pathway.new() \
-		.move_to(a) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2), true, runs(6), Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI), true, runs(6), Easing.linear) \
-		.arc_to(a.rotated(Vector3.UP, PI / 2 * 3), true, runs(6), Easing.linear) \
-		.arc_to(a, true, runs(6), Easing.linear)
+	var stretch_min := fit(3, 9)
+	var stretch_max := fit(7, 15)
+	var rotate_path := Pathway.new().random_points_in_sphere(runs(6), stretch_min, stretch_max, 7)
 	
-	attack_path = PathStyle.new(seedling).follow_path(rotate_path).align_y_to_air().origin_is_player().look_at_player()
+	attack_path = PathStyle.new(seedling).follow_path(rotate_path).align_y_to_ground_air_and_dirt().origin_is_player().look_at_player()
 	
 	current_path = idle_path
 	

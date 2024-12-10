@@ -156,7 +156,6 @@ func run_on_ready() -> void:
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
-	#chunker = Terrain.new(blender, CHUNK_SIZE, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, 4, 0.0625, 16, false)
 	if OS.is_debug_build():
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
 	else:
@@ -486,7 +485,7 @@ func update_terrain() -> void:
 	chunker.update_environment(player.position.x, player.position.z)
 
 func update_population_at(coord: Vector2i, display_only: bool) -> void:
-	var pop := Population.new(coord, CHUNK_SIZE, chunker, blender, player, entity_manager, true)
+	var pop := Population.new(settings.world_generation_version, coord, CHUNK_SIZE, chunker, blender, player, entity_manager, true)
 	pop.setup_spawning_state(not display_only)
 	population[coord] = pop
 				
