@@ -9,6 +9,7 @@ const lod0_meshes = {
 	World.Foliage.TREE_CHRISTMAS: preload("res://Models/Nature/tree_christmas.mesh") as ArrayMesh,
 	World.Foliage.TREE_SAFARI: preload("res://Models/Nature/tree_safari.mesh") as ArrayMesh,
 	World.Foliage.TREE_BRANCHED: preload("res://Models/Nature/tree_branched.mesh") as ArrayMesh,
+	World.Foliage.TREE_PALM: preload("res://Models/Nature/tree_palm.mesh") as ArrayMesh,
 	World.Foliage.ROCK_EGG: preload("res://Models/Nature/rock_egg.mesh") as ArrayMesh,
 	World.Foliage.ROCK_FLATTOP: preload("res://Models/Nature/rock_flattop.mesh") as ArrayMesh,
 	World.Foliage.ROCK_OVERHANG: preload("res://Models/Nature/rock_overhang.mesh") as ArrayMesh,
@@ -31,6 +32,7 @@ const lod1_meshes = {
 	World.Foliage.TREE_CHRISTMAS: preload("res://Models/Nature/tree_christmas_lod1.mesh") as ArrayMesh,
 	World.Foliage.TREE_SAFARI: preload("res://Models/Nature/tree_safari_lod1.mesh") as ArrayMesh,
 	World.Foliage.TREE_BRANCHED: preload("res://Models/Nature/tree_branched_lod1.mesh") as ArrayMesh,
+	World.Foliage.TREE_PALM: preload("res://Models/Nature/tree_palm.mesh") as ArrayMesh,
 	World.Foliage.ROCK_EGG: preload("res://Models/Nature/rock_egg.mesh") as ArrayMesh,
 	World.Foliage.ROCK_FLATTOP: preload("res://Models/Nature/rock_flattop.mesh") as ArrayMesh,
 	World.Foliage.ROCK_OVERHANG: preload("res://Models/Nature/rock_overhang.mesh") as ArrayMesh,
@@ -142,13 +144,15 @@ func remove(kind: World.Foliage, index: int) -> void:
 	
 	
 func setup(kind: World.Foliage, index: int, position: Vector3, rng: RandomNumberGenerator, biome: World.Biome) -> void:
-	var s := rng.randf_range(2, 5) * mesh_scales[kind] as float
+	var mesh_transform := mesh_transforms[kind] as Transform3D
+	var s := rng.randf_range(2, 5)
+	#var s := rng.randf_range(2, 5) * mesh_scales[kind] as float
 	if biome == World.Biome.JUNGLE and World.Foliage.TREE_BRANCHED == kind:
 		s *= rng.randf_range(5, 10)
 		
-	var transform := T.I
+	#var transform := mesh_transform.scaled(Vec3.a(s))
 	
-	var result := transform.scaled(Vector3(s, s, s))
+	var result := mesh_transform.scaled(Vec3.a(s))
 	var r := rng.randf_range(0, 2 * PI)
 	result = result.rotated(Vector3.UP, r)
 	result = result.translated(position)
@@ -168,7 +172,8 @@ func make_static_body(g: Vector2i) -> StaticBody3D:
 	var off := base_shapes[g.x] as ShapeTemplate
 	var shape := body.get_node("shape") as CollisionShape3D
 	static_body_map[g] = body
-	body.transform = base.scaled_local(Vec3.a(1.0 / mesh_scales[g.x] as float))
+	var mesh_transform := mesh_transforms[g.x] as Transform3D
+	body.transform = T.scaled_local(base.basis.get_scale() * mesh_transform.basis.get_scale().inverse()).translated(base.origin)
 	shape.transform = off.transform.orthonormalized()
 	return body
 		
@@ -187,8 +192,9 @@ func get_collision_shape(g: Vector2i) -> CollisionShape3D:
 	return shape
 	
 func get_scaled_shape_length(g: Vector2i, t: Transform3D) -> float:
+	var mesh_transform := mesh_transforms[g.x] as Transform3D
 	var shape := base_shapes[g.x] as ShapeTemplate
-	var scale := t.basis.get_scale().x
+	var scale := (t.basis.get_scale() * mesh_transform.basis.get_scale().inverse()).x
 	return shape.size.length() * scale
 				
 static var base_shapes := {
@@ -211,26 +217,51 @@ static var base_shapes := {
 	World.Foliage.TREE_PYRAMID: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
 	World.Foliage.TREE_ROUND: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),
 	World.Foliage.TREE_SAFARI: ShapeTemplate.cylinder(4.0, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(2))),	
+	World.Foliage.TREE_PALM: ShapeTemplate.cylinder(3.7, 0.15, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(1.85))),	
 }
 
-const mesh_scales = {
-	World.Foliage.BUSH_ROUND: 2.0,
-	World.Foliage.BUSH_SPROUT: 1.0,
-	World.Foliage.BUSH_TALL: 1.0,
-	World.Foliage.FLOWERS_SUN2: 2.5,
-	World.Foliage.FLOWERS_SUN3: 2.5,
-	World.Foliage.GRASS_REED: 4.0,
-	World.Foliage.GRASS_SHRUB: 2.75,
-	World.Foliage.MUSHROOM_BULB: 2.5,
-	World.Foliage.MUSHROOM_POINTED: 4,
-	World.Foliage.ROCK_EGG: 1.0,
-	World.Foliage.ROCK_FLATTOP: 10.0,
-	World.Foliage.ROCK_OVERHANG: 3.0,
-	World.Foliage.ROCK_SQUASHED: 15.0,
-	World.Foliage.ROCK_TALL: 2.0,
-	World.Foliage.TREE_BRANCHED: 1.0,
-	World.Foliage.TREE_CHRISTMAS: 1.0,
-	World.Foliage.TREE_PYRAMID: 1.0,
-	World.Foliage.TREE_ROUND: 1.0,
-	World.Foliage.TREE_SAFARI: 1.0,
+#const mesh_scales = {
+	#World.Foliage.BUSH_ROUND: 2.0,
+	#World.Foliage.BUSH_SPROUT: 1.0,
+	#World.Foliage.BUSH_TALL: 1.0,
+	#World.Foliage.FLOWERS_SUN2: 2.5,
+	#World.Foliage.FLOWERS_SUN3: 2.5,
+	#World.Foliage.GRASS_REED: 4.0,
+	#World.Foliage.GRASS_SHRUB: 2.75,
+	#World.Foliage.MUSHROOM_BULB: 2.5,
+	#World.Foliage.MUSHROOM_POINTED: 4,
+	#World.Foliage.ROCK_EGG: 1.0,
+	#World.Foliage.ROCK_FLATTOP: 10.0,
+	#World.Foliage.ROCK_OVERHANG: 3.0,
+	#World.Foliage.ROCK_SQUASHED: 15.0,
+	#World.Foliage.ROCK_TALL: 2.0,
+	#World.Foliage.TREE_BRANCHED: 1.0,
+	#World.Foliage.TREE_CHRISTMAS: 1.0,
+	#World.Foliage.TREE_PYRAMID: 1.0,
+	#World.Foliage.TREE_ROUND: 1.0,
+	#World.Foliage.TREE_SAFARI: 1.0,
+	#World.Foliage.TREE_PALM: 100.0,
+#}
+
+var mesh_transforms := {
+	World.Foliage.BUSH_ROUND: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(2.0)),
+	World.Foliage.BUSH_SPROUT: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.BUSH_TALL: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.FLOWERS_SUN2: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(2.5)),
+	World.Foliage.FLOWERS_SUN3: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(2.5)),
+	World.Foliage.GRASS_REED: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(4.0)),
+	World.Foliage.GRASS_SHRUB: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(2.75)),
+	World.Foliage.MUSHROOM_BULB: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(2.5)),
+	World.Foliage.MUSHROOM_POINTED: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(4.0)),
+	World.Foliage.ROCK_EGG: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.ROCK_FLATTOP: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(10.0)),
+	World.Foliage.ROCK_OVERHANG: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(3.0)),
+	World.Foliage.ROCK_SQUASHED: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(15.0)),
+	World.Foliage.ROCK_TALL: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(2.0)),
+	World.Foliage.TREE_BRANCHED: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.TREE_CHRISTMAS: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.TREE_PYRAMID: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.TREE_ROUND: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.TREE_SAFARI: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
+	World.Foliage.TREE_PALM: Transform3D(Basis(Quaternion(-0.707, 0, 0, 0.707)), Vec3.y(0)).scaled(Vec3.a(100)),
 }

@@ -3,13 +3,16 @@ extends BiomeGenerator
 
 enum DesertStructuresKind {
 	NONE,
-	TREE_BRANCHED, # TODO: add palm tree
+	OASIS,
 	GHOST, GHOSTLY, HOT_BLOB
 }
 
 const desert_structure := {
 	DesertStructuresKind.NONE: 120,
-	DesertStructuresKind.TREE_BRANCHED: 1,
+	DesertStructuresKind.OASIS: 1,
+	DesertStructuresKind.GHOST: 0.5,
+	DesertStructuresKind.GHOSTLY: 0.25,
+	DesertStructuresKind.HOT_BLOB: 0.125,
 }
 
 func setup_state(pop: Population) -> void:
@@ -28,11 +31,15 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			DesertStructuresKind.NONE:
 				pass
 				
-			DesertStructuresKind.TREE_BRANCHED:
+			DesertStructuresKind.OASIS:
 				var pos := area[index]
-				var count := Rand.entity_from_distribution(rng.randf(), { 1: 10, 2: 20, 3: 10 }) as int
+				var count := Rand.roll(9, 2, 0, rng, Rand.Accum.AVG)
 				for i in count:
-					pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos + Rand.point_in_circle_2d(10, rng), spacing)
+					if rng.randf() < 0.75:
+						pop.spawn_foliage(World.Foliage.TREE_PALM, pos + Rand.point_in_circle_2d(10, rng), spacing)
+					else:
+						pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, pos + Rand.point_in_circle_2d(10, rng), spacing)
+						
 				
 			DesertStructuresKind.GHOST:
 				var pos := area[index]

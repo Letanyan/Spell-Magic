@@ -135,18 +135,26 @@ static func roll(sides: int, count: int, constant: int, rng: RandomNumberGenerat
 		result = roundi(result / float(count))
 	return clampi(result + constant, clamping.x, clamping.y)
 	
-class CheapRNG:
-	const UINT32_MAX = 4294967295
-	var seed: int
+const UINT32_MAX = 4294967295
+static func xorshift(seedling: Globals.Ref) -> int:
+	var x := seedling.data as int
+	x ^= x << 13
+	x ^= x >> 17
+	x ^= x << 5
+	seedling.data = x
+	return x
 	
-	func next() -> int:
-		var x := seed
-		x ^= x << 13
-		x ^= x >> 17
-		x ^= x << 5
-		seed = x
-		return seed
-		
-	func randf() -> float:
-		var value := next()
-		return value / float(UINT32_MAX)
+static func randf(seedling: Globals.Ref) -> float:
+	var value := Rand.xorshift(seedling)
+	return value / float(UINT32_MAX)
+	
+static func randf_range(seedling: Globals.Ref, minimum: float, maximum: float) -> float:
+	var value := Rand.randf(seedling)
+	return lerpf(minimum, maximum, value)
+	
+static func randi(seedling: Globals.Ref) -> int:
+	return Rand.xorshift(seedling)
+	
+static func randi_range(seedling: Globals.Ref, minimum: int, maximum: int) -> int:
+	var value := Rand.randf(seedling)
+	return minimum + roundi((maximum - minimum) * value)
