@@ -53,11 +53,19 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						
 			HFILStructuresKind.MUSH_ENEMIES:
 				var pos := area[index]
+				
+				
 				var king := pop.spawn_enemy(World.Enemy.MUSHKING, pos, spacing) as Mushking
 				if king != null: result.append(king)
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.25, 0.5), 4: pop.fit(0.125, 0.5), 3: pop.fit(0.5, 0.25), 2: pop.fit(0.25, 0.25), 1: pop.fit(0.125, 0)}) as int
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
+				
+				var foliage_rates := Rand.normalise_distribution({World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf()})
+				for i in rng.randi_range(5, 15):
+					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_rates) as World.Foliage
+					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), spacing)
+					
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.MUSHROOM: 1, World.Enemy.FUNGI: 1}, rng, spacing)
@@ -69,6 +77,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.25, 0.5), 4: pop.fit(0.125, 0.5), 3: pop.fit(0.5, 0.25), 2: pop.fit(0.25, 0.25), 1: pop.fit(0.125, 0)}) as int
 				var angle_offset := rng.randf_range(0, 2 * PI)
 				var radius_offset := rng.randf_range(10, 20)
+				
+				var foliage_rates := Rand.normalise_distribution({World.Foliage.ROCK_EGG: rng.randf(), World.Foliage.ROCK_TALL: rng.randf()})
+				for i in rng.randi_range(5, 15):
+					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_rates) as World.Foliage
+					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), spacing)
+				
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.SNOT_SPIKE: 1}, rng, spacing)
@@ -103,6 +117,13 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				spawn_enemies_randomly(result, pop, minion_count, path, {World.Enemy.HOT_BLOB: 1}, rng, spacing)
+				
+				var foliage_count := rng.randi_range(5, 5 + pop.fiti(2, 5))
+				var foliage_path := Pathway.new().ngon(1, 3, radius_offset + 5).apply_transform(T.rotated(Vector3.UP, rng.randf() * PI * 2).translated(Vec3.xz(pos)))
+				var foliage_ratio := Rand.normalise_distribution({World.Foliage.ROCK_EGG: rng.randf(), World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf()})
+				for position in foliage_path.sample_points_xz(foliage_count):
+					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_ratio) as World.Foliage
+					pop.spawn_foliage(kind, position, spacing)
 						
 			HFILStructuresKind.ENEMY_MIX:
 				var pos := area[index]
@@ -116,12 +137,13 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var minion_layers := Rand.entity_from_distribution(rng.randf(), { 1: pop.fit(20, 5), 2: 10, 3: pop.fit(5, 20)}) as int
 				
 				for layer in minion_layers:
-					var minion_count := king_count + Rand.entity_from_distribution(rng.randf(), { 6: 1, 5: 2, 4: 4, 3: 8, 2: 16, 1: 32  }) as int
+					var minion_count := king_count + Rand.entity_from_distribution(rng.randf(), { 4: 4, 3: 8, 2: 16, 1: 32  }) as int
 					radius += rng.randf_range(10.0, 15.0)
 					var minion_path := Pathway.new().random_points_in_disc(1, radius, radius + rng.randf_range(10, 15), 0, 8, Easing.linear, rng)
 					minion_path.apply_transform(T.translated(Vec3.xz(pos)))
 					var minion_ratio := { World.Enemy.SNOT_BLOB: rng.randf(), World.Enemy.MUSHROOM: rng.randf(), World.Enemy.DRAGON: rng.randf(), World.Enemy.FUNGI: rng.randf() }
-					spawn_enemies_randomly(result, pop, minion_count, minion_path, minion_ratio, rng, spacing)
+					var foliage_ratio := { World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf() }
+					spawn_randomly(result, pop, minion_count, minion_path, rng.randf_range(0, 0.5), minion_ratio, foliage_ratio, rng, spacing)
 				
 				
 		index += 1
