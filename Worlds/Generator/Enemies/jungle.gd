@@ -34,7 +34,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				pass
 			JungleStructuresKind.TREE_BRANCHED:
 				var pos := area[index]
-				pop.spawn_foliage(World.Foliage.TREE_PALM, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
 			JungleStructuresKind.BUSH:
 				var pos := area[index]
 				var ratio := rng.randf()

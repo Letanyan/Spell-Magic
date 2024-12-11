@@ -593,9 +593,16 @@ func get_particles(fvars: Vars, exvars: Vars) -> Array[SpellBody]:
 		result.append(p)
 	return result
 	
-const fixed_var_list = [
-	"pi", "N", "M", "C", "L", "T", "P", "CR", "CD", "x", "y", "z", "r", "n", "D",
-]
+const fixed_var_list = {
+	"r0":true,"r1":true,"r2":true,"r3":true,"r4":true,"r5":true,"r6":true,"r7":true,"r8":true,"r9":true,"pi":true,"N":true,"M":true,"C":true,"L":true,"T":true,"P":true,"CR":true,"CD":true,"x":true,"y":true,"z":true,"r":true,
+	"rn0":true,"rn1":true,"rn2":true,"rn3":true,"rn4":true,"rn5":true,"rn6":true,"rn7":true,"rn8":true,"rn9":true,"n":true,"D":true,"spinrate":true,"t":true,"l":true,"fl":true,"Bx":true,"By":true,"Bz":true,"Br":true,
+	"tC":true,"TC":true,"u":true,"v":true,"w":true,"tu":true,"tv":true,"tw":true,"Tu":true,"Tv":true,"Tw":true,"ru":true,"rv":true,"rw":true,"tru":true,"trv":true,"trw":true,"Tru":true,"Trv":true,"Trw":true,
+	"U":true,"V":true,"W":true,"tU":true,"tV":true,"tW":true,"TU":true,"TV":true,"TW":true,"rU":true,"rV":true,"rW":true,"trU":true,"trV":true,"trW":true,"TrU":true,"TrV":true,"TrW":true,"i":true,"j":true,"k":true,
+	"ti":true,"tj":true,"tk":true,"Ti":true,"Tj":true,"Tk":true,"ri":true,"rj":true,"rk":true,"tri":true,"trj":true,"trk":true,"Tri":true,"Trj":true,"Trk":true,"I":true,"J":true,"K":true,"tI":true,"tJ":true,"tK":true,
+	"TI":true,"TJ":true,"TK":true,"rI":true,"rJ":true,"rK":true,"trI":true,"trJ":true,"trK":true,"TrI":true,"TrJ":true,"Tr":true,"Bxyz":true,"uvw":true,"tuvw":true,"Tuvw":true,"ruvw":true,"truvw":true,
+	"Truvw":true,"UVW":true,"tUVW":true,"TUVW":true,"rUVW":true,"trUVW":true,"TrUVW":true,"ijk":true,"tijk":true,"Tijk":true,"rijk":true,"trijk":true,"Trijk":true,"IJK":true,"tIJK":true,"TIJK":true,
+	"rIJK":true,"trIJK":true,"TrIJK":true,"abs_pos":true,
+}
 	
 func basic_fixed_vars() -> Vars:
 	var fixed_vars := Vars.new()

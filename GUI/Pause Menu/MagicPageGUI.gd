@@ -613,15 +613,16 @@ func _on_expressions_text_changed() -> void:
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
 	
-	for k: String in Spell.fixed_var_list:
-		errors_list.erase("warning: expression " + k)
+	if not errors_list.is_empty():
+		for k: String in Spell.fixed_var_list:
+			errors_list.erase("warning: subexpression '" + k + "'")
 	
 	for k: String in book.spells[current_index].expressions:
 		var expr: Expr = book.spells[current_index].expressions[k]
 		if expr.contains_variable(k):
 			expr.error = "Recursive variable definition"
 		if Spell.fixed_var_list.has(k):
-			errors_list["warning: expression " + k] = "Overwrite of variable"
+			errors_list["warning: subexpression '" + k + "'"] = "Redefinition of '" + k + "' will have no effect."
 		if expr.error.length() > 0:
 			errors_list["expression " + k] = expr.error
 		else:
@@ -707,7 +708,7 @@ func check_all_errors() -> void:
 		if expr.contains_variable(k):
 			expr.error = "Recursive variable definition"
 		if Spell.fixed_var_list.has(k):
-			errors_list["warning: expression " + k] = "Overwrite of variable"
+			errors_list["warning: subexpression '" + k + "'"] = "Redefinition of '" + k + "' will have no effect."
 		if expr.error.length() > 0:
 			errors_list["expression " + k] = expr.error
 		else:

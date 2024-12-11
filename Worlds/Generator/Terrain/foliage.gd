@@ -162,6 +162,7 @@ func setup(kind: World.Foliage, index: int, position: Vector3, rng: RandomNumber
 		
 func set_albedo_blend(kind: World.Foliage, index: int, color: Color) -> void:
 	multi_meshes[kind].multimesh.set_instance_color(index, color)
+	#FIXME: handle new models that don't use Nature_Mat_Shader
 	
 func get_transform(kind: World.Foliage, index: int) -> Transform3D:
 	return transforms[kind][index]
