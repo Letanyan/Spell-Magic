@@ -24,6 +24,9 @@ func _ready() -> void:
 	mat.shader = load("res://General/standard_solid.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
+	mat.shader = load("res://General/standard_solid_nature.gdshader")
+	await get_tree().create_timer(WAIT_TIME).timeout
+	
 	mat.shader = load("res://Models/Nature/nature_mat.gdshader")
 	await get_tree().create_timer(WAIT_TIME).timeout
 	

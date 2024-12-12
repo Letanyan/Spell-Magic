@@ -3,7 +3,7 @@ extends BiomeGenerator
 
 enum TaigaStructuresKind {
 	NONE,
-	TREE_PYRAMID, BUSH_TALL, FLOWER_SUN3,
+	TREE_PYRAMID, TREE_PINE, BUSH_TALL, FLOWER_SUN3,
 	HORZ_CIRCLE_PUZZLE, LINE_PUZZLE, ROTATING_PUZZLE,
 	LONE_GOBLIN, GOBLIN_HORDE,
 }
@@ -11,6 +11,7 @@ enum TaigaStructuresKind {
 const taiga_structure := {
 	TaigaStructuresKind.NONE: 120,
 	TaigaStructuresKind.TREE_PYRAMID: 20,
+	TaigaStructuresKind.TREE_PINE: 20,
 	TaigaStructuresKind.BUSH_TALL: 5,
 	TaigaStructuresKind.FLOWER_SUN3: 2,
 	TaigaStructuresKind.HORZ_CIRCLE_PUZZLE: 1,
@@ -39,6 +40,10 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			TaigaStructuresKind.TREE_PYRAMID:
 				var pos := area[index] as Vector2
 				pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, spacing)
+				
+			TaigaStructuresKind.TREE_PINE:
+				var pos := area[index] as Vector2
+				pop.spawn_foliage(World.Foliage.TREE_PINE, pos, spacing)
 				
 			TaigaStructuresKind.BUSH_TALL:
 				var pos := area[index] as Vector2

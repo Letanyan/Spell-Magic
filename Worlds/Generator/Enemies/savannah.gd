@@ -3,7 +3,7 @@ extends BiomeGenerator
 
 enum SavannahStructuresKind {
 	NONE,
-	TREE_SAFARI, TREE_BRANCHED,
+	TREE_SAFARI, TREE_BRANCHED, 
 	PIGEONS, LONE_ORC, ORC_HORDE,
 }
 
@@ -34,7 +34,8 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			SavannahStructuresKind.TREE_SAFARI:
 				var pos := area[index]
-				pop.spawn_foliage(World.Foliage.TREE_SAFARI, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_SAFARI if rng.randf() < 0.5 else World.Foliage.TREE_SAFARI2, pos, spacing)
+				
 			SavannahStructuresKind.TREE_BRANCHED:
 				var pos := area[index]
 				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)

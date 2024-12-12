@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bu641rysxb2pi"]
+
+[ext_resource type="ArrayMesh" uid="uid://rf1ti4n3l3qp" path="res://Models/Nature/Tree/tree_palm.mesh" id="1_g5qbt"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_75aj2"]
+height = 3.7
+radius = 0.15
+
+[node name="Tree_Palm" type="Node3D"]
+
+[node name="static" type="StaticBody3D" parent="."]
+
+[node name="shape" type="CollisionShape3D" parent="static"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
+shape = SubResource("CylinderShape3D_75aj2")
+
+[node name="MeshNode" type="Node3D" parent="."]
+
+[node name="PalmTree_3" type="MeshInstance3D" parent="MeshNode"]
+transform = Transform3D(100, 0, 0, 0, -1.19209e-05, 100, 0, -100, -1.19209e-05, 0, 0, 0)
+mesh = ExtResource("1_g5qbt")
+skeleton = NodePath("")

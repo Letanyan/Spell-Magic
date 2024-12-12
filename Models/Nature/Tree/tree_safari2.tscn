@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://8b04g31ousq3"]
+
+[ext_resource type="ArrayMesh" uid="uid://bhr2xhngb51df" path="res://Models/Nature/Tree/tree_safari2.mesh" id="1_8agov"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u4dtv"]
+
+[node name="TreeSafari2" type="Node3D"]
+
+[node name="MeshNode" type="Node3D" parent="."]
+
+[node name="CommonTree_1" type="MeshInstance3D" parent="MeshNode"]
+transform = Transform3D(100, 0, 0, 0, -1.19209e-05, 100, 0, -100, -1.19209e-05, 0, 0, 0)
+mesh = ExtResource("1_8agov")
+skeleton = NodePath("")
+
+[node name="static" type="StaticBody3D" parent="."]
+
+[node name="shape" type="CollisionShape3D" parent="static"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_u4dtv")
