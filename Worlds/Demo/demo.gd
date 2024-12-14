@@ -406,9 +406,10 @@ func _input(event: InputEvent) -> void:
 			if event.is_action_released("RT") or event.is_action_pressed("S"):
 				player.world_settings.world_level += 1
 				player.keys = 0
+				reset_enemy_populations()
 				SignalBus.level_up_world.emit(player, player.world_settings.world_level)
 				print(player.world_settings.world_level)
-				# TODO: reload world, save new world level and add some animations
+				# TODO: save new world level and add some animations
 			return
 			
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
@@ -517,6 +518,14 @@ func update_population_spawning() -> void:
 		for item: Node3D in items_to_add[pop]:
 			if item.get_parent() == null:
 				add_child(item)
+				
+func reset_enemy_populations() -> void:
+	for coord: Vector2i in population:
+		var pop := population[coord] as Population
+		if pop.display_only:
+			continue
+		pop.habitant_set_display_only(true)
+		pop.habitant_set_display_only(false)
 
 func enemy_dies(enemy: Enemy) -> void:
 	if settings.enemies_killed.has(enemy.kind):
