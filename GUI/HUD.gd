@@ -11,6 +11,7 @@ extends Control
 
 @onready var cooldown_list: ItemList = $CooldownList
 
+@onready var wand_mapping_panel: Panel = $WandMappingPanel
 @onready var wand_mapping: RichTextLabel = $WandMappingPanel/WandMapping
 
 @onready var notification_label: RichTextLabel = $NotificationLabel
@@ -28,6 +29,8 @@ var not_enough_mana_alert: float = 0.0
 
 var world_settings: WorldSettings = null
 var hud_settings: HUDSettings = null
+var cached_theme_color := Color()
+var cached_theme_variation := HUDSettings.ThemeKind.MONO
 
 var player: Player:
 	set(value):
@@ -37,7 +40,7 @@ var player: Player:
 		player.spell_was_cast.connect(spell_was_cast)
 		player.spell_was_disallowed.connect(spell_was_disallowed)
 		player.spell_was_limited.connect(spell_was_limited)
-		key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(player.keys)
+		key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(player.world_settings.player_keys)
 
 var wand: Wand: set = set_wand
 		
@@ -360,6 +363,11 @@ func update_settings(settings: WorldSettings) -> void:
 	player.change_reticule_visible(hud_settings.hide_reticule)
 	
 	key_count_label.visible = not hud_settings.hide_collected_keys_label
+	
+	if cached_theme_color != hud_settings.theme_color or cached_theme_variation != hud_settings.theme_variation:
+		var global_theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
+		global_theme.change_tint_color(hud_settings.theme_color, hud_settings.theme_variation)
+		update_theme_colors(hud_settings.theme_color, hud_settings.theme_variation)
 		
 	update_stats_view()
 	update_wand_mappings()
@@ -409,3 +417,16 @@ func update_selection_wheel_spells() -> void:
 func update_pick_up_world_item_key(k: int, m: String) -> void: 
 	show_notification(bbcode_new_item(m), 5)
 	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)
+
+func update_theme_colors(color: Color, variation: HUDSettings.ThemeKind) -> void:
+	cached_theme_color = color
+	cached_theme_variation = variation
+	
+	var list_theme := cooldown_list.get_theme_stylebox("panel") as StyleBoxFlat
+	list_theme.border_color = Color(color, 0.5)
+	
+	var mapping_theme := wand_mapping_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	mapping_theme.border_color = list_theme.border_color
+
+	var stats_theme := (stats_view.get_node("container") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+	stats_theme.border_color = list_theme.border_color

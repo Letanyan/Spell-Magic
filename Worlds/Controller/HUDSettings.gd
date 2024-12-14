@@ -1,6 +1,7 @@
 class_name HUDSettings
 
 enum KeyDisplay { AUTO, KEYBOARD, CONTROLLER }
+enum ThemeKind { MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
 
 var hide_wand_mappings: bool = false
 var hide_wand_modifier_hints: bool = false
@@ -13,6 +14,8 @@ var hide_reticule: bool = false
 var projectile_indicator_size: float = 1.0
 var key_display: KeyDisplay = KeyDisplay.AUTO
 var hide_collected_keys_label: bool = false
+var theme_variation: ThemeKind = ThemeKind.MONO
+var theme_color: Color = Color(0, 0.533, 0.8)
 
 func save_dict() -> Dictionary:
 	return {
@@ -21,7 +24,8 @@ func save_dict() -> Dictionary:
 		"hide_health_mana": hide_health_mana, "hide_cooldown_timings": hide_cooldown_timings,
 		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule,
 		"projectile_indicator_size": projectile_indicator_size, "key_display": key_display,
-		"hide_collected_keys_label": hide_collected_keys_label,
+		"hide_collected_keys_label": hide_collected_keys_label, "theme_color": theme_color,
+		"theme_variation": theme_variation,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -36,3 +40,5 @@ func load_dict(dict: Dictionary) -> void:
 	projectile_indicator_size = dict.get("projectile_indicator_size", 1.0)
 	key_display = dict.get("key_display", KeyDisplay.AUTO)
 	hide_collected_keys_label = dict.get("hide_collected_keys_label", false)
+	theme_variation = dict.get("theme_variation", ThemeKind.MONO)
+	theme_color = dict.get("theme_color", Color(0, 0.533, 0.8))

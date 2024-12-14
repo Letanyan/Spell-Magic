@@ -1,5 +1,6 @@
-[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=6 format=3 uid="uid://d12shiwt887us"]
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=5 format=3 uid="uid://d12shiwt887us"]
 
+[ext_resource type="Texture2D" uid="uid://cm247a444jxpy" path="res://GUI/ThemeUI/NeoColorDisabledGradient.tres" id="1_puses"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_rylgy"]
 
 [sub_resource type="Gradient" id="Gradient_obhf2"]
@@ -8,14 +9,6 @@ colors = PackedColorArray(0.6, 0.6, 0.6, 1, 0.7, 0.7, 0.7, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_m5khu"]
 gradient = SubResource("Gradient_obhf2")
 width = 16
-
-[sub_resource type="Gradient" id="Gradient_f7vnh"]
-interpolation_color_space = 2
-colors = PackedColorArray(0.21, 0.536667, 0.7, 1, 0.21, 0.7, 0.7, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_e50ol"]
-gradient = SubResource("Gradient_f7vnh")
-width = 64
 
 [resource]
 resource_local_to_scene = false
@@ -31,6 +24,12 @@ corner_radius_top_left = 4.0
 corner_radius_bottom_left = 4.0
 corner_radius_bottom_right = 4.0
 corner_radius_detail = 4.0
-fill_texture = SubResource("GradientTexture1D_e50ol")
+fill_texture = ExtResource("1_puses")
+fill_texture_flip_xy = false
+fill_texture_flip_vertical = false
+fill_texture_flip_horizonal = false
 border_texture = SubResource("GradientTexture1D_m5khu")
 border_width = 1.0
+border_texture_flip_xy = false
+border_texture_flip_vertical = false
+border_texture_flip_horizonal = false

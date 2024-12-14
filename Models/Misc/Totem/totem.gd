@@ -33,8 +33,8 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	
 	is_active = true
 	show_message()
-	if GDNavigator.popcnt(player.keys) < player.world_settings.max_keys():
-		message_label.text = "[center][font_size=30]%d / %d Keys Found\nCurrent World Level: %d[/font_size][/center]" % [GDNavigator.popcnt(player.keys), player.world_settings.max_keys(), player.world_settings.world_level]
+	if GDNavigator.popcnt(player.world_settings.player_keys) < player.world_settings.max_keys():
+		message_label.text = "[center][font_size=30]%d / %d Keys Found\nCurrent World Level: %d[/font_size][/center]" % [GDNavigator.popcnt(player.world_settings.player_keys), player.world_settings.max_keys(), player.world_settings.world_level]
 	else:
 		message_label.text = "[center][font_size=30]All Keys Found\nClick to Level Up World[/font_size][/center]"
 		player.can_level_up_world = true

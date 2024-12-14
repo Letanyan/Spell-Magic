@@ -346,6 +346,10 @@ func _ready() -> void:
 	AudioManager.world = self
 	AudioManager.camera = player.cam
 	
+	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
+	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
+	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
+	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
 	sub_viewport_container.visible = true

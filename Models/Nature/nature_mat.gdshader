@@ -30,7 +30,7 @@ uniform sampler2D wind_speed_change : hint_default_white;
 void vertex() {
 	ROUGHNESS=roughness;
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
-	
+
 	if (UV.y > 0.125 && UV.y < 0.125 + 0.0625) {
 		float wind_speed = texture(wind_speed_change, vec2(0.5, TIME * wind_speed_multiplier)).r;
 		vec2 wind_dir = vec2(
@@ -38,7 +38,7 @@ void vertex() {
 			texture(wind_noise, vec2(0.5, TIME * wind_speed * 0.1)).r * 2.0 - 1.0
 		);
 		float displacement_affect = pow(1.0 - VERTEX.y, 3.0);
-		
+
 		VERTEX.x += wind_dir.x * 0.01 * displacement_affect * wind_speed;
 		VERTEX.z += wind_dir.y * 0.01 * displacement_affect * wind_speed;
 	}
@@ -55,7 +55,7 @@ void fragment() {
 	if (base_uv.y > 0.125 && base_uv.y < 0.125 + 0.0625) {
 		if (albedo_tex.g >= albedo_tex.r && albedo_tex.g >= albedo_tex.b) {
 			albedo_tex = mix(albedo_tex, vec4(COLOR.rgb, 1.0), 0.9);
-		}	
+		}
 	} else if (base_uv.y < 0.0625) { // mix brown
 		albedo_tex = mix(albedo_tex, mix(vec4(COLOR.rgb, 1.0), vec4(0.125, 0.0625, 0.0, 1.0), 0.5), 0.9);
 	}
@@ -63,7 +63,7 @@ void fragment() {
 	vec3 temp_color = rgb2hsv(albedo.rgb * albedo_tex.rgb);
 	temp_color.b = 1.0 - pow(1.0 - temp_color.b, 2.0);
 	ALBEDO = hsv2rgb(temp_color);
-	
+
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);

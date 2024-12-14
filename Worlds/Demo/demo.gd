@@ -185,7 +185,8 @@ func run_on_ready() -> void:
 	AudioManager.camera = player.cam
 	
 	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
-	theme.change_tint_color(Color(0, 0.533, 0.8))
+	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
+	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	ready_state = GameSettings.ReadyState.IS
 	
 	await RenderingServer.frame_post_draw
@@ -405,11 +406,12 @@ func _input(event: InputEvent) -> void:
 		if player.can_level_up_world and event is InputEventMouseButton:
 			if event.is_action_released("RT") or event.is_action_pressed("S"):
 				player.world_settings.world_level += 1
-				player.keys = 0
+				player.world_settings.player_keys = 0
 				reset_enemy_populations()
 				SignalBus.level_up_world.emit(player, player.world_settings.world_level)
+				settings.save()
 				print(player.world_settings.world_level)
-				# TODO: save new world level and add some animations
+				# TODO: add some animations
 			return
 			
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):

@@ -84,7 +84,7 @@ func get_ground_level(pos: Vector2, offset: float = 0.0) -> Vector3:
 	var result := Vector3(pos.x, 0, pos.y)
 	#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
 	var world_normal := chunker.terrain_normal(pos.x, pos.y)
-	var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y # TODO: why is there a "+ pos.y" here
+	var wh: float = world_normal.get("position", Vector3.ZERO).y
 	result.y = wh + offset
 	return result
 	

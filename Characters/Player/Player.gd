@@ -35,9 +35,7 @@ var artifacts: Artifacts
 var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
-		keys = world_settings.player_keys
 var name_generator: NameGenerator
-var keys: int
 var can_level_up_world: bool = false
 
 var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
@@ -389,9 +387,8 @@ func update_watched_enemies_positions(delta: float) -> void:
 	
 	
 func pick_up_key(key: int) -> bool:
-	if keys & (1 << (key - 1)) == 0:
-		keys |= (1 << (key - 1))
-		world_settings.player_keys = keys
+	if world_settings.player_keys & (1 << (key - 1)) == 0:
+		world_settings.player_keys |= (1 << (key - 1))
 		return true
 	else:
 		return false

@@ -1,17 +1,19 @@
 class_name SettingsGUI
 extends Control
 
-@onready var hide_wand_mappings := $Tabs/HUD/HideWandMappings as CheckButton
-@onready var hide_wand_modifier_hints := $Tabs/HUD/HideWandModifierHints as CheckButton
-@onready var hide_notifications := $Tabs/HUD/HideNotifications as CheckButton
-@onready var hide_status_effects := $Tabs/HUD/HideStatusEffects as CheckButton
-@onready var hide_health_and_mana := $Tabs/HUD/HideHealthAndMana as CheckButton
-@onready var hide_cooldown_timings := $Tabs/HUD/HideCooldownTimings as CheckButton
-@onready var hide_stats_view := $Tabs/HUD/HideStatsView as CheckButton
-@onready var hide_reticule: CheckButton = $Tabs/HUD/HideReticule as CheckButton
-@onready var projectile_indicator_size: HSlider = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
-@onready var projectile_indicator_size_display: Label = $Tabs/HUD/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
-@onready var key_display: OptionButton = $Tabs/HUD/KeyDisplayLabel/KeyDisplay
+@onready var hide_wand_mappings := $Tabs/Display/HideWandMappings as CheckButton
+@onready var hide_wand_modifier_hints := $Tabs/Display/HideWandModifierHints as CheckButton
+@onready var hide_notifications := $Tabs/Display/HideNotifications as CheckButton
+@onready var hide_status_effects := $Tabs/Display/HideStatusEffects as CheckButton
+@onready var hide_health_and_mana := $Tabs/Display/HideHealthAndMana as CheckButton
+@onready var hide_cooldown_timings := $Tabs/Display/HideCooldownTimings as CheckButton
+@onready var hide_stats_view := $Tabs/Display/HideStatsView as CheckButton
+@onready var hide_reticule: CheckButton = $Tabs/Display/HideReticule as CheckButton
+@onready var projectile_indicator_size: HSlider = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
+@onready var projectile_indicator_size_display: Label = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
+@onready var key_display: OptionButton = $Tabs/Display/KeyDisplayLabel/KeyDisplay
+@onready var theme_color: ColorPickerButton = $Tabs/Display/ThemeColor/ThemeColor
+@onready var theme_variation: OptionButton = $Tabs/Display/ThemeVariation/ThemeVariation
 
 @onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
@@ -86,6 +88,8 @@ func update_controls() -> void:
 	projectile_indicator_size.value = world_settings.hud_settings.projectile_indicator_size
 	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
 	key_display.selected = world_settings.hud_settings.key_display
+	theme_variation.selected = world_settings.hud_settings.theme_variation
+	theme_color.color = world_settings.hud_settings.theme_color
 	
 	fov_slider.value = int(world_settings.camera_settings.fov)
 	fov_value.text = str(int(world_settings.camera_settings.fov))
@@ -179,6 +183,14 @@ func _on_projectile_indicator_size_value_changed(value: float) -> void:
 	
 func _on_key_display_item_selected(index: int) -> void:
 	world_settings.hud_settings.key_display = index as HUDSettings.KeyDisplay
+	settings_changed.emit(world_settings)
+	
+func _on_theme_variation_item_selected(index: int) -> void:
+	world_settings.hud_settings.theme_variation = index as HUDSettings.ThemeKind
+	settings_changed.emit(world_settings)
+	
+func _on_theme_color_color_changed(color: Color) -> void:
+	world_settings.hud_settings.theme_color = color
 	settings_changed.emit(world_settings)
 
 func _on_fov_slider_value_changed(value: float) -> void:

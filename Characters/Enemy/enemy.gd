@@ -485,7 +485,7 @@ func drop_spell_item(world: Node3D) -> bool:
 		
 func drop_key_item(world: Node3D) -> bool:
 	var key: int = drop_key()
-	if key != 0 and (player.keys & key == 0):
+	if key != 0 and (player.world_settings.player_keys & key == 0):
 		var item := KeyPrism.make()
 		item.position = position
 		item.global_transform = global_transform

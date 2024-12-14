@@ -130,7 +130,7 @@ func _physics_process(delta: float) -> void:
 		print(World.Biome.keys()[b])
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
-		theme.change_tint_color(tint)
+		theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
 		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
 		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
 		var fg := tint
