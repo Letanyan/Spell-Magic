@@ -403,8 +403,7 @@ func _physics_process(delta: float) -> void:
 		daytime_tick = 0.0
 			
 	if not menu.is_showing:
-		const SPEED = 12.0
-		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
+		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * settings.camera_settings.panning_speed
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
 			
@@ -482,21 +481,25 @@ func _input(event: InputEvent) -> void:
 		GlobalData.controller.handle_input(event)
 		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
-			settings.upgrade_settings.level_running_speed -= 1
-			print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
-			#if settings.camera_settings.distance > 1:
-				#settings.camera_settings.distance -= 1
-				#menu.settings.settings_changed.emit(settings)
-				#menu.settings.update_controls()
-				#settings.save()
+			if OS.is_debug_build():
+				settings.upgrade_settings.level_running_speed -= 1
+				print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
+			else:
+				if settings.camera_settings.distance > 1:
+					settings.camera_settings.distance -= 1
+					menu.settings.settings_changed.emit(settings)
+					menu.settings.update_controls()
+					settings.save()
 		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
-			settings.upgrade_settings.level_running_speed += 1
-			print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
-			#if settings.camera_settings.distance < 10:
-				#settings.camera_settings.distance += 1
-				#menu.settings.settings_changed.emit(settings)
-				#menu.settings.update_controls()
-				#settings.save()
+			if OS.is_debug_build():
+				settings.upgrade_settings.level_running_speed += 1
+				print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
+			else:
+				if settings.camera_settings.distance < 10:
+					settings.camera_settings.distance += 1
+					menu.settings.settings_changed.emit(settings)
+					menu.settings.update_controls()
+					settings.save()
 		
 		for k: String in wand.basic_keys:
 			var s: Spell = null

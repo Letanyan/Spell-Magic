@@ -78,7 +78,3 @@ func update_behaviour() -> void:
 		set_path_and_attack(attack_path, random_pattern)
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)
-
-
-func drop_health() -> float:
-	return health_drop(1)

@@ -87,7 +87,7 @@ void fragment() {
 	vec2 base_uv = UV;
 	vec3 albedo_tex = mix(instance_custom.rgb, instance_custom.rgb * 1.5, 1.0 - UV.y);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	ALPHA = clamp(abs(COLOR.a - tick_time_s), 0.0, 1.0);
+	//ALPHA = clamp(abs(COLOR.a - tick_time_s), 0.0, 1.0);
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);

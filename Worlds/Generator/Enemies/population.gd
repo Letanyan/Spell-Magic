@@ -63,6 +63,7 @@ func build_generators_version1() -> void:
 			World.Biome.SAVANNAH: generators.append(SavannahGen.new())
 			World.Biome.TAIGA: generators.append(TaigaGen.new())
 			World.Biome.DESERT: generators.append(DesertGen.new())
+			World.Biome.OTHERWORLD: generators.append(OtherworldGen.new())
 			_: generators.append(BiomeGenerator.new())
 	
 	
@@ -83,8 +84,23 @@ func get_ground_level(pos: Vector2, offset: float = 0.0) -> Vector3:
 	var result := Vector3(pos.x, 0, pos.y)
 	#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.y)
 	var world_normal := chunker.terrain_normal(pos.x, pos.y)
-	var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
+	var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y # TODO: why is there a "+ pos.y" here
 	result.y = wh + offset
+	return result
+	
+func get_flat_ground(center: Vector2, offset_y: float, r: float, rang: RandomNumberGenerator) -> Vector3:
+	var max_check := 16
+	var best := INF
+	var result := Vector3(center.x, 0, center.y)
+	for i in max_check:
+		var pos := Vector3(center.x, 0, center.y) + Vec3.polar(r, 2 * PI * rang.randf(), 0)
+		var world_normal := chunker.terrain_normal(pos.x, pos.z)
+		var wh: float = world_normal.get("position", Vector3.ZERO).y
+		var norm: Vector3 = world_normal.get("normal", Vector3.UP)
+		var angle := absf(Vector3.UP.angle_to(norm))
+		if angle < best:
+			best = angle
+			result = Vector3(pos.x, wh + offset_y, pos.z)
 	return result
 	
 func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable) -> int:
@@ -137,7 +153,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
 			(entity as Enemy).setup(rng.randi(), current_biome_during_generation)
-			entity.name = World.Enemy.keys()[(entity as Enemy).kind] + Globals.encode_v3(entity.position) + Rand.id(5, rng)
+			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(10, rng)
 			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)
@@ -146,7 +162,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 		else:
 			if entity is WorldItem:
 				(entity as WorldItem).setup(rng, current_biome_during_generation)
-				entity.name = World.Item.keys()[(entity as WorldItem).kind] + Globals.encode_v3(entity.position) + Rand.id(5, rng)
+				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(10, rng)
 				var is_marked := entity_name_is_marked(entity.name)
 				if is_marked:
 					entity_manager.free_world_item(entity as WorldItem)
@@ -379,7 +395,7 @@ func mark_entity_name(name: String) -> void:
 func entity_name_is_marked(name: String) -> bool:
 	return (player.world_settings.marked_entities.get(coord, []) as Array[String]).find(name) != -1
 
-static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float) -> float:
+static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float, world_level: int = 1) -> float:
 	var p := clampf(Vector2(x, z).length() / world_radius, 0.0, 100.0)
 	var base := 45.0 * (log(p + 1.0) / log(10.0))
 	var offset_max_range := (p * p) / 10000.0 + 9 * sin(p * PI / 10.0)
@@ -388,11 +404,11 @@ static func level_relative_to_position_within_radius(rang: RandomNumberGenerator
 		random_offset = 0
 	else:
 		random_offset = rang.randf_range(0.0, absf(offset_max_range))
-	var result := maxf(base + random_offset, 1.0)
+	var result := maxf(base + random_offset, 1.0) + (world_level - 1) * 100.0
 	return result
 	
 func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:
-	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius)
+	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius, player.world_settings.world_level)
 
 func fit(mn: float, mx: float) -> float:
 	return lerpf(mn, mx, current_fl_during_generation)

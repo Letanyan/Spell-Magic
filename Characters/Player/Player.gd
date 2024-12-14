@@ -38,6 +38,7 @@ var world_settings: WorldSettings:
 		keys = world_settings.player_keys
 var name_generator: NameGenerator
 var keys: int
+var can_level_up_world: bool = false
 
 var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
 var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_system

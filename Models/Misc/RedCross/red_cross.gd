@@ -19,7 +19,7 @@ func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if not eaten and body is Player:
 		eaten = true
-		SignalBus.pick_up_world_item_red_cross.emit(health, "%d%% health gained back" % roundi(health * 100))
+		SignalBus.pick_up_world_item_red_cross.emit(health, "%d%% health gained back" % ceili(health * 100))
 		var tween := create_tween_for_world_item_pick_up(body, 0.25)
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()

@@ -16,6 +16,7 @@ var is_test_arena: bool = false
 var world_generation_version: int = -1
 var sea_level: float = 0.0
 var world_radius: float = 10000.0
+var world_level: int = 1
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
@@ -124,3 +125,11 @@ func enemies_killed_table() -> String:
 		result += "[cell border=white][b]%s[/b][/cell][cell border=white]%d[/cell]\n" % [kind, number]
 	result += "[/table]"
 	return result
+
+func max_keys() -> int:
+	match world_generation_version:
+		1: return 9
+		
+		# These should match the latest version
+		-1: return 9
+		_: return 9 

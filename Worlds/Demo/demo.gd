@@ -7,6 +7,7 @@ extends Node3D
 @onready var fps: Label = $FPS
 @onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
+@onready var totem: Totem = $Totem
 
 #var noise_image := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
 var noise_image: Image
@@ -306,8 +307,7 @@ func _physics_process(delta: float) -> void:
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 			
 	if not menu.is_showing:
-		const SPEED = 12.0
-		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * SPEED
+		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * settings.camera_settings.panning_speed
 		if movement != Vector2.ZERO:
 			player.pan_camera(movement)
 			
@@ -334,6 +334,7 @@ func _physics_process(delta: float) -> void:
 func close_menu_for_player() -> void:
 	settings.is_paused = false
 	sub_viewport_container.visible = false
+	totem.show_message()
 	menu.close()
 	hud.show()
 	
@@ -348,6 +349,7 @@ func open_menu_for_player() -> void:
 	settings.player_health = player.vitals.health.value
 	settings.player_mana = player.vitals.mana.value
 	settings.last_save_time = Time.get_unix_time_from_system()
+	totem.hide_message()
 	menu.open(Menu.Kind.ANY)
 	hud.hide()
 
@@ -400,6 +402,13 @@ func _input(event: InputEvent) -> void:
 	if not settings.is_paused:
 		GlobalData.controller.handle_input(event)
 		
+		if player.can_level_up_world and event is InputEventMouseButton:
+			if event.is_action_released("RT") or event.is_action_pressed("S"):
+				player.world_settings.world_level += 1
+				print(player.world_settings.world_level)
+				# TODO: reload world and save
+				return
+			
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
 			if settings.camera_settings.distance > 1:
 				settings.camera_settings.distance -= 1
@@ -488,6 +497,11 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 	var pop := Population.new(settings.world_generation_version, coord, CHUNK_SIZE, chunker, blender, player, entity_manager, true)
 	pop.setup_spawning_state(not display_only)
 	population[coord] = pop
+	
+	if coord.x == 0 and coord.y == 0:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = settings.sed
+		totem.position = pop.get_flat_ground(Vector2.ZERO, 1.5, 32.0, rng)
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}

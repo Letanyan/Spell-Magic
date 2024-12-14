@@ -588,7 +588,11 @@ func drop_coins() -> Array[int]:
 	return cns(class_level)
 	
 func drop_health() -> float:
-	return 0.0
+	var p := class_level / 20.0
+	if randf() < fit(p * 0.5, p) * (1.0 - player.vitals.health.percentage()):
+		return health_drop(class_level)
+	else:
+		return 0.0
 	
 func drop_note() -> String:
 	var key_samples := GlobalData.game_settings.notes.keys()
