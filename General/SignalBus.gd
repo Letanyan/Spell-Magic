@@ -13,4 +13,4 @@ signal not_enough_mana_for_spell(spell: Spell)
 
 signal enemy_death(enemy: Enemy)
 
-signal level_up_world
+signal level_up_world(player: Player, new_world_level: int)

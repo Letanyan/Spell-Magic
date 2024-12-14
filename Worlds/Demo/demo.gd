@@ -405,9 +405,11 @@ func _input(event: InputEvent) -> void:
 		if player.can_level_up_world and event is InputEventMouseButton:
 			if event.is_action_released("RT") or event.is_action_pressed("S"):
 				player.world_settings.world_level += 1
+				player.keys = 0
+				SignalBus.level_up_world.emit(player, player.world_settings.world_level)
 				print(player.world_settings.world_level)
-				# TODO: reload world and save
-				return
+				# TODO: reload world, save new world level and add some animations
+			return
 			
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
 			if settings.camera_settings.distance > 1:
