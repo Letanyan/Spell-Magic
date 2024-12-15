@@ -223,9 +223,6 @@ noise = SubResource("FastNoiseLite_7y25k")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hra85"]
 render_priority = 0
 shader = ExtResource("11_sslk6")
-shader_parameter/texture_width = null
-shader_parameter/texture_depth = null
-shader_parameter/underwater = 1.0
 shader_parameter/locations = PackedVector2Array(0, 0.5, 0.5, 0, 0, 1, 1, 0, 0.25, 0, 0, 0.25, 0.75, 0, 0, 0.75, 0.5, 0.5)
 shader_parameter/biome_x = SubResource("NoiseTexture2D_805q4")
 shader_parameter/biome_y = SubResource("NoiseTexture2D_udh5n")

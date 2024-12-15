@@ -8,6 +8,7 @@ extends CharacterBody
 @onready var body_pivot: Node3D = $Pivot
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
 @onready var canvas_layer_bg: Control = $CanvasLayer/BG
+@onready var canvas_layer_transition_rect: ColorRect = $CanvasLayer/BG/WorldLevelTransition
 var projectile_indicator_scale: float = 1.0
 
 @onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 

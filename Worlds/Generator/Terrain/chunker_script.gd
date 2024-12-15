@@ -243,8 +243,6 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float, saved_player
 	RenderingServer.mesh_add_surface_from_arrays(mesh, RenderingServer.PRIMITIVE_TRIANGLES, mesh_data)
 	
 	var mat := mats[coord] as ShaderMaterial
-	mat.set_shader_parameter("texture_width", W)
-	mat.set_shader_parameter("texture_depth", W)
 	mat.set_shader_parameter("biome_x", biome_x_texture)
 	mat.set_shader_parameter("biome_y", biome_z_texture)
 	mat.set_shader_parameter("noise", noise_texture)

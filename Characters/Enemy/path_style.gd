@@ -249,6 +249,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	old_origin = temp_origin
 	
 	if player is Player:
+		# FIXME: enemy path is in origin
 		DebugDraw3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, delta)
 		for segment: Segment in path.segments:
 			var s := segment.position_at_time_with_transform(0.0, transform) + Vec3.xz_y(temp_origin, 0)

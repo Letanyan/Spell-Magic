@@ -60,4 +60,5 @@ void fragment() {
 	}
 
 	ALBEDO = mix(vec3(0, 0.1, 0.2), underwater_color, depth_blend);
+	ALPHA = 0.99;
 }

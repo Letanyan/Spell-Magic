@@ -267,7 +267,7 @@ func setup_spawning_state(spawn_enemies: bool = false, spacing: float = 16.0) ->
 	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing)
 	spawn_area_points = spawn_areas["points"]
 	spawn_area_biomes = spawn_areas["biomes"]
-	current_fl_during_generation = level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0
+	current_fl_during_generation = minf(level_relative_to_position(rng, coord.x * chunk_size, coord.y * chunk_size) / 100.0, 1.0)
 	spawn_cursor = Vector2i.ZERO
 	for b: World.Biome in World.Biome.values():
 		generators[b].setup_state(self) 

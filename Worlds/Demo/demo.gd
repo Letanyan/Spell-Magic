@@ -30,6 +30,10 @@ var biome_transition_duration := 1.0
 var biome_start_settings := {}
 var biome_final_settings := {}
 
+var texture_transition_biome_x: Texture2D = null
+var texture_transition_biome_y: Texture2D = null
+var texture_transition_height: Texture2D = null
+
 var terrain_update_interval := 0.0
 var has_init_terrain_population := false
 
@@ -99,7 +103,6 @@ func setup(_settings: WorldSettings) -> void:
 	entity_manager.buffer_foliage_lod0.add_all_meshes(self)
 	entity_manager.buffer_foliage_lod1.add_all_meshes(self)
 	
-	
 	GlobalData.game_settings.last_world = settings.world_name
 	GlobalData.game_settings.save()
 	
@@ -163,6 +166,18 @@ func run_on_ready() -> void:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
 	build_terrain()
 	update_terrain()
+	
+	#texture_transition_biome_x = blender.back.biome_texture(0, 0, 256.0, 256.0, 256.0, 0)
+	#texture_transition_biome_y = blender.back.biome_texture(0, 0, 256.0, 256.0, 256.0, 1)
+	#var heights := blender.back.height_map(0, 0, 256.0, 256.0, 256.0)
+	#var max_height := -INF
+	#var min_height := INF
+	#for h in heights:
+		#if h > max_height: max_height = h
+		#if h < min_height: min_height = h
+	#for i in heights.size():
+		#heights.set(i, (heights[i] - min_height) / (max_height - min_height) )
+	#texture_transition_height = blender.back.height_texture(heights, 256.0, 256.0)
 	
 	SignalBus.enemy_death.connect(enemy_dies)
 	
@@ -410,8 +425,7 @@ func _input(event: InputEvent) -> void:
 				reset_enemy_populations()
 				SignalBus.level_up_world.emit(player, player.world_settings.world_level)
 				settings.save()
-				print(player.world_settings.world_level)
-				# TODO: add some animations
+				transition_world_level()
 			return
 			
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
@@ -667,3 +681,39 @@ func update_transition_to_biome(delta: float) -> void:
 		env.environment.fog_density = lerp(biome_start_settings["*fog_density"], biome_final_settings["*fog_density"], t)
 		env.environment.fog_sky_affect = lerp(biome_start_settings["*fog_sky_affect"], biome_final_settings["*fog_sky_affect"], t)
 		env.environment.fog_light_color = lerp(biome_start_settings["*fog_light_color"], biome_final_settings["*fog_light_color"], t)
+
+func transition_world_level() -> void:
+	settings.is_paused = true
+	var tween := create_tween()
+	var bg := player.canvas_layer_transition_rect
+	var mat := bg.material as ShaderMaterial
+	var SIZE := (bg.size * 0.1).round()
+	var SCALE := minf(SIZE.x, SIZE.y)
+	var POS := Vector2(randf() * 10000, randf() * 10000)
+	mat.set_shader_parameter("transition", 0.0)
+	mat.set_shader_parameter("locations", blender.back.get_locations())
+	mat.set_shader_parameter("biome_x", blender.back.biome_texture(POS.x, POS.y, SIZE.x, SIZE.y, SCALE, 0))
+	mat.set_shader_parameter("biome_y", blender.back.biome_texture(POS.x, POS.y, SIZE.x, SIZE.y, SCALE, 1))
+	var heights := blender.back.height_map(POS.x, POS.y, SIZE.x, SIZE.y, SCALE)
+	var max_height := -INF
+	var min_height := INF
+	for h in heights:
+		if h > max_height: max_height = h
+		if h < min_height: min_height = h
+	for i in heights.size():
+		heights.set(i, (heights[i] - min_height) / (max_height - min_height) )
+	mat.set_shader_parameter("height", blender.back.height_texture(heights, SIZE.x, SIZE.y))
+	
+	bg.visible = true
+	totem.hide_message()
+	const DURATION = 0.5
+	tween.set_parallel(false)
+	tween.set_trans(Tween.TRANS_SPRING)
+	tween.tween_method(func(t: float) -> void: mat.set_shader_parameter("transition", t), 0.0, 1.1, DURATION)
+	tween.tween_interval(DURATION * 2)
+	tween.tween_method(func(t: float) -> void: mat.set_shader_parameter("transition", t), 1.1, 0.0, DURATION)
+	tween.finished.connect(func() -> void: 
+		bg.visible = false
+		settings.is_paused = false
+		totem.show_message()
+	)

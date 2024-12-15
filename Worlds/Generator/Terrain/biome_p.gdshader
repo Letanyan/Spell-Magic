@@ -6,11 +6,7 @@ render_mode diffuse_toon, skip_vertex_transform, blend_mix;
 //uniform sampler2D elevation: source_color;
 uniform sampler2D biome_x: source_color;
 uniform sampler2D biome_y: source_color;
-uniform sampler2D height;
-uniform float texture_width;
-uniform float texture_depth;
 uniform sampler2D noise: source_color;
-uniform float underwater = 0.0;
 uniform vec2 locations[9];
 
 // world sphere projection
@@ -108,7 +104,6 @@ vec4 biome_color(vec4 V, vec2 uv) {
 
 	vec2 p = vec2(bx, by);
 	float distances[9];
-	float total_distance = 0.0;
 	int index = 0;
 	float min_distance = 100000.0;
 	for (int i = 0; i < 9; i++) {
