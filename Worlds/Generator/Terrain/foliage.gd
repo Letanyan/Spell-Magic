@@ -147,17 +147,18 @@ func remove(kind: World.Foliage, index: int) -> void:
 	opened_slots[kind].append(index)
 	
 	
-func setup(kind: World.Foliage, index: int, position: Vector3, rng: RandomNumberGenerator, biome: World.Biome) -> void:
+func setup(kind: World.Foliage, index: int, position: Vector3, seedling: int, biome: World.Biome) -> void:
 	var mesh_transform := mesh_transforms[kind] as Transform3D
-	var s := rng.randf_range(2, 5)
-	#var s := rng.randf_range(2, 5) * mesh_scales[kind] as float
+	var scur := Globals.Ref.new(seedling)
+	var s := Rand.randf_range(scur, 2, 5)
+	#var s := Rand.randf_range(scur, 2, 5) * mesh_scales[kind] as float
 	if biome == World.Biome.JUNGLE and World.Foliage.TREE_BRANCHED == kind:
-		s *= rng.randf_range(5, 10)
+		s *= Rand.randf_range(scur, 5, 10)
 		
 	#var transform := mesh_transform.scaled(Vec3.a(s))
 	
 	var result := mesh_transform.scaled(Vec3.a(s))
-	var r := rng.randf_range(0, 2 * PI)
+	var r := Rand.randf_range(scur, 0, 2 * PI)
 	result = result.rotated(Vector3.UP, r)
 	result = result.translated(position)
 	

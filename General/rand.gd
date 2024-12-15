@@ -94,15 +94,12 @@ static func point_in_hemisphere_shell(min_r: float, max_r: float, rng: RandomNum
 		p = Vector3(rng.randf() * 2.0 - 1.0, rng.randf(), rng.randf() * 2.0 - 1.0).normalized() * r + Vector3(min_r, min_r, min_r)
 	return p 
 	
-static func id(length: int, rng: RandomNumberGenerator = null) -> String:
+static func id(length: int, seedling: int = Time.get_ticks_msec()) -> String:
 	var result := ""
 	var source := "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
-	if rng == null:
-		for i in length:
-			result += source[rng.randi_range(0, source.length() - 1)]
-	else:
-		for i in length:
-			result += source[randi_range(0, source.length() - 1)]
+	var scur := Globals.Ref.new(seedling)
+	for i in length:
+		result += source[Rand.randi_range(scur, 0, source.length() - 1)]
 	return result
 
 # probs: [Variant]float|int
@@ -137,10 +134,11 @@ static func roll(sides: int, count: int, constant: int, rng: RandomNumberGenerat
 	
 const UINT32_MAX = 4294967295
 static func xorshift(seedling: Globals.Ref) -> int:
-	var x := seedling.data as int
+	var x := (seedling.data as int)
 	x ^= x << 13
 	x ^= x >> 17
 	x ^= x << 5
+	x = x & 0x0000_0000_FFFF_FFFF
 	seedling.data = x
 	return x
 	

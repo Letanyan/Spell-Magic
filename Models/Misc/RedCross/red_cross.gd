@@ -11,9 +11,9 @@ static func make() -> RedCross:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	setup(null, World.Biome.WATER)
+	setup(0, World.Biome.WATER)
 
-func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 
 func _on_area_3d_body_entered(body: Node3D) -> void:

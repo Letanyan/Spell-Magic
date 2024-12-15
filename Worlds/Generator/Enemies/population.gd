@@ -103,7 +103,7 @@ func get_flat_ground(center: Vector2, offset_y: float, r: float, rang: RandomNum
 			result = Vector3(pos.x, wh + offset_y, pos.z)
 	return result
 	
-func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable) -> int:
+func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable, seedling: int) -> int:
 	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if index != -1:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -119,13 +119,13 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
 		foliage_manager.set_albedo_blend(kind, index, blender.color)
-		foliage_manager.setup(kind, index, position, rng, current_biome_during_generation)
+		foliage_manager.setup(kind, index, position, seedling, current_biome_during_generation)
 		garden.append(Vector2i(kind, index))
 		
 	#current_iteration_spawn_count += 1
 	return index
 	
-func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_info: Callable) -> Node3D:
+func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_info: Callable, seedling: int) -> Node3D:
 	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -152,8 +152,9 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 			(entity as Enemy).velocity_movement.current_biome = current_biome_during_generation
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
-			(entity as Enemy).setup(rng.randi(), current_biome_during_generation)
-			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(10, rng)
+			var scur := Globals.Ref.new(seedling)
+			(entity as Enemy).setup(Rand.randi(scur), current_biome_during_generation)
+			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(10, Rand.randi(scur))
 			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
 			if is_marked:
 				entity_manager.free_enemy(entity as Enemy)
@@ -161,8 +162,9 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 			inhabitants[inhabitants.size()] = entity
 		else:
 			if entity is WorldItem:
-				(entity as WorldItem).setup(rng, current_biome_during_generation)
-				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(10, rng)
+				var scur := Globals.Ref.new(seedling)
+				(entity as WorldItem).setup(Rand.randi(scur), current_biome_during_generation)
+				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(10, Rand.randi(scur))
 				var is_marked := entity_name_is_marked(entity.name)
 				if is_marked:
 					entity_manager.free_world_item(entity as WorldItem)
@@ -180,6 +182,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
+	var seedling := rng.randi()
 	if display_only and not spawn_enemies_in_display_only: return null
 	var result := entity_manager.get_enemy(enemy)
 	var pos := Vector3(p.x, 0, p.y)
@@ -187,7 +190,7 @@ func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
-	return prepare_entity(result, pos, enemy, always_valid)
+	return prepare_entity(result, pos, enemy, always_valid, seedling)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float, lvl: int = 1) -> Enemy:
 	var result := Enemy.make(enemy)
@@ -200,14 +203,17 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 
 
 func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> int:
+	var seedling := rng.randi()
 	if not display_only: return -1
 	var pos := Vector3(p.x, 0, p.y)
 	var result := foliage_manager.make(foliage)
-	pos.x += spacing * rng.randf_range(-0.5, 0.5)
-	pos.z += spacing * rng.randf_range(-0.5, 0.5)
-	return prepare_foliage(foliage, result, pos, user_info)
+	var scur := Globals.Ref.new(seedling)
+	pos.x += spacing * Rand.randf_range(scur, -0.5, 0.5)
+	pos.z += spacing * Rand.randf_range(scur, -0.5, 0.5)
+	return prepare_foliage(foliage, result, pos, user_info, scur.data as int)
 	
 func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
+	var seedling := rng.randi()
 	if display_only and not spawn_enemies_in_display_only: return null
 	var result := entity_manager.get_world_item(item) as WorldItem
 	var pos := Vector3(p.x, 0, p.y)
@@ -216,9 +222,10 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 		var temp := result as TargetShape
 		temp.configure(config)
 	
-	return prepare_entity(result, pos, World.Enemy.NONE, always_valid)
+	return prepare_entity(result, pos, World.Enemy.NONE, always_valid, seedling)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
+	var seedling := rng.randi()
 	if display_only and not spawn_enemies_in_display_only: return null
 	var result: ItemSpawner
 	var world_normal := chunker.terrain_normal(p.x, p.y)
@@ -232,7 +239,7 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 		World.Item.HEALTH: result = ItemSpawner.health_spawner(self, pos, value as float)
 		World.Item.NOTE: result = ItemSpawner.note_spawner(self, pos, value as String)
 		
-	result.name = World.Item.keys()[item] + "Spawner" + Globals.encode_v3(pos) + Rand.id(5, rng)
+	result.name = World.Item.keys()[item] + "Spawner" + Globals.encode_v3(pos) + Rand.id(5, seedling)
 	# if the spawner has already been consumed don't create a new one.
 	# IMPORTANT: Even if the spawner is consumed the generation algorithm must 
 	#            still assume the spawner exists. We do this to maintain the RNG

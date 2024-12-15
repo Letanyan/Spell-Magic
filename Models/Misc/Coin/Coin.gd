@@ -10,9 +10,9 @@ static func make() -> CoinDisc:
 	return result
 
 func _ready() -> void:
-	setup(null, World.Biome.WATER)
+	setup(0, World.Biome.WATER)
 	
-func setup(rng: RandomNumberGenerator, biome: World.Biome) -> void:
+func setup(seedling: int, biome: World.Biome) -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 	update_mesh_color()
 
