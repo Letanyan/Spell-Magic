@@ -2,6 +2,8 @@ class_name SpellBody
 extends Node3D
 
 var spell: Spell
+var sub_spell: Spell
+var skip_update_shape_check: bool
 var n: int
 var time_stamp: float
 var update_tick: float
@@ -52,6 +54,8 @@ func setup() -> void:
 	old_pos = Vector3.ZERO
 	rotation_angle = NAN
 	on_hit_casts = {}
+	sub_spell = null
+	skip_update_shape_check = false
 
 	to_remove = false
 	
@@ -212,6 +216,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 	var is_ice     : int = _body.collision_layer & Globals.Layer.ICE != 0
 	#var is_electric: int = _body.collision_layer & Globals.Layer.ELECTRIC != 0
 	var dmg := {"el": spell.element, "dmg": spell.power} # set default for contact with non player/enemy
+	var sub_dmg := {}
 	var invunerable: bool = (is_player or is_enemy) and (_body as CharacterBody).invunerable > 0.0
 	match spell.element:
 		Spell.Element.FIRE:
@@ -242,6 +247,8 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.WATER, spell.damage(caster_vitals), spell.elemental_application)
+				if sub_spell != null:
+					sub_dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, sub_spell.damage(caster_vitals), sub_spell.elemental_application)
 				expire_now(self, body, dmg)
 		Spell.Element.AIR:
 			if is_world or is_world_object:
@@ -261,6 +268,8 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				var body := _body as CharacterBody
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.damage(caster_vitals), spell.elemental_application)
+				if sub_spell != null:
+					sub_dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, sub_spell.damage(caster_vitals), sub_spell.elemental_application)
 				nothing(self, body, dmg)
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
@@ -289,6 +298,9 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				var body := _body as Player
 				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
 				body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+				if sub_dmg != {}:
+					Vitals.apply_damage(get_parent() as Node3D, _body, sub_dmg["dmg"] as float, sub_dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
+					body.add_shake(clampf(sub_dmg["dmg"] as float / 100.0, 0.0, 1.0))
 				body.invunerable = INVUNERABLE_DURATION
 				if dmg["dmg"] > 0:
 					body.play_animation("on_hit")
@@ -298,6 +310,9 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				var body := _body as Enemy
 				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
 				body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+				if sub_dmg != {}:
+					Vitals.apply_damage(get_parent() as Node3D, _body, sub_dmg["dmg"] as float, sub_dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
+					body.add_shake(clampf(sub_dmg["dmg"] as float / 100.0, 0.0, 1.0))
 				if body.vitals.health.value <= body.vitals.health.min_value:
 					body.vital_update.emit(body.index_in_population, body.vitals)
 					body.die()
@@ -307,10 +322,12 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 						body.play_animation("on_hit")
 			else:
 				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, null)
+				if sub_dmg != {}:
+					Vitals.apply_damage(get_parent() as Node3D, _body, sub_dmg["dmg"] as float, sub_dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, null)
 				
 
 func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
-	var _body := area.get_parent_node_3d() as CollisionObject3D
+	var _body := area.get_parent_node_3d() as Node3D
 	var is_world  : int = area.collision_layer & Globals.Layer.WORLD != 0
 	var is_player : int = area.collision_layer & Globals.Layer.PLAYER != 0
 	var is_enemy  : int = area.collision_layer & Globals.Layer.ENEMY != 0
@@ -330,20 +347,32 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		Spell.Element.FIRE:
 			if not (is_enemy or is_player):
 				if is_water:
-					expire_now(self, _body, dmg)
+					expire_now(self, null, dmg)
 				elif is_electric:
 					update_shape(Vector3(1, 1, 1).normalized() * most_recent_radius.length() * 3, true)
-					explode_after(self, _body, 0.0166667 * 2, false, dmg)
+					explode_after(self, null, 0.0166667 * 2, false, dmg)
 		Spell.Element.WATER:
 			if not (is_enemy or is_player):
 				if is_ice:
-					expire_now(self, _body, dmg)
+					expire_now(self, null, dmg)
 				elif is_fire:
-					explode_after(self, _body, 0.0166667 * 2, true, dmg)
+					explode_after(self, null, 0.0166667 * 2, true, dmg)
+				elif is_electric:
+					if _body is SpellBody:
+						var body := _body as SpellBody
+						sub_spell = body.spell
+						skip_update_shape_check = true
+						update_shape(most_recent_radius, true)
 		Spell.Element.ICE:
 			if not (is_enemy or is_player):
 				if is_water:
 					spell.elemental_application = clampf(spell.elemental_application * 1.1, 0.0, 1.0)
+				elif is_electric:
+					if _body is SpellBody:
+						var body := _body as SpellBody
+						sub_spell = body.spell
+						skip_update_shape_check = true
+						update_shape(most_recent_radius, true)
 		Spell.Element.ELECTRIC:
 			if not (is_enemy or is_player):
 				if is_world or is_rock or is_world_object:
@@ -351,8 +380,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 					pass
 				elif is_fire:
 					update_shape(Vector3(1, 1, 1).normalized() * most_recent_radius.length() * 3, true)
-					explode_after(self, _body, 0.0166667 * 2, false, dmg)
-					pass
+					explode_after(self, null, 0.0166667 * 2, false, dmg)
 			elif is_water and not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody
 				body.add_impulse(impulse())
@@ -361,7 +389,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		Spell.Element.VOID:
 			if not (is_player or is_enemy):
 				if is_world or is_rock or is_world_object:
-					nothing(self, _body, dmg)
+					nothing(self, null, dmg)
 			elif not invunerable:
 				var body := area.get_parent_node_3d() as CharacterBody
 				body.add_impulse(impulse())
@@ -396,8 +424,9 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 					body.play_animation("on_hit")
 
 func update_shape(r: Vector3, ignore_time: bool) -> void:
-	if r == most_recent_radius:
+	if r == most_recent_radius and not skip_update_shape_check:
 		return
+	skip_update_shape_check = false
 	most_recent_radius = r
 	var rl := r.length()
 	
@@ -453,6 +482,17 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(trail.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
 			trail.amount = ceili(80 * rl)
 			
+			if sub_spell != null and sub_spell.element == Spell.Element.ELECTRIC:
+				var electric_trail: GPUParticles3D = get_node("electric_trail")
+				(electric_trail.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
+				electric_trail.amount = ceili(80 * rl)
+				electric_trail.emitting = true
+				var mat: ShaderMaterial = electric_trail.draw_pass_1.surface_get_material(0)
+				mat.set_shader_parameter("len", rl * 5)
+			else:
+				var electric_trail: GPUParticles3D = get_node("electric_trail")
+				electric_trail.emitting = false
+			
 		Spell.Element.AIR:
 			(get_shape_cast().shape as CylinderShape3D).height = rl * 4
 			(get_shape_cast().shape as CylinderShape3D).radius = rl
@@ -491,7 +531,16 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(trail.process_material as ParticleProcessMaterial).scale_min = rl / 3.0
 			trail.amount = ceili(100 * rl)
 			
-			#source.local_coords = spell.follow
+			if sub_spell != null and sub_spell.element == Spell.Element.ELECTRIC:
+				var electric_trail: GPUParticles3D = get_node("electric_trail")
+				(electric_trail.process_material as ParticleProcessMaterial).emission_box_extents = r
+				electric_trail.amount = ceili(80 * rl)
+				electric_trail.emitting = true
+				var mat: ShaderMaterial = electric_trail.draw_pass_1.surface_get_material(0)
+				mat.set_shader_parameter("len", rl * 5)
+			else:
+				var electric_trail: GPUParticles3D = get_node("electric_trail")
+				electric_trail.emitting = false
 			
 		Spell.Element.ELECTRIC:
 			(get_shape_cast().shape as SphereShape3D).radius = rl
@@ -560,7 +609,7 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 			if (obj as Area3D).collision_layer & Globals.Layer.ITEM != 0:
 				var parent := (obj as Area3D).get_parent() as Node3D
 				if parent != null and parent is TargetShape:
-					((obj as Area3D).get_parent() as TargetShape)._on_area_3d_area_entered(self, caster_vitals, obj as Area3D, [point])
+					(parent as TargetShape)._on_area_3d_area_entered(self, caster_vitals, obj as Area3D, [point])
 			else:
 				_on_area_entered(obj as Area3D, [point])
 		elif obj is CollisionObject3D:
@@ -698,22 +747,6 @@ func start_emitting() -> void:
 func stop_emitting() -> void:
 	# FIXME: reduce amount of light sources
 	is_emitting = false
-	#print("--------------------------")
-	#spell.x_expr.back.print_profiling()
-	#spell.y_expr.back.print_profiling()
-	#spell.z_expr.back.print_profiling()
-	#for k: String in spell.expressions:
-		#var e := spell.expressions[k] as Expr
-		#print(k)
-		#e.back.print_profiling()
-	#if origin_spell_caster != null:
-		#print("-------------------------")
-		#prints(origin_spell_caster.prof_1.seconds(), origin_spell_caster.prof_2.seconds(), origin_spell_caster.prof_3.seconds(), origin_spell_caster.prof_4.seconds(), origin_spell_caster.prof_5.seconds())
-		#origin_spell_caster.prof_1.reset()
-		#origin_spell_caster.prof_2.reset()
-		#origin_spell_caster.prof_3.reset()
-		#origin_spell_caster.prof_4.reset()
-		#origin_spell_caster.prof_5.reset()
 	match spell.element:
 		Spell.Element.FIRE:
 			var particles: GPUParticles3D = get_node("source")
@@ -748,6 +781,8 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
+			var electric_trail: GPUParticles3D = get_node("electric_trail")
+			electric_trail.emitting = false
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
 			free_after(Globals.particle_system_lifetime(particles))
@@ -766,6 +801,8 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
+			var electric_trail: GPUParticles3D = get_node("electric_trail")
+			electric_trail.emitting = false
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
 			free_after(Globals.particle_system_lifetime(particles))
