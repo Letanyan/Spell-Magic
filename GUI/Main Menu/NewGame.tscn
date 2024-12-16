@@ -911,10 +911,12 @@ selected = 0
 item_count = 1
 popup/item_0/text = "Version 1"
 
+[connection signal="focus_entered" from="SaveName" to="." method="_on_save_name_focus_entered"]
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]
 [connection signal="toggled" from="UseNormal" to="." method="_on_use_normal_toggled"]
 [connection signal="toggled" from="UseHardcore" to="." method="_on_use_hardcore_toggled"]
+[connection signal="focus_entered" from="Seed" to="." method="_on_seed_focus_entered"]
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
 [connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]

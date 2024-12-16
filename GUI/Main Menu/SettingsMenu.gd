@@ -18,5 +18,6 @@ func _process(delta: float) -> void:
 
 func _on_back_pressed() -> void:
 	GlobalData.game_settings.save()
+	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")

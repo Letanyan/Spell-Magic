@@ -232,6 +232,7 @@ func update_cooldown() -> void:
 		mana_cost.text = ""
 	
 func _on_preview_image_pressed() -> void:
+	UIAudioPlayer.click()
 	preview_selector.visible = not preview_selector.visible
 	if preview_selector.visible:
 		prev_thumbnail.grab_focus()
@@ -252,7 +253,9 @@ func _on_name_edit_text_changed(new_text: String) -> void:
 	
 func _on_element_combo_selected(index: int) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.switch()
 	book.spells[current_index].element = index as Spell.Element
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
@@ -260,7 +263,10 @@ func _on_element_combo_selected(index: int) -> void:
 
 func _on_chain_combo_selected(index: int) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	preview_selector.visible = false
+	UIAudioPlayer.switch()
 	book.spells[current_index].chain_cast_kind = index as Spell.ChainCastKind
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
@@ -443,25 +449,33 @@ func _on_chain_text_changed(new_text: String) -> void:
 
 func _on_is_rel_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.check(button_pressed)
 	book.spells[current_index].follow = button_pressed
 	update_spells_that_chain_to_current_spell()
 
 func _on_is_bomb_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.check(button_pressed)
 	book.spells[current_index].is_bomb = button_pressed
 	update_spells_that_chain_to_current_spell()
 	
 func _on_player_is_origin_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.check(button_pressed)
 	book.spells[current_index].player_is_origin = button_pressed
 	update_spells_that_chain_to_current_spell()
 	
 func _on_is_sphere_toggled(toggled_on: bool) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.check(toggled_on)
 	book.spells[current_index].spherical_coords = toggled_on
 	update_spells_that_chain_to_current_spell()
 	
@@ -496,9 +510,12 @@ func update_spells_that_chain_to_current_spell() -> void:
 	
 func _on_view_chain_button_pressed() -> void:
 	var n := chain_edit.text
+	preview_selector.visible = false
 	if n == "":
+		UIAudioPlayer.failed_click()
 		return
 	else:
+		UIAudioPlayer.click()
 		request_to_view_spell.emit(n)
 		
 func _on_expressions_focus_exited() -> void:
@@ -724,22 +741,30 @@ func check_all_errors() -> void:
 
 func _on_delete_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
 		
+	preview_selector.visible = false
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var popup := PopupDialog.display("Are you sure you want to delete the spell '" + s.name + "'")
 	popup.confirmed.connect(func() -> void:
 		if current_index < 0:
 			return
+		UIAudioPlayer.delete()
 		book.spells.remove_at(current_index)
 		delete_spell.emit(current_index)
 	)
+	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)
 	
 
 func _on_duplicate_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
+	preview_selector.visible = false
 	duplicate_spell.emit(current_index)
 
 func hide_preview_selector() -> void:
@@ -749,9 +774,10 @@ func hide_preview_selector() -> void:
 		
 func _on_delete_thumnail_component_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.delete()
 	var spell := book.spells[current_index]
-	
 	if spell.preview_image.size() > 1:
 		spell.preview_image.remove_at(current_preview_index)
 		spell.preview_flags.remove_at(current_preview_index)
@@ -764,7 +790,9 @@ func _on_delete_thumnail_component_pressed() -> void:
 
 func _on_next_thumbnail_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.switch()
 	var spell := book.spells[current_index]
 	if current_preview_index < spell.preview_image.size() - 1:	
 		current_preview_index += 1
@@ -781,7 +809,9 @@ func _on_next_thumbnail_pressed() -> void:
 
 func _on_prev_thumbnail_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.switch()
 	if current_preview_index > 0:	
 		current_preview_index -= 1
 		refresh_preview_thumbnails(book.spells[current_index])
@@ -791,7 +821,9 @@ func _on_prev_thumbnail_pressed() -> void:
 
 func _on_flip_h_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var result := not s.preview_is_horizontal_flip(current_preview_index)
 	book.spells[current_index].set_preview_is_horizontal_flip(current_preview_index, result)
@@ -805,7 +837,9 @@ func _on_flip_h_pressed() -> void:
 
 func _on_flip_v_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var result := not s.preview_is_vertical_flip(current_preview_index)
 	book.spells[current_index].set_preview_is_vertical_flip(current_preview_index, result)
@@ -819,7 +853,9 @@ func _on_flip_v_pressed() -> void:
 
 func _on_rotate_cw_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var result := s.preview_rotation_tag(current_preview_index) + 1
 	if result > 0b111: result = 0
@@ -833,7 +869,9 @@ func _on_rotate_cw_pressed() -> void:
 
 func _on_rotate_ccw_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var result := s.preview_rotation_tag(current_preview_index) - 1
 	if result < 0: result = 0b111
@@ -847,7 +885,9 @@ func _on_rotate_ccw_pressed() -> void:
 
 func _on_scale_down_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var result := s.preview_scale_tag(current_preview_index) - 1
 	if result < 0: result = 0b111
@@ -861,7 +901,9 @@ func _on_scale_down_pressed() -> void:
 
 func _on_scale_up_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	var s := book.spells[current_index]
 	var result := s.preview_scale_tag(current_preview_index) + 1
 	if result > 0b111: result = 0
@@ -875,8 +917,10 @@ func _on_scale_up_pressed() -> void:
 
 func _on_pos_pressed(pidx: int) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
 		
+	UIAudioPlayer.click()
 	var is_pressed := not preview_selector_position_buttons[pidx].button_pressed
 	if is_pressed:
 		book.spells[current_index].set_preview_offset_tag(current_preview_index, 0)
@@ -895,7 +939,9 @@ func _on_pos_pressed(pidx: int) -> void:
 
 func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
+	UIAudioPlayer.click()
 	book.spells[current_index].preview_image[current_preview_index] = i
 	for ibtn: Button in preview_selector_thumbnail_buttons:
 		ibtn.set_pressed_no_signal(false)
@@ -905,4 +951,5 @@ func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
 
 
 func _on_control_focus_entered() -> void:
+	UIAudioPlayer.focus()
 	preview_selector.visible = false

@@ -20,11 +20,13 @@ func _process(delta: float) -> void:
 
 
 func _on_new_game_pressed() -> void:
+	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.NEW)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/NewGame.tscn")
 
 
 func _on_continue_pressed() -> void:
+	UIAudioPlayer.click()
 	var world_settings := WorldSettings.new(get_viewport())
 	world_settings.read(GlobalData.game_settings.last_world)
 	
@@ -47,10 +49,12 @@ func display_loading(is_loading: bool) -> void:
 	
 
 func _on_load_pressed() -> void:
+	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.LOAD)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
 
 func _on_settings_pressed() -> void:
+	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.SETTINGS)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")
 	

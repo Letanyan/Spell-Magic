@@ -238,3 +238,8 @@ vertical_alignment = 1
 [connection signal="gui_input" from="artifacts_list" to="." method="_on_artifacts_list_gui_input"]
 [connection signal="item_clicked" from="artifacts_list" to="." method="_on_artifacts_list_item_clicked"]
 [connection signal="item_selected" from="artifacts_list" to="." method="_on_artifacts_list_item_selected"]
+[connection signal="toggled" from="Top" to="." method="_on_top_toggled"]
+[connection signal="toggled" from="Left" to="." method="_on_left_toggled"]
+[connection signal="toggled" from="Right" to="." method="_on_right_toggled"]
+[connection signal="toggled" from="Bottom" to="." method="_on_bottom_toggled"]
+[connection signal="toggled" from="FilterAll" to="." method="_on_filter_all_toggled"]

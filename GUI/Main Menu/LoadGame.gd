@@ -16,6 +16,7 @@ func _ready() -> void:
 
 func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
+	UIAudioPlayer.click()
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
 func load_current_item(selected: int) -> void:
@@ -35,6 +36,7 @@ func load_current_item(selected: int) -> void:
 
 func _on_load_pressed() -> void:
 	var list: ItemList = $WorldsList
+	UIAudioPlayer.click()
 	var selected := list.get_selected_items()
 	if selected.is_empty():
 		return
@@ -45,6 +47,7 @@ func _on_worlds_list_item_activated(index: int) -> void:
 
 func _on_delete_pressed() -> void:
 	var list: ItemList = $WorldsList
+	UIAudioPlayer.click()
 	var selected := list.get_selected_items()
 	if selected.is_empty():
 		return
@@ -54,7 +57,9 @@ func _on_delete_pressed() -> void:
 		var current_selected := list.get_selected_items()
 		if current_selected.is_empty():
 			return
+		UIAudioPlayer.delete()
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
 		list.remove_item(current_selected[0])
 	)
+	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)

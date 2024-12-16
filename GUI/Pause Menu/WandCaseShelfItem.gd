@@ -39,6 +39,7 @@ func setup() -> void:
 
 func _on_cast_combo_selected(id: int) -> void:
 	if id > -1:
+		UIAudioPlayer.switch()
 		action_changed.call(get_node(".") as WandCaseShelfItem, store_action as Wand.Kind, id as Wand.Kind)
 		spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, true)
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD
@@ -67,3 +68,7 @@ func build_spell_list() -> String:
 		if i < store_spell.size() - 1:
 			result += ", "
 	return result
+
+
+func _on_spell_focus_entered() -> void:
+	UIAudioPlayer.focus()

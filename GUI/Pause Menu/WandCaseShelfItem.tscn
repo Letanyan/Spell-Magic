@@ -70,4 +70,5 @@ focus_neighbor_left = NodePath("../cast_combo")
 focus_previous = NodePath("../cast_combo")
 
 [connection signal="item_selected" from="cast_combo" to="." method="_on_cast_combo_selected"]
+[connection signal="focus_entered" from="spell" to="." method="_on_spell_focus_entered"]
 [connection signal="text_changed" from="spell" to="." method="_on_spell_text_changed"]

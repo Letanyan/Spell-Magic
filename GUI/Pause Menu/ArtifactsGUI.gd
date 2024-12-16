@@ -330,22 +330,27 @@ func _on_artifact_grid_gui_input(event: InputEvent) -> void:
 
 func attempt_delete_artifact() -> void:
 	if artifact_preview.artifact == null or artifact_preview.is_hidden:
+		UIAudioPlayer.failed_click()
 		return
 		
+	UIAudioPlayer.click()
 	var popup := PopupDialog.display("Are you sure you wish to delete the artifact '%s'" % artifact_preview.artifact.name)
 	popup.confirmed.connect(func() -> void:
+		UIAudioPlayer.delete()
 		artifacts.delete_artifact(artifact_preview.artifact)
 		artifact_preview.artifact = null
 		temporary_grid_tile.artifact = null
 		update_list()
 		update_temporary_grid_tile()
 	)
+	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)
 	
 func _on_destroy_pressed() -> void:
 	if destroy_artifact.text == "Destroy":
 		attempt_delete_artifact()
 	elif artifact_grid.selected_cell_coord != null:
+		UIAudioPlayer.check(false)
 		disconnect_artifact(artifact_grid.selected_cell_coord as Vector2)
 			
 func disconnect_artifact(coord: Vector2) -> void:
@@ -394,6 +399,7 @@ func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void
 	
 	if id >= 0 and id <= 2:
 		if id != data.main_option:
+			UIAudioPlayer.switch()
 			filter_update_popup_menu_items(menu, id)
 			data.set_main_option(id)
 	elif data.main_option == 1: # Event
@@ -401,39 +407,51 @@ func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void
 			var key := id - 3 
 			if data.events.has(key):
 				data.events.erase(key)
+				UIAudioPlayer.check(false)
 			else:
 				data.events[key] = true
+				UIAudioPlayer.check(true)
 		elif id < 9:
 			var key := id - 6
 			if data.patterns.has(key):
 				data.patterns.erase(key)
+				UIAudioPlayer.check(false)
 			else:
 				data.patterns[key] = true
+				UIAudioPlayer.check(true)
 		else:
 			var key := id - 9
 			if data.elements.has(key):
 				data.elements.erase(key)
+				UIAudioPlayer.check(false)
 			else:
 				data.elements[key] = true
+				UIAudioPlayer.check(true)
 	elif data.main_option == 2:
 		if id < 8:
 			var key := id - 3
 			if data.effects.has(key):
 				data.effects.erase(key)
+				UIAudioPlayer.check(false)
 			else:
 				data.effects[key] = true
+				UIAudioPlayer.check(true)
 		elif id < 13:
 			var key := id - 8
 			if data.patterns.has(key):
 				data.patterns.erase(key)
+				UIAudioPlayer.check(false)
 			else:
 				data.patterns[key] = true
+				UIAudioPlayer.check(true)
 		else:
 			var key := id - 13
 			if data.elements.has(key):
 				data.elements.erase(key)
+				UIAudioPlayer.check(false)
 			else:
 				data.elements[key] = true
+				UIAudioPlayer.check(true)
 				
 	filter_update_popup_menu_checked(menu, data)
 	update_list()
@@ -571,3 +589,19 @@ class FilterOptions:
 		events.clear()
 		effects.clear()
 		elements.clear()
+
+
+func _on_top_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+
+func _on_left_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+
+func _on_right_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+
+func _on_bottom_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+
+func _on_filter_all_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)

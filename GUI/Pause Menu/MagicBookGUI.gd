@@ -187,6 +187,7 @@ func add_spell(spell: Spell) -> void:
 		page.name_edit.select_all()
 		
 func _on_create_pressed() -> void:
+	UIAudioPlayer.click()
 	var spell := Spell.new()
 	var active_count := 0
 	for s in book.spells:
@@ -212,6 +213,7 @@ func view_new_spell(spell_name: String) -> void:
 
 func sort_popup_selected(id: int) -> void:
 	var is_order := id > TOTAL_SORT_ITEMS - 1
+	UIAudioPlayer.switch()
 	if is_order:
 		sort_order = id - TOTAL_SORT_ITEMS
 		var other := (1 if sort_order == 0 else 0) + TOTAL_SORT_ITEMS
@@ -225,11 +227,16 @@ func sort_popup_selected(id: int) -> void:
 		
 	reload_list()
 	
+func _on_sort_button_pressed() -> void:
+	UIAudioPlayer.click()
+	
 func filter_popup_selected(id: int) -> void:
 	var is_selected := filter_options.has(id)
 	if is_selected:
+		UIAudioPlayer.check(false)
 		filter_options.erase(id)
 	else:
+		UIAudioPlayer.check(true)
 		filter_options[id] = true
 	filter_popup.set_item_checked(id, not is_selected)
 	if id == TOTAL_FILTER_ITEMS - 1 and current_index != -1:
@@ -240,6 +247,8 @@ func filter_popup_selected(id: int) -> void:
 		
 	reload_list()
 	
+func _on_filter_button_pressed() -> void:
+	UIAudioPlayer.click()
 
 func _on_search_line_edit_text_changed(new_text: String) -> void:
 	reload_list()
@@ -256,6 +265,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 			var can_use := book.can_use_spell(spell)
 			if can_use == MagicBook.DisallowSpellReason.COOLDOWN:
 				var popup := PopupDialog.display("Spell currently on cooldown. Wait until the spell is of cooldown to deactive.", "Okay", "")
+				popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 				get_tree().root.add_child(popup)
 			else:
 				spell.is_active = false
@@ -274,8 +284,8 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				else:
 					options = "Deactive a spell"
 				var popup := PopupDialog.display("Total active spells limit reached." + options, "Okay", "")
+				popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 				popup.show_in_root(self)
 			else:
 				spell.is_active = true
 				reload_list()
-				

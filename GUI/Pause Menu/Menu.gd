@@ -42,6 +42,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: upgrades.update_state(UpgradeSettings.PurchaseError.NONE))
 
 func update_index(index: int) -> void:
+	UIAudioPlayer.switch()
 	save_changes()
 	const MAX_INDEX = 4 # used for wrap around
 	if index < 0:
@@ -147,4 +148,5 @@ func save_changes() -> void:
 
 
 func _on_quit_pressed() -> void:
+	UIAudioPlayer.click()
 	close_menu.emit()

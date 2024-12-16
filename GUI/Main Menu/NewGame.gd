@@ -152,6 +152,7 @@ func _on_worlds_list_item_activated(index: int) -> void:
 func _on_create_pressed() -> void:
 	if save_name.text.is_empty():
 		var popup := PopupDialog.display("Please provide a save name", "Okay", "")
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
 		return
 	
@@ -222,6 +223,7 @@ func _on_create_pressed() -> void:
 
 
 func _on_permadeath_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	respawn.set_pressed_no_signal(not button_pressed)
 	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.PERMADEATH
@@ -229,6 +231,7 @@ func _on_permadeath_toggled(button_pressed: bool) -> void:
 
 
 func _on_respawn_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	permadeath.set_pressed_no_signal(not button_pressed)
 	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.RESPAWN
@@ -236,6 +239,7 @@ func _on_respawn_toggled(button_pressed: bool) -> void:
 
 
 func _on_sandbox_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	respawn.set_pressed_no_signal(not button_pressed)
 	permadeath.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.SANDBOX
@@ -243,6 +247,7 @@ func _on_sandbox_toggled(button_pressed: bool) -> void:
 
 
 func _on_upgrades_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		game_flags |= GameModeSettings.RESPAWN_WITH_UPGRADES
 	else:
@@ -250,6 +255,7 @@ func _on_upgrades_toggled(button_pressed: bool) -> void:
 
 
 func _on_artifacts_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		game_flags |= GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	else:
@@ -257,6 +263,7 @@ func _on_artifacts_toggled(button_pressed: bool) -> void:
 
 
 func _on_spells_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		game_flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
 	else:
@@ -264,6 +271,7 @@ func _on_spells_toggled(button_pressed: bool) -> void:
 		
 		
 func _on_spell_editing_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		game_flags |= GameModeSettings.DISALLOW_SPELL_EDITING
 	else:
@@ -272,58 +280,70 @@ func _on_spell_editing_toggled(toggled_on: bool) -> void:
 
 func _on_health_value_changed(value: float) -> void:
 	upgrades.level_health = ceili(value)
+	UIAudioPlayer.switch()
 	health_value.text = str(upgrades.max_health())
 	
 func _on_defence_value_changed(value: float) -> void:
 	upgrades.level_defence = ceili(value)
+	UIAudioPlayer.switch()
 	defence_value.text = str(upgrades.max_defence())
 
 
 func _on_attack_value_changed(value: float) -> void:
 	upgrades.level_attack = ceili(value)
+	UIAudioPlayer.switch()
 	attack_value.text = str(upgrades.max_attack())
 
 
 func _on_mana_value_changed(value: float) -> void:
 	upgrades.level_mana = ceili(value)
+	UIAudioPlayer.switch()
 	mana_value.text = str(upgrades.max_mana())
 
 
 func _on_velocity_value_changed(value: float) -> void:
 	upgrades.level_v = ceili(value)
+	UIAudioPlayer.switch()
 	velocity_value.text = "%.1f" % upgrades.max_v()
 
 
 func _on_spell_count_value_changed(value: float) -> void:
 	upgrades.level_spells_in_book = ceili(value)
+	UIAudioPlayer.switch()
 	spell_count_value.text = str(upgrades.max_spells_in_book())
 
 func _on_auto_mana_slider_value_changed(value: float) -> void:
 	upgrades.level_mana_regen = ceili(value)
+	UIAudioPlayer.switch()
 	auto_mana_value.text = "%.1f" % upgrades.max_mana_regen()
 
 
 func _on_T_value_changed(value: float) -> void:
 	upgrades.level_T = ceili(value)
+	UIAudioPlayer.switch()
 	T_value.text = str(upgrades.max_T())
 
 
 func _on_r_value_changed(value: float) -> void:
 	upgrades.level_r = ceili(value)
+	UIAudioPlayer.switch()
 	r_value.text = "%.1f" % upgrades.max_r()
 
 
 func _on_P_value_changed(value: float) -> void:
 	upgrades.level_P = ceili(value)
+	UIAudioPlayer.switch()
 	P_value.text = str(upgrades.max_P())
 
 
 func _on_N_value_changed(value: float) -> void:
 	upgrades.level_N = ceili(value)
+	UIAudioPlayer.switch()
 	N_value.text = str(upgrades.max_N())
 
 
 func _on_fire_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_FIRE
 	else:
@@ -331,6 +351,7 @@ func _on_fire_toggled(button_pressed: bool) -> void:
 
 
 func _on_water_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_WATER
 	else:
@@ -338,6 +359,7 @@ func _on_water_toggled(button_pressed: bool) -> void:
 
 
 func _on_rock_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_ROCK
 	else:
@@ -345,6 +367,7 @@ func _on_rock_toggled(button_pressed: bool) -> void:
 
 
 func _on_air_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_AIR
 	else:
@@ -352,6 +375,7 @@ func _on_air_toggled(button_pressed: bool) -> void:
 
 
 func _on_ice_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_ICE
 	else:
@@ -359,6 +383,7 @@ func _on_ice_toggled(button_pressed: bool) -> void:
 
 
 func _on_electric_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_spell_element |= UpgradeSettings.HAS_ELECTRIC
 	else:
@@ -366,6 +391,7 @@ func _on_electric_toggled(button_pressed: bool) -> void:
 
 
 func _on_chain_at_start_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_chain_method |= UpgradeSettings.HAS_CHAIN_ON_START
 	else:
@@ -373,6 +399,7 @@ func _on_chain_at_start_toggled(button_pressed: bool) -> void:
 
 
 func _on_chain_at_end_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_chain_method |= UpgradeSettings.HAS_CHAIN_ON_END
 	else:
@@ -380,6 +407,7 @@ func _on_chain_at_end_toggled(button_pressed: bool) -> void:
 
 
 func _on_chain_on_hit_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	if button_pressed:
 		upgrades.has_chain_method |= UpgradeSettings.HAS_CHAIN_ON_HIT
 	else:
@@ -387,6 +415,7 @@ func _on_chain_on_hit_toggled(button_pressed: bool) -> void:
 
 
 func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
+	UIAudioPlayer.check(button_pressed)
 	starting_upgrades_panel.visible = button_pressed
 	var pos_delta := starting_upgrades_panel.size.x * (-0.5 if button_pressed else 0.5)
 	save_name.position.x += pos_delta
@@ -408,10 +437,12 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 
 func _on_S_value_changed(value: float) -> void:
 	upgrades.level_running_speed = ceili(value)
+	UIAudioPlayer.switch()
 	S_value.text = "%.2f" % upgrades.max_running_speed()
 
 
 func _on_use_seed_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		seed_edit.placeholder_text = "Seed"
 		seed_edit.visible = true
@@ -430,6 +461,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		seed_edit.placeholder_text = "Save File Name"
 		use_seed.set_pressed_no_signal(false)
@@ -449,6 +481,7 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		generation_version_label.visible = false
 
 func _on_use_normal_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		use_seed.set_pressed_no_signal(false)
 		use_save_file.set_pressed_no_signal(false)
@@ -468,6 +501,7 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		generation_version_label.visible = false
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		use_seed.set_pressed_no_signal(false)
 		use_normal.set_pressed_no_signal(false)
@@ -485,3 +519,11 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		game_mode_description_panel.visible = true
 		game_mode_description.text = "When you die the game is over. You will also not be allowed to edit or create your own new spells."
 		generation_version_label.visible = false
+
+
+func _on_save_name_focus_entered() -> void:
+	UIAudioPlayer.focus()
+
+
+func _on_seed_focus_entered() -> void:
+	UIAudioPlayer.focus()

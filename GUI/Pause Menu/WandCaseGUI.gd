@@ -131,8 +131,10 @@ func reload_list() -> void:
 	
 func _on_delete_pressed() -> void:
 	if current_index < 0:
+		UIAudioPlayer.failed_click()
 		return
 		
+	UIAudioPlayer.click()
 	var filename := case.wands[current_index].name as String
 	var popup := PopupDialog.display("Are you sure you want to delete the wand '" + filename + "'")
 	popup.confirmed.connect(func() -> void:
@@ -145,10 +147,12 @@ func _on_delete_pressed() -> void:
 			current_index = case.wands.size() - 1
 		reload_list()
 	)
+	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)
 	
 
 func _on_create_pressed() -> void:
+	UIAudioPlayer.click()
 	var wand := Wand.new()
 	var wand_count := 1
 	var is_numbered_wand := RegEx.new()
@@ -178,3 +182,7 @@ func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_
 		use_current_wand.call(current_index)
 		new_wand_selected.emit(case.wands[current_index])
 		reload_list()
+
+
+func _on_name_focus_entered() -> void:
+	UIAudioPlayer.focus()

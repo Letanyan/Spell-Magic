@@ -94,6 +94,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 		elif purchase_error == UpgradeSettings.PurchaseError.UPGRADE_IS_OVER_LIMIT:
 			message = "Max level reached. Can not upgrade furthur."
 		var popup := PopupDialog.display(message, "Okay", "")
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
 		return
 	
@@ -178,6 +179,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 
 func _on_max_spell_count_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spells_in_book()
+	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_max_running_speed_upgrade_pressed() -> void:
@@ -186,80 +188,100 @@ func _on_max_running_speed_upgrade_pressed() -> void:
 	
 func _on_void_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.VOID)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_fire_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.FIRE)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_water_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.WATER)
+	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_air_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.AIR)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_rock_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ROCK)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_ice_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ICE)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_electric_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ELECTRIC)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_P_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_P()
+	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_max_v_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_v()
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_T_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_T()
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_N_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_N()
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_M_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_mana()
+	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_max_R_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_r()
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_at_start_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.START)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_at_end_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.END)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_on_hit_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.HIT)
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_H_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_health()
+	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_attack_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_attack()
+	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_defence_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_defence()
+	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_mana_regen_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_mana_regen()
+	UIAudioPlayer.click()
 	update_state(err)

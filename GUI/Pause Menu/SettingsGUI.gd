@@ -136,57 +136,69 @@ func update_controls() -> void:
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 
 
 func _on_hide_wand_modifier_hints_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_modifier_hints = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 
 
 func _on_hide_notifications_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_notifications = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 
 
 func _on_hide_status_effects_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_status_effects = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 
 
 func _on_hide_health_and_mana_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_health_mana = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 
 
 func _on_hide_cooldown_timings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_cooldown_timings = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 
 
 func _on_hide_stats_view_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_stats_view = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 	
 func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_reticule = button_pressed
+	UIAudioPlayer.check(button_pressed)
 	settings_changed.emit(world_settings)
 	
 func _on_hide_key_count_toggled(toggled_on: bool) -> void:
 	world_settings.hud_settings.hide_collected_keys_label = toggled_on
+	UIAudioPlayer.check(toggled_on)
 	settings_changed.emit(world_settings)
 	
 func _on_projectile_indicator_size_value_changed(value: float) -> void:
 	world_settings.hud_settings.projectile_indicator_size = value
+	UIAudioPlayer.switch()
 	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
 	settings_changed.emit(world_settings)
 	
 func _on_key_display_item_selected(index: int) -> void:
 	world_settings.hud_settings.key_display = index as HUDSettings.KeyDisplay
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 	
 func _on_theme_variation_item_selected(index: int) -> void:
 	world_settings.hud_settings.theme_variation = index as HUDSettings.ThemeKind
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 	
 func _on_theme_color_color_changed(color: Color) -> void:
@@ -195,30 +207,36 @@ func _on_theme_color_color_changed(color: Color) -> void:
 
 func _on_fov_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.fov = int(value)
+	UIAudioPlayer.switch()
 	fov_value.text = str(int(value))
 	settings_changed.emit(world_settings)
 
 func _on_distance_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.distance = int(value)
+	UIAudioPlayer.switch()
 	distance_value.text = str(int(value))
 	settings_changed.emit(world_settings)
 	
 func _on_render_distance_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.render_distance = value
+	UIAudioPlayer.switch()
 	render_value.text = str(int(value)) + "m"
 	settings_changed.emit(world_settings)
 	
 func _on_panning_speed_slider_value_changed(value: float) -> void:
 	world_settings.camera_settings.panning_speed = value
+	UIAudioPlayer.switch()
 	panning_speed_value.text = str(int(value)) + "m/s"
 	settings_changed.emit(world_settings)
 	
 func _on_auto_distance_toggled(toggled_on: bool) -> void:
 	world_settings.camera_settings.auto_distance = toggled_on
+	UIAudioPlayer.check(toggled_on)
 	settings_changed.emit(world_settings)
 
 func _on_scaling_mode_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_scaling_mode(index)
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 		
 
@@ -238,39 +256,47 @@ func _on_sharpness_slider_drag_ended(value_changed: bool) -> void:
 
 func _on_scaling_slider_value_changed(value: float) -> void:
 	scaling_value.text = "%.0f%%" % [value]
+	UIAudioPlayer.switch()
 
 
 func _on_sharpness_slider_value_changed(value: float) -> void:
 	sharpness_value.text = "%.0f%%" % [value]
+	UIAudioPlayer.switch()
 
 
 func _on_display_style_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_display_style(index)
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 
 
 func _on_display_size_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_display_size(display_size_options.get_item_text(index))
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 
 
 func _on_msaa_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_msaa(index)
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 
 
 func _on_ssaa_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_ssaa(index)
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 
 
 func _on_taa_check_toggled(toggled_on: bool) -> void:
 	world_settings.graphics_settings.update_taa(toggled_on)
+	UIAudioPlayer.check(toggled_on)
 	settings_changed.emit(world_settings)
 
 
 func _on_max_fps_options_item_selected(index: int) -> void:
 	var num_text: String = fps_options.get_item_text(index)
+	UIAudioPlayer.switch()
 	var num: int = 0
 	if num_text == "Max":
 		num = 0
@@ -282,10 +308,12 @@ func _on_max_fps_options_item_selected(index: int) -> void:
 
 func _on_vsync_options_item_selected(index: int) -> void:
 	world_settings.graphics_settings.update_vsync(index == 0)
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 	
 func _on_grass_size_slider_value_changed(value: float) -> void:
 	grass_size_value.text = "%.0f%%" % [value]	
+	UIAudioPlayer.switch()
 
 func _on_grass_size_slider_drag_ended(value_changed: bool) -> void:
 	if value_changed:
@@ -294,18 +322,21 @@ func _on_grass_size_slider_drag_ended(value_changed: bool) -> void:
 
 func _on_master_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_master(value)
+	UIAudioPlayer.switch()
 	master_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 
 
 func _on_music_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_bg(value)
+	UIAudioPlayer.switch()
 	music_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 
 
 func _on_sfx_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_sfx(value)
+	UIAudioPlayer.switch()
 	sfx_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 	
@@ -395,11 +426,13 @@ func update_notes() -> void:
 
 func _on_show_notes_item_selected(index: int) -> void:
 	GlobalData.game_settings.notes_unlock_settings = index as GameSettings.NotesUnlockSettings
+	UIAudioPlayer.switch()
 	update_notes()
 	GlobalData.game_settings.save()
 	
 func _on_sort_notes_item_selected(index: int) -> void:
 	GlobalData.game_settings.notes_sort_settings = index as GameSettings.NotesSortSettings
+	UIAudioPlayer.switch()
 	update_notes()
 	GlobalData.game_settings.save()
 
@@ -409,16 +442,20 @@ func hide_game_tab(should_hide: bool) -> void:
 
 func _on_save_pressed() -> void:
 	save_game.emit()
+	UIAudioPlayer.click()
 
 
 func _on_main_menu_pressed() -> void:
 	main_menu.emit()
+	UIAudioPlayer.click()
 
 
 func _on_exit_game_pressed() -> void:
 	exit_game.emit()
+	UIAudioPlayer.click()
 
 func _on_tabs_tab_selected(tab: int) -> void:
+	UIAudioPlayer.switch()
 	var tab_container := $Tabs as TabContainer
 	if tab_container.get_current_tab_control().name == "Game":
 		update_info()
@@ -428,3 +465,6 @@ func _on_tabs_tab_selected(tab: int) -> void:
 func _on_user_functions_focus_exited() -> void:
 	GlobalData.game_settings.build_user_functions(user_functions.text)
 	GlobalData.game_settings.save()
+
+func _on_user_functions_focus_entered() -> void:
+	UIAudioPlayer.focus()
