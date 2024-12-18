@@ -86,6 +86,7 @@ func _on_settings_pressed() -> void:
 
 func open(kind: Kind) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	UIAudioPlayer.open()
 	visible = true
 	is_showing = true
 	if magic_book.visible and kind == Kind.ANY:
@@ -109,6 +110,7 @@ func open(kind: Kind) -> void:
 
 func close() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	UIAudioPlayer.close()
 	is_showing = false
 	visible = false
 	save_changes()

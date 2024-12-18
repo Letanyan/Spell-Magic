@@ -272,7 +272,8 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
 	new_spell.crit_rate = new_spell.crit_rate * (1.0 + buff_crit_rate.y / 100.0) + buff_crit_rate.x 
-	new_spell.crit_dmg = new_spell.crit_dmg * (1.0 + buff_crit_dmg.y / 100.0) + buff_crit_dmg.x 
+	new_spell.crit_dmg = new_spell.crit_dmg * (1.0 + buff_crit_dmg.y / 100.0) + buff_crit_dmg.x
+	UIAudioPlayer.attack()
 	play_animation("attack")
 #	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	await get_tree().physics_frame

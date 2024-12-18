@@ -106,7 +106,10 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		navigation_velocity.x = direction.x * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 		navigation_velocity.z = direction.z * movement_speed * (1.0 - vitals.freeze.value) * input_len * stun_value
 		if vitals.stun.value > 0.0:
-			(body as Player).add_shake(vitals.stun.value)
+			if body is Player:
+				(body as Player).add_shake(vitals.stun.value)
+			elif body is Enemy:
+				(body as Enemy).add_shake(vitals.stun.value)
 
 	var world_level := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, world_radius)
 	if vital_tick >= 1.0:

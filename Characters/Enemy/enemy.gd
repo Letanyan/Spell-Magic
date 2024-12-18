@@ -33,6 +33,8 @@ var invfl: float:
 		return 1.0 - level / 100.0
 var is_dead: bool = false
 var kind: World.Enemy = World.Enemy.NONE
+var sfx_attack: AudioManager.AudioStreamKind
+var sfx_hurt: AudioManager.AudioStreamKind
 var is_idle := true
 var is_idle_is_set := false
 var spell_drop_probs := {}
@@ -162,13 +164,19 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		World.Enemy.BIRDMAN, World.Enemy.BLUEMON, World.Enemy.FISHMAN, World.Enemy.FROG, \
 		World.Enemy.MOLE, World.Enemy.MUSHKING, World.Enemy.RABBIT, World.Enemy.UNDEAD, World.Enemy.WALKER, World.Enemy.ORC, World.Enemy.ORC_DEAD: 
 			frame_count = Vector2(30, 17)
+			sfx_attack = AudioManager.AudioStreamKind.ATTACK_MED
+			sfx_hurt = AudioManager.AudioStreamKind.HURT_MED
 		World.Enemy.BIRD, World.Enemy.FISH, World.Enemy.FUNGI, World.Enemy.HOT_BLOB, World.Enemy.MUSHROOM, \
 		World.Enemy.SNOT_BLOB, World.Enemy.SNOT_SPIKE, World.Enemy.WALKER_HEAD, World.Enemy.WIZARD, World.Enemy.BOUGEON: 
 			frame_count = Vector2(13, 13)
+			sfx_attack = AudioManager.AudioStreamKind.ATTACK_BEAST
+			sfx_hurt = AudioManager.AudioStreamKind.HURT_BEAST
 		World.Enemy.BAT, World.Enemy.BATTY, World.Enemy.BEE, World.Enemy.BUMBLE_BEE, World.Enemy.DRAGON, \
 		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD, World.Enemy.FLYGEON, \
 		World.Enemy.PINKMON, World.Enemy.REDMON, World.Enemy.GOBLIN, World.Enemy.GOBLIN_KING: 
 			frame_count = Vector2(35, 25)
+			sfx_attack = AudioManager.AudioStreamKind.ATTACK_FLY
+			sfx_hurt = AudioManager.AudioStreamKind.HURT_FLY
 		_: push_error("missing enemy kind")
 	
 func set_level(lvl: float) -> void:
@@ -358,6 +366,7 @@ func _physics_process(delta: float) -> void:
 		spell_tick = 0
 		if spell != null:
 			play_animation("attack")
+			AudioManager.play(sfx_attack, position, NAN, true, Vector2(0.8, 1.2))
 			await get_parent_node_3d().get_tree().create_timer(animator.get_animation(animation_map["attack"] as StringName).length / 2.0).timeout
 			await get_tree().physics_frame
 			cast_spell(insert_spell, spell)
@@ -436,6 +445,7 @@ func die() -> void:
 	var source := explosion.get_node("source") as GPUParticles3D
 	(source.process_material as ParticleProcessMaterial).emission_box_extents = bounds
 		
+	AudioManager.play(sfx_hurt, position, NAN, true)
 	play_animation("death")
 	
 	var world := get_parent_node_3d()

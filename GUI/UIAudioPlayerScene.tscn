@@ -5,4 +5,8 @@
 [node name="UiAudioPlayerScene" type="Node"]
 script = ExtResource("1_ls5wb")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="UIAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"UI"
+
+[node name="D3AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"

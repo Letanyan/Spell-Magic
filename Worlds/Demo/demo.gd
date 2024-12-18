@@ -561,6 +561,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				
 			settings.is_paused = true
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			UIAudioPlayer.hurt()
 			player.play_animation("death")
 			var subtitle_components := []
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
@@ -606,6 +607,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			if vitals.health.value > 0:
 				return
 			
+			UIAudioPlayer.hurt()
 			settings.is_paused = true
 			var overlay := OverlayScreen.display("GAME OVER", "Permadeath Mode Active\nSave File will be Deleted", "Main Menu")
 			overlay.confirmed.connect(func() -> void:

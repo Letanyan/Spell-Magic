@@ -34,10 +34,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 29.0
-offset_right = 144.0
-offset_bottom = 54.0
+offset_left = -192.0
+offset_top = 47.0
+offset_right = 192.0
+offset_bottom = 72.0
 grow_horizontal = 2
 text = "Hide Wand Mappings"
 
@@ -46,10 +46,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 63.0
-offset_right = 144.0
-offset_bottom = 88.0
+offset_left = -192.0
+offset_top = 79.0
+offset_right = 192.0
+offset_bottom = 104.0
 grow_horizontal = 2
 text = "Hide Wand Modifier Hints"
 
@@ -58,10 +58,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 95.0
-offset_right = 144.0
-offset_bottom = 120.0
+offset_left = -192.0
+offset_top = 111.0
+offset_right = 192.0
+offset_bottom = 136.0
 grow_horizontal = 2
 text = "Hide Notifications"
 
@@ -70,10 +70,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 127.0
-offset_right = 144.0
-offset_bottom = 152.0
+offset_left = -192.0
+offset_top = 143.0
+offset_right = 192.0
+offset_bottom = 168.0
 grow_horizontal = 2
 text = "Hide Status Effects"
 
@@ -82,10 +82,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 159.0
-offset_right = 144.0
-offset_bottom = 184.0
+offset_left = -192.0
+offset_top = 175.0
+offset_right = 192.0
+offset_bottom = 200.0
 grow_horizontal = 2
 text = "Hide Health and Mana"
 
@@ -94,10 +94,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 191.0
-offset_right = 144.0
-offset_bottom = 216.0
+offset_left = -192.0
+offset_top = 207.0
+offset_right = 192.0
+offset_bottom = 232.0
 grow_horizontal = 2
 text = "Hide Cooldown Timings"
 
@@ -106,10 +106,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 223.0
-offset_right = 144.0
-offset_bottom = 248.0
+offset_left = -192.0
+offset_top = 239.0
+offset_right = 192.0
+offset_bottom = 264.0
 grow_horizontal = 2
 text = "Hide Stats View"
 
@@ -118,10 +118,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 255.0
-offset_right = 144.0
-offset_bottom = 280.0
+offset_left = -192.0
+offset_top = 271.0
+offset_right = 192.0
+offset_bottom = 296.0
 grow_horizontal = 2
 text = "Hide Reticule"
 
@@ -130,10 +130,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -152.0
-offset_top = 287.0
-offset_right = 144.0
-offset_bottom = 312.0
+offset_left = -192.0
+offset_top = 303.0
+offset_right = 192.0
+offset_bottom = 328.0
 grow_horizontal = 2
 text = "Hide Key Count"
 
@@ -143,9 +143,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 319.0
+offset_top = 335.0
 offset_right = 192.0
-offset_bottom = 343.0
+offset_bottom = 359.0
 grow_horizontal = 2
 text = "Projectile Indicator Size"
 
@@ -172,9 +172,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 351.0
+offset_top = 367.0
 offset_right = 192.0
-offset_bottom = 375.0
+offset_bottom = 391.0
 grow_horizontal = 2
 text = "Key Display"
 
@@ -198,9 +198,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 383.0
+offset_top = 399.0
 offset_right = 192.0
-offset_bottom = 407.0
+offset_bottom = 423.0
 grow_horizontal = 2
 text = "Theme Variation"
 vertical_alignment = 1
@@ -230,9 +230,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 415.0
+offset_top = 431.0
 offset_right = 192.0
-offset_bottom = 439.0
+offset_bottom = 455.0
 grow_horizontal = 2
 text = "Theme Color"
 vertical_alignment = 1
@@ -254,29 +254,28 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -248.0
-offset_top = 55.0
-offset_right = -176.0
-offset_bottom = 87.0
+offset_left = -256.0
+offset_top = 47.0
+offset_right = -96.0
+offset_bottom = 71.0
 grow_horizontal = 2
 text = "FOV:"
-horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="Tabs/Camera/FOV Label"]
 layout_mode = 0
-offset_left = 96.0
-offset_right = 456.0
-offset_bottom = 32.0
+offset_left = 168.0
+offset_right = 448.0
+offset_bottom = 24.0
 min_value = 1.0
 max_value = 179.0
 value = 75.0
 
 [node name="Value" type="Label" parent="Tabs/Camera/FOV Label"]
 layout_mode = 0
-offset_left = 464.0
-offset_right = 536.0
-offset_bottom = 32.0
+offset_left = 448.0
+offset_right = 512.0
+offset_bottom = 24.0
 text = "75"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -286,29 +285,28 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -336.0
-offset_top = 95.0
-offset_right = -176.0
-offset_bottom = 127.0
+offset_left = -256.0
+offset_top = 87.0
+offset_right = -96.0
+offset_bottom = 111.0
 grow_horizontal = 2
 text = "Distance from player:"
-horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="Tabs/Camera/Distance"]
 layout_mode = 0
-offset_left = 184.0
-offset_right = 544.0
-offset_bottom = 32.0
+offset_left = 168.0
+offset_right = 448.0
+offset_bottom = 24.0
 min_value = 1.0
 max_value = 10.0
 value = 5.0
 
 [node name="Value" type="Label" parent="Tabs/Camera/Distance"]
 layout_mode = 0
-offset_left = 552.0
-offset_right = 624.0
-offset_bottom = 32.0
+offset_left = 448.0
+offset_right = 512.0
+offset_bottom = 24.0
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -318,27 +316,26 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -288.0
-offset_top = 135.0
-offset_right = -176.0
-offset_bottom = 167.0
+offset_left = -256.0
+offset_top = 127.0
+offset_right = -96.0
+offset_bottom = 151.0
 grow_horizontal = 2
 text = "Auto Distance:"
-horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Check" type="CheckButton" parent="Tabs/Camera/Auto Distance"]
 layout_mode = 0
-offset_left = 136.0
-offset_right = 165.0
-offset_bottom = 32.0
+offset_left = 168.0
+offset_right = 197.0
+offset_bottom = 25.0
 button_pressed = true
 
 [node name="Description" type="Label" parent="Tabs/Camera/Auto Distance"]
 layout_mode = 0
-offset_left = 176.0
-offset_right = 577.0
-offset_bottom = 56.0
+offset_left = 200.0
+offset_right = 512.0
+offset_bottom = 48.0
 text = "Adjust camera distance to try and fit all active enemies in your field of view"
 horizontal_alignment = 3
 autowrap_mode = 2
@@ -348,20 +345,19 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -304.0
-offset_top = 191.0
-offset_right = -175.0
-offset_bottom = 223.0
+offset_left = -256.0
+offset_top = 175.0
+offset_right = -96.0
+offset_bottom = 199.0
 grow_horizontal = 2
 text = "Render Distance: "
-horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="Tabs/Camera/Render Distance"]
 layout_mode = 0
-offset_left = 152.0
-offset_right = 512.0
-offset_bottom = 32.0
+offset_left = 168.0
+offset_right = 448.0
+offset_bottom = 24.0
 min_value = 1000.0
 max_value = 8000.0
 step = 100.0
@@ -369,9 +365,9 @@ value = 4000.0
 
 [node name="Value" type="Label" parent="Tabs/Camera/Render Distance"]
 layout_mode = 0
-offset_left = 520.0
-offset_right = 592.0
-offset_bottom = 32.0
+offset_left = 448.0
+offset_right = 512.0
+offset_bottom = 24.0
 text = "2000m"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -381,29 +377,28 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -304.0
-offset_top = 239.0
-offset_right = -176.0
-offset_bottom = 271.0
+offset_left = -256.0
+offset_top = 215.0
+offset_right = -96.0
+offset_bottom = 239.0
 grow_horizontal = 2
 text = "Panning Speed: "
-horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="Tabs/Camera/Panning Speed"]
 layout_mode = 0
-offset_left = 152.0
-offset_right = 512.0
-offset_bottom = 32.0
+offset_left = 168.0
+offset_right = 448.0
+offset_bottom = 24.0
 min_value = 1.0
 max_value = 25.0
 value = 12.0
 
 [node name="Value" type="Label" parent="Tabs/Camera/Panning Speed"]
 layout_mode = 0
-offset_left = 520.0
-offset_right = 592.0
-offset_bottom = 32.0
+offset_left = 448.0
+offset_right = 512.0
+offset_bottom = 24.0
 text = "12m/s"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -418,17 +413,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 39.0
-offset_right = -47.0
-offset_bottom = 63.0
+offset_left = -192.0
+offset_top = 47.0
+offset_right = -95.0
+offset_bottom = 71.0
 grow_horizontal = 2
 text = "Scaling Mode"
 
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/Scaling Mode"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 312.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 0
 item_count = 3
@@ -443,17 +438,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 79.0
-offset_right = -84.0
-offset_bottom = 104.0
+offset_left = -192.0
+offset_top = 87.0
+offset_right = -132.0
+offset_bottom = 112.0
 grow_horizontal = 2
 text = "Scaling"
 
 [node name="Slider" type="HSlider" parent="Tabs/Graphics/Scaling"]
 layout_mode = 0
-offset_left = 156.0
-offset_right = 304.0
+offset_left = 152.0
+offset_right = 320.0
 offset_bottom = 24.0
 min_value = 10.0
 max_value = 200.0
@@ -462,8 +457,8 @@ value = 100.0
 
 [node name="Value" type="Label" parent="Tabs/Graphics/Scaling"]
 layout_mode = 0
-offset_left = 312.0
-offset_right = 360.0
+offset_left = 320.0
+offset_right = 384.0
 offset_bottom = 24.0
 text = "100%"
 horizontal_alignment = 1
@@ -474,17 +469,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 119.0
-offset_right = -33.0
-offset_bottom = 147.0
+offset_left = -192.0
+offset_top = 127.0
+offset_right = -81.0
+offset_bottom = 151.0
 grow_horizontal = 2
 text = "FSR Sharpness"
 
 [node name="Slider" type="HSlider" parent="Tabs/Graphics/Sharpness"]
 layout_mode = 0
-offset_left = 156.0
-offset_right = 304.0
+offset_left = 152.0
+offset_right = 320.0
 offset_bottom = 24.0
 min_value = 10.0
 max_value = 200.0
@@ -493,8 +488,8 @@ value = 20.0
 
 [node name="Value" type="Label" parent="Tabs/Graphics/Sharpness"]
 layout_mode = 0
-offset_left = 312.0
-offset_right = 360.0
+offset_left = 320.0
+offset_right = 384.0
 offset_bottom = 24.0
 text = "20%"
 horizontal_alignment = 1
@@ -505,17 +500,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 159.0
-offset_right = -46.0
-offset_bottom = 180.0
+offset_left = -192.0
+offset_top = 167.0
+offset_right = -94.0
+offset_bottom = 191.0
 grow_horizontal = 2
 text = "Display Style"
 
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/Display Style"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 312.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 0
 item_count = 3
@@ -530,10 +525,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 199.0
-offset_right = -48.0
-offset_bottom = 220.0
+offset_left = -192.0
+offset_top = 207.0
+offset_right = -96.0
+offset_bottom = 231.0
 grow_horizontal = 2
 text = "Display Size
 "
@@ -541,7 +536,7 @@ text = "Display Size
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/Display Size"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 312.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 0
 item_count = 8
@@ -567,17 +562,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 247.0
-offset_right = -102.0
-offset_bottom = 268.0
+offset_left = -192.0
+offset_top = 255.0
+offset_right = -150.0
+offset_bottom = 279.0
 grow_horizontal = 2
 text = "MSAA"
 
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/MSAA"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 311.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 0
 item_count = 5
@@ -596,17 +591,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 287.0
-offset_right = -96.0
-offset_bottom = 308.0
+offset_left = -192.0
+offset_top = 295.0
+offset_right = -144.0
+offset_bottom = 319.0
 grow_horizontal = 2
 text = "SSAA"
 
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/SSAA"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 312.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 0
 item_count = 3
@@ -621,36 +616,35 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 327.0
-offset_right = -104.0
-offset_bottom = 348.0
+offset_left = -192.0
+offset_top = 335.0
+offset_right = -152.0
+offset_bottom = 359.0
 grow_horizontal = 2
 text = "TAA"
 
 [node name="Check" type="CheckButton" parent="Tabs/Graphics/TAA"]
 layout_mode = 0
 offset_left = 272.0
-offset_top = 8.0
 offset_right = 312.0
-offset_bottom = 28.0
+offset_bottom = 25.0
 
 [node name="FPS" type="Label" parent="Tabs/Graphics"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 367.0
-offset_right = -82.0
-offset_bottom = 388.0
+offset_left = -192.0
+offset_top = 375.0
+offset_right = -130.0
+offset_bottom = 399.0
 grow_horizontal = 2
 text = "Max FPS"
 
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/FPS"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 312.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 2
 item_count = 8
@@ -675,17 +669,17 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 407.0
-offset_right = -94.0
-offset_bottom = 431.0
+offset_left = -192.0
+offset_top = 415.0
+offset_right = -142.0
+offset_bottom = 439.0
 grow_horizontal = 2
 text = "VSYNC"
 
 [node name="Options" type="OptionButton" parent="Tabs/Graphics/VSYNC"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 312.0
+offset_right = 320.0
 offset_bottom = 25.0
 selected = 0
 item_count = 2
@@ -698,25 +692,25 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -144.0
-offset_top = 447.0
-offset_right = -68.0
-offset_bottom = 471.0
+offset_left = -192.0
+offset_top = 455.0
+offset_right = -116.0
+offset_bottom = 479.0
 grow_horizontal = 2
 text = "Grass Size"
 
 [node name="Slider" type="HSlider" parent="Tabs/Graphics/Grass Size"]
 layout_mode = 0
 offset_left = 152.0
-offset_right = 304.0
+offset_right = 320.0
 offset_bottom = 24.0
 step = 10.0
 value = 100.0
 
 [node name="Value" type="Label" parent="Tabs/Graphics/Grass Size"]
 layout_mode = 0
-offset_left = 312.0
-offset_right = 360.0
+offset_left = 320.0
+offset_right = 384.0
 offset_bottom = 24.0
 text = "100%"
 horizontal_alignment = 1
@@ -732,109 +726,140 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -196.0
-offset_top = 45.0
-offset_right = -145.0
-offset_bottom = 66.0
+offset_left = -192.0
+offset_top = 47.0
+offset_right = -104.0
+offset_bottom = 71.0
 grow_horizontal = 2
 text = "Master"
+vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="Tabs/Sound/Master"]
 layout_mode = 0
 offset_left = 96.0
-offset_right = 376.0
-offset_bottom = 16.0
+offset_right = 320.0
+offset_bottom = 24.0
 max_value = 1.0
 step = 0.05
 
 [node name="Value" type="Label" parent="Tabs/Sound/Master"]
 layout_mode = 0
-offset_left = 392.0
-offset_right = 432.0
-offset_bottom = 21.0
+offset_left = 320.0
+offset_right = 384.0
+offset_bottom = 24.0
 text = "100%"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Music" type="Label" parent="Tabs/Sound"]
+[node name="Background" type="Label" parent="Tabs/Sound"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -196.0
-offset_top = 85.0
-offset_right = -153.0
-offset_bottom = 106.0
+offset_left = -192.0
+offset_top = 87.0
+offset_right = -104.0
+offset_bottom = 113.0
 grow_horizontal = 2
-text = "Music"
+text = "Background"
+vertical_alignment = 1
 
-[node name="Slider" type="HSlider" parent="Tabs/Sound/Music"]
+[node name="Slider" type="HSlider" parent="Tabs/Sound/Background"]
 layout_mode = 0
 offset_left = 96.0
-offset_right = 376.0
-offset_bottom = 16.0
+offset_right = 320.0
+offset_bottom = 24.0
 max_value = 1.0
 step = 0.05
 
-[node name="Value" type="Label" parent="Tabs/Sound/Music"]
+[node name="Value" type="Label" parent="Tabs/Sound/Background"]
 layout_mode = 0
-offset_left = 392.0
-offset_right = 432.0
-offset_bottom = 21.0
+offset_left = 320.0
+offset_right = 384.0
+offset_bottom = 24.0
 text = "100%"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SFX" type="Label" parent="Tabs/Sound"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -196.0
-offset_top = 125.0
-offset_right = -156.0
-offset_bottom = 146.0
+offset_left = -192.0
+offset_top = 127.0
+offset_right = -104.0
+offset_bottom = 151.0
 grow_horizontal = 2
 text = "SFX"
+vertical_alignment = 1
 
 [node name="Slider" type="HSlider" parent="Tabs/Sound/SFX"]
 layout_mode = 0
 offset_left = 96.0
-offset_right = 376.0
-offset_bottom = 16.0
+offset_right = 320.0
+offset_bottom = 24.0
 max_value = 1.0
 step = 0.05
 
 [node name="Value" type="Label" parent="Tabs/Sound/SFX"]
 layout_mode = 0
-offset_left = 392.0
-offset_right = 432.0
-offset_bottom = 21.0
+offset_left = 320.0
+offset_right = 384.0
+offset_bottom = 24.0
 text = "100%"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Tools" type="Panel" parent="Tabs"]
+[node name="UI" type="Label" parent="Tabs/Sound"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
+offset_top = 167.0
+offset_right = -104.0
+offset_bottom = 191.0
+grow_horizontal = 2
+text = "UI"
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="Tabs/Sound/UI"]
+layout_mode = 0
+offset_left = 96.0
+offset_right = 320.0
+offset_bottom = 24.0
+max_value = 1.0
+step = 0.05
+
+[node name="Value" type="Label" parent="Tabs/Sound/UI"]
+layout_mode = 0
+offset_left = 320.0
+offset_right = 384.0
+offset_bottom = 24.0
+text = "100%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Functions" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 4
 
-[node name="user_functions" type="TextEdit" parent="Tabs/Tools"]
+[node name="user_functions" type="TextEdit" parent="Tabs/Functions"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.075
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 5.775
-offset_right = -8.0
-offset_bottom = -8.0
+offset_left = 16.0
+offset_top = 1.475
+offset_right = -16.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 18
 placeholder_text = "function_name    argument argument argument  ... = expression"
-
-[node name="Label" type="Label" parent="Tabs/Tools"]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 13.0
-offset_right = 123.0
-offset_bottom = 34.0
-text = "User Functions"
 
 [node name="Notes" type="Panel" parent="Tabs"]
 visible = false
@@ -847,8 +872,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = 55.0
+offset_top = 47.0
 offset_right = -16.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
@@ -865,15 +891,6 @@ offset_bottom = 55.0
 grow_horizontal = 0
 text = "Show:"
 vertical_alignment = 1
-
-[node name="Heading" type="RichTextLabel" parent="Tabs/Notes"]
-layout_mode = 0
-offset_left = 16.0
-offset_top = -1.0
-offset_right = 368.0
-offset_bottom = 54.0
-bbcode_enabled = true
-text = "[font_size=40][b]Notes[/b][/font_size]"
 
 [node name="ShowNotes" type="OptionButton" parent="Tabs/Notes"]
 layout_mode = 1
@@ -974,9 +991,9 @@ anchor_left = -0.011
 anchor_top = -0.058
 anchor_right = 1.011
 anchor_bottom = 1.0
-offset_left = 256.408
-offset_top = 47.974
-offset_right = -256.408
+offset_left = 260.496
+offset_top = 82.206
+offset_right = -260.496
 offset_bottom = -150.0
 bbcode_enabled = true
 
@@ -1014,10 +1031,11 @@ bbcode_enabled = true
 [connection signal="drag_ended" from="Tabs/Graphics/Grass Size/Slider" to="." method="_on_grass_size_slider_drag_ended"]
 [connection signal="value_changed" from="Tabs/Graphics/Grass Size/Slider" to="." method="_on_grass_size_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/Master/Slider" to="." method="_on_master_slider_value_changed"]
-[connection signal="value_changed" from="Tabs/Sound/Music/Slider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="Tabs/Sound/Background/Slider" to="." method="_on_bg_slider_value_changed"]
 [connection signal="value_changed" from="Tabs/Sound/SFX/Slider" to="." method="_on_sfx_slider_value_changed"]
-[connection signal="focus_entered" from="Tabs/Tools/user_functions" to="." method="_on_user_functions_focus_entered"]
-[connection signal="focus_exited" from="Tabs/Tools/user_functions" to="." method="_on_user_functions_focus_exited"]
+[connection signal="value_changed" from="Tabs/Sound/UI/Slider" to="." method="_on_ui_slider_value_changed"]
+[connection signal="focus_entered" from="Tabs/Functions/user_functions" to="." method="_on_user_functions_focus_entered"]
+[connection signal="focus_exited" from="Tabs/Functions/user_functions" to="." method="_on_user_functions_focus_exited"]
 [connection signal="item_selected" from="Tabs/Notes/ShowNotes" to="." method="_on_show_notes_item_selected"]
 [connection signal="item_selected" from="Tabs/Notes/SortNotes" to="." method="_on_sort_notes_item_selected"]
 [connection signal="pressed" from="Tabs/Game/Save" to="." method="_on_save_pressed"]

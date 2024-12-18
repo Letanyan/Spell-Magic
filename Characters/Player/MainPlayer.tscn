@@ -15063,8 +15063,10 @@ bus = &"BG"
 bus = &"BG"
 
 [node name="MovementAudio1" type="AudioStreamPlayer3D" parent="."]
+bus = &"SFX"
 
 [node name="MovementAudio2" type="AudioStreamPlayer3D" parent="."]
+bus = &"SFX"
 
 [node name="Rain" type="GPUParticles3D" parent="."]
 process_mode = 4

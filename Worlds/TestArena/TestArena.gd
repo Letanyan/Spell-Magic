@@ -553,6 +553,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			if vitals.health.value > 0:
 				return
 				
+			UIAudioPlayer.hurt()
 			vitals.health.value = vitals.health.max_value
 			#if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
 				#artifacts.reset_by_deleting_all_artifacts()

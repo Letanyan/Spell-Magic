@@ -43,14 +43,16 @@ extends Control
 
 @onready var master_slider: HSlider = $Tabs/Sound/Master/Slider
 @onready var master_value: Label = $Tabs/Sound/Master/Value
-@onready var music_slider: HSlider = $Tabs/Sound/Music/Slider
-@onready var music_value: Label = $Tabs/Sound/Music/Value
+@onready var bg_slider: HSlider = $Tabs/Sound/Background/Slider
+@onready var bg_value: Label = $Tabs/Sound/Background/Value
 @onready var sfx_slider: HSlider = $Tabs/Sound/SFX/Slider
 @onready var sfx_value: Label = $Tabs/Sound/SFX/Value
+@onready var ui_slider: HSlider = $Tabs/Sound/UI/Slider
+@onready var ui_value: Label = $Tabs/Sound/UI/Value
 
 @onready var info_label: RichTextLabel = $Tabs/Game/Info
 
-@onready var user_functions: TextEdit = $Tabs/Tools/user_functions
+@onready var user_functions: TextEdit = $Tabs/Functions/user_functions
 
 @onready var note_content: RichTextLabel = $Tabs/Notes/Content
 @onready var show_notes: OptionButton = $Tabs/Notes/ShowNotes
@@ -126,8 +128,9 @@ func update_controls() -> void:
 	vsync_options.selected = 0 if world_settings.graphics_settings.vsync else 1
 	
 	master_slider.value = world_settings.audio_settings.master
-	music_slider.value = world_settings.audio_settings.bg
+	bg_slider.value = world_settings.audio_settings.bg
 	sfx_slider.value = world_settings.audio_settings.sfx
+	ui_slider.value = world_settings.audio_settings.ui
 	
 	user_functions.text = GlobalData.game_settings.user_functions_text
 	
@@ -322,22 +325,28 @@ func _on_grass_size_slider_drag_ended(value_changed: bool) -> void:
 
 func _on_master_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_master(value)
-	UIAudioPlayer.switch()
+	UIAudioPlayer.switch(&"Master")
 	master_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 
 
-func _on_music_slider_value_changed(value: float) -> void:
+func _on_bg_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_bg(value)
-	UIAudioPlayer.switch()
-	music_value.text = str(int(value * 100)) + "%"
+	UIAudioPlayer.switch(&"BG")
+	bg_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 
 
 func _on_sfx_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_sfx(value)
-	UIAudioPlayer.switch()
+	UIAudioPlayer.switch(&"SFX")
 	sfx_value.text = str(int(value * 100)) + "%"
+	settings_changed.emit(world_settings)
+	
+func _on_ui_slider_value_changed(value: float) -> void:
+	world_settings.audio_settings.update_ui(value)
+	UIAudioPlayer.switch(&"UI")
+	ui_value.text = str(int(value * 100)) + "%"
 	settings_changed.emit(world_settings)
 	
 

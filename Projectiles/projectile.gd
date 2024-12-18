@@ -248,7 +248,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.WATER, spell.damage(caster_vitals), spell.elemental_application)
 				if sub_spell != null:
-					sub_dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, sub_spell.damage(caster_vitals), sub_spell.elemental_application)
+					sub_dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, 0.0, sub_spell.elemental_application)
 				expire_now(self, body, dmg)
 		Spell.Element.AIR:
 			if is_world or is_world_object:
@@ -269,7 +269,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				body.add_impulse(impulse())
 				dmg = body.vitals.handle_damage(Spell.Element.ICE, spell.damage(caster_vitals), spell.elemental_application)
 				if sub_spell != null:
-					sub_dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, sub_spell.damage(caster_vitals), sub_spell.elemental_application)
+					sub_dmg = body.vitals.handle_damage(Spell.Element.ELECTRIC, sub_spell.damage(caster_vitals), 0.0)
 				nothing(self, body, dmg)
 		Spell.Element.ELECTRIC:
 			if is_world or is_rock or is_world_object:
@@ -298,6 +298,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				var body := _body as Player
 				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
 				body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+				UIAudioPlayer.hurt()
 				if sub_dmg != {}:
 					Vitals.apply_damage(get_parent() as Node3D, _body, sub_dmg["dmg"] as float, sub_dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
 					body.add_shake(clampf(sub_dmg["dmg"] as float / 100.0, 0.0, 1.0))
@@ -310,6 +311,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				var body := _body as Enemy
 				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
 				body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+				AudioManager.play(body.sfx_hurt, body.position, NAN, true, Vector2(0.8, 1.2))
 				if sub_dmg != {}:
 					Vitals.apply_damage(get_parent() as Node3D, _body, sub_dmg["dmg"] as float, sub_dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, body.vitals)
 					body.add_shake(clampf(sub_dmg["dmg"] as float / 100.0, 0.0, 1.0))
@@ -407,6 +409,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		if is_player and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Player
 			body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+			UIAudioPlayer.hurt()
 			body.invunerable = INVUNERABLE_DURATION
 			if dmg["dmg"] > 0:
 				body.play_animation("on_hit")
@@ -415,6 +418,7 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 		if is_enemy and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Enemy
 			body.add_shake(clampf(dmg["dmg"] as float / 100.0, 0.0, 1.0))
+			AudioManager.play(body.sfx_hurt, body.position, NAN, true, Vector2(0.8, 1.2))
 			if body.vitals.health.value <= body.vitals.health.min_value:
 				body.vital_update.emit(body.index_in_population, body.vitals)
 				body.die()

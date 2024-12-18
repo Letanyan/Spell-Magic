@@ -60,17 +60,17 @@ func load_dict(dict: Dictionary) -> void:
 func update_sharpness(s: float) -> void:
 	sharpness = s
 	if viewport != null:
-		ProjectSettings.set_setting("rendering/scaling_3d/sharpness", sharpness)
+		viewport.fsr_sharpness = sharpness
 	
 func update_scaling(s: float) -> void:
 	scaling = s
 	if viewport != null:
-		ProjectSettings.set_setting("rendering/scaling_3d/scaling", scaling)
+		viewport.scaling_3d_scale = scaling
 	
 func update_scaling_mode(s: int) -> void:
 	scaling_mode = s
 	if viewport != null:
-		ProjectSettings.set_setting("rendering/scaling_3d/scaling_mode", scaling_mode)
+		viewport.scaling_3d_mode = scaling_mode as Viewport.Scaling3DMode
 
 func update_display_style(style: DisplayStyle) -> void:
 	display_style = style

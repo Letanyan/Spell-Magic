@@ -1,6 +1,6 @@
 extends Node
 
-const audio_streams: Array[AudioStreamMP3] = [
+const audio_streams: Array[AudioStream] = [
 	preload("res://Audio/projectile/fire.mp3") as AudioStreamMP3,
 	preload("res://Audio/projectile/rock.mp3") as AudioStreamMP3,
 	preload("res://Audio/projectile/electric.mp3") as AudioStreamMP3,
@@ -14,12 +14,23 @@ const audio_streams: Array[AudioStreamMP3] = [
 	preload("res://Audio/projectile/explosion/wind.mp3") as AudioStreamMP3,
 	preload("res://Audio/projectile/explosion/ice.mp3") as AudioStreamMP3,
 	preload("res://Audio/projectile/explosion/steam.mp3") as AudioStreamMP3,
+	
+	preload("res://Audio/characters/attack_beast.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/attack_fly.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/attack_med.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
 ]
 
 
 enum AudioStreamKind {
 	FIRE, ROCK, ELECTRIC, WATER, AIR, ICE,
 	FIRE_EXPLOSION, ROCK_EXPLOSION, ELECTRIC_EXPLOSION, WATER_EXPLOSION, AIR_EXPLOSION, ICE_EXPLOSION, STEAM_EXPLOSION,
+	
+	ATTACK_BEAST, ATTACK_FLY, ATTACK_MED,
+	HURT_BEAST, HURT_FLY, HURT_MED,
+	# TODO: add enemy idle sounds
 }
 
 class FadeParam:
@@ -40,8 +51,10 @@ class Stereo:
 	func _init(stream: AudioStream) -> void:
 		left_player = AudioStreamPlayer3D.new()
 		left_player.stream = stream
+		left_player.bus = "SFX"
 		right_player = AudioStreamPlayer3D.new()
 		right_player.stream = stream
+		right_player.bus = "SFX"
 	
 var streams: Array[Stereo] = []
 var fade_params: Dictionary = {} ## [AudioStreamPlayer3D]FadeParam
@@ -64,7 +77,7 @@ func _ready() -> void:
 	for i in AudioStreamKind.size():
 		streams.append(Stereo.new(audio_streams[i]))
 
-func play(kind: AudioStreamKind, position: Vector3, stop_time: float, reset: bool) -> void:	
+func play(kind: AudioStreamKind, position: Vector3, stop_time: float, reset: bool, pitch_scale: Vector2 = Vector2(1, 1)) -> void:	
 	var cam_dir := camera.global_transform.basis.z
 	var rel_pos := position - camera.global_position
 	var cam_right := cam_dir.cross(Vector3.UP)
@@ -99,8 +112,10 @@ func play(kind: AudioStreamKind, position: Vector3, stop_time: float, reset: boo
 		fade_params.erase(player)
 	if not player.playing:
 		player.volume_db = 0
+		player.pitch_scale = randf_range(pitch_scale.x, pitch_scale.y)
 		player.play()
 	if reset:
+		player.pitch_scale = randf_range(pitch_scale.x, pitch_scale.y)
 		player.seek(0.0)
 	
 func stop_all(kind: AudioStreamKind) -> void:
