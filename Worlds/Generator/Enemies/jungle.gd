@@ -66,7 +66,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						pathway = Pathway.new().from_to_and_back(pop.runs(10) * distance / MIN_DIST, cursor, dest, Easing.linear)
 					else:
 						pathway = Pathway.new().from_to_and_back(pop.runs(10) * distance / MIN_DIST, dest, cursor, Easing.linear)
-					var path := PathStyle.new(0, Vec3.xz__y(pos, 0)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+					var path := PathStyle.new(0, Vec3.xz__y(pos, 0)).follow_path(pathway).align_y_to_origin().look_at_nothing().origin_is_offset()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
 					var p := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 					if p != null:
@@ -116,7 +116,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var platform_scale := sqrt(platform_size ** 2 / 2)
 					var h := Vec3.y(rng.randf_range(50, 100) + platform_scale) 
 					var pathway := Pathway.new().wait(1.0, h)
-					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+					var path := PathStyle.new(0, Vec3.xz(center)).follow_path(pathway).align_y_to_origin().look_at_nothing().origin_is_offset()
 					var config := TargetShape.config_for_platform(Spell.Element.ROCK, platform_scale, path, true)
 					var platform := pop.spawn_world_item(World.Item.TARGET, center, spacing, config) as TargetShape
 					if platform != null:

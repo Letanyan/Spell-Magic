@@ -438,3 +438,25 @@ func load_dict(data: Dictionary) -> void:
 	level_mana_regen = data.get("level_mana_regen", 1)
 	
 	currency = data.get("currency", 0)
+
+func default_starter_spell() -> Spell:
+	var blast_element := Spell.Element.FIRE
+	if check_if_has_spell_element(Spell.Element.FIRE):
+		blast_element = Spell.Element.FIRE
+	elif check_if_has_spell_element(Spell.Element.ROCK):
+		blast_element = Spell.Element.ROCK
+	elif check_if_has_spell_element(Spell.Element.ELECTRIC):
+		blast_element = Spell.Element.ELECTRIC
+	elif check_if_has_spell_element(Spell.Element.WATER):
+		blast_element = Spell.Element.WATER
+	elif check_if_has_spell_element(Spell.Element.AIR):
+		blast_element = Spell.Element.AIR
+	elif check_if_has_spell_element(Spell.Element.ICE):
+		blast_element = Spell.Element.ICE
+	var blast := Spell.new(false, "u*(speed*t+offset)", "v*(speed*t+offset)", "w*(speed*t+offset)", "0.1", 5, 1.0, blast_element)
+	blast.expression_strings = {
+		"speed": "5",
+		"offset": "1",
+	}
+	
+	return blast

@@ -266,6 +266,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 			if can_use == MagicBook.DisallowSpellReason.COOLDOWN:
 				var popup := PopupDialog.display("Spell currently on cooldown. Wait until the spell is of cooldown to deactive.", "Okay", "")
 				popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+				popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 				get_tree().root.add_child(popup)
 			else:
 				spell.is_active = false
@@ -285,6 +286,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 					options = "Deactive a spell"
 				var popup := PopupDialog.display("Total active spells limit reached." + options, "Okay", "")
 				popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+				popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 				popup.show_in_root(self)
 			else:
 				spell.is_active = true

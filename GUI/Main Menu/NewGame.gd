@@ -153,6 +153,7 @@ func _on_create_pressed() -> void:
 	if save_name.text.is_empty():
 		var popup := PopupDialog.display("Please provide a save name", "Okay", "")
 		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
 		return
 	

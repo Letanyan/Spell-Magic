@@ -95,6 +95,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 			message = "Max level reached. Can not upgrade furthur."
 		var popup := PopupDialog.display(message, "Okay", "")
 		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
 		return
 	

@@ -140,6 +140,7 @@ func _on_delete_pressed() -> void:
 	popup.confirmed.connect(func() -> void:
 		if current_index < 0:
 			return
+		UIAudioPlayer.delete()
 		case.wands.remove_at(current_index)
 		if case.wands.size() == 0:
 			current_index = -1

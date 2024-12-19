@@ -42,7 +42,7 @@ func _init(vp: Viewport = null) -> void:
 func save_dict() -> Dictionary:
 	return {
 		"name": world_name, "player": {
-			"position": temp_position, "keys": player_keys,
+			"position": player_position, "keys": player_keys,
 			"health": player_health, "mana": player_mana,
 		}, 
 		"seed": sed,
@@ -58,7 +58,6 @@ func save_dict() -> Dictionary:
 		"audio_settings": audio_settings.save_dict()
 	}
 
-var temp_position := Vector3.ZERO
 func save() -> void:
 	var dir := DirAccess.open("user://")
 	if not dir.dir_exists("worlds"):
@@ -72,8 +71,6 @@ func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
 	var player := data.get("player", {}) as Dictionary
 	player_position = player.get("position", Vector3.ZERO)
-	temp_position = player_position # FIXME: remove temp_position
-	player_position = Vector3.ZERO # FIXME: remove set player to zero on start
 	player_keys = player.get("keys", 0)
 	player_health = player.get("health", 1000.0)
 	player_mana = player.get("mana", 1000.0)

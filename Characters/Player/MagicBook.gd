@@ -32,31 +32,30 @@ func read(world_name: String) -> void:
 		
 func read_absolute_path(file_path: String) -> void:
 	var file := FileAccess.open(file_path, FileAccess.READ)
-	cooldown = {}
-	ignore_cooldown = false
-	spell_index = {}
 	if not file:
-		spells = []
 		return 
 	var data := file.get_var() as Array
 	if data == null:
-		spells = []
 		return
 	var active_count := 0
+	spells = []
+	cooldown = {}
+	spell_index = {}
 	for d: Dictionary in data:
 		var s := Spell.new()
 		s.load_dict(d)
 		s.limit_r = settings.upgrade_settings.max_r()
 		s.limit_v = settings.upgrade_settings.max_v()
+		s.is_active = s.is_active and active_count < settings.upgrade_settings.max_spells_in_book()
 		if s.is_active:
 			active_count += 1
-		s.is_active = s.is_active and active_count < settings.upgrade_settings.max_spells_in_book()
 		spells.append(s)
 		spell_index[s.name] = s
 	
 func _init() -> void:
 	spells = []
 	cooldown = {}
+	spell_index = {}
 	ignore_cooldown = false
 	settings = null
 	

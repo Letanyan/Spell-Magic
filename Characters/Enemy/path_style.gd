@@ -10,7 +10,7 @@ enum CoordY {
 }
 enum Mover { PHYSICS, ABSOLUTE }
 enum LookAt { VELOCITY, PLAYER, PLAYER_XZ, NOTHING }
-enum OriginKind { ABSOLUTE, PLAYER, ME, VISION }
+enum OriginKind { ABSOLUTE, PLAYER, ME, VISION, OFFSET }
 enum PlayerVisionAngle { CAMERA, BODY_ROTATION, LINE_OF_SIGHT }
 
 enum InitialPositionCanUpdate {
@@ -105,6 +105,7 @@ func initial_position_can_update_at_start() -> PathStyle: when_initial_position_
 func origin_is_absolute(o: Vector3) -> PathStyle: origin_kind = OriginKind.ABSOLUTE; origin = o; return self
 func origin_is_player() -> PathStyle: origin_kind = OriginKind.PLAYER; return self
 func origin_is_me() -> PathStyle: origin_kind = OriginKind.ME; return self
+func origin_is_offset() -> PathStyle: origin_kind = OriginKind.OFFSET; return self
 	
 func player_vision_is_body_rotation(a: float, r: float, min_m: float = 0.0, max_m: float = min_m) -> PathStyle:
 	player_vision_angle = PlayerVisionAngle.BODY_ROTATION
@@ -196,6 +197,8 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		temp_origin = me_start_position as Vector3
 	elif origin_kind == OriginKind.ABSOLUTE:
 		temp_origin = origin
+	elif origin_kind == OriginKind.OFFSET:
+		temp_origin = origin
 		ignore_ground = false
 		
 	
@@ -249,16 +252,15 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	old_origin = temp_origin
 	
 	if player is Player:
-		# FIXME: enemy path is in origin
-		DebugDraw3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, delta)
-		DebugDraw3D.draw_line(Vector3(me.x, me.y, me.z), Vector3(v.x, y, v.z), Color.GREEN, delta)
+		DebugDraw3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, 10.0)
+		DebugDraw3D.draw_line(Vector3(me.x, me.y, me.z), Vector3(v.x, y, v.z), Color.GREEN, 10.0)
 		for segment: Segment in path.segments:
 			var s := segment.position_at_time_with_transform(0.0, transform) + Vec3.xz_y(temp_origin, 0)
 			s.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
 			var e := segment.position_at_time_with_transform(1.0, transform) + Vec3.xz_y(temp_origin, 0)
 			e.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
-			DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, delta)
-			DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, delta)
+			DebugDraw3D.draw_sphere(s, 0.1, Color.BLUE, 10.0)
+			DebugDraw3D.draw_sphere(e, 0.1, Color.BLUE, 10.0)
 	return old_position
 
 func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_state: PhysicsDirectSpaceState3D, origin_offset: float, ignore_ground: bool) -> float:
@@ -273,28 +275,28 @@ func next_y_position(me: Vector4, x: float, y: float, z: float, direct_space_sta
 			actual_y = 0.0
 		CoordY.GROUND_AND_DIRT:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - (0.0 if ignore_ground else g)
-			if y + off > 0:
+			var off := origin_offset - (g if ignore_ground else 0.0)
+			if y + g + off > 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y + off
 		CoordY.GROUND_AND_AIR:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - (0.0 if ignore_ground else g)
-			if y + off < 0:
+			var off := origin_offset - (g if ignore_ground else 0.0)
+			if y + g + off < 0:
 				result = g
 				actual_y = 0.0
 			else:
 				result = g + y + off
 		CoordY.GROUND_AIR_AND_DIRT: 
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - (0.0 if ignore_ground else g)
+			var off := origin_offset - (g if ignore_ground else 0.0)
 			result = g + y + off
 		CoordY.AIR:
 			var g := Navigator.get_world_height(direct_space_state, x, z) + me_y / 2.0
-			var off := origin_offset - (0.0 if ignore_ground else g)
-			if y + off <= me_y / 2.0:
+			var off := origin_offset - (g if ignore_ground else 0.0)
+			if y + g + off <= me_y / 2.0:
 				result = g + me_y / 2.0
 				actual_y = me_y / 2.0
 			else:

@@ -51,7 +51,6 @@ func _ready() -> void:
 	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	
-	# FIXME: VERSION: -1, WORLD SEED: 5825589, RNG SEED: 5825589
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)

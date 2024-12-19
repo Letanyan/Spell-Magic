@@ -66,6 +66,8 @@ func setup(_settings: WorldSettings) -> void:
 		book = MagicBook.new()
 		book.settings = settings
 		book.read(settings.world_name)
+		if book.spells.is_empty():
+			book.add(settings.upgrade_settings.default_starter_spell())
 		book.rebuild_spell_chains()
 		book.ignore_cooldown = OS.is_debug_build()
 	
