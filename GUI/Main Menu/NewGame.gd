@@ -30,6 +30,7 @@ extends Control
 @onready var N_slider: HSlider = $StartingUpgradesPanel/N/Slider
 @onready var S_slider: HSlider = $StartingUpgradesPanel/S/Slider
 @onready var auto_mana_slider: HSlider = $StartingUpgradesPanel/AutoMana/Slider
+@onready var coins_slider: HSlider = $StartingUpgradesPanel/Coins/Slider
 
 @onready var health_value: Label = $StartingUpgradesPanel/Health/Value
 @onready var attack_value: Label = $StartingUpgradesPanel/Attack/Value
@@ -43,6 +44,7 @@ extends Control
 @onready var N_value: Label = $StartingUpgradesPanel/N/Value
 @onready var S_value: Label = $StartingUpgradesPanel/S/Value
 @onready var auto_mana_value: Label = $StartingUpgradesPanel/AutoMana/Value
+@onready var coins_value: Label = $StartingUpgradesPanel/Coins/Value
 
 
 @onready var spell_elements_fire: Button = $StartingUpgradesPanel/SpellElements/Fire
@@ -72,24 +74,12 @@ var upgrades: UpgradeSettings
 var main_menu_world: MainMenuWorld = null
 
 var world_data: Array = []
-var world_name_exists := false
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	UIAudioPlayer.silence = true
 	upgrades = UpgradeSettings.new()
-	health_slider.value = upgrades.level_health
-	attack_slider.value = upgrades.level_attack
-	defence_slider.value = upgrades.level_defence
-	mana_slider.value = upgrades.level_mana
-	velocity_slider.value = upgrades.level_v
-	spell_count_slider.value = upgrades.level_spells_in_book
-	T_slider.value = upgrades.level_T
-	r_slider.value = upgrades.level_r
-	P_slider.value = upgrades.level_P
-	N_slider.value = upgrades.level_N
-	S_slider.value = upgrades.level_running_speed
-	auto_mana_slider.value = upgrades.level_mana_regen
 	
 	health_slider.min_value = upgrades.level_health
 	attack_slider.min_value = upgrades.level_attack
@@ -103,6 +93,7 @@ func _ready() -> void:
 	N_slider.min_value = upgrades.level_N
 	S_slider.min_value = upgrades.level_running_speed
 	auto_mana_slider.min_value = upgrades.level_mana_regen
+	coins_slider.min_value = 0
 	
 	health_slider.max_value = upgrades.level_max_health
 	attack_slider.max_value = upgrades.level_max_attack
@@ -116,6 +107,21 @@ func _ready() -> void:
 	N_slider.max_value = upgrades.level_max_N
 	S_slider.max_value = upgrades.level_max_running_speed
 	auto_mana_slider.max_value = upgrades.level_max_mana_regen
+	coins_slider.max_value = 100_000
+	
+	_on_health_value_changed(upgrades.level_health)
+	_on_attack_value_changed(upgrades.level_attack)
+	_on_defence_value_changed(upgrades.level_defence)
+	_on_mana_value_changed(upgrades.level_mana)
+	_on_velocity_value_changed(upgrades.level_v)
+	_on_spell_count_value_changed(upgrades.level_spells_in_book)
+	_on_T_value_changed(upgrades.level_T)
+	_on_r_value_changed(upgrades.level_r)
+	_on_P_value_changed(upgrades.level_P)
+	_on_N_value_changed(upgrades.level_N)
+	_on_S_value_changed(upgrades.level_running_speed)
+	_on_auto_mana_slider_value_changed(upgrades.level_mana_regen)
+	_on_coins_slider_value_changed(upgrades.currency)
 	
 	spell_elements_fire.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.FIRE)
 	spell_elements_water.button_pressed = upgrades.check_if_has_spell_element(Spell.Element.WATER)
@@ -132,15 +138,34 @@ func _ready() -> void:
 	for t: Array in world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 		
-	_on_use_normal_toggled(true)
+	_on_use_hardcore_toggled(true)
+	UIAudioPlayer.silence = false
 
 
 func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 	
+func world_name_exists(world_name: String) -> bool:
+	for t: Array in world_data:
+		if world_name == t[0]:
+			return true
+	return false
+	
 func _on_worlds_list_item_activated(index: int) -> void:
 	if worlds_list.get_selected_items().is_empty():
+		return
+	if save_name.text.is_empty():
+		var popup := PopupDialog.display("Please provide a save name", "Okay", "")
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
+		popup.show_in_root(self)
+		return
+	if world_name_exists(save_name.text):
+		var popup := PopupDialog.display("Save name '%s' already exists. Please provide a unique save name." % save_name.text, "Okay", "")
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
+		popup.show_in_root(self)
 		return
 	var selected_world_name := world_data[index][0] as String
 	var settings := WorldSettings.new(get_viewport())
@@ -152,6 +177,12 @@ func _on_worlds_list_item_activated(index: int) -> void:
 func _on_create_pressed() -> void:
 	if save_name.text.is_empty():
 		var popup := PopupDialog.display("Please provide a save name", "Okay", "")
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
+		popup.show_in_root(self)
+		return
+	if world_name_exists(save_name.text):
+		var popup := PopupDialog.display("Save name '%s' already exists. Please provide a unique save name." % save_name.text, "Okay", "")
 		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
@@ -215,6 +246,7 @@ func _on_create_pressed() -> void:
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
+		settings.game_mode_settings.flags = game_flags & GameModeSettings.DISALLOW_SPELL_EDITING
 		upgrades.reset_all_stats_to_default_values()
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
@@ -270,6 +302,12 @@ func _on_spells_toggled(button_pressed: bool) -> void:
 	else:
 		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS)
 		
+func _on_coins_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		game_flags |= GameModeSettings.RESPAWN_WITH_COINS
+	else:
+		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_COINS)
 		
 func _on_spell_editing_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
@@ -341,7 +379,11 @@ func _on_N_value_changed(value: float) -> void:
 	upgrades.level_N = ceili(value)
 	UIAudioPlayer.switch()
 	N_value.text = str(upgrades.max_N())
-
+	
+func _on_coins_slider_value_changed(value: float) -> void:
+	upgrades.currency = int(value)
+	UIAudioPlayer.switch()
+	coins_value.text = str(int(value))
 
 func _on_fire_toggled(button_pressed: bool) -> void:
 	UIAudioPlayer.check(button_pressed)
@@ -476,8 +518,8 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		respawn_options.visible = false
 		game_options.visible = false
 		starting_upgrades.visible = false
-		starting_upgrades.set_pressed_no_signal(false)
-		starting_upgrades_panel.visible = false
+		if starting_upgrades.button_pressed:
+			starting_upgrades.button_pressed = false
 		game_mode_description_panel.visible = false
 		generation_version_label.visible = false
 
@@ -494,11 +536,11 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		respawn_options.visible = false
 		game_options.visible = false
 		starting_upgrades.visible = false
-		starting_upgrades.set_pressed_no_signal(false)
-		starting_upgrades_panel.visible = false
+		if starting_upgrades.button_pressed:
+			starting_upgrades.button_pressed = false
 		worlds_list.visible = false
 		game_mode_description_panel.visible = true
-		game_mode_description.text = "When you die you will respawn with all your progressed saved."
+		game_mode_description.text = "When you die you will respawn with all your spells, artifacts and upgrades. However, you will lose all your coins."
 		generation_version_label.visible = false
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:
@@ -512,13 +554,13 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		respawn.visible = false
 		sandbox.visible = false
 		respawn_options.visible = false
-		game_options.visible = false
+		game_options.visible = true
 		starting_upgrades.visible = false
-		starting_upgrades.set_pressed_no_signal(false)
-		starting_upgrades_panel.visible = false
+		if starting_upgrades.button_pressed:
+			starting_upgrades.button_pressed = false
 		worlds_list.visible = false
 		game_mode_description_panel.visible = true
-		game_mode_description.text = "When you die the game is over. You will also not be allowed to edit or create your own new spells."
+		game_mode_description.text = "When you die the game is over"
 		generation_version_label.visible = false
 
 

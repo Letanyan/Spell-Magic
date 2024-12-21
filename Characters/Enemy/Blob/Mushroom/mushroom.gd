@@ -38,7 +38,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_down2.configure({"H": "20"}, Spell.Element.WATER, fit(8, 4), power(10), radius(4), 1, 75, 50, 65)
 	water_down3.configure({"H": "30"}, Spell.Element.WATER, fit(6, 3), power(12), radius(3), 1, 75, 75, 75)
 	water_shower1.configure({"s":fits(3,8), "d":"Br*2", "rv": "rv+pi/8"}, Spell.Element.WATER, 5.0, power(5), radius(2), 1, 60.0, 80.0, 0.0, water_shower1_chain)
-	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "r": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
+	water_shower1_chain.configure({"s":fits(2,6), "d": "C", "dx":"0", "dy":"-1", "dz":"0", "oy": "u*d*10", "R": "fl * 6 + 4"}, Spell.Element.WATER, 20.0, power(6), radius(2), fiti(5, 20), 30.0, 50.0, 60.0)
 	
 	spell_drop_probs = {
 		water_para1: spell_drop(4),

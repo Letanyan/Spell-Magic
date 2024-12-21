@@ -205,5 +205,6 @@ focus_previous = NodePath("../Create")
 [connection signal="item_selected" from="SpellIndex" to="." method="_on_spell_index_item_selected"]
 [connection signal="pressed" from="FilterButton" to="." method="_on_filter_button_pressed"]
 [connection signal="pressed" from="SortButton" to="." method="_on_sort_button_pressed"]
+[connection signal="focus_entered" from="SearchLineEdit" to="." method="_on_search_line_edit_focus_entered"]
 [connection signal="text_changed" from="SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]

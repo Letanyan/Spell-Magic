@@ -18,7 +18,11 @@ const source_attack_human_1 = preload("res://Audio/characters/attack_human_1.wav
 const source_attack_human_2 = preload("res://Audio/characters/attack_human_2.wav") as AudioStreamWAV
 const source_attack_human_3 = preload("res://Audio/characters/attack_human_3.wav") as AudioStreamWAV
 
+var silence: bool = false
+
 func play(player: AudioStreamPlayer, source: AudioStream, pitch_scale: Vector2 = Vector2(1, 1)) -> void:
+	if silence:
+		return
 	player.stop()
 	player.pitch_scale = randf_range(pitch_scale.x, pitch_scale.y)
 	player.stream = source

@@ -8,7 +8,7 @@ signal max_velocity_updated(value: float)
 signal max_radius_updated(value: float)
 signal upgrade_was_purchased(settings: UpgradeSettings)
 
-var currency := 1000
+var currency := 500
 
 
 const HAS_VOID := 1 << 0
@@ -317,8 +317,8 @@ func purchase_spells_in_book() -> PurchaseError:
 var level_running_speed := 1:
 	set(value):
 		level_running_speed = clampi(value, 1, level_max_running_speed)
-const level_max_running_speed := 25
-func max_running_speed(x: int = level_running_speed) -> float: return ((x - 1) * 0.25) + 2.0
+const level_max_running_speed := 20
+func max_running_speed(x: int = level_running_speed) -> float: return (x * 0.2) + 4.0
 func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
 func cost_running_speed() -> int: return level_running_speed * 500
 var buff_running_speed := 0.0

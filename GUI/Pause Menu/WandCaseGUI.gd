@@ -34,6 +34,7 @@ func update_wand_shelf_items(ignore_signals: bool) -> void:
 func reload_wand_shelf_items(index: int = current_index) -> void:
 	if index < 0:
 		return
+	UIAudioPlayer.silence = true
 	var wand: Wand = case.wands[index]
 	current_index = index
 	name_edit.text = wand.name
@@ -91,6 +92,7 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		
 		
 	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index), update_wand_shelf_relative_item)
+	UIAudioPlayer.silence = false
 		
 		
 func update_wand_shelf_item(widx: int = current_index) -> Callable:
@@ -115,6 +117,7 @@ func update_wand_shelf_relative_item(item: WandCaseShelfItem, prev: WandCaseShel
 	item.cast_combo.focus_previous = prev.spell.get_path()
 	
 func _on_wand_index_item_selected(index: int) -> void:
+	UIAudioPlayer.click()
 	reload_wand_shelf_items(index)
 
 func reload_list() -> void:

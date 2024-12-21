@@ -513,21 +513,11 @@ func health_drop(cls: int) -> float:
 	
 func artier(cls: int) -> Vector2i:
 	var p := cls / 20.0
-	var s := fiti(1, 10) * (1 if randf() < p else -1)
-	var c := roundi(p * 9) + 1
-	return Vector2i(s, c)
+	var sides := fiti(1, 10) * (1 if randf() < p else -1)
+	var count := roundi(p * 9) + 1
+	return Vector2i(sides, count)
 
-func arttv(mn: int, mx: int) -> Vector2i:
-	return Vector2i(fiti(0, mn), fiti(0, mx))
-	
-func arttd(probs: Dictionary) -> Dictionary:
-	for t: int in probs:
-		var val := probs[t] as float
-		probs.erase(t)
-		probs[fiti(0, t)] = val
-	return probs	
-
-# cls = [1,5]
+# number of coins dropped. cls = [1,5]
 func cns(cls: int) -> Array[int]:
 	var count := Rand.roll(3, fiti(1, cls), 0, rng)
 	var result: Array[int] = []

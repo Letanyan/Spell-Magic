@@ -37,7 +37,7 @@ bomb-disc-scatter: places N projectiles in circle with radius R in center `d*C`.
 	arc ; arc of disc
 	S ; minimum wait time
 	s ; interval between bombs
-	V ; vertical movement distance
+	Vert ; vertical movement distance
 	Vs ; veritcal movement speed
 	RR ; local movement around circle with radius
 	RRs ; local movement speed around circle
@@ -58,7 +58,7 @@ bomb-sphere-scatter: places N projectiles in sphere with radius R in center `d*C
 	arc ; arc of disc
 	S ; minimum wait time
 	s ; interval between bombs
-	V ; vertical movement distance
+	Vert ; vertical movement distance
 	Vs ; veritcal movement speed
 	RR ; local movement around circle with radius
 	RRs ; local movement speed around circle
@@ -129,7 +129,7 @@ orbit-xz: projectiles spin around a point
 	d ; offset
 	s ; rotation speed
 	or ; projectile offset
-	r ; radius
+	R ; radius
 	
 plane-linear: fires N projectiles in dir driection on the plane defined by dir
 	d ; offset
@@ -160,14 +160,14 @@ sniper:
 	s ; speed
 	
 solar-system: fires multiple projectiles that orbit around a center in multiple rings
-	r ; base radius
+	R ; base radius
 	H ; height
 	rs ; speed
 	r0 ; offset
 	
 sphere-linear: fires multiple projectiles from center in multiple directions
 	d ; offset
-	r ; radius
+	R ; radius
 	dx, dy, dz ; direction
 	
 swipe: fires projectiles moving along a sphere wall

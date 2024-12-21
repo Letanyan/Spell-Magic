@@ -118,7 +118,6 @@ func run_on_ready() -> void:
 		#_settings.sed = 0 
 		setup(_settings)
 		
-	settings.upgrade_settings.currency = 10000
 	menu.setup(book, case, artifacts, settings)
 	
 	wand = case.current_wand()
@@ -585,6 +584,11 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				menu.wand_case.reload_wand_shelf_items(0)
 				menu.wand_case.case.save(settings.world_name)
 				menu.magic_book.book.save(settings.world_name)
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_COINS == 0:
+				subtitle_components.append("Coins")
+				settings.upgrade_settings.currency = 0
+				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+				menu.upgrades.settings.save()
 				
 			settings.save()
 				
@@ -595,6 +599,8 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				subtitle = subtitle_components[0] + " and " + subtitle_components[1] + " have been removed"
 			elif subtitle_components.size() == 3:
 				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + " and " + subtitle_components[2] + " have been removed"
+			elif subtitle_components.size() == 4:
+				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + ", " + subtitle_components[2] + " and " + subtitle_components[3] + " have been removed"
 			var overlay := OverlayScreen.display("DEATH", subtitle, "Revive")
 			overlay.confirmed.connect(func() -> void:
 				player.play_animation("revive")

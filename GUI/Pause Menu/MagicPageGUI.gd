@@ -143,6 +143,8 @@ func refresh_preview_thumbnails(spell: Spell) -> void:
 	
 
 func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
+	UIAudioPlayer.silence = true
+	
 	book = magic_book
 	current_index = index
 	
@@ -212,6 +214,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	cd_edit.editable = is_editable
 		
 	check_all_errors()
+	
+	UIAudioPlayer.silence = false
 		
 func update_cooldown() -> void:
 	if current_index < 0:

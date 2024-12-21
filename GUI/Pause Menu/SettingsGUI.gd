@@ -79,6 +79,8 @@ func _process(delta: float) -> void:
 	pass
 
 func update_controls() -> void:
+	UIAudioPlayer.silence = true
+	
 	hide_wand_mappings.button_pressed = world_settings.hud_settings.hide_wand_mappings
 	hide_wand_modifier_hints.button_pressed = world_settings.hud_settings.hide_wand_modifier_hints
 	hide_notifications.button_pressed = world_settings.hud_settings.hide_notifications
@@ -136,6 +138,8 @@ func update_controls() -> void:
 	
 	show_notes.selected = GlobalData.game_settings.notes_unlock_settings
 	sort_notes.selected = GlobalData.game_settings.notes_sort_settings
+	
+	UIAudioPlayer.silence = false
 
 func _on_hide_wand_mappings_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_wand_mappings = button_pressed

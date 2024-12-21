@@ -9,7 +9,6 @@ var attack_pattern3: AttackPatterns
 var idle_path: PathStyle
 var attack_path: PathStyle
 
-# FIXME: fix swipe spells. lol ffs
 var air_small_fast := GlobalData.magic_book.copy_spell("swipe")
 var air_med_fast := GlobalData.magic_book.copy_spell("swipe")
 var air_large_fast := GlobalData.magic_book.copy_spell("swipe")

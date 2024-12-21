@@ -6,6 +6,7 @@ const RESPAWN_WITH_SPELLS_AND_WANDS: int = 1 << 0
 const RESPAWN_WITH_UPGRADES: int = 1 << 1
 const RESPAWN_WITH_ARTIFACTS: int = 1 << 2
 const DISALLOW_SPELL_EDITING: int = 1 << 3
+const RESPAWN_WITH_COINS: int = 1 << 4
 
 var mode: GameMode 
 var flags: int = 0
@@ -46,6 +47,8 @@ func flags_description() -> PackedStringArray:
 		result.append("Respawn with Upgrades")
 	if flags & DISALLOW_SPELL_EDITING != 0:
 		result.append("Disallow Spell Editing")
+	if flags & RESPAWN_WITH_COINS != 0:
+		result.append("Respawn with Coins")
 	return result
 	
 func save_dict() -> Dictionary:

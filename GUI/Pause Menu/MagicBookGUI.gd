@@ -53,6 +53,7 @@ func duplicate_book() -> void:
 
 func _on_spell_index_item_selected(index: int) -> void:
 	current_index = spells_index_map[index]
+	UIAudioPlayer.click()
 	var spell: Spell = book.spells[current_index]
 	
 	page.display_spell(book, spell, current_index)
@@ -291,3 +292,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 			else:
 				spell.is_active = true
 				reload_list()
+
+
+func _on_search_line_edit_focus_entered() -> void:
+	UIAudioPlayer.focus()

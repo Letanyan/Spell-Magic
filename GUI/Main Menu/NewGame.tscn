@@ -25,14 +25,32 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = -236.0
+offset_top = -284.0
 offset_right = 128.0
-offset_bottom = -204.0
+offset_bottom = -252.0
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../UseSeed")
 focus_next = NodePath("../UseSeed")
 focus_previous = NodePath("../StartingUpgradesPanel")
 placeholder_text = "Save Name"
+
+[node name="Seed" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -136.0
+offset_top = -148.0
+offset_right = 136.0
+offset_bottom = -116.0
+focus_neighbor_top = NodePath("../UseSeed")
+focus_neighbor_right = NodePath("../StartingUpgradesPanel")
+focus_neighbor_bottom = NodePath("../Permadeath")
+focus_next = NodePath("../Permadeath")
+focus_previous = NodePath("../UseSaveFile")
+placeholder_text = "Seed"
 
 [node name="UseSeed" type="Button" parent="."]
 layout_mode = 1
@@ -41,9 +59,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 8.0
+offset_left = -128.0
 offset_top = -196.0
-offset_right = 128.0
+offset_right = -8.0
 offset_bottom = -156.0
 focus_neighbor_top = NodePath("../SaveName")
 focus_neighbor_right = NodePath("../UseSaveFile")
@@ -61,9 +79,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 144.0
+offset_left = 8.0
 offset_top = -196.0
-offset_right = 264.0
+offset_right = 128.0
 offset_bottom = -156.0
 focus_neighbor_left = NodePath("../UseSeed")
 focus_neighbor_top = NodePath("../SaveName")
@@ -81,15 +99,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -264.0
-offset_top = -196.0
-offset_right = -148.0
-offset_bottom = -156.0
+offset_left = 8.0
+offset_top = -244.0
+offset_right = 128.0
+offset_bottom = -204.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-button_pressed = true
-text = "Normal Mode"
+text = "Easy Mode"
 
 [node name="UseHardcore" type="Button" parent="."]
 layout_mode = 1
@@ -99,30 +116,13 @@ anchor_top = 0.5
 anchor_right = 0.493
 anchor_bottom = 0.5
 offset_left = -119.936
-offset_top = -196.0
-offset_right = 0.0639648
-offset_bottom = -156.0
+offset_top = -244.0
+offset_right = 0.0640259
+offset_bottom = -204.0
 grow_horizontal = 2
 toggle_mode = true
-text = "Hardcore Mode"
-
-[node name="Seed" type="TextEdit" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -128.0
-offset_top = -148.0
-offset_right = 128.0
-offset_bottom = -116.0
-focus_neighbor_top = NodePath("../UseSeed")
-focus_neighbor_right = NodePath("../StartingUpgradesPanel")
-focus_neighbor_bottom = NodePath("../Permadeath")
-focus_next = NodePath("../Permadeath")
-focus_previous = NodePath("../UseSaveFile")
-placeholder_text = "Seed"
+button_pressed = true
+text = "Rogue Mode"
 
 [node name="Permadeath" type="Button" parent="."]
 layout_mode = 1
@@ -217,9 +217,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 128.0
-offset_bottom = 148.0
+offset_bottom = 180.0
 focus_neighbor_bottom = NodePath("Upgrades")
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
@@ -261,6 +261,14 @@ focus_neighbor_bottom = NodePath("../../Create")
 focus_next = NodePath("../../Create")
 focus_previous = NodePath("../Artifacts")
 text = "Respawn with Spells"
+
+[node name="Coins" type="CheckBox" parent="RespawnOptions"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 112.0
+offset_right = 205.0
+offset_bottom = 140.0
+text = "Respawn with Coins"
 
 [node name="Create" type="Button" parent="."]
 layout_mode = 1
@@ -305,10 +313,72 @@ anchor_right = 1.0
 offset_left = -160.0
 offset_top = 8.0
 offset_right = -4.0
-offset_bottom = 48.0
+offset_bottom = 56.0
 grow_horizontal = 0
 toggle_mode = true
 text = "Starting Upgrades"
+
+[node name="GameModeDescriptionPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
+offset_top = 176.0
+offset_right = 192.0
+offset_bottom = 272.0
+grow_horizontal = 2
+
+[node name="GameModeDescription" type="Label" parent="GameModeDescriptionPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_right = 0.472
+offset_left = -181.248
+offset_right = 202.752
+offset_bottom = 96.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="WorldsList" type="ItemList" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -192.0
+offset_top = 176.0
+offset_right = 192.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WorldGenerationVersion" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = -0.012
+anchor_right = 1.0
+anchor_bottom = -0.012
+offset_left = -360.0
+offset_top = 15.776
+offset_right = -168.0
+offset_bottom = 36.776
+grow_horizontal = 0
+grow_vertical = 0
+text = "World Generation Version:"
+
+[node name="GeneratorVersion" type="OptionButton" parent="WorldGenerationVersion"]
+layout_mode = 0
+offset_top = 24.0
+offset_right = 192.0
+offset_bottom = 49.0
+selected = 0
+item_count = 1
+popup/item_0/text = "Version 1"
 
 [node name="StartingUpgradesPanel" type="Panel" parent="."]
 visible = false
@@ -316,10 +386,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -368.0
-offset_top = 56.0
+offset_left = -760.0
+offset_top = 64.0
 offset_right = -8.0
-offset_bottom = 608.0
+offset_bottom = 384.0
 grow_horizontal = 0
 focus_neighbor_bottom = NodePath("Health/Slider")
 
@@ -328,15 +398,15 @@ layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 352.0
-offset_bottom = 34.0
+offset_bottom = 32.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#0A0]res://GUI/Images/health.svg[/img] Health"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Health"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_bottom = NodePath("../../Attack/Slider")
 focus_next = NodePath("../../Attack/Slider")
@@ -350,7 +420,7 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -360,15 +430,15 @@ layout_mode = 0
 offset_left = 8.0
 offset_top = 40.0
 offset_right = 352.0
-offset_bottom = 66.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#A00]res://GUI/Images/sword.svg[/img] ATK"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Attack"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../Health/Slider")
 focus_neighbor_bottom = NodePath("../../Defence/Slider")
@@ -382,25 +452,25 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "10"
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Defence" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 72.0
-offset_right = 352.0
-offset_bottom = 98.0
+offset_left = 400.0
+offset_top = 8.0
+offset_right = 744.0
+offset_bottom = 32.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#0AA]res://GUI/Images/shield.svg[/img] DEF"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Defence"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../Attack/Slider")
 focus_neighbor_bottom = NodePath("../../Mana/Slider")
@@ -414,25 +484,25 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "10"
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Mana" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 104.0
-offset_right = 352.0
-offset_bottom = 130.0
+offset_left = 400.0
+offset_top = 40.0
+offset_right = 744.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#A0A]res://GUI/Images/mana.svg[/img] M"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Mana"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../Defence/Slider")
 focus_neighbor_bottom = NodePath("../../Velocity/Slider")
@@ -447,7 +517,7 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -455,17 +525,17 @@ vertical_alignment = 1
 [node name="Velocity" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 136.0
+offset_top = 72.0
 offset_right = 352.0
-offset_bottom = 162.0
+offset_bottom = 96.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#7F0]res://GUI/Images/velocity.svg[/img] v"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Velocity"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../Mana/Slider")
 focus_neighbor_bottom = NodePath("../../T/Slider")
@@ -478,7 +548,7 @@ value = 1.0
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "2.5
 "
 horizontal_alignment = 2
@@ -487,16 +557,16 @@ vertical_alignment = 1
 [node name="SpellCount" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 328.0
+offset_top = 168.0
 offset_right = 352.0
-offset_bottom = 354.0
+offset_bottom = 192.0
 text = "Max Spells"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/SpellCount"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../P/Slider")
 focus_neighbor_bottom = NodePath("../../AutoMana/Slider")
@@ -511,7 +581,7 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "4"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -519,17 +589,17 @@ vertical_alignment = 1
 [node name="T" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 168.0
+offset_top = 104.0
 offset_right = 352.0
-offset_bottom = 194.0
+offset_bottom = 128.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#00ff08]res://GUI/Images/time.svg[/img] T"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/T"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../Velocity/Slider")
 focus_neighbor_bottom = NodePath("../../S/Slider")
@@ -544,25 +614,25 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "1"
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="r" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 232.0
-offset_right = 352.0
-offset_bottom = 258.0
+offset_left = 400.0
+offset_top = 72.0
+offset_right = 744.0
+offset_bottom = 96.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#70F]res://GUI/Images/radius.svg[/img] r"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/r"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../S/Slider")
 focus_neighbor_bottom = NodePath("../../N/Slider")
@@ -576,25 +646,25 @@ value = 1.0
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "0.1"
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="P" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 296.0
-offset_right = 352.0
-offset_bottom = 322.0
+offset_left = 400.0
+offset_top = 136.0
+offset_right = 744.0
+offset_bottom = 160.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#0008FF]res://GUI/Images/power.svg[/img] P"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/P"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../N/Slider")
 focus_neighbor_bottom = NodePath("../../SpellCount/Slider")
@@ -609,25 +679,25 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "10"
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="N" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 264.0
-offset_right = 352.0
-offset_bottom = 290.0
+offset_left = 400.0
+offset_top = 104.0
+offset_right = 744.0
+offset_bottom = 128.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#F700FF]res://GUI/Images/count.svg[/img] N"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/N"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../r/Slider")
 focus_neighbor_bottom = NodePath("../../P/Slider")
@@ -642,7 +712,7 @@ rounded = true
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "1"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -650,17 +720,17 @@ vertical_alignment = 1
 [node name="S" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 200.0
+offset_top = 136.0
 offset_right = 352.0
-offset_bottom = 226.0
+offset_bottom = 160.0
 bbcode_enabled = true
 text = "[img=l,16x16, color=#F6FF00]res://GUI/Images/running.svg[/img] S"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/S"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
-offset_bottom = 28.0
+offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../T/Slider")
 focus_neighbor_bottom = NodePath("../../r/Slider")
@@ -674,23 +744,23 @@ value = 1.0
 layout_mode = 0
 offset_left = 272.0
 offset_right = 344.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 text = "2"
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="AutoMana" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 360.0
-offset_right = 352.0
-offset_bottom = 384.0
+offset_left = 400.0
+offset_top = 168.0
+offset_right = 744.0
+offset_bottom = 192.0
 bbcode_enabled = true
 text = "Auto [img=l,16x16, color=#A0A]res://GUI/Images/mana.svg[/img] M"
 
 [node name="Slider" type="HSlider" parent="StartingUpgradesPanel/AutoMana"]
 layout_mode = 0
-offset_left = 104.0
+offset_left = 88.0
 offset_right = 264.0
 offset_bottom = 24.0
 focus_neighbor_left = NodePath("../../../SaveName")
@@ -714,16 +784,16 @@ horizontal_alignment = 2
 [node name="SpellElements" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 2
 offset_left = 8.0
-offset_top = 392.0
+offset_top = 208.0
 offset_right = 352.0
-offset_bottom = 416.0
+offset_bottom = 232.0
 text = "Spell Elements"
 
 [node name="Fire" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
 offset_top = 32.0
 offset_right = 32.0
-offset_bottom = 72.0
+offset_bottom = 64.0
 focus_neighbor_left = NodePath("../../../SaveName")
 focus_neighbor_top = NodePath("../../AutoMana/Slider")
 focus_neighbor_right = NodePath("../Rock")
@@ -736,10 +806,10 @@ icon = ExtResource("2_r3ufo")
 
 [node name="Rock" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
-offset_left = 40.0
+offset_left = 64.0
 offset_top = 32.0
-offset_right = 72.0
-offset_bottom = 72.0
+offset_right = 96.0
+offset_bottom = 64.0
 focus_neighbor_left = NodePath("../Fire")
 focus_neighbor_top = NodePath("../../AutoMana/Slider")
 focus_neighbor_right = NodePath("../Electric")
@@ -751,10 +821,10 @@ icon = ExtResource("4_4nvek")
 
 [node name="Electric" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
-offset_left = 80.0
+offset_left = 128.0
 offset_top = 32.0
-offset_right = 112.0
-offset_bottom = 72.0
+offset_right = 160.0
+offset_bottom = 64.0
 focus_neighbor_left = NodePath("../Rock")
 focus_neighbor_top = NodePath("../../AutoMana/Slider")
 focus_neighbor_right = NodePath("../Water")
@@ -766,10 +836,10 @@ icon = ExtResource("7_jc3of")
 
 [node name="Water" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
-offset_left = 120.0
+offset_left = 184.0
 offset_top = 32.0
-offset_right = 152.0
-offset_bottom = 72.0
+offset_right = 216.0
+offset_bottom = 64.0
 focus_neighbor_left = NodePath("../Electric")
 focus_neighbor_top = NodePath("../../AutoMana/Slider")
 focus_neighbor_right = NodePath("../Air")
@@ -781,10 +851,10 @@ icon = ExtResource("3_cyou0")
 
 [node name="Air" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
-offset_left = 160.0
+offset_left = 248.0
 offset_top = 32.0
-offset_right = 192.0
-offset_bottom = 72.0
+offset_right = 280.0
+offset_bottom = 64.0
 focus_neighbor_left = NodePath("../Water")
 focus_neighbor_top = NodePath("../../AutoMana/Slider")
 focus_neighbor_right = NodePath("../Ice")
@@ -796,10 +866,10 @@ icon = ExtResource("5_lff36")
 
 [node name="Ice" type="Button" parent="StartingUpgradesPanel/SpellElements"]
 layout_mode = 0
-offset_left = 200.0
+offset_left = 312.0
 offset_top = 32.0
-offset_right = 232.0
-offset_bottom = 72.0
+offset_right = 344.0
+offset_bottom = 64.0
 focus_neighbor_left = NodePath("../Air")
 focus_neighbor_top = NodePath("../../AutoMana/Slider")
 focus_neighbor_bottom = NodePath("../../ChainMethods/ChainAtStart")
@@ -810,17 +880,17 @@ icon = ExtResource("6_1jtyh")
 
 [node name="ChainMethods" type="Label" parent="StartingUpgradesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 475.0
-offset_right = 352.0
-offset_bottom = 544.0
+offset_left = 400.0
+offset_top = 216.0
+offset_right = 744.0
+offset_bottom = 285.0
 text = "Chain Methods"
 
 [node name="ChainAtStart" type="Button" parent="StartingUpgradesPanel/ChainMethods"]
 layout_mode = 0
-offset_top = 26.0
-offset_right = 113.0
-offset_bottom = 66.0
+offset_top = 24.0
+offset_right = 104.0
+offset_bottom = 54.0
 focus_neighbor_top = NodePath("../../SpellElements/Fire")
 focus_neighbor_right = NodePath("../ChainAtEnd")
 focus_next = NodePath("../ChainAtEnd")
@@ -830,10 +900,10 @@ text = "At Start"
 
 [node name="ChainAtEnd" type="Button" parent="StartingUpgradesPanel/ChainMethods"]
 layout_mode = 0
-offset_left = 116.0
-offset_top = 26.0
-offset_right = 228.0
-offset_bottom = 66.0
+offset_left = 120.0
+offset_top = 24.0
+offset_right = 224.0
+offset_bottom = 54.0
 focus_neighbor_left = NodePath("../ChainAtStart")
 focus_neighbor_top = NodePath("../../SpellElements/Fire")
 focus_neighbor_right = NodePath("../ChainOnHit")
@@ -844,10 +914,10 @@ text = "At End"
 
 [node name="ChainOnHit" type="Button" parent="StartingUpgradesPanel/ChainMethods"]
 layout_mode = 0
-offset_left = 232.0
-offset_top = 26.0
+offset_left = 240.0
+offset_top = 24.0
 offset_right = 344.0
-offset_bottom = 66.0
+offset_bottom = 54.0
 focus_neighbor_left = NodePath("../ChainAtEnd")
 focus_neighbor_top = NodePath("../../SpellElements/Fire")
 focus_next = NodePath("../../../SaveName")
@@ -855,68 +925,38 @@ focus_previous = NodePath("../ChainAtEnd")
 toggle_mode = true
 text = "On Hit"
 
-[node name="GameModeDescriptionPanel" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -192.0
-offset_top = 216.0
-offset_right = 192.0
-offset_bottom = 384.0
-grow_horizontal = 2
-
-[node name="GameModeDescription" type="Label" parent="GameModeDescriptionPanel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = -181.248
-offset_right = 202.752
-offset_bottom = 168.0
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-metadata/_edit_lock_ = true
-
-[node name="WorldsList" type="ItemList" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -184.0
-offset_top = 176.0
-offset_right = 184.0
-offset_bottom = -96.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="WorldGenerationVersion" type="Label" parent="."]
-visible = false
+[node name="Coins" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 8.0
-offset_right = 200.0
-offset_bottom = 29.0
-text = "World Generation Version:"
+offset_top = 288.0
+offset_right = 352.0
+offset_bottom = 312.0
+bbcode_enabled = true
+text = "[img=l,16x16, color=#F6FF00]res://GUI/Images/coins.svg[/img] Coins"
 
-[node name="GeneratorVersion" type="OptionButton" parent="WorldGenerationVersion"]
+[node name="Slider" type="HSlider" parent="StartingUpgradesPanel/Coins"]
 layout_mode = 0
-offset_top = 24.0
-offset_right = 192.0
-offset_bottom = 49.0
-selected = 0
-item_count = 1
-popup/item_0/text = "Version 1"
+offset_left = 88.0
+offset_right = 264.0
+offset_bottom = 24.0
+max_value = 100000.0
+step = 500.0
+
+[node name="Value" type="Label" parent="StartingUpgradesPanel/Coins"]
+layout_mode = 0
+offset_left = 272.0
+offset_right = 344.0
+offset_bottom = 21.0
+text = "100000"
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [connection signal="focus_entered" from="SaveName" to="." method="_on_save_name_focus_entered"]
+[connection signal="focus_entered" from="Seed" to="." method="_on_seed_focus_entered"]
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]
 [connection signal="toggled" from="UseNormal" to="." method="_on_use_normal_toggled"]
 [connection signal="toggled" from="UseHardcore" to="." method="_on_use_hardcore_toggled"]
-[connection signal="focus_entered" from="Seed" to="." method="_on_seed_focus_entered"]
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
 [connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]
@@ -924,9 +964,11 @@ popup/item_0/text = "Version 1"
 [connection signal="toggled" from="RespawnOptions/Upgrades" to="." method="_on_upgrades_toggled"]
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]
+[connection signal="toggled" from="RespawnOptions/Coins" to="." method="_on_coins_toggled"]
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="toggled" from="StartingUpgrades" to="." method="_on_starting_upgrades_toggled"]
+[connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Health/Slider" to="." method="_on_health_value_changed"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Attack/Slider" to="." method="_on_attack_value_changed"]
 [connection signal="value_changed" from="StartingUpgradesPanel/Defence/Slider" to="." method="_on_defence_value_changed"]
@@ -948,4 +990,4 @@ popup/item_0/text = "Version 1"
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtStart" to="." method="_on_chain_at_start_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainAtEnd" to="." method="_on_chain_at_end_toggled"]
 [connection signal="toggled" from="StartingUpgradesPanel/ChainMethods/ChainOnHit" to="." method="_on_chain_on_hit_toggled"]
-[connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
+[connection signal="value_changed" from="StartingUpgradesPanel/Coins/Slider" to="." method="_on_coins_slider_value_changed"]

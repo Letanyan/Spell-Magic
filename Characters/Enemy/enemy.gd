@@ -727,8 +727,23 @@ func artier(cls: int) -> Vector2i:
 	
 # cls = [1,5]
 func cns(cls: int) -> Array[int]:
-	var count := Rand.roll(3, fiti(1, cls), 0)
+	# class 1:     [worst case] -> [best case]
+	# - level   1: [1] -> [10, 10]
+	# - level 100: [2] -> [20, 20]
+	# class 2:
+	# - level   1: [1, 1] -> [10, 10, 10, 10]
+	# - level 100: [4, 4] -> [40, 40, 40, 40]
+	# class 3:
+	# - level   1: [1, 1, 1] -> [10, 10, 10, 10, 10, 10]
+	# - level 100: [6, 6, 6] -> [60, 60, 60, 60, 60, 60]
+	# class 4:
+	# - level   1: [1, 1, 1, 1] -> [10, 10, 10, 10, 10, 10, 10, 10]
+	# - level 100: [8, 8, 8, 8] -> [80, 80, 80, 80, 80, 80, 80, 80]
+	# class 5:
+	# - level   1: [1, 1, 1, 1, 1] -> [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+	# - level 100: [10, 10, 10, 10, 10] -> [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+	var count := Rand.roll(2, cls, 0)
 	var result: Array[int] = []
 	for i in count:
-		result.append(Rand.roll(10, fiti(1, cls * 2), 0))
+		result.append(Rand.roll(10, fiti(1, cls) + fiti(0, cls), 0))
 	return result

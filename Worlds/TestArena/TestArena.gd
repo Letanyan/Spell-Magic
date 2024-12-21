@@ -60,6 +60,20 @@ func setup(_settings: WorldSettings) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
+	#for i in ["flower", "feather", "goblet", "sands", "crown"]:
+		#var artifact := Artifact.new(i)
+		#artifact.fill(
+			#[Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT],
+			#randf() < 0.5,
+			#{ Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10, },
+			#{ Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 10, },
+			#{ Artifact.Element.FIRE: 10 },
+			#{ Artifact.Element.FIRE: 10 },
+			#{ Artifact.Pattern.CIRCLE: 10, Artifact.Pattern.TRIANGLE: 2 },
+			#Vector2i(7, 3),
+		#)
+		#artifacts.collection.append(artifact)
+	
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void: e.queue_free(); print(e, " died"))
 	
 	#make_targets()
