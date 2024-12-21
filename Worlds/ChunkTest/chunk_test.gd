@@ -39,4 +39,4 @@ func _input(event: InputEvent) -> void:
 						print("error: ", p)
 						continue
 					p.y = (res["position"] as Vector3).y
-					#DebugDraw3D.draw_sphere(p, 32, Color.DEEP_PINK, 20)
+					#Debug3D.draw_sphere(p, 32, Color.DEEP_PINK, 20)

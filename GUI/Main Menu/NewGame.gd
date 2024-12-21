@@ -171,6 +171,7 @@ func _on_worlds_list_item_activated(index: int) -> void:
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(selected_world_name)
 	settings.world_name = save_name.text
+	settings.last_save_time = Time.get_unix_time_from_system()
 	settings.save()
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 
@@ -207,6 +208,7 @@ func _on_create_pressed() -> void:
 			GameModeSettings.GameMode.RESPAWN:
 				settings.game_mode_settings.flags = game_flags
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
+		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
@@ -217,6 +219,7 @@ func _on_create_pressed() -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.read(selected_world_name)
 		settings.world_name = save_name.text
+		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_normal.button_pressed:
@@ -233,6 +236,7 @@ func _on_create_pressed() -> void:
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_hardcore.button_pressed:
@@ -251,6 +255,7 @@ func _on_create_pressed() -> void:
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 

@@ -303,7 +303,7 @@ static func astar(p: CollisionObject3D, target: Vector3, shape: Shape3D, options
 			var tentative: float = g_score[current] + distance
 			if tentative < g_score.get(n, INF):
 				if debug:
-					DebugDraw3D.draw_sphere(n, shape_max_bound(shape) / 2.0, Color(0, 1, 0), 0.5)
+					Debug3D.draw_sphere(n, shape_max_bound(shape) / 2.0, Color(0, 1, 0), 0.5)
 				came_from[n] = current
 				g_score[n] = tentative
 				f_score[n] = tentative + n.distance_to(target)
@@ -344,7 +344,7 @@ static func find_target_path(p: CollisionObject3D, target: Vector3, shape: Shape
 	
 	if debug:
 		for pos in path:
-			DebugDraw3D.draw_sphere(pos, shape_max_bound(new_shape) / 2.0, Color(1, 0, 0), 0.5)
+			Debug3D.draw_sphere(pos, shape_max_bound(new_shape) / 2.0, Color(1, 0, 0), 0.5)
 		
 	if debug: print("find_target_path: D")
 	return path 

@@ -47,7 +47,7 @@ func load_dict(dict: Dictionary) -> void:
 	update_sharpness(dict.get("sharpness", 0.2) as float)
 	update_scaling(dict.get("scaling", 1.0) as float)
 	update_scaling_mode(dict.get("scaling_mode", 0) as int)
-	update_display_style(dict.get("display_style", DisplayStyle.WINDOWED) as GraphicsSettings.DisplayStyle)
+	update_display_style(dict.get("display_style", DisplayStyle.BORDERLESS) as GraphicsSettings.DisplayStyle)
 	update_display_size(dict.get("display_size", "1920x1080 (16:9)") as String)
 	if viewport != null:
 		update_msaa(dict.get("msaa", Viewport.MSAA_DISABLED) as Viewport.MSAA)

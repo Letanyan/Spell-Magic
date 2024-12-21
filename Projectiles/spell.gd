@@ -261,7 +261,7 @@ func set_r(r_: String) -> void:
 func update_r() -> void:
 	var vars := basic_fixed_vars()
 	vars.set_value(Vars.r, 0.0)
-	radius_cache = r_expr.compute(vars)
+	radius_cache = snappedf(r_expr.compute_value(vars), 0.0001)
 	
 func calculate_cartesian_point(vars: Vars) -> Vector3:
 	var sphere := Vector3.ZERO

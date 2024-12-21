@@ -350,9 +350,9 @@ func _physics_process(delta: float) -> void:
 			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 1000.0, Vec3.max(player.bounds))
 			velocity_movement.target_position = Navigator.find_next_target_from_path(velocity_movement.target_path, position, obj, next_pos)
 			#var clr := Color(randf(), randf(), randf())
-			#DebugDraw3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
+			#Debug3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
 			#for p in velocity_movement.target_path:
-				#DebugDraw3D.draw_sphere(p, 0.1, clr, 0.2)
+				#Debug3D.draw_sphere(p, 0.1, clr, 0.2)
 			if reset_spell_tick:
 				behavior_tick = Globals.behaviour_tick()
 

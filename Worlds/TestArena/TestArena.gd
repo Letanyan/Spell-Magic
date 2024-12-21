@@ -431,9 +431,9 @@ func _physics_process(delta: float) -> void:
 		test_tick = UPDATE
 		var collision := $rigid_block/CollisionShape3D as CollisionShape3D
 		var V := Terrain._height_at_position(collision, player.position.x, player.position.z)
-		DebugDraw3D.draw_sphere(Vec3.xz_y(player.position, V.w + collision.global_position.y), 0.3, Color.BLUE, UPDATE)
+		Debug3D.draw_sphere(Vec3.xz_y(player.position, V.w + collision.global_position.y), 0.3, Color.BLUE, UPDATE)
 		#var normal := Vector3(V.x, V.y, V.z)
-		#DebugDraw3D.draw_arrow_ray(player.position, normal, 2, Color.RED, 0.5, false, UPDATE)
+		#Debug3D.draw_arrow_ray(player.position, normal, 2, Color.RED, 0.5, false, UPDATE)
 		var hmap := collision.shape as HeightMapShape3D
 		var S := collision.scale.x
 		var w := (hmap.map_width - 1) * collision.scale.x
@@ -447,7 +447,7 @@ func _physics_process(delta: float) -> void:
 				var Y := (r + s + collision.global_position.z)
 				var h := Terrain._height_at_position(collision, X, Y).w
 				var p := Vector3(c + s, h, r + s) + collision.global_position
-				DebugDraw3D.draw_sphere(p, 0.1, Color.BLACK, UPDATE)
+				Debug3D.draw_sphere(p, 0.1, Color.BLACK, UPDATE)
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false

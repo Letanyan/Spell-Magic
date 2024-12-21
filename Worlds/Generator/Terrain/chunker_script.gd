@@ -490,9 +490,9 @@ func height_at_position(coord: Vector2i, x: float, z: float) -> Vector4:
 	var p1 := Vector3(s1.x, yB * scale, s1.y)
 	var p2 := Vector3(s2.x, yC * scale, s2.y)
 	
-	#DebugDraw3D.draw_sphere(collision.global_position + p0, 0.2, Color.RED, 5)
-	#DebugDraw3D.draw_sphere(collision.global_position + p1, 0.2, Color.RED, 5)
-	#DebugDraw3D.draw_sphere(collision.global_position + p2, 0.2, Color.RED, 5)
+	#Debug3D.draw_sphere(collision.global_position + p0, 0.2, Color.RED, 5)
+	#Debug3D.draw_sphere(collision.global_position + p1, 0.2, Color.RED, 5)
+	#Debug3D.draw_sphere(collision.global_position + p2, 0.2, Color.RED, 5)
 	
 	# normal for the plane of the triangle defined by the equation [dot(p-p0,N)] where p is some point
 	var N := (p1 - p0).cross(p2 - p0)

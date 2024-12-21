@@ -147,7 +147,7 @@ func create_attack_jump_path() -> void:
 	var end: Vector3 = lerp(position, player.position, 5.0) - player.position
 	var attack_jump_pathway := Pathway.new() \
 		.cubic_to(start, end, mid, runs(14), Easing.linear)
-	#DebugDraw3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
-	#DebugDraw3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
-	#DebugDraw3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
+	#Debug3D.draw_sphere(start, 0.5, Color(1, 0, 0), 5)
+	#Debug3D.draw_sphere(mid, 0.5, Color(0, 1, 0), 5)
+	#Debug3D.draw_sphere(end, 0.5, Color(0, 0, 1), 5)
 	attack_jump_over_path = PathStyle.new().follow_path(attack_jump_pathway).origin_is_player().align_y_to_ground_air_and_dirt().look_at_player()

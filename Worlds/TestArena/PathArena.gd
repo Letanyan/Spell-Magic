@@ -21,7 +21,7 @@ func _physics_process(delta: float) -> void:
 	path_draw_tick -= delta
 	if path_draw_tick <= 0.0:
 		for pos in positions:
-			DebugDraw3D.draw_sphere(pos, Navigator.shape_max_bound(collision.shape) / 2.0, Color(1, 0, 0), 0.5)
+			Debug3D.draw_sphere(pos, Navigator.shape_max_bound(collision.shape) / 2.0, Color(1, 0, 0), 0.5)
 		path_draw_tick = 0.5
 
 func _input(event: InputEvent) -> void:

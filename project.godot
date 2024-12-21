@@ -12,9 +12,15 @@ config_version=5
 
 config/name="Spell Magic"
 run/main_scene="res://Worlds/ShaderLoader/ShaderLoader.tscn"
+run/print_header=false
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
+config/use_custom_user_dir.release=true
+run/main_scene.release="res://Worlds/ShaderLoader/ShaderLoader.tscn"
+run/disable_stdout.release=true
+run/disable_stderr.release=true
+config/use_custom_user_dir.template_release=true
 
 [autoload]
 
@@ -43,6 +49,7 @@ settings/updates/check_for_updates=false
 
 window/size/initial_position_type=3
 window/size/always_on_top=true
+window/size/always_on_top.release=false
 
 [dotnet]
 
