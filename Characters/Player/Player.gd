@@ -96,6 +96,7 @@ func _ready() -> void:
 	walking_audio_state = AudioState.new(walking_audio1, walking_audio2)
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
+	SignalBus.player_is_ready.emit(self)
 	
 func emit_vitals_update() -> void:
 	vital_update.emit(vitals)
@@ -391,6 +392,7 @@ func update_watched_enemies_positions(delta: float) -> void:
 func pick_up_key(key: int) -> bool:
 	if world_settings.player_keys & (1 << (key - 1)) == 0:
 		world_settings.player_keys |= (1 << (key - 1))
+		SignalBus.key_collected.emit(self)
 		return true
 	else:
 		return false
