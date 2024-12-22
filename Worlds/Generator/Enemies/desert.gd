@@ -43,7 +43,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			DesertStructuresKind.GHOST:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.GHOST, pos, spacing) as WalkerHead
+				var p := pop.spawn_enemy(World.Enemy.GHOST, pos, spacing)
 				if p != null: 
 					result.append(p)
 					var count := rng.randi_range(5, 5 + pop.fiti(2, 5))
@@ -56,7 +56,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			DesertStructuresKind.GHOSTLY:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.GHOSTLY, pos, spacing) as Walker
+				var p := pop.spawn_enemy(World.Enemy.GHOSTLY, pos, spacing)
 				if p != null: 
 					result.append(p)
 					var row_count := rng.randi_range(1, pop.fiti(2, 7))

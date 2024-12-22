@@ -75,7 +75,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						while offset_dir.is_equal_approx(-Vec2.xz(direction)):
 							offset_dir = Rand.entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
 						if cursor.y > 20 and rng.randf() < 0.5:
-							var op := pop.spawn_enemy(World.Enemy.BIRD, pos + Vec2.xz(cursor) + Rand.point_in_circle_2d(spacing, rng), spacing) as Bird
+							var op := pop.spawn_enemy(World.Enemy.BIRD, pos + Vec2.xz(cursor) + Rand.point_in_circle_2d(spacing, rng), spacing)
 							if op != null:
 								op.idle_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
 								op.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
@@ -157,7 +157,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							AttackSequence.ASCondition.jump("choose"),
 						])
 						result.append(platform)
-						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing) as Birdman
+						var p := pop.spawn_enemy(World.Enemy.BIRDMAN, center, spacing)
 						if p != null:
 							var y_offset := h.y + platform.bounds.y + p.bounds.y
 							p.idle_path.path.apply_transform(T.translated(Vec3.y(y_offset)))

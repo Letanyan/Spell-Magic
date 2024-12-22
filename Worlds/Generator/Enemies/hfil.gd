@@ -55,7 +55,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var pos := area[index]
 				
 				
-				var king := pop.spawn_enemy(World.Enemy.MUSHKING, pos, spacing) as Mushking
+				var king := pop.spawn_enemy(World.Enemy.MUSHKING, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.25, 0.5), 4: pop.fit(0.125, 0.5), 3: pop.fit(0.5, 0.25), 2: pop.fit(0.25, 0.25), 1: pop.fit(0.125, 0)}) as int
 				var angle_offset := rng.randf_range(0, 2 * PI)
@@ -72,7 +72,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 			HFILStructuresKind.SNOT_ENEMIES:
 				var pos := area[index]
-				var king := pop.spawn_enemy(World.Enemy.SNOT_BLOB, pos, spacing) as SnotBlob
+				var king := pop.spawn_enemy(World.Enemy.SNOT_BLOB, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.25, 0.5), 4: pop.fit(0.125, 0.5), 3: pop.fit(0.5, 0.25), 2: pop.fit(0.25, 0.25), 1: pop.fit(0.125, 0)}) as int
 				var angle_offset := rng.randf_range(0, 2 * PI)
@@ -109,7 +109,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 			HFILStructuresKind.HOT_DRAGONS:
 				var pos := area[index]
-				var king := pop.spawn_enemy(World.Enemy.DRAGON if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.DRAGOON, pos, spacing) as Enemy
+				var king := pop.spawn_enemy(World.Enemy.DRAGON if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.DRAGOON, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
 				var angle_offset := rng.randf_range(0, 2 * PI)

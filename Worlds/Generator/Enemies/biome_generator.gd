@@ -13,7 +13,7 @@ func spawn_enemies_randomly(result: Array[Node3D], pop: Population, count: int, 
 	Rand.normalise_distribution(probs)
 	for p in path.sample_points_xz(count):
 		var kind := Rand.entity_from_non_relative_distribution(rng.randf(), probs) as World.Enemy
-		var enemy := pop.spawn_enemy(kind, p, spacing) as Enemy
+		var enemy := pop.spawn_enemy(kind, p, spacing)
 		if enemy != null:
 			result.append(enemy)
 			if spawner != null:
@@ -33,7 +33,7 @@ func spawn_randomly(result: Array[Node3D], pop: Population, count: int, path: Pa
 		var enemy_kind := Rand.entity_from_non_relative_distribution(rng.randf(), enemy_probs) as World.Enemy
 		var is_enemy := rng.randf() < enemy_odds
 		if is_enemy:
-			var enemy := pop.spawn_enemy(enemy_kind, p, spacing) as Enemy
+			var enemy := pop.spawn_enemy(enemy_kind, p, spacing)
 			if enemy != null:
 				result.append(enemy)
 				if spawner != null:

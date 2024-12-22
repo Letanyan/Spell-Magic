@@ -65,7 +65,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			SavannahStructuresKind.LONE_ORC:
 				var pos := area[index]
-				var king := pop.spawn_enemy(World.Enemy.ORC if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.ORC_DEAD, pos, spacing) as Enemy
+				var king := pop.spawn_enemy(World.Enemy.ORC if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.ORC_DEAD, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
 				var angle_offset := rng.randf_range(0, 2 * PI)

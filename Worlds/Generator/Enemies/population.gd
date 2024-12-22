@@ -324,7 +324,6 @@ func despawn_all_from_world(world: Node3D) -> void:
 func update_info(world: Node3D) -> void:
 	if display_only: return
 	
-	# FIXME: enemy underwater probably `!is_inside_tree()`
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
 		var dist: float = habitant.global_position.distance_to(player.global_position) 

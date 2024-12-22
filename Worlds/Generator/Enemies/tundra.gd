@@ -41,12 +41,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			TundraStructuresKind.LONE_HEAD:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos, spacing) as WalkerHead
+				var p := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos, spacing)
 				if p != null: result.append(p)
 				
 			TundraStructuresKind.LONE_WALKER:
 				var pos := area[index]
-				var p := pop.spawn_enemy(World.Enemy.WALKER, pos, spacing) as Walker
+				var p := pop.spawn_enemy(World.Enemy.WALKER, pos, spacing)
 				if p != null: result.append(p)
 				
 			TundraStructuresKind.BLUEMON:
@@ -64,7 +64,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					if king != null: result.append(king)
 				var minion_count := Rand.roll(floori(6 * pop.fit(1, 1.5)), 2, king_count, rng, Rand.Accum.AVG)
 				for c in minion_count:
-					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing) as WalkerHead
+					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing)
 					if minion != null: result.append(minion)
 				
 			

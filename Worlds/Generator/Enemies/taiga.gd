@@ -78,7 +78,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			TaigaStructuresKind.LONE_GOBLIN:
 				var pos := area[index]
-				var king := pop.spawn_enemy(World.Enemy.GOBLIN if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.GOBLIN_KING, pos, spacing) as Enemy
+				var king := pop.spawn_enemy(World.Enemy.GOBLIN if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.GOBLIN_KING, pos, spacing)
 				if king != null: result.append(king)
 				
 			TaigaStructuresKind.HORZ_CIRCLE_PUZZLE:
