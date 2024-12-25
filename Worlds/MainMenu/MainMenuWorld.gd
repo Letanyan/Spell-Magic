@@ -53,6 +53,7 @@ func _ready() -> void:
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
+	# FIXME: check "VERSION: -1, WORLD SEED: 7213014, RNG SEED: 7213014"
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)

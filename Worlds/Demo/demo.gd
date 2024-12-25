@@ -108,10 +108,7 @@ func setup(_settings: WorldSettings) -> void:
 	GlobalData.game_settings.last_world = settings.world_name
 	GlobalData.game_settings.save()
 	
-var debug_file: FileAccess
 func run_on_ready() -> void:
-	debug_file.store_string("start run_on_ready\n")
-	debug_file.flush()
 	ready_state = GameSettings.ReadyState.IN
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
@@ -121,8 +118,6 @@ func run_on_ready() -> void:
 		#_settings.sed = 0 
 		setup(_settings)
 		
-	debug_file.store_string("menu setup\n")
-	debug_file.flush()
 	menu.setup(book, case, artifacts, settings)
 	
 	wand = case.current_wand()
@@ -131,12 +126,8 @@ func run_on_ready() -> void:
 		
 	menu.close_menu.connect(toggle_menu)
 	
-	debug_file.store_string("noise tex\n")
-	debug_file.flush()
 	var noise_tex := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
 	noise_image = noise_tex.get_image()
-	debug_file.store_string("get noise tex image: " + noise_tex.resource_path + "\n")
-	debug_file.flush()
 		
 	# Forest location for world seed 0
 	#player.position.x = 800
@@ -144,8 +135,6 @@ func run_on_ready() -> void:
 	#player.position.z = 2300
 	player.position = settings.player_position
 	player.spell_caster.ignore_mana_cost = OS.is_debug_build()
-	debug_file.store_string("connect player stats\n")
-	debug_file.flush()
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)
@@ -166,26 +155,16 @@ func run_on_ready() -> void:
 	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack())
 	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence())
 	player.world_settings = settings
-	debug_file.store_string("Name Generator\n")
-	debug_file.flush()
 	player.name_generator = NameGenerator.new()
-	debug_file.store_string("read name generators\n")
-	debug_file.flush()
 	player.name_generator.read(settings.world_name)
 		
-	debug_file.store_string("noise blender\n")
-	debug_file.flush()
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
-	debug_file.store_string("chunker\n")
-	debug_file.flush()
 	if OS.is_debug_build():
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
 	else:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
-	debug_file.store_string("build terrain\n")
-	debug_file.flush()
 	build_terrain()
 	update_terrain()
 	
@@ -201,8 +180,6 @@ func run_on_ready() -> void:
 		#heights.set(i, (heights[i] - min_height) / (max_height - min_height) )
 	#texture_transition_height = blender.back.height_texture(heights, 256.0, 256.0)
 	
-	debug_file.store_string("SignalBus\n")
-	debug_file.flush()
 	SignalBus.enemy_death.connect(enemy_dies)
 	
 	skybox = SkyBox.new(world_environment, sun, moon)
@@ -231,12 +208,8 @@ func run_on_ready() -> void:
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
 	sub_viewport_container.visible = true
-	
-	debug_file.store_string("done run_on_ready\n")
-	debug_file.flush()
 
 func _ready() -> void:
-	debug_file = FileAccess.open("user://debug.txt", FileAccess.WRITE)
 	if ready_state == GameSettings.ReadyState.NOT:
 		run_on_ready()
 

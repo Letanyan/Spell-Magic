@@ -682,8 +682,8 @@ func percep(mncls: int, mxcls: int) -> Vector2:
 	return Vector2(mn, mx)
 	
 func atks(mncls: int, mxcls: int) -> String:
-	var mn := 1.0 + pow(float(mncls) / 20.0, 1.5) * 31.0
-	var mx := 1.0 + pow(float(mxcls) / 20.0, 1.5) * 31.0
+	var mn := 1.0 + pow(float(mncls) / 20.0, 1.5) * 39.0
+	var mx := 1.0 + pow(float(mxcls) / 20.0, 1.5) * 39.0
 	return fits(mn, mx)
 	
 func runs(cls: int) -> float:
