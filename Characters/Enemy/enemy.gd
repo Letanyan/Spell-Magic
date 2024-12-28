@@ -591,7 +591,20 @@ func drop_spell() -> Spell:
 	return result
 	
 func drop_key() -> int:
-	return 0
+	var norm_level := int(level) % 101 # == [0, 100]
+	
+	if norm_level < 95:
+		return 0
+		
+	var exp_p := float(norm_level - 96) # prob == [0, 4]
+	var prob := maxf(0.0, (class_level / 20.0) ** ((5.0 - exp_p) * 4.0) - 0.05)
+	
+	if prob < randf():
+		return 0
+	
+	return 1 << (velocity_movement.current_biome - 1)
+	
+		
 	
 ## values must be in range [1, 100]
 func drop_coins() -> Array[int]: 

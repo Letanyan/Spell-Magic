@@ -15,7 +15,6 @@ var grassland_structure := {
 	GrasslandStructuresKind.TREE_ROUND: 5,
 	GrasslandStructuresKind.TREE_BRANCHED: 0.5,
 	GrasslandStructuresKind.HIVE: 0.1,
-	GrasslandStructuresKind.SLIMY: 0.05,
 	GrasslandStructuresKind.FLOCK: 0.1,
 	GrasslandStructuresKind.PETS: 0.05,
 	GrasslandStructuresKind.FISH: 0.1,

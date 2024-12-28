@@ -35,17 +35,16 @@ func update_mesh_with_color(color: Color) -> void:
 	
 func update_mesh_color() -> void:
 	match key:
-		1 <<  0: update_mesh_with_color(Color(1, 0, 0))
-		1 <<  1: update_mesh_with_color(Color(0, 1, 0))
-		1 <<  2: update_mesh_with_color(Color(0, 0, 1))
+		1 <<  0: update_mesh_with_color(Color(0.23, 0.83, 0.23)) # GRASSLAND
+		1 <<  1: update_mesh_with_color(Color(0, 1, 1)) # TAIGA
+		1 <<  2: update_mesh_with_color(Color(0.55, 0.28, 0.0)) # FOREST
+		1 <<  3: update_mesh_with_color(Color(1, 1, 0)) # DESERT
+		1 <<  4: update_mesh_with_color(Color(0, 0.4, 0.0)) # JUNGLE
+		1 <<  5: update_mesh_with_color(Color(1, 0.5, 0.0)) # SAVANNAH
+		1 <<  6: update_mesh_with_color(Color(0, 0, 0)) # TUNDRA
+		1 <<  7: update_mesh_with_color(Color(1, 1, 1)) # OTHERWORLD
+		1 <<  8: update_mesh_with_color(Color(1, 0, 0)) # HFIL
 		
-		1 <<  3: update_mesh_with_color(Color(1, 1, 0))
-		1 <<  4: update_mesh_with_color(Color(1, 0, 1))
-		1 <<  5: update_mesh_with_color(Color(0, 1, 1))
-		
-		1 <<  6: update_mesh_with_color(Color(1, 0.5, 0))
-		1 <<  7: update_mesh_with_color(Color(1, 0, 0.5))
-		1 <<  8: update_mesh_with_color(Color(0, 1, 0.5))
 		1 <<  9: update_mesh_with_color(Color(0.5, 1, 0))
 		1 << 10: update_mesh_with_color(Color(0.5, 0, 1))
 		1 << 11: update_mesh_with_color(Color(0, 0.5, 1))
