@@ -132,6 +132,18 @@ func can_use_spell_with_name(n: String) -> DisallowSpellReason:
 		return can_use_spell(s)
 	return DisallowSpellReason.ACTIVE
 
+func rebuild_spell_chain(spell: Spell) -> Array[Spell]:
+	var updated_spells: Array[Spell] = []
+	for s in spells:
+		if s.chain != null and s.chain.name == spell.name:
+			updated_spells.append(s)
+			if s.configuration_parameters_for_chain.is_empty():
+				s.chain = spell
+			else:
+				s.chain = spell.duplicate()
+				s.chain.configure_using_parameter_collection(s.configuration_parameters_for_chain, s.global_constant_variables())
+	return updated_spells
+
 func rebuild_spell_chains() -> void:
 	for s in spells:
 		if s.chain != null:

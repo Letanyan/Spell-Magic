@@ -101,11 +101,6 @@ func _ready() -> void:
 		tex.stretch_mode = TextureRect.StretchMode.STRETCH_TILE
 		btn.icon = tex
 		i += 1
-		
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 	
 func refresh_preview_thumbnails(spell: Spell) -> void:
 	var tint_color := Spell.color_from_element(spell.element)
@@ -502,15 +497,17 @@ func _on_M_text_changed(new_text: String) -> void:
 func update_spells_that_chain_to_current_spell() -> void:
 	if current_index < 0:
 		return
+	var spell := book.spells[current_index]
+	var updated_spells := book.rebuild_spell_chain(spell)
 	if not errors_list.is_empty():
 		var last_error : String = errors_list.values()[errors_list.size() - 1]
 		var last_key : String = errors_list.keys()[errors_list.size() - 1]
 		error_label.text = "%s: %s" % [last_key, last_error]
 	else:
 		error_label.text = ""
-		var spell := book.spells[current_index]
 		book.spell_was_updated.emit(spell)
-	book.rebuild_spell_chains()
+	for s in updated_spells:
+		book.spell_was_updated.emit(s)
 	
 func _on_view_chain_button_pressed() -> void:
 	var n := chain_edit.text

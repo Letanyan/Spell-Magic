@@ -137,6 +137,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool 
 	for e: Artifact.Element in damage_resistance:
 		if e == kind or e == Artifact.Element.ANY:
 			power = power * (1.0 - damage_resistance[e].y) - damage_resistance[e].x
+	power = maxf(0.0, power)
 	health.apply_ignoring_resistance(-power)
 	
 	if debug:

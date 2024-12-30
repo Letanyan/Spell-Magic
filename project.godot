@@ -61,6 +61,7 @@ project/assembly_name="Spell Magic"
 
 [editor]
 
+movie_writer/movie_file="C:/Users/letan/Documents/Assets/Spell Magic/Movies/crafting.avi"
 version_control/autoload_on_startup=true
 
 [editor_plugins]

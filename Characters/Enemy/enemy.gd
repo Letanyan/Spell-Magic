@@ -603,7 +603,6 @@ func drop_key() -> int:
 		return 0
 	
 	return 1 << (velocity_movement.current_biome - 1)
-	
 		
 	
 ## values must be in range [1, 100]
