@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://w4lonc2wt7at"]
+[gd_scene load_steps=3 format=3 uid="uid://w4lonc2wt7at"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/SettingsGUI.gd" id="1_r1of0"]
+[ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="2_j65m2"]
 
 [node name="Settings" type="Control"]
 layout_mode = 3
@@ -861,10 +862,18 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 18
 placeholder_text = "function_name    argument argument argument  ... = expression"
 
-[node name="Notes" type="Panel" parent="Tabs"]
+[node name="Universal Magic Book" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 5
+
+[node name="MagicBook" parent="Tabs/Universal Magic Book" instance=ExtResource("2_j65m2")]
+layout_mode = 1
+
+[node name="Notes" type="Panel" parent="Tabs"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6
 
 [node name="Content" type="RichTextLabel" parent="Tabs/Notes"]
 layout_mode = 1
@@ -941,7 +950,7 @@ popup/item_1/id = 1
 [node name="Game" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 6
+metadata/_tab_index = 7
 
 [node name="Save" type="Button" parent="Tabs/Game"]
 layout_mode = 1

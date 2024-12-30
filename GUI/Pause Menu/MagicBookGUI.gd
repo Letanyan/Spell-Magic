@@ -18,6 +18,8 @@ var book: MagicBook:
 		book = value
 		duplicate_book()
 		reload_list()
+var is_universal: bool = false
+		
 
 var spells_index_map := {}
 
@@ -190,13 +192,10 @@ func add_spell(spell: Spell) -> void:
 func _on_create_pressed() -> void:
 	UIAudioPlayer.click()
 	var spell := Spell.new()
-	var active_count := 0
-	for s in book.spells:
-		if s.is_active:
-			active_count += 1
-	spell.is_active = active_count < book.settings.upgrade_settings.max_spells_in_book()
 	spell.name = "New Spell"
 	add_spell(spell)
+	if is_universal:
+		spell.is_active = true
 
 func duplicate_spell_at_index(index: int) -> void:
 	var spell: Spell = book.spells[index].duplicate()
@@ -254,11 +253,12 @@ func _on_filter_button_pressed() -> void:
 func _on_search_line_edit_text_changed(new_text: String) -> void:
 	reload_list()
 	
-
 func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == 1 and at_position.x < 32:
 		current_index = spells_index_map[index]
 		if current_index < 0:
+			return
+		if is_universal:
 			return
 		
 		var spell: Spell = book.spells[current_index]
@@ -268,8 +268,10 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				var popup := PopupDialog.display("Spell currently on cooldown. Wait until the spell is of cooldown to deactive.", "Okay", "")
 				popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 				popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
+				UIAudioPlayer.failed_click()
 				get_tree().root.add_child(popup)
 			else:
+				UIAudioPlayer.check(false)
 				spell.is_active = false
 				reload_list()
 		else:
@@ -282,14 +284,16 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				var can_upgrade := book.settings.upgrade_settings.max_spells_in_book() < UpgradeSettings.LIMIT_SPELLS_IN_BOOK
 				var options := ""
 				if can_upgrade:
-					options = "Upgrade max spells in book or deactive a spell"
+					options = "Upgrade max spells in book or deactive another spell first."
 				else:
-					options = "Deactive a spell"
+					options = "Deactive another spell first."
 				var popup := PopupDialog.display("Total active spells limit reached." + options, "Okay", "")
 				popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 				popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
+				UIAudioPlayer.failed_click()
 				popup.show_in_root(self)
 			else:
+				UIAudioPlayer.check(true)
 				spell.is_active = true
 				reload_list()
 

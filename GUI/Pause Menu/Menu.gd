@@ -82,6 +82,7 @@ func _on_upgrades_pressed() -> void:
 	update_index(3)
 	
 func _on_settings_pressed() -> void:
+	settings.update_controls()
 	update_index(4)
 
 func open(kind: Kind) -> void:
@@ -104,7 +105,6 @@ func open(kind: Kind) -> void:
 		Kind.UPGRADES:
 			_on_upgrades_pressed()
 		Kind.SETTINGS:
-			settings.update_controls()
 			_on_settings_pressed()
 	world_settings.save()
 
@@ -146,6 +146,8 @@ func save_changes() -> void:
 		upgrades.settings.save()
 	if settings.visible:
 		settings.world_settings.save()
+		if settings.is_magic_book_selected:
+			settings.save_user_magic_book()
 	world_settings.save()
 
 

@@ -69,7 +69,7 @@ func add(spell: Spell) -> void:
 	for s in spells:
 		if s.is_active:
 			active_count += 1
-	spell.is_active = active_count <= settings.upgrade_settings.max_spells_in_book()
+	spell.is_active = active_count < settings.upgrade_settings.max_spells_in_book()
 	spells.append(spell)
 	spell_index[spell.name] = spell
 	

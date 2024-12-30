@@ -205,6 +205,7 @@ static func particle_system_lifetime(p: GPUParticles3D) -> float:
 var game_settings: GameSettings = null
 var controller: Controller = null
 var magic_book: MagicBook = null
+var user_magic_book: MagicBook = null
 var nav: GDNavigator = null
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
@@ -226,11 +227,21 @@ func _ready() -> void:
 	
 	controller = Controller.new()
 	
-	magic_book = MagicBook.new()
 	var upgrade_settings := UpgradeSettings.new()
 	upgrade_settings.reset_all_stats_to_max_values()
+	
+	magic_book = MagicBook.new()
 	magic_book.settings = WorldSettings.new(get_viewport())
 	magic_book.settings.upgrade_settings = upgrade_settings
-	
 	magic_book.read_absolute_path("res://magic_book.json")
 	magic_book.rebuild_spell_chains()
+	
+	user_magic_book = MagicBook.new()
+	user_magic_book.settings = WorldSettings.new(get_viewport())
+	user_magic_book.settings.upgrade_settings = upgrade_settings
+	user_magic_book.read_absolute_path("user://universal_magic_book.json")
+	user_magic_book.rebuild_spell_chains()
+	
+	#if user_magic_book.spells.is_empty():
+		#for spell in magic_book.spells:
+			#user_magic_book.add(spell)

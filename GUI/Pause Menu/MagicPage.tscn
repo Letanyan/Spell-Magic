@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=37 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -11,9 +11,11 @@
 [ext_resource type="Texture2D" uid="uid://ddt4jjlnnqy2e" path="res://GUI/Images/tinted_electric.tres" id="8_ex33p"]
 [ext_resource type="Texture2D" uid="uid://dqs2hqdonvqyd" path="res://GUI/Images/target.svg" id="9_dae3a"]
 [ext_resource type="Texture2D" uid="uid://b432kdsd0kipn" path="res://GUI/Images/bomb.svg" id="10_5c3hv"]
-[ext_resource type="Texture2D" uid="uid://ckh44temenbma" path="res://GUI/Images/duplicate.svg" id="10_ne1rx"]
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
 [ext_resource type="Texture2D" uid="uid://5kr3ouhyf7f6" path="res://GUI/Images/sphere.svg" id="12_g3iwv"]
+[ext_resource type="Texture2D" uid="uid://swd37r7koxq8" path="res://GUI/Images/transform.svg" id="13_r1tad"]
+[ext_resource type="Texture2D" uid="uid://b3b3rxit3y2s7" path="res://GUI/Images/files.svg" id="14_20nh8"]
+[ext_resource type="Texture2D" uid="uid://bdud8ym7of11u" path="res://GUI/Images/cloud-upload.svg" id="14_d6mvu"]
 [ext_resource type="Texture2D" uid="uid://qeny6kl34ssf" path="res://GUI/Images/horizontal-flip.svg" id="45_5l252"]
 [ext_resource type="Texture2D" uid="uid://j1tb85tfr0iu" path="res://GUI/Images/vertical-flip.svg" id="46_m27cl"]
 [ext_resource type="Texture2D" uid="uid://dbjjasa34u3gb" path="res://GUI/Images/clockwise-rotation.svg" id="47_n6fxk"]
@@ -73,7 +75,7 @@ layout_mode = 2
 anchor_right = 1.0
 offset_left = 48.0
 offset_top = 8.0
-offset_right = -328.0
+offset_right = -440.0
 offset_bottom = 40.0
 size_flags_vertical = 4
 focus_neighbor_left = NodePath("../preview_image")
@@ -88,9 +90,9 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -320.0
+offset_left = -424.0
 offset_top = 8.0
-offset_right = -88.0
+offset_right = -168.0
 offset_bottom = 40.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../name_edit")
@@ -570,6 +572,30 @@ clip_text = true
 text_overrun_behavior = 3
 max_lines_visible = 2
 
+[node name="LoadFromClipboard" type="Button" parent="container"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 8.0
+offset_right = -128.0
+offset_bottom = 40.0
+tooltip_text = "Load Spell from Clipboard"
+icon = ExtResource("13_r1tad")
+
+[node name="SaveToUniBook" type="Button" parent="container"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 8.0
+offset_right = -88.0
+offset_bottom = 40.0
+tooltip_text = "Save Spell to Universal Magic Book"
+icon = ExtResource("14_d6mvu")
+
 [node name="Duplicate" type="Button" parent="container"]
 layout_mode = 1
 anchors_preset = 1
@@ -585,7 +611,7 @@ focus_neighbor_top = NodePath("../expressions")
 focus_neighbor_right = NodePath("../Delete")
 focus_next = NodePath("../Delete")
 focus_previous = NodePath("../expressions")
-icon = ExtResource("10_ne1rx")
+icon = ExtResource("14_20nh8")
 
 [node name="Delete" type="Button" parent="container"]
 layout_mode = 1
@@ -1444,6 +1470,8 @@ icon = ExtResource("62_gl3h1")
 [connection signal="focus_entered" from="container/expressions" to="." method="_on_control_focus_entered"]
 [connection signal="focus_exited" from="container/expressions" to="." method="_on_expressions_focus_exited"]
 [connection signal="text_changed" from="container/expressions" to="." method="_on_expressions_text_changed"]
+[connection signal="pressed" from="container/LoadFromClipboard" to="." method="_on_load_from_clipboard_pressed"]
+[connection signal="pressed" from="container/SaveToUniBook" to="." method="_on_save_to_uni_book_pressed"]
 [connection signal="pressed" from="container/Duplicate" to="." method="_on_duplicate_pressed"]
 [connection signal="pressed" from="container/Delete" to="." method="_on_delete_pressed"]
 [connection signal="focus_entered" from="container/CR_edit" to="." method="_on_control_focus_entered"]

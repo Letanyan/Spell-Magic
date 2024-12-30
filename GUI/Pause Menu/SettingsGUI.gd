@@ -9,6 +9,7 @@ extends Control
 @onready var hide_cooldown_timings := $Tabs/Display/HideCooldownTimings as CheckButton
 @onready var hide_stats_view := $Tabs/Display/HideStatsView as CheckButton
 @onready var hide_reticule: CheckButton = $Tabs/Display/HideReticule as CheckButton
+@onready var hide_key_count: CheckButton = $Tabs/Display/HideKeyCount
 @onready var projectile_indicator_size: HSlider = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
 @onready var projectile_indicator_size_display: Label = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
 @onready var key_display: OptionButton = $Tabs/Display/KeyDisplayLabel/KeyDisplay
@@ -54,6 +55,9 @@ extends Control
 
 @onready var user_functions: TextEdit = $Tabs/Functions/user_functions
 
+@onready var magic_book: MagicBookGUI = $"Tabs/Universal Magic Book/MagicBook"
+
+
 @onready var note_content: RichTextLabel = $Tabs/Notes/Content
 @onready var show_notes: OptionButton = $Tabs/Notes/ShowNotes
 @onready var sort_notes: OptionButton = $Tabs/Notes/SortNotes
@@ -62,6 +66,8 @@ var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
 		update_controls()
+		
+var is_magic_book_selected: bool = false
 
 signal settings_changed(settings: WorldSettings)
 
@@ -73,6 +79,9 @@ signal exit_game
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	user_functions.text = GlobalData.game_settings.user_functions_text
+	magic_book.book = GlobalData.user_magic_book
+	magic_book.is_universal = true
+	magic_book.page.is_universal = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -89,6 +98,8 @@ func update_controls() -> void:
 	hide_cooldown_timings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
 	hide_stats_view.button_pressed = world_settings.hud_settings.hide_stats_view
 	hide_reticule.button_pressed = world_settings.hud_settings.hide_reticule
+	hide_key_count.button_pressed = world_settings.hud_settings.hide_collected_keys_label
+	
 	projectile_indicator_size.value = world_settings.hud_settings.projectile_indicator_size
 	projectile_indicator_size_display.text = str(int(projectile_indicator_size.value))
 	key_display.selected = world_settings.hud_settings.key_display
@@ -138,6 +149,14 @@ func update_controls() -> void:
 	
 	show_notes.selected = GlobalData.game_settings.notes_unlock_settings
 	sort_notes.selected = GlobalData.game_settings.notes_sort_settings
+	
+	var tab_container := $Tabs as TabContainer
+	if tab_container.get_current_tab_control().name == "Game":
+		update_info()
+	if tab_container.get_current_tab_control().name == "Notes":
+		update_notes()
+	if tab_container.get_current_tab_control().name == "Universal Magic Book":
+		update_magic_book()
 	
 	UIAudioPlayer.silence = false
 
@@ -474,6 +493,13 @@ func _on_tabs_tab_selected(tab: int) -> void:
 		update_info()
 	if tab_container.get_current_tab_control().name == "Notes":
 		update_notes()
+		
+	if is_magic_book_selected:
+		is_magic_book_selected = false
+		save_user_magic_book()
+	if tab_container.get_current_tab_control().name == "Universal Magic Book":
+		is_magic_book_selected = true
+		update_magic_book()
 
 func _on_user_functions_focus_exited() -> void:
 	GlobalData.game_settings.build_user_functions(user_functions.text)
@@ -481,3 +507,10 @@ func _on_user_functions_focus_exited() -> void:
 
 func _on_user_functions_focus_entered() -> void:
 	UIAudioPlayer.focus()
+
+func save_user_magic_book() -> void:
+	magic_book.book.save_absolute_path("user://universal_magic_book.json")
+
+func update_magic_book() -> void:
+	magic_book.duplicate_book()
+	magic_book.reload_list()
