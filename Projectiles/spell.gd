@@ -601,7 +601,7 @@ const fixed_var_list = {
 	"ti":true,"tj":true,"tk":true,"Ti":true,"Tj":true,"Tk":true,"ri":true,"rj":true,"rk":true,"tri":true,"trj":true,"trk":true,"Tri":true,"Trj":true,"Trk":true,"I":true,"J":true,"K":true,"tI":true,"tJ":true,"tK":true,
 	"TI":true,"TJ":true,"TK":true,"rI":true,"rJ":true,"rK":true,"trI":true,"trJ":true,"trK":true,"TrI":true,"TrJ":true,"Tr":true,"Bxyz":true,"uvw":true,"tuvw":true,"Tuvw":true,"ruvw":true,"truvw":true,
 	"Truvw":true,"UVW":true,"tUVW":true,"TUVW":true,"rUVW":true,"trUVW":true,"TrUVW":true,"ijk":true,"tijk":true,"Tijk":true,"rijk":true,"trijk":true,"Trijk":true,"IJK":true,"tIJK":true,"TIJK":true,
-	"rIJK":true,"trIJK":true,"TrIJK":true,"abs_pos":true,
+	"rIJK":true,"trIJK":true,"TrIJK":true,"position":true,
 }
 	
 func basic_fixed_vars() -> Vars:

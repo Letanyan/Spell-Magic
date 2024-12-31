@@ -9,6 +9,7 @@ const lod0_meshes = {
 	World.Foliage.TREE_CHRISTMAS: preload("res://Models/Nature/Tree/tree_christmas.mesh") as ArrayMesh,
 	World.Foliage.TREE_SAFARI: preload("res://Models/Nature/Tree/tree_safari.mesh") as ArrayMesh,
 	World.Foliage.TREE_BRANCHED: preload("res://Models/Nature/Tree/tree_branched.mesh") as ArrayMesh,
+	# FIXME: make shader that animates leaves for trees
 	World.Foliage.TREE_PALM: preload("res://Models/Nature/Tree/tree_palm.mesh") as ArrayMesh,
 	World.Foliage.TREE_PINE: preload("res://Models/Nature/Tree/tree_pine.mesh") as ArrayMesh,
 	World.Foliage.TREE_SAFARI2: preload("res://Models/Nature/Tree/tree_safari2.mesh") as ArrayMesh,

@@ -31,12 +31,14 @@ config/use_custom_user_dir.template_release=true
 UIAudioPlayer="*res://GUI/UIAudioPlayerScene.tscn"
 SignalBus="*res://General/SignalBus.gd"
 AudioManager="*res://Worlds/Generator/audio_manager.gd"
+Steamworks="*res://General/global_steam.gd"
 GlobalData="*res://General/globals.gd"
 SceneHandler="*res://GUI/Main Menu/SceneHandler.gd"
 SpellBuffer="*res://Projectiles/spell_buffer.gd"
 
 [debug]
 
+file_logging/enable_file_logging=true
 gdscript/warnings/unused_parameter=0
 gdscript/warnings/unused_signal=0
 gdscript/warnings/untyped_declaration=1

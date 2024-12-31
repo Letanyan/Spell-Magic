@@ -499,7 +499,7 @@ func _input(event: InputEvent) -> void:
 		GlobalData.controller.handle_input(event)
 		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
-			if OS.is_debug_build():
+			if GlobalData.is_debug:
 				settings.upgrade_settings.level_running_speed -= 1
 				print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
 			else:
@@ -509,7 +509,7 @@ func _input(event: InputEvent) -> void:
 					menu.settings.update_controls()
 					settings.save()
 		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
-			if OS.is_debug_build():
+			if GlobalData.is_debug:
 				settings.upgrade_settings.level_running_speed += 1
 				print(settings.upgrade_settings.level_running_speed, " = ", settings.upgrade_settings.max_running_speed())
 			else:

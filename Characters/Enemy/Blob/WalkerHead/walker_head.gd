@@ -117,7 +117,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		}
 	}
 	
-	animation_map["attack"] = "Weapon"
+	animation_map["attack"] = "Bite_Front"
 	kind = World.Enemy.WALKER_HEAD
 	super.setup(seedling, biome)
 

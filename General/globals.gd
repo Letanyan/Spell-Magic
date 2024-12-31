@@ -207,6 +207,7 @@ var controller: Controller = null
 var magic_book: MagicBook = null
 var user_magic_book: MagicBook = null
 var nav: GDNavigator = null
+var is_debug: bool = true
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
 const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
@@ -220,6 +221,8 @@ const encoded_x_noise = "DQADAAAAAAAAQBMAzczMPRMAbxKDOggAAAAAAAAAAAAAAA=="
 const encoded_y_noise = "EgACAAAAAAAAABAACtcjPA0ABAAAAOxRyEATAM3MzD0TAG8SgzoIAAAAAIA+AAAAAAAAAADIwgAAAAA/AAAAAAA="
 
 func _ready() -> void:
+	is_debug = OS.is_debug_build()
+	
 	nav = GDNavigator.new()
 	
 	game_settings = GameSettings.new()

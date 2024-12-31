@@ -161,7 +161,7 @@ func run_on_ready() -> void:
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
-	if OS.is_debug_build():
+	if GlobalData.is_debug:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
 	else:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
@@ -219,7 +219,7 @@ func _exit_tree() -> void:
 	AudioManager.camera = null
 	
 func _process(delta: float) -> void:
-	if OS.is_debug_build():
+	if GlobalData.is_debug:
 		var b := blender.biome
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
@@ -320,7 +320,7 @@ func _physics_process(delta: float) -> void:
 			if randf() < chance * 0.1:
 				player.apply_environment_impulse(Color.WHITE, Vector3(nx, 0, ny).normalized() * (lvl / 100.0 * 3))
 		
-	if OS.is_debug_build():
+	if GlobalData.is_debug:
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 			
 	if not menu.is_showing:

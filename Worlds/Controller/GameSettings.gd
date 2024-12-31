@@ -164,6 +164,7 @@ static var notes := {
 	"spell Variables": "A list of your variables which can be used in the x, y, z and D expressions. You can use these variables to simplify your other expressions.",
 	#"spell chain ^": "If you use ^ at the start of a variable name, all chained spells following will inherit and/or override their same named variables.",
 	"spell mana return": "Spells that have complicated movement will return some amount of mana back to the player. The amount returned is proportional to the complexity of the spells movement. The complexity of a spell is vaguely defined as how different it is from a spell which travels in a straight line.",
+	"spell save, copy and load": "Spells can be saved, using [img=l,24x24]res://GUI/Images/cloud-upload.svg[/img], to your 'Universal Magic Book' (which can be found in the settings menu). Spells can then be copied to your clipboard, using [img=l,24x24]res://GUI/Images/cloud-download.svg[/img], from your 'Universal Magic Book.' Finally, with your spell copied you can overwrite an existing spell, using [img=l,24x24]res://GUI/Images/transform.svg[/img], which is in the top right of your magic book page.",
 	
 	"variable uvw, u, v, w": "A unit vector {(u,v,w)} describing the direction from the player to the camera aim. {uvw} is the vector combination.",
 	"variable UVW, U, V, W": "A unit vector {(U,V,W)} decsribing the direction from the player to an enemy that was in line with the players aim when the spell was cast. {UVW} is the vector combination.",
@@ -190,6 +191,7 @@ static var notes := {
 	"variable size": "{size} is either a vector or number that describes the ratio of the total size of each projectile. When {size} is a vector it describes the ratio, {(a normalized vector)}, of {width},{height} and {depth} respectivly. When {size} is just a number it describes the ratio, {([0, 1])}, of each projectile in all dimensions. {size} only takes effect when each projectile is cast. {size} can only be set in the variables field of the spell.",
 	"variable spinrate": "{spinrate} describe the rotation speed of {Rock} spells. Limited to {[-2*pi, 2*pi]}.",
 	"variable x, y, z": "These are typically used with the {'.'} operator. Since {x=0},{y=1} and {z=2} you can use them to get the corrosponding component of a vector.",
+	"variable position": "{position} is a vector that describes the position of the player in the world.",
 	
 	"wand Cast": "Casts the assigned spell immediatly once keys are released.",
 	"wand Charged Cast": "Keys can be held and then released to cast the assigned spell. The time spent holding the keys will be set in the variable {C} to be used in the spell.",
