@@ -29,17 +29,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.move_to(Vector3(0, 0, 0)) \
 		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), runs(17), Easing.out_quart) \
 		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), runs(17), Easing.out_quart) \
-		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 20), runs(17), Easing.out_quart) \
+		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 10), runs(17), Easing.out_quart) \
 		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), runs(17), Easing.out_quart)
 	idle_path = PathStyle.new(seedling, position).follow_path(idle_pathway).align_y_to_ground_and_air() \
 		.initial_position_can_update_on_ground()
-	
-	#FIXME: scaling issue.
-	# E 0:00:56:0526   try_build_shape: Failed to correctly scale body '8_RsgBpg2znh:<CharacterBody3D#1092934992432>'. A scale of (1.000000, 0.999996, 0.973869) is not supported by Godot Jolt for this shape/body. The scale will instead be treated as (0.991288, 0.991288, 0.991288).
-	  #<C++ Source>   src\objects\jolt_shaped_object_impl_3d.cpp:140 @ try_build_shape()
-	#E 0:00:56:0527   try_build_shape: Failed to correctly scale body 'WetArea:<Area3D#1093924848215>'. A scale of (1.000000, 0.999996, 0.973869) is not supported by Godot Jolt for this shape/body. The scale will instead be treated as (0.991288, 0.991288, 0.991288).
-  		#<C++ Source>   src\objects\jolt_shaped_object_impl_3d.cpp:140 @ try_build_shape()
-
 
 	attack_path = PathStyle.new(seedling).follow_path(idle_pathway)\
 		.align_y_to_ground_and_air()\

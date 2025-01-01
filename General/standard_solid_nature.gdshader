@@ -20,12 +20,29 @@ uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 uniform float green_amount: hint_range(0.0, 1.0, 0.05) = 0.0;
 
+uniform float wind_speed_multiplier = 0.000001;
+uniform vec3 wind_speed_strength = vec3(0.0, 0.0, 0.0);
+// we need a tiling noise here!
+uniform sampler2D wind_noise : hint_default_black;
+uniform sampler2D wind_speed_change : hint_default_white;
+
 //varying vec4 instance_custom;
 
 void vertex() {
 	ROUGHNESS=roughness;
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	//instance_custom = INSTANCE_CUSTOM;
+	
+	float wind_speed = texture(wind_speed_change, vec2(0.5, TIME * wind_speed_multiplier)).r;
+	vec2 wind_dir = vec2(
+		texture(wind_noise, vec2(TIME * wind_speed * 0.1, 0.5)).r * 2.0 - 1.0,
+		texture(wind_noise, vec2(0.5, TIME * wind_speed * 0.1)).r * 2.0 - 1.0
+	);
+	float displacement_affect = pow(1.0 - VERTEX.y, 3.0);
+
+	VERTEX.x += wind_dir.x * 0.1 * wind_speed * wind_speed_strength.x * displacement_affect;
+	VERTEX.y += wind_dir.y * 0.1 * wind_speed * wind_speed_strength.y * displacement_affect;
+	VERTEX.z += wind_dir.y * 0.1 * wind_speed * wind_speed_strength.z * displacement_affect;
 }
 
 void fragment() {

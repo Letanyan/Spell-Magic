@@ -581,6 +581,7 @@ offset_left = -160.0
 offset_top = 8.0
 offset_right = -128.0
 offset_bottom = 40.0
+grow_horizontal = 0
 tooltip_text = "Load Spell from Clipboard"
 icon = ExtResource("13_r1tad")
 
@@ -593,6 +594,7 @@ offset_left = -120.0
 offset_top = 8.0
 offset_right = -88.0
 offset_bottom = 40.0
+grow_horizontal = 0
 tooltip_text = "Save Spell to Universal Magic Book"
 icon = ExtResource("14_d6mvu")
 
