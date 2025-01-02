@@ -43,7 +43,7 @@ var temp_pos := Vector3.ZERO
 func save_dict() -> Dictionary:
 	return {
 		"name": world_name, "player": {
-			"position": temp_pos, "keys": player_keys,
+			"position": player_position, "keys": player_keys,
 			"health": player_health, "mana": player_mana,
 		}, 
 		"seed": sed,
@@ -71,8 +71,8 @@ func save() -> void:
 func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")
 	var player := data.get("player", {}) as Dictionary
-	temp_pos = player.get("position", Vector3.ZERO)
-	player_position = Vector3(randf() * 5000, 0, randf() * 5000)
+	player_position = player.get("position", Vector3.ZERO)
+	#player_position = Vector3(randf() * 5000, 0, randf() * 5000)
 	player_keys = player.get("keys", 0)
 	player_health = player.get("health", 1000.0)
 	player_mana = player.get("mana", 1000.0)

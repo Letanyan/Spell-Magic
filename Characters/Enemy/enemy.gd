@@ -549,9 +549,22 @@ func update_vitals_display() -> void:
 func drop_artifact() -> Artifact:
 	if artifact_drop_probs.is_empty():
 		return null
-	var n := player.name_generator.constellations.generate(12, 2)
+		
+	var n: String
+	var b: World.Biome = (velocity_movement.current_biome - 1) as World.Biome
+	match b:
+		World.Biome.GRASSLAND: n = player.name_generator.german_names.generate(16, 2)
+		World.Biome.TAIGA: n = player.name_generator.russian_names.generate(14, 2)
+		World.Biome.FOREST: n = player.name_generator.english_names.generate(8, 1)
+		World.Biome.DESERT: n = player.name_generator.spanish_names.generate(16, 3)
+		World.Biome.JUNGLE: n = player.name_generator.indian_names.generate(12, 2)
+		World.Biome.SAVANNAH: n = player.name_generator.roman_names.generate(12, 2)
+		World.Biome.TUNDRA: n = player.name_generator.iclandic_names.generate(14, 2)
+		World.Biome.OTHERWORLD: n = player.name_generator.constellations.generate(18, 4)
+		World.Biome.HFIL: n = player.name_generator.capital_cities.generate(18, 4)
+		_: push_error("missing biome kind")
+		
 	var result := Artifact.nulled(n)
-	
 	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
 		var tier := probs["tier"] as Vector2i
 		var pattern := probs["pattern"] as Dictionary
@@ -582,7 +595,7 @@ func drop_artifact() -> Artifact:
 			if key.contains("N"): fill_with.call([Vector2i.UP], probs)
 			if key.contains("S"): fill_with.call([Vector2i.DOWN], probs)
 	
-	return null
+	return result
 	
 func drop_spell() -> Spell:
 	var result := Rand.entity_from_distribution(randf(), spell_drop_probs, null) as Spell

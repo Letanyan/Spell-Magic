@@ -726,8 +726,11 @@ func update_projectile_update_tick(body: SpellBody, updated_spell_bodies: Dictio
 ## updated_spell_bodies: [SpellBody]bool
 func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
 	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
-	var dist := clampf(1.0 - body.position.distance_to(position) / 20.0, 0.0, 1.0)
-	updated_spell_bodies[body] = update_projectile(body_pivot, pis * (1.0 + dist * dist), body, Spell.color_from_element(body.spell.element))
+	var distance_from_player := body.position.distance_to(position)
+	var dist := clampf(1.0 - distance_from_player / 20.0, 0.0, 1.0)
+	var should_update_indicator := update_projectile(body_pivot, pis * (1.0 + dist * dist), body, Spell.color_from_element(body.spell.element))
+	body.update_sub_entities(not should_update_indicator or distance_from_player > 40.0)
+	updated_spell_bodies[body] = should_update_indicator
 	update_projectile_update_tick(body, updated_spell_bodies)
 
 func update_projectile_indicators() -> void:

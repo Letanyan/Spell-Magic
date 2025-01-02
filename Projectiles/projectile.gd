@@ -11,6 +11,7 @@ var expired: bool
 var is_emitting: bool
 var started: bool
 var in_control: bool
+var is_off: bool
 var free_when_ready: float
 var velocity: Vector3
 var old_velocity: Vector3
@@ -48,6 +49,7 @@ func setup() -> void:
 	is_emitting = true
 	started = false
 	in_control = true
+	is_off = false
 	free_when_ready = NAN
 	velocity = Vector3.ZERO
 	old_velocity = Vector3.ZERO
@@ -679,6 +681,28 @@ func prepare_update_spell(delta: float) -> void:
 	if not is_active():
 		return
 	time_stamp += delta
+	
+func update_sub_entities(turn_off: bool) -> void:
+	if is_off == turn_off:
+		return
+	is_off = turn_off
+	match spell.element:
+		Spell.Element.FIRE, Spell.Element.ELECTRIC:
+			var tween := create_tween()
+			var light: OmniLight3D = get_node("light")
+			var fade_light := func(t: float) -> void:
+				if turn_off:
+					light.omni_range = lerpf(5.0, 0.0, t)
+				else:
+					light.omni_range = lerpf(0.0, 5.0, t)
+			tween.tween_method(fade_light, 0, 1, 0.2)
+			if turn_off:
+				tween.finished.connect(func() -> void:
+					light.visible = false
+				)
+			else:
+				light.visible = true
+			tween.play()
 			
 func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 	if not is_active():
@@ -749,7 +773,6 @@ func start_emitting() -> void:
 			get_area_collision().disabled = false
 
 func stop_emitting() -> void:
-	# FIXME: reduce amount of light sources
 	is_emitting = false
 	match spell.element:
 		Spell.Element.FIRE:

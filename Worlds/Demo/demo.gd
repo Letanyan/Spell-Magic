@@ -93,14 +93,6 @@ func setup(_settings: WorldSettings) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
-#	for i in ["flower 2", "feather 2", "goblet 2", "sands 2", "crown 2"]:
-#		var artifact := Artifact.new(i)
-#		artifact.top = Artifact.Option.make_random()
-#		artifact.bottom = Artifact.Option.make_random()
-#		artifact.left = Artifact.Option.make_random()
-#		artifact.right = Artifact.Option.make_random()
-#		artifacts.collection.append(artifact)
-	
 	entity_manager = EntityManager.new()
 	entity_manager.buffer_foliage_lod0.add_all_meshes(self)
 	entity_manager.buffer_foliage_lod1.add_all_meshes(self)
@@ -193,6 +185,30 @@ func run_on_ready() -> void:
 	hud.book = book
 	hud.wand = wand
 	menu.wand_case.new_wand_selected.connect(hud.set_wand)
+	
+	#for i in 18:
+		#var n: String
+		#match randi_range(0, 5):
+			#0: n = player.name_generator.capital_cities.generate(15, 3)
+			#1: n = player.name_generator.constellations.generate(15, 4)
+			#2: n = player.name_generator.english_names.generate(10, 1)
+			#3: n = player.name_generator.french_names.generate(12, 2)
+			#4: n = player.name_generator.iclandic_names.generate(15, 3)
+			#5: n = player.name_generator.italian_names.generate(14, 2)
+		#var artifact := Artifact.new(n)
+		#artifact.fill(
+			#[Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT],
+			#randf() < 0.5,
+			#{ Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10, },
+			#{ Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 10, },
+			#{ Artifact.Element.FIRE: 10, Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.AIR: 10, Artifact.Element.ELECTRIC: 10, Artifact.Element.ROCK: 10, Artifact.Element.RUNNING_SPEED: 10, Artifact.Element.ATTACK: 10, Artifact.Element.DEFENCE: 10, Artifact.Element.CRIT_RATE: 10, Artifact.Element.CRIT_DMG: 10, Artifact.Element.SPELL_RADIUS: 10, },
+			#{ Artifact.Element.FIRE: 10, Artifact.Element.WATER: 10, Artifact.Element.ICE: 10, Artifact.Element.AIR: 10, Artifact.Element.ELECTRIC: 10, Artifact.Element.ROCK: 10, },
+			#{ Artifact.Pattern.CIRCLE: 10, Artifact.Pattern.TRIANGLE: 10, Artifact.Pattern.SQUARE: 10, },
+			#Vector2i(7, 3),
+		#)
+		#player.artifacts.collection.append(artifact)
+	#player.artifacts.save(settings.world_name)
+	#menu.artifacts.update_list_and_grid()
 	
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
