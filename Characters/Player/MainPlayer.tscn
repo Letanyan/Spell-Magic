@@ -1,4 +1,4 @@
-[gd_scene load_steps=171 format=4 uid="uid://cs66h1r8861hy"]
+[gd_scene load_steps=168 format=4 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_kw0nn"]
@@ -14155,6 +14155,9 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_ibd37")
 size = Vector2(1.5, 0.75)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_kib4s"]
+radius = 0.07
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_puico"]
 frequency = 0.0243
 fractal_octaves = 1
@@ -14189,119 +14192,6 @@ height = 1.9
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_18tuy"]
 radius = 0.3
 height = 1.9
-
-[sub_resource type="Animation" id="Animation_lype0"]
-resource_name = "MovementAudioFade"
-
-[sub_resource type="Animation" id="Animation_0m7k7"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CamPivot/Arm/Lens:h_offset")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.4]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CamPivot/Arm/Lens/ScreenFilter:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CamPivot/Interface:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("CamPivot/Arm:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("CamPivot/Arm:rotation")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("CamPivot/Arm:spring_length")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
-}
-
-[sub_resource type="Animation" id="Animation_y3sh5"]
-resource_name = "camera_rotate"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CamPivot:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CamPivot/Arm:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_okr23"]
-_data = {
-"MovementAudioFade": SubResource("Animation_lype0"),
-"RESET": SubResource("Animation_0m7k7"),
-"camera_rotate": SubResource("Animation_y3sh5")
-}
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_eoiul"]
 
@@ -14997,9 +14887,11 @@ skeleton = NodePath("../..")
 
 [node name="Arm" type="SpringArm3D" parent="CamPivot"]
 collision_mask = 513
+shape = SubResource("SphereShape3D_kib4s")
 
 [node name="Lens" type="Camera3D" parent="CamPivot/Arm"]
 h_offset = 0.4
+near = 0.001
 
 [node name="ScreenFilter" type="MeshInstance3D" parent="CamPivot/Arm/Lens"]
 visible = false
@@ -15015,11 +14907,6 @@ collision_mask = 256
 
 [node name="WetCollision" type="CollisionShape3D" parent="WetArea"]
 shape = SubResource("CapsuleShape3D_18tuy")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_okr23")
-}
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1

@@ -12,7 +12,6 @@ extends CharacterBody
 var projectile_indicator_scale: float = 1.0
 
 @onready var animator: AnimationPlayer = $Pivot/King/AnimationPlayer 
-@onready var cam_animator: AnimationPlayer = $AnimationPlayer
 @onready var animation_tree: AnimationTree = $Pivot/King/AnimationTree
 @onready var screen_filter: MeshInstance3D = $CamPivot/Arm/Lens/ScreenFilter
 
@@ -199,6 +198,10 @@ func _physics_process(delta: float) -> void:
 				play_animation("battle_idle")
 		
 	if not is_on_floor:
+		var world_normal := chunker.terrain_normal(position.x, position.z)
+		var wh: float = world_normal.get("position", Vector3.ZERO).y
+		if feet_position() < wh:
+			set_feet_position(wh)
 		if position.y <= world_settings.sea_level:
 			if velocity.length() <= 0:
 				play_animation("float")
@@ -579,12 +582,6 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_open = open
 	on_menu_close = close
 	menu_callbacks_are_set = true
-	cam_animator.animation_finished.connect(func(animation_name: String) -> void:
-		if animation_name == "OpenMenu":
-			on_menu_open.call()
-		elif animation_name == "CloseMenu":
-			on_menu_close.call()
-	)
 		
 func transition_menu(is_open: bool) -> void:
 	if is_open:

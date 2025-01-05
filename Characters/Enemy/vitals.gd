@@ -91,7 +91,7 @@ static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: 
 static func default_ea(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(0, 0, high, rate)
 static func default_health(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(high, 0, high, rate)
 
-func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool = true) -> Dictionary:
+func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
 	match kind:
 		Spell.Element.FIRE:
 			var amount := burning.amount_of_change(gauge)
@@ -140,7 +140,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float, debug: bool 
 	power = maxf(0.0, power)
 	health.apply_ignoring_resistance(-power)
 	
-	if debug:
+	if GlobalData.is_debug:
 		print("power: ", power, ", gauge: ", gauge)
 		print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
 		print("element: ", Spell.name_from_element(kind))

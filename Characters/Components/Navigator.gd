@@ -155,27 +155,33 @@ static func get_ray_intersection_from_spell_body(p: SpellBody, from: Vector3, ta
 			c = o
 			break
 	return c
-	
-static func get_shape_intersection(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, exclude_ground: bool) -> bool:
+
+static func get_shape_intersection_from_mask(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, mask: int) -> bool:
 	var space_state := p.get_world_3d().direct_space_state
 	var query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
-	query.collision_mask = ~(1 if exclude_ground else 0)
+	query.collision_mask = mask
 	query.exclude = [p.get_rid()]
 	query.shape = shape
 	query.transform = Transform3D.IDENTITY.translated(target)
 	var result := space_state.intersect_shape(query, 4)
 	return not result.is_empty()
+	
+static func get_shape_intersection(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, exclude_ground: bool) -> bool:
+	return get_shape_intersection_from_mask(p, from, target, shape, ~(1 if exclude_ground else 0))
 
-static func get_shape_distance_away(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, exclude_ground: bool) -> PackedFloat32Array:
+static func get_shape_distance_away_from_mask(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, mask: int) -> PackedFloat32Array:
 	var space_state := p.get_world_3d().direct_space_state
 	var query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
-	query.collision_mask = ~(1 if exclude_ground else 0)
+	query.collision_mask = mask
 	query.exclude = [p.get_rid()]
 	query.shape = shape
 	query.transform = Transform3D.IDENTITY.translated(from)
 	query.motion = target - from
 	var result := space_state.cast_motion(query)
 	return result
+
+static func get_shape_distance_away(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, exclude_ground: bool) -> PackedFloat32Array:
+	return get_shape_distance_away(p, from, target, shape, ~(1 if exclude_ground else 0))
 	
 static func get_shape_collides(p: CollisionObject3D, from: Vector3, target: Vector3, shape: Shape3D, exclude_ground: bool) -> bool:
 	var result := get_shape_distance_away(p, from, target, shape, exclude_ground)

@@ -39,7 +39,7 @@ void vertex() {
 	spos=mat_world[3].xyz;
 	sp_size=2./max(length(WORLD_MATRIX[0].xyz),0.0001);
 	roc=CAMERA_MATRIX[3].xyz*sp_size;
-	
+
 	ROUGHNESS=roughness;
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 }
