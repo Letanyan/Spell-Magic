@@ -14155,8 +14155,7 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_ibd37")
 size = Vector2(1.5, 0.75)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_kib4s"]
-radius = 0.07
+[sub_resource type="SphereShape3D" id="SphereShape3D_500ud"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_puico"]
 frequency = 0.0243
@@ -14887,11 +14886,10 @@ skeleton = NodePath("../..")
 
 [node name="Arm" type="SpringArm3D" parent="CamPivot"]
 collision_mask = 513
-shape = SubResource("SphereShape3D_kib4s")
+shape = SubResource("SphereShape3D_500ud")
 
 [node name="Lens" type="Camera3D" parent="CamPivot/Arm"]
 h_offset = 0.4
-near = 0.001
 
 [node name="ScreenFilter" type="MeshInstance3D" parent="CamPivot/Arm/Lens"]
 visible = false
@@ -14948,12 +14946,6 @@ bus = &"BG"
 
 [node name="BGAudio2" type="AudioStreamPlayer3D" parent="."]
 bus = &"BG"
-
-[node name="MovementAudio1" type="AudioStreamPlayer3D" parent="."]
-bus = &"SFX"
-
-[node name="MovementAudio2" type="AudioStreamPlayer3D" parent="."]
-bus = &"SFX"
 
 [node name="Rain" type="GPUParticles3D" parent="."]
 process_mode = 4

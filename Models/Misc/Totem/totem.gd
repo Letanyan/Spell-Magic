@@ -34,6 +34,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	
 	is_active = true
 	show_message()
+	UIAudioPlayer.open()
 	if GDNavigator.popcnt(player.world_settings.player_keys) < player.world_settings.max_keys():
 		message_label.text = "[center][font_size=30]%d / %d Keys Found\nCurrent World Level: %d[/font_size][/center]" % [GDNavigator.popcnt(player.world_settings.player_keys), player.world_settings.max_keys(), player.world_settings.world_level]
 	else:
@@ -44,6 +45,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 func _on_area_3d_body_exited(body: Node3D) -> void:
 	is_active = false
 	hide_message()
+	UIAudioPlayer.close()
 	if body is Player:
 		(body as Player).can_level_up_world = false
 

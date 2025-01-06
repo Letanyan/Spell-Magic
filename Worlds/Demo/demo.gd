@@ -437,6 +437,7 @@ func _input(event: InputEvent) -> void:
 		
 		if player.can_level_up_world and event is InputEventMouseButton:
 			if event.is_action_released("RT") or event.is_action_pressed("S"):
+				UIAudioPlayer.world_level_up()
 				player.world_settings.world_level += 1
 				player.world_settings.player_keys = 0
 				reset_enemy_populations()

@@ -20,6 +20,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if not eaten and body is Player:
 		eaten = true
 		if (body as Player).pick_up_key(key):
+			UIAudioPlayer.pick_up_key()
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' picked up" % key)
 		elif key != 0:
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' already obtained" % key)

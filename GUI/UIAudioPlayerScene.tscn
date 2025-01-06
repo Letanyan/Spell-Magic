@@ -10,3 +10,6 @@ bus = &"UI"
 
 [node name="D3AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 bus = &"SFX"
+
+[node name="WXAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"

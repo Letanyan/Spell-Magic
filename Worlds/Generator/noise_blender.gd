@@ -20,9 +20,10 @@ var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elev
 var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
 var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
 
-const grassland_walking: AudioStream = preload("res://Audio/walking/grassland.mp3")
+const sandy_walking: AudioStream = preload("res://Audio/walking/sandy.mp3")
 const forest_walking: AudioStream = preload("res://Audio/walking/forest.mp3")
 const water_walking: AudioStream = preload("res://Audio/walking/water.mp3")
+const stoney_walking: AudioStream = preload("res://Audio/walking/stoney.wav")
 
 const grassland_bg: AudioStream = preload("res://Audio/biome/grassland.mp3")
 const forest_bg: AudioStream = preload("res://Audio/biome/forest.mp3")
@@ -168,7 +169,7 @@ static func version0(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
 	result.sea_level = rng.randf_range(-50.0, 50.0)
-	result.world_radius = rng.randf_range(7_500.0, 25_000.0)
+	result.world_radius = rng.randf_range(7_500.0, 10_000.0)
 	
 	return result
 	
@@ -249,15 +250,15 @@ static func bg_audio_for_biome(b: World.Biome) -> AudioStream:
 static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
 	match b:
 		World.Biome.WATER: return water_walking
-		World.Biome.TAIGA: return water_walking
-		World.Biome.GRASSLAND: return grassland_walking
+		World.Biome.TAIGA: return forest_walking
+		World.Biome.GRASSLAND: return forest_walking
 		World.Biome.FOREST: return forest_walking
-		World.Biome.DESERT: return water_walking
-		World.Biome.JUNGLE: return water_walking
-		World.Biome.SAVANNAH: return water_walking
-		World.Biome.TUNDRA: return water_walking
-		World.Biome.OTHERWORLD: return water_walking
-		World.Biome.HFIL: return water_walking
+		World.Biome.DESERT: return sandy_walking
+		World.Biome.JUNGLE: return forest_walking
+		World.Biome.SAVANNAH: return forest_walking
+		World.Biome.TUNDRA: return sandy_walking
+		World.Biome.OTHERWORLD: return stoney_walking
+		World.Biome.HFIL: return stoney_walking
 		_: return null
 		
 static func walking_audio_tempo_factor(b: World.Biome) -> float:

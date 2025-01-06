@@ -292,7 +292,7 @@ func highlight_all_available_cells_for_placement(artifact: Artifact) -> PackedVe
 func all_effects_description() -> String:
 	var result := ""
 	
-	var groups := {} # [Option][int]Option ([EventOption][int]EffectOption)
+	var groups := {} ## [String][]String
 	for c: Vector2 in active_options:
 		var a := get_artifact_at_coord(c)
 		for i: int in active_options[c]:
@@ -304,21 +304,17 @@ func all_effects_description() -> String:
 				2: e = a.bottom
 				3: e = a.left
 			if e != null and e.event != Artifact.Event.NONE:
-				if not groups.has(e):
-					groups[e.description()] = {}
+				if not groups.has(e.description()):
+					groups[e.description()] = []
 				if o.element == Artifact.Element.MANA or o.element == Artifact.Element.HEALTH:
-					groups[e.description()][""] = o.description()
+					(groups[e.description()] as Array).append(o.description())
 				else:
-					groups[e.description()][e.duration_description()] = o.description()
+					(groups[e.description()] as Array).append(o.description() + " For " + e.duration_description())
 					
 	for event: String in groups:
 		result += event + ": \n"
-		for duration: String in groups[event]:
-			var effect := groups[event][duration] as String
-			if duration != "":
-				result += "  - " + effect + " For " + duration + "\n"
-			else:
-				result += "  - " + effect + "\n"
+		for effect: String in groups[event]:
+			result += "  - " + effect + "\n"
 				
 	if result == "":
 		result = "Connect Artifacts on the Grid to Gain Buffs and Debuffs"

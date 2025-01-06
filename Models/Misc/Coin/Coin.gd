@@ -20,6 +20,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if not eaten and body is Player and amount != 0:
 		eaten = true
 		(body as Player).world_settings.upgrade_settings.currency += amount
+		UIAudioPlayer.ringing()
 		SignalBus.pick_up_world_item_coin.emit(amount, "'%d' coin collected" % amount)
 		var tween := create_tween_for_world_item_pick_up(body, 0.25)
 		tween.finished.connect(custom_free.bind(self))

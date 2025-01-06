@@ -4,6 +4,7 @@ extends CharacterBody
 @onready var cam_pivot: Marker3D = $CamPivot
 @onready var cam_arm: SpringArm3D = $CamPivot/Arm
 @onready var cam: Camera3D = $CamPivot/Arm/Lens
+var cam_shape: Shape3D
 
 @onready var body_pivot: Node3D = $Pivot
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
@@ -18,9 +19,9 @@ var projectile_indicator_scale: float = 1.0
 var bg_audio_state: AudioState
 @onready var bg_audio1: AudioStreamPlayer3D = $BGAudio1
 @onready var bg_audio2: AudioStreamPlayer3D = $BGAudio2
-var walking_audio_state: AudioState
-@onready var walking_audio1: AudioStreamPlayer3D = $MovementAudio1
-@onready var walking_audio2: AudioStreamPlayer3D = $MovementAudio2
+var can_play_footstep: bool = true
+var footstep_next_checkpoint := 0.0
+var last_footstep_playback_position := 0.0
 
 @onready var interface: MeshInstance3D = $CamPivot/Interface
 
@@ -92,10 +93,10 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_scroll_note.connect(on_pick_up_scroll_note)
 	animation_tree.active = true
 	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
-	walking_audio_state = AudioState.new(walking_audio1, walking_audio2)
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
 	SignalBus.player_is_ready.emit(self)
+	cam_shape = cam_arm.shape
 	
 func emit_vitals_update() -> void:
 	vital_update.emit(vitals)
@@ -128,6 +129,15 @@ func play_animation(animation: String, parameters: Dictionary = {}) -> void:
 	for path: StringName in parameters:
 		animation_tree.set(path, parameters[path])
 	var current := playback.get_current_node()
+	if animation == "walk" or animation == "run" or animation == "swim":
+		var current_position := playback.get_current_play_position()
+		if current_position < last_footstep_playback_position:
+			footstep_next_checkpoint = 0.0
+			can_play_footstep = true
+		else:
+			var ratio := current_position / playback.get_current_length() 
+			can_play_footstep = ratio >= footstep_next_checkpoint
+		last_footstep_playback_position = current_position
 	if current != animation:
 		playback.travel(animation)
 
@@ -160,10 +170,10 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor:
 			if velocity.length() < 0.166667:
-				play_walking_audio(World.Biome.WATER if is_underwater else velocity_movement.current_biome)
+				play_walking_audio(velocity_movement.current_biome)
 				play_animation("walk")
 			else:
-				play_walking_audio(World.Biome.WATER if is_underwater else velocity_movement.current_biome)
+				play_walking_audio(velocity_movement.current_biome)
 				var pivot_vector := Vector3.FORWARD.rotated(Vector3.UP, cam_pivot.rotation.y)
 				var direction_angle := Vector3(direction.x, 0, direction.z).signed_angle_to(pivot_vector, Vector3.UP)
 				var is_forward := absf(direction_angle) < PI / 2
@@ -188,6 +198,7 @@ func _physics_process(delta: float) -> void:
 						"parameters/run/Speed/scale": velocity_movement.movement_speed_animation_scale()
 					})
 		elif position.y <= world_settings.sea_level:
+			play_walking_audio(World.Biome.WATER)
 			play_animation("swim")
 	else:
 		if is_on_floor:
@@ -265,7 +276,6 @@ func _physics_process(delta: float) -> void:
 	
 func update_audio_state(delta: float) -> void:
 	bg_audio_state.update(delta)
-	walking_audio_state.update(delta)
 
 func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
@@ -589,6 +599,7 @@ func transition_menu(is_open: bool) -> void:
 		var tween := create_tween().set_parallel()
 		var D := 0.15
 		tween.tween_property(cam, "h_offset", 0.0, D)
+		cam_arm.shape = null
 		tween.tween_property(cam_arm, "position", Vector3(0, -0.3, -0.6), D)
 		tween.tween_property(cam_arm, "spring_length", 0, D)
 		cam_pivot_rotation_y = cam_pivot.rotation.y
@@ -615,6 +626,7 @@ func transition_menu(is_open: bool) -> void:
 		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
 		tween.finished.connect(func() -> void:
 			interface.visible = false
+			cam_arm.shape = cam_shape
 			on_menu_close.call()
 		)
 		tween.play()
@@ -623,9 +635,15 @@ func change_reticule_visible(should_hide: bool) -> void:
 	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide
 
 func play_walking_audio(biome: World.Biome, is_empty: bool = false) -> void:
-	var stream := null if is_empty else NoiseBlender.walking_audio_for_biome(biome)
-	walking_audio_state.play(stream, 0.5, 0.0)
-	walking_audio_state.pitch_scale = NoiseBlender.walking_audio_tempo_factor(biome)
+	if not is_empty:
+		if can_play_footstep:
+			UIAudioPlayer.walk(biome)
+			if footstep_next_checkpoint == 0.0:
+				footstep_next_checkpoint = 0.5
+			elif footstep_next_checkpoint == 0.5:
+				footstep_next_checkpoint = 1.0
+			elif footstep_next_checkpoint == 1.0:
+				footstep_next_checkpoint = 0.0
 		
 func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
 	artifacts.save(world_settings.world_name)
@@ -643,11 +661,13 @@ func on_pick_up_coin(coin: int, message: String) -> void:
 	
 func on_pick_up_red_cross(health: float, message: String) -> void:
 	vitals.health.apply_by_percentage_on_max(health)
+	UIAudioPlayer.drinking()
 	world_settings.save()
 	
 func on_pick_up_scroll_note(note_id: String, message: String) -> void:
 	if not GlobalData.game_settings.unlocked_notes.has(note_id):
 		GlobalData.game_settings.unlocked_notes[note_id] = true
+		UIAudioPlayer.grabbing()
 		GlobalData.game_settings.save()
 	
 func save_name_generator() -> void:

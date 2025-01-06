@@ -18,6 +18,10 @@ var requested_player_height := 0.0
 var last_last_biome: World.Biome = World.Biome.WATER
 var last_biome: World.Biome = World.Biome.WATER
 
+var bg_audio_state: AudioState
+@onready var bg_audio1: AudioStreamPlayer3D = $Player/BGAudio1
+@onready var bg_audio2: AudioStreamPlayer3D = $Player/BGAudio2
+
 @onready var skybox: SkyBox
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
@@ -50,6 +54,8 @@ func _ready() -> void:
 	_settings.world_name = "empty"
 	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
+	
+	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
@@ -103,6 +109,9 @@ func _physics_process(delta: float) -> void:
 	update_terrain_queue()
 	daytime_tick += delta
 	update_transition_to_biome(delta)
+	
+	AudioManager.update(delta)
+	update_audio_state(delta)
 			
 	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
@@ -128,6 +137,7 @@ func _physics_process(delta: float) -> void:
 	var b := blender.biome
 	if last_biome != b:
 		print(World.Biome.keys()[b])
+		play_bg_audio(b)
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
 		theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
@@ -172,7 +182,13 @@ func _on_player_moved(delta: float) -> void:
 		player_movement_direction.y = h - player.position.y
 		if player.position.y < h + 1.0:
 			player.position.y = lerpf(player.position.y, h + 1.0, 0.1)
-		
+
+func update_audio_state(delta: float) -> void:
+	bg_audio_state.update(delta)
+	
+func play_bg_audio(biome: World.Biome, is_empty: bool = false) -> void:
+	var stream := null if is_empty else NoiseBlender.bg_audio_for_biome(biome)
+	bg_audio_state.play(stream, 5.0, 2.0)	
 		
 func build_terrain() -> void:
 	#var chunks := chunker.init_chunks(player.position.x, player.position.z)

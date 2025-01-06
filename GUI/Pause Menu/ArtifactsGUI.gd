@@ -157,6 +157,7 @@ func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) 
 			attempt_place_artifact(artifact, coord, false)
 			
 func _on_artifact_grid_on_cell_selected(coord: Vector2, old_coord: Vector2) -> void:
+	UIAudioPlayer.click()
 	update_list_and_grid()
 
 func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool) -> void:	
@@ -179,6 +180,7 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 		
 	if not temporarily:
 		artifacts.connect_to_grid(artifact, coord)
+		UIAudioPlayer.check(true)
 		update_list_and_grid()
 	else:
 		temporary_grid_tile.queue_redraw()
@@ -237,6 +239,7 @@ func attempt_remove_artifact(coord: Vector2) -> bool:
 	return was_removed
 
 func _on_artifacts_list_item_selected(index: int) -> void:
+	UIAudioPlayer.click()
 	update_selected_artifact()
 	
 func _on_artifact_grid_on_cell_unselected(coord: Vector2) -> void:
@@ -249,7 +252,6 @@ func _on_artifacts_list_gui_input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_accept"):
 			confirm_place_artifact_from_list()
 		elif event.is_action_pressed("E"):
-			print("hello")
 			deselect_all()
 			
 func confirm_place_artifact_from_list() -> void:
@@ -350,11 +352,11 @@ func _on_destroy_pressed() -> void:
 	if destroy_artifact.text == "Destroy":
 		attempt_delete_artifact()
 	elif artifact_grid.selected_cell_coord != null:
-		UIAudioPlayer.check(false)
 		disconnect_artifact(artifact_grid.selected_cell_coord as Vector2)
 			
 func disconnect_artifact(coord: Vector2) -> void:
 	if not attempt_remove_artifact(coord):
+		UIAudioPlayer.click()
 		if temporary_grid_tile.artifact != null:
 			temporary_grid_tile.artifact = null
 			artifact_preview.artifact = null
@@ -368,6 +370,7 @@ func disconnect_artifact(coord: Vector2) -> void:
 		update_temporary_grid_tile()
 		update_list_and_grid()
 	else:
+		UIAudioPlayer.check(false)
 		artifact_grid.selected_cell_coord = null
 		artifact_preview.artifact = null
 		if not artifacts_list.get_selected_items().is_empty():
@@ -592,16 +595,16 @@ class FilterOptions:
 
 
 func _on_top_toggled(toggled_on: bool) -> void:
-	UIAudioPlayer.check(toggled_on)
+	UIAudioPlayer.click()
 
 func _on_left_toggled(toggled_on: bool) -> void:
-	UIAudioPlayer.check(toggled_on)
+	UIAudioPlayer.click()
 
 func _on_right_toggled(toggled_on: bool) -> void:
-	UIAudioPlayer.check(toggled_on)
+	UIAudioPlayer.click()
 
 func _on_bottom_toggled(toggled_on: bool) -> void:
-	UIAudioPlayer.check(toggled_on)
+	UIAudioPlayer.click()
 
 func _on_filter_all_toggled(toggled_on: bool) -> void:
-	UIAudioPlayer.check(toggled_on)
+	UIAudioPlayer.click()
