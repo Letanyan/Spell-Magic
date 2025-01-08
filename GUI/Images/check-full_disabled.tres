@@ -1,0 +1,21 @@
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://btcctd5s4ve7n"]
+
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_6xn70"]
+[ext_resource type="Texture2D" uid="uid://dq4uiamc42p66" path="res://GUI/Images/check-full.svg" id="2_jnrdx"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("1_6xn70")
+texture = ExtResource("2_jnrdx")
+tint = Color(0.2, 0.2, 0.2, 1)
+flip_vertical = false
+flip_horizontal = false
+rotation = 0.0
+stretch_mode = 5
+scale = Vector2(1, 1)
+offset = Vector2(0, 0)
+resource_local_to_scene = false
+resource_name = ""
+load_path = "res://.godot/imported/check-full.svg-4c3b4e6ce0cbf5f094b4f71b0114e5ca.ctex"
+script = ExtResource("1_6xn70")

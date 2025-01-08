@@ -31,6 +31,12 @@ var current_index := -1
 
 @onready var page: MagicPage = $MagicPage
 
+var check_full := load("res://GUI/Images/check-full.svg") as Texture2D
+var check_empty := load("res://GUI/Images/check-empty.svg") as Texture2D
+var check_full_not_seen := load("res://GUI/Images/check-full_not_seen.tres") as TintedTexture
+var check_empty_not_seen := load("res://GUI/Images/check-empty_not_seen.tres") as TintedTexture
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	sort_popup = sort_button.get_popup()
@@ -57,6 +63,8 @@ func _on_spell_index_item_selected(index: int) -> void:
 	current_index = spells_index_map[index]
 	UIAudioPlayer.click()
 	var spell: Spell = book.spells[current_index]
+	spell.seen_by_player = true
+	spell_index.set_item_icon(index, check_full if spell.is_active else check_empty)
 	
 	page.display_spell(book, spell, current_index)
 	
@@ -148,7 +156,10 @@ func reload_list() -> void:
 	update_spells_list()
 	for k: int in spells_index_map:
 		var s := book.spells[spells_index_map[k]]
-		spell_index.add_item(s.name, load("res://GUI/Images/check-full.svg") as Texture2D if s.is_active else load("res://GUI/Images/check-empty.svg") as Texture2D)
+		if s.seen_by_player:
+			spell_index.add_item(s.name, check_full if s.is_active else check_empty)
+		else:
+			spell_index.add_item(s.name, check_full_not_seen if s.is_active else check_empty_not_seen)
 		
 	if not spell_name.is_empty():
 		for i in spell_index.item_count:

@@ -23,6 +23,8 @@ var temporary_grid_tile: GridTile
 
 var double_click_timer: Dictionary = {} ## [int(MOUSE_BUTTON_INDEX)]bool(is_clicked)
 
+var not_seen_by_player_icon := load("res://GUI/Images/check-full_not_seen.tres") as TintedTexture
+
 var artifacts: Artifacts:
 	set(value):
 		artifacts = value
@@ -77,13 +79,13 @@ func update_list() -> void:
 	if artifact_grid.selected_cell_coord == null:
 		for a in artifacts.unconnected():
 			if filter_artifact_matches(a):
-				artifacts_list.add_item(a.name)
+				artifacts_list.add_item(a.name, null if a.seen_by_player else not_seen_by_player_icon)
 				if a == artifact_preview.artifact:
 					found_preview = true
 	else:
 		for a in artifacts.unconnected():
 			if filter_artifact_matches(a) and artifacts.can_place_artifact(a, artifact_grid.selected_cell_coord as Vector2).is_empty():
-				artifacts_list.add_item(a.name)
+				artifacts_list.add_item(a.name, null if a.seen_by_player else not_seen_by_player_icon)
 				if a == artifact_preview.artifact:
 					found_preview = true
 	if not found_preview:
@@ -130,6 +132,8 @@ func update_selected_artifact() -> void:
 	var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(index))
 	if artifact == null:
 		return
+	artifact.seen_by_player = true
+	artifacts_list.set_item_icon(index, null)
 	artifact_preview.artifact = artifact
 	temporary_grid_tile.artifact = artifact
 	artifact_preview.queue_redraw()

@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://k2wpu7vewbs8" path="res://GUI/Images/tinted_count.tres" id="12_orfx1"]
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="12_wuyxn"]
 [ext_resource type="Texture2D" uid="uid://cq728kfgknjvw" path="res://GUI/Images/tinted_power.tres" id="13_0lr0b"]
-[ext_resource type="Texture2D" uid="uid://blghd2xvrcth8" path="res://GUI/Images/check-full.svg" id="13_qqrq5"]
+[ext_resource type="Texture2D" uid="uid://dq4uiamc42p66" path="res://GUI/Images/check-full.svg" id="13_qqrq5"]
 [ext_resource type="Texture2D" uid="uid://bk1o4abaywoye" path="res://GUI/Images/tinted_mana.tres" id="14_r3sjk"]
 [ext_resource type="Texture2D" uid="uid://m5cjiv66vwql" path="res://GUI/Images/chain.svg" id="14_v18it"]
 [ext_resource type="Texture2D" uid="uid://df0tjri0j5t4e" path="res://GUI/Images/quill.svg" id="16_rkfs2"]

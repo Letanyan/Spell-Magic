@@ -595,12 +595,14 @@ func drop_artifact() -> Artifact:
 			if key.contains("N"): fill_with.call([Vector2i.UP], probs)
 			if key.contains("S"): fill_with.call([Vector2i.DOWN], probs)
 	
+	result.seen_by_player = false
 	return result
 	
 func drop_spell() -> Spell:
 	var result := Rand.entity_from_distribution(randf(), spell_drop_probs, null) as Spell
 	var new_name := player.name_generator.latin_names.generate(12, 2)
 	result.duplicate({}, false).bake(new_name)
+	result.seen_by_player = false
 	return result
 	
 func drop_key() -> int:
@@ -619,8 +621,9 @@ func drop_key() -> int:
 		
 	
 ## values must be in range [1, 100]
-func drop_coins() -> Array[int]: 
-	return cns(class_level)
+func drop_coins() -> Array[int]:
+	@warning_ignore("integer_division")
+	return cns(class_level / 4)
 	
 func drop_health() -> float:
 	var p := class_level / 20.0

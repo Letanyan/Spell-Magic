@@ -67,6 +67,7 @@ var crit_rate: float
 var crit_dmg: float
 var spherical_coords: bool
 var ignore_cooldown_when_calculating_elemental_application: bool = false
+var seen_by_player: bool
 
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
@@ -100,6 +101,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	player_is_origin = _player_is_origin
 	charge = 0.0
 	expression_strings = {}
+	seen_by_player = true
 	
 	crit_rate = 0.0
 	crit_dmg = 0.0
@@ -137,6 +139,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.spherical_coords = spherical_coords
 	result.configuration_parameters_for_chain.merge(configuration_parameters_for_chain, true)
 	result.variable_update_set = variable_update_set
+	result.seen_by_player = seen_by_player
 	if for_player:
 		result.limit_r = limit_r
 		result.limit_v = limit_v
@@ -693,7 +696,7 @@ func save_dict() -> Dictionary:
 		"expression_strings": expression_strings, "is_active": is_active, 
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
 		"spherical_coords": spherical_coords, "preview_image": pimages, "preview_flags": pflags,
-		"configuration_parameters_for_chain": configuration_parameters_for_chain,
+		"configuration_parameters_for_chain": configuration_parameters_for_chain, "seen_by_player": seen_by_player,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -724,6 +727,7 @@ func load_dict(dict: Dictionary) -> void:
 	crit_dmg = dict.get("crit_dmg", 0.0)
 	spherical_coords = dict.get("spherical_coords", false)
 	charge = 0.0
+	seen_by_player = dict.get("seen_by_player", false)
 	id = dict.get("id", -1)
 	mana_cost = dict.get("mana", 0.0)
 	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind

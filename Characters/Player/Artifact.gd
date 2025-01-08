@@ -357,6 +357,7 @@ var top: Option
 var right: Option
 var bottom: Option
 var left: Option
+var seen_by_player: bool
 
 func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b: Option = Option.empty(), l: Option = Option.empty()) -> void:
 	name = n
@@ -364,6 +365,7 @@ func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b:
 	right = r
 	bottom = b
 	left = l
+	seen_by_player = false
 	
 static func nulled(n: String) -> Artifact:
 	return Artifact.new(n, null, null, null, null)
@@ -376,7 +378,7 @@ func fill(spots: Array[Vector2i], is_effect: float, effect: Dictionary, event: D
 
 func save_dict() -> Dictionary:
 	return {"name": name, "top": top.save_dict(), "left": left.save_dict(), 
-	"right": right.save_dict(), "bottom": bottom.save_dict()}
+	"right": right.save_dict(), "bottom": bottom.save_dict(), "seen_by_player": seen_by_player}
 	
 func load_dict(dict: Dictionary) -> void:
 	name = dict["name"]
@@ -388,6 +390,7 @@ func load_dict(dict: Dictionary) -> void:
 	right.load_dict(dict["right"] as Dictionary)
 	bottom = Option.empty()
 	bottom.load_dict(dict["bottom"] as Dictionary)
+	seen_by_player = dict.get("seen_by_player", false)
 	
 static func color_for_element(element: Element) -> Color:
 	match element:

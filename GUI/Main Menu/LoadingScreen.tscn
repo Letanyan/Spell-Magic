@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://cj1doo6y1k4vk"]
+[gd_scene load_steps=10 format=3 uid="uid://cj1doo6y1k4vk"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/LoadingScreen.gd" id="1_lx61i"]
-[ext_resource type="Texture2D" uid="uid://b78atkfmuchnc" path="res://GUI/Images/check-empty.svg" id="2_602if"]
 
 [sub_resource type="Animation" id="Animation_5kl2m"]
 length = 0.001
@@ -183,7 +182,6 @@ libraries = {
 }
 
 [node name="ProgressBar" type="TextureProgressBar" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -197,7 +195,6 @@ offset_bottom = 23.888
 value = 60.0
 fill_mode = 4
 radial_initial_angle = 199.629
-texture_progress = ExtResource("2_602if")
 
 [node name="Loading" type="Label" parent="."]
 layout_mode = 1
