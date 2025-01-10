@@ -412,16 +412,17 @@ func _input(event: InputEvent) -> void:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative)
 				
-	if not settings.is_paused:
+	if GlobalData.is_debug and not settings.is_paused:
 		if event is InputEventKey:
 			var ev := event as InputEventKey
+			if ev.is_released() and ev.keycode == KEY_2:
+				chunker.update_environment(player.position.x + 0.5, player.position.z + 0.5)
 			if ev.is_released() and ev.keycode == KEY_1:
 				for loc: Vector2i in population:
 					var pop := population[loc] as Population
 					if pop == null: continue
 					if pop.display_only: continue
 					var y := 0.0
-					print(pop.coord)
 					for i in pop.spawn_area_biomes.size():
 						for p: Vector2 in pop.spawn_area_points[i]:
 							p += pop.coord * chunker.chunk_width
