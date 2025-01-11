@@ -66,10 +66,8 @@ func setup(_settings: WorldSettings) -> void:
 		book = MagicBook.new()
 		book.settings = settings
 		book.read(settings.world_name)
-		if book.spells.is_empty():
-			book.add(settings.upgrade_settings.default_starter_spell())
 		book.rebuild_spell_chains()
-		book.ignore_cooldown = OS.is_debug_build()
+		book.ignore_cooldown = GlobalData.is_debug
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v(), settings.upgrade_settings.max_r())
 	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:
@@ -87,7 +85,11 @@ func setup(_settings: WorldSettings) -> void:
 	)
 	
 	case = WandCase.new()
-	case.read(settings.world_name, book)
+	if not case.read(settings.world_name, book):
+		var w := case.wands[case.selected_wand]
+		var opt := w.keys[PackedStringArray(["RT"])] as Wand.Option
+		opt.kind = Wand.Kind.FIRE
+		opt.parse_spells("Blast", book)
 	book.spell_was_updated.connect(case.spell_was_updated)
 	
 	artifacts = Artifacts.new()

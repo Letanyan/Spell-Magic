@@ -10,22 +10,23 @@ func save(world_name: String) -> void:
 		data.append(w.save_dict())
 	file.store_var({"wands": data, "selected": selected_wand})
 	
-func read(world_name: String, book: MagicBook) -> void:
+func read(world_name: String, book: MagicBook) -> bool:
 	var file := FileAccess.open("user://worlds/%s/wand_case.json" % (world_name), FileAccess.READ)
 	if not file:
 		wands = [Wand.basic()]
 		selected_wand = 0
-		return 
+		return false
 	var data := file.get_var() as Dictionary
 	if data == null:
 		wands = [Wand.basic()]
 		selected_wand = 0
-		return
+		return false
 	for d: Dictionary in data["wands"]:
 		var w := Wand.new()
 		w.load_dict(d, book)
 		wands.append(w)
 	selected_wand = data["selected"]
+	return true
 	
 func _init() -> void:
 	wands = []

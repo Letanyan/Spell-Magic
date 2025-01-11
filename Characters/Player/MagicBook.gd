@@ -27,16 +27,18 @@ func export_absolute_path(file_path: String) -> void:
 		data += s.make_gdscript_init(s.name, true)
 	file.store_string(data)
 	
-func read(world_name: String) -> void:
-	read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
+func read(world_name: String) -> bool:
+	return read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
 		
-func read_absolute_path(file_path: String) -> void:
+func read_absolute_path(file_path: String) -> bool:
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if not file:
-		return 
+		add(settings.upgrade_settings.default_starter_spell())
+		return false
 	var data := file.get_var() as Array
 	if data == null:
-		return
+		add(settings.upgrade_settings.default_starter_spell())
+		return false
 	var active_count := 0
 	spells = []
 	cooldown = {}
@@ -51,6 +53,7 @@ func read_absolute_path(file_path: String) -> void:
 			active_count += 1
 		spells.append(s)
 		spell_index[s.name] = s
+	return true
 	
 func _init() -> void:
 	spells = []

@@ -795,25 +795,33 @@ func _on_load_from_clipboard_pressed() -> void:
 	if current_index < 0 and DisplayServer.clipboard_has():
 		UIAudioPlayer.failed_click()
 		return
-	var spell_text := DisplayServer.clipboard_get()
-	var dict := Marshalls.base64_to_utf8(spell_text)
-	var json := JSON.new()
-	var err := json.parse(dict)
-	if err != OK or not json.data is Dictionary:
-		UIAudioPlayer.failed_click()
-		return
-	UIAudioPlayer.click()
-	
+		
 	var spell := book.spells[current_index]
-	var old_name := spell.name
-	spell.load_dict(json.data as Dictionary)
-	spell.name = old_name
-	var active_count := 0
-	for s in book.spells:
-		if s.is_active:
-			active_count += 1
-	spell.is_active = active_count < book.settings.upgrade_settings.max_spells_in_book()
-	display_spell(book, book.spells[current_index], current_index)
+	var popup := PopupDialog.display("Are you sure you want to overwrite the spell '" + spell.name + "' with copied spell")
+	popup.confirmed.connect(func() -> void:
+		var spell_text := DisplayServer.clipboard_get()
+		var dict := Marshalls.base64_to_utf8(spell_text)
+		var json := JSON.new()
+		var err := json.parse(dict)
+		if err != OK or not json.data is Dictionary:
+			UIAudioPlayer.failed_click()
+			return
+		UIAudioPlayer.click()
+		
+		var old_name := spell.name
+		var old_id := spell.id
+		spell.load_dict(json.data as Dictionary)
+		spell.name = old_name
+		spell.id = old_id
+		var active_count := 0
+		for s in book.spells:
+			if s.is_active:
+				active_count += 1
+		spell.is_active = active_count < book.settings.upgrade_settings.max_spells_in_book()
+		display_spell(book, book.spells[current_index], current_index)
+	)
+	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+	popup.show_in_root(self)
 
 func hide_preview_selector() -> void:
 	preview_selector.hide()

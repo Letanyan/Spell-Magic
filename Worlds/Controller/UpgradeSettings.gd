@@ -453,11 +453,13 @@ func default_starter_spell() -> Spell:
 		blast_element = Spell.Element.AIR
 	elif check_if_has_spell_element(Spell.Element.ICE):
 		blast_element = Spell.Element.ICE
-	var blast := Spell.new(false, "u*(speed*t+offset)", "v*(speed*t+offset)", "w*(speed*t+offset)", "0.1", 5, 1.0, blast_element)
+	var blast := Spell.new(false, "ru", "rv", "offset + speed * t", "0.1", 5, 1.0, blast_element)
 	blast.name = "Blast"
+	blast.spherical_coords = true
 	blast.expression_strings = {
 		"speed": "5",
 		"offset": "1",
 	}
+	blast.build_expressions()
 	
 	return blast
