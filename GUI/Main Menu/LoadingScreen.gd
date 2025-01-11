@@ -5,9 +5,9 @@ extends Node
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var timer: Timer = $Timer
 @onready var loading_label: Label = $Loading
-@onready var message_label: Label = $Message
+@onready var message_label: RichTextLabel = $VBoxMessage/Message
 
-var message: String
+var message: Array
 var starting_animation_name:String
 
 
@@ -47,7 +47,15 @@ func _on_timer_timeout() -> void:
 	#progress_bar.visible = true
 	loading_label.visible = true
 	message_label.visible = true
-	message_label.text = message
+	if message.is_empty():
+		message_label.text = ""
+	else:
+		message_label.text = """
+[font_size=72][b]"[/b][/font_size]
+[font_size=36]%s[/font_size]
+
+[font_size=36][right][i]%s[/i][/right][/font_size]
+""" % message
 
 func update_bar(val: float) -> void:
 	progress_bar.value = val

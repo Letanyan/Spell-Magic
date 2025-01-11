@@ -19,7 +19,7 @@ func _ready() -> void:
 	content_failed_to_load.connect(on_content_failed_to_load)
 	content_finished_loading.connect(on_content_finished_loading)
 
-func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content: Variant) -> void: pass, message: String = "") -> void:
+func load_new_scene(content_path:String, transition_type:String="fade_to_black", on_complete: Callable = func(content: Variant) -> void: pass, message: Array = []) -> void:
 	_transition = transition_type
 	# add loading screen
 	loading_screen = _loading_screen_scene.instantiate() as LoadingScreen
