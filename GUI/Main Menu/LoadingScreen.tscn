@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cj1doo6y1k4vk"]
+[gd_scene load_steps=11 format=3 uid="uid://cj1doo6y1k4vk"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/LoadingScreen.gd" id="1_lx61i"]
+[ext_resource type="Texture2D" uid="uid://b3tdybqsgo1ie" path="res://GUI/Images/Background/loading_bg.png" id="2_8jp1v"]
 
 [sub_resource type="Animation" id="Animation_5kl2m"]
 length = 0.001
@@ -38,7 +39,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 0.757858),
 "update": 0,
-"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -78,7 +79,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 0.196146),
 "update": 0,
-"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -157,6 +158,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lx61i")
 
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("2_8jp1v")
+expand_mode = 3
+stretch_mode = 6
+
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -164,7 +174,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

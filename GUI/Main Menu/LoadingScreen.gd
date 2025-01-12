@@ -59,3 +59,6 @@ func _on_timer_timeout() -> void:
 
 func update_bar(val: float) -> void:
 	progress_bar.value = val
+
+func mess(string: String) -> void:
+	print(string)
