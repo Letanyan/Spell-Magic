@@ -234,6 +234,8 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					focus_point = pos3d + Vec3.polar(999_999, facing_tangent)
 					
 				var make_circle_path := func(pos: Vector3, speed: float) -> Pathway:
+					if pos.is_zero_approx():
+						return Pathway.empty()
 					return Pathway.new().move_to(pos).arc_to(pos.rotated(Vector3.UP, PI), true, speed).arc_to(pos, true, speed)
 				var make_still_path := func(pos: Vector3, speed: float) -> Pathway:
 					return Pathway.new().wait(5, pos)
