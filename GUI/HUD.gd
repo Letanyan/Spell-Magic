@@ -24,6 +24,9 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 @onready var selection_wheel: SelectionWheel = $SelectionWheel
 var image_preview_raws := {} ## [String]Texture2D
 
+@onready var message_label: RichTextLabel = $MessageLabel
+
+
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
@@ -209,6 +212,10 @@ func draw_notifications(delta: float) -> void:
 	for n: String in to_erase:
 		notifications.erase(n)
 		
+func show_message(text: String) -> void:
+	message_label.text = text
+	message_label.visible = not text.is_empty()
+		
 func update_wand_mappings() -> void:
 	const SIZE := 16
 	var rich_text := ""
@@ -337,6 +344,7 @@ func update_settings(settings: WorldSettings) -> void:
 	world_settings = settings
 	hud_settings = settings.hud_settings
 	
+	GlobalData.controller.switching_mode = hud_settings.key_display
 	match hud_settings.key_display:
 		HUDSettings.KeyDisplay.KEYBOARD:
 			GlobalData.controller.last_input_type = Controller.InputType.KEYBOARD

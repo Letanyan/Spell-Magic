@@ -123,10 +123,6 @@ func run_on_ready() -> void:
 	var noise_tex := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
 	noise_image = noise_tex.get_image()
 		
-	# Forest location for world seed 0
-	#player.position.x = 800
-	#player.position.y = 700
-	#player.position.z = 2300
 	player.position = settings.player_position
 	player.spell_caster.ignore_mana_cost = OS.is_debug_build()
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
@@ -495,6 +491,28 @@ func insert_spell(p: Node3D) -> void:
 
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta
+	if Vec2.xz(player.position).distance_to(Vector2.ZERO) < 8.0:
+		match GlobalData.controller.last_input_type:
+			Controller.InputType.KEYBOARD:
+				var message := "[center]"
+				message += GlobalData.controller.key_images(PackedStringArray(["move_forward"]))
+				message += GlobalData.controller.key_images(PackedStringArray(["move_left"]))
+				message += GlobalData.controller.key_images(PackedStringArray(["move_back"]))
+				message += GlobalData.controller.key_images(PackedStringArray(["move_right"])) + "[b]Move[/b] "
+				message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
+				message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
+				message += "[/center]"
+				hud.show_message(message)
+			Controller.InputType.CONTROLLER:
+				var message := "[center]"
+				message += GlobalData.controller.key_images(PackedStringArray(["dpad"])) + "[b]Move[/b] "
+				message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
+				message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
+				message += "[/center]"
+				hud.show_message(message)
+	else:
+		hud.show_message("")
+		
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
 		update_terrain()
