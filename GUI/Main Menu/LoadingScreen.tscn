@@ -188,6 +188,7 @@ libraries = {
 wait_time = 0.05
 
 [node name="ProgressAnimation" type="AnimationPlayer" parent="."]
+active = false
 root_node = NodePath("../ProgressBar")
 libraries = {
 "": SubResource("AnimationLibrary_spo1q")
@@ -213,6 +214,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ProgressBar" type="TextureProgressBar" parent="."]
+visible = false
 layout_mode = 2
 anchor_left = 0.5
 anchor_top = 1.0

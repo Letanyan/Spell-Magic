@@ -16,7 +16,8 @@ var starting_animation_name:String
 func _ready() -> void:
 	loading_label.visible = false
 	message_label.visible = false
-	progress_animation.play("spin")
+	progress_bar.visible = false
+	#progress_animation.play("spin")
 	
 func start_transition(animation_name: String, on_complete: Callable) -> void:
 	if !anim_player.has_animation(animation_name):

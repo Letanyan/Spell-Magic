@@ -251,7 +251,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
 	old_origin = temp_origin
 	
-	if player is Player:
+	if GlobalData.is_debug and player is Player:
 		Debug3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, 10.0)
 		Debug3D.draw_line(Vector3(me.x, me.y, me.z), Vector3(v.x, y, v.z), Color.GREEN, 10.0)
 		for segment: Segment in path.segments:

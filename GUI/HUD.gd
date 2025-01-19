@@ -174,6 +174,9 @@ func update_spell_cooldowns(delta: float) -> void:
 			cooldown_list.deselect(i)
 		i += 1
 		
+	if i < cooldown_list.item_count:
+		update_wand_mappings()
+		
 	while i < cooldown_list.item_count:
 		cooldown_list.remove_item(i)
 		

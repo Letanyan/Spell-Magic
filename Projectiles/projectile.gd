@@ -49,7 +49,7 @@ func setup() -> void:
 	is_emitting = true
 	started = false
 	in_control = true
-	is_off = false
+	is_off = true
 	free_when_ready = NAN
 	velocity = Vector3.ZERO
 	old_velocity = Vector3.ZERO
