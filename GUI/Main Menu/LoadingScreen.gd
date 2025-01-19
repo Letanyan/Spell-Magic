@@ -7,14 +7,16 @@ extends Node
 @onready var loading_label: Label = $Loading
 @onready var message_label: RichTextLabel = $VBoxMessage/Message
 
+@onready var progress_animation: AnimationPlayer = $ProgressAnimation
+
 var message: Array
 var starting_animation_name:String
 
 
 func _ready() -> void:
-	progress_bar.visible = false
 	loading_label.visible = false
 	message_label.visible = false
+	progress_animation.play("spin")
 	
 func start_transition(animation_name: String, on_complete: Callable) -> void:
 	if !anim_player.has_animation(animation_name):
@@ -44,7 +46,6 @@ func finish_transition() -> void:
 	queue_free()
 
 func _on_timer_timeout() -> void:
-	#progress_bar.visible = true
 	loading_label.visible = true
 	message_label.visible = true
 	if message.is_empty():
@@ -59,6 +60,3 @@ func _on_timer_timeout() -> void:
 
 func update_bar(val: float) -> void:
 	progress_bar.value = val
-
-func mess(string: String) -> void:
-	print(string)
