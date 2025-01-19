@@ -402,9 +402,10 @@ func mark_entity_name(name: String) -> void:
 func entity_name_is_marked(name: String) -> bool:
 	return (player.world_settings.marked_entities.get(coord, []) as Array[String]).find(name) != -1
 
-static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float, world_level: int = 1) -> float:
+static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float, world_level: int = 1, difficulty_curve: Segment = Easing.linear) -> float:
 	var p := clampf(Vector2(x, z).length() / world_radius, 0.0, 1.0) * 100.0
-	var base := 45.0 * (log(p + 1.0) / log(10.0))
+	#var base := 45.0 * (log(p + 1.0) / log(10.0))
+	var base := difficulty_curve.position_at_time(p / 100.0).y * 90
 	var offset_max_range := (p * p) / 10000.0 + 9 * sin(p * PI / 10.0)
 	var random_offset := 0.0
 	if rang == null:
@@ -415,7 +416,7 @@ static func level_relative_to_position_within_radius(rang: RandomNumberGenerator
 	return result
 	
 func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:
-	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius, player.world_settings.world_level)
+	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius, player.world_settings.world_level, blender.difficulty_curve)
 
 func fit(mn: float, mx: float) -> float:
 	return lerpf(mn, mx, current_fl_during_generation)

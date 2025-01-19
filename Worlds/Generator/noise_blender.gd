@@ -118,6 +118,7 @@ var color := Color.WHITE
 var total_size := 0.0
 var sea_level := 0.0
 var world_radius := 10000.0
+var difficulty_curve := Easing.linear
 
 static func color_for_biome(_biome: World.Biome) -> Color:
 	match _biome:
@@ -200,6 +201,14 @@ static func version1(s: int) -> NoiseBlender:
 	
 	result.sea_level = rng.randf_range(-50.0, 50.0)
 	result.world_radius = rng.randf_range(7_500.0, 10_000.0)
+	
+	var difficulty_option := rng.randi_range(0, 4)
+	match difficulty_option:
+		0: result.difficulty_curve = Easing.in_quart
+		1: result.difficulty_curve = Easing.in_quad
+		2: result.difficulty_curve = Easing.linear
+		3: result.difficulty_curve = Easing.out_quad
+		4: result.difficulty_curve = Easing.out_quart
 	
 	return result
 	

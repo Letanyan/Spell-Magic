@@ -162,8 +162,8 @@ func purchase_D() -> PurchaseError:
 var level_P := 1:
 	set(value):
 		level_P = clampi(value, 1, level_max_P)
-const level_max_P := 20
-func max_P(x: int = level_P) -> int: return x * 5
+const level_max_P := 10
+func max_P(x: int = level_P) -> int: return x * 10
 func upgrade_P() -> int: return max_P(level_P + 1) - max_P(level_P)
 func cost_P() -> int: return level_P * 200
 var buff_P := 0.0
@@ -252,8 +252,8 @@ func purchase_health() -> PurchaseError:
 var level_attack := 1:
 	set(value):
 		level_attack = clampi(value, 1, level_max_attack)
-const level_max_attack := 20
-func max_attack(x: int = level_attack) -> float: return x * 5.0
+const level_max_attack := 10
+func max_attack(x: int = level_attack) -> float: return x * 10.0
 func upgrade_attack() -> float: return max_attack(level_attack + 1) - max_attack(level_attack)
 func cost_attack() -> int: return level_attack * 180
 var buff_attack := 0.0
@@ -274,8 +274,8 @@ func purchase_attack() -> PurchaseError:
 var level_defence := 1:
 	set(value):
 		level_defence = clampi(value, 1, level_max_defence)
-const level_max_defence := 20
-func max_defence(x: int = level_defence) -> float: return x * 5.0
+const level_max_defence := 10
+func max_defence(x: int = level_defence) -> float: return x * 10.0
 func upgrade_defence() -> float: return max_defence(level_defence + 1) - max_defence(level_defence) 
 func cost_defence() -> int: return level_defence * 140
 var buff_defence := 0.0
