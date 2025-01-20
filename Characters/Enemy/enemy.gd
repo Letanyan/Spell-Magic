@@ -267,31 +267,30 @@ func _physics_process(delta: float) -> void:
 					v = movement["absolute"]
 					t = movement["target"]
 					var g := Navigator.get_world_height(get_world_3d().direct_space_state, position.x, position.z)
-					if feet_position() < g:
+					if feet_position() + v.y + t.y < g + 0.005:
 						if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR:
 							if pushed_with_impulse:
 								pushed_with_impulse = feet_position() + t.y < g
 								v.y = 0
 							else:
-								set_feet_position(g)
-								t.y = 0
+								t.y = (g - feet_position()) * delta
 								v.y = 0
 						else:
 							pushed_with_impulse = false
-					elif feet_position() > g:
+					elif feet_position() + v.y + t.y > g + 0.005:
 						if current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT:
 							if pushed_with_impulse:
 								pushed_with_impulse = feet_position() + t.y > g
 								v.y = 0
 							else:
-								set_feet_position(g)
-								t.y = 0
+								t.y = (g - feet_position()) * delta
 								v.y = 0
 						else:
 							pushed_with_impulse = false
 					is_on_floor_1_not_on_floor_2_else_check_0 = 1 if abs(feet_position() - g) < 0.1 else 2
 					velocity = Vector3(v.x, v.y + t.y, v.z)
-					position += Vector3(v.x, v.y + t.y, v.z) + group_positioning_adjustment * delta * speed_for_current_behaviour_tick
+					var adj := group_positioning_adjustment * delta * speed_for_current_behaviour_tick
+					position += Vector3(v.x, v.y + t.y, v.z) + adj
 					
 			if current_path.lookat == PathStyle.LookAt.PLAYER:
 				var t := Globals.looking_at(self, player.transform.origin)
