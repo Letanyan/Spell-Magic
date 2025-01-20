@@ -2,7 +2,7 @@
 
 shader_type spatial;
 #include "basic.gdshaderinc"
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,vertex_lighting;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_toon,specular_schlick_ggx,vertex_lighting;
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
 uniform float point_size : hint_range(0,128);
@@ -40,9 +40,9 @@ void vertex() {
 	);
 	float displacement_affect = pow(1.0 - VERTEX.y, 3.0);
 
-	VERTEX.x += wind_dir.x * 0.1 * wind_speed * wind_speed_strength.x * displacement_affect;
-	VERTEX.y += wind_dir.y * 0.1 * wind_speed * wind_speed_strength.y * displacement_affect;
-	VERTEX.z += wind_dir.y * 0.1 * wind_speed * wind_speed_strength.z * displacement_affect;
+	VERTEX.x += wind_dir.x * 0.1 * wind_speed * displacement_affect * wind_speed_strength.x;
+	VERTEX.y += wind_dir.y * 0.1 * wind_speed * displacement_affect * wind_speed_strength.y;
+	VERTEX.z += wind_dir.y * 0.1 * wind_speed * displacement_affect * wind_speed_strength.z;
 }
 
 void fragment() {
