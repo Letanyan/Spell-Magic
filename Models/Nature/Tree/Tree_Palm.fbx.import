@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://gxah6g0pnybg"
-path="res://.godot/imported/Tree_Palm.fbx-7c15de677f2c6c3a3b40ae0b265360d7.scn"
+uid="uid://bp60mdu3i7g0"
+path="res://.godot/imported/tree_palm.fbx-2f9883ac8f16ba603310aa9e5bb61620.scn"
 
 [deps]
 
-source_file="res://Models/Nature/Tree/Tree_Palm.fbx"
-dest_files=["res://.godot/imported/Tree_Palm.fbx-7c15de677f2c6c3a3b40ae0b265360d7.scn"]
+source_file="res://Models/Nature/Tree/tree_palm.fbx"
+dest_files=["res://.godot/imported/tree_palm.fbx-2f9883ac8f16ba603310aa9e5bb61620.scn"]
 
 [params]
 

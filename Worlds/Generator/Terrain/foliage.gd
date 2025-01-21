@@ -247,7 +247,7 @@ var mesh_transforms := {
 	World.Foliage.TREE_PYRAMID: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
 	World.Foliage.TREE_ROUND: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
 	World.Foliage.TREE_SAFARI: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)),
-	World.Foliage.TREE_PALM: Transform3D(Basis(Quaternion(-0.707, 0, 0, 0.707)), Vec3.y(0)).scaled(Vec3.a(100)),
-	World.Foliage.TREE_PINE: Transform3D(Basis(Quaternion(-0.707, 0, 0, 0.707)), Vec3.y(0)).scaled(Vec3.a(100)),
-	World.Foliage.TREE_SAFARI2: Transform3D(Basis(Quaternion(-0.707, 0, 0, 0.707)), Vec3.y(0)).scaled(Vec3.a(250)),
+	World.Foliage.TREE_PALM: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1)),
+	World.Foliage.TREE_PINE: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1)),
+	World.Foliage.TREE_SAFARI2: Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1)),
 }

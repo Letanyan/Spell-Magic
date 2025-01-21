@@ -20,11 +20,12 @@ uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 uniform float green_amount: hint_range(0.0, 1.0, 0.05) = 0.0;
 
-uniform float wind_speed_multiplier = 0.000001;
+uniform float wind_speed_multiplier = 0.0;
 uniform vec3 wind_speed_strength = vec3(0.0, 0.0, 0.0);
 // we need a tiling noise here!
 uniform sampler2D wind_noise : hint_default_black;
 uniform sampler2D wind_speed_change : hint_default_white;
+uniform bool invert_wind_effect = false;
 
 //varying vec4 instance_custom;
 
@@ -38,11 +39,14 @@ void vertex() {
 		texture(wind_noise, vec2(TIME * wind_speed * 0.1, 0.5)).r * 2.0 - 1.0,
 		texture(wind_noise, vec2(0.5, TIME * wind_speed * 0.1)).r * 2.0 - 1.0
 	);
-	float displacement_affect = pow(1.0 - VERTEX.y, 3.0);
+	float displacement_effect = pow(1.0 - VERTEX.y, 3.0);
+	if (invert_wind_effect) {
+		displacement_effect = 1.0 - VERTEX.y;
+	}
 
-	VERTEX.x += wind_dir.x * 0.1 * wind_speed * displacement_affect * wind_speed_strength.x;
-	VERTEX.y += wind_dir.y * 0.1 * wind_speed * displacement_affect * wind_speed_strength.y;
-	VERTEX.z += wind_dir.y * 0.1 * wind_speed * displacement_affect * wind_speed_strength.z;
+	VERTEX.x += wind_dir.x * 1.0 * wind_speed * displacement_effect * wind_speed_strength.x;
+	VERTEX.y += wind_dir.y * 1.0 * wind_speed * displacement_effect * wind_speed_strength.y;
+	VERTEX.z += wind_dir.y * 1.0 * wind_speed * displacement_effect * wind_speed_strength.z;
 }
 
 void fragment() {
