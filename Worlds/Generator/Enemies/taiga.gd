@@ -6,6 +6,7 @@ enum TaigaStructuresKind {
 	TREE_PYRAMID, TREE_PINE, BUSH_TALL, FLOWER_SUN3,
 	HORZ_CIRCLE_PUZZLE, LINE_PUZZLE, ROTATING_PUZZLE,
 	LONE_GOBLIN, GOBLIN_HORDE,
+	NOTE,
 }
 
 const taiga_structure := {
@@ -19,6 +20,7 @@ const taiga_structure := {
 	TaigaStructuresKind.ROTATING_PUZZLE: 1,
 	TaigaStructuresKind.LONE_GOBLIN: 0.05,
 	TaigaStructuresKind.GOBLIN_HORDE: 0.01,
+	TaigaStructuresKind.NOTE: 0.01,
 }
 
 func setup_state(pop: Population) -> void:
@@ -261,6 +263,14 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							target.focus_point = focus_point
 						result.append(target)
 						spawner.add_condition(target)
+						
+			TaigaStructuresKind.NOTE:
+				var pos := area[index] as Vector2
+				var note_id := GlobalData.game_settings.get_unfound_note()
+				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
+				if reward != null:
+					reward.note_id = note_id
+					result.append(reward)
 				
 				
 		index += 1

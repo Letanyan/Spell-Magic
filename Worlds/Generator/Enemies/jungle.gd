@@ -6,6 +6,7 @@ enum JungleStructuresKind {
 	TREE_BRANCHED, BUSH,
 	ELEVATOR, PLATFORM,
 	BIRD,
+	NOTE,
 }
 
 var jungle_structure := {
@@ -15,6 +16,7 @@ var jungle_structure := {
 	JungleStructuresKind.ELEVATOR: 0.075,
 	JungleStructuresKind.PLATFORM: 0.5,
 	JungleStructuresKind.BIRD: 0.1,
+	JungleStructuresKind.NOTE: 0.01,
 }
 
 func setup_state(pop: Population) -> void:
@@ -172,6 +174,14 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var p := pop.spawn_enemy(World.Enemy.BIRD, pos, spacing)
 				if p != null:
 					result.append(p)
+					
+			JungleStructuresKind.NOTE:
+				var pos := area[index] as Vector2
+				var note_id := GlobalData.game_settings.get_unfound_note()
+				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
+				if reward != null:
+					reward.note_id = note_id
+					result.append(reward)
 				
 				
 		index += 1

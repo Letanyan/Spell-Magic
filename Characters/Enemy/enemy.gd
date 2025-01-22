@@ -584,11 +584,11 @@ func drop_health() -> float:
 		return 0.0
 	
 func drop_note() -> String:
-	var key_samples := GlobalData.game_settings.notes.keys()
-	key_samples.shuffle()
-	for key: String in key_samples:
-		if not GlobalData.game_settings.unlocked_notes.has(key):
-			return key
+	#var key_samples := GlobalData.game_settings.notes.keys()
+	#key_samples.shuffle()
+	#for key: String in key_samples:
+		#if not GlobalData.game_settings.unlocked_notes.has(key):
+			#return key
 	return ""
 
 func play_walking_audio(stream: String) -> void:

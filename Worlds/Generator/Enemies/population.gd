@@ -125,7 +125,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 	#current_iteration_spawn_count += 1
 	return index
 	
-func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_info: Callable, seedling: int) -> Node3D:
+func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_info: Callable, seedling: int, should_free: bool = false) -> Node3D:
 	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -156,7 +156,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 			(entity as Enemy).setup(Rand.randi(scur), current_biome_during_generation)
 			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(10, Rand.randi(scur))
 			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
-			if is_marked:
+			if is_marked or should_free:
 				entity_manager.free_enemy(entity as Enemy)
 				return null
 			inhabitants[inhabitants.size()] = entity
@@ -166,7 +166,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 				(entity as WorldItem).setup(Rand.randi(scur), current_biome_during_generation)
 				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(10, Rand.randi(scur))
 				var is_marked := entity_name_is_marked(entity.name)
-				if is_marked:
+				if is_marked or should_free:
 					entity_manager.free_world_item(entity as WorldItem)
 					return null
 				world_items.append(entity) 
@@ -212,7 +212,7 @@ func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info
 	pos.z += spacing * Rand.randf_range(scur, -0.5, 0.5)
 	return prepare_foliage(foliage, result, pos, user_info, scur.data as int)
 	
-func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
+func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary, should_free: bool = false) -> Node3D:
 	var seedling := rng.randi()
 	if display_only and not spawn_enemies_in_display_only: return null
 	var result := entity_manager.get_world_item(item) as WorldItem

@@ -4,12 +4,9 @@ extends BiomeGenerator
 enum ForestStructuresKind {
 	NONE, 
 	TREE_CHRISTMAS, TREE_PYRAMID,
-	
 	UNDEAD_HORDE, BAT_HORDE, BAT, MOLE, UNDEAD,
-	
 	DENSE_BATTLEFIELD,
-	
-	ARTIFACT,
+	ARTIFACT, NOTE,
 }
 
 var forest_structures := {
@@ -23,6 +20,7 @@ var forest_structures := {
 	ForestStructuresKind.UNDEAD: 0.05,
 	ForestStructuresKind.DENSE_BATTLEFIELD: 0.0005,
 	ForestStructuresKind.ARTIFACT: 0.001,
+	ForestStructuresKind.NOTE: 0.01,
 }
 
 func setup_state(pop: Population) -> void:
@@ -180,6 +178,15 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					reward.artifact = artifact
 					reward.position = pop.get_ground_level(pos)
 					result.append(reward)
+					
+			ForestStructuresKind.NOTE:
+				var pos := area[index] as Vector2
+				var note_id := GlobalData.game_settings.get_unfound_note()
+				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
+				if reward != null:
+					reward.note_id = note_id
+					result.append(reward)
+			
 		index += 1
 		
 	from.data = index

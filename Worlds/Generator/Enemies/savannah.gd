@@ -5,7 +5,7 @@ enum SavannahStructuresKind {
 	NONE,
 	TREE_SAFARI, TREE_BRANCHED, 
 	PIGEONS, LONE_ORC, ORC_HORDE,
-	ARTIFACT
+	ARTIFACT, NOTE
 }
 
 const savannah_structure := {
@@ -16,6 +16,7 @@ const savannah_structure := {
 	SavannahStructuresKind.ORC_HORDE: 0.05,
 	SavannahStructuresKind.LONE_ORC: 0.01,
 	SavannahStructuresKind.ARTIFACT: 0.001,
+	SavannahStructuresKind.NOTE: 0.01,
 }
 
 func setup_state(pop: Population) -> void:

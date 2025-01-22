@@ -92,6 +92,14 @@ static func get_world_names() -> Array:
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
 	return times
 
+func get_unfound_note() -> String:
+	var key_samples := notes.keys()
+	key_samples.shuffle()
+	for key: String in key_samples:
+		if not unlocked_notes.has(key):
+			return key
+	return ""
+
 static var notes := {
 	"func rot": "{rot(a, v, p)} returns the vector {p} rotated around vector {v} by angle {a}.",
 	"func rot_x, rot_y, rot_z": "{rot_#(a, vx, vy, vz, px, py, pz)} can be used to rotate a point around a vector and returns the {#} component. The parameters of the functions are defined as, {a} which is the angle around the vector and {(vx, vy, vz)} which the point {(px, py, pz)} is rotated around.",

@@ -5,7 +5,7 @@ enum DesertStructuresKind {
 	NONE,
 	OASIS,
 	GHOST, GHOSTLY, HOT_BLOB,
-	ARTIFACT,
+	ARTIFACT, NOTE,
 }
 
 const desert_structure := {
@@ -15,6 +15,7 @@ const desert_structure := {
 	DesertStructuresKind.GHOSTLY: 0.25,
 	DesertStructuresKind.HOT_BLOB: 0.125,
 	DesertStructuresKind.ARTIFACT: 0.001,
+	DesertStructuresKind.NOTE: 0.01,
 }
 
 func setup_state(pop: Population) -> void:
@@ -119,6 +120,14 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				if reward != null:
 					reward.artifact = artifact
 					reward.position = pop.get_ground_level(pos)
+					result.append(reward)
+					
+			DesertStructuresKind.NOTE:
+				var pos := area[index] as Vector2
+				var note_id := GlobalData.game_settings.get_unfound_note()
+				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
+				if reward != null:
+					reward.note_id = note_id
 					result.append(reward)
 				
 		index += 1
