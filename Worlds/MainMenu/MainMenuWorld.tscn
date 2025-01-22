@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cevyetu4agssv" path="res://GUI/Main Menu/LoadGame.tscn" id="5_si7au"]
 [ext_resource type="PackedScene" uid="uid://oko6g6intlvw" path="res://GUI/Main Menu/NewGame.tscn" id="6_urucm"]
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
-[ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar.gdshader" id="8_7souk"]
+[ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar_no_fog.gdshader" id="8_al82f"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="11_0ki14"]
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="11_sslk6"]
@@ -89,7 +89,7 @@ fog_sky_affect = 0.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5mvey"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("8_7souk")
+shader = ExtResource("8_al82f")
 shader_parameter/foreground = Color(1, 1, 1, 0.25098)
 shader_parameter/background = Color(0.101961, 0.101961, 0.101961, 0.752941)
 shader_parameter/percentage = 0.0

@@ -1,11 +1,11 @@
 class_name ThemeUI
 extends Theme
 
-func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> void:
+func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 	# enum ThemeVariation { MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
 	match variation:
 		HUDSettings.ThemeKind.MONO: 
-			change_tint_color_mono(tint)
+			return change_tint_color_mono(tint)
 		
 		HUDSettings.ThemeKind.COMP:
 			var start := tint
@@ -14,6 +14,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> void:
 			if h > 1.0: h -= 1.0
 			end.h = h
 			change_tint_color_array(PackedColorArray([start, end]))
+			return start
 			
 		HUDSettings.ThemeKind.ANA:
 			var start := tint
@@ -27,6 +28,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> void:
 			end.h = eh
 			
 			change_tint_color_array(PackedColorArray([start, tint, end]))
+			return start
 			
 		HUDSettings.ThemeKind.TRI:
 			var start := tint
@@ -40,6 +42,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> void:
 			end.h = eh
 			
 			change_tint_color_array(PackedColorArray([start, tint, end]))
+			return start
 			
 		HUDSettings.ThemeKind.TETRA:
 			var next1 := tint
@@ -58,6 +61,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> void:
 			next3.h = n3
 			
 			change_tint_color_array(PackedColorArray([tint, next1, next2, next3]))
+			return tint
 			
 		HUDSettings.ThemeKind.ELEMENTS:
 			var colors := [
@@ -69,18 +73,23 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> void:
 				Color("00FFFF"),
 			]
 			change_tint_color_array(PackedColorArray(colors))
+			return colors[0]
+			
+	return Color.BLACK
 			
 
-func change_tint_color_mono(tint: Color) -> void:
+func change_tint_color_mono(tint: Color) -> Color:
 	var root_base_style: StyleBoxGradientFill = get_stylebox("normal", "Button") as StyleBoxGradientFill
 	var root_disabled_style: StyleBoxGradientFill = get_stylebox("disabled", "Button") as StyleBoxGradientFill
 	var root_focus_style: StyleBoxGradientFill = get_stylebox("focus", "Button") as StyleBoxGradientFill
 	var root_hover_style: StyleBoxGradientFill = get_stylebox("hover", "Button") as StyleBoxGradientFill
 	var root_pressed_style: StyleBoxGradientFill = get_stylebox("pressed", "Button") as StyleBoxGradientFill
 	
+	var result_tint := tint
 	if tint.s < 0.25:
 		tint.s = 0.25
 		tint.h = 0.66667 + (tint.s * 4) * 0.0392157
+		result_tint = tint
 	
 	var base_tint := tint
 	var base_degen_tint := tint
@@ -172,6 +181,8 @@ func change_tint_color_mono(tint: Color) -> void:
 	scroll_hover_style.set_fill_gradient(tint, degen_tint)
 	v_slider_pressed_style.set_fill_gradient(tint, degen_tint)
 	v_scroll_hover_style.set_fill_gradient(tint, degen_tint)
+	
+	return result_tint
 
 func change_tint_color_array(tint: PackedColorArray) -> void:
 	var root_base_style: StyleBoxGradientFill = get_stylebox("normal", "Button") as StyleBoxGradientFill

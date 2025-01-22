@@ -90,7 +90,7 @@ focus_neighbor_bottom = NodePath("../Seed")
 focus_next = NodePath("../Seed")
 focus_previous = NodePath("../UseSeed")
 toggle_mode = true
-text = "Copy Save File"
+text = "Duplicate Save"
 
 [node name="UseNormal" type="Button" parent="."]
 layout_mode = 1

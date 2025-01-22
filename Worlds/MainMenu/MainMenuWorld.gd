@@ -140,7 +140,7 @@ func _physics_process(delta: float) -> void:
 		play_bg_audio(b)
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
-		theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
+		tint = theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
 		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
 		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
 		var fg := tint
@@ -150,9 +150,6 @@ func _physics_process(delta: float) -> void:
 		else:
 			bg.v = bg.v * 1.5
 		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
-		#(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("bg_color", Color(bg, 1.0))
-		#title.modulate = tint
-		#title.outline_modulate = tint
 		var particle_color := tint
 		particle_color.v = particle_color.v * 1.5
 		(source.process_material as ParticleProcessMaterial).color = particle_color

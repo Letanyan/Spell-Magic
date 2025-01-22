@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_toon,specular_schlick_ggx,vertex_lighting,shadows_disabled,unshaded;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_toon,specular_schlick_ggx,vertex_lighting,shadows_disabled,unshaded,fog_disabled;
 
 uniform sampler2D noise_tex : hint_default_white;
 uniform vec4 bg_color : source_color = vec4( 1.0, 0.75, 0.3, 1.0 );
