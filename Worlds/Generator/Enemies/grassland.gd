@@ -8,7 +8,7 @@ enum GrasslandStructuresKind {
 	ABANDONED_VILLAGE,
 	TARGET_PUZZLE,
 	HIVE, SLIMY, FLOCK, PETS, FISH,
-	NOTE,
+	ARTIFACT, NOTE,
 }
 
 var grassland_structure := {
@@ -20,6 +20,7 @@ var grassland_structure := {
 	GrasslandStructuresKind.PETS: 0.05,
 	GrasslandStructuresKind.FISH: 0.1,
 	#GrasslandStructuresKind.TARGET_PUZZLE: 0.01
+	GrasslandStructuresKind.ARTIFACT: 0.001,
 	GrasslandStructuresKind.NOTE: 0.01,
 }
 
@@ -132,6 +133,43 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						result.append(p)				
 					
 				spawner.position = pos3
+				
+			GrasslandStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10)}) as int:
+					1: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(2, 6), Vector4i(2, 4, 6, 8), 
+								{ Artifact.Element.AIR: 5, Artifact.Element.WATER: 5, },
+								{ Artifact.Element.AIR: 5, Artifact.Element.WATER: 5, Artifact.Element.HEALTH_BUMP: 5 },
+								Vector3i(8, 4, 1),
+								pop.artier(8)
+							),
+						}, pop.player.name_generator, World.Biome.GRASSLAND)
+					2: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(3, 5), Vector4i(4, 6, 8, 2), 
+								{ Artifact.Element.AIR: 5, Artifact.Element.WATER: 5, },
+								{ Artifact.Element.AIR: 5, Artifact.Element.WATER: 5, Artifact.Element.HEALTH_BUMP: 5 },
+								Vector3i(4, 1, 8),
+								pop.artier(12)
+							),
+						}, pop.player.name_generator, World.Biome.GRASSLAND)
+					3: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(4, 4), Vector4i(6, 8, 2, 4), 
+								{ Artifact.Element.AIR: 5, Artifact.Element.WATER: 5, },
+								{ Artifact.Element.AIR: 5, Artifact.Element.WATER: 5, Artifact.Element.HEALTH_BUMP: 5 },
+								Vector3i(1, 8, 4),
+								pop.artier(16)
+							),
+						}, pop.player.name_generator, World.Biome.GRASSLAND)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = pop.get_ground_level(pos)
+					result.append(reward)
 				
 			GrasslandStructuresKind.NOTE:
 				var pos := area[index] as Vector2

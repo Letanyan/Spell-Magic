@@ -5,7 +5,7 @@ enum OtherworldStructuresKind {
 	NONE,
 	FLOWER_FIELD,
 	LONE_PINK, LONE_RED, LONE_DRAGON,
-	NOTE,
+	ARTIFACT, NOTE,
 }
 
 var otherworld_structure := {
@@ -14,6 +14,7 @@ var otherworld_structure := {
 	OtherworldStructuresKind.LONE_PINK: 0.5,
 	OtherworldStructuresKind.LONE_RED: 0.25,
 	OtherworldStructuresKind.LONE_DRAGON: 0.125,
+	OtherworldStructuresKind.ARTIFACT: 0.001,
 	OtherworldStructuresKind.NOTE: 0.01,
 }
 
@@ -93,10 +94,47 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							var q := pop.spawn_enemy(World.Enemy.DRAGON, sp, spacing)
 							if q != null:
 								result.append(q)
-								
+			
+			OtherworldStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10)}) as int:
+					1: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(5, 1), Vector4i(2, 0, 6, 0), 
+								{ Artifact.Element.FIRE: 5, Artifact.Element.AIR: 5, },
+								{ Artifact.Element.FIRE: 5, Artifact.Element.AIR: 5, Artifact.Element.MANA: 2 },
+								Vector3i(0, 4, 1),
+								pop.artier(4)
+							),
+						}, pop.player.name_generator, World.Biome.OTHERWORLD)
+					2: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(5, 3), Vector4i(4, 0, 8, 0), 
+								{ Artifact.Element.FIRE: 5, Artifact.Element.AIR: 5, },
+								{ Artifact.Element.FIRE: 5, Artifact.Element.AIR: 5, Artifact.Element.MANA: 2 },
+								Vector3i(0, 1, 8),
+								pop.artier(12)
+							),
+						}, pop.player.name_generator, World.Biome.OTHERWORLD)
+					3: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(5, 5), Vector4i(6, 0, 2, 0), 
+								{ Artifact.Element.FIRE: 5, Artifact.Element.AIR: 5, },
+								{ Artifact.Element.FIRE: 5, Artifact.Element.AIR: 5, Artifact.Element.MANA: 2 },
+								Vector3i(0, 8, 4),
+								pop.artier(20)
+							),
+						}, pop.player.name_generator, World.Biome.OTHERWORLD)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = pop.get_ground_level(pos)
+					result.append(reward)					
+			
 			OtherworldStructuresKind.NOTE:
 				var pos := area[index] as Vector2
-				var note_id := GlobalData.game_settings.get_unfound_note()
+				var note_id := GlobalData.game_settings.get_unfound_note(GameSettings.NoteKind.SPELL)
 				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
 				if reward != null:
 					reward.note_id = note_id

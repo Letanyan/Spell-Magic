@@ -6,7 +6,7 @@ enum JungleStructuresKind {
 	TREE_BRANCHED, BUSH,
 	ELEVATOR, PLATFORM,
 	BIRD,
-	NOTE,
+	ARTIFACT, NOTE,
 }
 
 var jungle_structure := {
@@ -16,6 +16,7 @@ var jungle_structure := {
 	JungleStructuresKind.ELEVATOR: 0.075,
 	JungleStructuresKind.PLATFORM: 0.5,
 	JungleStructuresKind.BIRD: 0.1,
+	JungleStructuresKind.ARTIFACT: 0.001,
 	JungleStructuresKind.NOTE: 0.01,
 }
 
@@ -175,9 +176,46 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				if p != null:
 					result.append(p)
 					
+			JungleStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10)}) as int:
+					1: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.25, Vector2i(4, 4), Vector4i(2, 4, 6, 8), 
+								{ Artifact.Element.AIR: 5, },
+								{ Artifact.Element.AIR: 5, Artifact.Element.HEALTH: 5, Artifact.Element.HEALTH_BUMP: 5 },
+								Vector3i(8, 0, 1),
+								pop.artier(7)
+							),
+						}, pop.player.name_generator, World.Biome.JUNGLE)
+					2: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(5, 3), Vector4i(4, 6, 8, 2), 
+								{ Artifact.Element.AIR: 5, },
+								{ Artifact.Element.AIR: 5, Artifact.Element.HEALTH: 5, Artifact.Element.HEALTH_BUMP: 5 },
+								Vector3i(4, 0, 8),
+								pop.artier(13)
+							),
+						}, pop.player.name_generator, World.Biome.JUNGLE)
+					3: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.75, Vector2i(6, 2), Vector4i(6, 8, 2, 4), 
+								{ Artifact.Element.AIR: 5, },
+								{ Artifact.Element.AIR: 5, Artifact.Element.HEALTH: 5, Artifact.Element.HEALTH_BUMP: 5 },
+								Vector3i(1, 0, 4),
+								pop.artier(19)
+							),
+						}, pop.player.name_generator, World.Biome.JUNGLE)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = pop.get_ground_level(pos)
+					result.append(reward)
+					
 			JungleStructuresKind.NOTE:
 				var pos := area[index] as Vector2
-				var note_id := GlobalData.game_settings.get_unfound_note()
+				var note_id := GlobalData.game_settings.get_unfound_note(GameSettings.NoteKind.UPGRADES)
 				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
 				if reward != null:
 					reward.note_id = note_id

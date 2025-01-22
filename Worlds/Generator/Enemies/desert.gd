@@ -124,7 +124,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 			DesertStructuresKind.NOTE:
 				var pos := area[index] as Vector2
-				var note_id := GlobalData.game_settings.get_unfound_note()
+				var note_id := GlobalData.game_settings.get_unfound_note(GameSettings.NoteKind.ARTIFACT)
 				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
 				if reward != null:
 					reward.note_id = note_id

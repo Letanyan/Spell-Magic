@@ -370,6 +370,17 @@ func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b:
 static func nulled(n: String) -> Artifact:
 	return Artifact.new(n, null, null, null, null)
 	
+static func make_config(is_effect: float, event: Vector2i, effect: Vector4i, ev_element: Dictionary, ef_element: Dictionary, pattern: Vector3i, tier: Vector2i) -> Dictionary:
+	return {
+		"is_effect": is_effect,
+		"event": { Artifact.Event.DEAL: event.x, Artifact.Event.RECEIVE: event.y },
+		"effect": { Artifact.Effect.BOOST_PERCENTAGE: effect.x, Artifact.Effect.BOOST_FLAT: effect.y, Artifact.Effect.RESISTANCE_PERCENTAGE: effect.z, Artifact.Effect.RESISTANCE_FLAT: effect.w },
+		"ev_element": ev_element,
+		"ef_element": ef_element,
+		"pattern": {Artifact.Pattern.CIRCLE: pattern.x, Artifact.Pattern.SQUARE: pattern.y, Artifact.Pattern.TRIANGLE: pattern.z },
+		"tier": tier,
+	}
+	
 static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, biome: World.Biome) -> Artifact:
 	if drop_probs.is_empty():
 		return null

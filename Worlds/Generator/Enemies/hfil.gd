@@ -6,7 +6,7 @@ enum HFILStructuresKind {
 	MUSHROOM_FIELD,
 	ENEMY_MIX, SLIMY,
 	MUSH_ENEMIES, SNOT_ENEMIES, HOT_DRAGONS,
-	NOTE,
+	ARTIFACT, NOTE,
 }
 
 var HFIL_structure := {
@@ -17,6 +17,7 @@ var HFIL_structure := {
 	HFILStructuresKind.SLIMY: 0.025,
 	HFILStructuresKind.HOT_DRAGONS: 0.0125,
 	HFILStructuresKind.ENEMY_MIX: 0.0125,
+	HFILStructuresKind.ARTIFACT: 0.001,
 	HFILStructuresKind.NOTE: 0.01,
 }
 
@@ -149,7 +150,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 			HFILStructuresKind.NOTE:
 				var pos := area[index] as Vector2
-				var note_id := GlobalData.game_settings.get_unfound_note()
+				var note_id := GlobalData.game_settings.get_unfound_note(GameSettings.NoteKind.VARIABLE)
 				var reward := pop.spawn_world_item(World.Item.NOTE, pos, spacing, {}, note_id.is_empty()) as ScrollNote
 				if reward != null:
 					reward.note_id = note_id

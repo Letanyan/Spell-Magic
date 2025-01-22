@@ -6,7 +6,7 @@ enum TaigaStructuresKind {
 	TREE_PYRAMID, TREE_PINE, BUSH_TALL, FLOWER_SUN3,
 	HORZ_CIRCLE_PUZZLE, LINE_PUZZLE, ROTATING_PUZZLE,
 	LONE_GOBLIN, GOBLIN_HORDE,
-	NOTE,
+	ARTIFACT, NOTE,
 }
 
 const taiga_structure := {
@@ -20,6 +20,7 @@ const taiga_structure := {
 	TaigaStructuresKind.ROTATING_PUZZLE: 1,
 	TaigaStructuresKind.LONE_GOBLIN: 0.05,
 	TaigaStructuresKind.GOBLIN_HORDE: 0.01,
+	TaigaStructuresKind.ARTIFACT: 0.001,
 	TaigaStructuresKind.NOTE: 0.01,
 }
 
@@ -263,6 +264,43 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							target.focus_point = focus_point
 						result.append(target)
 						spawner.add_condition(target)
+						
+			TaigaStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10)}) as int:
+					1: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(2, 6), Vector4i(2, 4, 6, 8), 
+								{ Artifact.Element.ELECTRIC: 5, Artifact.Element.ICE: 5, },
+								{ Artifact.Element.ELECTRIC: 5, Artifact.Element.ICE: 5, Artifact.Element.MANA_BUMP: 2 },
+								Vector3i(8, 4, 0),
+								pop.artier(3)
+							),
+						}, pop.player.name_generator, World.Biome.TAIGA)
+					2: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(3, 5), Vector4i(4, 6, 8, 2), 
+								{ Artifact.Element.ELECTRIC: 5, Artifact.Element.ICE: 5, },
+								{ Artifact.Element.ELECTRIC: 5, Artifact.Element.ICE: 5, Artifact.Element.MANA_BUMP: 2 },
+								Vector3i(4, 1, 0),
+								pop.artier(9)
+							),
+						}, pop.player.name_generator, World.Biome.TAIGA)
+					3: artifact = Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(4, 4), Vector4i(6, 8, 2, 4), 
+								{ Artifact.Element.ELECTRIC: 5, Artifact.Element.ICE: 5, },
+								{ Artifact.Element.ELECTRIC: 5, Artifact.Element.ICE: 5, Artifact.Element.MANA_BUMP: 2 },
+								Vector3i(1, 8, 0),
+								pop.artier(18)
+							),
+						}, pop.player.name_generator, World.Biome.TAIGA)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = pop.get_ground_level(pos)
+					result.append(reward)
 						
 			TaigaStructuresKind.NOTE:
 				var pos := area[index] as Vector2

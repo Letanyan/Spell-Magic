@@ -92,11 +92,15 @@ static func get_world_names() -> Array:
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
 	return times
 
-func get_unfound_note() -> String:
+enum NoteKind { ANY, FUNC, ARTIFACT, SPELL, VARIABLE, WAND, UPGRADES }
+func get_unfound_note(prefix_kind: NoteKind = NoteKind.ANY) -> String:
+	var prefix := (NoteKind.keys()[prefix_kind] as String).to_lower()
+	if prefix == "any":
+		prefix = ""
 	var key_samples := notes.keys()
 	key_samples.shuffle()
 	for key: String in key_samples:
-		if not unlocked_notes.has(key):
+		if not unlocked_notes.has(key) and (prefix.is_empty() or key.begins_with(prefix)):
 			return key
 	return ""
 
