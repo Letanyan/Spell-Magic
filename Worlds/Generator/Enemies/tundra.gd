@@ -6,6 +6,7 @@ enum TundraStructuresKind {
 	FLAT_ROCK,
 	LONE_HEAD, LONE_WALKER, HOARD,
 	BLUEMON,
+	ARTIFACT,
 }
 
 const tundra_structure := {
@@ -15,6 +16,7 @@ const tundra_structure := {
 	TundraStructuresKind.LONE_WALKER: 0.025,
 	TundraStructuresKind.HOARD: 0.0125,
 	TundraStructuresKind.BLUEMON: 0.1,
+	TundraStructuresKind.ARTIFACT: 0.001,
 }
 
 func setup_state(pop: Population) -> void:
@@ -66,6 +68,60 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				for c in minion_count:
 					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing)
 					if minion != null: result.append(minion)
+					
+			TundraStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10), 4: pop.fit(1, 5)}) as int:
+					1: artifact = Artifact.from_config({
+							"all": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 10 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10, Artifact.Effect.RESISTANCE_FLAT: 10, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, },
+								"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.MANA: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 8, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(5),
+							},
+						}, pop.player.name_generator, World.Biome.TUNDRA)
+					2: artifact = Artifact.from_config({
+							"all": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, },
+								"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.MANA: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 6, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(10),
+							},
+						}, pop.player.name_generator, World.Biome.TUNDRA)
+					3: artifact = Artifact.from_config({
+							"all": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, },
+								"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.MANA: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(15),
+							},
+						}, pop.player.name_generator, World.Biome.TUNDRA)
+					4: artifact = Artifact.from_config({
+							"all": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, },
+								"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.ICE: 10, Artifact.Element.CRIT_RATE: 5, Artifact.Element.MANA: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 2, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(20),
+							},
+						}, pop.player.name_generator, World.Biome.TUNDRA)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = pop.get_ground_level(pos)
+					result.append(reward)
 				
 			
 				

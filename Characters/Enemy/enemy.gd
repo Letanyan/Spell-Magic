@@ -546,56 +546,8 @@ func update_vitals_display() -> void:
 	effects_shader.set_shader_parameter("burning_progress", vitals.burning.percentage())
 
 func drop_artifact() -> Artifact:
-	if artifact_drop_probs.is_empty():
-		return null
-		
-	var n: String
 	var b: World.Biome = (velocity_movement.current_biome - 1) as World.Biome
-	match b:
-		World.Biome.GRASSLAND: n = player.name_generator.german_names.generate(16, 2)
-		World.Biome.TAIGA: n = player.name_generator.russian_names.generate(14, 2)
-		World.Biome.FOREST: n = player.name_generator.english_names.generate(8, 1)
-		World.Biome.DESERT: n = player.name_generator.spanish_names.generate(16, 3)
-		World.Biome.JUNGLE: n = player.name_generator.indian_names.generate(12, 2)
-		World.Biome.SAVANNAH: n = player.name_generator.roman_names.generate(12, 2)
-		World.Biome.TUNDRA: n = player.name_generator.iclandic_names.generate(14, 2)
-		World.Biome.OTHERWORLD: n = player.name_generator.constellations.generate(18, 4)
-		World.Biome.HFIL: n = player.name_generator.capital_cities.generate(18, 4)
-		_: push_error("missing biome kind")
-		
-	var result := Artifact.nulled(n)
-	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
-		var tier := probs["tier"] as Vector2i
-		var pattern := probs["pattern"] as Dictionary
-		if probs.has("is_effect"):
-			var is_effect := probs["is_effect"] as float
-			var ev_element := probs["ev_element"] as Dictionary
-			var ef_element := probs["ef_element"] as Dictionary
-			var effect := probs["effect"] as Dictionary
-			var event := probs["event"] as Dictionary
-			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], is_effect, effect, event, ef_element, ev_element, pattern, tier)
-		elif probs.has("effect"):
-			var element := probs["element"] as Dictionary
-			var effect := probs["effect"] as Dictionary
-			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, effect, {}, element, {}, pattern, tier)
-		elif probs.has("event"):
-			var element := probs["element"] as Dictionary
-			var event := probs["event"] as Dictionary
-			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, {}, event, {}, element, pattern, tier)
-		
-	
-	if artifact_drop_probs.has("all"):
-		fill_with.call([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], artifact_drop_probs["all"])
-	else:
-		for key: String in artifact_drop_probs:
-			var probs := artifact_drop_probs[key] as Dictionary
-			if key.contains("W"): fill_with.call([Vector2i.LEFT], probs)
-			if key.contains("E"): fill_with.call([Vector2i.RIGHT], probs)
-			if key.contains("N"): fill_with.call([Vector2i.UP], probs)
-			if key.contains("S"): fill_with.call([Vector2i.DOWN], probs)
-	
-	result.seen_by_player = false
-	return result
+	return Artifact.from_config(artifact_drop_probs, player.name_generator, b)
 	
 func drop_spell() -> Spell:
 	var result := Rand.entity_from_distribution(randf(), spell_drop_probs, null) as Spell

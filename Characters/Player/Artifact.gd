@@ -370,6 +370,57 @@ func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b:
 static func nulled(n: String) -> Artifact:
 	return Artifact.new(n, null, null, null, null)
 	
+static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, biome: World.Biome) -> Artifact:
+	if drop_probs.is_empty():
+		return null
+		
+	var n: String
+	match biome:
+		World.Biome.GRASSLAND: n = name_generator.german_names.generate(16, 2)
+		World.Biome.TAIGA: n = name_generator.russian_names.generate(14, 2)
+		World.Biome.FOREST: n = name_generator.english_names.generate(8, 1)
+		World.Biome.DESERT: n = name_generator.spanish_names.generate(16, 3)
+		World.Biome.JUNGLE: n = name_generator.indian_names.generate(12, 2)
+		World.Biome.SAVANNAH: n = name_generator.roman_names.generate(12, 2)
+		World.Biome.TUNDRA: n = name_generator.iclandic_names.generate(14, 2)
+		World.Biome.OTHERWORLD: n = name_generator.constellations.generate(18, 4)
+		World.Biome.HFIL: n = name_generator.capital_cities.generate(18, 4)
+		_: push_error("missing biome kind")
+		
+	var result := Artifact.nulled(n)
+	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
+		var tier := probs["tier"] as Vector2i
+		var pattern := probs["pattern"] as Dictionary
+		if probs.has("is_effect"):
+			var is_effect := probs["is_effect"] as float
+			var ev_element := probs["ev_element"] as Dictionary
+			var ef_element := probs["ef_element"] as Dictionary
+			var effect := probs["effect"] as Dictionary
+			var event := probs["event"] as Dictionary
+			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], is_effect, effect, event, ef_element, ev_element, pattern, tier)
+		elif probs.has("effect"):
+			var element := probs["element"] as Dictionary
+			var effect := probs["effect"] as Dictionary
+			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, effect, {}, element, {}, pattern, tier)
+		elif probs.has("event"):
+			var element := probs["element"] as Dictionary
+			var event := probs["event"] as Dictionary
+			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, {}, event, {}, element, pattern, tier)
+		
+	
+	if drop_probs.has("all"):
+		fill_with.call([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], drop_probs["all"])
+	else:
+		for key: String in drop_probs:
+			var probs := drop_probs[key] as Dictionary
+			if key.contains("W"): fill_with.call([Vector2i.LEFT], probs)
+			if key.contains("E"): fill_with.call([Vector2i.RIGHT], probs)
+			if key.contains("N"): fill_with.call([Vector2i.UP], probs)
+			if key.contains("S"): fill_with.call([Vector2i.DOWN], probs)
+	
+	result.seen_by_player = false
+	return result
+	
 func fill(spots: Array[Vector2i], is_effect: float, effect: Dictionary, event: Dictionary, ef_element: Dictionary, ev_element: Dictionary, pattern: Dictionary, tier: Vector2i) -> void:
 	if spots.has(Vector2i.UP): top = Option.make_random(is_effect, effect, event, ef_element, ev_element, pattern, tier)
 	if spots.has(Vector2i.LEFT): left = Option.make_random(is_effect, effect, event, ef_element, ev_element, pattern, tier)

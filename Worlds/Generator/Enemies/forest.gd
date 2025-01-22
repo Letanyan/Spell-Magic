@@ -7,7 +7,9 @@ enum ForestStructuresKind {
 	
 	UNDEAD_HORDE, BAT_HORDE, BAT, MOLE, UNDEAD,
 	
-	DENSE_BATTLEFIELD
+	DENSE_BATTLEFIELD,
+	
+	ARTIFACT,
 }
 
 var forest_structures := {
@@ -20,6 +22,7 @@ var forest_structures := {
 	ForestStructuresKind.MOLE: 0.005,
 	ForestStructuresKind.UNDEAD: 0.05,
 	ForestStructuresKind.DENSE_BATTLEFIELD: 0.0005,
+	ForestStructuresKind.ARTIFACT: 0.001,
 }
 
 func setup_state(pop: Population) -> void:
@@ -107,6 +110,76 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							p = pop.spawn_enemy(Rand.entity_from_distribution(rng.randf(), enemy_prob) as World.Enemy, ppos, spacing)
 						if p != null:
 							result.append(p)
+							
+			ForestStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10)}) as int:
+					1: artifact = Artifact.from_config({
+							"NE": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 10 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 5, Artifact.Effect.RESISTANCE_FLAT: 10, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, },
+								"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.COUNT: 5, Artifact.Element.DURATION: 3, },
+								"pattern": {Artifact.Pattern.CIRCLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(5),
+							},
+							"WS": {
+								"is_effect": 0.25,
+								"event": { Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 5, Artifact.Effect.RESISTANCE_FLAT: 10, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, },
+								"ef_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, Artifact.Element.COUNT: 5, Artifact.Element.DURATION: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(10),
+							},
+						}, pop.player.name_generator, World.Biome.FOREST)
+					2: artifact = Artifact.from_config({
+							"NW": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_PERCENTAGE: 5, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, },
+								"ef_element": { Artifact.Element.WATER: 8, Artifact.Element.AIR: 8, Artifact.Element.COUNT: 5, Artifact.Element.DURATION: 3, },
+								"pattern": {Artifact.Pattern.CIRCLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(10),
+							},
+							"SE": {
+								"is_effect": 0.25,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_PERCENTAGE: 5, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, },
+								"ef_element": { Artifact.Element.WATER: 8, Artifact.Element.AIR: 8, Artifact.Element.COUNT: 5, Artifact.Element.DURATION: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(15),
+							},
+						}, pop.player.name_generator, World.Biome.FOREST)
+					3: artifact = Artifact.from_config({
+							"NS": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, },
+								"ef_element": { Artifact.Element.WATER: 6, Artifact.Element.AIR: 6, Artifact.Element.COUNT: 5, Artifact.Element.DURATION: 3, },
+								"pattern": {Artifact.Pattern.CIRCLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(15),
+							},
+							"WE": {
+								"is_effect": 0.25,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 10 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5, Artifact.Effect.RESISTANCE_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_FLAT: 5, },
+								"ev_element": { Artifact.Element.WATER: 10, Artifact.Element.AIR: 10, },
+								"ef_element": { Artifact.Element.WATER: 6, Artifact.Element.AIR: 6, Artifact.Element.COUNT: 5, Artifact.Element.DURATION: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 4, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(20),
+							},
+						}, pop.player.name_generator, World.Biome.FOREST)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					reward.position = pop.get_ground_level(pos)
+					result.append(reward)
 		index += 1
 		
 	from.data = index

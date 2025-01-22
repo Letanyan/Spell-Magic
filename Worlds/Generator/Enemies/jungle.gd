@@ -83,16 +83,17 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 								result.append(op)
 						cursor += (direction * distance) + Vec3.xz(offset_dir) * p.bounds
 						direction = Rand.entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
-				var artifact := Artifact.nulled(pop.player.name_generator.spanish_names.generate(9))
-				artifact.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], \
-					0.5,
-					{Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5}, \
-					{Artifact.Event.RECEIVE: 10, Artifact.Event.DEAL: 5}, \
-					{Artifact.Element.AIR: 10, Artifact.Element.RUNNING_SPEED: 2}, \
-					{Artifact.Element.AIR: 10}, \
-					{Artifact.Pattern.TRIANGLE: 8, Artifact.Pattern.CIRCLE: 4}, \
-					pop.artier(5),
-				)
+				var artifact := Artifact.from_config({
+					"all": {
+						"is_effect": 0.5,
+						"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 10 },
+						"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5 },
+						"ev_element": { Artifact.Element.AIR: 10, },
+						"ef_element": { Artifact.Element.AIR: 10, Artifact.Element.RUNNING_SPEED: 2, },
+						"pattern": {Artifact.Pattern.TRIANGLE: 8, Artifact.Pattern.CIRCLE: 4},
+						"tier": pop.artier(5),
+					},
+				}, pop.player.name_generator, World.Biome.JUNGLE)
 				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
 				if reward != null:
 					reward.artifact = artifact
