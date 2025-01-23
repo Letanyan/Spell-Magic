@@ -735,7 +735,7 @@ func check_all_errors() -> void:
 				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
 			else:
 				var disallow := book.can_use_spell(next_spell)
-				if disallow != MagicBook.DisallowSpellReason.NONE:
+				if (chain_combo.selected as Spell.ChainCastKind) != Spell.ChainCastKind.NONE and disallow != MagicBook.DisallowSpellReason.NONE:
 					errors_list["chain"] = "'%s''s chained spell has a problem" % [next_spell.name]
 			
 	for k: String in book.spells[current_index].expressions:

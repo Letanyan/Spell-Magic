@@ -61,6 +61,7 @@ func setup() -> void:
 
 	to_remove = false
 	
+	update_sub_entities(false)
 	spell_caster = SpellCaster.new(origin_node, SpellCaster.Entity.PROJECTILE)
 	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
 		cast_spell(insert_spell, spell.chain)
@@ -781,15 +782,17 @@ func stop_emitting() -> void:
 			particles.emitting = false
 			var trail: GPUParticles3D = get_node("source_trail")
 			trail.emitting = false
-			var tween := create_tween()
+			var tween := create_tween().set_parallel(false)
 			var light: OmniLight3D = get_node("light")
+			var particle_wait_time := Globals.particle_system_lifetime(particles)
 			var fade_light := func(t: float) -> void:
 				light.omni_range = lerpf(5.0, 0.0, t)
+			tween.tween_interval(particle_wait_time * 0.5)
 			tween.tween_method(fade_light, 0, 1, 0.2)
 			tween.play()
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
-			free_after(Globals.particle_system_lifetime(particles))
+			free_after(particle_wait_time)
 			
 		Spell.Element.ROCK:
 			var particles: GPUParticles3D = get_node("source")
@@ -838,17 +841,19 @@ func stop_emitting() -> void:
 		Spell.Element.ELECTRIC:
 			var particles: GPUParticles3D = get_node("source")
 			particles.emitting = false
-			var tween := create_tween()
+			var tween := create_tween().set_parallel(false)
 			var light: OmniLight3D = get_node("light")
+			var particle_wait_time := Globals.particle_system_lifetime(particles)
 			var fade_light := func(t: float) -> void:
 				light.omni_range = lerpf(5.0, 0.0, t)
+			tween.tween_interval(particle_wait_time * 0.5)
 			tween.tween_method(fade_light, 0, 1, 0.2)
 			tween.play()
 			get_shape_cast().enabled = false
 			get_area_collision().disabled = true
 			var body := get_node("body") as MeshInstance3D
 			body.visible = false
-			free_after(Globals.particle_system_lifetime(particles))
+			free_after(particle_wait_time)
 			
 		Spell.Element.VOID:
 			get_area_collision().disabled = true

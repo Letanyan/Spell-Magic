@@ -88,12 +88,14 @@ func use_spell(spell: Spell) -> void:
 	else:
 		cooldown[spell.name] = spell.cooldown
 	var ns := spell.chain
-	while ns != null:
+	var ck := spell.chain_cast_kind
+	while ns != null and ck != Spell.ChainCastKind.NONE:
 		if cooldown.has(ns.name):
 			var v := cooldown[ns.name] as float
 			cooldown[ns.name] = maxf(v, ns.cooldown)
 		else:
 			cooldown[ns.name] = ns.cooldown
+		ck = ns.chain_cast_kind
 		ns = ns.chain
 	
 func can_use_spell(spell: Spell) -> DisallowSpellReason:

@@ -748,13 +748,17 @@ func update_projectile_update_tick(body: SpellBody, updated_spell_bodies: Dictio
 	if body.spell.element != Spell.Element.VOID:
 		AudioManager.play(body.spell.element - 1, body.position, Time.get_unix_time_from_system() + body.spell.duration - body.time_stamp, false)
 
+func contains_proj(point: Vector3) -> bool:
+	var res := projectile_tree.contains_point(point, 0.5)
+	return res
+
 ## updated_spell_bodies: [SpellBody]bool
 func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictionary) -> void:
 	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
 	var distance_from_player := body.position.distance_to(position)
 	var dist := clampf(1.0 - distance_from_player / 20.0, 0.0, 1.0)
 	var should_update_indicator := update_projectile(body_pivot, pis * (1.0 + dist * dist), body, Spell.color_from_element(body.spell.element))
-	body.update_sub_entities(not node_is_in_frustum(body) or distance_from_player > 40.0 or projectile_tree.contains_point(body.position, 2.0))
+	body.update_sub_entities(not node_is_in_frustum(body) or distance_from_player > 40.0 or contains_proj(body.position))
 	updated_spell_bodies[body] = should_update_indicator
 	update_projectile_update_tick(body, updated_spell_bodies)
 
