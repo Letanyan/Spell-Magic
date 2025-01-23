@@ -48,6 +48,7 @@ var max_watched_enemies_distance := 0.0
 var indicator_update_tick := 0.0
 const projectile_indicator = preload("res://Characters/Player/ProjectileIndicator.tscn")
 const enemy_indicator = preload("res://Characters/Player/EnemyIndicator.tscn")
+var projectile_tree := GDKDTree.new()
 
 var camera_target_velocity: float = 0
 var shake_intensity: float = 0.0
@@ -712,7 +713,6 @@ func node_is_in_frustum(node: Node3D) -> bool:
 	if not cam.is_position_in_frustum(node.global_position):
 		return false
 	return true
-	
 
 func update_projectile(pivot: Node3D, pi_size: float, body: SpellBody, color: Color) -> bool:
 	if not body.is_inside_tree():
@@ -754,11 +754,12 @@ func update_projectile_indicator(body: SpellBody, updated_spell_bodies: Dictiona
 	var distance_from_player := body.position.distance_to(position)
 	var dist := clampf(1.0 - distance_from_player / 20.0, 0.0, 1.0)
 	var should_update_indicator := update_projectile(body_pivot, pis * (1.0 + dist * dist), body, Spell.color_from_element(body.spell.element))
-	body.update_sub_entities(not node_is_in_frustum(body) or distance_from_player > 40.0)
+	body.update_sub_entities(not node_is_in_frustum(body) or distance_from_player > 40.0 or projectile_tree.contains_point(body.position, 2.0))
 	updated_spell_bodies[body] = should_update_indicator
 	update_projectile_update_tick(body, updated_spell_bodies)
 
 func update_projectile_indicators() -> void:
+	projectile_tree.reset_buffer(0)
 	var updated_spell_bodies := {} ## [SpellBody]bool
 	var pis := world_settings.hud_settings.projectile_indicator_size * projectile_indicator_scale
 	if pis > 0:

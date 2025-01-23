@@ -97,7 +97,6 @@ func use_spell(spell: Spell) -> void:
 		ns = ns.chain
 	
 func can_use_spell(spell: Spell) -> DisallowSpellReason:
-	# TODO: recursive check on chained spells
 	if not spell.is_active:
 		return DisallowSpellReason.ACTIVE
 	

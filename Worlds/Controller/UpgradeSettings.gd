@@ -372,7 +372,7 @@ func reset_all_stats_to_default_values() -> void:
 	level_defence = 1
 	level_mana_regen = 1
 	has_spell_element = 0b11
-	has_chain_method = 0
+	has_chain_method = 1
 	currency = 0
 	
 func reset_all_stats_to_max_values() -> void:
@@ -420,7 +420,7 @@ func save_dict() -> Dictionary:
 
 func load_dict(data: Dictionary) -> void:
 	has_spell_element = data.get("has_spell_element", 0b1)
-	has_chain_method = data.get("has_chain_method", 0)
+	has_chain_method = data.get("has_chain_method", 1)
 	cost_spell_element = data.get("cost_spell_element", 100)
 	
 	level_r = data.get("level_r", 1)
