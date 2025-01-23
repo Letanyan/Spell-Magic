@@ -117,6 +117,7 @@ func not_enough_mana_for_spell(spell: Spell) -> void:
 	style.border_color = Color(1, 0, 0.3, 1)
 	mana_bar.add_theme_stylebox_override("background", style)
 	
+	
 func bbcode(message: String, font_size: int = 18, color: String = "#F05", outline_color: String = "#000", outline_size: int = 4) -> String:
 	return "[outline_color=%s][outline_size=%d][color=%s][font_size=%d]%s[/font_size][/color][/outline_size][/outline_color]" % [outline_color, outline_size, color, font_size, message]
 	
@@ -145,6 +146,8 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -
 			show_notification(bbcode_error("'%s' requires r %.1f upgrade" % [spell.name, r]), 5)
 		MagicBook.DisallowSpellReason.ACTIVE:
 			show_notification(bbcode_error("'%s' is not active in magic book" % [spell.name]), 5)
+		MagicBook.DisallowSpellReason.CHAINED_SPELL:
+			show_notification(bbcode_error("'%s''s chained spell has a problem" % [spell.name]), 5)
 		# We don't disallow spells from being cast because of velocity. We just limit the velocity and notify the player.
 		#MagicBook.DisallowSpellReason.VELOCITY:
 			#show_notification(bbcode_error(""), 5)
@@ -183,10 +186,10 @@ func update_spell_cooldowns(delta: float) -> void:
 	cooldown_list.visible = not((hud_settings != null and hud_settings.hide_cooldown_timings) or cooldown_list.item_count == 0) 
 		
 	var mana_alert_time := Time.get_unix_time_from_system() - not_enough_mana_alert
-	if not_enough_mana_alert != 0.0 and mana_alert_time > 5:
-		var style: StyleBoxFlat = load("res://GUI/HUD_progress_bar_bg.tres")
-		style.bg_color = Color(1, 1, 1, 1)
-		mana_bar.add_theme_stylebox_override("background", style)
+	if not_enough_mana_alert != 0.0 and mana_alert_time > 0.5:
+		var style: StyleBoxFlat = mana_bar.get_theme_stylebox("background")
+		style.bg_color = Color(1, 0.702, 1)
+		style.border_color = Color(0.667, 0, 0.667)
 		not_enough_mana_alert = 0.0
 		
 	draw_notifications(delta)
@@ -253,6 +256,8 @@ func update_wand_mappings() -> void:
 				return "[color=#00FF08]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.RADIUS:
 				return "[color=#7700FF]" + s.name + "[/color]"
+			MagicBook.DisallowSpellReason.CHAINED_SPELL:
+				return "[color=#F70]" + s.name + "[/color]"
 			_:
 				return "[color=#F50]" + s.name + "[/color]"
 				
@@ -271,7 +276,7 @@ func update_wand_mappings() -> void:
 				reason = MagicBook.DisallowSpellReason.MANA
 		match reason:
 			MagicBook.DisallowSpellReason.NONE:
-				return kd + " [b]" + title +  "[/b]: " + color_spell.call(spell) + "\n"
+				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.COOLDOWN:
 				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 			MagicBook.DisallowSpellReason.MANA:

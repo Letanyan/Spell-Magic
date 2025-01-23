@@ -214,12 +214,17 @@ func duplicate_spell_at_index(index: int) -> void:
 	add_spell(spell)
 
 func view_new_spell(spell_name: String) -> void:
-	var i := 0
-	for s: Spell in book.spells:
-		if s.name == spell_name:
-			_on_spell_index_item_selected(i)
-			spell_index.select(i, true)
-		i += 1
+	var spell := book.find_spell(spell_name)
+	if spell == null:
+		return
+	var k_index := -1
+	for k: int in spells_index_map:
+		if spells_index_map[k] == spell.id:
+			k_index = k
+			break
+	if k_index != -1:
+		_on_spell_index_item_selected(k_index)
+		spell_index.select(k_index, true)
 		
 
 func sort_popup_selected(id: int) -> void:

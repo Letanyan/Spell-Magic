@@ -124,7 +124,7 @@ func run_on_ready() -> void:
 	noise_image = noise_tex.get_image()
 		
 	player.position = settings.player_position
-	player.spell_caster.ignore_mana_cost = OS.is_debug_build()
+	player.spell_caster.ignore_mana_cost = GlobalData.is_debug
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)

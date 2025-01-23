@@ -522,13 +522,15 @@ func update_spells_that_chain_to_current_spell() -> void:
 	
 func _on_view_chain_button_pressed() -> void:
 	var n := chain_edit.text
+	var option := Wand.Option.new()
+	option.parse_spells(n, book)
 	preview_selector.visible = false
-	if n == "":
+	if n == "" or option.next_spell() == null:
 		UIAudioPlayer.failed_click()
 		return
 	else:
 		UIAudioPlayer.click()
-		request_to_view_spell.emit(n)
+		request_to_view_spell.emit(option.next_spell().name)
 		
 func _on_expressions_focus_exited() -> void:
 	selected_variables.clear()
@@ -728,9 +730,13 @@ func check_all_errors() -> void:
 		if option.spells.size() != 1:
 			errors_list["chain"] = "Only one spell is allowed to be chained"
 		else:
-			var found := option.next_spell() != null
-			if not found:
+			var next_spell := option.next_spell()
+			if next_spell == null:
 				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
+			else:
+				var disallow := book.can_use_spell(next_spell)
+				if disallow != MagicBook.DisallowSpellReason.NONE:
+					errors_list["chain"] = "'%s''s chained spell has a problem" % [next_spell.name]
 			
 	for k: String in book.spells[current_index].expressions:
 		var expr: Expr = book.spells[current_index].expressions[k]

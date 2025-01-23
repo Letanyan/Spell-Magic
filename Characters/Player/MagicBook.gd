@@ -4,7 +4,7 @@ var spells: Array[Spell]
 var spell_index: Dictionary
 var cooldown: Dictionary ## [String]float
 var ignore_cooldown: bool
-enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE, VELOCITY }
+enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE, VELOCITY, CHAINED_SPELL }
 
 var settings: WorldSettings # set by the world
 
@@ -97,6 +97,7 @@ func use_spell(spell: Spell) -> void:
 		ns = ns.chain
 	
 func can_use_spell(spell: Spell) -> DisallowSpellReason:
+	# TODO: recursive check on chained spells
 	if not spell.is_active:
 		return DisallowSpellReason.ACTIVE
 	
@@ -126,6 +127,11 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 		
 	if spell.actual_mana_cost() > settings.upgrade_settings.max_mana() + settings.upgrade_settings.buff_mana:
 		return DisallowSpellReason.MANA
+		
+	if spell.chain_cast_kind != Spell.ChainCastKind.NONE and spell.chain != null:
+		var chain_issue := can_use_spell(spell.chain)
+		if chain_issue != DisallowSpellReason.NONE:
+			return DisallowSpellReason.CHAINED_SPELL
 		
 	return DisallowSpellReason.NONE
 	

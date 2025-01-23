@@ -154,9 +154,14 @@ static var notes := {
 	"func perp_x, perp_y, perp_z": "{perp_#(v)} returns the {#} component of some vector that is perpendicular to {v}",
 	
 	"artifact pattern": "Each artifact has either a {circle}, {square} or {triangle} on each of the 4 sides of the artifact. Artifacts can only join on to other artifacts that have the same shape between the connecting edges.",
-	"artifact connections": "An artifact can either have an event or effect on each of the 4 sides. Connecting artifact edges must be one event and the other an effect.",
-	"artifact event": "Events can be either receiving or dealing damage. The damage dealt must be of some element defined for the event. Each event has an associated duration for which the connect effect will last.",
-	"artifact effect": "Effects either increase or decrease stats. Each effect can applies to one of the following fire, rock, electric, water, air, ice resistance or damage buff. A special any element effect can buff all 6 elements damage or resistance. Other stats such as current health and mana can be changed, as well as, max health and mana. Attack, defence, crit rate, crit damage, spell movement speed, spell duration, spell max radius, spell projectile count, spell max power and player running speed can be changed.",
+	"artifact connections": "An artifact can either have an event or effect on each of its 4 sides. Connecting artifact edges requires one to be an event and the other an effect.",
+	"artifact event": "Events can be either be receiving or dealing damage. The damage dealt must be of some element defined for the event. Each event has an associated duration for which the connected effect will last.",
+	"artifact effect": "Effects either increase or decrease stats. Each effect applies to one of the following fire, rock, electric, water, air, ice resistance or damage buff. A special 'any' element effect can buff all 6 elements damage or resistance. Other stats such as current health and mana can be changed, as well as, max health and mana. Attack, defence, crit rate, crit damage, spell movement speed, spell duration, spell max radius, spell projectile count, spell max power and player running speed can also be changed.",
+	"artifact crit rate and crit damage": "Buffs and debuffs for crit stats apply to all projectiles of a spell when cast. The effects on all projectiles will last even after the buff/debuffs have expired on the player.",
+	"artifact spell movement speed, duration, max radius, projectile count and max power": "These effects increase the max limits of a spell. The limits are only increased while the effects are active. Spells already cast will not be effected however.",
+	"artifact running speed": "This will increase/decrease your running speed for some amount of time.",
+	"artifact current health and mana": "These are permanant changes to your current health and mana.",
+	"artifact max health and mana": "These will change your max health and mana for a temporary period. Any excess current health or mana will be lost after a decrease to maximum health or mana respectively.",
 	
 	"spell r": "The radius of every projectile for the spell.",
 	"spell D": "The time delay in seconds for each projectile of the spell.",

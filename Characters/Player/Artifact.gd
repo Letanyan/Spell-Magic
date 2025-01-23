@@ -399,7 +399,7 @@ static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, b
 		_: push_error("missing biome kind")
 		
 	var result := Artifact.nulled(n)
-	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
+	var fill_with := func (positions: Array, probs: Dictionary) -> void:
 		var tier := probs["tier"] as Vector2i
 		var pattern := probs["pattern"] as Dictionary
 		if probs.has("is_effect"):
