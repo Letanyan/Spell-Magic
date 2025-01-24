@@ -62,7 +62,7 @@ class Option:
 		var flip := Rand.entity_from_distribution(randf(), {true: is_ef, false: 1 - is_ef}, false) as bool
 		var ef := Rand.entity_from_distribution(randf(), ef_prob, Effect.BOOST_FLAT) as Effect
 		var ev := Rand.entity_from_distribution(randf(), ev_prob, Event.DEAL) as Event
-		var tier := Rand.roll((tier_range as Vector2i).x, (tier_range as Vector2i).y, 0, null, Rand.Accum.MAX, Vector2i(-10, 10))
+		var tier := Rand.roll(tier_range.x, tier_range.y, 0, null, Rand.Accum.MAX, Vector2i(-10, 10))
 		var el: Element
 		var am: int
 		if not flip: # is event
@@ -386,20 +386,23 @@ static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, b
 		return null
 		
 	var n: String
-	match biome:
-		World.Biome.GRASSLAND: n = name_generator.german_names.generate(16, 2)
-		World.Biome.TAIGA: n = name_generator.russian_names.generate(14, 2)
-		World.Biome.FOREST: n = name_generator.english_names.generate(8, 1)
-		World.Biome.DESERT: n = name_generator.spanish_names.generate(16, 3)
-		World.Biome.JUNGLE: n = name_generator.indian_names.generate(12, 2)
-		World.Biome.SAVANNAH: n = name_generator.roman_names.generate(12, 2)
-		World.Biome.TUNDRA: n = name_generator.iclandic_names.generate(14, 2)
-		World.Biome.OTHERWORLD: n = name_generator.constellations.generate(18, 4)
-		World.Biome.HFIL: n = name_generator.capital_cities.generate(18, 4)
-		_: push_error("missing biome kind")
+	if name_generator == null:
+		n = ""
+	else:
+		match biome:
+			World.Biome.GRASSLAND: n = name_generator.german_names.generate(16, 2)
+			World.Biome.TAIGA: n = name_generator.russian_names.generate(14, 2)
+			World.Biome.FOREST: n = name_generator.english_names.generate(8, 1)
+			World.Biome.DESERT: n = name_generator.spanish_names.generate(16, 3)
+			World.Biome.JUNGLE: n = name_generator.indian_names.generate(12, 2)
+			World.Biome.SAVANNAH: n = name_generator.roman_names.generate(12, 2)
+			World.Biome.TUNDRA: n = name_generator.iclandic_names.generate(14, 2)
+			World.Biome.OTHERWORLD: n = name_generator.constellations.generate(18, 4)
+			World.Biome.HFIL: n = name_generator.capital_cities.generate(18, 4)
+			_: push_error("missing biome kind")
 		
 	var result := Artifact.nulled(n)
-	var fill_with := func (positions: Array, probs: Dictionary) -> void:
+	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
 		var tier := probs["tier"] as Vector2i
 		var pattern := probs["pattern"] as Dictionary
 		if probs.has("is_effect"):
@@ -408,26 +411,26 @@ static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, b
 			var ef_element := probs["ef_element"] as Dictionary
 			var effect := probs["effect"] as Dictionary
 			var event := probs["event"] as Dictionary
-			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], is_effect, effect, event, ef_element, ev_element, pattern, tier)
+			result.fill(positions, is_effect, effect, event, ef_element, ev_element, pattern, tier)
 		elif probs.has("effect"):
 			var element := probs["element"] as Dictionary
 			var effect := probs["effect"] as Dictionary
-			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, effect, {}, element, {}, pattern, tier)
+			result.fill(positions, 1.0, effect, {}, element, {}, pattern, tier)
 		elif probs.has("event"):
 			var element := probs["element"] as Dictionary
 			var event := probs["event"] as Dictionary
-			result.fill([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], 1.0, {}, event, {}, element, pattern, tier)
+			result.fill(positions, 0.0, {}, event, {}, element, pattern, tier)
 		
 	
 	if drop_probs.has("all"):
-		fill_with.call([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT], drop_probs["all"])
+		fill_with.call([Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT] as Array[Vector2i], drop_probs["all"])
 	else:
 		for key: String in drop_probs:
 			var probs := drop_probs[key] as Dictionary
-			if key.contains("W"): fill_with.call([Vector2i.LEFT], probs)
-			if key.contains("E"): fill_with.call([Vector2i.RIGHT], probs)
-			if key.contains("N"): fill_with.call([Vector2i.UP], probs)
-			if key.contains("S"): fill_with.call([Vector2i.DOWN], probs)
+			if key.contains("W"): fill_with.call([Vector2i.LEFT] as Array[Vector2i], probs)
+			if key.contains("E"): fill_with.call([Vector2i.RIGHT] as Array[Vector2i], probs)
+			if key.contains("N"): fill_with.call([Vector2i.UP] as Array[Vector2i], probs)
+			if key.contains("S"): fill_with.call([Vector2i.DOWN] as Array[Vector2i], probs)
 	
 	result.seen_by_player = false
 	return result

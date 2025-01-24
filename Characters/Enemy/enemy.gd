@@ -426,7 +426,7 @@ func update_behaviour() -> void:
 	if old_is_idle != is_idle or not is_idle_is_set:
 		if is_idle:
 			player.ignore_enemy(self)
-		else:
+		elif is_inside_tree():
 			player.watch_enemy(self)
 			
 		if health_bar != null:
@@ -701,7 +701,7 @@ func spell_drop(tier: int) -> float:
 func artier(cls: int) -> Vector2i:
 	var p := cls / 20.0
 	var s := fiti(1, 10) * (1 if randf() < p else -1)
-	var c := roundi(p * 9) + 1
+	var c := roundi(p * 4) + 1
 	return Vector2i(s, c)
 	
 # cls = [1,5]

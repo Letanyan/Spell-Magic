@@ -515,7 +515,7 @@ func health_drop(cls: int) -> float:
 func artier(cls: int) -> Vector2i:
 	var p := cls / 20.0
 	var sides := fiti(1, 10) * (1 if randf() < p else -1)
-	var count := roundi(p * 9) + 1
+	var count := roundi(p * 4) + 1
 	return Vector2i(sides, count)
 
 # number of coins dropped. cls = [1,5]

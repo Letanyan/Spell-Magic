@@ -33,7 +33,7 @@ void vertex() {
 	ROUGHNESS=roughness;
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	//instance_custom = INSTANCE_CUSTOM;
-	
+
 	float wind_speed = texture(wind_speed_change, vec2(0.5, TIME * wind_speed_multiplier)).r;
 	vec2 wind_dir = vec2(
 		texture(wind_noise, vec2(TIME * wind_speed * 0.1, 0.5)).r * 2.0 - 1.0,

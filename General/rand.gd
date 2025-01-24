@@ -117,17 +117,22 @@ static func normalise_distribution(probs: Dictionary) -> Dictionary:
 	return probs
 
 static func roll(sides: int, count: int, constant: int, rng: RandomNumberGenerator = null, accum: Accum = Accum.SUM, clamping: Vector2i = Vector2i(1, sides * count)) -> int:
+	var base := 1 if sides > 0 else -1
 	var result := 0
+	match accum:
+		Accum.SUM, Accum.AVG: result = 0
+		Accum.MAX: result = -99999999
+		Accum.MIN: result = 99999999
 	if rng == null:
 		match accum:
-			Accum.SUM, Accum.AVG: for n in count: result += randi_range(1, sides)
-			Accum.MAX: for n in count: result = maxi(result, randi_range(1, sides))
-			Accum.MIN: for n in count: result = mini(result, randi_range(1, sides))
+			Accum.SUM, Accum.AVG: for n in count: result += randi_range(base, sides)
+			Accum.MAX: for n in count: result = maxi(result, randi_range(base, sides))
+			Accum.MIN: for n in count: result = mini(result, randi_range(base, sides))
 	else:
 		match accum:
-			Accum.SUM, Accum.AVG: for n in count: result += rng.randi_range(1, sides)
-			Accum.MAX: for n in count: result = maxi(result, rng.randi_range(1, sides))
-			Accum.MIN: for n in count: result = mini(result, rng.randi_range(1, sides))
+			Accum.SUM, Accum.AVG: for n in count: result += rng.randi_range(base, sides)
+			Accum.MAX: for n in count: result = maxi(result, rng.randi_range(base, sides))
+			Accum.MIN: for n in count: result = mini(result, rng.randi_range(base, sides))
 	if accum == Accum.AVG:
 		result = roundi(result / float(count))
 	return clampi(result + constant, clamping.x, clamping.y)
