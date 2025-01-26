@@ -712,30 +712,30 @@ func load_dict(dict: Dictionary) -> void:
 	if preview_image.size() != preview_flags.size():
 		while preview_image.size() < preview_flags.size(): preview_image.append(0)
 		while preview_image.size() > preview_flags.size(): preview_flags.append(0)
-	x = dict["x"] as String
-	y = dict["y"] as String
-	z = dict["z"] as String
-	r = str(dict["r"])
-	power = dict["power"]
-	duration = dict["duration"]
-	element = dict["el"]
-	count = dict["count"]
-	delay = dict["delay"]
-	is_bomb = dict.get("is_bomb", false)
-	follow = dict["is_rel"]
-	crit_rate = dict.get("crit_rate", 0.0)
-	crit_dmg = dict.get("crit_dmg", 0.0)
-	spherical_coords = dict.get("spherical_coords", false)
+	x = dict.get("x", "") as String
+	y = dict.get("y", "") as String
+	z = dict.get("z", "") as String
+	r = str(dict.get("r", ""))
+	power = dict.get("power", 0.0) as float
+	duration = dict.get("duration", 0.0) as float
+	element = dict.get("el", Element.VOID) as Element
+	count = dict.get("count", 1) as int
+	delay = dict.get("delay", "0") as String
+	is_bomb = dict.get("is_bomb", false) as bool
+	follow = dict.get("is_rel", false) as bool
+	crit_rate = dict.get("crit_rate", 0.0) as float
+	crit_dmg = dict.get("crit_dmg", 0.0) as float
+	spherical_coords = dict.get("spherical_coords", false) as bool
 	charge = 0.0
-	seen_by_player = dict.get("seen_by_player", false)
-	id = dict.get("id", -1)
-	mana_cost = dict.get("mana", 0.0)
-	chain_cast_kind = dict.get("chain_cast_kind", 0) as ChainCastKind
-	player_is_origin = dict.get("player_is_origin", true)
-	expression_strings = dict.get("expression_strings", {})
-	is_active = dict.get("is_active", false)
-	elemental_application = dict.get("elemental_application", 0.0)
-	configuration_parameters_for_chain = dict.get("configuration_parameters_for_chain", {})
+	seen_by_player = dict.get("seen_by_player", false) as bool
+	id = dict.get("id", -1) as int
+	mana_cost = dict.get("mana", 0.0) as float
+	chain_cast_kind = dict.get("chain_cast_kind", ChainCastKind.NONE) as ChainCastKind
+	player_is_origin = dict.get("player_is_origin", true) as bool
+	expression_strings = dict.get("expression_strings", {}) as Dictionary
+	is_active = dict.get("is_active", false) as bool
+	elemental_application = dict.get("elemental_application", 0.0) as float
+	configuration_parameters_for_chain = dict.get("configuration_parameters_for_chain", {}) as Dictionary
 	for e: String in expression_strings:
 		expression_strings[e] = (expression_strings[e] as String).strip_edges()
 	
@@ -746,7 +746,7 @@ func load_dict(dict: Dictionary) -> void:
 	r_expr = Expr.new(r)
 	build_expressions()
 	
-	if dict["chain"] != {}:
+	if dict.get("chain", {}) != {}:
 		chain = Spell.new()
 		chain.load_dict(dict["chain"] as Dictionary)
 		chain.configure_using_parameter_collection(configuration_parameters_for_chain, global_constant_variables())

@@ -467,6 +467,7 @@ func close_menu_for_player() -> void:
 func open_menu_for_player() -> void:
 	settings.is_paused = true
 	sub_viewport_container.visible = true
+	menu.player_in_combat = not player.enemies_in_range.is_empty()
 	menu.open(Menu.Kind.ANY)
 	settings.player_position = player.position
 	settings.player_health = player.vitals.health.value

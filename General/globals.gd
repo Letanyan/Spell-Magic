@@ -100,6 +100,10 @@ static func midpoint_tangent2(s: Vector3, e: Vector3) -> Vector3:
 static func encode_v3(v: Vector3) -> String:
 	return "%.v" % v
 	
+static var regex := RegEx.create_from_string("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$")
+static func is_base64(s: String) -> bool:
+	return regex.search(s) != null
+	
 static func dampen(source: float, target: float, rate: float, delta: float) -> float:
 	return lerpf(source, target, 1 - pow(rate, delta))
 	

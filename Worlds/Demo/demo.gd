@@ -381,6 +381,7 @@ func open_menu_for_player() -> void:
 	settings.player_mana = player.vitals.mana.value
 	settings.last_save_time = Time.get_unix_time_from_system()
 	totem.hide_message()
+	menu.player_in_combat = not player.enemies_in_range.is_empty()
 	menu.open(Menu.Kind.ANY)
 	hud.hide()
 

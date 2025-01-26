@@ -17,9 +17,12 @@ var current_index := 0
 @onready var upgrades_button: Button = $Tabbar/Upgrades
 @onready var settings_button: Button = $Tabbar/Settings
 
+@onready var message_panel: Panel = $MessagePanel
+@onready var message_label: Label = $MessagePanel/MessageLabel
 
 var is_showing: bool = false
 var world_settings: WorldSettings
+var player_in_combat: bool = false
 
 signal close_menu
 
@@ -56,17 +59,27 @@ func update_index(index: int) -> void:
 	artifacts.visible = false
 	upgrades.visible = false
 	settings.visible = false
-	match current_index:
-		0: magic_book.visible = true; spells_button.grab_focus()
-		1: wand_case.visible = true; wands_button.grab_focus()
-		2: artifacts.visible = true; artifacts_button.grab_focus()
-		3: upgrades.visible = true; upgrades_button.grab_focus()
-		4: settings.visible = true; settings_button.grab_focus()
-	spells_button.set_pressed_no_signal(magic_book.visible)
-	wands_button.set_pressed_no_signal(wand_case.visible)
-	artifacts_button.set_pressed_no_signal(artifacts.visible)
-	upgrades_button.set_pressed_no_signal(upgrades.visible)
-	settings_button.set_pressed_no_signal(settings.visible)
+	message_panel.visible = false
+	if player_in_combat and current_index < 4:
+		match current_index:
+			0: message_label.text = "Currently in Combat\nMagic Book Disabled"
+			1: message_label.text = "Currently in Combat\nWand Case Disabled"
+			2: message_label.text = "Currently in Combat\nArtifacts Disabled"
+			3: message_label.text = "Currently in Combat\nUpgrades Disabled"
+		message_panel.visible = true
+	else:
+		match current_index:
+			0: magic_book.visible = true; spells_button.grab_focus()
+			1: wand_case.visible = true; wands_button.grab_focus()
+			2: artifacts.visible = true; artifacts_button.grab_focus()
+			3: upgrades.visible = true; upgrades_button.grab_focus()
+			4: settings.visible = true; settings_button.grab_focus()
+		spells_button.set_pressed_no_signal(magic_book.visible)
+		wands_button.set_pressed_no_signal(wand_case.visible)
+		artifacts_button.set_pressed_no_signal(artifacts.visible)
+		upgrades_button.set_pressed_no_signal(upgrades.visible)
+		settings_button.set_pressed_no_signal(settings.visible)
+		
 
 func _on_spells_pressed() -> void:
 	update_index(0)

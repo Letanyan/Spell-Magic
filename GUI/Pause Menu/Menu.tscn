@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b185ji0u0kuxo"]
+[gd_scene load_steps=8 format=3 uid="uid://b185ji0u0kuxo"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/Menu.gd" id="1_op10b"]
 [ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="1_ufdyg"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://c0eqpohrkp1r7" path="res://GUI/Pause Menu/Artifacts.tscn" id="4_setqv"]
 [ext_resource type="PackedScene" uid="uid://lbdwf4vi4u7w" path="res://GUI/Pause Menu/Upgrades.tscn" id="5_85var"]
 [ext_resource type="PackedScene" uid="uid://w4lonc2wt7at" path="res://GUI/Pause Menu/Settings.tscn" id="7_nxty0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kjkp2"]
+font_size = 48
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -153,6 +156,36 @@ focus_next = NodePath("../Quit")
 focus_previous = NodePath("../Upgrades")
 toggle_mode = true
 text = "Settings"
+
+[node name="MessagePanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 64.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MessageLabel" type="Label" parent="MessagePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_top = 64.0
+offset_right = -56.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Currently in Combat
+Spells Disabled"
+label_settings = SubResource("LabelSettings_kjkp2")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]

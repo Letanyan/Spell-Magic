@@ -806,6 +806,9 @@ func _on_load_from_clipboard_pressed() -> void:
 	var popup := PopupDialog.display("Are you sure you want to overwrite the spell '" + spell.name + "' with copied spell")
 	popup.confirmed.connect(func() -> void:
 		var spell_text := DisplayServer.clipboard_get()
+		if not Globals.is_base64(spell_text):
+			UIAudioPlayer.failed_click()
+			return
 		var dict := Marshalls.base64_to_utf8(spell_text)
 		var json := JSON.new()
 		var err := json.parse(dict)
