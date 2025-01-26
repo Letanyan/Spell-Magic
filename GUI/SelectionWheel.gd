@@ -163,7 +163,7 @@ func calculate_segment_width(point: Vector2, inner_radius: float, radius: float)
 		segment_width = radius * 2
 	return minf(segment_width, radius - inner_radius - 16.0)
 		
-func _gui_input(_event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	
@@ -193,12 +193,12 @@ func _gui_input(_event: InputEvent) -> void:
 			on_segment_hover.emit(index)
 			selected_segment_index = index
 		queue_redraw()
+		accept_event()
 			
 	elif _event is InputEventMouseMotion:
 		var event := _event as InputEventMouseMotion
 		
 		if mouse_down == null:
-			#mouse_down = event.position
 			mouse_down = global_position + size / 2.0
 		else:
 			var md := mouse_down as Vector2
@@ -223,6 +223,8 @@ func _gui_input(_event: InputEvent) -> void:
 			if center.distance_to(event.position) > sensitivity:
 				var V := event.position - center
 				Input.warp_mouse(center + V / V.length() * sensitivity)
+				
+		accept_event()
 
 func visiblity_did_change() -> void:
 	if not visible:
