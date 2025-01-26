@@ -809,7 +809,7 @@ func _on_load_from_clipboard_pressed() -> void:
 		if not Globals.is_base64(spell_text):
 			UIAudioPlayer.failed_click()
 			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
-			popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+			popup_err.cancelled.connect(func() -> void: UIAudioPlayer.click())
 			popup_err.show_in_root(self)
 			return
 		var dict := Marshalls.base64_to_utf8(spell_text)
@@ -819,7 +819,7 @@ func _on_load_from_clipboard_pressed() -> void:
 		if err != OK or not json.data is Dictionary:
 			UIAudioPlayer.failed_click()
 			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
-			popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+			popup_err.cancelled.connect(func() -> void: UIAudioPlayer.click())
 			popup_err.show_in_root(self)
 			return
 		
@@ -835,7 +835,7 @@ func _on_load_from_clipboard_pressed() -> void:
 		if not contains_all_fields:
 			UIAudioPlayer.failed_click()
 			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
-			popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+			popup_err.cancelled.connect(func() -> void: UIAudioPlayer.click())
 			popup_err.show_in_root(self)
 			return
 			
