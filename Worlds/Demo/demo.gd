@@ -441,6 +441,7 @@ func _input(event: InputEvent) -> void:
 				player.world_settings.player_keys = 0
 				reset_enemy_populations()
 				SignalBus.level_up_world.emit(player, player.world_settings.world_level)
+				Steamworks.set_achievement(Steamworks.Achievements.ACH_INCREASED_WORLD_LEVEL)
 				settings.save()
 				transition_world_level()
 			return
@@ -655,6 +656,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				return
 			
 			UIAudioPlayer.hurt()
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			settings.is_paused = true
 			var overlay := OverlayScreen.display("GAME OVER", "Permadeath Mode Active\nSave File will be Deleted", "Main Menu")
 			overlay.confirmed.connect(func() -> void:

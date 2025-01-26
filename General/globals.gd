@@ -225,7 +225,7 @@ const encoded_y_noise = "EAAAAEA/DwACAAAAAACAPxMAmpmZPRMAbxIDOwgAAAAAAD8AAAAAAAA
 #const encoded_y_noise = "EgACAAAAAAAAABAACtcjPA0ABAAAAOxRyEATAM3MzD0TAG8SgzoIAAAAAIA+AAAAAAAAAADIwgAAAAA/AAAAAAA="
 
 func _ready() -> void:
-	is_debug = false # OS.is_debug_build()
+	is_debug = OS.is_debug_build()
 	
 	nav = GDNavigator.new()
 	

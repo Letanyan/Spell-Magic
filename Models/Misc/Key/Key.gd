@@ -21,6 +21,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		eaten = true
 		if (body as Player).pick_up_key(key):
 			UIAudioPlayer.pick_up_key()
+			Steamworks.set_achievement(Steamworks.achievement_pick_up_key(key_to_biome()))
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' picked up" % key)
 		elif key != 0:
 			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' already obtained" % key)
@@ -33,6 +34,14 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 func update_mesh_with_color(color: Color) -> void:
 	var mat := ($Key as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
 	mat.set_shader_parameter("albedo", color)
+	
+func key_to_biome() -> World.Biome:
+	var result := 0
+	var k := key
+	while k > 0:
+		result += 1
+		k >>= 1
+	return (result - 1) as World.Biome
 	
 func update_mesh_color() -> void:
 	match key:

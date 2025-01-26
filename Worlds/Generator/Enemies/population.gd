@@ -154,7 +154,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 			# the rng state across generations.
 			var scur := Globals.Ref.new(seedling)
 			(entity as Enemy).setup(Rand.randi(scur), current_biome_during_generation)
-			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(10, Rand.randi(scur))
+			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(4, Rand.randi(scur))
 			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
 			if is_marked or should_free:
 				entity_manager.free_enemy(entity as Enemy)
@@ -164,7 +164,7 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 			if entity is WorldItem:
 				var scur := Globals.Ref.new(seedling)
 				(entity as WorldItem).setup(Rand.randi(scur), current_biome_during_generation)
-				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(10, Rand.randi(scur))
+				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(4, Rand.randi(scur))
 				var is_marked := entity_name_is_marked(entity.name)
 				if is_marked or should_free:
 					entity_manager.free_world_item(entity as WorldItem)
