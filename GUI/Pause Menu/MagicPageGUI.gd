@@ -808,15 +808,38 @@ func _on_load_from_clipboard_pressed() -> void:
 		var spell_text := DisplayServer.clipboard_get()
 		if not Globals.is_base64(spell_text):
 			UIAudioPlayer.failed_click()
+			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
+			popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+			popup_err.show_in_root(self)
 			return
 		var dict := Marshalls.base64_to_utf8(spell_text)
 		var json := JSON.new()
 		var err := json.parse(dict)
+		
 		if err != OK or not json.data is Dictionary:
 			UIAudioPlayer.failed_click()
+			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
+			popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+			popup_err.show_in_root(self)
 			return
-		UIAudioPlayer.click()
 		
+		var contains_all_fields := true
+		var fields := ["x", "y", "z", "r", "power", "duration", "count", "delay", "chain", "is_bomb",
+			"is_rel", "el", "chain_cast_kind", "name", "id", "mana", "player_is_origin", "expression_strings", "is_active", 
+			"elemental_application", "crit_rate", "crit_dmg", "spherical_coords", "preview_image", "preview_flags",
+			"configuration_parameters_for_chain", "seen_by_player"]
+		for field in fields:
+			if not (json.data as Dictionary).has(field):
+				contains_all_fields = false
+				break
+		if not contains_all_fields:
+			UIAudioPlayer.failed_click()
+			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
+			popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+			popup_err.show_in_root(self)
+			return
+			
+		UIAudioPlayer.click()
 		var old_name := spell.name
 		var old_id := spell.id
 		spell.load_dict(json.data as Dictionary)
