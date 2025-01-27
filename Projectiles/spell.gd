@@ -682,6 +682,11 @@ func get_turret(n: int, fvars: Vars) -> Node3D:
 	
 	return p
 
+const all_spell_fields: Array[String] = ["x", "y", "z", "r", "power", "duration", "count", "delay", "chain", "is_bomb",
+			"is_rel", "el", "chain_cast_kind", "name", "id", "mana", "player_is_origin", "expression_strings", "is_active", 
+			"elemental_application", "crit_rate", "crit_dmg", "spherical_coords", "preview_image", "preview_flags",
+			"configuration_parameters_for_chain", "seen_by_player"] 
+
 func save_dict() -> Dictionary:
 	var pimages: Array[int] = []
 	var pflags: Array[int] = []

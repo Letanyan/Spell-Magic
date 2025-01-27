@@ -219,7 +219,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	var time_was_up := false
 	# don't use positions to determine completion as we might get stuck if time near total_duration
 	if time >= path.total_duration: # and me_pos.is_equal_approx(Vector3(v.x, y, v.z)):
-		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0):
+		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0) or not is_on_path:
 			me_start_position = null
 		time_was_up = true
 		time = 0.0
@@ -239,7 +239,7 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		player_start_vision_rotation = null
 		player_start_position = null
 	if previous_path_index != index.data or is_zero_approx(time) or (player is Player and player.position != player_start_position) or (player is Vector3 and player != player_start_position):
-		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0):
+		if can_update_initial_position_now or (when_initial_position_can_update & InitialPositionCanUpdate.AT_INTERCHANGE != 0) or not is_on_path:
 			player_start_vision_rotation = null
 			player_start_position = null
 		previous_path_index = index.data

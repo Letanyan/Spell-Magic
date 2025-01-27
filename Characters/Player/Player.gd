@@ -210,10 +210,11 @@ func _physics_process(delta: float) -> void:
 				play_animation("battle_idle")
 		
 	if not is_on_floor:
-		var world_normal := chunker.terrain_normal(position.x, position.z)
-		var wh: float = world_normal.get("position", Vector3.ZERO).y
-		if feet_position() < wh - 16.0:
-			set_feet_position(wh + 0.2)
+		if chunker:
+			var world_normal := chunker.terrain_normal(position.x, position.z)
+			var wh: float = world_normal.get("position", Vector3.ZERO).y
+			if feet_position() < wh - 16.0:
+				set_feet_position(wh + 0.2)
 		if position.y <= world_settings.sea_level:
 			if velocity.length() <= 0:
 				play_animation("float")

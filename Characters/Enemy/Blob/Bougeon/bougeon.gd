@@ -43,7 +43,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 		.origin_is_player()\
 		.player_vision_is_camera(0, 0.0, 1.0, 2.0)\
 		.look_at_player()\
-		.initial_position_can_update_on_ground()
+		.initial_position_can_update_on_ground_and_air()
 	
 	current_path = idle_path
 	

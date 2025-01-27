@@ -164,6 +164,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 				target_velocity.y = target_velocity.y + fa * delta
 		else:
 			target_velocity.y = 0
+	else:
+		target_velocity.y *= friction
 		
 	if body.feet_position() < -1000.0 or is_nan(body.position.y):
 		body.set_feet_position(Navigator.get_world_height(body.get_world_3d().direct_space_state, body.position.x, body.position.z))

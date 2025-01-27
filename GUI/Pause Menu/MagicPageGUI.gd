@@ -824,11 +824,7 @@ func _on_load_from_clipboard_pressed() -> void:
 			return
 		
 		var contains_all_fields := true
-		var fields := ["x", "y", "z", "r", "power", "duration", "count", "delay", "chain", "is_bomb",
-			"is_rel", "el", "chain_cast_kind", "name", "id", "mana", "player_is_origin", "expression_strings", "is_active", 
-			"elemental_application", "crit_rate", "crit_dmg", "spherical_coords", "preview_image", "preview_flags",
-			"configuration_parameters_for_chain", "seen_by_player"]
-		for field in fields:
+		for field in Spell.all_spell_fields:
 			if not (json.data as Dictionary).has(field):
 				contains_all_fields = false
 				break
