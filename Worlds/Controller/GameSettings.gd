@@ -87,11 +87,12 @@ static func get_world_names() -> Array:
 	var worlds := dir.get_directories()
 	var times: Array[Array] = []
 	for world in worlds:
-		var settings := WorldSettings.new(null)
-		settings.read(world)
-		if not settings.is_test_arena:
-			# TODO: use folder modified date instead and get rid of read settings
-			times.append([world, settings.last_save_time])
+		var file := dir.get_current_dir(true) + "/" + world + "/settings.json"
+		if not FileAccess.file_exists(file):
+			continue
+		if world != "test+arena":
+			var unix := FileAccess.get_modified_time(file)
+			times.append([world, unix])
 		
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
 	return times
