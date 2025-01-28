@@ -631,7 +631,14 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
 				menu.upgrades.settings.save()
 				
+			settings.player_position = player.position
+			settings.player_health = player.vitals.health.max_value
+			settings.player_mana = player.vitals.mana.max_value
+			settings.last_save_time = Time.get_unix_time_from_system()
 			settings.save()
+			
+			for enemy: Enemy in player.enemies_in_range:
+				enemy.vitals.reset()
 				
 			var subtitle := ""
 			if subtitle_components.size() == 1:

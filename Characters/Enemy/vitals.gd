@@ -45,6 +45,12 @@ class Stat:
 		max_value = amount
 		value = amount
 		
+	func reset_to_max() -> void:
+		value = max_value
+		
+	func reset_to_min() -> void:
+		value = min_value
+		
 		
 
 var health: Stat
@@ -211,6 +217,14 @@ func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](flo
 				
 	did_update_on_tick = did_update_on_tick or not result.is_empty()
 	return result
+	
+func reset() -> void:
+	health.reset_to_max()
+	mana.reset_to_max()
+	burning.reset_to_min()
+	wetness.reset_to_min()
+	freeze.reset_to_min()
+	stun.reset_to_min()
 
 func wetness_scale() -> float:
 	return 1 + wetness.value

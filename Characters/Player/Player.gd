@@ -332,7 +332,7 @@ func watch_enemy(enemy: Enemy) -> void:
 	
 func ignore_enemy(enemy: Enemy) -> void:
 	enemies_in_range.erase(enemy)
-	enemy.vitals.health.value = enemy.vitals.health.max_value
+	enemy.vitals.reset()
 	
 func watch_target(target: TargetShape) -> void:
 	targets_in_range[target] = Time.get_unix_time_from_system()
