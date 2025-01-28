@@ -32,14 +32,6 @@ func _on_continue_pressed() -> void:
 	
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(world_settings), Quotes.random())
 	
-	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
-	#demo.setup(world_settings)
-	#
-	#var current = get_tree().current_scene
-	#get_tree().root.add_child(demo)
-	#current.call_deferred("free")
-	#get_tree().current_scene = demo
-	
 
 func display_loading(is_loading: bool) -> void:
 	continue_button.disabled = is_loading

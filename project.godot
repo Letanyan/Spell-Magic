@@ -56,6 +56,11 @@ settings/updates/check_for_updates=false
 window/size/initial_position_type=3
 window/size/always_on_top=true
 window/size/always_on_top.release=false
+window/size/borderless.template_release=true
+window/size/always_on_top.template_release=false
+window/size/borderless.release=true
+window/size/mode.template_release=3
+window/size/mode.release=3
 
 [dotnet]
 

@@ -10,6 +10,7 @@ extends Node3D
 var player_movement_direction := Vector3.ZERO
 var player_rotation_direction := 0.0
 var requested_player_height := 0.0
+@onready var cam: Camera3D = $Player/Arm/Lens
 
 @onready var blender: NoiseBlender
 @onready var chunker: Chunker
@@ -47,11 +48,15 @@ func _exit_tree() -> void:
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
+	settings_menu.settings_pane.settings_changed.connect(update_settings)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var _settings := WorldSettings.new(get_viewport())
-	_settings.world_name = "empty"
+	var _settings := GlobalData.game_settings.default_world_settings
+	_settings.viewport = get_viewport()
+	_settings.graphics_settings.viewport = _settings.viewport
+	_settings.graphics_settings.update_all_settings()
+	#_settings.world_name = "empty"
 	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	
@@ -313,3 +318,7 @@ func _on_button_pressed() -> void:
 
 func _on_button_2_pressed() -> void:
 	skybox.day_time = fmod(snappedf(skybox.day_time + 6, 6), 24)
+
+func update_settings(new_settings: WorldSettings) -> void:
+	cam.fov = new_settings.camera_settings.fov
+	cam.far = new_settings.camera_settings.render_distance

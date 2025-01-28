@@ -83,7 +83,6 @@ func setup(_settings: WorldSettings) -> void:
 	const pY = 100
 	const LVL = 3
 	var enemy := Population.generate_enemy(World.Enemy.FLYGEON, player, pX / 10.0, 1000, pY / 10.0, LVL)
-	enemy.velocity_movement.debug_log = true
 	add_enemy(enemy)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)

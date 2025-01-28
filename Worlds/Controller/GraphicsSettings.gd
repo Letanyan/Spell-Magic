@@ -22,18 +22,7 @@ var viewport: Viewport
 func _init(vp: Viewport, should_update: bool = false) -> void:
 	viewport = vp
 	if should_update and viewport != null:
-		update_sharpness(sharpness)
-		update_scaling(scaling)
-		update_scaling_mode(scaling_mode)
-		update_display_style(display_style)
-		update_display_size(display_size)
-		if vp != null:
-			update_msaa(msaa)
-			update_taa(taa)
-			update_ssaa(ssaa)
-		update_max_fps(max_fps)
-		update_vsync(vsync)
-		
+		update_all_settings()
 
 func save_dict() -> Dictionary:
 	return {
@@ -56,6 +45,18 @@ func load_dict(dict: Dictionary) -> void:
 	update_max_fps(dict.get("max_fps", 60) as int)
 	update_vsync(dict.get("vsync", true) as bool)
 	grass_size = dict.get("grass_size", 1.0) as float
+
+func update_all_settings() -> void:
+	update_sharpness(sharpness)
+	update_scaling(scaling)
+	update_scaling_mode(scaling_mode)
+	update_display_style(display_style)
+	update_display_size(display_size)
+	update_msaa(msaa)
+	update_taa(taa)
+	update_ssaa(ssaa)
+	update_max_fps(max_fps)
+	update_vsync(vsync)
 
 func update_sharpness(s: float) -> void:
 	sharpness = s

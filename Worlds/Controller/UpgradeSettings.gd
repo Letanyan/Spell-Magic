@@ -18,7 +18,7 @@ const HAS_ROCK := 1 << 3
 const HAS_AIR := 1 << 4
 const HAS_ICE := 1 << 5
 const HAS_ELECTRIC := 1 << 6
-var has_spell_element := 0b11 # Start with fire and void
+var has_spell_element := HAS_VOID | HAS_FIRE # Start with fire and void
 var cost_spell_element := 100
 func purchase_spell_element(el: Spell.Element) -> PurchaseError:
 	if currency < cost_spell_element:
@@ -74,10 +74,10 @@ var level_r := 1:
 	set(value):
 		level_r = clampi(value, 1, level_max_r)
 		max_radius_updated.emit(max_r())
-const level_max_r := 50
-func max_r(x: int = level_r) -> float: return x * 0.1
+const level_max_r := 20
+func max_r(x: int = level_r) -> float: return x * 0.25
 func upgrade_r() -> float: return max_r(level_r + 1) - max_r(level_r)
-func cost_r() -> int: return level_r * 50
+func cost_r() -> int: return (level_r ** 2) * 10
 var buff_r := 0.0
 const LIMIT_r := 5.0
 func purchase_r() -> PurchaseError:
@@ -140,12 +140,12 @@ func purchase_N() -> PurchaseError:
 var level_D := 1:
 	set(value):
 		level_D = clampi(value, 1, level_max_D)
-const level_max_D := 26
-func max_D(x: int = level_D) -> float: return (x - 1.0)
+const level_max_D := 10
+func max_D(x: int = level_D) -> float: return roundf((x - 1) / 36.0 * 100.0)
 func upgrade_D() -> float: return max_D(level_D + 1) - max_D(level_D)
 func cost_D() -> int: return level_D * 25
 var buff_D := 0.0
-const LIMIT_D := 30.0
+const LIMIT_D := 25.0
 func purchase_D() -> PurchaseError:
 	if currency < cost_D():
 		return PurchaseError.NOT_ENOUGH_CURRENCY
@@ -376,19 +376,19 @@ func reset_all_stats_to_default_values() -> void:
 	currency = 0
 	
 func reset_all_stats_to_max_values() -> void:
-	level_health = 999
-	level_mana = 999
-	level_attack = 999
-	level_defence = 999
-	level_D = 999
-	level_N = 999
-	level_P = 999
-	level_r = 999
-	level_spells_in_book = 999
-	level_running_speed = 999
-	level_v = 999
-	level_T = 999
-	level_mana_regen = 999
+	level_health = level_max_health
+	level_mana = level_max_mana
+	level_attack = level_max_attack
+	level_defence = level_max_defence
+	level_D = level_max_D
+	level_N = level_max_N
+	level_P = level_max_P
+	level_r = level_max_r
+	level_spells_in_book = level_max_spells_in_book
+	level_running_speed = level_max_running_speed
+	level_v = level_max_v
+	level_T = level_max_T
+	level_mana_regen = level_max_mana_regen
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
 	currency = 9_999_999

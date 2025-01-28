@@ -11,6 +11,7 @@ var user_functions_text: String
 var unlocked_notes: Dictionary
 var notes_unlock_settings: NotesUnlockSettings
 var notes_sort_settings: NotesSortSettings
+var saved_worlds: Dictionary
 
 func save() -> void:
 	var file := FileAccess.open("user://settings.json", FileAccess.WRITE)
@@ -19,7 +20,7 @@ func save() -> void:
 		"last_world": last_world, "user_functions_text": user_functions_text,
 		"default_world_settings": default_world_settings.save_dict(),
 		"unlocked_notes": unlocked_notes, "notes_unlock_settings": notes_unlock_settings,
-		"notes_sort_settings": notes_sort_settings,
+		"notes_sort_settings": notes_sort_settings, "saved_worlds": saved_worlds,
 	})
 
 func read() -> void:
@@ -39,6 +40,8 @@ func read() -> void:
 	notes_sort_settings = data.get("notes_sort_settings", NotesSortSettings.CHRONOLOGICAL) as NotesSortSettings
 	
 	build_user_functions(data.get("user_functions_text", "") as String)
+	
+	saved_worlds = data.get("saved_worlds", {}) as Dictionary
 	
 func build_user_functions(text: String) -> void:
 	user_functions_text = text
@@ -87,6 +90,7 @@ static func get_world_names() -> Array:
 		var settings := WorldSettings.new(null)
 		settings.read(world)
 		if not settings.is_test_arena:
+			# TODO: use folder modified date instead and get rid of read settings
 			times.append([world, settings.last_save_time])
 		
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])

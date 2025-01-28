@@ -626,8 +626,8 @@ text = "TAA"
 
 [node name="Check" type="CheckButton" parent="Tabs/Graphics/TAA"]
 layout_mode = 0
-offset_left = 272.0
-offset_right = 312.0
+offset_left = 280.0
+offset_right = 320.0
 offset_bottom = 25.0
 
 [node name="FPS" type="Label" parent="Tabs/Graphics"]

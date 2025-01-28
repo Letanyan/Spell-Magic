@@ -303,7 +303,7 @@ focus_neighbor_top = NodePath("../Create")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_next = NodePath("../StartingUpgradesPanel")
 focus_previous = NodePath("../Create")
-text = "Cancel"
+text = "Back"
 
 [node name="StartingUpgrades" type="Button" parent="."]
 layout_mode = 1

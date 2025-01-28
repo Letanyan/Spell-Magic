@@ -667,10 +667,11 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			player.play_animation("death")
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			settings.is_paused = true
-			var overlay := OverlayScreen.display("GAME OVER", "Permadeath Mode\nSave File will be Deleted", "Main Menu")
+			GlobalData.game_settings.last_world = ""
+			GlobalData.game_settings.save()
+			OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (settings.world_name)))
+			var overlay := OverlayScreen.display("DEATH", "Game Over", "Main Menu")
 			overlay.confirmed.connect(func() -> void:
-				OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (settings.world_name)))
-				GlobalData.game_settings.last_world = ""
 				SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black")
 			)
 			overlay.show_in_root(self)

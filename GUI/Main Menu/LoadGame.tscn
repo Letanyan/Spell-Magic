@@ -57,7 +57,7 @@ offset_bottom = -17.0
 focus_neighbor_top = NodePath("../Load")
 focus_next = NodePath("../WorldsList")
 focus_previous = NodePath("../Load")
-text = "Cancel"
+text = "Back"
 
 [node name="Delete" type="Button" parent="."]
 layout_mode = 1
