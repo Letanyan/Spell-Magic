@@ -232,7 +232,10 @@ func update_cooldown() -> void:
 	if raw_radius > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
 		errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw_radius) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
 	else:
-		errors_list.erase("r")
+		# only delete message if it is about the value and not about something else
+		var message := errors_list.get("r", "") as String
+		if message.begins_with("Value"):
+			errors_list.erase("r")
 	
 	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " + Globals.format_number_nearest_place(book.spells[current_index].cooldown) + "s[/font_size][/left]"
 	element_application.text = book.spells[current_index].elemental_application_description()
@@ -326,11 +329,15 @@ func _on_r_text_changed(new_text: String) -> void:
 	if e.error.length() > 0:
 		errors_list["r"] = e.error
 	else:
-		var raw := book.spells[current_index].radius_cache
-		if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
-			errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
+		var bad_var := e.contains_only_basic_vars()
+		if not bad_var.is_empty():
+			errors_list["r"] = "can not use variable '" + bad_var + "'"
 		else:
-			errors_list.erase("r")
+			var raw := book.spells[current_index].radius_cache
+			if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
+				errors_list["r"] = "Value of " + Globals.format_number_nearest_place(raw) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r)
+			else:
+				errors_list.erase("r")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
@@ -682,9 +689,11 @@ func check_all_errors() -> void:
 	e = Expr.new(r_edit.text)
 	if e.error.length() > 0:
 		errors_list["r"] = e.error
-		
+	var bad_var := e.contains_only_basic_vars()
 	var raw: float = book.spells[current_index].radius_cache
-	if raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
+	if not bad_var.is_empty():
+		errors_list["r"] = "can not use variable '" + bad_var + "'"
+	elif raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
 		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
 		
 	var text := power_edit.text

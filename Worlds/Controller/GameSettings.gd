@@ -175,7 +175,7 @@ static var notes := {
 	"spell P": "The base damage multipler for all projectiles of the spell.",
 	"spell CR": "The crit rate for all projectiles of the spell. Crit rate defines some probability to possibly deal additional damage.",
 	"spell CD": "The crit damage for all projectiles of the spell. Crit damage is the amount of additional damage dealt if a critical hit is dealt.",
-	"spell chain": "A chain spell is a spell that is automatically cast based on one of the options selected. {At Start} and {At End} are called at the start at end for each projectile. {On Hit} is called when a projectile hits an object.",
+	"spell chain": "A chain spell is a spell (with optional parameters) that is automatically cast based on one of the options selected. {At Start} and {At End} are called at the start at end for each projectile. {On Hit} is called when a projectile hits an object.",
 	"spell M": "The amount of mana the spell will cost to cast. Increasing mana put into the spell will decrease the spell's cooldown time. Any excess mana that no longer decreases the cooldown will increase elemental application up to a certain point.",
 	"spell Player is Origin": "By default a projectiles origin is at the players reticule. Setting {Player is Origin} will make the spell's origin the center of the players feet.",
 	"spell Is Bomb": "By default a projectiles origin will only be set when it enter the world. Setting {Is Bomb} will fix the origin for each projectile to the point when the spell is first cast.",

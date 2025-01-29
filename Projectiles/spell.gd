@@ -129,8 +129,6 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.z_expr = z_expr
 	result.r_expr = r_expr
 	result.d_expr = d_expr
-	result.chain = chain
-	result.chain_cast_kind = chain_cast_kind
 	result.name = name
 	result.preview_image = preview_image
 	result.preview_flags = preview_flags
@@ -160,6 +158,8 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.cooldown = cooldown
 	result.charge = charge
 	result.is_active = is_active
+	result.chain = chain
+	result.chain_cast_kind = chain_cast_kind
 	return result
 	
 @warning_ignore("shadowed_variable")
@@ -265,6 +265,7 @@ func update_r() -> void:
 	var vars := basic_fixed_vars()
 	vars.set_value(Vars.r, 0.0)
 	radius_cache = snappedf(r_expr.compute_value(vars), 0.0001)
+	vars.set_value(Vars.r, radius_cache)
 	
 func calculate_cartesian_point(vars: Vars) -> Vector3:
 	var sphere := Vector3.ZERO
@@ -604,6 +605,13 @@ const fixed_var_list = {
 	"TI":true,"TJ":true,"TK":true,"rI":true,"rJ":true,"rK":true,"trI":true,"trJ":true,"trK":true,"TrI":true,"TrJ":true,"Tr":true,"Bxyz":true,"uvw":true,"tuvw":true,"Tuvw":true,"ruvw":true,"truvw":true,
 	"Truvw":true,"UVW":true,"tUVW":true,"TUVW":true,"rUVW":true,"trUVW":true,"TrUVW":true,"ijk":true,"tijk":true,"Tijk":true,"rijk":true,"trijk":true,"Trijk":true,"IJK":true,"tIJK":true,"TIJK":true,
 	"rIJK":true,"trIJK":true,"TrIJK":true,"position":true,
+}
+const basic_fixed_var_list = {
+	"r0": true, "r1": true, "r2": true, "r3": true, "r4": true,
+	"r5": true, "r6": true, "r7": true, "r8": true, "r9": true,
+	"pi": true, "N": true, "M": true, "C": true, "L": true,
+	"T": true, "P": true, "CR": true, "CD": true, "x": true,
+	"y": true, "z": true, "r": true,
 }
 	
 func basic_fixed_vars() -> Vars:

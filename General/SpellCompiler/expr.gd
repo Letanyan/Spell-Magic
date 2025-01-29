@@ -16,6 +16,9 @@ func _init(expr: String) -> void:
 func contains_variable(var_name: String) -> bool:
 	return back.contains_variable(var_name)
 	
+func contains_only_basic_vars() -> String:
+	return back.all_variables_is_contained(Spell.basic_fixed_var_list, GlobalData.game_settings.user_functions)
+	
 #	var tokens = Token.tokenize(expr)
 #
 #	error = ""
