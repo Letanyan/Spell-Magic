@@ -130,7 +130,7 @@ text = "+ 5
 layout_mode = 0
 offset_left = 128.0
 offset_right = 240.0
-offset_bottom = 26.0
+offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -179,7 +179,7 @@ text = "+ 5
 [node name="cost" type="RichTextLabel" parent="container/defence/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 228.0
+offset_right = 224.0
 offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -190,9 +190,9 @@ layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
 offset_left = -264.544
-offset_top = 280.0
+offset_top = 336.0
 offset_right = 239.456
-offset_bottom = 304.0
+offset_bottom = 360.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_P"]
@@ -229,7 +229,7 @@ text = "+ 5
 [node name="cost" type="RichTextLabel" parent="container/max_P/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 228.0
+offset_right = 224.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -278,7 +278,7 @@ text = "+ 5
 [node name="cost" type="RichTextLabel" parent="container/max_M/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 228.0
+offset_right = 224.0
 offset_bottom = 25.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -289,9 +289,9 @@ layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
 offset_left = -264.544
-offset_top = 336.0
+offset_top = 392.0
 offset_right = 239.456
-offset_bottom = 384.0
+offset_bottom = 440.0
 grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/max_spell_count"]
@@ -327,7 +327,7 @@ text = "+ 5
 [node name="cost" type="RichTextLabel" parent="container/max_spell_count/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 228.0
+offset_right = 224.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -338,9 +338,9 @@ layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
 offset_left = -255.456
-offset_top = 280.0
+offset_top = 336.0
 offset_right = 248.544
-offset_bottom = 304.0
+offset_bottom = 360.0
 
 [node name="label" type="RichTextLabel" parent="container/running_speed"]
 layout_mode = 0
@@ -388,9 +388,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -552.0
-offset_top = 416.0
+offset_top = 464.0
 offset_right = -8.0
-offset_bottom = 480.0
+offset_bottom = 528.0
 grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/elements"]
@@ -559,9 +559,9 @@ layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
 offset_left = -264.544
-offset_top = 224.0
+offset_top = 280.0
 offset_right = 239.456
-offset_bottom = 248.0
+offset_bottom = 304.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_N"]
@@ -598,7 +598,7 @@ text = "+ 5
 [node name="cost" type="RichTextLabel" parent="container/max_N/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 228.0
+offset_right = 224.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -609,9 +609,9 @@ layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
 offset_left = -255.456
-offset_top = 224.0
+offset_top = 280.0
 offset_right = 248.544
-offset_bottom = 248.0
+offset_bottom = 304.0
 
 [node name="label" type="RichTextLabel" parent="container/max_T"]
 layout_mode = 1
@@ -657,10 +657,10 @@ scroll_active = false
 layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
-offset_left = 312.544
-offset_top = 416.0
-offset_right = 824.544
-offset_bottom = 472.0
+offset_left = 320.544
+offset_top = 464.0
+offset_right = 832.544
+offset_bottom = 520.0
 
 [node name="label" type="Label" parent="container/chain_methods"]
 layout_mode = 0
@@ -673,7 +673,7 @@ text = "Chain Methods"
 layout_mode = 0
 offset_left = 136.0
 offset_right = 249.0
-offset_bottom = 25.0
+offset_bottom = 32.0
 focus_neighbor_left = NodePath("../../elements/Ice")
 focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
 focus_neighbor_right = NodePath("../at_end")
@@ -683,9 +683,9 @@ text = "At Start"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/at_start"]
 layout_mode = 0
-offset_top = 31.0
+offset_top = 40.0
 offset_right = 112.0
-offset_bottom = 56.0
+offset_bottom = 65.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -694,7 +694,7 @@ scroll_active = false
 layout_mode = 0
 offset_left = 264.0
 offset_right = 376.0
-offset_bottom = 25.0
+offset_bottom = 32.0
 focus_neighbor_left = NodePath("../at_start")
 focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
 focus_neighbor_right = NodePath("../on_hit")
@@ -704,9 +704,9 @@ text = "At End"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/at_end"]
 layout_mode = 0
-offset_top = 32.0
+offset_top = 40.0
 offset_right = 112.0
-offset_bottom = 56.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -715,7 +715,7 @@ scroll_active = false
 layout_mode = 0
 offset_left = 392.0
 offset_right = 504.0
-offset_bottom = 25.0
+offset_bottom = 32.0
 focus_neighbor_left = NodePath("../at_end")
 focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
 focus_next = NodePath("../../max_H/upgrade")
@@ -724,9 +724,9 @@ text = "On Hit"
 
 [node name="cost" type="RichTextLabel" parent="container/chain_methods/on_hit"]
 layout_mode = 0
-offset_top = 32.0
+offset_top = 40.0
 offset_right = 112.0
-offset_bottom = 56.0
+offset_bottom = 64.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
@@ -736,9 +736,9 @@ layout_mode = 1
 anchor_left = 0.754
 anchor_right = 0.754
 offset_left = -264.544
-offset_top = 168.0
+offset_top = 224.0
 offset_right = 239.456
-offset_bottom = 192.0
+offset_bottom = 248.0
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_r"]
@@ -774,7 +774,7 @@ text = "+ 5
 [node name="cost" type="RichTextLabel" parent="container/max_r/upgrade"]
 layout_mode = 0
 offset_left = 128.0
-offset_right = 228.0
+offset_right = 224.0
 offset_bottom = 26.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
@@ -785,9 +785,9 @@ layout_mode = 1
 anchor_left = 0.246
 anchor_right = 0.246
 offset_left = -255.456
-offset_top = 168.0
+offset_top = 224.0
 offset_right = 256.544
-offset_bottom = 192.0
+offset_bottom = 248.0
 
 [node name="label" type="RichTextLabel" parent="container/max_v"]
 layout_mode = 1
@@ -832,9 +832,9 @@ scroll_active = false
 [node name="mana_regen" type="Control" parent="container"]
 anchors_preset = 0
 offset_left = 24.0
-offset_top = 336.0
+offset_top = 392.0
 offset_right = 528.0
-offset_bottom = 384.0
+offset_bottom = 440.0
 
 [node name="label" type="RichTextLabel" parent="container/mana_regen"]
 layout_mode = 0
@@ -874,6 +874,88 @@ offset_bottom = 24.0
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
+
+[node name="crit_dmg" type="Control" parent="container"]
+layout_mode = 1
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -264.544
+offset_top = 168.0
+offset_right = 239.456
+offset_bottom = 192.0
+
+[node name="label" type="RichTextLabel" parent="container/crit_dmg"]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 128.0
+offset_bottom = 24.0
+bbcode_enabled = true
+text = "Max [img=l,16x16, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img] Crit Dmg"
+
+[node name="current" type="Label" parent="container/crit_dmg"]
+layout_mode = 0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/crit_dmg"]
+layout_mode = 0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
+text = "+ 5"
+
+[node name="cost" type="RichTextLabel" parent="container/crit_dmg/upgrade"]
+layout_mode = 0
+offset_left = 128.0
+offset_right = 224.0
+offset_bottom = 24.0
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+
+[node name="crit_rate" type="Control" parent="container"]
+layout_mode = 1
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -255.456
+offset_top = 168.0
+offset_right = 248.544
+offset_bottom = 192.0
+
+[node name="label" type="RichTextLabel" parent="container/crit_rate"]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 128.0
+offset_bottom = 24.0
+bbcode_enabled = true
+text = "Max [img=l,16x16, color=#0000AA]res://GUI/Images/cubes.svg[/img] Crit Rate"
+
+[node name="current" type="Label" parent="container/crit_rate"]
+layout_mode = 0
+offset_left = 136.0
+offset_right = 248.0
+offset_bottom = 24.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrade" type="Button" parent="container/crit_rate"]
+layout_mode = 0
+offset_left = 264.0
+offset_right = 376.0
+offset_bottom = 25.0
+text = "+ 5"
+
+[node name="cost" type="RichTextLabel" parent="container/crit_rate/upgrade"]
+layout_mode = 0
+offset_left = 128.0
+offset_right = 240.0
+offset_bottom = 24.0
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 
 [node name="Currency" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -947,8 +1029,8 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 392.0
-offset_bottom = 408.0
+offset_top = 368.0
+offset_bottom = 384.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -956,8 +1038,17 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 480.0
-offset_bottom = 496.0
+offset_top = 440.0
+offset_bottom = 456.0
+grow_horizontal = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
+
+[node name="HSep8" type="HSeparator" parent="container"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 528.0
+offset_bottom = 544.0
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -969,7 +1060,7 @@ anchor_right = 0.5
 offset_left = -8.0
 offset_top = 40.0
 offset_right = 8.0
-offset_bottom = 488.0
+offset_bottom = 535.0
 grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
@@ -995,3 +1086,5 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 [connection signal="pressed" from="container/max_r/upgrade" to="." method="_on_max_R_upgrade_pressed"]
 [connection signal="pressed" from="container/max_v/upgrade" to="." method="_on_max_v_upgrade_pressed"]
 [connection signal="pressed" from="container/mana_regen/upgrade" to="." method="_on_mana_regen_upgrade_pressed"]
+[connection signal="pressed" from="container/crit_dmg/upgrade" to="." method="_on_crit_rate_upgrade_pressed"]
+[connection signal="pressed" from="container/crit_rate/upgrade" to="." method="_on_crit_dmg_upgrade_pressed"]

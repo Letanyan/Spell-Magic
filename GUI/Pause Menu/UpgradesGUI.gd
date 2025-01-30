@@ -14,6 +14,14 @@ var settings: WorldSettings:
 @onready var max_v_upgrade: Button = $container/max_v/upgrade
 @onready var max_v_cost: RichTextLabel = $container/max_v/upgrade/cost
 
+@onready var max_cd_current: Label = $container/crit_dmg/current
+@onready var max_cd_upgrade: Button = $container/crit_dmg/upgrade
+@onready var max_cd_cost: RichTextLabel = $container/crit_dmg/upgrade/cost
+
+@onready var max_cr_current: Label = $container/crit_rate/current
+@onready var max_cr_upgrade: Button = $container/crit_rate/upgrade
+@onready var max_cr_cost: RichTextLabel = $container/crit_rate/upgrade/cost
+
 @onready var max_N_current: Label = $container/max_N/current
 @onready var max_N_upgrade: Button = $container/max_N/upgrade
 @onready var max_N_cost: RichTextLabel = $container/max_N/upgrade/cost
@@ -111,6 +119,8 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	attack_current.text = str(settings.upgrade_settings.max_attack())
 	defence_current.text = str(settings.upgrade_settings.max_defence())
 	mana_regen_current.text = str(settings.upgrade_settings.max_mana_regen())
+	max_cr_current.text = str(settings.upgrade_settings.max_crit_rate())
+	max_cd_current.text = str(settings.upgrade_settings.max_crit_dmg())
 	
 	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID)
 	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE)
@@ -137,6 +147,8 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	attack_cost.text = "[center]" + str(settings.upgrade_settings.cost_attack()) + coin_suffix
 	defence_cost.text = "[center]" + str(settings.upgrade_settings.cost_defence()) + coin_suffix
 	mana_regen_cost.text = "[center]" + str(settings.upgrade_settings.cost_mana_regen()) + coin_suffix
+	max_cr_cost.text = "[center]" + str(settings.upgrade_settings.cost_crit_rate()) + coin_suffix
+	max_cd_cost.text = "[center]" + str(settings.upgrade_settings.cost_crit_dmg()) + coin_suffix
 	
 	element_void_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
 	element_fire_cost.text = "[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix
@@ -164,19 +176,23 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	attack_upgrade.disabled = settings.upgrade_settings.level_attack >= UpgradeSettings.level_max_attack
 	defence_upgrade.disabled = settings.upgrade_settings.level_defence >= UpgradeSettings.level_max_defence
 	mana_regen_upgrade.disabled = settings.upgrade_settings.level_mana_regen >= UpgradeSettings.level_max_mana_regen
+	max_cr_upgrade.disabled = settings.upgrade_settings.level_crit_rate >= UpgradeSettings.level_max_crit_rate
+	max_cd_upgrade.disabled = settings.upgrade_settings.level_crit_dmg >= UpgradeSettings.level_max_crit_dmg
 	
 	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book())
-	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed())
+	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed()) + "m/s"
 	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P())
-	max_v_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_v())
-	max_T_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_T())
+	max_v_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_v()) + "m/s"
+	max_T_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_T()) + "s"
 	max_N_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_N())
 	max_H_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_health())
 	max_M_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana())
-	max_r_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_r())
+	max_r_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_r()) + "m"
 	attack_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_attack())
 	defence_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_defence())
 	mana_regen_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_mana_regen())
+	max_cr_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_crit_rate()) + "%"
+	max_cd_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_crit_dmg())
 
 func _on_max_spell_count_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spells_in_book()
@@ -284,5 +300,16 @@ func _on_defence_upgrade_pressed() -> void:
 	
 func _on_mana_regen_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_mana_regen()
+	UIAudioPlayer.click()
+	update_state(err)
+
+
+func _on_crit_rate_upgrade_pressed() -> void:
+	var err := settings.upgrade_settings.purchase_crit_rate()
+	UIAudioPlayer.click()
+	update_state(err)
+
+func _on_crit_dmg_upgrade_pressed() -> void:
+	var err := settings.upgrade_settings.purchase_crit_dmg()
 	UIAudioPlayer.click()
 	update_state(err)

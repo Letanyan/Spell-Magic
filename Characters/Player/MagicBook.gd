@@ -4,7 +4,7 @@ var spells: Array[Spell]
 var spell_index: Dictionary
 var cooldown: Dictionary ## [String]float
 var ignore_cooldown: bool
-enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE, VELOCITY, CHAINED_SPELL }
+enum DisallowSpellReason { NONE, COOLDOWN, MANA, COUNT, POWER, DURATION, RADIUS, ACTIVE, VELOCITY, CHAINED_SPELL, CRIT_RATE, CRIT_DMG }
 
 var settings: WorldSettings # set by the world
 
@@ -119,6 +119,16 @@ func can_use_spell(spell: Spell) -> DisallowSpellReason:
 		return DisallowSpellReason.POWER
 	elif spell.power > settings.upgrade_settings.LIMIT_P:
 		return DisallowSpellReason.POWER
+		
+	if spell.crit_rate > settings.upgrade_settings.max_crit_rate():
+		return DisallowSpellReason.CRIT_RATE
+	elif spell.crit_rate > settings.upgrade_settings.LIMIT_CRIT_RATE:
+		return DisallowSpellReason.CRIT_RATE
+		
+	if spell.crit_dmg > settings.upgrade_settings.max_crit_dmg():
+		return DisallowSpellReason.CRIT_DMG
+	elif spell.crit_dmg > settings.upgrade_settings.LIMIT_CRIT_DMG:
+		return DisallowSpellReason.CRIT_DMG
 		
 	var radius := spell.radius_cache
 	if radius > settings.upgrade_settings.max_r() + settings.upgrade_settings.buff_r:

@@ -140,7 +140,7 @@ func _physics_process(delta: float) -> void:
 	player.rotate_y(player_rotation_direction * delta)
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	var b := blender.biome
-	if last_biome != b:
+	if last_biome != b: # TODO: add timer delay for switching biomes to avoid flickering
 		print(World.Biome.keys()[b])
 		play_bg_audio(b)
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI

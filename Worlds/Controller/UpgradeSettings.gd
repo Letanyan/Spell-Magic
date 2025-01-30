@@ -10,7 +10,6 @@ signal upgrade_was_purchased(settings: UpgradeSettings)
 
 var currency := 500
 
-
 const HAS_VOID := 1 << 0
 const HAS_FIRE := 1 << 1
 const HAS_WATER := 1 << 2
@@ -267,6 +266,48 @@ func purchase_attack() -> PurchaseError:
 		
 	currency -= cost_attack()
 	level_attack += 1
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+
+var level_crit_rate := 1:
+	set(value):
+		level_crit_rate = clampi(value, 1, level_max_crit_rate)
+const level_max_crit_rate := 10
+func max_crit_rate(x: int = level_crit_rate) -> float: return x * 10.0
+func upgrade_crit_rate() -> float: return max_crit_rate(level_crit_rate + 1) - max_crit_rate(level_crit_rate)
+func cost_crit_rate() -> int: return level_crit_rate * 250
+var buff_crit_rate := 0.0
+const LIMIT_CRIT_RATE := 100
+func purchase_crit_rate() -> PurchaseError:
+	if currency < cost_crit_rate():
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if level_crit_rate >= level_max_crit_rate:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	currency -= cost_crit_rate()
+	level_crit_rate += 1
+	emit_upgrade_purchase()
+	return PurchaseError.NONE
+	
+var level_crit_dmg := 1:
+	set(value):
+		level_crit_dmg = clampi(value, 1, level_max_crit_dmg)
+const level_max_crit_dmg := 10
+func max_crit_dmg(x: int = level_crit_dmg) -> float: return x * 50.0
+func upgrade_crit_dmg() -> float: return max_crit_dmg(level_crit_dmg + 1) - max_crit_dmg(level_crit_dmg)
+func cost_crit_dmg() -> int: return level_crit_dmg * 250
+var buff_crit_dmg := 0.0
+const LIMIT_CRIT_DMG := 500
+func purchase_crit_dmg() -> PurchaseError:
+	if currency < cost_crit_dmg():
+		return PurchaseError.NOT_ENOUGH_CURRENCY
+		
+	if level_crit_dmg >= level_max_crit_dmg:
+		return PurchaseError.UPGRADE_IS_OVER_LIMIT
+		
+	currency -= cost_crit_dmg()
+	level_crit_dmg += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 

@@ -684,6 +684,7 @@ func prepare_update_spell(delta: float) -> void:
 	time_stamp += delta
 	
 func update_sub_entities(turn_off: bool) -> void:
+	# FIXME: this shit still dont work
 	if is_off == turn_off:
 		return
 	is_off = turn_off

@@ -636,7 +636,7 @@ func def(cls: int) -> float:
 	return fit(5.0, cls * 5.0)
 	
 func hp(cls: int) -> float:
-	return fit(50.0, cls * 50.0)
+	return fit(0.0, 1.0) * 49.75 * cls + 5
 	
 func mana(cls: int) -> float:
 	return fit(50.0, cls * 50.0)

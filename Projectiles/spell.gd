@@ -31,13 +31,13 @@ var r: String
 var variable_update_set: PackedByteArray
 var power: float:
 	set(value):
-		power = clamp(value, 0, UpgradeSettings.LIMIT_P)
+		power = clampf(value, 0, UpgradeSettings.LIMIT_P)
 var duration: float:
 	set(value):
-		duration = clamp(value, 0.0166667, UpgradeSettings.LIMIT_T)
+		duration = clampf(value, 0.0166667, UpgradeSettings.LIMIT_T)
 var count: int:
 	set(value):
-		count = clamp(value, 1, UpgradeSettings.LIMIT_N)
+		count = clampi(value, 1, UpgradeSettings.LIMIT_N)
 var delay: String
 var mana_cost: float = 0.0
 var chain_cast_kind: ChainCastKind = ChainCastKind.NONE:
@@ -64,7 +64,9 @@ var cooldown: float
 var charge: float
 var elemental_application: float
 var crit_rate: float
-var crit_dmg: float
+var crit_dmg: float:
+	set(value):
+		crit_dmg = clampf(value, 0, UpgradeSettings.LIMIT_CRIT_DMG)
 var spherical_coords: bool
 var ignore_cooldown_when_calculating_elemental_application: bool = false
 var seen_by_player: bool
@@ -482,6 +484,7 @@ func calculate_cooldown() -> float:
 	else:
 		var radius := radius_cache
 		var no_crit_hit := power / UpgradeSettings.LIMIT_P
+		crit_dmg = clampf(crit_dmg, 0, UpgradeSettings.LIMIT_CRIT_DMG)
 		var crit_hit := no_crit_hit * (1.0 + crit_dmg / 100.0)
 		var rate := clampf(crit_rate / 100.0, 0.0, 1.0)
 		var avg_dmg := crit_hit * rate + no_crit_hit * (1.0 - rate)
@@ -519,15 +522,16 @@ func damage(vitals: Vitals) -> float:
 	var atk := vitals.attack.value + buff_attack
 	var p := power / UpgradeSettings.LIMIT_P
 	p = pow(1 - (p - 1) * (p - 1), 0.6913)
+	var result := 0.0
 	match element:
-		Element.FIRE    : return p * (      atk                                               ) * crit
-		Element.WATER   : return p * (0.5 * atk + 0.05 * vitals.health.value                  ) * crit
-		Element.AIR     : return p * (0.5 * atk + 0.05 * vitals.mana.max_value                ) * crit
-		Element.ROCK    : return p * (0.5 * atk + 0.5  * (vitals.defence.value + buff_defence)) * crit
-		Element.ICE     : return p * (0.5 * atk + 0.05 * vitals.health.max_value              ) * crit
-		Element.ELECTRIC: return p * (0.5 * atk + 0.05 * vitals.mana.value                    ) * crit
-		Element.VOID    : return 0.0
-	return 0.0
+		Element.FIRE    : result = p * (      atk                                               ) * crit; print(p, " * ", atk, " * ", crit)
+		Element.WATER   : result = p * (0.5 * atk + 0.05 * vitals.health.value                  ) * crit
+		Element.AIR     : result = p * (0.5 * atk + 0.05 * vitals.mana.max_value                ) * crit
+		Element.ROCK    : result = p * (0.5 * atk + 0.5  * (vitals.defence.value + buff_defence)) * crit
+		Element.ICE     : result = p * (0.5 * atk + 0.05 * vitals.health.max_value              ) * crit
+		Element.ELECTRIC: result = p * (0.5 * atk + 0.05 * vitals.mana.value                    ) * crit
+		Element.VOID    : result = 0.0
+	return result
 	
 func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	var fixed_vars := Vars.new()

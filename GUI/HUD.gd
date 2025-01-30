@@ -137,6 +137,10 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -
 			show_notification(bbcode_error("'%s' requires M %.1f" % [spell.name, spell.actual_mana_cost()]), 5)		
 		MagicBook.DisallowSpellReason.POWER:
 			show_notification(bbcode_error("'%s' requires P %d upgrade" % [spell.name, spell.power]), 5)
+		MagicBook.DisallowSpellReason.CRIT_RATE:
+			show_notification(bbcode_error("'%s' requires CR %d upgrade" % [spell.name, spell.crit_rate]), 5)
+		MagicBook.DisallowSpellReason.CRIT_DMG:
+			show_notification(bbcode_error("'%s' requires CD %d upgrade" % [spell.name, spell.crit_dmg]), 5)
 		MagicBook.DisallowSpellReason.COUNT:
 			show_notification(bbcode_error("'%s' requires N %d upgrade" % [spell.name, spell.count]), 5)
 		MagicBook.DisallowSpellReason.DURATION:
@@ -252,6 +256,10 @@ func update_wand_mappings() -> void:
 				return "[color=#F700FF]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.POWER:
 				return "[color=#0008FF]" + s.name + "[/color]"
+			MagicBook.DisallowSpellReason.CRIT_RATE:
+				return "[color=#0000AA]" + s.name + "[/color]"
+			MagicBook.DisallowSpellReason.CRIT_DMG:
+				return "[color=#AAAA00]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.DURATION:
 				return "[color=#00FF08]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.RADIUS:
@@ -270,29 +278,7 @@ func update_wand_mappings() -> void:
 		
 		
 	var build_desc := func(kd: String, title: String, spell: Spell) -> String:
-		var reason := book.can_use_spell(spell)
-		if reason == MagicBook.DisallowSpellReason.NONE:
-			if player.vitals.mana.value < spell.actual_mana_cost():
-				reason = MagicBook.DisallowSpellReason.MANA
-		match reason:
-			MagicBook.DisallowSpellReason.NONE:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.COOLDOWN:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.MANA:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.ACTIVE:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.COUNT:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.POWER:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.DURATION:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			MagicBook.DisallowSpellReason.RADIUS:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
-			_:
-				return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
+		return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
 		
 	for k: PackedStringArray in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
@@ -400,13 +386,13 @@ func update_stats_view() -> void:
 	sv.mana.text = "%d%+d" % [ws.max_mana(), ws.buff_mana]
 	sv.attack.text = "%d%+d" % [ws.max_attack(), ws.buff_attack]
 	sv.defence.text = "%d%+d" % [ws.max_defence(), ws.buff_defence]
-	sv.crit_rate.text = "%s%%%s" % [Globals.format_number_nearest_place(player.buff_crit_rate.x, 1), Globals.format_number_nearest_place(player.buff_crit_rate.y, 1, true)]
+	sv.crit_rate.text = "%s%%%s%%" % [Globals.format_number_nearest_place(player.buff_crit_rate.x, 1), Globals.format_number_nearest_place(player.buff_crit_rate.y, 1, true)]
 	sv.crit_dmg.text = "%s%s" % [Globals.format_number_nearest_place(player.buff_crit_dmg.x, 1), Globals.format_number_nearest_place(player.buff_crit_dmg.y, 1, true)]
 	sv.radius.text = "%s%s" % [Globals.format_number_nearest_place(ws.max_r(), 1), Globals.format_number_nearest_place(ws.buff_r, 1, true)]
 	sv.duration.text = "%d%+d" % [ws.max_T(), ws.buff_T]
 	sv.count.text = "%d%+d" % [ws.max_N(), ws.buff_N]
 	sv.power.text = "%d%+d" % [ws.max_P(), ws.buff_P]
-	sv.running_speed.text = "%s%s" % [ws.max_running_speed(), ws.buff_running_speed]
+	sv.running_speed.text = "%d%+d" % [ws.max_running_speed(), ws.buff_running_speed]
 	
 	var v: Vector2 = Vector2.ZERO
 	sv.fireDMG.text = "%d%%%+d" % [player.spell_modifier.get(Spell.Element.FIRE, v).y, player.spell_modifier.get(Spell.Element.FIRE, v).x]
