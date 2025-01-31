@@ -12,7 +12,6 @@ extends Node
 var message: Array
 var starting_animation_name:String
 
-
 func _ready() -> void:
 	loading_label.visible = false
 	message_label.visible = false

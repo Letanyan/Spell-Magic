@@ -125,7 +125,37 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 	#current_iteration_spawn_count += 1
 	return index
 	
-func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_info: Callable, seedling: int, should_free: bool = false) -> Node3D:
+func prepare_world_item(entity: WorldItem, pos: Vector3, user_info: Callable, seedling: int, should_free: bool = false) -> Node3D:
+	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
+	if entity != null:
+		var world_normal := chunker.terrain_normal(pos.x, pos.z)
+		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
+		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
+		var info: Dictionary = user_info.call(world_normal)
+		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
+		var not_hfil := current_biome_during_generation != World.Biome.HFIL
+		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
+			entity_manager.free_world_item(entity)
+			return null
+		entity.set_base_position(Vector3(pos.x, wh + info.get("y_offset", 0.0) as float, pos.z))
+		var scur := Globals.Ref.new(seedling)
+		entity.setup(Rand.randi(scur), current_biome_during_generation)
+		entity.name = str(entity.kind) + "_" + Rand.id(4, Rand.randi(scur))
+		var is_marked := entity_name_is_marked(entity.name)
+		if is_marked or should_free:
+			entity_manager.free_world_item(entity)
+			return null
+		world_items.append(entity) 
+		match entity.kind:
+			World.Item.ARTIFACT: SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, message: String) -> void: mark_entity(entity))
+			World.Item.SPELL: SignalBus.pick_up_world_item_spell.connect(func(a: Spell, message: String) -> void: mark_entity(entity))
+			World.Item.COIN: SignalBus.pick_up_world_item_coin.connect(func(a: Array[int], message: String) -> void: mark_entity(entity))
+			World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
+			World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
+			World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
+	return entity
+	
+func prepare_enemy(entity: Enemy, pos: Vector3, is_enemy: World.Enemy, user_info: Callable, seedling: int, should_free: bool = false) -> Node3D:
 	current_spawn_duration_ms = Time.get_ticks_msec() - current_spawn_start_time_ms
 	if entity != null:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -137,48 +167,26 @@ func prepare_entity(entity: Node3D, pos: Vector3, is_enemy: World.Enemy, user_in
 		var is_fish := (is_enemy != World.Enemy.NONE) and (entity is Fish or entity is Fishman)
 		if not info.get("valid", true) or (below_sea_level and not_hfil and not is_fish) or is_nan(wh):
 			if is_enemy != World.Enemy.NONE:
-				entity_manager.free_enemy(entity as Enemy, is_enemy)
-			else:
-				if entity is WorldItem:
-					entity_manager.free_world_item(entity as WorldItem)
+				entity_manager.free_enemy(entity, is_enemy)
 			return null
 		entity.position.x = pos.x
 		entity.position.y = wh + info.get("y_offset", 0.0)
 		entity.position.z = pos.z
 		if is_enemy != World.Enemy.NONE:
-			(entity as Enemy).player = player
-			(entity as Enemy).index_in_population = inhabitants.size()
-			(entity as Enemy).is_dead = false
-			(entity as Enemy).velocity_movement.current_biome = current_biome_during_generation
+			entity.player = player
+			entity.index_in_population = inhabitants.size()
+			entity.is_dead = false
+			entity.velocity_movement.current_biome = current_biome_during_generation
 			# unfortunately the order of setup enemy must come before name generation as we must maintain
 			# the rng state across generations.
 			var scur := Globals.Ref.new(seedling)
-			(entity as Enemy).setup(Rand.randi(scur), current_biome_during_generation)
-			entity.name = str((entity as Enemy).kind) + "_" + Rand.id(4, Rand.randi(scur))
+			entity.setup(Rand.randi(scur), current_biome_during_generation)
+			entity.name = str(entity.kind) + "_" + Rand.id(4, Rand.randi(scur))
 			var is_marked := entity_name_is_marked(entity.name) # check if this enemy has already been killed
 			if is_marked or should_free:
-				entity_manager.free_enemy(entity as Enemy)
+				entity_manager.free_enemy(entity)
 				return null
 			inhabitants[inhabitants.size()] = entity
-		else:
-			if entity is WorldItem:
-				var scur := Globals.Ref.new(seedling)
-				(entity as WorldItem).setup(Rand.randi(scur), current_biome_during_generation)
-				entity.name = str((entity as WorldItem).kind) + "_" + Rand.id(4, Rand.randi(scur))
-				var is_marked := entity_name_is_marked(entity.name)
-				if is_marked or should_free:
-					entity_manager.free_world_item(entity as WorldItem)
-					return null
-				world_items.append(entity) 
-				match (entity as WorldItem).kind:
-					World.Item.ARTIFACT: SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, message: String) -> void: mark_entity(entity))
-					World.Item.SPELL: SignalBus.pick_up_world_item_spell.connect(func(a: Spell, message: String) -> void: mark_entity(entity))
-					World.Item.COIN: SignalBus.pick_up_world_item_coin.connect(func(a: Array[int], message: String) -> void: mark_entity(entity))
-					World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
-					World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
-					World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
-					
-	#current_iteration_spawn_count += 1
 	return entity
 	
 func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
@@ -190,7 +198,7 @@ func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
 	for conn: Dictionary in result.vital_update.get_connections():
 		result.vital_update.disconnect(conn["callable"] as Callable)
 	result.vital_update.connect(habitant_vitals_update)
-	return prepare_entity(result, pos, enemy, always_valid, seedling)
+	return prepare_enemy(result, pos, enemy, always_valid, seedling)
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float, lvl: int = 1) -> Enemy:
 	var result := Enemy.make(enemy)
@@ -222,7 +230,7 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 		var temp := result as TargetShape
 		temp.configure(config)
 	
-	return prepare_entity(result, pos, World.Enemy.NONE, always_valid, seedling)
+	return prepare_world_item(result, pos, always_valid, seedling, should_free)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	var seedling := rng.randi()
@@ -357,7 +365,7 @@ func update_info(world: Node3D) -> void:
 			else:
 				(item.get_node("./area/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50
 		else:
-			(item.get_node("./Area3D/CollisionShape3D") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50
+			(item.get_node("./area/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50
 		
 		if item is TargetShape and (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
 			item.is_active = not display_only and item.position.distance_to(player.position) < (item as TargetShape).bounds.length() * 2.0 + 50 and not player.world_settings.is_paused

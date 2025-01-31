@@ -95,12 +95,12 @@ libraries = {
 "": SubResource("AnimationLibrary_nnju5")
 }
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="area" type="Area3D" parent="."]
 collision_layer = 1024
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="shape" type="CollisionShape3D" parent="area"]
 shape = SubResource("SphereShape3D_ppy1q")
 
-[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="area" to="." method="_on_area_3d_body_entered"]

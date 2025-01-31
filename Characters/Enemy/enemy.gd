@@ -299,6 +299,8 @@ func _physics_process(delta: float) -> void:
 				global_transform.basis.y = global_transform.basis.y.slerp(t.basis.y, v)
 				global_transform.basis.x = global_transform.basis.x.slerp(t.basis.x, v)
 				global_transform.basis.z = global_transform.basis.z.slerp(t.basis.z, v)
+				if not global_transform.basis.is_conformal():
+					global_transform = global_transform.orthonormalized()
 			elif current_path.lookat == PathStyle.LookAt.PLAYER_XZ:
 				var player_transform := player.transform
 				player_transform.translated(Vector3(0, -player.global_position.y + global_position.y, 0))
@@ -307,6 +309,8 @@ func _physics_process(delta: float) -> void:
 				global_transform.basis.y = global_transform.basis.y.slerp(t.basis.y, v)
 				global_transform.basis.x = global_transform.basis.x.slerp(t.basis.x, v)
 				global_transform.basis.z = global_transform.basis.z.slerp(t.basis.z, v)
+				if not global_transform.basis.is_conformal():
+					global_transform = global_transform.orthonormalized()
 		
 
 	var reset_spell_tick := false
@@ -458,10 +462,9 @@ func die() -> void:
 	source.emitting = true
 	spell_caster.free_particles()
 	
-	# drop only one of key/artifact/spell based on said priority
-	if not drop_key_item(world):
-		if not drop_artifact_item(world):
-			drop_spell_item(world)
+	drop_key_item(world)
+	drop_artifact_item(world)
+	drop_spell_item(world)
 	drop_coin_items(world)
 	drop_health_item(world, multiplier)
 	drop_scroll_note(world)
@@ -474,8 +477,7 @@ func drop_artifact_item(world: Node3D) -> bool:
 	var artifact: Artifact = drop_artifact()
 	if artifact:
 		var item := ArtifactCube.make()
-		item.position = position
-		item.global_transform = global_transform
+		item.set_base_position(player.chunker.ground_position(position + Rand.point_in_circle(3, 0)))
 		item.artifact = artifact
 		world.add_child(item)
 		return true
@@ -486,8 +488,7 @@ func drop_spell_item(world: Node3D) -> bool:
 	var spell: Spell = drop_spell()
 	if spell:
 		var item := SpellPaper.make()
-		item.position = position
-		item.global_transform = global_transform
+		item.set_base_position(player.chunker.ground_position(position + Rand.point_in_circle(3, 0)))
 		item.spell = spell
 		world.add_child(item)
 		return true
@@ -497,8 +498,7 @@ func drop_key_item(world: Node3D) -> bool:
 	var key: int = drop_key()
 	if key != 0 and (player.world_settings.player_keys & key == 0):
 		var item := KeyPrism.make()
-		item.position = position
-		item.global_transform = global_transform
+		item.set_base_position(player.chunker.ground_position(position + Rand.point_in_circle(3, 0)))
 		item.key = key
 		world.add_child(item)
 		return true
@@ -509,8 +509,7 @@ func drop_coin_items(world: Node3D) -> bool:
 	if not coins.is_empty():
 		for coin in coins:
 			var item := CoinDisc.make()
-			item.position = position
-			item.global_transform = global_transform.translated(Rand.point_in_circle(1.0 + log(coins.size()), 0))
+			item.set_base_position(player.chunker.ground_position(position + Rand.point_in_circle(1.0 + log(coins.size()), 0)))
 			item.amount = ceili(coin * maxf(level / 10.0, 1.0))
 			world.add_child(item)
 		return true
@@ -521,8 +520,7 @@ func drop_health_item(world: Node3D, multiplier: float) -> bool:
 	var h := amount * 0.25 + amount * 0.75 * multiplier
 	if h > 0.0:
 		var item := RedCross.make()
-		item.position = position
-		item.global_transform = global_transform.translated(Rand.point_in_circle(3, 0))
+		item.set_base_position(player.chunker.ground_position(position + Rand.point_in_circle(3, 0)))
 		item.health = h
 		world.add_child(item)
 		return true
@@ -532,8 +530,7 @@ func drop_scroll_note(world: Node3D) -> bool:
 	var note_id := drop_note()
 	if note_id != "":
 		var item := ScrollNote.make()
-		item.position = position
-		item.global_transform = global_transform.translated(Rand.point_in_circle(3, 0))
+		item.set_base_position(player.chunker.ground_position(position + Rand.point_in_circle(3, 0)))
 		item.note_id = note_id
 		world.add_child(item)
 		return true
@@ -547,10 +544,28 @@ func update_vitals_display() -> void:
 	effects_shader.set_shader_parameter("burning_progress", vitals.burning.percentage())
 
 func drop_artifact() -> Artifact:
+	var class_p := class_level / 20.0
+	var level_p := (int(level) % 101) / 100.0
+	var min_p := class_p
+	var max_p := level_p
+	if min_p > max_p:
+		min_p = level_p
+		max_p = class_p
+	if randf() >= randf_range(min_p, max_p):
+		return null
 	var b: World.Biome = (velocity_movement.current_biome - 1) as World.Biome
 	return Artifact.from_config(artifact_drop_probs, player.name_generator, b)
 	
 func drop_spell() -> Spell:
+	var class_p := class_level / 20.0
+	var level_p := (int(level) % 101) / 100.0
+	var min_p := class_p
+	var max_p := level_p
+	if min_p > max_p:
+		min_p = level_p
+		max_p = class_p
+	if randf() >= randf_range(min_p, max_p):
+		return null
 	var result := Rand.entity_from_distribution(randf(), spell_drop_probs, null) as Spell
 	var new_name := player.name_generator.latin_names.generate(12, 2)
 	result.duplicate({}, false).bake(new_name)

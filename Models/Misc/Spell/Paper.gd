@@ -7,6 +7,7 @@ var eaten: bool = false
 static func make() -> SpellPaper:
 	var result := (preload("res://Models/Misc/Spell/Paper.tscn") as PackedScene).instantiate() as SpellPaper
 	result.kind = World.Item.SPELL
+	result.height = 2.0
 	return result
 
 # Called when the node enters the scene tree for the first time.

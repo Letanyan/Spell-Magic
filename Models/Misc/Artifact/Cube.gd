@@ -6,6 +6,7 @@ var eaten: bool = false
 
 static func make() -> ArtifactCube:
 	var result := (preload("res://Models/Misc/Artifact/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
+	result.height = 2.0
 	result.kind = World.Item.ARTIFACT
 	return result
 

@@ -5,6 +5,7 @@ var is_active: bool = true
 var kind: World.Item = World.Item.NONE
 var custom_free: Callable = func(this: WorldItem) -> void:
 	this.queue_free()
+var height: float = 0.5
 
 func setup(seedling: int, biome: World.Biome) -> void:
 	pass
@@ -30,3 +31,6 @@ func create_tween_for_key_pick_up(body: Player, duration: float) -> Tween:
 	tween.tween_property(self, "scale", Vector3(0.0001, 0.0001, 0.0001), duration * 0.2).set_delay(duration * 0.5)
 	tween.stop()
 	return tween
+
+func set_base_position(pos: Vector3) -> void:
+	position = pos + Vec3.y(height)

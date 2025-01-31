@@ -7,6 +7,7 @@ var eaten: bool = false
 static func make() -> KeyPrism:
 	var result := (preload("res://Models/Misc/Key/Key.tscn") as PackedScene).instantiate() as KeyPrism
 	result.kind = World.Item.KEY
+	result.height = 2.0
 	return result
 
 func _ready() -> void:

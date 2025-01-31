@@ -9,8 +9,8 @@ radius = 1.0
 
 [sub_resource type="Gradient" id="Gradient_c4dcj"]
 interpolation_color_space = 2
-offsets = PackedFloat32Array(0, 0.166052, 0.640187, 0.792829)
-colors = PackedColorArray(0, 0.501961, 0, 1, 0.501961, 1, 0.501961, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0.295238, 0.428571, 0.585714)
+colors = PackedColorArray(0, 0.501961, 0, 1, 0.501961, 1, 0.501961, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_rlncl"]
 gradient = SubResource("Gradient_c4dcj")
@@ -38,7 +38,6 @@ initial_velocity_min = 0.01
 initial_velocity_max = 0.01
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_tncfq")
-color = Color(0.501961, 1, 0.501961, 1)
 color_ramp = SubResource("GradientTexture1D_rlncl")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ib6y7"]

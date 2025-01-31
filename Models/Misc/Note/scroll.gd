@@ -8,6 +8,7 @@ var eaten: bool = false
 static func make() -> ScrollNote:
 	var result := (preload("res://Models/Misc/Note/Scroll.tscn") as PackedScene).instantiate() as ScrollNote
 	result.kind = World.Item.NOTE
+	result.height = 2.0
 	return result
 
 # Called when the node enters the scene tree for the first time.

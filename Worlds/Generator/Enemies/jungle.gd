@@ -210,7 +210,6 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
 				if reward != null:
 					reward.artifact = artifact
-					reward.position = pop.get_ground_level(pos)
 					result.append(reward)
 					
 			JungleStructuresKind.NOTE:

@@ -94,6 +94,16 @@ shadow_mesh = SubResource("ArrayMesh_m3qm7")
 [sub_resource type="SphereShape3D" id="SphereShape3D_0p1ld"]
 radius = 3.0
 
+[sub_resource type="Animation" id="Animation_56w28"]
+length = 0.001
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Scroll")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
 [sub_resource type="Animation" id="Animation_re8me"]
 resource_name = "idle"
 loop_mode = 1
@@ -112,16 +122,6 @@ tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = PackedFloat32Array(0, 1, 100, 100, 100, 0.5, 1, 150, 150, 150, 1, 1, 100, 100, 100)
 
-[sub_resource type="Animation" id="Animation_56w28"]
-length = 0.001
-tracks/0/type = "rotation_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Scroll")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rxyu3"]
 _data = {
 "RESET": SubResource("Animation_56w28"),
@@ -136,12 +136,12 @@ transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("ArrayMesh_itj8p")
 skeleton = NodePath("")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="area" type="Area3D" parent="."]
 collision_layer = 1024
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="shape" type="CollisionShape3D" parent="area"]
 shape = SubResource("SphereShape3D_0p1ld")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -149,4 +149,4 @@ libraries = {
 "": SubResource("AnimationLibrary_rxyu3")
 }
 
-[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="area" to="." method="_on_area_3d_body_entered"]

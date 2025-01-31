@@ -56,6 +56,7 @@ static func make() -> TargetShape:
 	# FIXME: optimise this
 	var result := (preload("res://Models/Misc/Target/Target.tscn") as PackedScene).instantiate() as TargetShape
 	result.kind = World.Item.TARGET
+	result.height = 1.0
 	return result
 	
 func setup(seedling: int, biome: World.Biome) -> void:

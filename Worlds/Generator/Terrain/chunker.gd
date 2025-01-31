@@ -43,6 +43,9 @@ func update_environment(x: float, z: float) -> void:
 func terrain_normal(x: float, z: float) -> Dictionary:
 	return back.terrain_normal(x, z)
 	
+func ground_position(v: Vector3) -> Vector3:
+	return terrain_normal(v.x, v.z).get("position", v) as Vector3
+	
 func update_chunks(x: float, z: float) -> void:
 	back.update_chunks(x, z)
 	

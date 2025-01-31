@@ -147,6 +147,75 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var minion_ratio := { World.Enemy.SNOT_BLOB: rng.randf(), World.Enemy.MUSHROOM: rng.randf(), World.Enemy.DRAGON: rng.randf(), World.Enemy.FUNGI: rng.randf() }
 					var foliage_ratio := { World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf() }
 					spawn_randomly(result, pop, minion_count, minion_path, rng.randf_range(0, 0.5), minion_ratio, foliage_ratio, rng, spacing)
+			
+			HFILStructuresKind.ARTIFACT:
+				var pos := area[index]
+				var artifact: Artifact
+				match Rand.entity_from_distribution(rng.randf(), {1: pop.fit(10, 1), 2: 5, 3: pop.fit(1, 10)}) as int:
+					1: artifact = Artifact.from_config({
+							"NS": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 10 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10, },
+								"ev_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, },
+								"ef_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, Artifact.Element.SPELL_VELOCITY: 5, Artifact.Element.HEALTH_BUMP: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 1, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(6),
+							},
+							"WE": {
+								"is_effect": 0.25,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 10 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 10, },
+								"ev_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, },
+								"ef_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, Artifact.Element.SPELL_VELOCITY: 5, Artifact.Element.HEALTH_BUMP: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 1, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(6),
+							},
+						}, pop.player.name_generator, World.Biome.SAVANNAH)
+					2: artifact = Artifact.from_config({
+							"NS": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 5, },
+								"ev_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, },
+								"ef_element": { Artifact.Element.FIRE: 8, Artifact.Element.ROCK: 8, Artifact.Element.SPELL_VELOCITY: 5, Artifact.Element.HEALTH_BUMP: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 1, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(12),
+							},
+							"WE": {
+								"is_effect": 0.25,
+								"event": { Artifact.Event.DEAL: 5, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 5, Artifact.Effect.BOOST_FLAT: 5, },
+								"ev_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, },
+								"ef_element": { Artifact.Element.FIRE: 8, Artifact.Element.ROCK: 8, Artifact.Element.SPELL_VELOCITY: 5, Artifact.Element.HEALTH_BUMP: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 1, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(12),
+							},
+						}, pop.player.name_generator, World.Biome.SAVANNAH)
+					3: artifact = Artifact.from_config({
+							"NS": {
+								"is_effect": 0.75,
+								"event": { Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5, },
+								"ev_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, },
+								"ef_element": { Artifact.Element.FIRE: 6, Artifact.Element.ROCK: 6, Artifact.Element.SPELL_VELOCITY: 5, Artifact.Element.HEALTH_BUMP: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 1, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(18),
+							},
+							"WE": {
+								"is_effect": 0.25,
+								"event": { Artifact.Event.DEAL: 10, Artifact.Event.RECEIVE: 5 },
+								"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.BOOST_FLAT: 5, },
+								"ev_element": { Artifact.Element.FIRE: 10, Artifact.Element.ROCK: 10, },
+								"ef_element": { Artifact.Element.FIRE: 6, Artifact.Element.ROCK: 6, Artifact.Element.SPELL_VELOCITY: 5, Artifact.Element.HEALTH_BUMP: 3, },
+								"pattern": {Artifact.Pattern.TRIANGLE: 1, Artifact.Pattern.SQUARE: 4, },
+								"tier": pop.artier(18),
+							},
+						}, pop.player.name_generator, World.Biome.SAVANNAH)
+				var reward := pop.spawn_world_item(World.Item.ARTIFACT, pos, spacing, {}) as ArtifactCube
+				if reward != null:
+					reward.artifact = artifact
+					result.append(reward)
 					
 			HFILStructuresKind.NOTE:
 				var pos := area[index] as Vector2

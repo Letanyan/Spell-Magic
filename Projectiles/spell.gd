@@ -524,7 +524,7 @@ func damage(vitals: Vitals) -> float:
 	p = pow(1 - (p - 1) * (p - 1), 0.6913)
 	var result := 0.0
 	match element:
-		Element.FIRE    : result = p * (      atk                                               ) * crit; print(p, " * ", atk, " * ", crit)
+		Element.FIRE    : result = p * (      atk                                               ) * crit
 		Element.WATER   : result = p * (0.5 * atk + 0.05 * vitals.health.value                  ) * crit
 		Element.AIR     : result = p * (0.5 * atk + 0.05 * vitals.mana.max_value                ) * crit
 		Element.ROCK    : result = p * (0.5 * atk + 0.5  * (vitals.defence.value + buff_defence)) * crit

@@ -87,7 +87,7 @@ radius = 3.0
 script = ExtResource("1_qeju3")
 
 [node name="medal" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.83136, 2.75065, -4.76085, -6.04499e-07, 5.01799, 2.89921, 5.49835, -0.916171, 1.58572, 0, 0, 0)
+transform = Transform3D(5, 0, 0, 0, 4.32935, 2.50135, 0, -2.50135, 4.32935, 0, 0, 0)
 mesh = SubResource("ArrayMesh_red7a")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_fus8v")
@@ -97,12 +97,12 @@ libraries = {
 "": SubResource("AnimationLibrary_m6p2k")
 }
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="area" type="Area3D" parent="."]
 collision_layer = 1024
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="shape" type="CollisionShape3D" parent="area"]
 shape = SubResource("SphereShape3D_v5rpu")
 
-[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="area" to="." method="_on_area_3d_body_entered"]

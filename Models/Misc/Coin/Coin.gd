@@ -6,6 +6,7 @@ var eaten: bool = false
 
 static func make() -> CoinDisc:
 	var result := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
+	result.height = 1.0
 	result.kind = World.Item.COIN
 	return result
 
@@ -48,4 +49,3 @@ func update_mesh_color() -> void:
 		update_mesh_with_color(silver.lerp(gold, (amount - 50) / 50.0))
 	else:
 		update_mesh_with_color(gold.lerp(Color(gold.r * 10, gold.g * 10, gold.b * 10), (amount - 100.0) / 100.0))
-		

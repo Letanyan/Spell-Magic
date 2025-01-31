@@ -481,12 +481,12 @@ transform = Transform3D(100, 0, 0, 0, -70.7107, 70.7107, 0, -70.7107, -70.7107, 
 mesh = SubResource("ArrayMesh_bln8l")
 skeleton = NodePath("")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="area" type="Area3D" parent="."]
 collision_layer = 1024
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="shape" type="CollisionShape3D" parent="area"]
 shape = SubResource("SphereShape3D_swlhu")
 
 [node name="MessageLabel" type="RichTextLabel" parent="."]
@@ -507,5 +507,5 @@ libraries = {
 "": SubResource("AnimationLibrary_wtktr")
 }
 
-[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
-[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
+[connection signal="body_entered" from="area" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="area" to="." method="_on_area_3d_body_exited"]
