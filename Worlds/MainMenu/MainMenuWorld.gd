@@ -16,6 +16,8 @@ var requested_player_height := 0.0
 @onready var chunker: Chunker
 @onready var population: Dictionary = {}
 
+var biome_in_waiting_queue: World.Biome = World.Biome.WATER
+var switch_biome_timer: float = 0.0
 var last_last_biome: World.Biome = World.Biome.WATER
 var last_biome: World.Biome = World.Biome.WATER
 
@@ -140,7 +142,12 @@ func _physics_process(delta: float) -> void:
 	player.rotate_y(player_rotation_direction * delta)
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	var b := blender.biome
-	if last_biome != b: # TODO: add timer delay for switching biomes to avoid flickering
+	if last_biome != b and biome_in_waiting_queue != b:
+		biome_in_waiting_queue = b
+		switch_biome_timer = 3.0
+	if (biome_in_waiting_queue != World.Biome.WATER and switch_biome_timer - delta < 0.0) or (last_biome == World.Biome.WATER):
+		b = biome_in_waiting_queue
+		biome_in_waiting_queue = World.Biome.WATER
 		print(World.Biome.keys()[b])
 		play_bg_audio(b)
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
@@ -162,6 +169,8 @@ func _physics_process(delta: float) -> void:
 		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)
 		last_last_biome = last_biome
 		last_biome = b
+	elif switch_biome_timer > 0.0:
+		switch_biome_timer -= delta
 			
 	if not has_init_terrain_population:
 		var space := get_world_3d().space

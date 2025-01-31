@@ -200,7 +200,7 @@ static func version1(s: int) -> NoiseBlender:
 	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
 	result.sea_level = rng.randf_range(-50.0, 50.0)
-	result.world_radius = rng.randf_range(7_500.0, 10_000.0)
+	result.world_radius = rng.randf_range(6_000.0, 8_000.0)
 	
 	var difficulty_option := rng.randi_range(0, 4)
 	match difficulty_option:
