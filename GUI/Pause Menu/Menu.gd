@@ -119,6 +119,8 @@ func open(kind: Kind) -> void:
 			_on_upgrades_pressed()
 		Kind.SETTINGS:
 			_on_settings_pressed()
+		Kind.ANY:
+			update_index(current_index)
 	world_settings.save()
 
 func close() -> void:

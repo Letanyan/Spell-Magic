@@ -254,6 +254,7 @@ func _on_create_pressed() -> void:
 		upgrades.reset_all_stats_to_default_values()
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
+		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << rng.randi_range(1, 6))
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()

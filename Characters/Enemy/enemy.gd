@@ -568,7 +568,7 @@ func drop_spell() -> Spell:
 		return null
 	var result := Rand.entity_from_distribution(randf(), spell_drop_probs, null) as Spell
 	var new_name := player.name_generator.latin_names.generate(12, 2)
-	result.duplicate({}, false).bake(new_name)
+	result = result.duplicate({}, false).bake(new_name)
 	result.seen_by_player = false
 	return result
 	
