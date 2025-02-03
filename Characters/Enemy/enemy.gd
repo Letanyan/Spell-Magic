@@ -18,6 +18,7 @@ var current_path: PathStyle:
 			current_path = value
 			current_path.time = NAN
 var still_path: PathStyle
+var spawn_position: Vector3
 var current_attack: AttackPatterns
 var class_level: int = 10 # [1, 20]
 var level: float: # Use float so it's easy to use in expressions. However, should only be whole numbers.
@@ -158,6 +159,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 	return result
 	
 func setup(seedling: int, biome: World.Biome) -> void:
+	spawn_position = position
 	update_behaviour()
 	rotation.y = randf() * 2 * PI
 	match kind:
@@ -425,7 +427,7 @@ func update_behaviour() -> void:
 		if player.position.distance_to(position) < vitals.perception.min_value:
 			is_idle = false
 	else:
-		if player.position.distance_to(position) > vitals.perception.max_value:
+		if player.position.distance_to(position) > vitals.perception.max_value or position.distance_to(spawn_position) > player.chunker.chunk_width:
 			is_idle = true
 	
 	if old_is_idle != is_idle or not is_idle_is_set:

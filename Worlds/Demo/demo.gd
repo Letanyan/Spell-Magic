@@ -561,8 +561,17 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 	if coord.x == 0 and coord.y == 0:
 		var rng := RandomNumberGenerator.new()
 		rng.seed = settings.sed
-		totem.position = pop.get_flat_ground(Vector2.ZERO, 1.5, 32.0, rng)
+		var pos := pop.get_flat_ground(Vector2.ZERO, 1.5, 32.0, rng)
+		totem.position = pos
 		totem.open_book(GDNavigator.popcnt(player.world_settings.player_keys) >= player.world_settings.max_keys())
+		var count := Rand.roll(10, 2, 0, rng, Rand.Accum.AVG)
+		var path := Pathway.new().circle(16.0, 0, 1)
+		path.apply_transform(T.translated(pos))
+		for p in path.sample_points_xz(count):
+			match rng.randi_range(0, 2):
+				0: pop.spawn_foliage(World.Foliage.ROCK_TALL, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
+				1: pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
+				2: pop.spawn_foliage(World.Foliage.ROCK_EGG, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}

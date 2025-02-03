@@ -288,7 +288,6 @@ func calculate_cartesian_point(vars: Vars) -> Vector3:
 	
 func calculate_location(vars: Vars, only_delta: bool = false, velocity_exceeds_limit: Globals.Ref = null) -> Vector3:
 	var result := calculate_cartesian_point(vars)
-	
 	if vars.has_vector(Vars.old_pos) and not only_delta:
 		var old_pos := vars.get_vector(Vars.old_pos)
 		var frame_time := vars.get_value(Vars.frame_time)

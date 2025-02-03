@@ -26,36 +26,14 @@ extends Control
 @onready var electricDMG: Label = $"container/Value Electric DMG"
 @onready var electricRES: Label = $"container/Value Electric RES"
 
-func artier(cls: int) -> Vector2i:
-	var p := cls / 20.0
-	var s := 7 * (1 if randf() < p else -1)
-	var c := roundi(p * 4) + 1
-	return Vector2i(s, c)
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
-	#var artifact_drop_probs := {
-		#"NS": {
-			#"effect": { Artifact.Effect.BOOST_PERCENTAGE: 2, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
-			#"element": { Artifact.Element.AIR: 10 },
-			#"pattern": { Artifact.Pattern.TRIANGLE: 10, Artifact.Pattern.CIRCLE: 2 },
-			#"tier": -artier(10),
-		#},
-		#"WE": {
-			#"effect": { Artifact.Effect.BOOST_PERCENTAGE: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 2 },
-			#"element": { Artifact.Element.AIR: 10 },
-			#"pattern": { Artifact.Pattern.TRIANGLE: 2, Artifact.Pattern.CIRCLE: 10 },
-			#"tier": artier(10),
-		#}
-	#}
-	#for i in range(10):
-		#var artifact := Artifact.from_config(artifact_drop_probs, null, World.Biome.GRASSLAND)
-		#print("------------")
-		#print(artifact.left.description(), " For ", artifact.left.duration_description(), ": ", Artifact.Pattern.keys()[artifact.left.pattern])
-		#print(artifact.top.description(), " For ", artifact.top.duration_description(), ": ", Artifact.Pattern.keys()[artifact.top.pattern])
-		#print(artifact.right.description(), " For ", artifact.right.duration_description(), ": ", Artifact.Pattern.keys()[artifact.right.pattern])
-		#print(artifact.bottom.description(), " For ", artifact.bottom.duration_description(), ": ", Artifact.Pattern.keys()[artifact.bottom.pattern])
+	var text := "-unit(posi)"
+	var expr := Expr.new(text)
+	var vars := Vars.new()
+	vars.set_raw("posi", Vector3(1, 2, 3))
+	print(text, " = ", expr.compute(vars, true))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
