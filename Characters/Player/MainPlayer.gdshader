@@ -1,6 +1,6 @@
 shader_type spatial;
 
-render_mode unshaded, depth_draw_always, blend_mix, cull_disabled, alpha_to_coverage;
+render_mode unshaded, depth_draw_never, blend_mix, cull_disabled;
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
 uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;
@@ -41,9 +41,7 @@ void fragment() {
 	    col += texture(tex, base_uv + vec2(0.0, 4.0 * -SCREEN_PIXEL_SIZE.y)) * 0.05;
 
 		vec2 normal_to_uv = (vec2(world_normal.x, world_normal.z) + UV) / 2.0;
-		//vec2 normal_to_uv = vec2(world_normal.x, world_normal.z);
 		vec3 cch = texture(caustic, (normal_to_uv - sin(TIME / 10.0)) * ((sin(TIME / 10.0) / 2.0 + 0.5) * 0.15 + 0.85) + vec2(TIME, 3.0) * 0.125).rgb;
-		//vec3 ccv = texture(caustic, (sin(UV * cch.r) - sin(TIME / 10.0)) * ((sin(TIME / 10.0) / 2.0 + 0.5) * 0.15 + 0.85) + vec2(0.0, TIME) * 0.125).rgb;
 		vec3 ccv = texture(caustic, (normal_to_uv - sin(TIME / 10.0)) * ((sin(TIME / 10.0) / 2.0 + 0.5) * 0.15 + 0.85) + vec2(0.0, TIME) * 0.125).rgb;
 		vec3 caustic_color = pow((cch + ccv) / 2.0, vec3(7.0)) * 1.0;
 
@@ -60,5 +58,4 @@ void fragment() {
 	}
 
 	ALBEDO = mix(vec3(0, 0.1, 0.2), underwater_color, depth_blend);
-	ALPHA = 0.99;
 }
