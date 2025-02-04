@@ -125,7 +125,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			var underwater := clampf(sea_level - body.position.y, 0.0, 10.0) / 10.0
 			var damage := clampf(body.position.y - sea_level, -100.0, 0.0) / 100.0 * lerpf(1.0, 5.0, world_level / 100.0)
 			vitals.handle_damage(Spell.Element.WATER, damage, underwater)
-			Vitals.apply_damage(world_node, body, damage, Spell.Element.WATER, true, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
+			if damage > 0.0:
+				Vitals.apply_damage(world_node, body, damage, Spell.Element.WATER, true, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
 		if current_biome == World.Biome.TUNDRA and body is Player:
 			vitals.handle_damage(Spell.Element.ICE, 0, fmod(world_level, 101.0) / 100.0)
 			Vitals.apply_damage(world_node, body, 0, Spell.Element.ICE, false, true, [Vector3.INF], 0, Vector3.ZERO, vitals)

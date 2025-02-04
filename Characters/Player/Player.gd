@@ -112,7 +112,7 @@ func pan_camera(movement: Vector2) -> void:
 	var exp_movement := Vector2(absf(movement.x / rate) ** S * signf(movement.x), absf(movement.y / rate) ** S * signf(movement.y))
 	cam_pivot.rotate_y(-exp_movement.x * damping / 180 * PI)
 	cam_arm.rotate_x(-exp_movement.y * damping / 180 * PI / 3)
-	cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2, PI / 2)
+	cam_arm.rotation.x = clamp(cam_arm.rotation.x, -PI / 2.0, 0.0 if current_animation_is("float") or current_animation_is("swim") else PI / 2.0)
 	
 	var size := -movement.length()
 	if vitals.wetness.value > vitals.wetness.min_value and position.y > world_settings.sea_level:
