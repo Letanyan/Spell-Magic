@@ -168,7 +168,8 @@ func get_enemy(kind: World.Enemy) -> Enemy:
 
 func free_enemy(enemy: Enemy, kind: World.Enemy = World.Enemy.NONE) -> void:
 	if kind == World.Enemy.NONE:
-		buffer_enemies[enemy.kind].free_entity(enemy)
+		if enemy.kind != World.Enemy.NONE:
+			buffer_enemies[enemy.kind].free_entity(enemy)
 	else:
 		buffer_enemies[kind].free_entity(enemy)
 		

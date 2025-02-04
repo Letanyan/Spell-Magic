@@ -108,31 +108,31 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 		return
 	
 	max_spell_count_current.text = str(settings.upgrade_settings.max_spells_in_book())
-	max_running_speed_current.text = str(settings.upgrade_settings.max_running_speed())
+	max_running_speed_current.text = str(settings.upgrade_settings.max_running_speed()) + "m/s"
 	max_P_current.text = str(settings.upgrade_settings.max_P())
-	max_v_current.text = str(settings.upgrade_settings.max_v())
+	max_v_current.text = str(settings.upgrade_settings.max_v()) + "m/s"
 	max_N_current.text = str(settings.upgrade_settings.max_N())
-	max_T_current.text = str(settings.upgrade_settings.max_T())
+	max_T_current.text = str(settings.upgrade_settings.max_T()) + "s"
 	max_M_current.text = str(settings.upgrade_settings.max_mana())
-	max_r_current.text = str(settings.upgrade_settings.max_r())
+	max_r_current.text = str(settings.upgrade_settings.max_r()) + "m"
 	max_H_current.text = str(settings.upgrade_settings.max_health())
 	attack_current.text = str(settings.upgrade_settings.max_attack())
 	defence_current.text = str(settings.upgrade_settings.max_defence())
 	mana_regen_current.text = str(settings.upgrade_settings.max_mana_regen())
-	max_cr_current.text = str(settings.upgrade_settings.max_crit_rate())
+	max_cr_current.text = str(settings.upgrade_settings.max_crit_rate()) + "%"
 	max_cd_current.text = str(settings.upgrade_settings.max_crit_dmg())
 	
-	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID)
-	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE)
-	element_water_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER)
-	element_air_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.AIR)
-	element_rock_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ROCK)
-	element_ice_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ICE)
-	element_electric_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ELECTRIC)
+	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
+	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
+	element_water_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
+	element_air_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.AIR) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
+	element_rock_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ROCK) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
+	element_ice_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ICE) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
+	element_electric_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ELECTRIC) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
 	
-	chain_at_start_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.START)
-	chain_at_end_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
-	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
+	chain_at_start_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.START) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.START)
+	chain_at_end_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.END)
+	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.HIT)
 	
 	var coin_suffix := " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/center]"
 	max_spell_count_cost.text = "[center]" + str(settings.upgrade_settings.cost_spells_in_book()) + coin_suffix
@@ -164,20 +164,20 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	
 	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/right]"
 	
-	max_spell_count_upgrade.disabled = settings.upgrade_settings.level_spells_in_book >= UpgradeSettings.level_max_spells_in_book
-	max_running_speed_upgrade.disabled = settings.upgrade_settings.level_running_speed >= UpgradeSettings.level_max_running_speed
-	max_P_upgrade.disabled = settings.upgrade_settings.level_P >= UpgradeSettings.level_max_P
-	max_v_upgrade.disabled = settings.upgrade_settings.level_v >= UpgradeSettings.level_max_v
-	max_T_upgrade.disabled = settings.upgrade_settings.level_T >= UpgradeSettings.level_max_T
-	max_N_upgrade.disabled = settings.upgrade_settings.level_N >= UpgradeSettings.level_max_N
-	max_H_upgrade.disabled = settings.upgrade_settings.level_health >= UpgradeSettings.level_max_health
-	max_M_upgrade.disabled = settings.upgrade_settings.level_mana >= UpgradeSettings.level_max_mana
-	max_r_upgrade.disabled = settings.upgrade_settings.level_r >= UpgradeSettings.level_max_r
-	attack_upgrade.disabled = settings.upgrade_settings.level_attack >= UpgradeSettings.level_max_attack
-	defence_upgrade.disabled = settings.upgrade_settings.level_defence >= UpgradeSettings.level_max_defence
-	mana_regen_upgrade.disabled = settings.upgrade_settings.level_mana_regen >= UpgradeSettings.level_max_mana_regen
-	max_cr_upgrade.disabled = settings.upgrade_settings.level_crit_rate >= UpgradeSettings.level_max_crit_rate
-	max_cd_upgrade.disabled = settings.upgrade_settings.level_crit_dmg >= UpgradeSettings.level_max_crit_dmg
+	max_spell_count_upgrade.disabled = settings.upgrade_settings.level_spells_in_book >= UpgradeSettings.level_max_spells_in_book or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spells_in_book()
+	max_running_speed_upgrade.disabled = settings.upgrade_settings.level_running_speed >= UpgradeSettings.level_max_running_speed or settings.upgrade_settings.currency < settings.upgrade_settings.cost_running_speed()
+	max_P_upgrade.disabled = settings.upgrade_settings.level_P >= UpgradeSettings.level_max_P or settings.upgrade_settings.currency < settings.upgrade_settings.cost_P()
+	max_v_upgrade.disabled = settings.upgrade_settings.level_v >= UpgradeSettings.level_max_v or settings.upgrade_settings.currency < settings.upgrade_settings.cost_v()
+	max_T_upgrade.disabled = settings.upgrade_settings.level_T >= UpgradeSettings.level_max_T or settings.upgrade_settings.currency < settings.upgrade_settings.cost_T()
+	max_N_upgrade.disabled = settings.upgrade_settings.level_N >= UpgradeSettings.level_max_N or settings.upgrade_settings.currency < settings.upgrade_settings.cost_N()
+	max_H_upgrade.disabled = settings.upgrade_settings.level_health >= UpgradeSettings.level_max_health or settings.upgrade_settings.currency < settings.upgrade_settings.cost_health()
+	max_M_upgrade.disabled = settings.upgrade_settings.level_mana >= UpgradeSettings.level_max_mana or settings.upgrade_settings.currency < settings.upgrade_settings.cost_mana()
+	max_r_upgrade.disabled = settings.upgrade_settings.level_r >= UpgradeSettings.level_max_r or settings.upgrade_settings.currency < settings.upgrade_settings.cost_r()
+	attack_upgrade.disabled = settings.upgrade_settings.level_attack >= UpgradeSettings.level_max_attack or settings.upgrade_settings.currency < settings.upgrade_settings.cost_attack()
+	defence_upgrade.disabled = settings.upgrade_settings.level_defence >= UpgradeSettings.level_max_defence or settings.upgrade_settings.currency < settings.upgrade_settings.cost_defence()
+	mana_regen_upgrade.disabled = settings.upgrade_settings.level_mana_regen >= UpgradeSettings.level_max_mana_regen or settings.upgrade_settings.currency < settings.upgrade_settings.cost_mana_regen()
+	max_cr_upgrade.disabled = settings.upgrade_settings.level_crit_rate >= UpgradeSettings.level_max_crit_rate or settings.upgrade_settings.currency < settings.upgrade_settings.cost_crit_rate()
+	max_cd_upgrade.disabled = settings.upgrade_settings.level_crit_dmg >= UpgradeSettings.level_max_crit_dmg or settings.upgrade_settings.currency < settings.upgrade_settings.cost_crit_dmg()
 	
 	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book())
 	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed()) + "m/s"

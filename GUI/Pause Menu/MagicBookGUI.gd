@@ -300,7 +300,7 @@ func _on_spell_index_item_clicked(index: int, at_position: Vector2, mouse_button
 				var can_upgrade := book.settings.upgrade_settings.max_spells_in_book() < UpgradeSettings.LIMIT_SPELLS_IN_BOOK
 				var options := ""
 				if can_upgrade:
-					options = "Upgrade max spells in book or deactive another spell first."
+					options = "Upgrade 'Max Active Spells' or deactive another spell first."
 				else:
 					options = "Deactive another spell first."
 				var popup := PopupDialog.display("Total active spells limit reached." + options, "Okay", "")
