@@ -74,6 +74,7 @@ var seen_by_player: bool
 var expression_strings: Dictionary = {}
 var expressions: Dictionary = {}
 var time_dependent_vars: Dictionary = {}
+var description: String = ""
 		
 var id: int = -1
 
@@ -162,6 +163,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.is_active = is_active
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
+	result.description = description
 	return result
 	
 @warning_ignore("shadowed_variable")
@@ -359,7 +361,8 @@ func build_expressions() -> void:
 	for k: String in expression_strings:
 		var expr: Expr
 		if (expression_strings[k] as String).contains(";"):
-			expr = Expr.new((expression_strings[k] as String).split(";", false, 2)[0])
+			var comps := (expression_strings[k] as String).split(";", false, 2)
+			expr = Expr.new(comps[0])
 		else:
 			expr = Expr.new(expression_strings[k] as String)
 		expressions[k] = expr
@@ -696,7 +699,7 @@ func get_turret(n: int, fvars: Vars) -> Node3D:
 const all_spell_fields: Array[String] = ["x", "y", "z", "r", "power", "duration", "count", "delay", "chain", "is_bomb",
 			"is_rel", "el", "chain_cast_kind", "name", "id", "mana", "player_is_origin", "expression_strings", "is_active", 
 			"elemental_application", "crit_rate", "crit_dmg", "spherical_coords", "preview_image", "preview_flags",
-			"configuration_parameters_for_chain", "seen_by_player"] 
+			"configuration_parameters_for_chain", "seen_by_player", "description"] 
 
 func save_dict() -> Dictionary:
 	var pimages: Array[int] = []
@@ -713,6 +716,7 @@ func save_dict() -> Dictionary:
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
 		"spherical_coords": spherical_coords, "preview_image": pimages, "preview_flags": pflags,
 		"configuration_parameters_for_chain": configuration_parameters_for_chain, "seen_by_player": seen_by_player,
+		"description": description,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -752,6 +756,7 @@ func load_dict(dict: Dictionary) -> void:
 	is_active = dict.get("is_active", false) as bool
 	elemental_application = dict.get("elemental_application", 0.0) as float
 	configuration_parameters_for_chain = dict.get("configuration_parameters_for_chain", {}) as Dictionary
+	description = dict.get("description", "") as String
 	for e: String in expression_strings:
 		expression_strings[e] = (expression_strings[e] as String).strip_edges()
 	
@@ -833,6 +838,7 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 %s.crit_rate = %s
 %s.crit_dmg = %s
 %s.spherical_coords = %s
+%s.description = %s
 """ % [
 	chain_creation,
 	variable_name, repr.call(follow), repr.call(x), repr.call(y), repr.call(z),
@@ -855,7 +861,8 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 	variable_name, repr.call(is_active),
 	variable_name, repr.call(crit_rate),
 	variable_name, repr.call(crit_dmg),
-	variable_name, repr.call(spherical_coords)
+	variable_name, repr.call(spherical_coords),
+	variable_name, repr.call(description)
 ]
 
 	if wrap_in_function:
@@ -935,6 +942,7 @@ func bake(new_name: String) -> Spell:
 	result.crit_dmg = crit_dmg
 	result.spherical_coords = spherical_coords
 	result.expression_strings = {}
+	result.description = description
 	result.build_expressions()
 	result.calculate_cooldown()
 	result.charge = charge

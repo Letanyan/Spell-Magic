@@ -46,6 +46,11 @@ func _ready() -> void:
 	
 	page.visible = false
 	page.spell_name_changed.connect(func(n: String) -> void: reload_list())
+	page.spell_description_changed.connect(func(n: String) -> void:
+		if current_index < 0 or spell_index.get_selected_items().is_empty():
+			return
+		spell_index.set_item_tooltip(spell_index.get_selected_items()[0], n)
+	)
 	page.request_to_view_spell.connect(view_new_spell)
 	page.delete_spell.connect(delete_spell_at_index)
 	page.duplicate_spell.connect(duplicate_spell_at_index)
@@ -154,12 +159,15 @@ func reload_list() -> void:
 		
 	spell_index.clear()
 	update_spells_list()
+	var j := 0
 	for k: int in spells_index_map:
 		var s := book.spells[spells_index_map[k]]
 		if s.seen_by_player:
 			spell_index.add_item(s.name, check_full if s.is_active else check_empty)
 		else:
 			spell_index.add_item(s.name, check_full_not_seen if s.is_active else check_empty_not_seen)
+		spell_index.set_item_tooltip(j, s.description)
+		j += 1
 		
 	if not spell_name.is_empty():
 		for i in spell_index.item_count:

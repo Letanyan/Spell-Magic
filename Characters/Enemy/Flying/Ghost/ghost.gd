@@ -123,7 +123,7 @@ func update_behaviour() -> void:
 	super.update_behaviour()
 	if is_idle:
 		set_path_and_attack(idle_path, none_pattern)
-	elif vitals.health.percentage() >= 0.1:
+	elif vitals.health.percentage() >= 0.25:
 		set_path_and_attack(attack_path, random_pattern)
 	else:
 		set_path_and_attack(attack_path, sequence_pattern)

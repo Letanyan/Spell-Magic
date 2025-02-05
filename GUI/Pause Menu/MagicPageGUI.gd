@@ -77,6 +77,7 @@ var selected_variables_origin_line := -1
 var last_selected_variable := ""
 
 signal spell_name_changed(new_text: String)
+signal spell_description_changed(new_text: String)
 signal request_to_view_spell(spell_name: String)
 signal delete_spell(index: int)
 signal duplicate_spell(index: int)
@@ -190,6 +191,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	player_is_origin.button_pressed = spell.player_is_origin
 	
 	expressions.text = ""
+	if not spell.description.is_empty():
+		expressions.text = "; " + spell.description + "\n"
 	for n: String in spell.expression_strings:
 		expressions.text += "%s = %s\n" % [n, spell.expression_strings[n]]
 		
@@ -618,7 +621,15 @@ func _on_expressions_text_changed() -> void:
 	var result := {}
 	var text: String = expressions.text
 	var definitions := text.split("\n", false)
+	var at_start := true
+	var description := ""
 	for def: String in definitions:
+		if at_start and def.begins_with(";"):
+			description = def.trim_prefix(";").strip_edges()
+			at_start = false
+			continue
+		else:
+			at_start = false
 		var atoms := def.split("=", false)
 		if atoms.size() == 2:
 			var n := atoms[0].strip_edges()
@@ -658,6 +669,9 @@ func _on_expressions_text_changed() -> void:
 			
 	book.spells[current_index].expression_strings = result
 	book.spells[current_index].build_expressions()
+	if book.spells[current_index].description != description:
+		book.spells[current_index].description = description
+		spell_description_changed.emit(description)
 	
 	if not errors_list.is_empty():
 		for k: String in Spell.fixed_var_list:
