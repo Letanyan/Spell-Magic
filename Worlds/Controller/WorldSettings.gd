@@ -24,6 +24,7 @@ var upgrade_settings: UpgradeSettings
 var game_mode_settings: GameModeSettings
 var graphics_settings: GraphicsSettings
 var audio_settings: AudioSettings
+var customisation_settings: CustomisationSettings
 
 var viewport: Viewport
 
@@ -38,6 +39,7 @@ func _init(vp: Viewport = null) -> void:
 	game_mode_settings = GameModeSettings.new()
 	graphics_settings = GraphicsSettings.new(viewport)
 	audio_settings = AudioSettings.new()
+	customisation_settings = CustomisationSettings.new()
 
 var temp_pos := Vector3.ZERO
 func save_dict() -> Dictionary:
@@ -56,7 +58,8 @@ func save_dict() -> Dictionary:
 		"camera_settings": camera_settings.save_dict(),
 		"game_mode_settings": game_mode_settings.save_dict(),
 		"graphics_settings": graphics_settings.save_dict(),
-		"audio_settings": audio_settings.save_dict()
+		"audio_settings": audio_settings.save_dict(),
+		"customisation_settings": customisation_settings.save_dict(),
 	}
 
 func save() -> void:
@@ -105,6 +108,9 @@ func load_dict(data: Dictionary) -> void:
 	
 	audio_settings = AudioSettings.new()
 	audio_settings.load_dict(data.get("audio_settings", {}) as Dictionary)
+	
+	customisation_settings = CustomisationSettings.new()
+	customisation_settings.load_dict(data.get("customisation_settings", {}) as Dictionary)
 
 func read(filename: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/settings.json" % (filename), FileAccess.READ)

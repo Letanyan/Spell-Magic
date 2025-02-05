@@ -112,7 +112,7 @@ func run_on_ready() -> void:
 		#_settings.sed = 0 
 		setup(_settings)
 		
-	menu.setup(book, case, artifacts, settings)
+	menu.setup(book, case, artifacts, settings, player)
 	
 	wand = case.current_wand()
 	menu.wand_case.use_current_wand = func(id: int) -> void:
@@ -151,6 +151,7 @@ func run_on_ready() -> void:
 	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
+	settings.customisation_settings.update_all(player.skeleton_3d)
 	if GlobalData.is_debug:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
 	else:
@@ -383,6 +384,8 @@ func open_menu_for_player() -> void:
 	totem.hide_message()
 	menu.player_in_combat = not player.enemies_in_range.is_empty()
 	menu.open(Menu.Kind.ANY)
+	if menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Customisation":
+		player.animate_spring_arm_length(3, 0.2)
 	hud.hide()
 
 func toggle_menu() -> void:
@@ -394,8 +397,7 @@ func toggle_menu() -> void:
 	
 	settings.is_paused = true
 	sub_viewport_container.visible = false
-	#menu.visible = true
-	player.transition_menu(not menu.is_showing)
+	player.transition_menu(not menu.is_showing, menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Customisation")
 	
 
 func _input(event: InputEvent) -> void:

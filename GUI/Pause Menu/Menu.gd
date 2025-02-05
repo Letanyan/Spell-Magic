@@ -21,18 +21,21 @@ var current_index := 0
 @onready var message_label: Label = $MessagePanel/MessageLabel
 
 var is_showing: bool = false
+var player: Player
 var world_settings: WorldSettings
 var player_in_combat: bool = false
 
 signal close_menu
 
-func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings) -> void:
+func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings, _player: Player) -> void:
 	magic_book.book = book
 	wand_case.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
 	upgrades.settings = _world_settings
 	settings.world_settings = _world_settings
+	settings.player = _player
+	player = _player
 	world_settings = _world_settings
 	
 	settings.exit_game.connect(func() -> void: get_tree().quit())
@@ -79,6 +82,10 @@ func update_index(index: int) -> void:
 		artifacts_button.set_pressed_no_signal(artifacts.visible)
 		upgrades_button.set_pressed_no_signal(upgrades.visible)
 		settings_button.set_pressed_no_signal(settings.visible)
+		if current_index == 4 and settings.tab_container.get_current_tab_control().name == "Customisation":
+			player.animate_spring_arm_length(3, 0.2)
+		else:
+			player.animate_spring_arm_length(0, 0.2)
 		
 
 func _on_spells_pressed() -> void:

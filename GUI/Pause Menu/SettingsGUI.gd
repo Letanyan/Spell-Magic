@@ -1,6 +1,8 @@
 class_name SettingsGUI
 extends Control
 
+@onready var tab_container: TabContainer = $Tabs
+
 @onready var hide_wand_mappings := $Tabs/Display/HideWandMappings as CheckButton
 @onready var hide_wand_modifier_hints := $Tabs/Display/HideWandModifierHints as CheckButton
 @onready var hide_notifications := $Tabs/Display/HideNotifications as CheckButton
@@ -25,7 +27,6 @@ extends Control
 @onready var panning_speed_slider: HSlider = $"Tabs/Camera/Panning Speed/Slider" as HSlider
 @onready var panning_speed_value: Label = $"Tabs/Camera/Panning Speed/Value" as Label
 
-
 @onready var scaling_options: OptionButton = $"Tabs/Graphics/Scaling Mode/Options"
 @onready var scaling_slider: HSlider = $Tabs/Graphics/Scaling/Slider
 @onready var scaling_value: Label = $Tabs/Graphics/Scaling/Value
@@ -40,7 +41,6 @@ extends Control
 @onready var vsync_options: OptionButton = $Tabs/Graphics/VSYNC/Options
 @onready var grass_size_slider: HSlider = $"Tabs/Graphics/Grass Size/Slider"
 @onready var grass_size_value: Label = $"Tabs/Graphics/Grass Size/Value"
-
 
 @onready var master_slider: HSlider = $Tabs/Sound/Master/Slider
 @onready var master_value: Label = $Tabs/Sound/Master/Value
@@ -57,11 +57,23 @@ extends Control
 
 @onready var magic_book: MagicBookGUI = $"Tabs/Universal Magic Book/MagicBook"
 
-
 @onready var note_content: RichTextLabel = $Tabs/Notes/Content
 @onready var show_notes: OptionButton = $Tabs/Notes/ShowNotes
 @onready var sort_notes: OptionButton = $Tabs/Notes/SortNotes
 
+@onready var skin_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Skin/ColorPicker
+@onready var hair_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Hair/ColorPicker
+@onready var eyes_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Eyes/ColorPicker
+@onready var overshirt_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Overshirt/ColorPicker
+@onready var undershirt_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Undershirt/ColorPicker
+@onready var body_armor_trim_color_picker: ColorPickerButton = $Tabs/Customisation/Container/BodyArmorTrim/ColorPicker
+@onready var body_armor_plate_color_picker: ColorPickerButton = $Tabs/Customisation/Container/BodyArmorPlate/ColorPicker
+@onready var shoes_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Shoes/ColorPicker
+@onready var pants_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Pants/ColorPicker
+@onready var legs_armor_trim_color_picker: ColorPickerButton = $Tabs/Customisation/Container/LegsArmorTrim/ColorPicker
+@onready var legs_armor_plate_color_picker: ColorPickerButton = $Tabs/Customisation/Container/LegsArmorPlate/ColorPicker
+
+var player: Player
 var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
@@ -150,13 +162,24 @@ func update_controls() -> void:
 	show_notes.selected = GlobalData.game_settings.notes_unlock_settings
 	sort_notes.selected = GlobalData.game_settings.notes_sort_settings
 	
-	var tab_container := $Tabs as TabContainer
 	if tab_container.get_current_tab_control().name == "Game":
 		update_info()
 	if tab_container.get_current_tab_control().name == "Notes":
 		update_notes()
 	if tab_container.get_current_tab_control().name == "Universal Magic Book":
 		update_magic_book()
+		
+	skin_color_picker.color = world_settings.customisation_settings.skin
+	hair_color_picker.color = world_settings.customisation_settings.hair
+	eyes_color_picker.color = world_settings.customisation_settings.eyes
+	overshirt_color_picker.color = world_settings.customisation_settings.overshirt
+	undershirt_color_picker.color = world_settings.customisation_settings.undershirt
+	body_armor_trim_color_picker.color = world_settings.customisation_settings.body_armor_trim
+	body_armor_plate_color_picker.color = world_settings.customisation_settings.body_armor_plate
+	shoes_color_picker.color = world_settings.customisation_settings.shoes
+	pants_color_picker.color = world_settings.customisation_settings.pants
+	legs_armor_trim_color_picker.color = world_settings.customisation_settings.legs_armor_trim
+	legs_armor_plate_color_picker.color = world_settings.customisation_settings.legs_armor_plate
 	
 	UIAudioPlayer.silence = false
 
@@ -229,6 +252,7 @@ func _on_theme_variation_item_selected(index: int) -> void:
 	
 func _on_theme_color_color_changed(color: Color) -> void:
 	world_settings.hud_settings.theme_color = color
+	UIAudioPlayer.switch()
 	settings_changed.emit(world_settings)
 
 func _on_fov_slider_value_changed(value: float) -> void:
@@ -469,8 +493,8 @@ func _on_sort_notes_item_selected(index: int) -> void:
 	GlobalData.game_settings.save()
 
 func hide_game_tab(should_hide: bool) -> void:
-	var tab_container := $Tabs as TabContainer
-	tab_container.set_tab_hidden(tab_container.get_tab_count() - 1, should_hide)
+	var tabs := $Tabs as TabContainer
+	tabs.set_tab_hidden(tabs.get_tab_count() - 1, should_hide)
 
 func _on_save_pressed() -> void:
 	save_game.emit()
@@ -488,18 +512,25 @@ func _on_exit_game_pressed() -> void:
 
 func _on_tabs_tab_selected(tab: int) -> void:
 	UIAudioPlayer.switch()
-	var tab_container := $Tabs as TabContainer
-	if tab_container.get_current_tab_control().name == "Game":
+	var tabs := $Tabs as TabContainer
+	if tabs.get_current_tab_control().name == "Game":
 		update_info()
-	if tab_container.get_current_tab_control().name == "Notes":
+	if tabs.get_current_tab_control().name == "Notes":
 		update_notes()
 		
 	if is_magic_book_selected:
 		is_magic_book_selected = false
 		save_user_magic_book()
-	if tab_container.get_current_tab_control().name == "Universal Magic Book":
+	if tabs.get_current_tab_control().name == "Universal Magic Book":
 		is_magic_book_selected = true
 		update_magic_book()
+		
+	if player != null:
+		if tabs.get_current_tab_control().name == "Customisation":
+			player.animate_spring_arm_length(3, 0.2)
+		else:
+			player.animate_spring_arm_length(0, 0.2)
+		
 
 func _on_user_functions_focus_exited() -> void:
 	GlobalData.game_settings.build_user_functions(user_functions.text)
@@ -514,3 +545,47 @@ func save_user_magic_book() -> void:
 func update_magic_book() -> void:
 	magic_book.duplicate_book()
 	magic_book.reload_list()
+
+func _on_skin_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_skin(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_hair_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_hair(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_eyes_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_eyes(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_overshirt_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_overshirt(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_undershirt_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_undershirt(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_body_armor_trim_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_body_armor_trim(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_body_armor_plate_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_body_armor_plate(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_shoes_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_shoes(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_pants_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_pants(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_legs_armor_trim_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_legs_armor_trim(player.skeleton_3d, color)
+	UIAudioPlayer.switch()
+
+func _on_legs_armor_plate_color_picker_color_changed(color: Color) -> void:
+	world_settings.customisation_settings.update_legs_armor_plate(player.skeleton_3d, color)
+	UIAudioPlayer.switch()

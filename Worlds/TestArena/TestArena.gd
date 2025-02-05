@@ -314,7 +314,7 @@ func _ready() -> void:
 		
 	settings.upgrade_settings.currency = 10000
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
-	menu.setup(book, case, artifacts, settings)
+	menu.setup(book, case, artifacts, settings, player)
 	
 	wand = case.current_wand()
 	menu.wand_case.use_current_wand = func(id: int) -> void:
@@ -356,6 +356,7 @@ func _ready() -> void:
 	
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
+	settings.customisation_settings.update_all(player.skeleton_3d)
 	
 	AudioManager.world = self
 	AudioManager.camera = player.cam
@@ -469,6 +470,8 @@ func open_menu_for_player() -> void:
 	sub_viewport_container.visible = true
 	menu.player_in_combat = not player.enemies_in_range.is_empty()
 	menu.open(Menu.Kind.ANY)
+	if menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Customisation":
+		player.animate_spring_arm_length(3, 0.2)
 	settings.player_position = player.position
 	settings.player_health = player.vitals.health.value
 	settings.player_mana = player.vitals.mana.value
@@ -483,7 +486,7 @@ func toggle_menu() -> void:
 	settings.is_paused = true
 	sub_viewport_container.visible = false
 	#menu.visible = true
-	player.transition_menu(not menu.is_showing)
+	player.transition_menu(not menu.is_showing, menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Customisation")
 		
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
