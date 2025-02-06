@@ -15,3 +15,5 @@ signal enemy_death(enemy: Enemy)
 signal level_up_world(player: Player, new_world_level: int)
 signal key_collected(player: Player)
 signal player_is_ready(player: Player)
+
+signal spell_from_global_book_exported(spell: Spell)

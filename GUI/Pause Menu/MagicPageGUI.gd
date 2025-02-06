@@ -54,7 +54,7 @@ var current_preview_index: int = 0
 
 @onready var duplicate_button: Button = $container/Duplicate
 @onready var delete_button: Button = $container/Delete
-@onready var load_from_clipboard: Button = $container/LoadFromClipboard
+@onready var copy_to_clipboard: Button = $container/CopyToClipboard
 @onready var save_to_uni_book: Button = $container/SaveToUniBook
 
 var errors_list := {}
@@ -63,7 +63,7 @@ var book: MagicBook
 var is_universal: bool = false:
 	set(value):
 		if value:
-			save_to_uni_book.tooltip_text = "Copy Spell to Clipboard"
+			save_to_uni_book.tooltip_text = "Load Spell into the Current Game's Magic Book"
 			save_to_uni_book.icon = preload("res://GUI/Images/cloud-download.svg")
 		else:
 			save_to_uni_book.tooltip_text = "Save Spell to Universal Magic Book"
@@ -835,62 +835,32 @@ func _on_save_to_uni_book_pressed() -> void:
 	var spell := book.spells[current_index]
 	UIAudioPlayer.click()
 	if is_universal:
-		var encoded := Marshalls.utf8_to_base64(str(spell.save_dict()))
-		DisplayServer.clipboard_set(encoded)
+		var popup := PopupDialog.display("Load Spell into the Current Game's Magic Book?", "No", "Yes")
+		popup.confirmed.connect(func() -> void: 
+			UIAudioPlayer.click()
+			SignalBus.spell_from_global_book_exported.emit(spell)
+		)
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.show_in_root(self)
 	else:
-		GlobalData.user_magic_book.add(spell)
+		var popup := PopupDialog.display("Save Spell to Universal Magic Book?", "No", "Yes")
+		popup.confirmed.connect(func() -> void: 
+			UIAudioPlayer.click()
+			GlobalData.user_magic_book.add(spell)
+		)
+		popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+		popup.show_in_root(self)
 		
-func _on_load_from_clipboard_pressed() -> void:
-	if current_index < 0 and DisplayServer.clipboard_has():
+func _on_copy_to_clipboard_pressed() -> void:
+	if current_index < 0:
 		UIAudioPlayer.failed_click()
 		return
-		
 	var spell := book.spells[current_index]
-	var popup := PopupDialog.display("Are you sure you want to overwrite the spell '" + spell.name + "' with copied spell")
-	popup.confirmed.connect(func() -> void:
-		var spell_text := DisplayServer.clipboard_get()
-		if not Globals.is_base64(spell_text):
-			UIAudioPlayer.failed_click()
-			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
-			popup_err.cancelled.connect(func() -> void: UIAudioPlayer.click())
-			popup_err.show_in_root(self)
-			return
-		var dict := Marshalls.base64_to_utf8(spell_text)
-		var json := JSON.new()
-		var err := json.parse(dict)
-		
-		if err != OK or not json.data is Dictionary:
-			UIAudioPlayer.failed_click()
-			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
-			popup_err.cancelled.connect(func() -> void: UIAudioPlayer.click())
-			popup_err.show_in_root(self)
-			return
-		
-		var contains_all_fields := true
-		for field in Spell.all_spell_fields:
-			if not (json.data as Dictionary).has(field):
-				contains_all_fields = false
-				break
-		if not contains_all_fields:
-			UIAudioPlayer.failed_click()
-			var popup_err := PopupDialog.display("Can not load spell. Invalid spell data.", "Okay", "")
-			popup_err.cancelled.connect(func() -> void: UIAudioPlayer.click())
-			popup_err.show_in_root(self)
-			return
-			
-		UIAudioPlayer.click()
-		var old_name := spell.name
-		var old_id := spell.id
-		spell.load_dict(json.data as Dictionary)
-		spell.name = old_name
-		spell.id = old_id
-		var active_count := 0
-		for s in book.spells:
-			if s.is_active:
-				active_count += 1
-		spell.is_active = active_count < book.settings.upgrade_settings.max_spells_in_book()
-		display_spell(book, book.spells[current_index], current_index)
-	)
+	UIAudioPlayer.click()
+	var encoded := Marshalls.utf8_to_base64(str(spell.save_dict()))
+	DisplayServer.clipboard_set(encoded)
+	var popup := PopupDialog.display("Spell Copied to the Clipboard", "", "Okay")
+	popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)
 

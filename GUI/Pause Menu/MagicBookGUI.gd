@@ -56,6 +56,11 @@ func _ready() -> void:
 	page.duplicate_spell.connect(duplicate_spell_at_index)
 	page.return_focus.connect(func() -> void: spell_index.grab_focus())
 	
+	SignalBus.spell_from_global_book_exported.connect(func(spell: Spell) -> void:
+		if not is_universal:
+			add_spell(spell)	
+	)
+	
 	
 func duplicate_book() -> void:
 	for i in book.spells.size():
@@ -210,11 +215,53 @@ func add_spell(spell: Spell) -> void:
 		
 func _on_create_pressed() -> void:
 	UIAudioPlayer.click()
-	var spell := Spell.new()
-	spell.name = "New Spell"
-	add_spell(spell)
-	if is_universal:
-		spell.is_active = true
+	var load_from_clipboard := true
+	var json := JSON.new()
+	while DisplayServer.clipboard_has():
+		var spell_text := DisplayServer.clipboard_get()
+		if not Globals.is_base64(spell_text):
+			load_from_clipboard = false
+			break
+		var dict := Marshalls.base64_to_utf8(spell_text)
+		var err := json.parse(dict)
+		if err != OK or not json.data is Dictionary:
+			load_from_clipboard = false
+			break
+		for field in Spell.all_spell_fields:
+			if not (json.data as Dictionary).has(field):
+				load_from_clipboard = false
+				break
+		break
+		
+	if load_from_clipboard:
+		var popup := PopupDialog.display("Do you want to load spell from Clipboard?", "No", "Yes")
+		popup.confirmed.connect(func() -> void:
+			UIAudioPlayer.click()
+			var spell := Spell.new()
+			spell.load_dict(json.data as Dictionary)
+			var active_count := 0
+			for s in book.spells:
+				if s.is_active:
+					active_count += 1
+			add_spell(spell)
+			spell.is_active = active_count < book.settings.upgrade_settings.max_spells_in_book()
+		)
+		popup.cancelled.connect(func() -> void: 
+			UIAudioPlayer.click()
+			var spell := Spell.new()
+			spell.name = "New Spell"
+			add_spell(spell)
+			if is_universal:
+				spell.is_active = true
+		)
+		popup.show_in_root(self)
+	else:
+		var spell := Spell.new()
+		spell.name = "New Spell"
+		add_spell(spell)
+		if is_universal:
+			spell.is_active = true
+		
 
 func duplicate_spell_at_index(index: int) -> void:
 	var spell: Spell = book.spells[index].duplicate()
