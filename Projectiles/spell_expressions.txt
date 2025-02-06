@@ -25,7 +25,7 @@ bomb-circle: places N projectiles on circle perimeter with radius R in center `d
 	arc ; arc of the circle
 	S ; minimum wait time
 	s ; interval between bombs
-	V ; vertical movement distance
+	Vert ; vertical movement distance
 	Vs ; veritcal movement speed
 	RR ; local movement around circle with radius
 	RRs ; local movement speed around circle
@@ -84,7 +84,9 @@ line: fires a projectile that goes from a start point to an end point
 	
 linear: fires a projectile straight from camera
 	s ; speed
-	d ; offset
+	d ; offset from player
+	voff ; vertical offset
+	hoff ; horizontal offset
 	
 linear-arc: fires multiple projectiles in a straight line set in an arc starting point
 	R ; arc angle

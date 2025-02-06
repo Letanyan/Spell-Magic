@@ -378,6 +378,12 @@ func set_underwater(underwater: float = 0.5) -> float:
 		screen_material.set_shader_parameter("underwater", 0.0)
 		screen_material.set_shader_parameter("depth_distance", 0.0)
 		return 0.0
+		
+func get_chunk_width() -> float:
+	if chunker != null:
+		return chunker.chunk_width
+	else:
+		return INF
 	
 func compute_max_watched_enemies_distance() -> float:
 	var result := 0.0

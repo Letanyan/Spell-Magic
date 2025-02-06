@@ -427,7 +427,7 @@ func update_behaviour() -> void:
 		if player.position.distance_to(position) < vitals.perception.min_value:
 			is_idle = false
 	else:
-		if player.position.distance_to(position) > vitals.perception.max_value or position.distance_to(spawn_position) > player.chunker.chunk_width:
+		if player.position.distance_to(position) > vitals.perception.max_value or position.distance_to(spawn_position) > player.get_chunk_width():
 			is_idle = true
 	
 	if old_is_idle != is_idle or not is_idle_is_set:
