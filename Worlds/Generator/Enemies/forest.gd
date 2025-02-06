@@ -9,23 +9,25 @@ enum ForestStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-var forest_structures := {
-	ForestStructuresKind.NONE: 15.0,
-	ForestStructuresKind.TREE_CHRISTMAS: 0.125,
-	ForestStructuresKind.TREE_PYRAMID: 0.25,
-	ForestStructuresKind.UNDEAD_HORDE: 0.0001,
-	ForestStructuresKind.BAT_HORDE: 0.0001,
-	ForestStructuresKind.BAT: 0.1,
-	ForestStructuresKind.MOLE: 0.005,
-	ForestStructuresKind.UNDEAD: 0.05,
-	ForestStructuresKind.DENSE_BATTLEFIELD: 0.0005,
-	ForestStructuresKind.ARTIFACT: 0.001,
-	ForestStructuresKind.NOTE: 0.01,
+const forest_structures_base := {
+	ForestStructuresKind.NONE: 30.0,
+	ForestStructuresKind.TREE_CHRISTMAS: 2.5,
+	ForestStructuresKind.TREE_PYRAMID: 5.0,
+	ForestStructuresKind.UNDEAD_HORDE: 0.05,
+	ForestStructuresKind.BAT_HORDE: 0.05,
+	ForestStructuresKind.BAT: 0.5,
+	ForestStructuresKind.MOLE: 0.05,
+	ForestStructuresKind.UNDEAD: 0.1,
+	ForestStructuresKind.DENSE_BATTLEFIELD: 0.01,
+	ForestStructuresKind.ARTIFACT: 0.01,
+	ForestStructuresKind.NOTE: 0.05,
 }
+var forest_structures := {}
 
 func setup_state(pop: Population) -> void:
-	forest_structures[ForestStructuresKind.TREE_PYRAMID] = pop.fit(0.25, 0.5)
-	forest_structures[ForestStructuresKind.TREE_CHRISTMAS] = pop.fit(0.125, 0.25)
+	forest_structures.merge(forest_structures_base, true)
+	forest_structures[ForestStructuresKind.TREE_PYRAMID] = pop.fit(2.5, 5.0)
+	forest_structures[ForestStructuresKind.TREE_CHRISTMAS] = pop.fit(1.25, 2.5)
 	Rand.normalise_distribution(forest_structures)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
@@ -62,7 +64,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					result.append(p)	
 			ForestStructuresKind.UNDEAD_HORDE:
 				var pos := area[index]
-				var count := rng.randi_range(4, pop.fiti(6, 10))
+				var count := rng.randi_range(1, pop.fiti(3, 5))
 				var path := Pathway.new().random_points_in_disc(1, spacing * 0.5, spacing * 2, 0, count, Easing.linear, rng)
 				path.apply_transform(Transform3D.IDENTITY.translated(Vec3.xz(pos)))
 				var elite_prob := pop.fit(0.1, 0.5)
@@ -72,7 +74,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						result.append(p)
 			ForestStructuresKind.BAT_HORDE:
 				var pos := area[index]
-				var count := rng.randi_range(2, pop.fiti(4, 12))
+				var count := rng.randi_range(2, pop.fiti(4, 8))
 				var path := Pathway.new().random_points_in_sphere(1, 0, spacing / 2.0, count, Easing.linear, rng)
 				path.apply_transform(T.translated(Vec3.xz(pos)))
 				var elite_prob := pop.fit(0.1, 0.9)
@@ -90,7 +92,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				for i in range(count_tree):
 					index += 1
 					pos = area[index]
-					var count := pop.rng.randi_range(5, pop.fiti(5, 15))
+					var count := pop.rng.randi_range(2, pop.fiti(3, 10))
 					var path := Pathway.new().circle(rng.randf_range(spacing, spacing * 2), 0, 1)
 					path.apply_transform(T.translated(Vec3.xz(pos)))
 					for ppos in path.sample_points_xz(count):

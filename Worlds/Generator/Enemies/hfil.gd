@@ -9,19 +9,21 @@ enum HFILStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-var HFIL_structure := {
-	HFILStructuresKind.NONE: 120,
+const HFIL_structure_base := {
+	HFILStructuresKind.NONE: 100,
 	HFILStructuresKind.MUSHROOM_FIELD: 10,
 	HFILStructuresKind.MUSH_ENEMIES: 0.1,
 	HFILStructuresKind.SNOT_ENEMIES: 0.05,
 	HFILStructuresKind.SLIMY: 0.025,
 	HFILStructuresKind.HOT_DRAGONS: 0.0125,
 	HFILStructuresKind.ENEMY_MIX: 0.0125,
-	HFILStructuresKind.ARTIFACT: 0.001,
-	HFILStructuresKind.NOTE: 0.01,
+	HFILStructuresKind.ARTIFACT: 0.01,
+	HFILStructuresKind.NOTE: 0.1,
 }
+var HFIL_structure := {}
 
 func setup_state(pop: Population) -> void:
+	HFIL_structure.merge(HFIL_structure_base, true)
 	Rand.normalise_distribution(HFIL_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:

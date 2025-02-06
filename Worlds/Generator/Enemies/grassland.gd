@@ -11,7 +11,7 @@ enum GrasslandStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-var grassland_structure := {
+const grassland_structure_base := {
 	GrasslandStructuresKind.NONE: 160,
 	GrasslandStructuresKind.TREE_ROUND: 5,
 	GrasslandStructuresKind.TREE_BRANCHED: 0.5,
@@ -20,11 +20,17 @@ var grassland_structure := {
 	GrasslandStructuresKind.PETS: 0.05,
 	GrasslandStructuresKind.FISH: 0.1,
 	#GrasslandStructuresKind.TARGET_PUZZLE: 0.01
-	GrasslandStructuresKind.ARTIFACT: 0.001,
-	GrasslandStructuresKind.NOTE: 0.01,
+	GrasslandStructuresKind.ARTIFACT: 0.01,
+	GrasslandStructuresKind.NOTE: 0.1,
 }
+var grassland_structure := {}
 
 func setup_state(pop: Population) -> void:
+	grassland_structure.merge(grassland_structure_base, true)
+	grassland_structure[GrasslandStructuresKind.HIVE] = pop.fit(0.1, 0.5)
+	grassland_structure[GrasslandStructuresKind.FLOCK] = pop.fit(0.1, 0.5)
+	grassland_structure[GrasslandStructuresKind.PETS] = pop.fit(0.05, 0.1)
+	grassland_structure[GrasslandStructuresKind.FISH] = pop.fit(0.1, 0.5)
 	Rand.normalise_distribution(grassland_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:

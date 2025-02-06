@@ -9,18 +9,21 @@ enum JungleStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-var jungle_structure := {
+const jungle_structure_base := {
 	JungleStructuresKind.NONE: 60,
 	JungleStructuresKind.TREE_BRANCHED: 5,
 	JungleStructuresKind.BUSH: 5,
 	JungleStructuresKind.ELEVATOR: 0.075,
 	JungleStructuresKind.PLATFORM: 0.5,
 	JungleStructuresKind.BIRD: 0.1,
-	JungleStructuresKind.ARTIFACT: 0.001,
-	JungleStructuresKind.NOTE: 0.01,
+	JungleStructuresKind.ARTIFACT: 0.01,
+	JungleStructuresKind.NOTE: 0.1,
 }
+var jungle_structure := {}
 
 func setup_state(pop: Population) -> void:
+	jungle_structure.merge(jungle_structure_base, true)
+	jungle_structure[JungleStructuresKind.BIRD] = pop.fit(0.1, 1.0)
 	Rand.normalise_distribution(jungle_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:

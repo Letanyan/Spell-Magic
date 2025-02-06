@@ -9,18 +9,24 @@ enum TundraStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-const tundra_structure := {
+const tundra_structure_base := {
 	TundraStructuresKind.NONE: 120,
 	TundraStructuresKind.FLAT_ROCK: 1,
 	TundraStructuresKind.LONE_HEAD: 0.5,
 	TundraStructuresKind.LONE_WALKER: 0.025,
 	TundraStructuresKind.HOARD: 0.0125,
 	TundraStructuresKind.BLUEMON: 0.1,
-	TundraStructuresKind.ARTIFACT: 0.001,
-	TundraStructuresKind.NOTE: 0.01,
+	TundraStructuresKind.ARTIFACT: 0.01,
+	TundraStructuresKind.NOTE: 0.1,
 }
+var tundra_structure := {}
 
 func setup_state(pop: Population) -> void:
+	tundra_structure.merge(tundra_structure_base, true)
+	tundra_structure[TundraStructuresKind.LONE_HEAD] = pop.fit(0.5, 1.0)
+	tundra_structure[TundraStructuresKind.LONE_WALKER] = pop.fit(0.025, 0.5)
+	tundra_structure[TundraStructuresKind.HOARD] = pop.fit(0.0125, 0.025)
+	tundra_structure[TundraStructuresKind.BLUEMON] = pop.fit(0.025, 0.1)
 	Rand.normalise_distribution(tundra_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
@@ -61,11 +67,11 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 			TundraStructuresKind.HOARD:
 				var pos := area[index]
-				var king_count := Rand.entity_from_distribution(rng.randf(), {1: pop.fit(15, 5), 2: pop.fit(10, 5), 3: pop.fit(5, 3)}) as int
+				var king_count := Rand.entity_from_distribution(rng.randf(), {1: pop.fit(15, 5), 2: pop.fit(10, 5)}) as int
 				for i in king_count:
 					var king := pop.spawn_enemy(World.Enemy.WALKER if rng.randf() < pop.fit(0.9, 0.1) else World.Enemy.BLUEMON, pos, spacing)
 					if king != null: result.append(king)
-				var minion_count := Rand.roll(floori(6 * pop.fit(1, 1.5)), 2, king_count, rng, Rand.Accum.AVG)
+				var minion_count := Rand.roll(floori(3 * pop.fit(1, 1.5)), 2, king_count, rng, Rand.Accum.AVG)
 				for c in minion_count:
 					var minion := pop.spawn_enemy(World.Enemy.WALKER_HEAD, pos + Rand.point_in_disc_2d(10, 20, rng), spacing)
 					if minion != null: result.append(minion)

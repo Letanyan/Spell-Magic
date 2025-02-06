@@ -8,17 +8,22 @@ enum DesertStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-const desert_structure := {
+const desert_structure_base := {
 	DesertStructuresKind.NONE: 120,
 	DesertStructuresKind.OASIS: 1,
-	DesertStructuresKind.GHOST: 0.5,
-	DesertStructuresKind.GHOSTLY: 0.25,
-	DesertStructuresKind.HOT_BLOB: 0.125,
-	DesertStructuresKind.ARTIFACT: 0.001,
-	DesertStructuresKind.NOTE: 0.01,
+	DesertStructuresKind.GHOST: 0.75,
+	DesertStructuresKind.GHOSTLY: 0.5,
+	DesertStructuresKind.HOT_BLOB: 0.25,
+	DesertStructuresKind.ARTIFACT: 0.01,
+	DesertStructuresKind.NOTE: 0.1,
 }
 
+var desert_structure := {}
+
 func setup_state(pop: Population) -> void:
+	desert_structure.merge(desert_structure_base, true)
+	desert_structure[DesertStructuresKind.GHOST] = pop.fit(0.75, 1.0)
+	desert_structure[DesertStructuresKind.GHOSTLY] = pop.fit(0.5, 0.75)
 	Rand.normalise_distribution(desert_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:

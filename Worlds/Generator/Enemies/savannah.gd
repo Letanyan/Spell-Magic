@@ -8,18 +8,21 @@ enum SavannahStructuresKind {
 	ARTIFACT, NOTE
 }
 
-const savannah_structure := {
-	SavannahStructuresKind.NONE: 120,
+const savannah_structure_base := {
+	SavannahStructuresKind.NONE: 100,
 	SavannahStructuresKind.TREE_SAFARI: 10,
 	SavannahStructuresKind.TREE_BRANCHED: 2,
 	SavannahStructuresKind.PIGEONS: 0.5,
 	SavannahStructuresKind.ORC_HORDE: 0.05,
 	SavannahStructuresKind.LONE_ORC: 0.01,
-	SavannahStructuresKind.ARTIFACT: 0.001,
-	SavannahStructuresKind.NOTE: 0.01,
+	SavannahStructuresKind.ARTIFACT: 0.01,
+	SavannahStructuresKind.NOTE: 0.1,
 }
+var savannah_structure := {}
 
 func setup_state(pop: Population) -> void:
+	savannah_structure.merge(savannah_structure_base, true)
+	savannah_structure[SavannahStructuresKind.LONE_ORC] = pop.fit(0.01, 0.1)
 	Rand.normalise_distribution(savannah_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:

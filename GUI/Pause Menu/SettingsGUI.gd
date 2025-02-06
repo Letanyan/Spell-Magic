@@ -470,8 +470,9 @@ func update_notes() -> void:
 			
 	var notes_keys := GlobalData.game_settings.notes.keys() if GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.SHOW_ALL else GlobalData.game_settings.unlocked_notes.keys()
 	
-	if GlobalData.game_settings.notes_sort_settings == GameSettings.NotesSortSettings.ALPHABETICAL:
-		notes_keys.sort_custom(func(a: String, b: String) -> bool: return a < b)
+	match GlobalData.game_settings.notes_sort_settings:
+		GameSettings.NotesSortSettings.ALPHABETICAL: notes_keys.sort_custom(func(a: String, b: String) -> bool: return a < b)
+		GameSettings.NotesSortSettings.CHRONOLOGICAL: notes_keys.reverse()
 	
 	for note: String in notes_keys:
 		if GlobalData.game_settings.notes.has(note):

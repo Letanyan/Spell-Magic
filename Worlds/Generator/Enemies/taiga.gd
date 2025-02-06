@@ -9,8 +9,8 @@ enum TaigaStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-const taiga_structure := {
-	TaigaStructuresKind.NONE: 120,
+const taiga_structure_base := {
+	TaigaStructuresKind.NONE: 80,
 	TaigaStructuresKind.TREE_PYRAMID: 20,
 	TaigaStructuresKind.TREE_PINE: 20,
 	TaigaStructuresKind.BUSH_TALL: 5,
@@ -20,11 +20,13 @@ const taiga_structure := {
 	TaigaStructuresKind.ROTATING_PUZZLE: 1,
 	TaigaStructuresKind.LONE_GOBLIN: 0.05,
 	TaigaStructuresKind.GOBLIN_HORDE: 0.01,
-	TaigaStructuresKind.ARTIFACT: 0.001,
-	TaigaStructuresKind.NOTE: 0.01,
+	TaigaStructuresKind.ARTIFACT: 0.01,
+	TaigaStructuresKind.NOTE: 0.1,
 }
+var taiga_structure := {}
 
 func setup_state(pop: Population) -> void:
+	taiga_structure.merge(taiga_structure_base, true)
 	Rand.normalise_distribution(taiga_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:

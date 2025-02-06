@@ -8,17 +8,22 @@ enum OtherworldStructuresKind {
 	ARTIFACT, NOTE,
 }
 
-var otherworld_structure := {
+const otherworld_structure_base := {
 	OtherworldStructuresKind.NONE: 120,
 	OtherworldStructuresKind.FLOWER_FIELD: 10,
 	OtherworldStructuresKind.LONE_PINK: 0.5,
 	OtherworldStructuresKind.LONE_RED: 0.25,
 	OtherworldStructuresKind.LONE_DRAGON: 0.125,
-	OtherworldStructuresKind.ARTIFACT: 0.001,
-	OtherworldStructuresKind.NOTE: 0.01,
+	OtherworldStructuresKind.ARTIFACT: 0.01,
+	OtherworldStructuresKind.NOTE: 0.1,
 }
+var otherworld_structure := {}
 
 func setup_state(pop: Population) -> void:
+	otherworld_structure.merge(otherworld_structure_base, true)
+	otherworld_structure[OtherworldStructuresKind.LONE_PINK] = pop.fit(0.5, 1.0)
+	otherworld_structure[OtherworldStructuresKind.LONE_RED] = pop.fit(0.25, 1.0)
+	otherworld_structure[OtherworldStructuresKind.LONE_DRAGON] = pop.fit(0.125, 1.0)
 	Rand.normalise_distribution(otherworld_structure)
 
 func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limit: int, rng: RandomNumberGenerator, spacing: float) -> Array[Node3D]:
