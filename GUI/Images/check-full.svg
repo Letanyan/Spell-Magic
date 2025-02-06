@@ -1,1 +1,93 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 512px; width: 512px;"><defs><filter id="shadow-3" height="300%" width="300%" x="-100%" y="-100%"><feFlood flood-color="rgba(0, 0, 0, 1)" result="flood"></feFlood><feComposite in="flood" in2="SourceGraphic" operator="atop" result="composite"></feComposite>0<feOffset dx="0" dy="0" result="offset"></feOffset><feComposite in="SourceGraphic" in2="offset" operator="over"></feComposite></filter></defs><g class="" transform="translate(0,0)" style=""><g><path d="M74.5 36C53.237 36 36 53.237 36 74.5L36 437.5C36 458.763 53.237 476 74.5 476L437.5 476C458.763 476 476 458.763 476 437.5L476 74.5C476 53.237 458.763 36 437.5 36L74.5 36Z" class="selected" fill="#ffffff" fill-opacity="1" stroke="#ffffff" stroke-opacity="1" stroke-width="24"></path><path d="M256 206C294.49 206 318.546 247.667 299.301 281C290.37 296.47 273.863 306 256 306C217.51 306 193.454 264.333 212.699 231C221.63 215.53 238.137 206 256 206Z" class="" fill="#ca3737" fill-opacity="0" filter="url(#shadow-3)"></path></g></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 512 512"
+   style="height: 512px; width: 512px;"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="check-full.svg"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#000000"
+     bordercolor="#000000"
+     borderopacity="1"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.80175781"
+     inkscape:cx="243.83922"
+     inkscape:cy="266.28989"
+     inkscape:window-width="2560"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4" />
+  <defs
+     id="defs2">
+    <filter
+       id="shadow-3"
+       height="1"
+       width="1"
+       x="0"
+       y="0"><feFlood
+   flood-color="rgba(0, 0, 0, 1)"
+   result="flood"
+   id="feFlood1" />
+<feComposite
+   in="flood"
+   in2="SourceGraphic"
+   operator="atop"
+   result="composite"
+   id="feComposite1" />
+0<feOffset
+   dx="0"
+   dy="0"
+   result="offset"
+   id="feOffset1" />
+<feComposite
+   in="SourceGraphic"
+   in2="offset"
+   operator="over"
+   id="feComposite2" />
+</filter>
+  </defs>
+  <g
+     class=""
+     transform="translate(0,0)"
+     id="g4"
+     style="fill:#ffffff;fill-opacity:0">
+    <g
+       id="g3"
+       style="display:inline;fill:#ffffff;fill-opacity:0">
+      <path
+         d="M 74.5,36 C 53.237,36 36,53.237 36,74.5 v 363 c 0,21.263 17.237,38.5 38.5,38.5 h 363 c 21.263,0 38.5,-17.237 38.5,-38.5 V 74.5 C 476,53.237 458.763,36 437.5,36 Z"
+         class="selected"
+         fill="#ffffff"
+         fill-opacity="1"
+         stroke="#ffffff"
+         stroke-opacity="1"
+         stroke-width="24"
+         id="path2"
+         style="display:inline;fill:#ffffff;fill-opacity:0"
+         inkscape:label="path2" />
+      <path
+         d="m 89.448988,75.285614 c -17.46605,0 -16.657911,-0.18451 -16.657911,17.281532 l 0,327.489354 c 0,17.46606 -0.184384,17.34779 17.281541,17.28152 l 328.736612,-1.24726 c 17.46594,-0.0663 17.24809,-0.43912 17.28154,-17.90515 L 436.7144,92.567146 c 0.0335,-17.466011 0.18452,-17.281532 -17.28154,-17.281532 z"
+         class="selected"
+         fill="#ffffff"
+         fill-opacity="1"
+         stroke="#ffffff"
+         stroke-opacity="1"
+         stroke-width="20.6897"
+         id="path4"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:18.5712;stroke-miterlimit:4;stroke-dasharray:none"
+         inkscape:label="path4"
+         sodipodi:nodetypes="sssssssss" />
+    </g>
+  </g>
+</svg>

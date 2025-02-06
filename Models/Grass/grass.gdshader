@@ -56,7 +56,7 @@ void vertex() {
 
 	VERTEX.x += normalized_wind_direction.x * 0.001 * displacement_affect * wind_speed;
 	VERTEX.z += normalized_wind_direction.y * 0.001 * displacement_affect * wind_speed;
-	
+
 	//COLOR.a = 1.0;
 
 	/*

@@ -8,7 +8,7 @@
 [ext_resource type="StyleBox" uid="uid://hhufd7ivp0di" path="res://GUI/ThemeUI/NeoPressedStyle.tres" id="5_sw5fm"]
 [ext_resource type="Texture2D" uid="uid://dq4uiamc42p66" path="res://GUI/Images/check-full.svg" id="6_ckjgh"]
 [ext_resource type="Texture2D" uid="uid://dfutkuw2ev151" path="res://GUI/Images/radio-full.svg" id="7_kal57"]
-[ext_resource type="Texture2D" uid="uid://btcctd5s4ve7n" path="res://GUI/Images/check-full_disabled.tres" id="7_vpusd"]
+[ext_resource type="Texture2D" uid="uid://bhfm8cb6spfal" path="res://GUI/Images/check-full_disabled.tres" id="7_vpusd"]
 [ext_resource type="Texture2D" uid="uid://bq0q7t0o3wedo" path="res://GUI/Images/radio-empty.svg" id="8_h7tvf"]
 [ext_resource type="Texture2D" uid="uid://dr0mj4mw8klmr" path="res://GUI/Images/check-empty.svg" id="9_ooey2"]
 [ext_resource type="Texture2D" uid="uid://ddagt4a32cpsx" path="res://GUI/Images/radio-full_disabled.tres" id="9_t1ubq"]
