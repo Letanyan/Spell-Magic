@@ -260,10 +260,10 @@ func random_points_in_sphere(speed: float, min_r: float, max_r: float, count: in
 		rng = RandomNumberGenerator.new()
 		rng.seed = Time.get_ticks_usec()
 	var pivot := cursor
-	var p := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r) + pivot
+	var p := Vector3(rng.randf() - 0.5, rng.randf() - 0.5, rng.randf() - 0.5).normalized() * randf_range(min_r, max_r) + pivot
 	add_with_speed(Segment.linear(cursor, p), speed, m)
 	for i in range(count - 1):
-		var q := Vector3(rng.randf(), rng.randf(), rng.randf()).normalized() * randf_range(min_r, max_r) + pivot
+		var q := Vector3(rng.randf() - 0.5, rng.randf() - 0.5, rng.randf() - 0.5).normalized() * randf_range(min_r, max_r) + pivot
 		add_with_speed(Segment.linear(p, q), speed, m)
 		p = q
 	add_with_speed(Segment.linear(p, pivot), speed, m)
@@ -295,10 +295,10 @@ func random_points_in_rect(speed: float, w: float, h: float, d: float, count: in
 		rng = RandomNumberGenerator.new()
 		rng.seed = Time.get_ticks_usec()
 	var pivot := cursor
-	var p := Vector3(rng.randf() * w, rng.randf() * h, rng.randf() * d) + pivot
+	var p := Vector3((rng.randf() - 0.5) * w, (rng.randf() - 0.5) * h, (rng.randf() - 0.5) * d) + pivot
 	add_with_speed(Segment.linear(cursor, p), speed, m)
 	for i in range(count - 1):
-		var q := Vector3(rng.randf() * w, rng.randf() * h, rng.randf() * d) + pivot
+		var q := Vector3((rng.randf() - 0.5) * w, (rng.randf() - 0.5) * h, (rng.randf() - 0.5) * d) + pivot
 		add_with_speed(Segment.linear(p, q), speed, m)
 		p = q
 	add_with_speed(Segment.linear(p, pivot), speed, m)

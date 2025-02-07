@@ -256,9 +256,9 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		Debug3D.draw_line(Vector3(me.x, me.y, me.z), Vector3(v.x, y, v.z), Color.GREEN, 10.0)
 		for segment: Segment in path.segments:
 			var s := segment.position_at_time_with_transform(0.0, transform) + Vec3.xz_y(temp_origin, 0)
-			s.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
+			s.y = next_y_position(me, s.x, s.y, s.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
 			var e := segment.position_at_time_with_transform(1.0, transform) + Vec3.xz_y(temp_origin, 0)
-			e.y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
+			e.y = next_y_position(me, e.x, e.y, e.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
 			Debug3D.draw_sphere(s, 0.1, Color.BLUE, 10.0)
 			Debug3D.draw_sphere(e, 0.1, Color.BLUE, 10.0)
 	return old_position
