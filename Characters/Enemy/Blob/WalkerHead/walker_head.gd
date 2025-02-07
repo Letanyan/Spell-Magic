@@ -121,8 +121,8 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.WALKER_HEAD
 	super.setup(seedling, biome)
 
-func _physics_process(delta: float) -> void:
-	super._physics_process(delta)
+func manual_physics_process(delta: float) -> void:
+	super.manual_physics_process(delta)
 	if current_path != idle_path:
 		ice_wall_timer += delta
 

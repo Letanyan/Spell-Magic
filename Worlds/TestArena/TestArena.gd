@@ -409,6 +409,9 @@ func _physics_process(delta: float) -> void:
 	#player.play_bg_audio(World.Biome.GRASSLAND)
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
+	
+	for inhabitant in inhabitants:
+		inhabitant.manual_physics_process(delta)
 			
 	if daytime_tick >= 1.0:
 		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:

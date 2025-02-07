@@ -2,6 +2,7 @@ class_name NewGameScreen
 extends Control
 
 @onready var save_name: TextEdit = $SaveName
+var name_generator: NameGenerator
 @onready var use_seed: Button = $UseSeed
 @onready var use_save_file: Button = $UseSaveFile
 @onready var use_normal: Button = $UseNormal
@@ -137,6 +138,9 @@ func _ready() -> void:
 	world_data = GameSettings.get_world_names()
 	for t: Array in world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
+		
+	name_generator = NameGenerator.new()
+	name_generator.initial()
 		
 	_on_use_hardcore_toggled(true)
 	UIAudioPlayer.silence = false
@@ -576,3 +580,9 @@ func _on_save_name_focus_entered() -> void:
 
 func _on_seed_focus_entered() -> void:
 	UIAudioPlayer.focus()
+
+
+func _on_random_name_pressed() -> void:
+	UIAudioPlayer.click()
+	save_name.text = name_generator.english_names.generate(8, 1, 12, false)
+	

@@ -50,6 +50,7 @@ var path_movement_remaining_duration := 0.0
 var time_since_navigation_update := NAN
 var frame_count := Vector2(0, 0) # animation frame count for each enemy. x=walk, y=run
 var pushed_with_impulse := false
+var timer_seed: Globals.Ref
 
 var index_in_population: int = -1
 signal vital_update(index_in_population: int, vitals: Vitals)
@@ -65,6 +66,7 @@ func _ready() -> void:
 	collider = $Collision
 	moving_platform_layers = Globals.Layer.OBJECT | Globals.Layer.ROCK
 	max_snap_length = 0.0
+	timer_seed = Globals.Ref.new(Time.get_ticks_usec())
 	if kind == World.Enemy.NONE:
 		setup(0, World.Biome.WATER)
 	health_bar.visible = not is_idle
@@ -225,12 +227,12 @@ func set_attack_sequence(atk_seq: AttackSequence) -> void:
 	current_attack = null
 	attack_sequence = atk_seq
 
-func _physics_process(delta: float) -> void:
+func manual_physics_process(delta: float) -> void:
 	if kind == World.Enemy.NONE or player.magic_book.settings.is_paused:
 		return
 	
 	var dist := 1.0 - clampf(maxf(position.distance_to(player.position) - Globals.enemy_update_radius(), 0.0) / Globals.enemy_update_radius(), 0.0, 1.0)
-	var tick_scale := maxf(pow(dist, 2.0), 0.01)
+	var tick_scale := maxf(pow(dist, 2.0), 0.01 * Rand.randf_range(timer_seed, 0.5, 1.0))
 	increment_ticks(delta * tick_scale)
 			
 	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO

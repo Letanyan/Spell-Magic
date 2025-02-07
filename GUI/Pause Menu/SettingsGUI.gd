@@ -495,6 +495,7 @@ func _on_sort_notes_item_selected(index: int) -> void:
 
 func hide_game_tab(should_hide: bool) -> void:
 	var tabs := $Tabs as TabContainer
+	tabs.set_tab_hidden(tabs.get_tab_count() - 2, should_hide)
 	tabs.set_tab_hidden(tabs.get_tab_count() - 1, should_hide)
 
 func _on_save_pressed() -> void:
@@ -590,3 +591,18 @@ func _on_legs_armor_trim_color_picker_color_changed(color: Color) -> void:
 func _on_legs_armor_plate_color_picker_color_changed(color: Color) -> void:
 	world_settings.customisation_settings.update_legs_armor_plate(player.skeleton_3d, color)
 	UIAudioPlayer.switch()
+
+func _on_make_customisation_default_pressed() -> void:
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_skin(player.skeleton_3d, skin_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_hair(player.skeleton_3d, hair_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_eyes(player.skeleton_3d, eyes_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_overshirt(player.skeleton_3d, overshirt_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_undershirt(player.skeleton_3d, undershirt_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_body_armor_trim(player.skeleton_3d, body_armor_trim_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_body_armor_plate(player.skeleton_3d, body_armor_plate_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_shoes(player.skeleton_3d, shoes_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_pants(player.skeleton_3d, pants_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_legs_armor_trim(player.skeleton_3d, legs_armor_trim_color_picker.color)
+	GlobalData.game_settings.default_world_settings.customisation_settings.update_legs_armor_plate(player.skeleton_3d, legs_armor_plate_color_picker.color)
+	GlobalData.game_settings.save()
+	UIAudioPlayer.click()

@@ -314,6 +314,13 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 			break
 		fidx += 1
 	
+	# FIXME: happened when the name had spaces
+	# E 0:03:15:0347   MagicBook.gd:317 @ autocomplete(): Positional parameters (from: 6, to: 5) are inverted or outside the text length (6).
+	  #<C++ Error>    Condition "p_from_column < 0 || p_from_column > p_to_column || p_to_column > text.length()" is true.
+	  #<C++ Source>   scene/gui/line_edit.cpp:1525 @ delete_text()
+	  #<Stack Trace>  MagicBook.gd:317 @ autocomplete()
+					 #WandCaseShelfItem.gd:48 @ _on_spell_text_changed()
+
 	edit.delete_text(edit.caret_column, fidx)
 	edit.insert_text_at_caret(suffix)
 	edit.select(eidx, eidx + suffix.length())

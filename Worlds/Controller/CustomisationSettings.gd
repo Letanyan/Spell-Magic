@@ -91,7 +91,7 @@ func update_undershirt(node: Node3D, color: Color) -> void:
 func update_shoes(node: Node3D, color: Color) -> void:
 	shoes = color
 	var feet := (node.find_child("King_Feet") as MeshInstance3D).mesh
-	(feet.surface_get_material(4) as ShaderMaterial).set_shader_parameter("albedo", color)
+	(feet.surface_get_material(0) as ShaderMaterial).set_shader_parameter("albedo", color)
 	
 func update_legs_armor_trim(node: Node3D, color: Color) -> void:
 	legs_armor_trim = color

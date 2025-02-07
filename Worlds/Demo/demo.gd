@@ -280,15 +280,11 @@ func _physics_process(delta: float) -> void:
 		for loc: Vector2i in population:
 			var pop := population[loc] as Population
 			pop.update_info(self)
-			
-		#for chunk in chunker.get_loaded_chunks():
-			#var mi := chunk.get_node("mesh")
-			#var static_body := mi.get_node("static")
-			#var collision := static_body.get_node("collision")
-			#var V := chunker.height_at_position(collision, player.position.x, player.position.z)
-			#if not is_nan(V.x):
-				#Debug3D.draw_sphere(Vec3.xz_y(player.position, V.w), 0.2, Color.RED, Globals.knowledge_tick())
-				#Debug3D.draw_arrow_ray(player.position, Vector3(V.x, V.y, V.z), 2, Color.BLUE, 0.5, false, Globals.knowledge_tick())
+			pop.update_enemies(delta)
+	else:
+		for loc: Vector2i in population:
+			var pop := population[loc] as Population
+			pop.update_enemies(delta)
 			
 	if daytime_tick >= 0.166667:
 		const DAY_TICK = 0.000277778
@@ -647,6 +643,8 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			settings.player_mana = player.vitals.mana.max_value
 			settings.last_save_time = Time.get_unix_time_from_system()
 			settings.save()
+			totem.hide_message()
+			hud.hide()
 			
 			for enemy: Enemy in player.enemies_in_range:
 				enemy.vitals.reset()
@@ -663,6 +661,8 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			var overlay := OverlayScreen.display("DEATH", subtitle, "Revive")
 			overlay.confirmed.connect(func() -> void:
 				player.play_animation("revive")
+				totem.show_message()
+				hud.show()
 				settings.is_paused = false
 				vitals.health.value = vitals.health.max_value
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -678,6 +678,8 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			player.play_animation("death")
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			settings.is_paused = true
+			totem.hide_message()
+			hud.hide()
 			GlobalData.game_settings.last_world = ""
 			GlobalData.game_settings.save()
 			OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (settings.world_name)))

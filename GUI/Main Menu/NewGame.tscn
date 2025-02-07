@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=9 format=3 uid="uid://oko6g6intlvw"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
+[ext_resource type="Texture2D" uid="uid://bhgsrvtcjjrro" path="res://GUI/Images/cubes.svg" id="2_rk2kc"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="3_cyou0"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="4_4nvek"]
 [ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="5_lff36"]
@@ -33,6 +34,19 @@ focus_neighbor_bottom = NodePath("../UseSeed")
 focus_next = NodePath("../UseSeed")
 focus_previous = NodePath("../StartingUpgradesPanel")
 placeholder_text = "Save Name"
+
+[node name="RandomName" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -168.0
+offset_top = -284.0
+offset_right = -136.0
+offset_bottom = -252.0
+icon = ExtResource("2_rk2kc")
 
 [node name="Seed" type="TextEdit" parent="."]
 layout_mode = 1
@@ -952,6 +966,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [connection signal="focus_entered" from="SaveName" to="." method="_on_save_name_focus_entered"]
+[connection signal="pressed" from="RandomName" to="." method="_on_random_name_pressed"]
 [connection signal="focus_entered" from="Seed" to="." method="_on_seed_focus_entered"]
 [connection signal="toggled" from="UseSeed" to="." method="_on_use_seed_toggled"]
 [connection signal="toggled" from="UseSaveFile" to="." method="_on_use_save_file_toggled"]

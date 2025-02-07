@@ -30,7 +30,9 @@ var spawn_point_spacing: float = 16.0
 var spawn_cursor := Vector2i.ZERO
 var current_spawn_start_time_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
 var current_spawn_duration_ms: int = 0 # gets reset each generation cycle. Only to be used by generators to track whether the limit has been reached for this frame
-var generators: Array[BiomeGenerator] = [] 
+var generators: Array[BiomeGenerator] = []
+
+var inhabitant_cursor := 0
 
 func _init(version: int, _coord: Vector2i, _chunk_size: float, _chunker: Chunker, _blender: NoiseBlender, _player: Player, _entity_manager: EntityManager, _display_only: bool) -> void:
 	rng = RandomNumberGenerator.new()
@@ -328,6 +330,20 @@ func despawn_all_from_world(world: Node3D) -> void:
 	world_items.clear()
 	spawn_cursor.x = spawn_area_biomes.size()
 	SignalBus.enemy_death.disconnect(mark_entity)
+
+func update_enemies(delta: float) -> void:
+	if display_only: return
+	
+	var timer := Time.get_ticks_msec()
+	for i in range(inhabitant_cursor, inhabitants.size()):
+		var habitant: Enemy = inhabitants[inhabitants.keys()[i]]
+		habitant.manual_physics_process(delta)
+		inhabitant_cursor += 1
+		if Time.get_ticks_msec() - timer > 3:
+			break
+		
+	if inhabitant_cursor >= inhabitants.size():
+		inhabitant_cursor = 0
 
 func update_info(world: Node3D) -> void:
 	if display_only: return

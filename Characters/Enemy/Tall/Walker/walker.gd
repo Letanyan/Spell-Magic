@@ -126,8 +126,8 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	kind = World.Enemy.WALKER
 	super.setup(seedling, biome)
 
-func _physics_process(delta: float) -> void:
-	super._physics_process(delta)
+func manual_physics_process(delta: float) -> void:
+	super.manual_physics_process(delta)
 	if not is_idle:
 		ice_wall_timer += delta
 
