@@ -58,6 +58,8 @@ signal spell_was_cast(spell: Spell)
 @onready var health_bar: MeshInstance3D = $HealthBar/Bar
 @onready var level_text: Label3D = $HealthBar/Level
 @onready var effects_mesh: MeshInstance3D = $HealthBar/Effects
+@onready var collision: CollisionShape3D = $Collision
+@onready var area: CollisionShape3D = $WetArea/WetCollision 
 
 func _ready() -> void:
 	level_text.text = str(int(level))

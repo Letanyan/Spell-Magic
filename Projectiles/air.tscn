@@ -71,7 +71,6 @@ initial_velocity_min = 0.01
 initial_velocity_max = 0.01
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_tncfq")
-color = Color(0.501961, 1, 0.501961, 1)
 color_ramp = SubResource("GradientTexture1D_rlncl")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_btvvs"]

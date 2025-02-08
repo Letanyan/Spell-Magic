@@ -510,7 +510,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		game_options.visible = true
 		starting_upgrades.visible = true
 		game_mode_description_panel.visible = false
-		generation_version_label.visible = true
+		#generation_version_label.visible = true
 
 
 func _on_use_save_file_toggled(toggled_on: bool) -> void:
@@ -531,7 +531,7 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false
 		game_mode_description_panel.visible = false
-		generation_version_label.visible = false
+		#generation_version_label.visible = false
 
 func _on_use_normal_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
@@ -551,7 +551,7 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		worlds_list.visible = false
 		game_mode_description_panel.visible = true
 		game_mode_description.text = "When you die you will respawn with all your spells, artifacts and upgrades. However, you will lose all your coins."
-		generation_version_label.visible = false
+		#generation_version_label.visible = false
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
@@ -571,7 +571,7 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		worlds_list.visible = false
 		game_mode_description_panel.visible = true
 		game_mode_description.text = "When you die the game is over"
-		generation_version_label.visible = false
+		#generation_version_label.visible = false
 
 
 func _on_save_name_focus_entered() -> void:

@@ -16,6 +16,8 @@ var is_ready := false
 
 var inhabitants: Dictionary = {}
 var garden: Array[Vector2i] = []
+var garden_item_radius: PackedFloat32Array = PackedFloat32Array([])
+var garden_item_origin: Array[Vector3] = []
 var other_objects: Array = []
 var world_items: Array[WorldItem] = []
 var current_biome_during_generation: World.Biome = World.Biome.WATER
@@ -122,7 +124,12 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
 		foliage_manager.set_albedo_blend(kind, index, blender.color)
 		foliage_manager.setup(kind, index, position, seedling, current_biome_during_generation)
-		garden.append(Vector2i(kind, index))
+		var g := Vector2i(kind, index)
+		var t := foliage_manager.get_transform(g.x, g.y)
+		garden.append(g)
+		garden_item_origin.append(t.origin)
+		garden_item_radius.append(foliage_manager.get_scaled_shape_length(g, t))
+		
 		
 	#current_iteration_spawn_count += 1
 	return index
@@ -327,6 +334,8 @@ func despawn_all_from_world(world: Node3D) -> void:
 	other_objects.clear()
 	inhabitants.clear()
 	garden.clear()
+	garden_item_radius.clear()
+	garden_item_origin.clear()
 	world_items.clear()
 	spawn_cursor.x = spawn_area_biomes.size()
 	SignalBus.enemy_death.disconnect(mark_entity)
@@ -348,30 +357,33 @@ func update_enemies(delta: float) -> void:
 func update_info(world: Node3D) -> void:
 	if display_only: return
 	
-	for habitant_index: int in inhabitants:
-		var habitant: Enemy = inhabitants[habitant_index]
+	for habitant: Enemy in inhabitants.values():
 		var dist: float = habitant.global_position.distance_to(player.global_position) 
-		var col: CollisionShape3D = habitant.get_node("./Collision")
-		var area: CollisionShape3D = habitant.get_node("./WetArea/WetCollision")
-		col.disabled = dist > 50
-		area.disabled = col.disabled
+		habitant.collision.disabled = dist > 50
+		habitant.area.disabled = habitant.collision.disabled
 		if habitant.is_node_ready():
 			habitant.animation_tree.active = dist < 50
 	
-	for g: Vector2i in garden:
+	for g: Vector2i in foliage_manager.static_body_map:
 		var t := foliage_manager.get_transform(g.x, g.y)
-		var s := foliage_manager.get_collision_shape(g)
 		var mxb := foliage_manager.get_scaled_shape_length(g, t)
 		if t.origin.distance_to(player.position) > 50 + mxb * 2.0:
-			if s != null:
-				foliage_manager.free_static_body(g)
-		else:
+			foliage_manager.free_static_body(g)
+		
+	var i := 0
+	for g: Vector2i in garden:
+		var pos := garden_item_origin[i]
+		var mxb := garden_item_radius[i]
+		if pos.distance_to(player.position) <= 50 + mxb * 2.0:
+			var s := foliage_manager.get_collision_shape(g)
 			if s == null:
 				var body := foliage_manager.make_static_body(g)
 				if body.get_parent() == null:
 					world.add_child(body)
 				s = body.get_node("shape") as CollisionShape3D
 			s.disabled = false
+				
+		i += 1
 
 			
 	for item in world_items:
