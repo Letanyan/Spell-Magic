@@ -2,8 +2,12 @@ class_name ThemeUI
 extends Theme
 
 func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
-	# enum ThemeVariation { MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
+	# enum ThemeVariation { FLAT, MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
 	match variation:
+		HUDSettings.ThemeKind.FLAT:
+			change_tint_color_array(PackedColorArray([tint, tint]))
+			return tint
+		
 		HUDSettings.ThemeKind.MONO: 
 			return change_tint_color_mono(tint)
 		

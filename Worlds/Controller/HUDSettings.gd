@@ -1,7 +1,7 @@
 class_name HUDSettings
 
 enum KeyDisplay { AUTO, KEYBOARD, CONTROLLER }
-enum ThemeKind { MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
+enum ThemeKind { FLAT, MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
 
 var hide_wand_mappings: bool = false
 var hide_wand_modifier_hints: bool = false
