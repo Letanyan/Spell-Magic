@@ -12,6 +12,9 @@ var main_menu_world: MainMenuWorld = null
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	continue_button.disabled = GlobalData.game_settings.last_world == ""
+	if GlobalData.is_demo:
+		load_button.disabled = true
+		load_button.tooltip_text = "Not Available in Demo"
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -21,8 +24,28 @@ func _process(delta: float) -> void:
 
 func _on_new_game_pressed() -> void:
 	UIAudioPlayer.click()
-	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.NEW)
-	#get_tree().change_scene_to_file("res://GUI/Main Menu/NewGame.tscn")
+	if GlobalData.is_demo:
+		var settings := WorldSettings.new(get_viewport())
+		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
+		settings.world_name = "Demo World"
+		settings.world_generation_version = -1
+		settings.sed = 0
+		var rng := RandomNumberGenerator.new()
+		rng.seed = settings.sed
+		settings.time_of_day = rng.randf_range(0.0, 24.0)
+		settings.day_of_the_year = rng.randi_range(1, 365)
+		settings.game_mode_settings = GameModeSettings.hardcore_mode()
+		settings.game_mode_settings.flags = GameModeSettings.DISALLOW_SPELL_EDITING
+		var temp_upgrades := UpgradeSettings.new()
+		temp_upgrades.reset_all_stats_to_default_values()
+		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | Spell.Element.FIRE
+		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		settings.last_save_time = Time.get_unix_time_from_system()
+		settings.save()
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
+	else:
+		main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.NEW)
+		#get_tree().change_scene_to_file("res://GUI/Main Menu/NewGame.tscn")
 
 
 func _on_continue_pressed() -> void:
@@ -43,6 +66,7 @@ func display_loading(is_loading: bool) -> void:
 func _on_load_pressed() -> void:
 	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.LOAD)
+	
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
 
 func _on_settings_pressed() -> void:

@@ -219,6 +219,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	delete_button.disabled = not is_editable
 	view_chain_button.disabled = not is_editable
 	duplicate_button.disabled = not is_editable
+	#copy_to_clipboard.disabled = not is_editable
+	save_to_uni_book.disabled = not is_editable
 	cr_edit.editable = is_editable
 	cd_edit.editable = is_editable
 		

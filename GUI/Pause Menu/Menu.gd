@@ -63,36 +63,41 @@ func update_index(index: int) -> void:
 	upgrades.visible = false
 	settings.visible = false
 	message_panel.visible = false
-	if player_in_combat and current_index < 4:
+	spells_button.set_pressed_no_signal(false)
+	wands_button.set_pressed_no_signal(false)
+	artifacts_button.set_pressed_no_signal(false)
+	upgrades_button.set_pressed_no_signal(false)
+	settings_button.set_pressed_no_signal(false)
+	if GlobalData.is_demo and (current_index == 2 or current_index == 3):
 		match current_index:
-			0: message_label.text = "Currently in Combat\nMagic Book Disabled"
-			1: message_label.text = "Currently in Combat\nWand Case Disabled"
-			2: message_label.text = "Currently in Combat\nArtifacts Disabled"
-			3: message_label.text = "Currently in Combat\nUpgrades Disabled"
+			2: message_label.text = "Not Available in Demo\nArtifacts Disabled"; artifacts_button.set_pressed_no_signal(true)
+			3: message_label.text = "Not Available in Demo\nUpgrades Disabled"; upgrades_button.set_pressed_no_signal(true)
+		message_panel.visible = true
+	elif player_in_combat and current_index < 4:
+		match current_index:
+			0: message_label.text = "Currently in Combat\nMagic Book Disabled"; spells_button.set_pressed_no_signal(true)
+			1: message_label.text = "Currently in Combat\nWand Case Disabled"; wands_button.set_pressed_no_signal(true)
+			2: message_label.text = "Currently in Combat\nArtifacts Disabled"; artifacts_button.set_pressed_no_signal(true)
+			3: message_label.text = "Currently in Combat\nUpgrades Disabled"; upgrades_button.set_pressed_no_signal(true)
 		message_panel.visible = true
 	else:
 		match current_index:
-			0: magic_book.visible = true; spells_button.grab_focus()
-			1: wand_case.visible = true; wands_button.grab_focus()
-			2: artifacts.visible = true; artifacts_button.grab_focus()
-			3: upgrades.visible = true; upgrades_button.grab_focus()
-			4: settings.visible = true; settings_button.grab_focus()
-		spells_button.set_pressed_no_signal(magic_book.visible)
-		wands_button.set_pressed_no_signal(wand_case.visible)
-		artifacts_button.set_pressed_no_signal(artifacts.visible)
-		upgrades_button.set_pressed_no_signal(upgrades.visible)
-		settings_button.set_pressed_no_signal(settings.visible)
+			0: magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
+			1: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
+			2: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
+			3: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+			4: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
 		if current_index == 4 and settings.tab_container.get_current_tab_control().name == "Customisation":
 			player.animate_spring_arm_length(3, 0.2)
 		else:
 			player.animate_spring_arm_length(0, 0.2)
+			
 		
 
 func _on_spells_pressed() -> void:
 	update_index(0)
 
 func _on_wands_pressed() -> void:
-	wand_case.update_wand_shelf_items(true)
 	update_index(1)
 
 func _on_artifacts_pressed() -> void:
@@ -102,7 +107,6 @@ func _on_upgrades_pressed() -> void:
 	update_index(3)
 	
 func _on_settings_pressed() -> void:
-	settings.update_controls()
 	update_index(4)
 
 func open(kind: Kind) -> void:
@@ -110,17 +114,12 @@ func open(kind: Kind) -> void:
 	UIAudioPlayer.open()
 	visible = true
 	is_showing = true
-	if magic_book.visible and kind == Kind.ANY:
-		magic_book.duplicate_book()
 	match kind:
 		Kind.SPELLS:
-			magic_book.duplicate_book()
 			_on_spells_pressed()
 		Kind.WANDS:
-			wand_case.reload_wand_shelf_items()
 			_on_wands_pressed()
 		Kind.ARTIFACTS:
-			artifacts.update_list_and_grid()
 			_on_artifacts_pressed()
 		Kind.UPGRADES:
 			_on_upgrades_pressed()

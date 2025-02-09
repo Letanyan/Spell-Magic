@@ -255,7 +255,6 @@ func _on_create_pressed() -> void:
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
 		settings.game_mode_settings.flags = game_flags & GameModeSettings.DISALLOW_SPELL_EDITING
-		upgrades.reset_all_stats_to_default_values()
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << rng.randi_range(1, 6))

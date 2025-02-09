@@ -236,6 +236,8 @@ offset_left = 32.0
 offset_top = 32.0
 offset_right = -32.0
 offset_bottom = -200.0
+grow_horizontal = 2
+grow_vertical = 2
 alignment = 1
 
 [node name="Message" type="RichTextLabel" parent="VBoxMessage"]

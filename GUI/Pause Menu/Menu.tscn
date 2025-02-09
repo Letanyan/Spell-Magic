@@ -22,8 +22,7 @@ script = ExtResource("1_op10b")
 [node name="MagicBook" parent="." instance=ExtResource("1_ufdyg")]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.086
-offset_top = 0.271999
+offset_top = 48.0
 
 [node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
 visible = false

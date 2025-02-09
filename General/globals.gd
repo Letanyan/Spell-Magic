@@ -212,6 +212,7 @@ var magic_book: MagicBook = null
 var user_magic_book: MagicBook = null
 var nav: GDNavigator = null
 var is_debug: bool = true
+var is_demo: bool = false
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
 const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
@@ -230,6 +231,7 @@ const encoded_y_noise = "EAAAAEA/DwACAAAAAACAPxMAmpmZPRMAbxIDOwgAAAAAAD8AAAAAAAA
 
 func _ready() -> void:
 	is_debug = false # OS.is_debug_build()
+	is_demo = false
 	
 	nav = GDNavigator.new()
 	

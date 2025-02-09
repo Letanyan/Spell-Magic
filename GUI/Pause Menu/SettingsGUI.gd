@@ -94,6 +94,7 @@ func _ready() -> void:
 	magic_book.book = GlobalData.user_magic_book
 	magic_book.is_universal = true
 	magic_book.page.is_universal = true
+	tab_container.set_tab_hidden(6, GlobalData.is_demo)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -495,7 +496,7 @@ func _on_sort_notes_item_selected(index: int) -> void:
 
 func hide_game_tab(should_hide: bool) -> void:
 	var tabs := $Tabs as TabContainer
-	tabs.set_tab_hidden(tabs.get_tab_count() - 2, should_hide)
+	tabs.set_tab_hidden(0, should_hide)
 	tabs.set_tab_hidden(tabs.get_tab_count() - 1, should_hide)
 
 func _on_save_pressed() -> void:

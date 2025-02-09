@@ -23,7 +23,7 @@ var temporary_grid_tile: GridTile
 
 var double_click_timer: Dictionary = {} ## [int(MOUSE_BUTTON_INDEX)]bool(is_clicked)
 
-var not_seen_by_player_icon := load("res://GUI/Images/check-full_not_seen.tres") as TintedTexture
+var not_seen_by_player_icon := load("res://GUI/Images/circle-hollow_not_seen.tres") as TintedTexture
 
 var artifacts: Artifacts:
 	set(value):

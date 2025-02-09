@@ -18,6 +18,7 @@ var book: MagicBook:
 		book = value
 		duplicate_book()
 		reload_list()
+		create_button.disabled = book.settings.game_mode_settings.has_flag(GameModeSettings.DISALLOW_SPELL_EDITING)
 var is_universal: bool = false
 		
 
