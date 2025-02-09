@@ -152,6 +152,8 @@ func spell_was_disallowed(spell: Spell, reason: MagicBook.DisallowSpellReason) -
 			show_notification(bbcode_error("'%s' is not active in magic book" % [spell.name]), 5)
 		MagicBook.DisallowSpellReason.CHAINED_SPELL:
 			show_notification(bbcode_error("'%s''s chained spell has a problem" % [spell.name]), 5)
+		MagicBook.DisallowSpellReason.ELEMENT:
+			show_notification(bbcode_error("'%s''s requires element '%s' upgrade" % [spell.name, (Spell.Element.keys()[spell.element] as String).to_lower()]), 5)
 		# We don't disallow spells from being cast because of velocity. We just limit the velocity and notify the player.
 		#MagicBook.DisallowSpellReason.VELOCITY:
 			#show_notification(bbcode_error(""), 5)
@@ -266,6 +268,8 @@ func update_wand_mappings() -> void:
 				return "[color=#7700FF]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.CHAINED_SPELL:
 				return "[color=#F70]" + s.name + "[/color]"
+			MagicBook.DisallowSpellReason.ELEMENT:
+				return "[color=#FFF7]" + s.name + "[/color]"
 			_:
 				return "[color=#F50]" + s.name + "[/color]"
 				

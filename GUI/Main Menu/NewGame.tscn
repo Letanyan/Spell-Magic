@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
-[ext_resource type="Texture2D" uid="uid://bhgsrvtcjjrro" path="res://GUI/Images/cubes.svg" id="2_rk2kc"]
+[ext_resource type="Texture2D" uid="uid://7roma70qcf5y" path="res://GUI/Images/cubes.svg" id="2_rk2kc"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="3_cyou0"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="4_4nvek"]
 [ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="5_lff36"]
@@ -46,6 +46,8 @@ offset_left = -168.0
 offset_top = -284.0
 offset_right = -136.0
 offset_bottom = -252.0
+grow_horizontal = 2
+grow_vertical = 2
 icon = ExtResource("2_rk2kc")
 
 [node name="Seed" type="TextEdit" parent="."]

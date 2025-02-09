@@ -45,6 +45,7 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 	action_change_callables.clear()
 	
 	for w: PackedStringArray in wand.keys:
+		# FIXME: display when modifier key selected
 		var spell_changed := func(item: WandCaseShelfItem, text: String, ignore_signals: bool) -> void:
 			var option := wand.keys[w] as Wand.Option
 			option.parse_spells(text, book)

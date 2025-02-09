@@ -7,17 +7,17 @@
 [ext_resource type="StyleBox" uid="uid://b5hkii08bovm3" path="res://GUI/ThemeUI/NeoBaseStyle.tres" id="4_gjk61"]
 [ext_resource type="StyleBox" uid="uid://hhufd7ivp0di" path="res://GUI/ThemeUI/NeoPressedStyle.tres" id="5_sw5fm"]
 [ext_resource type="Texture2D" uid="uid://dq4uiamc42p66" path="res://GUI/Images/check-full.svg" id="6_ckjgh"]
+[ext_resource type="Texture2D" uid="uid://c1uia24hj0gfe" path="res://GUI/Images/check-full-disabled.tres" id="7_ak58w"]
 [ext_resource type="Texture2D" uid="uid://dfutkuw2ev151" path="res://GUI/Images/radio-full.svg" id="7_kal57"]
-[ext_resource type="Texture2D" uid="uid://bhfm8cb6spfal" path="res://GUI/Images/check-full_disabled.tres" id="7_vpusd"]
 [ext_resource type="Texture2D" uid="uid://bq0q7t0o3wedo" path="res://GUI/Images/radio-empty.svg" id="8_h7tvf"]
+[ext_resource type="Texture2D" uid="uid://cu2sgy8xsqoql" path="res://GUI/Images/radio-full-disabled.tres" id="9_066rk"]
 [ext_resource type="Texture2D" uid="uid://dr0mj4mw8klmr" path="res://GUI/Images/check-empty.svg" id="9_ooey2"]
-[ext_resource type="Texture2D" uid="uid://ddagt4a32cpsx" path="res://GUI/Images/radio-full_disabled.tres" id="9_t1ubq"]
 [ext_resource type="StyleBox" uid="uid://bbnvd7a168bgx" path="res://GUI/ThemeUI/CheckButtonStyles/NeoDisabledStyle.tres" id="10_vg21c"]
 [ext_resource type="StyleBox" uid="uid://bcai3e5tbrdmf" path="res://GUI/ThemeUI/CheckButtonStyles/NeoFocusStyle.tres" id="11_2ov8m"]
-[ext_resource type="Texture2D" uid="uid://cthjxo1g1l0hs" path="res://GUI/Images/radio-empty_disabled.tres" id="11_k2hmc"]
+[ext_resource type="Texture2D" uid="uid://0mti1j0vgu2n" path="res://GUI/Images/radio-empty-disabled.tres" id="11_rgcrf"]
 [ext_resource type="StyleBox" uid="uid://cd1jxjc318h5e" path="res://GUI/ThemeUI/CheckButtonStyles/NeoHoverStyle.tres" id="12_y0tuj"]
 [ext_resource type="StyleBox" uid="uid://v1x7vwchs3yl" path="res://GUI/ThemeUI/CheckButtonStyles/NeoBaseStyle.tres" id="13_b2h0o"]
-[ext_resource type="Texture2D" uid="uid://dqal3lv5mrwy3" path="res://GUI/Images/check-empty_disabled.tres" id="13_dfuoi"]
+[ext_resource type="Texture2D" uid="uid://cm30lxy2d62mi" path="res://GUI/Images/check-empty-disabled.tres" id="13_kitml"]
 [ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="13_sqwc1"]
 [ext_resource type="FontFile" uid="uid://bbyhrcj741rsi" path="res://GUI/ThemeUI/ChakraPetch-BoldItalic.ttf" id="14_u2jn3"]
 [ext_resource type="StyleBox" uid="uid://d1ban8a4qr36a" path="res://GUI/ThemeUI/CheckButtonStyles/NeoPressedStyle.tres" id="14_wyryu"]
@@ -48,13 +48,13 @@ Button/styles/hover = ExtResource("3_xn2xs")
 Button/styles/normal = ExtResource("4_gjk61")
 Button/styles/pressed = ExtResource("5_sw5fm")
 CheckBox/icons/checked = ExtResource("6_ckjgh")
-CheckBox/icons/checked_disabled = ExtResource("7_vpusd")
+CheckBox/icons/checked_disabled = ExtResource("7_ak58w")
 CheckBox/icons/radio_checked = ExtResource("7_kal57")
-CheckBox/icons/radio_checked_disabled = ExtResource("9_t1ubq")
+CheckBox/icons/radio_checked_disabled = ExtResource("9_066rk")
 CheckBox/icons/radio_unchecked = ExtResource("8_h7tvf")
-CheckBox/icons/radio_unchecked_disabled = ExtResource("11_k2hmc")
+CheckBox/icons/radio_unchecked_disabled = ExtResource("11_rgcrf")
 CheckBox/icons/unchecked = ExtResource("9_ooey2")
-CheckBox/icons/unchecked_disabled = ExtResource("13_dfuoi")
+CheckBox/icons/unchecked_disabled = ExtResource("13_kitml")
 CheckBox/styles/disabled = ExtResource("10_vg21c")
 CheckBox/styles/focus = ExtResource("11_2ov8m")
 CheckBox/styles/hover = ExtResource("12_y0tuj")
@@ -62,12 +62,12 @@ CheckBox/styles/hover_pressed = ExtResource("12_y0tuj")
 CheckBox/styles/normal = ExtResource("13_b2h0o")
 CheckBox/styles/pressed = ExtResource("14_wyryu")
 CheckButton/icons/checked = ExtResource("6_ckjgh")
-CheckButton/icons/checked_disabled = ExtResource("7_vpusd")
-CheckButton/icons/checked_disabled_mirrored = ExtResource("7_vpusd")
+CheckButton/icons/checked_disabled = ExtResource("7_ak58w")
+CheckButton/icons/checked_disabled_mirrored = ExtResource("7_ak58w")
 CheckButton/icons/checked_mirrored = ExtResource("6_ckjgh")
 CheckButton/icons/unchecked = ExtResource("9_ooey2")
-CheckButton/icons/unchecked_disabled = ExtResource("13_dfuoi")
-CheckButton/icons/unchecked_disabled_mirrored = ExtResource("13_dfuoi")
+CheckButton/icons/unchecked_disabled = ExtResource("13_kitml")
+CheckButton/icons/unchecked_disabled_mirrored = ExtResource("13_kitml")
 CheckButton/icons/unchecked_mirrored = ExtResource("9_ooey2")
 CheckButton/styles/disabled = ExtResource("10_vg21c")
 CheckButton/styles/focus = ExtResource("11_2ov8m")
@@ -94,13 +94,13 @@ LineEdit/styles/read_only = ExtResource("1_cdj88")
 Panel/styles/panel = ExtResource("4_gjk61")
 PopupDialog/styles/panel = ExtResource("4_gjk61")
 PopupMenu/icons/checked = ExtResource("6_ckjgh")
-PopupMenu/icons/checked_disabled = ExtResource("7_vpusd")
+PopupMenu/icons/checked_disabled = ExtResource("7_ak58w")
 PopupMenu/icons/radio_checked = ExtResource("7_kal57")
-PopupMenu/icons/radio_checked_disabled = ExtResource("9_t1ubq")
+PopupMenu/icons/radio_checked_disabled = ExtResource("9_066rk")
 PopupMenu/icons/radio_unchecked = ExtResource("8_h7tvf")
-PopupMenu/icons/radio_unchecked_disabled = ExtResource("11_k2hmc")
+PopupMenu/icons/radio_unchecked_disabled = ExtResource("11_rgcrf")
 PopupMenu/icons/unchecked = ExtResource("9_ooey2")
-PopupMenu/icons/unchecked_disabled = ExtResource("13_dfuoi")
+PopupMenu/icons/unchecked_disabled = ExtResource("13_kitml")
 PopupMenu/styles/hover = ExtResource("3_xn2xs")
 PopupMenu/styles/panel = ExtResource("4_gjk61")
 ProgressBar/styles/background = ExtResource("4_gjk61")

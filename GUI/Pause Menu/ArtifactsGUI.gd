@@ -24,7 +24,7 @@ var temporary_grid_tile: GridTile
 
 var double_click_timer: Dictionary = {} ## [int(MOUSE_BUTTON_INDEX)]bool(is_clicked)
 
-var not_seen_by_player_icon := load("res://GUI/Images/circle_not_seen.tres") as TintedTexture
+var not_seen_by_player_icon := load("res://GUI/Images/circle.svg") as CompressedTexture2D
 
 var artifacts: Artifacts:
 	set(value):
@@ -81,12 +81,14 @@ func update_list() -> void:
 		for a in artifacts.unconnected():
 			if filter_artifact_matches(a):
 				artifacts_list.add_item(a.name, null if a.seen_by_player else not_seen_by_player_icon)
+				artifacts_list.set_item_icon_modulate(artifacts_list.item_count - 1, Color(1.0, 192.0 / 255.0, 0))
 				if a == artifact_preview.artifact:
 					found_preview = true
 	else:
 		for a in artifacts.unconnected():
 			if filter_artifact_matches(a) and artifacts.can_place_artifact(a, artifact_grid.selected_cell_coord as Vector2).is_empty():
 				artifacts_list.add_item(a.name, null if a.seen_by_player else not_seen_by_player_icon)
+				artifacts_list.set_item_icon_modulate(artifacts_list.item_count - 1, Color(1.0, 192.0 / 255.0, 0))
 				if a == artifact_preview.artifact:
 					found_preview = true
 	if not found_preview:
@@ -480,12 +482,18 @@ func filter_update_popup_menu_items(menu: PopupMenu, option: int) -> void:
 		menu.add_icon_check_item(preload("res://GUI/Images/circle.png") as Texture2D, "Circle", Artifact.Pattern.CIRCLE + 6)
 		menu.add_separator()
 		menu.add_check_item("Any", Artifact.Element.ANY + 9)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 9)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 9)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 9)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_water.tres") as Texture2D, "Water", Artifact.Element.WATER + 9)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_wind.tres") as Texture2D, "Wind", Artifact.Element.AIR + 9)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_ice.tres") as Texture2D, "Ice", Artifact.Element.ICE + 9)
+		menu.add_icon_check_item(preload("res://GUI/Images/fire.svg") as Texture2D, "Fire", Artifact.Element.FIRE + 9)
+		menu.set_item_icon_modulate(menu.item_count - 1, Spell.color_from_element(Spell.Element.FIRE))
+		menu.add_icon_check_item(preload("res://GUI/Images/rock.svg") as Texture2D, "Rock", Artifact.Element.ROCK + 9)
+		menu.set_item_icon_modulate(menu.item_count - 1, Spell.color_from_element(Spell.Element.ROCK))
+		menu.add_icon_check_item(preload("res://GUI/Images/electric.svg") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 9)
+		menu.set_item_icon_modulate(menu.item_count - 1, Spell.color_from_element(Spell.Element.ELECTRIC))
+		menu.add_icon_check_item(preload("res://GUI/Images/water.svg") as Texture2D, "Water", Artifact.Element.WATER + 9)
+		menu.set_item_icon_modulate(menu.item_count - 1, Spell.color_from_element(Spell.Element.WATER))
+		menu.add_icon_check_item(preload("res://GUI/Images/wind.svg") as Texture2D, "Wind", Artifact.Element.AIR + 9)
+		menu.set_item_icon_modulate(menu.item_count - 1, Spell.color_from_element(Spell.Element.AIR))
+		menu.add_icon_check_item(preload("res://GUI/Images/ice.svg") as Texture2D, "Ice", Artifact.Element.ICE + 9)
+		menu.set_item_icon_modulate(menu.item_count - 1, Spell.color_from_element(Spell.Element.ICE))
 	elif option == 2: # Effect
 		menu.add_separator()
 		menu.add_icon_check_item(preload("res://GUI/Images/sword.svg") as Texture2D, "DMG %", Artifact.Effect.BOOST_PERCENTAGE + 3)
@@ -498,26 +506,46 @@ func filter_update_popup_menu_items(menu: PopupMenu, option: int) -> void:
 		menu.add_icon_check_item(preload("res://GUI/Images/circle.png") as Texture2D, "Circle", Artifact.Pattern.CIRCLE + 8)
 		menu.add_separator()
 		menu.add_check_item("Any", Artifact.Element.ANY + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_fire.tres") as Texture2D, "Fire", Artifact.Element.FIRE + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_rock.tres") as Texture2D, "Rock", Artifact.Element.ROCK + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_electric.tres") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_water.tres") as Texture2D, "Water", Artifact.Element.WATER + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_wind.tres") as Texture2D, "Wind", Artifact.Element.AIR + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_ice.tres") as Texture2D, "Ice", Artifact.Element.ICE + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health.tres") as Texture2D, "Health", Artifact.Element.HEALTH + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana.tres") as Texture2D, "Mana", Artifact.Element.MANA + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_sword.tres") as Texture2D, "Attack", Artifact.Element.ATTACK + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_shield.tres") as Texture2D, "Defence", Artifact.Element.DEFENCE + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_cubes.tres") as Texture2D, "Crit Rate", Artifact.Element.CRIT_RATE + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_hypersonic.tres") as Texture2D, "Crit Dmg", Artifact.Element.CRIT_DMG + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_velocity.tres") as Texture2D, "v", Artifact.Element.SPELL_VELOCITY + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_time.tres") as Texture2D, "T", Artifact.Element.DURATION + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_running.tres") as Texture2D, "Movement Speed", Artifact.Element.RUNNING_SPEED + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_radius.tres") as Texture2D, "r", Artifact.Element.SPELL_RADIUS + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_count.tres") as Texture2D, "N", Artifact.Element.COUNT + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_power.tres") as Texture2D, "P", Artifact.Element.POWER + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_health_outline.tres") as Texture2D, "Max Health", Artifact.Element.HEALTH_BUMP + 13)
-		menu.add_icon_check_item(preload("res://GUI/Images/tinted_mana_outline.tres") as Texture2D, "Max Mana", Artifact.Element.MANA_BUMP + 13)
+		menu.add_icon_check_item(preload("res://GUI/Images/fire.svg") as Texture2D, "Fire", Artifact.Element.FIRE + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.FIRE))
+		menu.add_icon_check_item(preload("res://GUI/Images/rock.svg") as Texture2D, "Rock", Artifact.Element.ROCK + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.ROCK))
+		menu.add_icon_check_item(preload("res://GUI/Images/electric.svg") as Texture2D, "Electric", Artifact.Element.ELECTRIC + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.ELECTRIC))
+		menu.add_icon_check_item(preload("res://GUI/Images/water.svg") as Texture2D, "Water", Artifact.Element.WATER + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.WATER))
+		menu.add_icon_check_item(preload("res://GUI/Images/wind.svg") as Texture2D, "Wind", Artifact.Element.AIR + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.AIR))
+		menu.add_icon_check_item(preload("res://GUI/Images/ice.svg") as Texture2D, "Ice", Artifact.Element.ICE + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.ICE))
+		menu.add_icon_check_item(preload("res://GUI/Images/health.svg") as Texture2D, "Health", Artifact.Element.HEALTH + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.HEALTH))
+		menu.add_icon_check_item(preload("res://GUI/Images/mana.svg") as Texture2D, "Mana", Artifact.Element.MANA + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.MANA))
+		menu.add_icon_check_item(preload("res://GUI/Images/sword.svg") as Texture2D, "Attack", Artifact.Element.ATTACK + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.ATTACK))
+		menu.add_icon_check_item(preload("res://GUI/Images/shield.svg") as Texture2D, "Defence", Artifact.Element.DEFENCE + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.DEFENCE))
+		menu.add_icon_check_item(preload("res://GUI/Images/cubes.svg") as Texture2D, "Crit_Rate", Artifact.Element.CRIT_RATE + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.CRIT_RATE))
+		menu.add_icon_check_item(preload("res://GUI/Images/hypersonic.svg") as Texture2D, "Crit_Dmg", Artifact.Element.CRIT_DMG + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.CRIT_DMG))
+		menu.add_icon_check_item(preload("res://GUI/Images/velocity.svg") as Texture2D, "v", Artifact.Element.SPELL_VELOCITY + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.SPELL_VELOCITY))
+		menu.add_icon_check_item(preload("res://GUI/Images/time.svg") as Texture2D, "T", Artifact.Element.DURATION + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.DURATION))
+		menu.add_icon_check_item(preload("res://GUI/Images/running.svg") as Texture2D, "Movement_Speed", Artifact.Element.RUNNING_SPEED + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.RUNNING_SPEED))
+		menu.add_icon_check_item(preload("res://GUI/Images/radius.svg") as Texture2D, "r", Artifact.Element.SPELL_RADIUS + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.SPELL_RADIUS))
+		menu.add_icon_check_item(preload("res://GUI/Images/count.svg") as Texture2D, "N", Artifact.Element.COUNT + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.COUNT))
+		menu.add_icon_check_item(preload("res://GUI/Images/power.svg") as Texture2D, "P", Artifact.Element.POWER + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.POWER))
+		menu.add_icon_check_item(preload("res://GUI/Images/health-outline.svg") as Texture2D, "Max_Health", Artifact.Element.HEALTH_BUMP + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.HEALTH_BUMP))
+		menu.add_icon_check_item(preload("res://GUI/Images/mana-outline.svg") as Texture2D, "Max_Mana", Artifact.Element.MANA_BUMP + 13)
+		menu.set_item_icon_modulate(menu.item_count - 1, Artifact.color_for_element(Artifact.Element.MANA_BUMP))
 		
 func filter_update_popup_menu_checked(menu: PopupMenu, data: FilterOptions) -> void:
 	var index := 3

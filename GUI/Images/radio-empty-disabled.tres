@@ -1,12 +1,12 @@
-[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://cthjxo1g1l0hs"]
+[gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://0mti1j0vgu2n"]
 
-[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_6q7x2"]
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_vvm52"]
 [ext_resource type="Texture2D" uid="uid://bq0q7t0o3wedo" path="res://GUI/Images/radio-empty.svg" id="2_o8exy"]
 
 [resource]
 resource_local_to_scene = false
 resource_name = ""
-script = ExtResource("1_6q7x2")
+script = ExtResource("1_vvm52")
 texture = ExtResource("2_o8exy")
 tint = Color(0.2, 0.2, 0.2, 1)
 flip_vertical = false
@@ -18,4 +18,4 @@ offset = Vector2(0, 0)
 resource_local_to_scene = false
 resource_name = ""
 load_path = "res://.godot/imported/radio-empty.svg-8a29028fe9a9b53541d2495d1f5d8862.ctex"
-script = ExtResource("1_6q7x2")
+script = ExtResource("1_vvm52")

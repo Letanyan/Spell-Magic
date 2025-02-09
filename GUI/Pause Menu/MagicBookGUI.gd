@@ -34,8 +34,6 @@ var current_index := -1
 
 var check_full := load("res://GUI/Images/check-full.svg") as Texture2D
 var check_empty := load("res://GUI/Images/check-empty.svg") as Texture2D
-var check_full_not_seen := load("res://GUI/Images/check-full_not_seen.tres") as TintedTexture
-var check_empty_not_seen := load("res://GUI/Images/check-empty_not_seen.tres") as TintedTexture
 
 
 # Called when the node enters the scene tree for the first time.
@@ -75,7 +73,11 @@ func _on_spell_index_item_selected(index: int) -> void:
 	UIAudioPlayer.click()
 	var spell: Spell = book.spells[current_index]
 	spell.seen_by_player = true
-	spell_index.set_item_icon(index, check_full if spell.is_active else check_empty)
+	if is_universal:
+		spell_index.set_item_icon(index, null)
+	else:
+		spell_index.set_item_icon(index, check_full if spell.is_active else check_empty)
+		spell_index.set_item_icon_modulate(index, Color.WHITE)
 	
 	page.display_spell(book, spell, current_index)
 	
@@ -168,10 +170,14 @@ func reload_list() -> void:
 	var j := 0
 	for k: int in spells_index_map:
 		var s := book.spells[spells_index_map[k]]
-		if s.seen_by_player:
+		if not is_universal:
 			spell_index.add_item(s.name, check_full if s.is_active else check_empty)
+			if s.seen_by_player:
+				spell_index.set_item_icon_modulate(spell_index.item_count - 1, Color.WHITE)
+			else:
+				spell_index.set_item_icon_modulate(spell_index.item_count - 1, Color(1.0, 0.752941, 0.0))
 		else:
-			spell_index.add_item(s.name, check_full_not_seen if s.is_active else check_empty_not_seen)
+			spell_index.add_item(s.name, null)
 		spell_index.set_item_tooltip(j, s.description)
 		j += 1
 		
