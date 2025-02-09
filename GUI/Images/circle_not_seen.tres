@@ -1,13 +1,13 @@
 [gd_resource type="Texture2D" script_class="TintedTexture" load_steps=3 format=3 uid="uid://kyha25ric05p"]
 
-[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_vn1rr"]
-[ext_resource type="Texture2D" uid="uid://c4ahek33r0tva" path="res://GUI/Images/right.svg" id="2_po70l"]
+[ext_resource type="Script" path="res://GUI/Images/TintedTexture.gd" id="1_nify6"]
+[ext_resource type="Texture2D" uid="uid://k5gp4jr018n8" path="res://GUI/Images/circle.svg" id="2_66r7d"]
 
 [resource]
 resource_local_to_scene = false
 resource_name = ""
-script = ExtResource("1_vn1rr")
-texture = ExtResource("2_po70l")
+script = ExtResource("1_nify6")
+texture = ExtResource("2_66r7d")
 tint = Color(0.9, 0.75, 0, 1)
 flip_vertical = false
 flip_horizontal = false
@@ -17,5 +17,5 @@ scale = Vector2(1, 1)
 offset = Vector2(0, 0)
 resource_local_to_scene = false
 resource_name = ""
-load_path = "res://.godot/imported/right.svg-695d9d7daa40ee202a3226609baa11b3.ctex"
-script = ExtResource("1_vn1rr")
+load_path = "res://.godot/imported/circle.svg-1f1214ac69b8c4b2b727d55d76fef24b.ctex"
+script = ExtResource("1_nify6")

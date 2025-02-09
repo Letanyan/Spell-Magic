@@ -5,7 +5,8 @@ extends Control
 @onready var artifact_grid: InfinityGrid = $artifact_grid
 @onready var artifact_preview: GridTile = $artifact_preview
 @onready var destroy_artifact: Button = $Destroy
-@onready var effects_list: Label = $effects_list
+@onready var effects_list: RichTextLabel = $effects_list
+@onready var effects_button: Button = $effects_button
 
 @onready var filter_top: MenuButton = $Top
 @onready var filter_left: MenuButton = $Left
@@ -23,7 +24,7 @@ var temporary_grid_tile: GridTile
 
 var double_click_timer: Dictionary = {} ## [int(MOUSE_BUTTON_INDEX)]bool(is_clicked)
 
-var not_seen_by_player_icon := load("res://GUI/Images/circle-hollow_not_seen.tres") as TintedTexture
+var not_seen_by_player_icon := load("res://GUI/Images/circle_not_seen.tres") as TintedTexture
 
 var artifacts: Artifacts:
 	set(value):
@@ -118,8 +119,8 @@ func update_list_and_grid() -> void:
 	for move in possible_moves:
 		if move == artifact_grid.selected_cell_coord:
 			update_selected_artifact()
-			
-	update_effects_list_tooltip()
+	
+	effects_list.text = artifacts.all_effects_description()
 	
 	if is_first_view:
 		is_first_view = false
@@ -397,9 +398,6 @@ func highlight_all_available_cells_for_placement() -> void:
 		artifact_grid.center_grid_on_cell(artifact_grid.highlighted_cells[0])
 	else:
 		artifact_grid.queue_redraw()
-	
-func update_effects_list_tooltip() -> void:
-	effects_list.tooltip_text = artifacts.all_effects_description()
 
 func filter_id_pressed(button: MenuButton, id: int, data: FilterOptions) -> void:
 	var menu := button.get_popup() as PopupMenu
@@ -612,3 +610,14 @@ func _on_bottom_toggled(toggled_on: bool) -> void:
 
 func _on_filter_all_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.click()
+
+func _on_effects_list_pressed() -> void:
+	UIAudioPlayer.click()
+	effects_list.visible = not effects_list.visible
+
+func _on_effects_button_mouse_exited() -> void:
+	effects_list.visible = false
+
+func _on_effects_button_mouse_entered() -> void:
+	if effects_button.has_focus():
+		effects_list.visible = true

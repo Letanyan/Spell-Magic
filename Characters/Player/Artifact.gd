@@ -213,16 +213,22 @@ class Option:
 				return preload("res://GUI/Images/deal.svg")
 		return preload("res://GUI/Images/deal.svg")
 		
-	func amount_description() -> String:
+	func amount_description(formatted: bool = false) -> String:
 		if effect == Effect.NONE:
 			return ""
 		var result := ("+" if amount > 0 else "") + ("%d" % amount)
 		if effect == Effect.BOOST_PERCENTAGE or effect == Effect.RESISTANCE_PERCENTAGE:
 			result += "%"
-		return result
+		if formatted:
+			return "[b]" + result + "[/b]"
+		else:
+			return result
 		
-	func duration_description() -> String:
-		return ("%d" % amount) + "s"
+	func duration_description(formatted: Color = Color(0, 0, 0, 0)) -> String:
+		if formatted.a != 0:
+			return ("[color=#%08x][b]" % formatted.to_rgba32()) + ("%d" % amount) + "s[/b][/color]"
+		else:
+			return ("%d" % amount) + "s"
 		
 	func pattern_description() -> String:
 		match pattern:
@@ -233,49 +239,53 @@ class Option:
 		
 	func element_texture() -> Texture2D:
 		match element:
-			Element.ANY:
-				return preload("res://GUI/Images/infinity.svg")
-			Element.FIRE:
-				return preload("res://GUI/Images/fire.svg")
-			Element.WATER:
-				return preload("res://GUI/Images/water.svg")
-			Element.AIR:
-				return preload("res://GUI/Images/wind.svg")
-			Element.ROCK:
-				return preload("res://GUI/Images/rock.svg")
-			Element.ELECTRIC:
-				return preload("res://GUI/Images/electric.svg")
-			Element.ICE:
-				return preload("res://GUI/Images/ice.svg")
-			Element.HEALTH:
-				return preload("res://GUI/Images/health.svg")
-			Element.MANA:
-				return preload("res://GUI/Images/mana.svg")
-			Element.ATTACK:
-				return preload("res://GUI/Images/sword.svg")
-			Element.DEFENCE:
-				return preload("res://GUI/Images/shield.svg")
-			Element.CRIT_RATE:
-				return preload("res://GUI/Images/cubes.svg")
-			Element.CRIT_DMG:
-				return preload("res://GUI/Images/hypersonic.svg")
-			Element.POWER:
-				return preload("res://GUI/Images/power.svg")
-			Element.DURATION:
-				return preload("res://GUI/Images/time.svg")
-			Element.COUNT:
-				return preload("res://GUI/Images/count.svg")
-			Element.MANA_BUMP:
-				return preload("res://GUI/Images/mana-outline.svg")
-			Element.HEALTH_BUMP:
-				return preload("res://GUI/Images/health-outline.svg")
-			Element.SPELL_VELOCITY:
-				return preload("res://GUI/Images/velocity.svg")
-			Element.SPELL_RADIUS:
-				return preload("res://GUI/Images/radius.svg")
-			Element.RUNNING_SPEED:
-				return preload("res://GUI/Images/velocity.svg")
+			Element.ANY: return preload("res://GUI/Images/infinity.svg")
+			Element.FIRE: return preload("res://GUI/Images/fire.svg")
+			Element.WATER: return preload("res://GUI/Images/water.svg")
+			Element.AIR: return preload("res://GUI/Images/wind.svg")
+			Element.ROCK: return preload("res://GUI/Images/rock.svg")
+			Element.ELECTRIC: return preload("res://GUI/Images/electric.svg")
+			Element.ICE: return preload("res://GUI/Images/ice.svg")
+			Element.HEALTH: return preload("res://GUI/Images/health.svg")
+			Element.MANA: return preload("res://GUI/Images/mana.svg")
+			Element.ATTACK: return preload("res://GUI/Images/sword.svg")
+			Element.DEFENCE: return preload("res://GUI/Images/shield.svg")
+			Element.CRIT_RATE: return preload("res://GUI/Images/cubes.svg")
+			Element.CRIT_DMG: return preload("res://GUI/Images/hypersonic.svg")
+			Element.POWER: return preload("res://GUI/Images/power.svg")
+			Element.DURATION: return preload("res://GUI/Images/time.svg")
+			Element.COUNT: return preload("res://GUI/Images/count.svg")
+			Element.MANA_BUMP: return preload("res://GUI/Images/mana-outline.svg")
+			Element.HEALTH_BUMP: return preload("res://GUI/Images/health-outline.svg")
+			Element.SPELL_VELOCITY: return preload("res://GUI/Images/velocity.svg")
+			Element.SPELL_RADIUS: return preload("res://GUI/Images/radius.svg")
+			Element.RUNNING_SPEED: return preload("res://GUI/Images/velocity.svg")
 		return preload("res://GUI/Images/infinity.svg")
+		
+	func element_texture_path() -> String:
+		match element:
+			Element.ANY: return "res://GUI/Images/infinity.svg"
+			Element.FIRE: return "res://GUI/Images/fire.svg"
+			Element.WATER: return "res://GUI/Images/water.svg"
+			Element.AIR: return "res://GUI/Images/wind.svg"
+			Element.ROCK: return "res://GUI/Images/rock.svg"
+			Element.ELECTRIC: return "res://GUI/Images/electric.svg"
+			Element.ICE: return "res://GUI/Images/ice.svg"
+			Element.HEALTH: return "res://GUI/Images/health.svg"
+			Element.MANA: return "res://GUI/Images/mana.svg"
+			Element.ATTACK: return "res://GUI/Images/sword.svg"
+			Element.DEFENCE: return "res://GUI/Images/shield.svg"
+			Element.CRIT_RATE: return "res://GUI/Images/cubes.svg"
+			Element.CRIT_DMG: return "res://GUI/Images/hypersonic.svg"
+			Element.POWER: return "res://GUI/Images/power.svg"
+			Element.DURATION: return "res://GUI/Images/time.svg"
+			Element.COUNT: return "res://GUI/Images/count.svg"
+			Element.MANA_BUMP: return "res://GUI/Images/mana-outline.svg"
+			Element.HEALTH_BUMP: return "res://GUI/Images/health-outline.svg"
+			Element.SPELL_VELOCITY: return "res://GUI/Images/velocity.svg"
+			Element.SPELL_RADIUS: return "res://GUI/Images/radius.svg"
+			Element.RUNNING_SPEED: return "res://GUI/Images/velocity.svg" 
+		return "res://GUI/Images/infinity.svg"
 		
 	func element_color() -> Color:
 		return Artifact.color_for_element(element)
@@ -289,7 +299,7 @@ class Option:
 		return result
 				
 	
-	func description() -> String:
+	func description(formatted: bool = false) -> String:
 		if effect == Effect.NONE and event == Event.NONE:
 			return ""
 			
@@ -316,17 +326,23 @@ class Option:
 			Element.SPELL_VELOCITY: element_text = "v"
 			Element.SPELL_RADIUS: element_text = "r"
 			Element.RUNNING_SPEED: element_text = "S"
+		var color_hex := "#%08x" % color().to_rgba32()
+		element_text = ("[img=l, 18x18, color=%s]%s[/img][color=%s]" % [color_hex, element_texture_path(), color_hex]) + element_text + "[/color]"
 			
 		var result := ""
 		if effect != Effect.NONE:
-			var direction := "Increase" if amount > 0 else "Decrease"
+			var direction: String
+			if amount > 0:
+				direction = "[b]Increase[/b]" if formatted else "Increase"
+			else:
+				direction = "[b][i]Decrease[/i][/b]" if formatted else "Decrease"	
 			var am := absi(amount)
 			var buff := ("Damage" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "Resistance")
 			var perc := ("%" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.RESISTANCE_PERCENTAGE else "")
 			if SpellElements.has(element):
-				return "%s %s %s by %d%s" % [direction, element_text, buff, am, perc]
+				return ("%s %s %s by [color=%s][b]%d%s[/b][/color]"  % [direction, element_text, buff, color_hex, am, perc]) if formatted else ("%s %s %s by %d%s" % [direction, element_text, buff, am, perc])
 			else:
-				return "%s %s by %d%s" % [direction, element_text, am, perc]
+				return ("%s %s by [color=%s][b]%d%s[/b][/color]" % [direction, element_text, color_hex, am, perc]) if formatted else ("%s %s by %d%s" % [direction, element_text, am, perc])
 		elif event != Event.NONE:
 			match event:
 				Event.RECEIVE:

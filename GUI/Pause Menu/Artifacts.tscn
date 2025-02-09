@@ -11,8 +11,21 @@
 [ext_resource type="Texture2D" uid="uid://bql6w7l7jeygc" path="res://GUI/Images/bottom.svg" id="7_s27d8"]
 [ext_resource type="Texture2D" uid="uid://xncojprr0p71" path="res://GUI/Images/top bottom left right.svg" id="10_qgfxf"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_goeow"]
-font_size = 20
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rb180"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0.501961)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="Artifacts" type="Control"]
 layout_mode = 3
@@ -218,17 +231,24 @@ popup/item_2/icon = ExtResource("6_b7gc4")
 popup/item_2/checkable = 2
 popup/item_2/id = 2
 
-[node name="effects_list" type="Label" parent="."]
+[node name="effects_button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 1112.0
-offset_top = 608.0
-offset_right = 1144.0
-offset_bottom = 640.0
-mouse_filter = 0
+offset_left = 200.0
+offset_top = 64.0
+offset_right = 232.0
+offset_bottom = 96.0
 text = "?"
-label_settings = SubResource("LabelSettings_goeow")
-horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="effects_list" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 1
+offset_left = 240.0
+offset_top = 64.0
+offset_right = 704.0
+offset_bottom = 72.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_rb180")
+bbcode_enabled = true
+fit_content = true
 
 [connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]
@@ -243,3 +263,6 @@ vertical_alignment = 1
 [connection signal="toggled" from="Right" to="." method="_on_right_toggled"]
 [connection signal="toggled" from="Bottom" to="." method="_on_bottom_toggled"]
 [connection signal="toggled" from="FilterAll" to="." method="_on_filter_all_toggled"]
+[connection signal="mouse_entered" from="effects_button" to="." method="_on_effects_button_mouse_entered"]
+[connection signal="mouse_exited" from="effects_button" to="." method="_on_effects_button_mouse_exited"]
+[connection signal="pressed" from="effects_button" to="." method="_on_effects_list_pressed"]

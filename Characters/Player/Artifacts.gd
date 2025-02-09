@@ -304,12 +304,12 @@ func all_effects_description() -> String:
 				2: e = a.bottom
 				3: e = a.left
 			if e != null and e.event != Artifact.Event.NONE:
-				if not groups.has(e.description()):
-					groups[e.description()] = []
+				if not groups.has(e.description(true)):
+					groups[e.description(true)] = []
 				if o.element == Artifact.Element.MANA or o.element == Artifact.Element.HEALTH:
-					(groups[e.description()] as Array).append(o.description())
+					(groups[e.description(true)] as Array).append(o.description(true))
 				else:
-					(groups[e.description()] as Array).append(o.description() + " For " + e.duration_description())
+					(groups[e.description(true)] as Array).append(o.description(true) + " For " + e.duration_description(o.color()))
 					
 	for event: String in groups:
 		result += event + ": \n"
