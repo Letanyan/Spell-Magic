@@ -147,10 +147,10 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		
 		if current_biome == World.Biome.HFIL:
 			wb = wb * -1.0
-			fa = fa * lerpf(0.75, 0.25, world_level / 100.0)
+			fa = fa * lerpf(0.75, 0.25, fmod(world_level, 101.0) / 100.0)
 			fl = wb * delta
 		elif current_biome == World.Biome.OTHERWORLD:
-			fa = fa * lerpf(1.1, 1.9, world_level / 100.0)
+			fa = fa * lerpf(1.1, 1.9, fmod(world_level, 101.0) / 100.0)
 			
 		if sea_level - 1.5 < body.feet_position() and body.feet_position() < sea_level - 1.45:
 			target_velocity.y = fl

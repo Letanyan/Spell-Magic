@@ -450,6 +450,8 @@ func handle_damage() -> void:
 	pass
 	
 func die() -> void:
+	if is_dead:
+		return
 	is_dead = true
 	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
 	var source := explosion.get_node("source") as GPUParticles3D
@@ -559,8 +561,7 @@ func drop_artifact() -> Artifact:
 		max_p = class_p
 	if randf() >= randf_range(min_p, max_p):
 		return null
-	var b: World.Biome = (velocity_movement.current_biome - 1) as World.Biome
-	return Artifact.from_config(artifact_drop_probs, player.name_generator, b)
+	return Artifact.from_config(artifact_drop_probs, player.name_generator, velocity_movement.current_biome)
 	
 func drop_spell() -> Spell:
 	var class_p := class_level / 20.0

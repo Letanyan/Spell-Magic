@@ -74,14 +74,14 @@ text = "Exit Game"
 [node name="Info" type="RichTextLabel" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.011
+anchor_left = -0.007
 anchor_top = -0.058
-anchor_right = 1.011
-anchor_bottom = 1.0
-offset_left = 260.496
+anchor_right = 1.007
+anchor_bottom = 1.013
+offset_left = 255.952
 offset_top = 82.206
-offset_right = -260.496
-offset_bottom = -150.0
+offset_right = -255.952
+offset_bottom = -157.891
 bbcode_enabled = true
 
 [node name="Display" type="Panel" parent="Tabs"]

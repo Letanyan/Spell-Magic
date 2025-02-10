@@ -408,10 +408,8 @@ func update_info() -> void:
 		
 	var hour := floori(world_settings.time_of_day)
 	var time := "%02d:%02d" % [hour, clampi(int((world_settings.time_of_day - hour) * 60), 0, 59)]
-	info_label.text = """
-[center]
-[b]World Name:[/b] %s
-[b]Keys Obtained:[/b] %d / 8 (%s)
+	info_label.text = """[center][b]World Name:[/b] %s
+[b]Keys Obtained:[/b] %d / 8
 [b]Day of the Year:[/b] %d
 [b]Time of Day:[/b] %s
 [b]Game Mode:[/b] %s
@@ -425,7 +423,7 @@ func update_info() -> void:
 [/center]
 """ % [
 	world_settings.world_name,
-	GDNavigator.popcnt(world_settings.player_keys), String.num_int64(world_settings.player_keys, 2),
+	GDNavigator.popcnt(world_settings.player_keys),
 	world_settings.day_of_the_year, time,
 	world_settings.game_mode_settings.game_mode_description(), game_flags,
 	world_settings.enemies_killed_table(),

@@ -343,12 +343,12 @@ func despawn_all_from_world(world: Node3D) -> void:
 func update_enemies(delta: float) -> void:
 	if display_only: return
 	
-	var timer := Time.get_ticks_msec()
+	var timer := Time.get_ticks_usec()
 	for i in range(inhabitant_cursor, inhabitants.size()):
 		var habitant: Enemy = inhabitants[inhabitants.keys()[i]]
 		habitant.manual_physics_process(delta)
 		inhabitant_cursor += 1
-		if Time.get_ticks_msec() - timer > 3:
+		if Time.get_ticks_usec() - timer > 500:
 			break
 		
 	if inhabitant_cursor >= inhabitants.size():

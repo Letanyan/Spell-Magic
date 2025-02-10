@@ -415,7 +415,7 @@ static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, b
 			World.Biome.TUNDRA: n = name_generator.iclandic_names.generate(14, 2)
 			World.Biome.OTHERWORLD: n = name_generator.constellations.generate(18, 4)
 			World.Biome.HFIL: n = name_generator.capital_cities.generate(18, 4)
-			_: push_error("missing biome kind")
+			_: push_error("missing biome kind ", biome)
 		
 	var result := Artifact.nulled(n)
 	var fill_with := func (positions: Array[Vector2i], probs: Dictionary) -> void:
