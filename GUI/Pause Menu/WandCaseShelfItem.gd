@@ -72,3 +72,12 @@ func build_spell_list() -> String:
 
 func _on_spell_focus_entered() -> void:
 	UIAudioPlayer.focus()
+
+
+func _on_cast_combo_gui_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var ev := event as InputEventKey
+		if ev.is_action_released("ui_up"):
+			move_up_request.emit()
+		elif ev.is_action_released("ui_down"):
+			move_down_request.emit()

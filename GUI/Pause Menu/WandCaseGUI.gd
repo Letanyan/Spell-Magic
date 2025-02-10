@@ -31,6 +31,14 @@ func update_wand_shelf_items(ignore_signals: bool) -> void:
 	if ignore_signals and current_index > -1:
 		(case.wands[current_index] as Wand).spell_updated.emit()
 	
+func scroll_wand_keys_up() -> void:
+	print("scroll up")
+	list_view.shift_scroll_bar(true)
+	
+func scroll_wand_keys_down() -> void:
+	print("scroll down")
+	list_view.shift_scroll_bar(false)
+	
 func reload_wand_shelf_items(index: int = current_index) -> void:
 	if index < 0:
 		return
@@ -39,7 +47,10 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 	current_index = index
 	name_edit.text = wand.name
 	var make := func() -> WandCaseShelfItem:
-		return (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
+		var result := (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
+		result.move_up_request.connect(scroll_wand_keys_up)
+		result.move_down_request.connect(scroll_wand_keys_down)
+		return result
 		
 	spell_change_callables.clear()
 	action_change_callables.clear()
