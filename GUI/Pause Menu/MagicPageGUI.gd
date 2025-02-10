@@ -275,6 +275,7 @@ func _on_element_combo_selected(index: int) -> void:
 		return
 	UIAudioPlayer.switch()
 	book.spells[current_index].element = index as Spell.Element
+	errors_list.erase("element")
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	refresh_preview_thumbnails(book.spells[current_index])
@@ -537,6 +538,7 @@ func update_spells_that_chain_to_current_spell() -> void:
 	else:
 		error_label.text = ""
 		book.spell_was_updated.emit(spell)
+		
 	for s in updated_spells:
 		book.spell_was_updated.emit(s)
 	
@@ -720,6 +722,9 @@ func check_all_errors() -> void:
 	elif raw > book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r:
 		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
 		
+	if not book.settings.upgrade_settings.check_if_has_spell_element(element_combo.selected as Spell.Element):
+		errors_list["element"] = "missing '%s' upgrade" % (Spell.Element.keys()[element_combo.selected] as String).to_lower
+		
 	var text := power_edit.text
 	if not text.is_valid_float():
 		errors_list["P"] = "'%s' is not a valid number" % text
@@ -780,7 +785,7 @@ func check_all_errors() -> void:
 				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
 			else:
 				var disallow := book.can_use_spell(next_spell)
-				if (chain_combo.selected as Spell.ChainCastKind) != Spell.ChainCastKind.NONE and disallow != MagicBook.DisallowSpellReason.NONE:
+				if (chain_combo.selected as Spell.ChainCastKind) != Spell.ChainCastKind.NONE and not (disallow == MagicBook.DisallowSpellReason.NONE or disallow == MagicBook.DisallowSpellReason.NONE):
 					errors_list["chain"] = "'%s''s chained spell has a problem" % [next_spell.name]
 			
 	for k: String in book.spells[current_index].expressions:

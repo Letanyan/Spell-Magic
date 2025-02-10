@@ -515,7 +515,7 @@ func calculate_cooldown() -> float:
 	
 func actual_mana_cost() -> float:
 	var result := mana_cost
-	if chain != null:
+	if chain != null and chain_cast_kind != ChainCastKind.NONE:
 		result += chain.actual_mana_cost() * count
 	return result
 	
