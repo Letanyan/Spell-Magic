@@ -29,7 +29,7 @@ func _on_new_game_pressed() -> void:
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = "Demo World"
 		settings.world_generation_version = -1
-		settings.sed = 0
+		settings.sed = 17312391
 		var rng := RandomNumberGenerator.new()
 		rng.seed = settings.sed
 		settings.time_of_day = rng.randf_range(0.0, 24.0)

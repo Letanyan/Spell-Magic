@@ -1,4 +1,5 @@
 class_name NoiseBlender
+extends RefCounted
 
 const grassland_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/grassland.tres")
 const forest_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/forest.tres")
@@ -10,49 +11,27 @@ const otherworld_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevatio
 const savannah_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/savannah.tres")
 const tundra_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/tundra.tres")
 
-var grassland_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/grassland.tres")
-var jungle_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/jungle.tres")
-var desert_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/desert.tres")
-var forest_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/forest.tres")
-var hfil_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/hfil.tres")
-var otherworld_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/otherworld.tres")
-var savannah_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/savannah.tres")
-var taiga_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/taiga.tres")
-var tundra_noise: FastNoiseLite = preload("res://Worlds/Generator/Terrain/Elevation Noise/tundra.tres")
-
-const sandy_walking: AudioStream = preload("res://Audio/walking/sandy.mp3")
-const forest_walking: AudioStream = preload("res://Audio/walking/forest.mp3")
-const water_walking: AudioStream = preload("res://Audio/walking/water.mp3")
-const stoney_walking: AudioStream = preload("res://Audio/walking/stoney.wav")
-
-const grassland_bg: AudioStream = preload("res://Audio/biome/grassland.mp3")
-const forest_bg: AudioStream = preload("res://Audio/biome/forest.mp3")
-const water_bg: AudioStream = preload("res://Audio/biome/lake.mp3")
-const desert_bg: AudioStream = preload("res://Audio/biome/desert.mp3")
-const hfil_bg: AudioStream = preload("res://Audio/biome/hfil.mp3")
-const jungle_bg: AudioStream = preload("res://Audio/biome/jungle.mp3")
-const otherworld_bg: AudioStream = preload("res://Audio/biome/otherworld.mp3")
-const savannah_bg: AudioStream = preload("res://Audio/biome/savannah.mp3")
-const taiga_bg: AudioStream = preload("res://Audio/biome/taiga.mp3")
-const tundra_bg: AudioStream = preload("res://Audio/biome/tundra.mp3")
-
-"""
-	WATER,
-	GRASSLAND, TAIGA, FOREST, DESERT, JUNGLE, SAVANNAH, TUNDRA,
-	OTHERWORLD, HFIL
-"""
-
-var noise_list: Array[FastNoiseLite] = [
-	grassland_noise, # padding for water
-	grassland_noise,
-	taiga_noise,
-	forest_noise,
-	desert_noise,
-	jungle_noise,
-	savannah_noise,
-	tundra_noise,
-	otherworld_noise,
-	hfil_noise,
+const biome_list: Array[World.Biome] = [
+	World.Biome.GRASSLAND,
+	World.Biome.TAIGA,
+	World.Biome.FOREST,
+	World.Biome.DESERT,
+	World.Biome.JUNGLE,
+	World.Biome.SAVANNAH,
+	World.Biome.TUNDRA,
+	World.Biome.OTHERWORLD,
+	World.Biome.HFIL,
+]
+const biome_colors: PackedVector3Array = [
+	Vector3(0.23, 0.83, 0.23),
+	Vector3(0, 1, 1),
+	Vector3(0.55, 0.28, 0.0),
+	Vector3(1, 1, 0),
+	Vector3(0, 0.4, 0.0),
+	Vector3(1, 0.5, 0),
+	Vector3(1, 1, 1),
+	Vector3(0, 0, 0),
+	Vector3(1, 0, 0),
 ]
 
 var curve_list: Array[Curve] = [
@@ -68,40 +47,6 @@ var curve_list: Array[Curve] = [
 	hfil_curve,
 ]
 
-const biome_list: Array[World.Biome] = [
-	World.Biome.GRASSLAND,
-	World.Biome.TAIGA,
-	World.Biome.FOREST,
-	World.Biome.DESERT,
-	World.Biome.JUNGLE,
-	World.Biome.SAVANNAH,
-	World.Biome.TUNDRA,
-	World.Biome.OTHERWORLD,
-	World.Biome.HFIL,
-]
-# x=temperature/elevation(0=hot,1=cold)[e.i. valleys(hot) upto mountain top(cold)] y=wetness(0=moist,1=dry) 
-#var biome_locations: PackedVector2Array = [
-	#Vector2(0.50, 0.50), # grassland
-	#Vector2(0.75, 0.00), # taiga
-	#Vector2(0.50, 0.25), # forest
-	#Vector2(0.25, 0.75), # desert
-	#Vector2(0.25, 0.25), # jungle
-	#Vector2(0.25, 0.50), # savannah
-	#Vector2(1.00, 0.50), # tundra
-	#Vector2(1.00, 0.00), # otherworld
-	#Vector2(0.00, 1.00)  # hfil
-#]
-const biome_colors: PackedVector3Array = [
-	Vector3(0.23, 0.83, 0.23),
-	Vector3(0, 1, 1),
-	Vector3(0.55, 0.28, 0.0),
-	Vector3(1, 1, 0),
-	Vector3(0, 0.4, 0.0),
-	Vector3(1, 0.5, 0),
-	Vector3(1, 1, 1),
-	Vector3(0, 0, 0),
-	Vector3(1, 0, 0),
-]
 var distances: PackedFloat64Array = [
 	0.0,
 	0.0,
@@ -113,6 +58,7 @@ var distances: PackedFloat64Array = [
 	0.0,
 	0.0,
 ]
+var back: GDNoiseBlender
 var biome := World.Biome.GRASSLAND
 var color := Color.WHITE
 var total_size := 0.0
@@ -120,97 +66,71 @@ var sea_level := 0.0
 var world_radius := 10000.0
 var difficulty_curve := Easing.linear
 
-static func color_for_biome(_biome: World.Biome) -> Color:
-	match _biome:
-		World.Biome.WATER: return Color(0.2, 0.5, 1)
-		World.Biome.TAIGA: return Color(0, 1, 1)
-		World.Biome.GRASSLAND: return Color(0, 1, 0)
-		World.Biome.FOREST: return Color(0, 0.5, 0.5)
-		World.Biome.DESERT: return Color(1, 1, 0)
-		World.Biome.JUNGLE: return Color(0, 0.25, 0.25)
-		World.Biome.SAVANNAH: return Color(1, 0.5, 0)
-		World.Biome.TUNDRA: return Color(1, 1, 1)
-		World.Biome.OTHERWORLD: return Color(0, 0, 0)
-		World.Biome.HFIL: return Color(1, 0, 0)
-		_: return Color(1, 0, 1)
-		
-static func real_color_for_biome(_biome: World.Biome) -> Color:
-	var vec := biome_colors[_biome as int - 1]
-	return Color(vec.x, vec.y, vec.z)
-
-var back: GDNoiseBlender
-
-static func make(version: int, s: int) -> NoiseBlender:
+func _init(version: int, s: int) -> void:
 	if version == 1:
-		return NoiseBlender.version1(s)
-		
-	return NoiseBlender.version1(s) # WARNING: This should always return the latest version
+		version1(s)
+	else:
+		version1(s) # WARNING: This should always return the latest version
 	
-static func version0(s: int) -> NoiseBlender:
-	var result := NoiseBlender.new()
+func version0(s: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = s
 	
-	result.back = GDNoiseBlender.new()
-	result.back.set_elevation_mix_exp(20.0)
+	back = GDNoiseBlender.new()
+	back.set_elevation_mix_exp(20.0)
 	
-	var biome_locations := result.shuffle_biome_locations(rng)
+	var biome_locations := shuffle_biome_locations(rng)
 	
-	result.back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
-	result.back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
-	result.back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
-	result.back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
-	result.back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
-	result.back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
-	result.back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
-	result.back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
-	result.back.add_biome("DQACAAAACtevQRMAbxIDPBMACtcjPAgAAQIA4XrUPwAAAIA/", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
+	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
+	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
+	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
+	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
+	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
+	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
+	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
+	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
+	back.add_biome("DQACAAAACtevQRMAbxIDPBMACtcjPAgAAQIA4XrUPwAAAIA/", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
 	
-	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
-	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
+	back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
+	back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
-	result.sea_level = rng.randf_range(-50.0, 50.0)
-	result.world_radius = rng.randf_range(7_500.0, 10_000.0)
+	sea_level = rng.randf_range(-50.0, 50.0)
+	world_radius = rng.randf_range(7_500.0, 10_000.0)
 	
-	return result
-	
-static func version1(s: int) -> NoiseBlender:
-	var result := NoiseBlender.new()
+func version1(s: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = s
 	
-	result.back = GDNoiseBlender.new()
+	back = GDNoiseBlender.new()
 	
-	var biome_locations := result.shuffle_biome_locations(rng)
+	var biome_locations := shuffle_biome_locations(rng)
 	
 	var elevation_curve := lerpf(20.0, 40.0, rng.randf())
-	result.back.set_elevation_mix_exp(elevation_curve)
+	back.set_elevation_mix_exp(elevation_curve)
 	
-	result.back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
-	result.back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
-	result.back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
-	result.back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
-	result.back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
-	result.back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
-	result.back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
-	result.back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
-	result.back.add_biome("DQACAAAAAACAPxMAbxIDPBMACtcjPAgAARAAAAAAPwIA4XrUPwCPwvW9AAAAgD8=", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
+	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
+	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
+	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
+	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
+	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
+	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
+	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
+	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
+	back.add_biome("DQACAAAAAACAPxMAbxIDPBMACtcjPAgAARAAAAAAPwIA4XrUPwCPwvW9AAAAgD8=", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
 						  
-	result.back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
-	result.back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
+	back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
+	back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
 	
-	result.sea_level = rng.randf_range(-50.0, 50.0)
-	result.world_radius = rng.randf_range(6_000.0, 8_000.0)
+	sea_level = rng.randf_range(-50.0, 50.0)
+	world_radius = rng.randf_range(6_000.0, 8_000.0)
 	
 	var difficulty_option := rng.randi_range(0, 4)
 	match difficulty_option:
-		0: result.difficulty_curve = Easing.in_quart
-		1: result.difficulty_curve = Easing.in_quad
-		2: result.difficulty_curve = Easing.linear
-		3: result.difficulty_curve = Easing.out_quad
-		4: result.difficulty_curve = Easing.out_quart
-	
-	return result
+		0: difficulty_curve = Easing.in_quart
+		1: difficulty_curve = Easing.in_quad
+		2: difficulty_curve = Easing.linear
+		3: difficulty_curve = Easing.out_quad
+		4: difficulty_curve = Easing.out_quart
 	
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)
@@ -240,336 +160,7 @@ func shuffle_biome_locations(rng: RandomNumberGenerator) -> PackedVector2Array:
 		result.append(source[j])
 		source.remove_at(j)
 	return result
-		
 
-static func bg_audio_for_biome(b: World.Biome) -> AudioStream:
-	match b:
-		World.Biome.WATER: return water_bg
-		World.Biome.TAIGA: return taiga_bg
-		World.Biome.GRASSLAND: return grassland_bg
-		World.Biome.FOREST: return forest_bg
-		World.Biome.DESERT: return desert_bg
-		World.Biome.JUNGLE: return jungle_bg
-		World.Biome.SAVANNAH: return savannah_bg
-		World.Biome.TUNDRA: return tundra_bg
-		World.Biome.OTHERWORLD: return otherworld_bg
-		World.Biome.HFIL: return hfil_bg
-		_: return null
-		
-static func walking_audio_for_biome(b: World.Biome) -> AudioStream:
-	match b:
-		World.Biome.WATER: return water_walking
-		World.Biome.TAIGA: return forest_walking
-		World.Biome.GRASSLAND: return forest_walking
-		World.Biome.FOREST: return forest_walking
-		World.Biome.DESERT: return sandy_walking
-		World.Biome.JUNGLE: return forest_walking
-		World.Biome.SAVANNAH: return forest_walking
-		World.Biome.TUNDRA: return sandy_walking
-		World.Biome.OTHERWORLD: return stoney_walking
-		World.Biome.HFIL: return stoney_walking
-		_: return null
-		
-static func walking_audio_tempo_factor(b: World.Biome) -> float:
-	match b:
-		World.Biome.WATER: return 1.0 #
-		World.Biome.TAIGA: return 1.0 # 
-		World.Biome.GRASSLAND: return 0.5 #
-		World.Biome.FOREST: return 1.0 #
-		World.Biome.DESERT: return 1.0 # 
-		World.Biome.JUNGLE: return 1.0 # 
-		World.Biome.SAVANNAH: return 1.0 #
-		World.Biome.TUNDRA: return 1.0 # 
-		World.Biome.OTHERWORLD: return 1.0
-		World.Biome.HFIL: return 1.0
-		_: return 1.0
-
-static func update_for_world_environment(result: Dictionary, env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D, level: float, b: World.Biome, day_time: float) -> void:	
-	result["*fog_density"] = 0.0
-	result["*fog_sky_affect"] = 0.0
-	result["*fog_light_color"] = Color.GRAY
-	result["*ambient_light_color"] = NoiseBlender.environment_ambient_color(b, day_time, sun, moon)
-	match b:
-		World.Biome.GRASSLAND:
-			result["day_top_color"] = Color(0.1, 0.6, 1, 1)
-			result["day_bottom_color"] = Color(0.43, 1, 0.8195, 1)
-			result["sunset_top_color"] = Color(0.7085, 0.47, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 0.3667, 0.24, 1)
-			result["night_top_color"] = Color(0.02, 0, 0.039, 1)
-			result["night_bottom_color"] = Color(0.0819, 0.2411, 0.39, 1)
-			result["horizon_color"] = Color(0, 0.702, 0.8, 1)
-			result["horizon_blur"] = 0.05
-			result["clouds_edge_color"] = Color(0.941, 0.961, 1, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.922, 0.922, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.831, 0.831, 0.941, 1)
-			result["clouds_speed"] = 1.0
-			result["clouds_scale"] = 2.2
-			result["clouds_cutoff"] = 0.6
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.27
-		World.Biome.FOREST:
-			result["day_top_color"] = Color(0, 0.3725, 1, 1)
-			result["day_bottom_color"] = Color(0.4627, 1, 0.4275, 1)
-			result["sunset_top_color"] = Color(0.702, 0.749, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 0.9176, 0.2353, 1)
-			result["night_top_color"] = Color(0.02, 0, 0.04, 1)
-			result["night_bottom_color"] = Color(0.102, 0.4824, 0.2, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05000000074506
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 1.0
-			result["clouds_scale"] = 2.2
-			result["clouds_cutoff"] = 0.3
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.25
-		World.Biome.TAIGA:
-			result["day_top_color"] = Color(0.05, 0, 1, 1)
-			result["day_bottom_color"] = Color(0, 0.8367, 0.9796, 1)
-			result["sunset_top_color"] = Color(0.66, 0.9377, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 0.35, 0.5992, 1)
-			result["night_top_color"] = Color(0.02, 0, 0.04, 1)
-			result["night_bottom_color"] = Color(0.1034, 0.1636, 0.22, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05000000074506
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 0.999999977648
-			result["clouds_scale"] = 2.27999994903744
-			result["clouds_cutoff"] = 0.43999999016512
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.78999998234192
-		World.Biome.JUNGLE:
-			result["day_top_color"] = Color(0, 0.53, 0.1943, 1)
-			result["day_bottom_color"] = Color(0, 0.63, 0.567, 1)
-			result["sunset_top_color"] = Color(0.5553, 0.42, 1, 1)
-			result["sunset_bottom_color"] = Color(0.368, 0.48, 0, 1)
-			result["night_top_color"] = Color(0.02, 0, 0.04, 1)
-			result["night_bottom_color"] = Color(0.1269, 0.27, 0.2175, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05000000074506
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 0.999999977648
-			result["clouds_scale"] = 2.27999994903744
-			result["clouds_cutoff"] = 0.43999999016512
-			result["clouds_weight"] = 0.3999999910592
-			result["clouds_blur"] = 0.0
-		World.Biome.DESERT:
-			result["day_top_color"] = Color(0, 0.4833, 1, 1)
-			result["day_bottom_color"] = Color(0, 0.9333, 1, 1)
-			result["sunset_top_color"] = Color(0.3667, 0, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 0.7, 0, 1)
-			result["night_top_color"] = Color(0, 0.136, 0.34, 1)
-			result["night_bottom_color"] = Color(0.2162, 0.4031, 0.46, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05000000074506
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 0.73999998345952
-			result["clouds_scale"] = 3.999999910592
-			result["clouds_cutoff"] = 0.15999999642368
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.999999977648
-		World.Biome.SAVANNAH:
-			result["day_top_color"] = Color(0.27, 0.562, 1, 1)
-			result["day_bottom_color"] = Color(0.81, 0.9683, 1, 1)
-			result["sunset_top_color"] = Color(1, 0.35, 0, 1)
-			result["sunset_bottom_color"] = Color(1, 0.55, 0, 1)
-			result["night_top_color"] = Color(0, 0.216, 0.54, 1)
-			result["night_bottom_color"] = Color(0, 0, 0, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 2.0499999541784
-			result["clouds_scale"] = 1.30999997071888
-			result["clouds_cutoff"] = 0.6999999843536
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.0
-		World.Biome.TUNDRA:
-			result["day_top_color"] = Color(0.51, 0.706, 1, 1)
-			result["day_bottom_color"] = Color(1, 1, 1, 1)
-			result["sunset_top_color"] = Color(0.7958, 0.51, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 0.7795, 0.51, 1)
-			result["night_top_color"] = Color(0, 0.12, 0.3, 1)
-			result["night_bottom_color"] = Color(0.2444, 0.4557, 0.52, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 5.86999986879376
-			result["clouds_scale"] = 3.999999910592
-			result["clouds_cutoff"] = 0.6499999854712
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.0
-			
-			result["*fog_density"] = lerpf(0.0, 0.1, level / 100.0)
-			result["*fog_sky_affect"] = lerpf(0.1, 0.75, level / 100.0)
-			result["*fog_light_color"] = Color.WHITE
-		World.Biome.OTHERWORLD:
-			result["day_top_color"] = Color(0, 1, 1, 1)
-			result["day_bottom_color"] = Color(0, 0.0167, 1, 1)
-			result["sunset_top_color"] = Color(0, 0, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 0, 1, 1)
-			result["night_top_color"] = Color(0, 0, 1, 1)
-			result["night_bottom_color"] = Color(0, 0, 0, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 19.99999955296
-			result["clouds_scale"] = 0.43999999016512
-			result["clouds_cutoff"] = 0.31999999284736
-			result["clouds_weight"] = 0.0
-			result["clouds_blur"] = 0.999999977648
-		World.Biome.HFIL:
-			result["day_top_color"] = Color(1, 0, 0, 1)
-			result["day_bottom_color"] = Color(1, 0.0157, 1, 1)
-			result["sunset_top_color"] = Color(1, 0, 1, 1)
-			result["sunset_bottom_color"] = Color(1, 1, 0, 1)
-			result["night_top_color"] = Color(1, 0, 0, 1)
-			result["night_bottom_color"] = Color(0, 0, 0, 1)
-			result["horizon_color"] = Color(0, 0.7, 0.8, 1)
-			result["horizon_blur"] = 0.05
-			result["clouds_edge_color"] = Color(0.8, 0.8, 0.98, 1)
-			result["clouds_top_color"] = Color(1, 1, 1, 1)
-			result["clouds_middle_color"] = Color(0.92, 0.92, 0.98, 1)
-			result["clouds_bottom_color"] = Color(0.83, 0.83, 0.94, 1)
-			result["clouds_speed"] = 0.0
-			result["clouds_scale"] = 3.999999910592
-			result["clouds_cutoff"] = 0.499999988824
-			result["clouds_weight"] = 0.999999977648
-			result["clouds_blur"] = 0.61999998614176
-	
-enum SkyColorKind { DAY_TOP, DAY_BOTTOM, SUNSET_TOP, SUNSET_BOTTOM, NIGHT_TOP, NIGHT_BOTTOM }
-static func sky_color(b: World.Biome, kind: SkyColorKind) -> Color:
-	var result := Color(1, 1, 1)
-	match b:
-		World.Biome.GRASSLAND:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0.1, 0.6, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0.43, 1, 0.8195, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.7085, 0.47, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.3667, 0.24, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.039, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.0819, 0.2411, 0.39, 1)
-		World.Biome.FOREST:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0, 0.3725, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0.4627, 1, 0.4275, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.702, 0.749, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.9176, 0.2353, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.04, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.102, 0.4824, 0.2, 1)
-		World.Biome.TAIGA:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0.05, 0, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.8367, 0.9796, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.66, 0.9377, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.35, 0.5992, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.04, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.1034, 0.1636, 0.22, 1)
-		World.Biome.JUNGLE:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0, 0.53, 0.1943, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.63, 0.567, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.5553, 0.42, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(0.368, 0.48, 0, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0.02, 0, 0.04, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.1269, 0.27, 0.2175, 1)
-		World.Biome.DESERT:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0, 0.4833, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.9333, 1, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.3667, 0, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.7, 0, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0.136, 0.34, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.2162, 0.4031, 0.46, 1)
-		World.Biome.SAVANNAH:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0.27, 0.562, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0.81, 0.9683, 1, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(1, 0.35, 0, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.55, 0, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0.216, 0.54, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0, 0, 0, 1)
-		World.Biome.TUNDRA:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0.51, 0.706, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(1, 1, 1, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0.7958, 0.51, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0.7795, 0.51, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0.12, 0.3, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0.2444, 0.4557, 0.52, 1)
-		World.Biome.OTHERWORLD:
-			if kind == SkyColorKind.DAY_TOP: result = Color(0, 1, 1, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(0, 0.0167, 1, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(0, 0, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 0, 1, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(0, 0, 1, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0, 0, 0, 1)
-		World.Biome.HFIL:
-			if kind == SkyColorKind.DAY_TOP: result = Color(1, 0, 0, 1)
-			if kind == SkyColorKind.DAY_BOTTOM: result = Color(1, 0.0157, 1, 1)
-			if kind == SkyColorKind.SUNSET_TOP: result = Color(1, 0, 1, 1)
-			if kind == SkyColorKind.SUNSET_BOTTOM: result = Color(1, 1, 0, 1)
-			if kind == SkyColorKind.NIGHT_TOP: result = Color(1, 0, 0, 1)
-			if kind == SkyColorKind.NIGHT_BOTTOM: result = Color(0, 0, 0, 1)
-	return result
-			
-static func environment_ambient_color(b: World.Biome, time_of_day: float, sun: DirectionalLight3D, moon: DirectionalLight3D) -> Color:
-	var daylight := Color(1, 1, 1)
-	var sun_direction := sun.to_global( Vector3( 0.0, 0.0, 1.0 )).normalized()
-	var sunset_amount := clampf( 0.5 - absf( sun_direction.y ), 0.0, 0.5 ) * 2.0
-	daylight = daylight.lerp(Color(0.8, 0.8, 0.8), sunset_amount)
-	var night_amount := clampf( -sun_direction.y + 0.7, 0.0, 1.0 )
-	daylight = daylight.lerp(Color(0.1, 0.1, 0.1), night_amount)
-	
-	var day_top_color := sky_color(b, SkyColorKind.DAY_TOP)
-	var day_bottom_color := sky_color(b, SkyColorKind.DAY_BOTTOM)
-	var sunset_top_color := sky_color(b, SkyColorKind.SUNSET_TOP)
-	var sunset_bottom_color := sky_color(b, SkyColorKind.SUNSET_BOTTOM)
-	var night_top_color := sky_color(b, SkyColorKind.NIGHT_TOP)
-	var night_bottom_color := sky_color(b, SkyColorKind.NIGHT_BOTTOM)
-	
-	var _eyedir := 0.5
-	var _sky_color := day_bottom_color.lerp(day_top_color, _eyedir)
-	var _sky_sunset_color := sunset_bottom_color.lerp(sunset_top_color, _eyedir + 0.5)
-	_sky_sunset_color = _sky_sunset_color.lerp(sunset_bottom_color, sunset_amount)
-	_sky_color = _sky_color.lerp(_sky_sunset_color, sunset_amount)
-	var _sky_night_color := night_bottom_color.lerp(night_top_color, _eyedir)
-	_sky_color = _sky_color.lerp(_sky_night_color, night_amount)
-	
-	return _sky_color.lerp(daylight, 0.75)
-			
-static func print_world_environment(env: WorldEnvironment, sun: DirectionalLight3D, moon: DirectionalLight3D) -> void:
-	var shader := env.environment.sky.sky_material as ShaderMaterial
-	print("shader.set_shader_parameter(prefix + \"day_top_color\", Color", shader.get_shader_parameter("start_day_top_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"day_bottom_color\", Color", shader.get_shader_parameter("start_day_bottom_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"sunset_top_color\", Color", shader.get_shader_parameter("start_sunset_top_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"sunset_bottom_color\", Color", shader.get_shader_parameter("start_sunset_bottom_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"night_top_color\", Color", shader.get_shader_parameter("start_night_top_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"night_bottom_color\", Color", shader.get_shader_parameter("start_night_bottom_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"horizon_color\", Color", shader.get_shader_parameter("start_horizon_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"horizon_blur\", ", shader.get_shader_parameter("start_horizon_blur"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_edge_color\", Color", shader.get_shader_parameter("start_clouds_edge_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_top_color\", Color", shader.get_shader_parameter("start_clouds_top_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_middle_color\", Color", shader.get_shader_parameter("start_clouds_middle_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_bottom_color\", Color", shader.get_shader_parameter("start_clouds_bottom_color"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_speed\", ", shader.get_shader_parameter("start_clouds_speed"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_scale\", ", shader.get_shader_parameter("start_clouds_scale"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_cutoff\", ", shader.get_shader_parameter("start_clouds_cutoff"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_weight\", ", shader.get_shader_parameter("start_clouds_weight"), ")")
-	print("shader.set_shader_parameter(prefix + \"clouds_blur\", ", shader.get_shader_parameter("start_clouds_blur"), ")")
 
 func count_biomes(positions: Array[Vector2], summary: Dictionary, should_print: bool = false) -> int:
 	var sum := 0

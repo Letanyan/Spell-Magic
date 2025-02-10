@@ -56,6 +56,7 @@ var shake_intensity: float = 0.0
 const camera_shake_noise = preload("res://Characters/Player/camera_shake_noise.tres")
 var camera_bounce_direction := 0
 var chunker: Chunker
+var biome_helper: BiomeHelper
 
 signal player_moved(delta: float, state: PhysicsDirectSpaceState3D)
 signal vital_update(vitals: Vitals)
@@ -94,6 +95,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_red_cross.connect(on_pick_up_red_cross)
 	SignalBus.pick_up_world_item_scroll_note.connect(on_pick_up_scroll_note)
 	animation_tree.active = true
+	biome_helper = BiomeHelper.new()
 	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
 	if not bounds:
 		bounds = Navigator.shape_bounds((get_node("Collision") as CollisionShape3D).shape)
@@ -594,7 +596,7 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 	vitals.damage_resistance = damage_resistance
 	
 func play_bg_audio(biome: World.Biome, is_empty: bool = false) -> void:
-	var stream := null if is_empty else NoiseBlender.bg_audio_for_biome(biome)
+	var stream := null if is_empty else bg_audio_state.bg_audio_for_biome(biome)
 	bg_audio_state.play(stream, 5.0, 2.0)
 		
 func setup_menu_transition(open: Callable, close: Callable) -> void:

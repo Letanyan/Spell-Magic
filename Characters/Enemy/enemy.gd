@@ -394,10 +394,8 @@ func manual_physics_process(delta: float) -> void:
 			if velocity != Vector3.ZERO:
 				if final_is_on_floor:
 					if velocity.length() < 0.166667:
-						#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 						play_animation("walk", {"parameters/walk/speed/scale": velocity_movement.movement_speed_animation_scale()})
 					else:
-						#play_walking_audio(NoiseBlender.walking_audio_for_biome(current_biome))
 						play_animation("run", {"parameters/run/speed/scale": velocity_movement.movement_speed_animation_scale()})
 			else:
 				idle_tick += delta
@@ -615,6 +613,7 @@ func drop_note() -> String:
 	return ""
 
 func play_walking_audio(stream: String) -> void:
+	# FIXME: add enemy walking sounds
 	pass
 
 # returns the actual value if the enemy with a class (1-20) where 1 is low 

@@ -13,15 +13,16 @@ extends Node3D
 var noise_image: Image
 
 const CHUNK_SIZE = 256
-@onready var blender: NoiseBlender
-@onready var chunker: Chunker
-@onready var population: Dictionary = {} ## [Vector2i]Population
+var blender: NoiseBlender
+var chunker: Chunker
+var biome_helper: BiomeHelper
+var population: Dictionary = {} ## [Vector2i]Population
 var entity_manager: EntityManager
 
 var last_last_biome: World.Biome = World.Biome.WATER
 var last_biome: World.Biome = World.Biome.WATER
 
-@onready var skybox: SkyBox
+var skybox: SkyBox
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
@@ -148,7 +149,8 @@ func run_on_ready() -> void:
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 		
-	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
+	biome_helper = BiomeHelper.new()
+	blender = NoiseBlender.new(settings.world_generation_version, settings.sed)
 	settings.sea_level = blender.sea_level
 	settings.world_radius = blender.world_radius
 	settings.customisation_settings.update_all(player.skeleton_3d)
@@ -300,7 +302,7 @@ func _physics_process(delta: float) -> void:
 		settings.day_of_the_year = skybox.day_of_year
 		if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
 			var env := get_node("WorldEnvironment") as WorldEnvironment
-			env.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
+			env.environment.ambient_light_color = biome_helper.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
 		RenderingServer.global_shader_parameter_set("tick_time_s", float(Time.get_ticks_msec()) / 1000.0)
 		
 	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
@@ -694,7 +696,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var shader := env.environment.sky.sky_material as ShaderMaterial
 	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius)
 	if biome_final_settings.is_empty():
-		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		biome_start_settings.merge(biome_final_settings, true)
 		biome_tick = biome_transition_duration
 		shader.set_shader_parameter("transition", 0.0)
@@ -710,7 +712,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	elif is_equal_approx(biome_tick, biome_transition_duration):
 		biome_tick = 0.0
 		shader.set_shader_parameter("transition", 0.0)
-		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		biome_transition_duration = duration
 	else:
@@ -724,7 +726,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 				shader.set_shader_parameter("start_" + key, value)
 				shader.set_shader_parameter("final_" + key, value)
 		shader.set_shader_parameter("transition", 0.0)
-		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		if last_last_biome == biome:
 			biome_transition_duration = elapsed

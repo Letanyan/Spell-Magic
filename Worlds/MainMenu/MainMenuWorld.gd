@@ -12,9 +12,10 @@ var player_rotation_direction := 0.0
 var requested_player_height := 0.0
 @onready var cam: Camera3D = $Player/Arm/Lens
 
-@onready var blender: NoiseBlender
-@onready var chunker: Chunker
-@onready var population: Dictionary = {}
+var blender: NoiseBlender
+var chunker: Chunker
+var biome_helper: BiomeHelper
+var population: Dictionary = {}
 
 var biome_in_waiting_queue: World.Biome = World.Biome.WATER
 var switch_biome_timer: float = 0.0
@@ -25,7 +26,7 @@ var bg_audio_state: AudioState
 @onready var bg_audio1: AudioStreamPlayer3D = $Player/BGAudio1
 @onready var bg_audio2: AudioStreamPlayer3D = $Player/BGAudio2
 
-@onready var skybox: SkyBox
+var skybox: SkyBox
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 @onready var moon: DirectionalLight3D = $Moon
@@ -61,19 +62,20 @@ func _ready() -> void:
 	#_settings.world_name = "empty"
 	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
-	
 	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
 	# FIXME: check "VERSION: -1, WORLD SEED: 7213014, RNG SEED: 7213014"
+	# FIXME: check color VERSION: -1, WORLD SEED: 8871961, RNG SEED: 8871961
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)
 	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
 	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
-	blender = NoiseBlender.make(settings.world_generation_version, settings.sed)
+	biome_helper = BiomeHelper.new()
+	blender = NoiseBlender.new(settings.world_generation_version, settings.sed)
 	
 	#blender.count_biomes([
 	#Vector2(0, 0), Vector2(0, 1), Vector2(1, 0), \
@@ -92,7 +94,6 @@ func _ready() -> void:
 	#Vector2(0, -2000), Vector2(-2000, 0), Vector2(2000, -2000), \
 	#Vector2(-2000, 2000), Vector2(2000, 2000), Vector2(-2000, -2000), \
 	#])
-	
 	#chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
 	if GlobalData.is_debug:
 		chunker = Chunker.new(256, 0.0625, 128 * settings.graphics_settings.grass_size, blender, [2, 4], true)
@@ -135,7 +136,7 @@ func _physics_process(delta: float) -> void:
 		_on_player_moved(0.25)
 		if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
 			var env := get_node("WorldEnvironment") as WorldEnvironment
-			env.environment.ambient_light_color = NoiseBlender.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
+			env.environment.ambient_light_color = biome_helper.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
 		RenderingServer.global_shader_parameter_set("tick_time_s", float(Time.get_ticks_msec()) / 1000.0)
 		
 	player.position += player_movement_direction * delta
@@ -151,7 +152,8 @@ func _physics_process(delta: float) -> void:
 		print(World.Biome.keys()[b])
 		play_bg_audio(b)
 		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
-		var tint := NoiseBlender.color_for_biome(b).darkened(0.5)
+		biome_helper = BiomeHelper.new()
+		var tint := biome_helper.color_for_biome(b).darkened(0.5)
 		tint = theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
 		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
 		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
@@ -196,7 +198,7 @@ func update_audio_state(delta: float) -> void:
 	bg_audio_state.update(delta)
 	
 func play_bg_audio(biome: World.Biome, is_empty: bool = false) -> void:
-	var stream := null if is_empty else NoiseBlender.bg_audio_for_biome(biome)
+	var stream := null if is_empty else bg_audio_state.bg_audio_for_biome(biome)
 	bg_audio_state.play(stream, 5.0, 2.0)	
 		
 func build_terrain() -> void:
@@ -257,7 +259,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var shader := env.environment.sky.sky_material as ShaderMaterial
 	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius)
 	if biome_final_settings.is_empty():
-		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		biome_start_settings.merge(biome_final_settings, true)
 		biome_tick = biome_transition_duration
 		shader.set_shader_parameter("transition", 0.0)
@@ -273,7 +275,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	elif is_equal_approx(biome_tick, biome_transition_duration):
 		biome_tick = 0.0
 		shader.set_shader_parameter("transition", 0.0)
-		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		biome_transition_duration = duration
 	else:
@@ -287,7 +289,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 				shader.set_shader_parameter("start_" + key, value)
 				shader.set_shader_parameter("final_" + key, value)
 		shader.set_shader_parameter("transition", 0.0)
-		NoiseBlender.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
+		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		if last_last_biome == biome:
 			biome_transition_duration = elapsed
@@ -322,7 +324,7 @@ func update_transition_to_biome(delta: float) -> void:
 
 
 func _on_button_pressed() -> void:
-	NoiseBlender.print_world_environment(world_environment, sun, moon)
+	biome_helper.print_world_environment(world_environment, sun, moon)
 
 
 func _on_button_2_pressed() -> void:

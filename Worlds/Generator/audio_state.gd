@@ -167,3 +167,28 @@ func update(delta: float) -> void:
 			state = PlayerState.PLAYING_1 if fade_player1 == null else PlayerState.IN_TRANSITION_TO_1
 		elif player2.playing or fade_player2 != null:
 			state = PlayerState.PLAYING_2 if fade_player2 == null else PlayerState.IN_TRANSITION_TO_2
+
+func bg_audio_for_biome(b: World.Biome) -> AudioStream:
+	match b:
+		World.Biome.WATER: return water_bg
+		World.Biome.TAIGA: return taiga_bg
+		World.Biome.GRASSLAND: return grassland_bg
+		World.Biome.FOREST: return forest_bg
+		World.Biome.DESERT: return desert_bg
+		World.Biome.JUNGLE: return jungle_bg
+		World.Biome.SAVANNAH: return savannah_bg
+		World.Biome.TUNDRA: return tundra_bg
+		World.Biome.OTHERWORLD: return otherworld_bg
+		World.Biome.HFIL: return hfil_bg
+		_: return null
+		
+const grassland_bg: AudioStream = preload("res://Audio/biome/grassland.mp3") as AudioStreamMP3
+const forest_bg: AudioStream = preload("res://Audio/biome/forest.mp3") as AudioStreamMP3
+const water_bg: AudioStream = preload("res://Audio/biome/lake.mp3") as AudioStreamMP3
+const desert_bg: AudioStream = preload("res://Audio/biome/desert.mp3") as AudioStreamMP3
+const hfil_bg: AudioStream = preload("res://Audio/biome/hfil.mp3") as AudioStreamMP3
+const jungle_bg: AudioStream = preload("res://Audio/biome/jungle.mp3") as AudioStreamMP3
+const otherworld_bg: AudioStream = preload("res://Audio/biome/otherworld.mp3") as AudioStreamMP3
+const savannah_bg: AudioStream = preload("res://Audio/biome/savannah.mp3") as AudioStreamMP3
+const taiga_bg: AudioStream = preload("res://Audio/biome/taiga.mp3") as AudioStreamMP3
+const tundra_bg: AudioStream = preload("res://Audio/biome/tundra.mp3") as AudioStreamMP3
