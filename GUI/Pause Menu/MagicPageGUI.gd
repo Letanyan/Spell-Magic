@@ -71,6 +71,7 @@ var is_universal: bool = false:
 		is_universal = value
 var current_index := -1
 var old_chain_text: String = ""
+var delete_chain_key_pressed: bool = false
 var selected_variables: Dictionary = {}
 var constants_text_changed: bool = false # Used to avoid triggering expressions caret changed when text is changed
 var selected_variables_origin_line := -1
@@ -444,7 +445,7 @@ func _on_chain_text_changed(new_text: String) -> void:
 		return
 	var spell: Spell = book.spells[current_index]
 	
-	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell)
+	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell) if not delete_chain_key_pressed else new_text
 	var option := Wand.Option.new()
 	option.parse_spells(n, book)
 	
@@ -1057,3 +1058,10 @@ func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
 func _on_control_focus_entered() -> void:
 	UIAudioPlayer.focus()
 	preview_selector.visible = false
+
+
+func _on_chain_edit_gui_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var ev := event as InputEventKey
+		if ev.is_action_pressed("ui_text_backspace") or ev.is_action_pressed("ui_text_delete"):
+			delete_chain_key_pressed = true

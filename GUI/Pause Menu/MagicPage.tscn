@@ -1454,6 +1454,7 @@ icon = ExtResource("62_gl3h1")
 [connection signal="focus_entered" from="container/power_edit" to="." method="_on_control_focus_entered"]
 [connection signal="text_changed" from="container/power_edit" to="." method="_on_P_text_changed"]
 [connection signal="focus_entered" from="container/chain_edit" to="." method="_on_control_focus_entered"]
+[connection signal="gui_input" from="container/chain_edit" to="." method="_on_chain_edit_gui_input"]
 [connection signal="text_changed" from="container/chain_edit" to="." method="_on_chain_text_changed"]
 [connection signal="item_selected" from="container/chain_combo" to="." method="_on_chain_combo_selected"]
 [connection signal="pressed" from="container/view_chain_button" to="." method="_on_view_chain_button_pressed"]

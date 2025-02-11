@@ -15,6 +15,7 @@ var action_changed: Callable
 var autocomplete: Callable
 
 var old_text: String = ""
+var delete_key_pressed: bool = false
 
 signal move_down_request
 signal move_up_request
@@ -45,9 +46,10 @@ func _on_cast_combo_selected(id: int) -> void:
 		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD
 
 func _on_spell_text_changed(new_text: String) -> void:
-	var updated_text: String = autocomplete.call(old_text, spell, true)
+	var updated_text: String = autocomplete.call(old_text, spell, true) if not delete_key_pressed else new_text
 	spell_changed.call(get_node(".") as WandCaseShelfItem, updated_text, false)
 	old_text = updated_text
+	delete_key_pressed = false
 	
 func update_state(ignore_signals: bool) -> void:
 	spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, ignore_signals)
@@ -81,3 +83,10 @@ func _on_cast_combo_gui_input(event: InputEvent) -> void:
 			move_up_request.emit()
 		elif ev.is_action_released("ui_down"):
 			move_down_request.emit()
+
+
+func _on_spell_gui_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var ev := event as InputEventKey
+		if ev.is_action_pressed("ui_text_backspace") or ev.is_action_pressed("ui_text_delete"):
+			delete_key_pressed = true
