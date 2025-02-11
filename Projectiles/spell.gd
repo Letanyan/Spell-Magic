@@ -205,7 +205,11 @@ func call_with_parameter_collection_description() -> String:
 	result += "CD=" + str(crit_dmg) + ","
 	result += "M=" + str(mana_cost) + ","
 	for v: String in expression_strings:
-		result += v + "=" + expression_strings[v] + ","
+		var text := expression_strings[v] as String
+		if text.contains(";"):
+			result += v + "=" + text.split(";", false, 2)[0] + ","
+		else:
+			result += v + "=" + text + ","
 	return result.substr(0, result.length() - 1) + ")"
 	
 func configure_using_parameter_collection(parameters: Dictionary, vars: Vars) -> void:
@@ -922,12 +926,20 @@ static func real_color_from_element(el: Element) -> Color:
 		Element.VOID: return Color(0.25, 0.25, 0.25)
 		_: return Color.WHITE
 
-func bake(new_name: String) -> Spell: 
-	var bx := GDExpr.bake(x, expression_strings)
-	var by := GDExpr.bake(y, expression_strings)
-	var bz := GDExpr.bake(z, expression_strings)
-	var bd := GDExpr.bake(delay, expression_strings)
-	var br := GDExpr.bake(r, expression_strings)
+func bake(new_name: String) -> Spell:
+	var formatted_expressions := {}
+	for v: String in expression_strings:
+		var e := expression_strings[v] as String
+		if e.contains(";"):
+			formatted_expressions[v] = e.split(";", false, 2)[0]
+		else:
+			formatted_expressions[v] = e
+			
+	var bx := GDExpr.bake(x, formatted_expressions)
+	var by := GDExpr.bake(y, formatted_expressions)
+	var bz := GDExpr.bake(z, formatted_expressions)
+	var bd := GDExpr.bake(delay, formatted_expressions)
+	var br := GDExpr.bake(r, formatted_expressions)
 	var result := Spell.new(follow, bx, by, bz, br, power, duration, element, count, bd, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind

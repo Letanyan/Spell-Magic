@@ -74,7 +74,17 @@ func setup(_settings: WorldSettings) -> void:
 		#)
 		#artifacts.collection.append(artifact)
 	
-	SignalBus.enemy_death.connect(func(e: Enemy) -> void: e.queue_free(); print(e, " died"))
+	SignalBus.enemy_death.connect(func(e: Enemy) -> void:
+		var i := -1
+		for x in inhabitants:
+			i += 1
+			if x == e:
+				break
+		if i != -1:
+			inhabitants.remove_at(i)
+		e.queue_free()
+		print(e, " died")
+	)
 	
 	#make_targets()
 	make_line_targets()

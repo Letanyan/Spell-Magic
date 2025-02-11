@@ -1,4 +1,4 @@
-arc:  fires multiple projectilesin an arc
+arc:  fires multiple projectiles in an arc
 	R ; arc radius
 	s ; speed
 	d ; offset

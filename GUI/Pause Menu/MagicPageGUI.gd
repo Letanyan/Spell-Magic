@@ -724,7 +724,7 @@ func check_all_errors() -> void:
 		errors_list["r"] = "Value of %.1f exceeds maximum of %.1f" % [raw, book.settings.upgrade_settings.max_r() + book.settings.upgrade_settings.buff_r]
 		
 	if not book.settings.upgrade_settings.check_if_has_spell_element(element_combo.selected as Spell.Element):
-		errors_list["element"] = "missing '%s' upgrade" % (Spell.Element.keys()[element_combo.selected] as String).to_lower
+		errors_list["element"] = "missing '%s' upgrade" % (Spell.Element.keys()[element_combo.selected] as String).to_lower()
 		
 	var text := power_edit.text
 	if not text.is_valid_float():

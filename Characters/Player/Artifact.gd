@@ -406,6 +406,7 @@ static func from_config(drop_probs: Dictionary, name_generator: NameGenerator, b
 		n = ""
 	else:
 		match biome:
+			World.Biome.WATER: n = name_generator.satellites.generate(7, 2) 
 			World.Biome.GRASSLAND: n = name_generator.german_names.generate(16, 2)
 			World.Biome.TAIGA: n = name_generator.russian_names.generate(14, 2)
 			World.Biome.FOREST: n = name_generator.english_names.generate(8, 1)
