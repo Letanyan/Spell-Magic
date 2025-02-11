@@ -17,6 +17,7 @@ var world_generation_version: int = -1
 var sea_level: float = 0.0
 var world_radius: float = 10000.0
 var world_level: int = 1
+var difficulty_level: int = 2
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
@@ -52,6 +53,7 @@ func save_dict() -> Dictionary:
 		"enemies_killed": enemies_killed, "marked_entities": marked_entities, "day_of_the_year": day_of_the_year,
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		"world_generation_version": world_generation_version, "sea_level": sea_level, "world_radius": world_radius,
+		"difficulty_level": difficulty_level,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
@@ -90,6 +92,7 @@ func load_dict(data: Dictionary) -> void:
 	world_generation_version = data.get("world_generation_version", -1) 
 	sea_level = data.get("sea_level", 0.0)
 	world_radius = data.get("world_radius", 10000.0)
+	difficulty_level = data.get("difficulty_level", 2)
 	
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.load_dict(data.get("upgrade_settings", {}) as Dictionary)

@@ -3,6 +3,7 @@ extends Control
 
 @onready var save_name: TextEdit = $SaveName
 var name_generator: NameGenerator
+@onready var random_name: Button = $RandomName
 @onready var use_seed: Button = $UseSeed
 @onready var use_save_file: Button = $UseSaveFile
 @onready var use_normal: Button = $UseNormal
@@ -65,6 +66,7 @@ var name_generator: NameGenerator
 @onready var game_mode_description_panel: Panel = $GameModeDescriptionPanel
 @onready var game_mode_description: Label = $GameModeDescriptionPanel/GameModeDescription
 
+@onready var difficulty_value: OptionButton = $StartingUpgradesPanel/Difficulty/Value
 
 
 var game_mode: GameModeSettings.GameMode = GameModeSettings.GameMode.RESPAWN
@@ -206,6 +208,7 @@ func _on_create_pressed() -> void:
 		rng.seed = settings.sed
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
+		settings.difficulty_level = difficulty_value.get_item_id(difficulty_value.selected)
 		
 		settings.game_mode_settings.mode = game_mode
 		match game_mode:
@@ -237,6 +240,7 @@ func _on_create_pressed() -> void:
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.normal_mode()
+		settings.difficulty_level = 2
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
@@ -255,6 +259,7 @@ func _on_create_pressed() -> void:
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
 		settings.game_mode_settings.flags = game_flags & GameModeSettings.DISALLOW_SPELL_EDITING
+		settings.difficulty_level = 2
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << rng.randi_range(1, 6))
@@ -471,6 +476,7 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	starting_upgrades_panel.visible = button_pressed
 	var pos_delta := starting_upgrades_panel.size.x * (-0.5 if button_pressed else 0.5)
 	save_name.position.x += pos_delta
+	random_name.position.x += pos_delta
 	use_seed.position.x += pos_delta
 	use_save_file.position.x += pos_delta
 	use_normal.position.x += pos_delta
@@ -584,4 +590,3 @@ func _on_seed_focus_entered() -> void:
 func _on_random_name_pressed() -> void:
 	UIAudioPlayer.click()
 	save_name.text = name_generator.english_names.generate(8, 1, 12, false)
-	

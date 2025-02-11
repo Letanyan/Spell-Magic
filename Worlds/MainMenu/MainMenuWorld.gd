@@ -257,7 +257,7 @@ func show_menu_screen(kind: MenuScreenKind) -> void:
 func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var env := get_node("WorldEnvironment") as WorldEnvironment
 	var shader := env.environment.sky.sky_material as ShaderMaterial
-	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius)
+	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius, settings.difficulty_level)
 	if biome_final_settings.is_empty():
 		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		biome_start_settings.merge(biome_final_settings, true)

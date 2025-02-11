@@ -332,7 +332,7 @@ offset_right = -4.0
 offset_bottom = 56.0
 grow_horizontal = 0
 toggle_mode = true
-text = "Starting Upgrades"
+text = "Custom Stats"
 
 [node name="GameModeDescriptionPanel" type="Panel" parent="."]
 layout_mode = 1
@@ -376,6 +376,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="WorldGenerationVersion" type="Label" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -969,6 +970,31 @@ offset_bottom = 21.0
 text = "100000"
 horizontal_alignment = 2
 vertical_alignment = 1
+
+[node name="Difficulty" type="Label" parent="StartingUpgradesPanel"]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 288.0
+offset_right = 744.0
+offset_bottom = 312.0
+text = "Difficulty Curve"
+
+[node name="Value" type="OptionButton" parent="StartingUpgradesPanel/Difficulty"]
+layout_mode = 0
+offset_left = 128.0
+offset_right = 344.0
+offset_bottom = 24.0
+selected = 2
+item_count = 5
+popup/item_0/text = "Easy"
+popup/item_1/text = "Very Easy"
+popup/item_1/id = 1
+popup/item_2/text = "Normal"
+popup/item_2/id = 2
+popup/item_3/text = "Hard"
+popup/item_3/id = 3
+popup/item_4/text = "Very Hard"
+popup/item_4/id = 4
 
 [connection signal="focus_entered" from="SaveName" to="." method="_on_save_name_focus_entered"]
 [connection signal="pressed" from="RandomName" to="." method="_on_random_name_pressed"]

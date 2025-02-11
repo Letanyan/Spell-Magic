@@ -64,7 +64,6 @@ var color := Color.WHITE
 var total_size := 0.0
 var sea_level := 0.0
 var world_radius := 10000.0
-var difficulty_curve := Easing.linear
 
 func _init(version: int, s: int) -> void:
 	if version == 1:
@@ -123,14 +122,6 @@ func version1(s: int) -> void:
 	
 	sea_level = rng.randf_range(-50.0, 50.0)
 	world_radius = rng.randf_range(6_000.0, 8_000.0)
-	
-	var difficulty_option := rng.randi_range(0, 4)
-	match difficulty_option:
-		0: difficulty_curve = Easing.in_quart
-		1: difficulty_curve = Easing.in_quad
-		2: difficulty_curve = Easing.linear
-		3: difficulty_curve = Easing.out_quad
-		4: difficulty_curve = Easing.out_quart
 	
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)

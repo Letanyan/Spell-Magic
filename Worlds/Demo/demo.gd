@@ -322,7 +322,7 @@ func _physics_process(delta: float) -> void:
 		if environment_timer > 1.0:
 			environment_timer = 0.0
 		environment_effect_tick = 0.0
-		var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, player.world_settings.world_radius)
+		var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, player.world_settings.world_radius, player.world_settings.difficulty_level)
 		var chance := lvl / 100.0
 		if last_biome == World.Biome.HFIL:
 			if randf() < chance * 0.01:
@@ -694,7 +694,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var env := get_node("WorldEnvironment") as WorldEnvironment
 	var shader := env.environment.sky.sky_material as ShaderMaterial
-	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius)
+	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius, settings.difficulty_level)
 	if biome_final_settings.is_empty():
 		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		biome_start_settings.merge(biome_final_settings, true)

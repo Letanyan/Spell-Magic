@@ -61,7 +61,7 @@ func increment_ticks(delta: float) -> void:
 # result["target"] = target_velocity * delta
 # result["impulse"] = impulse
 # result["direction"] = direction
-func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, sea_level: float, world_radius: float, chunker: Chunker) -> Dictionary:
+func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, settings: WorldSettings, chunker: Chunker) -> Dictionary:
 	var result := {}
 	increment_ticks(delta)
 		
@@ -111,7 +111,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			elif body is Enemy:
 				(body as Enemy).add_shake(vitals.stun.value)
 
-	var world_level := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, world_radius)
+	var world_level := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, settings.world_radius, settings.difficulty_level)
 	if vital_tick >= 1.0:
 		var h := vitals.update_vitals(body)
 		var world_node := body.get_parent() as Node3D
@@ -121,9 +121,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
 		vital_tick = 0.0
-		if body.position.y < sea_level and body is Player:
-			var underwater := clampf(sea_level - body.position.y, 0.0, 10.0) / 10.0
-			var damage := clampf(body.position.y - sea_level, -100.0, 0.0) / 100.0 * lerpf(1.0, 5.0, world_level / 100.0)
+		if body.position.y < settings.sea_level and body is Player:
+			var underwater := clampf(settings.sea_level - body.position.y, 0.0, 10.0) / 10.0
+			var damage := clampf(body.position.y - settings.sea_level, -100.0, 0.0) / 100.0 * lerpf(1.0, 5.0, settings.world_level / 100.0)
 			vitals.handle_damage(Spell.Element.WATER, damage, underwater)
 			if damage > 0.0:
 				Vitals.apply_damage(world_node, body, damage, Spell.Element.WATER, true, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
@@ -152,9 +152,9 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		elif current_biome == World.Biome.OTHERWORLD:
 			fa = fa * lerpf(1.1, 1.9, fmod(world_level, 101.0) / 100.0)
 			
-		if sea_level - 1.5 < body.feet_position() and body.feet_position() < sea_level - 1.45:
+		if settings.sea_level - 1.5 < body.feet_position() and body.feet_position() < settings.sea_level - 1.45:
 			target_velocity.y = fl
-		elif body.feet_position() < sea_level - 1.5:
+		elif body.feet_position() < settings.sea_level - 1.5:
 			if target_velocity.y < 0:
 				target_velocity.y = target_velocity.y * 0.9
 			target_velocity.y = target_velocity.y + wb * delta

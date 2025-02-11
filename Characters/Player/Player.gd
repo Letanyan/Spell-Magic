@@ -162,7 +162,7 @@ func _physics_process(delta: float) -> void:
 		
 	update_watched_enemies_positions(delta)
 	velocity_movement.update_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed, bounds.y, 21.0)
-	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings.sea_level, world_settings.world_radius, chunker)
+	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings, chunker)
 	if vitals.did_update_on_tick:
 		emit_vitals_update()
 	

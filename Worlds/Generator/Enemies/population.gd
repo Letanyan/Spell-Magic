@@ -438,11 +438,19 @@ func mark_entity_name(name: String) -> void:
 func entity_name_is_marked(name: String) -> bool:
 	return (player.world_settings.marked_entities.get(coord, []) as Array[String]).find(name) != -1
 
-static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float, world_level: int = 1, difficulty_curve: Segment = Easing.linear) -> float:
-	var p := clampf(Vector2(x, z).length() / world_radius, 0.0, 1.0) * 100.0
-	#var base := 45.0 * (log(p + 1.0) / log(10.0))
-	var base := difficulty_curve.position_at_time(p / 100.0).y * 90
-	var offset_max_range := (p * p) / 10000.0 + 9 * sin(p * PI / 10.0)
+static func curve_for_difficulty(difficulty: int, x: float) -> float:
+	match difficulty:
+		0: return 1.0 - pow(1.0 - x, 0.25)
+		1: return 1.0 - pow(1.0 - x, 0.33)
+		2: return 1.0 - pow(1.0 - x, 0.50)
+		3: return 1.0 - pow(1.0 - x, 1.00)
+		4: return 1.0 - pow(1.0 - x, 1.50)
+	return 1.0 - pow(1.0 - x, 0.5)
+
+static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float, difficulty_curve: int, world_level: int = 1) -> float:
+	var p := clampf(Vector2(x, z).length() / world_radius, 0.0, 1.0)
+	var base := Population.curve_for_difficulty(difficulty_curve, p) * 90
+	var offset_max_range := 10.0 * sin(p * PI * 10.0)
 	var random_offset := 0.0
 	if rang == null:
 		random_offset = 0
@@ -452,7 +460,7 @@ static func level_relative_to_position_within_radius(rang: RandomNumberGenerator
 	return result
 	
 func level_relative_to_position(rang: RandomNumberGenerator, x: float, z: float) -> float:
-	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius, player.world_settings.world_level, blender.difficulty_curve)
+	return Population.level_relative_to_position_within_radius(rang, x, z, blender.world_radius, player.world_settings.difficulty_level, player.world_settings.world_level)
 
 func fit(mn: float, mx: float) -> float:
 	return lerpf(mn, mx, current_fl_during_generation)
