@@ -18,8 +18,8 @@ const taiga_structure_base := {
 	TaigaStructuresKind.HORZ_CIRCLE_PUZZLE: 1,
 	TaigaStructuresKind.LINE_PUZZLE: 1,
 	TaigaStructuresKind.ROTATING_PUZZLE: 1,
-	TaigaStructuresKind.LONE_GOBLIN: 0.05,
-	TaigaStructuresKind.GOBLIN_HORDE: 0.01,
+	TaigaStructuresKind.LONE_GOBLIN: 0.5,
+	TaigaStructuresKind.GOBLIN_HORDE: 0.1,
 	TaigaStructuresKind.ARTIFACT: 0.01,
 	TaigaStructuresKind.NOTE: 0.1,
 }

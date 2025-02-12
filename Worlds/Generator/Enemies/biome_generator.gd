@@ -40,3 +40,23 @@ func spawn_randomly(result: Array[Node3D], pop: Population, count: int, path: Pa
 					spawner.add_condition(enemy)
 		else:
 			pop.spawn_foliage(foliage_kind, p, spacing)
+
+
+static func print_generater_probs() -> void:
+	var print_structs := func(structs: Dictionary, keys: Array, label: String) -> void:
+		var base := structs.duplicate()
+		Rand.normalise_distribution(base)
+		print(label, " ------------------------")
+		for key: int in base:
+			print(keys[key], ": ", base[key])
+		print()
+	
+	print_structs.call(DesertGen.desert_structure_base, DesertGen.DesertStructuresKind.keys(), "Desert")
+	print_structs.call(ForestGen.forest_structures_base, ForestGen.ForestStructuresKind.keys(), "Forest")
+	print_structs.call(GrasslandGen.grassland_structure_base, GrasslandGen.GrasslandStructuresKind.keys(), "Grassland")
+	print_structs.call(HFILGen.HFIL_structure_base, HFILGen.HFILStructuresKind.keys(), "HFIL")
+	print_structs.call(JungleGen.jungle_structure_base, JungleGen.JungleStructuresKind.keys(), "Jungle")
+	print_structs.call(OtherworldGen.otherworld_structure_base, OtherworldGen.OtherworldStructuresKind.keys(), "Otherworld")
+	print_structs.call(SavannahGen.savannah_structure_base, SavannahGen.SavannahStructuresKind.keys(), "Savannah")
+	print_structs.call(TaigaGen.taiga_structure_base, TaigaGen.TaigaStructuresKind.keys(), "Taiga")
+	print_structs.call(TundraGen.tundra_structure_base, TundraGen.TundraStructuresKind.keys(), "Tundra")

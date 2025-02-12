@@ -13,8 +13,8 @@ const savannah_structure_base := {
 	SavannahStructuresKind.TREE_SAFARI: 10,
 	SavannahStructuresKind.TREE_BRANCHED: 2,
 	SavannahStructuresKind.PIGEONS: 0.5,
-	SavannahStructuresKind.ORC_HORDE: 0.05,
-	SavannahStructuresKind.LONE_ORC: 0.01,
+	SavannahStructuresKind.ORC_HORDE: 0.25,
+	SavannahStructuresKind.LONE_ORC: 0.1,
 	SavannahStructuresKind.ARTIFACT: 0.01,
 	SavannahStructuresKind.NOTE: 0.1,
 }
@@ -63,7 +63,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var w := rng.randf_range(10, 30) * pop.fit(1, 2)
 				var h := rng.randf_range(10, 30) * pop.fit(1, 2)
 				var r := rng.randf_range(-PI, PI)
-				var point_count := Rand.roll(8, 4, 2, rng, Rand.Accum.AVG)
+				var point_count := Rand.roll(6, 4, 2, rng, Rand.Accum.AVG)
 				var path := Pathway.new().random_points_in_rect(1, w, 0, h, point_count)
 				path.apply_transform(T.rotated(Vector3.UP, r).translated(Vec3.xz(pos)))
 				var probs := {World.Enemy.ORC: pop.fit(10, 5), World.Enemy.ORC_DEAD: pop.fit(1, 5)}

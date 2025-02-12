@@ -13,9 +13,9 @@ const jungle_structure_base := {
 	JungleStructuresKind.NONE: 60,
 	JungleStructuresKind.TREE_BRANCHED: 5,
 	JungleStructuresKind.BUSH: 5,
-	JungleStructuresKind.ELEVATOR: 0.075,
-	JungleStructuresKind.PLATFORM: 0.5,
-	JungleStructuresKind.BIRD: 0.1,
+	JungleStructuresKind.ELEVATOR: 0.75,
+	JungleStructuresKind.PLATFORM: 0.25,
+	JungleStructuresKind.BIRD: 0.5,
 	JungleStructuresKind.ARTIFACT: 0.01,
 	JungleStructuresKind.NOTE: 0.1,
 }

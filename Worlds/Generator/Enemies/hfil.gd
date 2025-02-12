@@ -10,13 +10,13 @@ enum HFILStructuresKind {
 }
 
 const HFIL_structure_base := {
-	HFILStructuresKind.NONE: 100,
+	HFILStructuresKind.NONE: 120,
 	HFILStructuresKind.MUSHROOM_FIELD: 10,
-	HFILStructuresKind.MUSH_ENEMIES: 0.1,
-	HFILStructuresKind.SNOT_ENEMIES: 0.05,
-	HFILStructuresKind.SLIMY: 0.025,
-	HFILStructuresKind.HOT_DRAGONS: 0.0125,
-	HFILStructuresKind.ENEMY_MIX: 0.0125,
+	HFILStructuresKind.MUSH_ENEMIES: 0.75,
+	HFILStructuresKind.SNOT_ENEMIES: 0.5,
+	HFILStructuresKind.SLIMY: 0.25,
+	HFILStructuresKind.HOT_DRAGONS: 0.175,
+	HFILStructuresKind.ENEMY_MIX: 0.125,
 	HFILStructuresKind.ARTIFACT: 0.01,
 	HFILStructuresKind.NOTE: 0.1,
 }

@@ -146,6 +146,8 @@ func _ready() -> void:
 		
 	_on_use_hardcore_toggled(true)
 	UIAudioPlayer.silence = false
+	
+	BiomeGenerator.print_generater_probs()
 
 
 func _on_cancel_pressed() -> void:

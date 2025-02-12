@@ -11,8 +11,8 @@ enum ForestStructuresKind {
 
 const forest_structures_base := {
 	ForestStructuresKind.NONE: 30.0,
-	ForestStructuresKind.TREE_CHRISTMAS: 2.5,
-	ForestStructuresKind.TREE_PYRAMID: 5.0,
+	ForestStructuresKind.TREE_CHRISTMAS: 5.0,
+	ForestStructuresKind.TREE_PYRAMID: 10.0,
 	ForestStructuresKind.UNDEAD_HORDE: 0.05,
 	ForestStructuresKind.BAT_HORDE: 0.05,
 	ForestStructuresKind.BAT: 0.5,
@@ -35,6 +35,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 	var index := from.data as int
 	
 	while index < area.size() and pop.current_spawn_duration_ms < limit:
+		if exclusion.has(index):
+			index += 1
+			continue
 		var struct := Rand.entity_from_non_relative_distribution(rng.randf(), forest_structures) as ForestStructuresKind
 		match struct:
 			ForestStructuresKind.NONE:
@@ -87,11 +90,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				if area.size() - index < 100:
 					index += 1
 					continue
-				var count_tree := pop.rng.randi_range(10, pop.fiti(20, 30))
+				var count_tree := pop.rng.randi_range(5, pop.fiti(10, 15))
 				var pos := area[index]
 				for i in range(count_tree):
 					index += 1
 					pos = area[index]
+					exclusion[index] = true
 					var count := pop.rng.randi_range(2, pop.fiti(3, 10))
 					var path := Pathway.new().circle(rng.randf_range(spacing, spacing * 2), 0, 1)
 					path.apply_transform(T.translated(Vec3.xz(pos)))

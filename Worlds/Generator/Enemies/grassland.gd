@@ -1,6 +1,7 @@
 class_name GrasslandGen
 extends BiomeGenerator
 
+# TODO: Add more kinds of artifact spawns where quality scales with rarity
 enum GrasslandStructuresKind {
 	NONE,
 	TREE_ROUND, TREE_BRANCHED,
@@ -12,13 +13,13 @@ enum GrasslandStructuresKind {
 }
 
 const grassland_structure_base := {
-	GrasslandStructuresKind.NONE: 160,
+	GrasslandStructuresKind.NONE: 120,
 	GrasslandStructuresKind.TREE_ROUND: 5,
 	GrasslandStructuresKind.TREE_BRANCHED: 0.5,
-	GrasslandStructuresKind.HIVE: 0.1,
-	GrasslandStructuresKind.FLOCK: 0.1,
-	GrasslandStructuresKind.PETS: 0.05,
-	GrasslandStructuresKind.FISH: 0.1,
+	GrasslandStructuresKind.HIVE: 0.5,
+	GrasslandStructuresKind.FLOCK: 0.5,
+	GrasslandStructuresKind.PETS: 0.1,
+	GrasslandStructuresKind.FISH: 0.5,
 	#GrasslandStructuresKind.TARGET_PUZZLE: 0.01
 	GrasslandStructuresKind.ARTIFACT: 0.01,
 	GrasslandStructuresKind.NOTE: 0.1,
@@ -64,9 +65,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 			GrasslandStructuresKind.HIVE:
 				var pos := area[index]
-				var r := Rand.entity_from_distribution(rng.randf(), {3: pop.fit(0.05, 0.5), 2: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as float
-				var bee_count := rng.randi_range(roundi(r * 2), roundi(r * 5))
-				var bumble_count := rng.randi_range(roundi(r * 1), roundi(r * 2))
+				var r := Rand.entity_from_distribution(rng.randf(), {3: pop.fit(0.05, 0.5), 2: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as int
+				var bee_count := Rand.roll(r, pop.fiti(1, 3), 0, rng, Rand.Accum.SUM)
+				var bumble_count := Rand.roll(r, pop.fiti(1, 2), 0, rng, Rand.Accum.MAX)
 				var art := Artifact.new("", Artifact.Option.make_effect(Artifact.Effect.BOOST_PERCENTAGE, Artifact.Element.FIRE, 2, Artifact.Pattern.TRIANGLE))
 				if bee_count <= 0 and bumble_count <= 0:
 					continue
