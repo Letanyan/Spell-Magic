@@ -41,6 +41,8 @@ extends Control
 @onready var vsync_options: OptionButton = $Tabs/Graphics/VSYNC/Options
 @onready var grass_size_slider: HSlider = $"Tabs/Graphics/Grass Size/Slider"
 @onready var grass_size_value: Label = $"Tabs/Graphics/Grass Size/Value"
+@onready var terain_detail_value: OptionButton = $Tabs/Graphics/TerrainDetail/Value
+@onready var graphics_notice: Label = $Tabs/Graphics/Notice
 
 @onready var master_slider: HSlider = $Tabs/Sound/Master/Slider
 @onready var master_value: Label = $Tabs/Sound/Master/Value
@@ -365,11 +367,17 @@ func _on_vsync_options_item_selected(index: int) -> void:
 func _on_grass_size_slider_value_changed(value: float) -> void:
 	grass_size_value.text = "%.0f%%" % [value]	
 	UIAudioPlayer.switch()
-
+	
 func _on_grass_size_slider_drag_ended(value_changed: bool) -> void:
 	if value_changed:
 		world_settings.graphics_settings.grass_size = grass_size_slider.value / 100.0
 		settings_changed.emit(world_settings)
+		graphics_notice.show()
+		
+func _on_terrain_detail_value_item_selected(index: int) -> void:
+	world_settings.graphics_settings.terrain_detail = terain_detail_value.get_item_id(index)
+	UIAudioPlayer.switch()
+	graphics_notice.show()
 
 func _on_master_slider_value_changed(value: float) -> void:
 	world_settings.audio_settings.update_master(value)

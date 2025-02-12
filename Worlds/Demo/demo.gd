@@ -157,7 +157,12 @@ func run_on_ready() -> void:
 	if GlobalData.is_debug:
 		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
 	else:
-		chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
+		match settings.graphics_settings.terrain_detail:
+			0: chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [2, 4, 6], false)
+			1: chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 6], false)
+			2: chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 5, 7, 9], false)
+			3: chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 8, 16, 24], false)
+			4: chunker = Chunker.new(CHUNK_SIZE, 0.0625, CHUNK_SIZE * 0.5 * settings.graphics_settings.grass_size, blender, [3, 12, 16, 24], false)
 	build_terrain()
 	update_terrain()
 	
@@ -525,7 +530,7 @@ func build_terrain() -> void:
 
 func update_terrain_queue() -> void:
 	if chunker.has_chunks_to_update():
-		var coords := chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
+		var coords := chunker.update_chunks_in_queue(Time.get_ticks_usec(), 500)
 		var updated_coords := coords["updated"] as Array[Vector4i]
 		var removed_coords := coords["removed"] as Array[Vector4i]
 		for _removed in removed_coords:
@@ -575,11 +580,13 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}
-	var start_time_ms := Time.get_ticks_msec()
+	var start_time_us := Time.get_ticks_usec()
 	for loc: Vector2i in population:
 		var pop := population[loc] as Population
 		if not pop.is_spawning_complete():
-			items_to_add[pop] = pop.spawn_into_world(start_time_ms, 3)
+			items_to_add[pop] = pop.spawn_into_world(start_time_us, 500)
+		if Time.get_ticks_usec() - start_time_us > 1000:
+			break
 			
 	for pop: Population in items_to_add:
 		for item: Node3D in items_to_add[pop]:

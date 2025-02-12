@@ -17,7 +17,7 @@ func _physics_process(delta: float) -> void:
 	info.text = "%.1v" % camera.position
 	
 	if chunker.has_chunks_to_update():
-		chunker.update_chunks_in_queue(Time.get_ticks_msec(), 5)
+		chunker.update_chunks_in_queue(Time.get_ticks_usec(), 500)
 		#print(updated)
 
 func _input(event: InputEvent) -> void:

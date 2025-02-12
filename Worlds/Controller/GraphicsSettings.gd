@@ -17,6 +17,8 @@ var vsync: bool = true
 
 var grass_size: float = 1.0
 
+var terrain_detail: int = 2
+
 var viewport: Viewport
 
 func _init(vp: Viewport, should_update: bool = false) -> void:
@@ -29,7 +31,7 @@ func save_dict() -> Dictionary:
 		"scaling_mode": scaling_mode, "scaling": scaling, "sharpness": sharpness,
 		"display_style": display_style, "display_size": display_size,
 		"msaa": msaa, "taa": taa, "ssaa": ssaa, "max_fps": max_fps, "vsync": vsync,
-		"grass_size": grass_size,
+		"grass_size": grass_size, "terrain_detail": terrain_detail,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -45,6 +47,7 @@ func load_dict(dict: Dictionary) -> void:
 	update_max_fps(dict.get("max_fps", 60) as int)
 	update_vsync(dict.get("vsync", true) as bool)
 	grass_size = dict.get("grass_size", 1.0) as float
+	terrain_detail = dict.get("terrain_detail", 2) as int
 
 func update_all_settings() -> void:
 	update_sharpness(sharpness)

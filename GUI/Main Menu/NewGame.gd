@@ -146,6 +146,8 @@ func _ready() -> void:
 		
 	_on_use_hardcore_toggled(true)
 	UIAudioPlayer.silence = false
+	
+	print(OS.get_processor_name())
 
 
 func _on_cancel_pressed() -> void:

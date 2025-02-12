@@ -225,7 +225,7 @@ func build_terrain() -> void:
 		
 func update_terrain_queue() -> void:
 	if chunker.has_chunks_to_update():
-		chunker.update_chunks_in_queue(Time.get_ticks_msec(), 3)
+		chunker.update_chunks_in_queue(Time.get_ticks_usec(), 500)
 		#for loc in locations:
 			#chunker.disable_height_map(loc, true, true)
 

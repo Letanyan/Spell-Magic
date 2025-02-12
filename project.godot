@@ -270,6 +270,7 @@ locale/translations=PackedStringArray("res://Translations/translations.en.transl
 
 [rendering]
 
+limits/time/time_rollover_secs=6283.0
 scaling_3d/fsr_sharpness=0.2
 
 [shader_globals]
