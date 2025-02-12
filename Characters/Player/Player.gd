@@ -444,11 +444,13 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 						vitals.health.apply(amount.x)
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						vitals.health.apply(vitals.health.max_value * amount.y / 100.0)
+					emit_vitals_update()
 				elif effect_el == Artifact.Element.MANA:
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
 						vitals.mana.apply(amount.x)
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						vitals.mana.apply(vitals.mana.max_value * amount.y / 100.0)
+					emit_vitals_update()
 				elif effect_el == Artifact.Element.POWER:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -480,7 +482,12 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_mana() * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_mana += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_mana -= value; active_effects[event][effect] = false)
+					emit_vitals_update()
+					get_tree().create_timer(duration).timeout.connect(func() -> void: 
+						magic_book.settings.upgrade_settings.buff_mana -= value
+						active_effects[event][effect] = false
+						emit_vitals_update()
+					)
 				elif effect_el == Artifact.Element.HEALTH_BUMP:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -488,7 +495,12 @@ func update_artifact_effects(event_to_match: Artifact.Event, spell: Spell) -> vo
 					elif effect_kind == Artifact.Effect.BOOST_PERCENTAGE or effect_kind == Artifact.Effect.RESISTANCE_PERCENTAGE:
 						value = magic_book.settings.upgrade_settings.max_health() * amount.y / 100.0
 					magic_book.settings.upgrade_settings.buff_health += value
-					get_tree().create_timer(duration).timeout.connect(func() -> void: magic_book.settings.upgrade_settings.buff_health -= value; active_effects[event][effect] = false)
+					emit_vitals_update()
+					get_tree().create_timer(duration).timeout.connect(func() -> void: 
+						magic_book.settings.upgrade_settings.buff_health -= value
+						active_effects[event][effect] = false
+						emit_vitals_update()
+					)
 				elif effect_el == Artifact.Element.SPELL_VELOCITY:
 					var value := 0.0
 					if effect_kind == Artifact.Effect.BOOST_FLAT or effect_kind == Artifact.Effect.RESISTANCE_FLAT:
@@ -681,6 +693,7 @@ func on_pick_up_coin(coin: int, message: String) -> void:
 	
 func on_pick_up_red_cross(health: float, message: String) -> void:
 	vitals.health.apply_by_percentage_on_max(health)
+	emit_vitals_update()
 	UIAudioPlayer.drinking()
 	world_settings.save()
 	

@@ -414,6 +414,7 @@ func update_info() -> void:
 [b]Time of Day:[/b] %s
 [b]Game Mode:[/b] %s
 [b]Flags:[/b] %s
+[b]Current Position:[/b] %.v
 
 [b]Enemies Killed:[/b]
 %s
@@ -426,6 +427,7 @@ func update_info() -> void:
 	GDNavigator.popcnt(world_settings.player_keys),
 	world_settings.day_of_the_year, time,
 	world_settings.game_mode_settings.game_mode_description(), game_flags,
+	player.position if player != null else world_settings.player_position,
 	world_settings.enemies_killed_table(),
 	world_settings.sed, world_settings.world_generation_version,
 ]

@@ -10,9 +10,13 @@ func _init() -> void:
 func start() -> void:
 	start_time = Time.get_ticks_usec()
 	
-func reset() -> void:
-	start_time = Time.get_ticks_usec()
+func reset(desc: String = "") -> int:
+	elapsed += (Time.get_ticks_usec() - start_time)
+	var result := elapsed
 	elapsed = 0
+	if not desc.is_empty(): print(desc, ": ", elapsed)
+	start_time = Time.get_ticks_usec()
+	return result
 	
 func lap(desc: String = "") -> int:
 	var lap_time := (Time.get_ticks_usec() - start_time)
