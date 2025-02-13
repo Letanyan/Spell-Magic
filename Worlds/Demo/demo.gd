@@ -226,6 +226,7 @@ func run_on_ready() -> void:
 	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	ready_state = GameSettings.ReadyState.IS
+	show_tutorial_label()
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -496,30 +497,34 @@ func insert_spell(p: Node3D) -> void:
 	if p is SpellBody:
 		(p as SpellBody).setup()
 
+func show_tutorial_label() -> void:
+	match GlobalData.controller.last_input_type:
+		Controller.InputType.KEYBOARD:
+			var message := "[center]"
+			message += GlobalData.controller.key_images(PackedStringArray(["move_forward"]))
+			message += GlobalData.controller.key_images(PackedStringArray(["move_left"]))
+			message += GlobalData.controller.key_images(PackedStringArray(["move_back"]))
+			message += GlobalData.controller.key_images(PackedStringArray(["move_right"])) + "[b]Move[/b] "
+			message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
+			message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
+			message += "[/center]"
+			hud.show_message(message)
+		Controller.InputType.CONTROLLER:
+			var message := "[center]"
+			message += GlobalData.controller.key_images(PackedStringArray(["dpad"])) + "[b]Move[/b] "
+			message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
+			message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
+			message += "[/center]"
+			hud.show_message(message)
+			
+func hide_tutorial_message() -> void:
+	if hud.message_label.visible:
+		hud.show_message("")
+
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta
-	if Vec2.xz(player.position).distance_to(Vector2.ZERO) < 8.0:
-		match GlobalData.controller.last_input_type:
-			Controller.InputType.KEYBOARD:
-				var message := "[center]"
-				message += GlobalData.controller.key_images(PackedStringArray(["move_forward"]))
-				message += GlobalData.controller.key_images(PackedStringArray(["move_left"]))
-				message += GlobalData.controller.key_images(PackedStringArray(["move_back"]))
-				message += GlobalData.controller.key_images(PackedStringArray(["move_right"])) + "[b]Move[/b] "
-				message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
-				message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
-				message += "[/center]"
-				hud.show_message(message)
-			Controller.InputType.CONTROLLER:
-				var message := "[center]"
-				message += GlobalData.controller.key_images(PackedStringArray(["dpad"])) + "[b]Move[/b] "
-				message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
-				message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
-				message += "[/center]"
-				hud.show_message(message)
-	else:
-		hud.show_message("")
-		
+	if Vec2.xz(player.position).distance_to(Vector2.ZERO) > 8.0:
+		hide_tutorial_message()
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0
 		update_terrain()
@@ -572,11 +577,14 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 		var count := Rand.roll(10, 2, 0, rng, Rand.Accum.AVG)
 		var path := Pathway.new().circle(16.0, 0, 1)
 		path.apply_transform(T.translated(pos))
+		var saved_pop_biome := pop.current_biome_during_generation
+		pop.current_biome_during_generation = World.Biome.HFIL # change biome to allow rocks under the ocean
 		for p in path.sample_points_xz(count):
 			match rng.randi_range(0, 2):
 				0: pop.spawn_foliage(World.Foliage.ROCK_TALL, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
 				1: pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
 				2: pop.spawn_foliage(World.Foliage.ROCK_EGG, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
+		pop.current_biome_during_generation = saved_pop_biome
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}
@@ -673,7 +681,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				totem.show_message()
 				hud.show()
 				settings.is_paused = false
-				vitals.health.value = vitals.health.max_value
+				vitals.reset()
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			)
 			overlay.show_in_root(self)

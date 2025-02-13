@@ -127,13 +127,13 @@ text = "Easy Mode"
 [node name="UseHardcore" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.493
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.493
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -119.936
+offset_left = -128.0
 offset_top = -244.0
-offset_right = 0.0640259
+offset_right = -8.0
 offset_bottom = -204.0
 grow_horizontal = 2
 toggle_mode = true

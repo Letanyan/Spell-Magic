@@ -184,7 +184,6 @@ static var notes := {
 	"spell Elemental Application": "Certain elements have additional effects. Namely {Fire} applies {Burn}, {Water} applies {Wet}, {Ice} applies {Freeze}, {Electric} applies {Stun} and {Wind} applies {Feather}.",
 	"spell Cooldown": "The time before the spell can be cast again.",
 	"spell Variables": "A list of your variables which can be used in the x, y, z and D expressions. You can use these variables to simplify your other expressions.",
-	#"spell chain ^": "If you use ^ at the start of a variable name, all chained spells following will inherit and/or override their same named variables.",
 	"spell mana return": "Spells that have complicated movement will return some amount of mana back to the player. The amount returned is proportional to the complexity of the spells movement. The complexity of a spell is vaguely defined as how different it is from a spell which travels in a straight line.",
 	"spell save, copy and load": "Spells can be saved, using [img=l,24x24]res://GUI/Images/cloud-upload.svg[/img], to your 'Universal Magic Book' (which can be found in the settings menu). Spells can then be copied to your clipboard, using [img=l,24x24]res://GUI/Images/cloud-download.svg[/img], from your 'Universal Magic Book.' Finally, with your spell copied you can overwrite an existing spell, using [img=l,24x24]res://GUI/Images/transform.svg[/img], which is in the top right of your magic book page.",
 	
@@ -218,12 +217,12 @@ static var notes := {
 	"wand Cast": "Casts the assigned spell immediatly once keys are released.",
 	"wand Charged Cast": "Keys can be held and then released to cast the assigned spell. The time spent holding the keys will be set in the variable {C} to be used in the spell.",
 	"wand Rapid Cast": "Keys can be held and the assigned spell will continuosly be cast when ready.",
-	"wand Choose": "Iterate through the list of spells and set the next spell as {Chosen}. Spells must be separated by commas to be part of the list.",
+	"wand Choose": "Iterate through the list of spells and set the next spell as {Chosen}. Spells must be separated by commas to be part of the list. Holding the key will bring up a selection wheel.",
 	"wand Cast Chosen": "Casts the {Chosen} spell immdiatly once the keys are release.",
 	"wand Charged Chosen": "Keys can be held and then released to cast the {Chosen} spell. The time spent holding the keys will be set in the variable {C} to be used in the spell.",
 	"wand Rapid Chosen": "Keys can be held and the {Chosen} spell will continuosly be cast when ready.",
 	"wand Modifier Key": "The key will become a modifier key for all other non modifier keys. Use this to increase the availble key combinations.",
-	"wand Spell Parameters": "Sometimes you might want to the cast the same spell but with only a few changes. You can do this using spell parameters in the wand. Each spell can have a set of customised parameters set from a wand action. Parameters must be set inside a pair of parentheses '()' which appear after the spell name. Parameters are a set of '=' separated key-value pairs separated by commas. For example, if we have a spell called 'blast', we can set its values by declaring the spell like 'blast(N=5, element=ice, speed=10).' In this example we change 'N' to 5, change the element of the spell to ice and change its custom variable 'speed' to 10.",
+	"wand Spell Parameters": "Sometimes you might want to cast a spell but with only a few changes. You can do this using spell parameters. Each spell can have a set of customised parameters set from a wand action. Parameters must be set inside a pair of parentheses '()' which appear after the spell name. Parameters are a set of '=' separated key-value pairs separated by commas. For example, if we have a spell called 'Blast', we can set its values by declaring the spell like 'Blast(N=5, element=ice, speed=10).' In this example we change 'N' to 5, change the element of the spell to ice and change its custom variable 'speed' to 10.",
 	"wand Cast Spell Lists": "Using a comma separated list for {Cast}, {Charged Cast} and {Rapid Cast} will auto rotate to the next spell after each cast.",
 	
 	"upgrades Max Health": "The maximum health of the player.",

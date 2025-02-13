@@ -646,18 +646,22 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 			var biome := World.Biome.WATER
 			var world_radius := 10000.0
 			var difficulty_curve := 2
+			var player: Player
 			if origin_node is Player:
-				biome = (origin_node as Player).velocity_movement.current_biome
-				world_radius = (origin_node as Player).world_settings.world_radius
-				difficulty_curve = (origin_node as Player).world_settings.difficulty_level
+				player = (origin_node as Player)
+				biome = player.velocity_movement.current_biome
+				world_radius = player.world_settings.world_radius
+				difficulty_curve = player.world_settings.difficulty_level
 			elif origin_node is Enemy:
+				player = (origin_node as Enemy).player
 				biome = (origin_node as Enemy).velocity_movement.current_biome
-				world_radius = (origin_node as Enemy).player.world_settings.world_radius
-				difficulty_curve = (origin_node as Enemy).player.world_settings.difficulty_level
-			var lvl := Population.level_relative_to_position_within_radius(null, p.x, p.z, world_radius, difficulty_curve)
-			if biome == World.Biome.DESERT:
-				if time_stamp > lerpf(UpgradeSettings.LIMIT_T / 25.0, 1.0, lvl / 100.0):
-					explode_after(self, null, 0.0166667 * 2, true, {})
+				world_radius = player.world_settings.world_radius
+				difficulty_curve = player.world_settings.difficulty_level
+			if player != null:
+				var lvl := Population.level_relative_to_position_within_radius(null, p.x, p.z, world_radius, difficulty_curve)
+				if biome == World.Biome.DESERT:
+					if time_stamp > lerpf(0.0, UpgradeSettings.LIMIT_T * (1 - spell.elemental_application), fmod(lvl, 101.0) / 100.0):
+						explode_after(self, null, 0.0166667 * 2, true, {})
 			
 		Spell.Element.AIR:
 			position = p

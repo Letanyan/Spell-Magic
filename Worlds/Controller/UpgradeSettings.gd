@@ -497,8 +497,9 @@ func default_starter_spell() -> Spell:
 	var blast := Spell.new(false, "ru", "rv", "offset + speed * t", "0.1", 5, 1.0, blast_element)
 	blast.name = "Blast"
 	blast.spherical_coords = true
+	blast.mana_cost = 1
 	blast.expression_strings = {
-		"speed": "5",
+		"speed": "8",
 		"offset": "1",
 	}
 	blast.build_expressions()

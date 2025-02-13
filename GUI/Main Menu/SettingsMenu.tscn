@@ -14,21 +14,14 @@ script = ExtResource("1_6yygw")
 
 [node name="Settings" parent="." instance=ExtResource("2_vkxxe")]
 layout_mode = 1
-offset_top = 49.0
+offset_top = 7.0
 
-[node name="Tabbar" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 48.0
-grow_horizontal = 2
-
-[node name="Back" type="Button" parent="Tabbar"]
+[node name="Back" type="Button" parent="."]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 88.0
-offset_bottom = 39.0
+offset_bottom = 33.0
 text = "Back"
 
-[connection signal="pressed" from="Tabbar/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]

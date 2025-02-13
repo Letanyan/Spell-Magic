@@ -927,19 +927,11 @@ static func real_color_from_element(el: Element) -> Color:
 		_: return Color.WHITE
 
 func bake(new_name: String) -> Spell:
-	var formatted_expressions := {}
-	for v: String in expression_strings:
-		var e := expression_strings[v] as String
-		if e.contains(";"):
-			formatted_expressions[v] = e.split(";", false, 2)[0]
-		else:
-			formatted_expressions[v] = e
-			
-	var bx := GDExpr.bake(x, formatted_expressions)
-	var by := GDExpr.bake(y, formatted_expressions)
-	var bz := GDExpr.bake(z, formatted_expressions)
-	var bd := GDExpr.bake(delay, formatted_expressions)
-	var br := GDExpr.bake(r, formatted_expressions)
+	var bx := GDExpr.bake(x, {})
+	var by := GDExpr.bake(y, {})
+	var bz := GDExpr.bake(z, {})
+	var bd := GDExpr.bake(delay, {})
+	var br := GDExpr.bake(r, {})
 	var result := Spell.new(follow, bx, by, bz, br, power, duration, element, count, bd, is_bomb, mana_cost, player_is_origin)
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
@@ -953,7 +945,7 @@ func bake(new_name: String) -> Spell:
 	result.crit_rate = crit_rate
 	result.crit_dmg = crit_dmg
 	result.spherical_coords = spherical_coords
-	result.expression_strings = {}
+	result.expression_strings = expression_strings
 	result.description = description
 	result.build_expressions()
 	result.calculate_cooldown()

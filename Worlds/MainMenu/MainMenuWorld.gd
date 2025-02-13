@@ -45,6 +45,8 @@ var has_init_terrain_population := false
 var daytime_tick: float
 
 var settings: WorldSettings
+var cached_theme_color := Color(0, 0, 0, 0)
+var cached_theme_variation := HUDSettings.ThemeKind.MONO
 
 func _exit_tree() -> void:
 	chunker.deinit()
@@ -151,23 +153,12 @@ func _physics_process(delta: float) -> void:
 		biome_in_waiting_queue = World.Biome.WATER
 		print(World.Biome.keys()[b])
 		play_bg_audio(b)
-		var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
-		biome_helper = BiomeHelper.new()
-		var tint := biome_helper.color_for_biome(b).darkened(0.5)
-		tint = theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
-		var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
-		var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
-		var fg := tint
-		var bg := tint
-		if not is_day:
-			fg.v = fg.v * 1.5
-		else:
-			bg.v = bg.v * 1.5
-		(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
-		var particle_color := tint
-		particle_color.v = particle_color.v * 1.5
-		(source.process_material as ParticleProcessMaterial).color = particle_color
-		(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)
+		if cached_theme_color.a == 0:
+			var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
+			biome_helper = BiomeHelper.new()
+			var tint := biome_helper.color_for_biome(b).darkened(0.5)
+			tint = theme.change_tint_color(tint, HUDSettings.ThemeKind.MONO)
+			update_theme_colors(tint)
 		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)
 		last_last_biome = last_biome
 		last_biome = b
@@ -182,7 +173,21 @@ func _physics_process(delta: float) -> void:
 		chunker.update_environment(player.position.x, player.position.z)
 		
 	player.position.y = maxf(player.position.y, blender.sea_level)
-				
+
+func update_theme_colors(tint: Color) -> void:
+	var day_ratio := skybox.day_time / SkyBox.HOURS_IN_DAY
+	var is_day := 0.25 <= day_ratio and day_ratio <= 0.75 
+	var fg := tint
+	var bg := tint
+	if not is_day:
+		fg.v = fg.v * 1.5
+	else:
+		bg.v = bg.v * 1.5
+	(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fg_color", Color(fg, 1.0))
+	var particle_color := tint
+	particle_color.v = particle_color.v * 1.5
+	(source.process_material as ParticleProcessMaterial).color = particle_color
+	(placard.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("outline_color", tint)				
 
 func _on_player_moved(delta: float) -> void:	
 	terrain_update_interval = 0
@@ -333,3 +338,19 @@ func _on_button_2_pressed() -> void:
 func update_settings(new_settings: WorldSettings) -> void:
 	cam.fov = new_settings.camera_settings.fov
 	cam.far = new_settings.camera_settings.render_distance
+	var hud_settings := new_settings.hud_settings
+	
+	GlobalData.controller.switching_mode = hud_settings.key_display
+	match hud_settings.key_display:
+		HUDSettings.KeyDisplay.KEYBOARD:
+			GlobalData.controller.last_input_type = Controller.InputType.KEYBOARD
+		HUDSettings.KeyDisplay.CONTROLLER:
+			GlobalData.controller.last_input_type = Controller.InputType.CONTROLLER
+			
+	if cached_theme_color != hud_settings.theme_color or cached_theme_variation != hud_settings.theme_variation:
+		var global_theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
+		global_theme.change_tint_color(hud_settings.theme_color, hud_settings.theme_variation)
+		cached_theme_color = hud_settings.theme_color
+		cached_theme_variation = hud_settings.theme_variation
+		var tint := global_theme.change_tint_color(cached_theme_color, cached_theme_variation)
+		update_theme_colors(tint)

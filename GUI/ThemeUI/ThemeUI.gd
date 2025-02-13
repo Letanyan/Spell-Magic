@@ -5,8 +5,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 	# enum ThemeVariation { FLAT, MONO, COMP, ANA, TRI, TETRA, ELEMENTS }
 	match variation:
 		HUDSettings.ThemeKind.FLAT:
-			change_tint_color_array(PackedColorArray([tint, tint]))
-			return tint
+			return change_tint_color_array(PackedColorArray([tint, tint]))
 		
 		HUDSettings.ThemeKind.MONO: 
 			return change_tint_color_mono(tint)
@@ -17,8 +16,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 			var h := end.h + 0.5
 			if h > 1.0: h -= 1.0
 			end.h = h
-			change_tint_color_array(PackedColorArray([start, end]))
-			return start
+			return change_tint_color_array(PackedColorArray([start, end]))
 			
 		HUDSettings.ThemeKind.ANA:
 			var start := tint
@@ -31,8 +29,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 			if eh > 1.0: eh -= 1.0
 			end.h = eh
 			
-			change_tint_color_array(PackedColorArray([start, tint, end]))
-			return start
+			return change_tint_color_array(PackedColorArray([start, tint, end]))
 			
 		HUDSettings.ThemeKind.TRI:
 			var start := tint
@@ -45,8 +42,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 			if eh > 1.0: eh -= 1.0
 			end.h = eh
 			
-			change_tint_color_array(PackedColorArray([start, tint, end]))
-			return start
+			return change_tint_color_array(PackedColorArray([start, tint, end]))
 			
 		HUDSettings.ThemeKind.TETRA:
 			var next1 := tint
@@ -64,8 +60,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 			if n3 > 1.0: n3 -= 1.0
 			next3.h = n3
 			
-			change_tint_color_array(PackedColorArray([tint, next1, next2, next3]))
-			return tint
+			return change_tint_color_array(PackedColorArray([tint, next1, next2, next3]))
 			
 		HUDSettings.ThemeKind.ELEMENTS:
 			var colors := [
@@ -76,10 +71,9 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 				Color("00FF80"),
 				Color("00FFFF"),
 			]
-			change_tint_color_array(PackedColorArray(colors))
-			return colors[0]
+			return change_tint_color_array(PackedColorArray(colors))
 			
-	return Color.BLACK
+	return Color.WHITE
 			
 
 func change_tint_color_mono(tint: Color) -> Color:
@@ -89,11 +83,9 @@ func change_tint_color_mono(tint: Color) -> Color:
 	var root_hover_style: StyleBoxGradientFill = get_stylebox("hover", "Button") as StyleBoxGradientFill
 	var root_pressed_style: StyleBoxGradientFill = get_stylebox("pressed", "Button") as StyleBoxGradientFill
 	
-	var result_tint := tint
 	if tint.s < 0.25:
 		tint.s = 0.25
 		tint.h = 0.66667 + (tint.s * 4) * 0.0392157
-		result_tint = tint
 	
 	var base_tint := tint
 	var base_degen_tint := tint
@@ -101,6 +93,7 @@ func change_tint_color_mono(tint: Color) -> Color:
 	
 	var degen_tint := base_degen_tint
 	
+	var result_tint := tint.lerp(degen_tint, 0.5)
 	root_base_style.set_border_gradient(tint, degen_tint)
 	root_hover_style.set_border_gradient(tint, degen_tint)
 	root_hover_style.set_fill_gradient(tint, degen_tint)
@@ -188,7 +181,7 @@ func change_tint_color_mono(tint: Color) -> Color:
 	
 	return result_tint
 
-func change_tint_color_array(tint: PackedColorArray) -> void:
+func change_tint_color_array(tint: PackedColorArray) -> Color:
 	var root_base_style: StyleBoxGradientFill = get_stylebox("normal", "Button") as StyleBoxGradientFill
 	var root_disabled_style: StyleBoxGradientFill = get_stylebox("disabled", "Button") as StyleBoxGradientFill
 	var root_focus_style: StyleBoxGradientFill = get_stylebox("focus", "Button") as StyleBoxGradientFill
@@ -253,3 +246,12 @@ func change_tint_color_array(tint: PackedColorArray) -> void:
 	scroll_hover_style.set_complete_fill_gradient(tint, offsets)
 	v_slider_pressed_style.set_complete_fill_gradient(tint, offsets)
 	v_scroll_hover_style.set_complete_fill_gradient(tint, offsets)
+	
+	match tint.size():
+		1: return tint[0]
+		2: return tint[0].lerp(tint[1], 0.5)
+		3: return tint[1]
+		4: return tint[1].lerp(tint[2], 0.5)
+		5: return tint[2]
+		6: return tint[2].lerp(tint[3], 0.5)
+		_: return Color.WHITE
