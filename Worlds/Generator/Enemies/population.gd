@@ -203,6 +203,7 @@ func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
 	if display_only and not spawn_enemies_in_display_only: return null
 	var result := entity_manager.get_enemy(enemy)
 	result.process_mode = Node.PROCESS_MODE_INHERIT
+	result.show()
 	var pos := Vector3(p.x, 0, p.y)
 	result.set_level(level_relative_to_position(rng, p.x, p.y))
 	for conn: Dictionary in result.vital_update.get_connections():

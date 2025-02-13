@@ -41,7 +41,7 @@ extends Control
 @onready var vsync_options: OptionButton = $Tabs/Graphics/VSYNC/Options
 @onready var grass_size_slider: HSlider = $"Tabs/Graphics/Grass Size/Slider"
 @onready var grass_size_value: Label = $"Tabs/Graphics/Grass Size/Value"
-@onready var terain_detail_value: OptionButton = $Tabs/Graphics/TerrainDetail/Value
+@onready var terrain_detail_value: OptionButton = $Tabs/Graphics/TerrainDetail/Value
 @onready var graphics_notice: Label = $Tabs/Graphics/Notice
 
 @onready var master_slider: HSlider = $Tabs/Sound/Master/Slider
@@ -145,6 +145,7 @@ func update_controls() -> void:
 	taa_check.button_pressed = world_settings.graphics_settings.taa
 	grass_size_slider.value = world_settings.graphics_settings.grass_size * 100
 	grass_size_value.text = "%.0f%%" % [world_settings.graphics_settings.grass_size * 100]
+	terrain_detail_value.select(terrain_detail_value.get_item_index(world_settings.graphics_settings.terrain_detail))
 	
 	for i in range(fps_options.item_count):
 		if fps_options.get_item_text(i) == "Max" and world_settings.graphics_settings.max_fps == 0:
@@ -375,7 +376,7 @@ func _on_grass_size_slider_drag_ended(value_changed: bool) -> void:
 		graphics_notice.show()
 		
 func _on_terrain_detail_value_item_selected(index: int) -> void:
-	world_settings.graphics_settings.terrain_detail = terain_detail_value.get_item_id(index)
+	world_settings.graphics_settings.terrain_detail = terrain_detail_value.get_item_id(index)
 	UIAudioPlayer.switch()
 	graphics_notice.show()
 
