@@ -237,10 +237,7 @@ func manual_physics_process(delta: float) -> void:
 	var tick_scale := maxf(pow(dist, 2.0), 0.01 * Rand.randf_range(timer_seed, 0.5, 1.0))
 	increment_ticks(delta * tick_scale)
 			
-	var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
-	var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
-	velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
-	var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings, player.chunker)
+	velocity_movement.update_vitals(delta, vitals, self, player.world_settings)
 	if vitals.did_update_on_tick:
 		vital_update.emit(index_in_population, vitals)
 	if not is_dead and vitals.health.value <= vitals.health.min_value:
@@ -252,10 +249,17 @@ func manual_physics_process(delta: float) -> void:
 	var is_ground_path_style := current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT
 	if snappedf(move_tick, 0.00001) < Globals.move_tick():
 		if velocity_movement.impulse != Vector3.ZERO or current_path.mover == PathStyle.Mover.PHYSICS:
+			var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
+			velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
+			var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings, player.chunker)
 			velocity = movement["velocity"]
 			move_and_slide()
 			pushed_with_impulse = not is_on_floor and is_ground_path_style
 	else:
+		var group_positioning_adjustment := (player.enemies_in_range[self] as Player.CombatStats).seperation if player.enemies_in_range.has(self) else Vector3.ZERO
+		var current_frame_count := frame_count.x if velocity.length() < 0.166667 else frame_count.y
+		velocity_movement.update_movement_speed(speed_for_current_behaviour_tick, bounds.y, current_frame_count)
+		var movement := velocity_movement.update(delta, vitals, speed_for_current_behaviour_tick, self, current_path.lookat == PathStyle.LookAt.VELOCITY, player.world_settings, player.chunker)
 		did_move = true
 		move_tick = 0.0
 		if velocity_movement.impulse != Vector3.ZERO:

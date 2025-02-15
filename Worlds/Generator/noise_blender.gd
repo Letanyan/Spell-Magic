@@ -11,6 +11,16 @@ const otherworld_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevatio
 const savannah_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/savannah.tres")
 const tundra_curve: Curve = preload("res://Worlds/Generator/Terrain/Elevation Curves/tundra.tres")
 
+const grassland_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/grassland.tres")
+const forest_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/forest.tres")
+const taiga_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/taiga.tres")
+const desert_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/desert.tres")
+const hfil_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/hfil.tres")
+const jungle_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/jungle.tres")
+const otherworld_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/otherworld.tres")
+const savannah_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/savannah.tres")
+const tundra_grass_height: Curve = preload("res://Worlds/Generator/Terrain/Grass Heights/tundra.tres")
+
 const biome_list: Array[World.Biome] = [
 	World.Biome.GRASSLAND,
 	World.Biome.TAIGA,
@@ -80,15 +90,15 @@ func version0(s: int) -> void:
 	
 	var biome_locations := shuffle_biome_locations(rng)
 	
-	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
-	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
-	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
-	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
-	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
-	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
-	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
-	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
-	back.add_biome("DQACAAAACtevQRMAbxIDPBMACtcjPAgAAQIA4XrUPwAAAIA/", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
+	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, grassland_grass_height, biome_locations[0], biome_colors[0])
+	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, taiga_grass_height, biome_locations[1], biome_colors[1])
+	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, forest_grass_height, biome_locations[2], biome_colors[2])
+	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, desert_grass_height, biome_locations[3], biome_colors[3])
+	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, jungle_grass_height, biome_locations[4], biome_colors[4])
+	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, savannah_grass_height, biome_locations[5], biome_colors[5])
+	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, tundra_grass_height, biome_locations[6], biome_colors[6])
+	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, otherworld_grass_height, biome_locations[7], biome_colors[7])
+	back.add_biome("DQACAAAACtevQRMAbxIDPBMACtcjPAgAAQIA4XrUPwAAAIA/", s ^ hash("hfil"), hfil_curve, hfil_grass_height, biome_locations[8], biome_colors[8])
 	
 	back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
 	back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)
@@ -107,15 +117,15 @@ func version1(s: int) -> void:
 	var elevation_curve := lerpf(20.0, 40.0, rng.randf())
 	back.set_elevation_mix_exp(elevation_curve)
 	
-	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, biome_locations[0], biome_colors[0])
-	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, biome_locations[1], biome_colors[1])
-	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, biome_locations[2], biome_colors[2])
-	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, biome_locations[3], biome_colors[3])
-	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, biome_locations[4], biome_colors[4])
-	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, biome_locations[5], biome_colors[5])
-	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, biome_locations[6], biome_colors[6])
-	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, biome_locations[7], biome_colors[7])
-	back.add_biome("DQACAAAAAACAPxMAbxIDPBMACtcjPAgAARAAAAAAPwIA4XrUPwCPwvW9AAAAgD8=", s ^ hash("hfil"), hfil_curve, biome_locations[8], biome_colors[8])
+	back.add_biome("EQACAAAAAACgQBAAbxKDOg0AAwAAAAAAgD8TAG8SgzoTAM3MzD0IAAAAAIA/AAAAAAAAAACAPwAAAEA/AAAAAAA=", s ^ hash("grassland"), grassland_curve, grassland_grass_height, biome_locations[0], biome_colors[0])
+	back.add_biome("EQACAAAAAAAgQRAAAACAPw0ABQAAAAAAAEATAG8SgzsTAM3MzD0IAAAAAAAAAAAAgD8AAACgQAAAAABAAAAAAAA=", s ^ hash("taiga"), taiga_curve, taiga_grass_height, biome_locations[1], biome_colors[1])
+	back.add_biome("EQAFAAAAAAAAQBAACtcjPA0AAwAAAAAAIEATAG8SgzsTAArXIzwIAAAAAIA/AOF6lD4AAADwQQAAAAA/AAAAAAA=", s ^ hash("forest"), forest_curve, forest_grass_height, biome_locations[2], biome_colors[2])
+	back.add_biome("EQAFAAAAAAAAQBAAzcxMPQ0ABQAAAAAAEEETAKabxDsTAM3MzD0GAAAAAAAAAAAAgD8AKVzLQgDNzMw9AAAAAAA=", s ^ hash("desert"), desert_curve, desert_grass_height, biome_locations[3], biome_colors[3])
+	back.add_biome("EADNzMw+DQADAAAAAABwQhMAbxKDOhMACtcjPAgAAAAAAD8AAAAAAAEbAAgAAAAASEI=", s ^ hash("jungle"), jungle_curve, jungle_grass_height, biome_locations[4], biome_colors[4])
+	back.add_biome("EgACAAAAAAAAQBAAZmZmPw0ABQAAAAAAgEATALx0kzsTAM3MzD0IAADNzMw9AAAAAD8AAAAAQAAAAIA/AAAAAAA=", s ^ hash("savannah"), savannah_curve, savannah_grass_height, biome_locations[5], biome_colors[5])
+	back.add_biome("EQACAAAA16PwPxAAbxKDOg0AAwAAAHE9yj8TAEJg5TsTAArXIzwGAABcj4pBAKRwPUAAAEAcRgBmZqY/AMP1qD8=", s ^ hash("tundra"), tundra_curve, tundra_grass_height, biome_locations[6], biome_colors[6])
+	back.add_biome("EgACAAAA16OwQBAAAAAAAA0AAwAAANejAEETAG8SAzwTAM3MzD0GAAEDAHE9yj8AZmZmPwCF61FAAEjhUkEAPQoXwQ==", s ^ hash("otherworld"), otherworld_curve, otherworld_grass_height, biome_locations[7], biome_colors[7])
+	back.add_biome("DQACAAAAAACAPxMAbxIDPBMACtcjPAgAARAAAAAAPwIA4XrUPwCPwvW9AAAAgD8=", s ^ hash("hfil"), hfil_curve, hfil_grass_height, biome_locations[8], biome_colors[8])
 						  
 	back.set_biome_noise(Globals.encoded_x_noise, s ^ hash("temperatue"), 0)
 	back.set_biome_noise(Globals.encoded_y_noise, s ^ hash("moisture"), 1)

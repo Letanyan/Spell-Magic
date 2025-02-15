@@ -52,8 +52,27 @@ func movement_speed_animation_scale() -> float:
 	#var s := (60.0 / 21.0) * 0.85
 	#return speed / s
 
-func increment_ticks(delta: float) -> void:
+func update_vitals(delta: float, vitals: Vitals, body: CharacterBody, settings: WorldSettings) -> void:
 	vital_tick += delta
+	var world_level := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, settings.world_radius, settings.difficulty_level)
+	if vital_tick >= 1.0:
+		var h := vitals.update_vitals(body)
+		var world_node := body.get_parent() as Node3D
+		for dmg: Dictionary in h: ## [][String(dmg, el)](float, Spell.Element)
+			Vitals.apply_damage(world_node, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [], 0, Vector3.ZERO, vitals)
+		var wet_area := body.get_node("WetArea") as Area3D
+		if wet_area != null:
+			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
+		vital_tick = 0.0
+		if body.position.y < settings.sea_level and body is Player:
+			var underwater := clampf(settings.sea_level - body.position.y, 0.0, 10.0) / 10.0
+			var damage := clampf(body.position.y - settings.sea_level, -100.0, 0.0) / 100.0 * lerpf(1.0, 5.0, settings.world_level / 100.0)
+			vitals.handle_damage(Spell.Element.WATER, damage, underwater)
+			if damage > 0.0:
+				Vitals.apply_damage(world_node, body, damage, Spell.Element.WATER, true, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
+		if current_biome == World.Biome.TUNDRA and body is Player:
+			vitals.handle_damage(Spell.Element.ICE, 0, fmod(world_level, 101.0) / 100.0)
+			Vitals.apply_damage(world_node, body, 0, Spell.Element.ICE, false, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
 
 # returns 
 # result["velocity"] = velocity
@@ -63,7 +82,6 @@ func increment_ticks(delta: float) -> void:
 # result["direction"] = direction
 func update(delta: float, vitals: Vitals, movement_speed: float, body: CharacterBody, should_rotate_character: bool, settings: WorldSettings, chunker: Chunker) -> Dictionary:
 	var result := {}
-	increment_ticks(delta)
 		
 	if position_is_same_as_last_update_count < 0 or body.global_position.is_equal_approx(target_position):
 		position_is_same_as_last_update_count = 30
@@ -110,27 +128,8 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 				(body as Player).add_shake(vitals.stun.value)
 			elif body is Enemy:
 				(body as Enemy).add_shake(vitals.stun.value)
-
-	var world_level := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, settings.world_radius, settings.difficulty_level)
-	if vital_tick >= 1.0:
-		var h := vitals.update_vitals(body)
-		var world_node := body.get_parent() as Node3D
-		for dmg: Dictionary in h: ## [][String(dmg, el)](float, Spell.Element)
-			Vitals.apply_damage(world_node, body, dmg["dmg"] as float, dmg["el"] as Spell.Element, true, false, [], 0, Vector3.ZERO, vitals)
-		var wet_area := body.get_node("WetArea") as Area3D
-		if wet_area != null:
-			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
-		vital_tick = 0.0
-		if body.position.y < settings.sea_level and body is Player:
-			var underwater := clampf(settings.sea_level - body.position.y, 0.0, 10.0) / 10.0
-			var damage := clampf(body.position.y - settings.sea_level, -100.0, 0.0) / 100.0 * lerpf(1.0, 5.0, settings.world_level / 100.0)
-			vitals.handle_damage(Spell.Element.WATER, damage, underwater)
-			if damage > 0.0:
-				Vitals.apply_damage(world_node, body, damage, Spell.Element.WATER, true, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
-		if current_biome == World.Biome.TUNDRA and body is Player:
-			vitals.handle_damage(Spell.Element.ICE, 0, fmod(world_level, 101.0) / 100.0)
-			Vitals.apply_damage(world_node, body, 0, Spell.Element.ICE, false, true, [Vector3.INF], 0, Vector3.ZERO, vitals)
 	
+	var world_level := Population.level_relative_to_position_within_radius(null, body.position.x, body.position.z, settings.world_radius, settings.difficulty_level)
 	target_velocity.x *= friction
 	target_velocity.z *= friction
 	if (body is Enemy and (body as Enemy).pushed_with_impulse) or (body is Player):

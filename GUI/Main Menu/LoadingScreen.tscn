@@ -243,7 +243,7 @@ alignment = 1
 [node name="Message" type="RichTextLabel" parent="VBoxMessage"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[font_size=72][b]\"[/b][/font_size]
+text = "[font_size=72][b]\"\"[/b][/font_size]
 [font_size=36]This is an amazing quote[/font_size]
 
 [font_size=36][right][i]Author[/i][/right][/font_size]"

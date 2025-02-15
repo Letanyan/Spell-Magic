@@ -434,11 +434,6 @@ func _physics_process(delta: float) -> void:
 			skybox.day_time += 0.016667
 		daytime_tick = 0.0
 			
-	if not menu.is_showing:
-		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * settings.camera_settings.panning_speed
-		if movement != Vector2.ZERO:
-			player.pan_camera(movement)
-			
 	test_tick -= delta
 	const UPDATE = 2.0
 	if test_tick < 0.0:
@@ -510,7 +505,7 @@ func _input(event: InputEvent) -> void:
 	if not menu.is_showing:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
-				player.pan_camera((event as InputEventMouseMotion).relative)
+				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
 		
 	if not menu.is_showing:
 		GlobalData.controller.handle_input(event)

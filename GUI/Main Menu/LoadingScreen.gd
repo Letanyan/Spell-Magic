@@ -52,7 +52,7 @@ func _on_timer_timeout() -> void:
 		message_label.text = ""
 	else:
 		message_label.text = """
-[font_size=72][b]"[/b][/font_size]
+[font_size=72][b]""[/b][/font_size]
 [font_size=36]%s[/font_size]
 
 [font_size=36][right][i]%s[/i][/right][/font_size]

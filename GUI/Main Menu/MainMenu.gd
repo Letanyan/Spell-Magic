@@ -38,10 +38,11 @@ func _on_new_game_pressed() -> void:
 		settings.game_mode_settings.flags = GameModeSettings.DISALLOW_SPELL_EDITING
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
-		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | Spell.Element.FIRE
+		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << randi_range(1, 6))
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		# FIXME: play startup sound (possibly a truck crash ;)
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	else:
 		main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.NEW)

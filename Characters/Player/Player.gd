@@ -122,6 +122,8 @@ func pan_camera(movement: Vector2) -> void:
 		vitals.wetness.apply(size / 50_000.0)
 	if vitals.freeze.value > vitals.freeze.min_value:
 		vitals.freeze.apply(size / 75_000.0)
+		
+	set_underwater()
 
 func current_animation_is(animation: String) -> bool:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
@@ -163,6 +165,7 @@ func _physics_process(delta: float) -> void:
 	update_watched_enemies_positions(delta)
 	velocity_movement.update_movement_speed(magic_book.settings.upgrade_settings.max_running_speed() + magic_book.settings.upgrade_settings.buff_running_speed, bounds.y, 21.0)
 	var movement := velocity_movement.update(delta, vitals, velocity_movement.speed, self, false, world_settings, chunker)
+	velocity_movement.update_vitals(delta, vitals, self, world_settings)
 	if vitals.did_update_on_tick:
 		emit_vitals_update()
 	
@@ -364,9 +367,10 @@ func set_current_biome_grass_color(color: Color) -> void:
 	(leaves.process_material as ParticleProcessMaterial).color = color
 
 func check_is_underwater() -> bool:
-	return position.y + 2.0 < world_settings.sea_level
+	return cam.global_position.y < world_settings.sea_level - 0.5
 
 func set_underwater(underwater: float = 0.5) -> float:
+	# FIXME: increase range when player is underwater
 	var screen_mesh: Mesh = screen_filter.mesh
 	var screen_material: ShaderMaterial = screen_mesh.surface_get_material(0)
 	if check_is_underwater():

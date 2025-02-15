@@ -46,10 +46,10 @@ void vertex() {
 
 	vec4 world_coord = INV_VIEW_MATRIX * vec4(VERTEX, 0);
 
-	float wind_speed = texture(wind_speed_change, vec2(0.5, TIME * wind_speed_multiplier)).r;
+	float wind_speed = texture(wind_speed_change, vec2(0.5, sin(TIME) * wind_speed_multiplier)).r;
 	vec2 wind_dir = vec2(
-		texture(wind_horizontal_direction, vec2(TIME * wind_speed * 0.1, 0.5 + instance_custom.a)).r * 2.0 - 1.0,
-		texture(wind_horizontal_direction, vec2(0.5 + instance_custom.a, TIME * wind_speed * 0.1)).r * 2.0 - 1.0
+		texture(wind_horizontal_direction, vec2(sin(TIME) * wind_speed * 0.1, 0.5 + instance_custom.a)).r * 2.0 - 1.0,
+		texture(wind_horizontal_direction, vec2(0.5 + instance_custom.a, sin(TIME) * wind_speed * 0.1)).r * 2.0 - 1.0
 	);
 	vec2 normalized_wind_direction = wind_dir; // normalize(wind_dir);
 	float displacement_affect = pow(1.0 - UV.y, 3.0);

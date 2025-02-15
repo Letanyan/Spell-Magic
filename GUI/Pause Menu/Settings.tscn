@@ -438,7 +438,7 @@ text = "2000m"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Panning Speed" type="Label" parent="Tabs/Camera"]
+[node name="Panning Speed X" type="Label" parent="Tabs/Camera"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -448,24 +448,56 @@ offset_top = 215.0
 offset_right = -96.0
 offset_bottom = 239.0
 grow_horizontal = 2
-text = "Panning Speed: "
+text = "X-Acceleration: "
 vertical_alignment = 1
 
-[node name="Slider" type="HSlider" parent="Tabs/Camera/Panning Speed"]
+[node name="Slider" type="HSlider" parent="Tabs/Camera/Panning Speed X"]
 layout_mode = 0
 offset_left = 168.0
 offset_right = 448.0
 offset_bottom = 24.0
-min_value = 1.0
-max_value = 25.0
-value = 12.0
+min_value = 0.05
+max_value = 5.0
+step = 0.05
+value = 1.0
 
-[node name="Value" type="Label" parent="Tabs/Camera/Panning Speed"]
+[node name="Value" type="Label" parent="Tabs/Camera/Panning Speed X"]
 layout_mode = 0
 offset_left = 448.0
 offset_right = 512.0
 offset_bottom = 24.0
-text = "12m/s"
+text = "x 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panning Speed Y" type="Label" parent="Tabs/Camera"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -256.0
+offset_top = 255.0
+offset_right = -96.0
+offset_bottom = 279.0
+grow_horizontal = 2
+text = "Y-Acceleration"
+
+[node name="Slider" type="HSlider" parent="Tabs/Camera/Panning Speed Y"]
+layout_mode = 0
+offset_left = 168.0
+offset_right = 448.0
+offset_bottom = 24.0
+min_value = 0.05
+max_value = 5.0
+step = 0.05
+value = 1.0
+
+[node name="Value" type="Label" parent="Tabs/Camera/Panning Speed Y"]
+layout_mode = 0
+offset_left = 448.0
+offset_right = 512.0
+offset_bottom = 24.0
+text = "x 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1258,7 +1290,8 @@ text = "Make Default"
 [connection signal="value_changed" from="Tabs/Camera/Distance/Slider" to="." method="_on_distance_slider_value_changed"]
 [connection signal="toggled" from="Tabs/Camera/Auto Distance/Check" to="." method="_on_auto_distance_toggled"]
 [connection signal="value_changed" from="Tabs/Camera/Render Distance/Slider" to="." method="_on_render_distance_slider_value_changed"]
-[connection signal="value_changed" from="Tabs/Camera/Panning Speed/Slider" to="." method="_on_panning_speed_slider_value_changed"]
+[connection signal="value_changed" from="Tabs/Camera/Panning Speed X/Slider" to="." method="_on_panning_speed_x_slider_value_changed"]
+[connection signal="value_changed" from="Tabs/Camera/Panning Speed Y/Slider" to="." method="_on_panning_speed_y_slider_value_changed"]
 [connection signal="item_selected" from="Tabs/Graphics/Scaling Mode/Options" to="." method="_on_scaling_mode_options_item_selected"]
 [connection signal="drag_ended" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_drag_ended"]
 [connection signal="value_changed" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_value_changed"]

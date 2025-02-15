@@ -24,8 +24,10 @@ extends Control
 @onready var distance_value: Label = $Tabs/Camera/Distance/Value as Label
 @onready var render_slider: HSlider = $"Tabs/Camera/Render Distance/Slider" as HSlider
 @onready var render_value: Label = $"Tabs/Camera/Render Distance/Value" as Label
-@onready var panning_speed_slider: HSlider = $"Tabs/Camera/Panning Speed/Slider" as HSlider
-@onready var panning_speed_value: Label = $"Tabs/Camera/Panning Speed/Value" as Label
+@onready var panning_speed_x_slider: HSlider = $"Tabs/Camera/Panning Speed X/Slider" as HSlider
+@onready var panning_speed_x_value: Label = $"Tabs/Camera/Panning Speed X/Value" as Label
+@onready var panning_speed_y_slider: HSlider = $"Tabs/Camera/Panning Speed Y/Slider" as HSlider
+@onready var panning_speed_y_value: Label = $"Tabs/Camera/Panning Speed Y/Value" as Label
 
 @onready var scaling_options: OptionButton = $"Tabs/Graphics/Scaling Mode/Options"
 @onready var scaling_slider: HSlider = $Tabs/Graphics/Scaling/Slider
@@ -127,8 +129,10 @@ func update_controls() -> void:
 	distance_value.text = str(int(world_settings.camera_settings.distance))
 	render_slider.value = world_settings.camera_settings.render_distance
 	render_value.text = str(int(world_settings.camera_settings.render_distance)) + "m"
-	panning_speed_slider.value = world_settings.camera_settings.panning_speed
-	panning_speed_value.text = str(int(world_settings.camera_settings.panning_speed)) + "m/s"
+	panning_speed_x_slider.value = world_settings.camera_settings.panning_speed_x
+	panning_speed_x_value.text = "x %.2f" % world_settings.camera_settings.panning_speed_x
+	panning_speed_y_slider.value = world_settings.camera_settings.panning_speed_y
+	panning_speed_y_value.text = "x %.2f" % world_settings.camera_settings.panning_speed_y
 	
 	scaling_options.selected = world_settings.graphics_settings.scaling_mode
 	sharpness_slider.value = world_settings.graphics_settings.sharpness * 100
@@ -277,10 +281,16 @@ func _on_render_distance_slider_value_changed(value: float) -> void:
 	render_value.text = str(int(value)) + "m"
 	settings_changed.emit(world_settings)
 	
-func _on_panning_speed_slider_value_changed(value: float) -> void:
-	world_settings.camera_settings.panning_speed = value
+func _on_panning_speed_x_slider_value_changed(value: float) -> void:
+	world_settings.camera_settings.panning_speed_x = value
 	UIAudioPlayer.switch()
-	panning_speed_value.text = str(int(value)) + "m/s"
+	panning_speed_x_value.text = "x %.2f" % value
+	settings_changed.emit(world_settings)
+	
+func _on_panning_speed_y_slider_value_changed(value: float) -> void:
+	world_settings.camera_settings.panning_speed_y = value
+	UIAudioPlayer.switch()
+	panning_speed_y_value.text = "x %.2f" % value
 	settings_changed.emit(world_settings)
 	
 func _on_auto_distance_toggled(toggled_on: bool) -> void:

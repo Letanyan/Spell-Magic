@@ -226,7 +226,8 @@ func run_on_ready() -> void:
 	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	ready_state = GameSettings.ReadyState.IS
-	show_tutorial_label()
+	if Vec2.xz(player.position).length() < 8:
+		show_tutorial_label()
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -342,11 +343,6 @@ func _physics_process(delta: float) -> void:
 	if GlobalData.is_debug:
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 			
-	if not menu.is_showing:
-		var movement := VelocityMovement.get_input_strength("pan_left", "pan_right", "pan_forward", "pan_back") * settings.camera_settings.panning_speed
-		if movement != Vector2.ZERO:
-			player.pan_camera(movement)
-			
 	#print("total: ", Enemy.physics_time, ", movement: ", Enemy.movement_time, ", spell: ", Enemy.spell_time, ", behaviour: ", Enemy.behaviour_time, ", animation: ", Enemy.animation_time)
 			
 	if not has_init_terrain_population:
@@ -415,7 +411,7 @@ func _input(event: InputEvent) -> void:
 	if not settings.is_paused:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
-				player.pan_camera((event as InputEventMouseMotion).relative)
+				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
 				
 	if GlobalData.is_debug and not settings.is_paused:
 		if event is InputEventKey:
@@ -523,7 +519,7 @@ func hide_tutorial_message() -> void:
 
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta
-	if Vec2.xz(player.position).distance_to(Vector2.ZERO) > 8.0:
+	if Vec2.xz(player.position).length() > 8.0:
 		hide_tutorial_message()
 	if terrain_update_interval >= 0.25:
 		terrain_update_interval = 0

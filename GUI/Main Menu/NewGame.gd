@@ -218,6 +218,7 @@ func _on_create_pressed() -> void:
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 
+		# FIXME: play startup sound (possibly a truck crash ;)
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_save_file.button_pressed:
 		if worlds_list.get_selected_items().is_empty():
