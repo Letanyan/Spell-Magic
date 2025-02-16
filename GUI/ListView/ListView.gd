@@ -29,9 +29,6 @@ func setup(total: int, height: float, template: Callable, update: Callable, rel_
 	make_template = template
 	update_item = update
 	relative_update = rel_update
-	y_offset = 0
-	scroll_bar.value = 0
-	items_offset = 0
 	generate_items(false)
 
 func generate_items(full_update: bool) -> void:

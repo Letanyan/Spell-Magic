@@ -327,7 +327,8 @@ class Option:
 			Element.SPELL_RADIUS: element_text = "r"
 			Element.RUNNING_SPEED: element_text = "S"
 		var color_hex := "#%08x" % color().to_rgba32()
-		element_text = ("[img=l, 18x18, color=%s]%s[/img][color=%s]" % [color_hex, element_texture_path(), color_hex]) + element_text + "[/color]"
+		if formatted:
+			element_text = ("[img=l, 18x18, color=%s]%s[/img][color=%s]" % [color_hex, element_texture_path(), color_hex]) + element_text + "[/color]"
 			
 		var result := ""
 		if effect != Effect.NONE:

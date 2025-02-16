@@ -222,9 +222,10 @@ func add_spell(spell: Spell) -> void:
 		
 func _on_create_pressed() -> void:
 	UIAudioPlayer.click()
-	var load_from_clipboard := true
+	var load_from_clipboard := false
 	var json := JSON.new()
-	while DisplayServer.clipboard_has():
+	while DisplayServer.clipboard_has(): # run once. We do this because the logic is easier when we can use `break` 
+		load_from_clipboard = true
 		var spell_text := DisplayServer.clipboard_get()
 		if not Globals.is_base64(spell_text):
 			load_from_clipboard = false

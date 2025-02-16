@@ -32,11 +32,9 @@ func update_wand_shelf_items(ignore_signals: bool) -> void:
 		(case.wands[current_index] as Wand).spell_updated.emit()
 	
 func scroll_wand_keys_up() -> void:
-	print("scroll up")
 	list_view.shift_scroll_bar(true)
 	
 func scroll_wand_keys_down() -> void:
-	print("scroll down")
 	list_view.shift_scroll_bar(false)
 	
 func reload_wand_shelf_items(index: int = current_index) -> void:
