@@ -110,7 +110,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		var direction := Vector3.ZERO
 		#var cam_pivot := body.get_node("CamPivot") as Node3D
 		var input_dir := VelocityMovement.get_input_strength("move_left", "move_right", "move_forward", "move_back")
-		var input_len := input_dir.length()
+		var input_len := minf(input_dir.length(), 1.0)
 		var port := body.get_viewport()
 		var pos := port.get_visible_rect().size / 2.0
 		direction = port.get_camera_3d().project_ray_normal(pos)
