@@ -637,6 +637,7 @@ func basic_fixed_vars() -> Vars:
 	fixed_vars.set_value(Vars.r8, randf())
 	fixed_vars.set_value(Vars.r9, randf())
 	fixed_vars.set_value(Vars.pi, PI)
+	fixed_vars.set_value(Vars.tau, TAU)
 	fixed_vars.set_value(Vars.N, float(count))
 	fixed_vars.set_value(Vars.M, mana_cost)
 	fixed_vars.set_value(Vars.C, charge)
