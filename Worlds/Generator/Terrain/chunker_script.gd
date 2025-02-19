@@ -160,7 +160,7 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float, saved_player
 	var biome_z_texture := blender.back.biome_texture(X, Z, W, W, R, 1)
 
 	var A := Vector3.ZERO
-	var ys := blender.back.height_map(X, Z, W, W, R)
+	var ys := blender.back.height_map(X, Z, W, W, R, false)
 	var yss := PackedFloat32Array([])
 	var lod := chunk_lods[coord] as int
 	#if not biome_maps.has(new_coord) or (biome_maps[new_coord] as PackedInt32Array).is_empty():
@@ -174,7 +174,7 @@ func update_chunk(coord: Vector2i, new_coord: Vector2i, res: float, saved_player
 		var newZ := z / newR - newW / 2.0
 		newX = snappedf(newX, 1.0)
 		newZ = snappedf(newZ, 1.0)
-		yss = blender.back.height_map(newX, newZ, newW, newW, newR)
+		yss = blender.back.height_map(newX, newZ, newW, newW, newR, true)
 		biome_maps[coord] = blender.back.get_biomes_map()
 	else:
 		biome_maps[coord] = PackedInt32Array([])

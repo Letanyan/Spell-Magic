@@ -783,7 +783,7 @@ func transition_world_level() -> void:
 	mat.set_shader_parameter("locations", blender.back.get_locations())
 	mat.set_shader_parameter("biome_x", blender.back.biome_texture(POS.x, POS.y, SIZE.x, SIZE.y, SCALE, 0))
 	mat.set_shader_parameter("biome_y", blender.back.biome_texture(POS.x, POS.y, SIZE.x, SIZE.y, SCALE, 1))
-	var heights := blender.back.height_map(POS.x, POS.y, SIZE.x, SIZE.y, SCALE)
+	var heights := blender.back.height_map(POS.x, POS.y, SIZE.x, SIZE.y, SCALE, false)
 	var max_height := -INF
 	var min_height := INF
 	for h in heights:

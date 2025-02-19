@@ -9,24 +9,24 @@ uniform sampler2D biome_y: source_color;
 uniform vec2 locations[9];
 // use alpha channel to store cliff side gray color
 const vec4 biome_colors[9] = {
-	//vec4(0.23, 0.83, 0.23, 0.15), // grassland
-	//vec4(0, 1, 1, 0.1),           // taiga
-	//vec4(0.55, 0.28, 0.0, 0.08),  // forest
-	//vec4(1, 1, 0, 0.2),           // desert
-	//vec4(0, 0.4, 0.0, 0.08),      // jungle
-	//vec4(1, 0.5, .0, 0.2),        // savannah
-	//vec4(1, 1, 1, 1.0),           // tundra
-	//vec4(0, 0, 0, 1.0),           // otherworld
-	//vec4(1, 0, 0, 0.0)            // hfil
-	vec4(0.0, 1.0, 0.0, 0.15), // grassland
-	vec4(0.0, 1.0, 1.0, 0.1), // taiga
-	vec4(0.0, 0.5, 0.0, 0.08), // forest
-	vec4(1.0, 1.0, 0.0, 0.2), // desert
-	vec4(0.0, 0.5, 0.3, 0.08), // jungle
-	vec4(1.0, 0.5, 0.0, 0.2), // savannah
-	vec4(1.0, 1.0, 1.0, 1.0), // tundra
-	vec4(0.0, 0.0, 0.0, 1.0), // otherworld
-	vec4(1.0, 0.0, 0.0, 0.0) // hfil
+	vec4(0.23, 0.83, 0.23, 0.15), // grassland
+	vec4(0, 1, 1, 0.1),           // taiga
+	vec4(0.55, 0.28, 0.0, 0.08),  // forest
+	vec4(1, 1, 0, 0.2),           // desert
+	vec4(0, 0.4, 0.0, 0.08),      // jungle
+	vec4(1, 0.5, .0, 0.2),        // savannah
+	vec4(1, 1, 1, 1.0),           // tundra
+	vec4(0, 0, 0, 1.0),           // otherworld
+	vec4(1, 0, 0, 0.0)            // hfil
+	//vec4(0.0, 1.0, 0.0, 0.15), // grassland
+	//vec4(0.0, 1.0, 1.0, 0.1), // taiga
+	//vec4(0.0, 0.5, 0.0, 0.08), // forest
+	//vec4(1.0, 1.0, 0.0, 0.2), // desert
+	//vec4(0.0, 0.5, 0.3, 0.08), // jungle
+	//vec4(1.0, 0.5, 0.0, 0.2), // savannah
+	//vec4(1.0, 1.0, 1.0, 1.0), // tundra
+	//vec4(0.0, 0.0, 0.0, 1.0), // otherworld
+	//vec4(1.0, 0.0, 0.0, 0.0) // hfil
 };
 
 void vertex() {
@@ -59,12 +59,12 @@ vec4 biome_color(vec4 V, vec2 uv) {
 		if (dist <= (axial_weight + 1.0)) {
 			float mix_alpha = pow(1.0 - dist / (axial_weight + 1.0), 3.0);
 			vec3 c = oklab_mix(vec3(1.0), biome_colors[i].rgb, mix_alpha);
-			//color = color * vec4(c, mix(1, biome_colors[i].a, mix_alpha));
+			color = color * vec4(c, mix(1, biome_colors[i].a, mix_alpha));
 		}
 		if (dist < min_distance) {
 			min_distance = dist;
 			index = i;
-			color = biome_colors[i];
+			//color = biome_colors[i];
 		}
 	}
 

@@ -2,6 +2,9 @@
 
 shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,shadows_disabled,diffuse_toon;
+
+#include "res://General/basic.gdshaderinc"
+
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
 uniform float point_size : hint_range(0,128);
@@ -86,7 +89,11 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	
-	vec3 albedo_tex = mix(instance_custom.rgb, instance_custom.rgb * 1.5, 1.0 - UV.y);
+	vec3 color = rgb2hsv(instance_custom.rgb);
+	color.b = 1.0 - pow(1.0 - color.b, 2.0);
+	color.rgb = hsv2rgb(color.rgb);
+	
+	vec3 albedo_tex = mix(color.rgb, color.rgb * 1.5, 1.0 - UV.y);
 	ALBEDO = albedo_tex.rgb * albedo.rgb;
 	//ALPHA = clamp(abs(COLOR.a - tick_time_s), 0.0, 1.0);
 	//float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);

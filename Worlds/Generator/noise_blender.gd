@@ -33,24 +33,25 @@ const biome_list: Array[World.Biome] = [
 	World.Biome.HFIL,
 ]
 const biome_colors: PackedVector3Array = [
-	#Vector3(0.23, 0.83, 0.23), # grassland
-	#Vector3(0, 1, 1), # taiga
-	#Vector3(0.55, 0.28, 0.0), # forest
-	#Vector3(1, 1, 0), # desert
-	#Vector3(0, 0.4, 0.0), # jungle
-	#Vector3(1, 0.5, 0), # savannah
-	#Vector3(1, 1, 1), # tundra
-	#Vector3(0, 0, 0), # otherworld
-	#Vector3(1, 0, 0), # hfil
-	Vector3(0.0, 1.0, 0.0), # grassland
-	Vector3(0.0, 1.0, 1.0), # taiga
-	Vector3(0.0, 0.5, 0.0), # forest
-	Vector3(1.0, 1.0, 0.0), # desert
-	Vector3(0.0, 0.5, 0.3), # jungle
-	Vector3(1.0, 0.5, 0.0), # savannah
-	Vector3(1.0, 1.0, 1.0), # tundra
-	Vector3(0.0, 0.0, 0.0), # otherworld
-	Vector3(1.0, 0.0, 0.0), # hfil
+	Vector3(0.23, 0.83, 0.23), # grassland
+	Vector3(0, 1, 1), # taiga
+	Vector3(0.55, 0.28, 0.0), # forest
+	Vector3(1, 1, 0), # desert
+	Vector3(0, 0.4, 0.0), # jungle
+	Vector3(1, 0.5, 0), # savannah
+	Vector3(1, 1, 1), # tundra
+	Vector3(0, 0, 0), # otherworld
+	Vector3(1, 0, 0), # hfil
+	
+	#Vector3(0.0, 1.0, 0.0), # grassland
+	#Vector3(0.0, 1.0, 1.0), # taiga
+	#Vector3(0.0, 0.5, 0.0), # forest
+	#Vector3(1.0, 1.0, 0.0), # desert
+	#Vector3(0.0, 0.5, 0.3), # jungle
+	#Vector3(1.0, 0.5, 0.0), # savannah
+	#Vector3(1.0, 1.0, 1.0), # tundra
+	#Vector3(0.0, 0.0, 0.0), # otherworld
+	#Vector3(1.0, 0.0, 0.0), # hfil
 ]
 
 var curve_list: Array[Curve] = [
@@ -175,7 +176,7 @@ func shuffle_biome_locations(rng: RandomNumberGenerator) -> PackedVector2Array:
 func count_biomes(positions: Array[Vector2], summary: Dictionary, should_print: bool = false) -> int:
 	var sum := 0
 	for pos in positions:
-		back.compute_biome_map_stats(pos.x * 256, pos.y * 256, 16, 16, 16)
+		back.compute_biome_map_stats(pos.x * 256, pos.y * 256, 16, 16, 16, false)
 		var dict := back.get_biomes_map()
 		sum += dict.size()
 		for p in dict:

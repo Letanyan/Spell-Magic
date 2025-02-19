@@ -136,9 +136,9 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			stun.apply_ignoring_resistance(amount + burn_amount)
 					
 		Spell.Element.AIR:
-			burning.apply(gauge)
-			wetness.apply(-gauge)
-			freeze.apply(-gauge * 0.5)
+			burning.apply(burning.value * (1 + gauge))
+			wetness.apply(wetness.value * -(1 + gauge))
+			freeze.apply(freeze.value * -(1 + gauge) * 0.5)
 			
 		Spell.Element.VOID:
 			power = 0.0
