@@ -121,8 +121,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 			#print(info, " or (", below_sea_level, " and ", not_hfil, ") or ", world_normal)
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
-		blender.compute_biome_distances(position.x, position.z, chunker.get_noise_scale())
-		foliage_manager.set_albedo_blend(kind, index, blender.color)
+		foliage_manager.set_albedo_blend(kind, index, chunker.get_color_at_position(position.x, position.z))
 		foliage_manager.setup(kind, index, position, seedling, current_biome_during_generation)
 		var g := Vector2i(kind, index)
 		var t := foliage_manager.get_transform(g.x, g.y)

@@ -68,12 +68,13 @@ func _ready() -> void:
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
+	# FIXME: 8826327
 	# FIXME: check "VERSION: -1, WORLD SEED: 7213014, RNG SEED: 7213014"
 	# FIXME: check color VERSION: -1, WORLD SEED: 8871961, RNG SEED: 8871961
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
-	player.position.x = rng.randf_range(-10000, 10000)
-	player.position.z = rng.randf_range(-10000, 10000)
-	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(1.0, 0.1)
+	player.position.x = rng.randf_range(-10000, 10000) * 0
+	player.position.z = rng.randf_range(-10000, 10000) * 0
+	player_movement_direction = Vector3(rng.randf(), 0, rng.randf()).normalized() * rng.randfn(100.0, 0.1)
 	player_rotation_direction = (rng.randf() * 2 - 1) * PI / 16
 		
 	biome_helper = BiomeHelper.new()
@@ -143,8 +144,7 @@ func _physics_process(delta: float) -> void:
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
-	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
-	var b := blender.biome
+	var b := chunker.get_biome_at_position(player.position.x, player.position.z)
 	if last_biome != b and biome_in_waiting_queue != b:
 		biome_in_waiting_queue = b
 		switch_biome_timer = 3.0

@@ -33,15 +33,24 @@ const biome_list: Array[World.Biome] = [
 	World.Biome.HFIL,
 ]
 const biome_colors: PackedVector3Array = [
-	Vector3(0.23, 0.83, 0.23),
-	Vector3(0, 1, 1),
-	Vector3(0.55, 0.28, 0.0),
-	Vector3(1, 1, 0),
-	Vector3(0, 0.4, 0.0),
-	Vector3(1, 0.5, 0),
-	Vector3(1, 1, 1),
-	Vector3(0, 0, 0),
-	Vector3(1, 0, 0),
+	#Vector3(0.23, 0.83, 0.23), # grassland
+	#Vector3(0, 1, 1), # taiga
+	#Vector3(0.55, 0.28, 0.0), # forest
+	#Vector3(1, 1, 0), # desert
+	#Vector3(0, 0.4, 0.0), # jungle
+	#Vector3(1, 0.5, 0), # savannah
+	#Vector3(1, 1, 1), # tundra
+	#Vector3(0, 0, 0), # otherworld
+	#Vector3(1, 0, 0), # hfil
+	Vector3(0.0, 1.0, 0.0), # grassland
+	Vector3(0.0, 1.0, 1.0), # taiga
+	Vector3(0.0, 0.5, 0.0), # forest
+	Vector3(1.0, 1.0, 0.0), # desert
+	Vector3(0.0, 0.5, 0.3), # jungle
+	Vector3(1.0, 0.5, 0.0), # savannah
+	Vector3(1.0, 1.0, 1.0), # tundra
+	Vector3(0.0, 0.0, 0.0), # otherworld
+	Vector3(1.0, 0.0, 0.0), # hfil
 ]
 
 var curve_list: Array[Curve] = [
@@ -136,8 +145,8 @@ func version1(s: int) -> void:
 func texture(noise: FastNoiseLite, x: float, y: float, w: float, h: float, scale: float) -> NoiseTexture2D:
 	return back.texture(noise, x, y, w, h, scale)
 
-func compute_biome_distances(x: float, y: float, scale: float) -> void:
-	back.compute_biome_stats(x, y, scale)
+func compute_biome_distances(x: float, y: float, scale: float, size: float) -> void:
+	back.compute_biome_stats(x, y, scale, size)
 	biome = biome_list[back.get_biome()]
 	color = back.get_color()
 	distances = back.get_distances()

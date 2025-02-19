@@ -312,12 +312,13 @@ func _physics_process(delta: float) -> void:
 			env.environment.ambient_light_color = biome_helper.environment_ambient_color(last_biome, skybox.day_time, sun, moon)
 		RenderingServer.global_shader_parameter_set("tick_time_s", float(Time.get_ticks_msec()) / 1000.0)
 		
-	blender.compute_biome_distances(player.position.x, player.position.z, chunker.get_noise_scale())
 	const MULT = 2.5
-	var clr := Color(blender.color.r * MULT, blender.color.g * MULT, blender.color.b * MULT)
+	var grass_color := chunker.get_color_at_position(player.position.x, player.position.z)
+	var clr := grass_color * MULT
 	player.set_current_biome_grass_color(clr)
-	var b := blender.biome
+	var b := chunker.get_biome_at_position(player.position.x, player.position.z)
 	if last_biome != b:
+		print(World.Biome.keys()[b])
 		player.set_current_biome(b)
 		player.play_bg_audio(b)
 		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)

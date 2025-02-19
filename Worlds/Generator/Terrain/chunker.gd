@@ -69,3 +69,9 @@ func get_min_height_position() -> Vector3:
 	
 func group_spawn_points(coord: Vector2i, spacing: float) -> Dictionary:
 	return back.group_spawn_points(coord, spacing)
+
+func get_biome_at_position(x: float, z: float) -> World.Biome:
+	return back.get_biome_at_position(x, z) as World.Biome
+	
+func get_color_at_position(x: float, z: float) -> Color:
+	return back.get_color_at_position(x, z)
