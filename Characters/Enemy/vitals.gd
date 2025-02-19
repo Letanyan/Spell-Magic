@@ -112,7 +112,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			if burning.value <= 0:
 				wetness.apply_ignoring_resistance(amount)
 			else:
-				power = power * 0.5
+				power = power * (1.0 - burning.value * 0.33)
 			burning.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(amount * freeze.value)
 		Spell.Element.ICE:
@@ -121,7 +121,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 				freeze.apply_ignoring_resistance(amount)
 				wetness.apply_ignoring_resistance(-amount)
 			if burning.value > 0:
-				power = power * 0.25
+				power = power * (1.0 - burning.value * 0.66)
 			burning.apply_ignoring_resistance(-amount)
 		Spell.Element.ELECTRIC:
 			var amount := stun.amount_of_change(maxf(wetness.value, freeze.value) * gauge)
@@ -136,9 +136,9 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			stun.apply_ignoring_resistance(amount + burn_amount)
 					
 		Spell.Element.AIR:
-			burning.apply(burning.value * (1 + gauge))
-			wetness.apply(wetness.value * -(1 + gauge))
-			freeze.apply(freeze.value * -(1 + gauge) * 0.5)
+			burning.apply(burning.value * gauge)
+			wetness.apply(wetness.value * -gauge)
+			freeze.apply(freeze.value * -gauge * 0.5)
 			
 		Spell.Element.VOID:
 			power = 0.0

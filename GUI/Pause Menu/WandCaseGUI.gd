@@ -37,7 +37,7 @@ func scroll_wand_keys_up() -> void:
 func scroll_wand_keys_down() -> void:
 	list_view.shift_scroll_bar(false)
 	
-func reload_wand_shelf_items(index: int = current_index) -> void:
+func reload_wand_shelf_items(index: int = current_index, full_update: bool = false) -> void:
 	if index < 0:
 		return
 	UIAudioPlayer.silence = true
@@ -101,6 +101,8 @@ func reload_wand_shelf_items(index: int = current_index) -> void:
 		
 		
 	list_view.setup(wand.keys.size(), 48, make, update_wand_shelf_item(current_index), update_wand_shelf_relative_item)
+	if full_update:
+		list_view.update_items(true)
 	UIAudioPlayer.silence = false
 		
 		

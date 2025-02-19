@@ -642,8 +642,9 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				book.reset_by_deleting_all_spells()
 				case.reset_by_deleting_all_wands()
 				wand = case.wands[0]
+				hud.wand = wand
 				menu.magic_book.update_book_without_selection()
-				menu.wand_case.reload_wand_shelf_items(0)
+				menu.wand_case.reload_wand_shelf_items(0, true)
 				menu.wand_case.case.save(settings.world_name)
 				menu.magic_book.book.save(settings.world_name)
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_COINS == 0:

@@ -484,6 +484,19 @@ func update_notes() -> void:
 			var internal := m.get_string(1)
 			var prefix := note.left(m.get_start())
 			var suffix := note.right(note.length() - m.get_end())
+			match internal:
+				"Burning": internal = "[color=#FF0000]Burning[/color]"
+				"Fire": internal = "[color=#FF0000]Fire[/color]"
+				"Wet": internal = "[color=#0080FF]Wet[/color]"
+				"Water": internal = "[color=#0080FF]Water[/color]"
+				"Feather": internal = "[color=#00FF80]Feather[/color]"
+				"Wind": internal = "[color=#00FF80]Wind[/color]"
+				"Stun": internal = "[color=#FF0080]Stun[/color]"
+				"Electric": internal = "[color=#FF0080]Electric[/color]"
+				"Freeze": internal = "[color=#00FFFF]Freeze[/color]"
+				"Ice": internal = "[color=#00FFFF]Ice[/color]"
+				"Rock": internal = "[color=#FF8000]Rock[/color]"
+				
 			note = prefix + "[b][i]" + internal + "[/i][/b]" + suffix
 			m = regex_tag_t.search(note)
 		return note

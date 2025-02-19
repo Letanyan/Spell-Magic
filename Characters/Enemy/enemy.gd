@@ -78,7 +78,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 
 	
 	const fish = preload("res://Characters/Enemy/Blob/Fish/fish.tscn") as PackedScene
-	const bird = preload("res://Characters/Enemy/Blob/Bird/bird.tscn") as PackedScene
+	const bird = preload("res://Characters/Enemy/Blob/Bird/Bird.tscn") as PackedScene
 	const fungi = preload("res://Characters/Enemy/Blob/Fungi/fungi.tscn") as PackedScene
 	const hot_blob = preload("res://Characters/Enemy/Blob/HotBlob/hot_blob.tscn") as PackedScene
 	const mushroom = preload("res://Characters/Enemy/Blob/Mushroom/mushroom.tscn") as PackedScene
