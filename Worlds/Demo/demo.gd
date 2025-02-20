@@ -318,7 +318,6 @@ func _physics_process(delta: float) -> void:
 	player.set_current_biome_grass_color(clr)
 	var b := chunker.get_biome_at_position(player.position.x, player.position.z)
 	if last_biome != b:
-		print(World.Biome.keys()[b])
 		player.set_current_biome(b)
 		player.play_bg_audio(b)
 		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)

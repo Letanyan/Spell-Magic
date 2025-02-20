@@ -89,8 +89,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	
 	artifact_drop_probs = {
 		"N": {
+			"is_effect": 0.75,
+			"event": { Artifact.Event.DEAL: 2 },
 			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
-			"element": { Artifact.Element.ICE: 10, Artifact.Element.SPELL_RADIUS: 10, Artifact.Element.ANY: 1,  },
+			"ef_element": { Artifact.Element.ICE: 10, Artifact.Element.SPELL_RADIUS: 10, Artifact.Element.ANY: 1,  },
+			"ev_element": { Artifact.Element.ICE: 10, },
 			"pattern": { Artifact.Pattern.CIRCLE: 2 },
 			"tier": artier(8),
 		},
@@ -101,8 +104,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			"tier": artier(8),
 		},
 		"S": {
+			"is_effect": 0.75,
+			"event": { Artifact.Event.DEAL: 2 },
 			"effect": { Artifact.Effect.RESISTANCE_FLAT: 10, Artifact.Effect.RESISTANCE_PERCENTAGE: 10 },
-			"element": { Artifact.Element.ICE: 10, Artifact.Element.COUNT: 10, Artifact.Element.ANY: 1,  },
+			"ef_element": { Artifact.Element.ICE: 10, Artifact.Element.COUNT: 10, Artifact.Element.ANY: 1,  },
+			"ev_element": { Artifact.Element.ICE: 10, },
 			"pattern": { Artifact.Pattern.CIRCLE: 2 },
 			"tier": artier(8),
 		},

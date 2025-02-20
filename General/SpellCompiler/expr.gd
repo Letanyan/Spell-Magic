@@ -16,8 +16,17 @@ func _init(expr: String) -> void:
 func contains_variable(var_name: String) -> bool:
 	return back.contains_variable(var_name)
 	
+func contains_variable_token(var_token: int) -> bool:
+	return back.contains_variable_token(var_token)
+	
 func contains_only_basic_vars() -> String:
 	return back.all_variables_is_contained(Spell.basic_fixed_var_list, GlobalData.game_settings.user_functions)
+	
+func contains_time_dependent() -> bool:
+	return back.get_contains_time_dependent()
+	
+func variable_update_set() -> int:
+	return back.get_variable_update_set()
 	
 #	var tokens = Token.tokenize(expr)
 #
@@ -225,3 +234,10 @@ func compute_value(vars: Vars, display: bool = false) -> float:
 #		return 0
 #
 #	return tape[tape_index - 1]
+
+
+static var vec0 := Expr.new("vec(0,0,0)")
+static var vec_right := Expr.new("vec(1,0,0)")
+static var vec_down := Expr.new("vec(0,-1,0)")
+static var vec_up := Expr.new("vec(0,1,0)")
+static var arc_frac := Expr.new("n/N*tau")

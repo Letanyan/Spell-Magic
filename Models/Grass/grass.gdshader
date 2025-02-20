@@ -93,8 +93,8 @@ void fragment() {
 	color.b = 1.0 - pow(1.0 - color.b, 2.0);
 	color.rgb = hsv2rgb(color.rgb);
 	
-	vec3 albedo_tex = mix(color.rgb, color.rgb * 1.5, 1.0 - UV.y);
-	ALBEDO = albedo_tex.rgb * albedo.rgb;
+	//vec3 albedo_tex = mix(color.rgb, color.rgb * 1.5, 1.0 - UV.y);
+	ALBEDO = color.rgb;
 	//ALPHA = clamp(abs(COLOR.a - tick_time_s), 0.0, 1.0);
 	//float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	//METALLIC = metallic_tex * metallic;

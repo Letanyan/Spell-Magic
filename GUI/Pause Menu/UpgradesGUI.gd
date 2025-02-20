@@ -122,6 +122,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	max_cr_current.text = str(settings.upgrade_settings.max_crit_rate()) + "%"
 	max_cd_current.text = str(settings.upgrade_settings.max_crit_dmg())
 	
+	# TODO: grey out maxed upgrades
 	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
 	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
 	element_water_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element

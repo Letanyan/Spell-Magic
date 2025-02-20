@@ -678,7 +678,7 @@ func power(cls: int) -> float:
 	return fit(5.0, cls * 5.0)
 	
 func radius(cls: int) -> float:
-	return fit(0.1, minf(cls * cls / 80.0 + 0.875, 5.0))
+	return fit(0.1, cls * cls / 81.0 + 0.1)
 	
 func ea(cls: int) -> float:
 	return fit(0, (cls + 5) * 3)

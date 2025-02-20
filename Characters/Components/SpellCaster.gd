@@ -179,7 +179,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			__rIJK = Vars.rIJK
 	
 	
-	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.C] != 0:
+	if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.C):
 		if entity == Entity.ENEMY:
 			var body := _body as Enemy
 			result.set_value(_C, (body as Enemy).player.global_position.distance_to(body.global_position))
@@ -189,7 +189,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			result.set_value(_C, body.caster_position.distance_to(pos))
 	
 	var cdir := Vector3.ZERO
-	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.uvw] != 0 or s.variable_update_set[Spell.VariableUpdateSet.ruvw] != 0:
+	if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.uvw) or s.variable_update_set_contains(Spell.VariableUpdateSet.ruvw):
 		match entity:
 			Entity.PLAYER:
 				var body := _body as Player
@@ -258,12 +258,12 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 					result.set_value(Vars.Br, maxf(body.bounds.x, maxf(body.bounds.y, body.bounds.z)))
 		
 		# direction to camera
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.uvw] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.uvw):
 			result.set_vector(__uvw, cdir)
 			result.set_value(_uvw.x, cdir.x)
 			result.set_value(_uvw.y, cdir.y)
 			result.set_value(_uvw.z, cdir.z)
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.ruvw] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.ruvw):
 			var ruvw := Vector3(Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), cdir.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(cdir.x, 0, cdir.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
 			result.set_vector(__ruvw, ruvw)
 			result.set_value(_ruvw.x, ruvw.x)
@@ -271,7 +271,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			result.set_value(_ruvw.z, ruvw.z)
 				
 	var track := Vector3.ZERO
-	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.UVW] != 0 or s.variable_update_set[Spell.VariableUpdateSet.rUVW] != 0:
+	if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.UVW) or s.variable_update_set_contains(Spell.VariableUpdateSet.rUVW):
 		match entity:
 			Entity.PLAYER:
 				var body := _body as Player
@@ -283,12 +283,12 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 					track = get_direction_to_tracking(body, p, hit_on)
 				
 		# direction to homing target	
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.UVW] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.UVW):
 			result.set_vector(__UVW, track)
 			result.set_value(_UVW.x, track.x)
 			result.set_value(_UVW.y, track.y)
 			result.set_value(_UVW.z, track.z)
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.rUVW] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.rUVW):
 			var rUVW := Vector3(Vector3(track.x, 0, track.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), track.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(track.x, 0, track.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
 			result.set_vector(__rUVW, rUVW)
 			result.set_value(_rUVW.x, rUVW.x)
@@ -296,7 +296,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			result.set_value(_rUVW.z, rUVW.z)
 	
 	
-	if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.ijk] != 0 or s.variable_update_set[Spell.VariableUpdateSet.rijk] != 0:
+	if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.ijk) or s.variable_update_set_contains(Spell.VariableUpdateSet.rijk):
 		var c := Vector3.ZERO # character facing direction
 		match entity:
 			Entity.PLAYER:
@@ -309,12 +309,12 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 				c = cdir
 		var cxz := Vector3(c.x, 0, c.z)
 				
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.ijk] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.ijk):
 			result.set_vector(__ijk, c)
 			result.set_value(_ijk.x, c.x)
 			result.set_value(_ijk.y, c.y)
 			result.set_value(_ijk.z, c.z)
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.rijk] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.rijk):
 			var rijk := Vector3(cxz.signed_angle_to(Vector3.RIGHT, Vector3.UP), c.signed_angle_to(Vector3.UP, Vector3.UP), cxz.signed_angle_to(Vector3.BACK, Vector3.UP))
 			result.set_vector(__rijk, rijk)
 			result.set_value(_rijk.x, rijk.x)
@@ -359,7 +359,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 				result.set_vector(Vars.rel_pos, (_body as TargetShape).caster_position + cdir)
 	
 	
-	if p != null and (not is_timed or s.variable_update_set[Spell.VariableUpdateSet.IJK] != 0 or s.variable_update_set[Spell.VariableUpdateSet.rIJK] != 0): # direction from character to spell
+	if p != null and (not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.IJK) or s.variable_update_set_contains(Spell.VariableUpdateSet.rIJK)): # direction from character to spell
 		var old_origin := Vector3(result.get_value(_IJK.x), result.get_value(_IJK.y), result.get_value(_IJK.z))
 		var origin: Vector3
 		if entity == Entity.TARGET:
@@ -367,12 +367,12 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 		else:
 			origin = old_origin.lerp((_body.position - p.position).normalized(), 0.0166667).normalized()
 		
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.IJK] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.IJK):
 			result.set_vector(__IJK, origin)
 			result.set_value(_IJK.x, origin.x)
 			result.set_value(_IJK.y, origin.y)
 			result.set_value(_IJK.z, origin.z)
-		if not is_timed or s.variable_update_set[Spell.VariableUpdateSet.rIJK] != 0:
+		if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.rIJK):
 			var rIJK := Vector3(Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(1, 0, 0), Vector3.UP), origin.signed_angle_to(Vector3(0, 1, 0), Vector3.UP), Vector3(origin.x, 0, origin.z).signed_angle_to(Vector3(0, 0, 1), Vector3.UP))
 			result.set_vector(__rIJK, rIJK)
 			result.set_value(_rIJK.x, rIJK.x)

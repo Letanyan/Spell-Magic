@@ -28,7 +28,7 @@ var x: String
 var y: String
 var z: String
 var r: String
-var variable_update_set: PackedByteArray
+var variable_update_set: int
 var power: float:
 	set(value):
 		power = clampf(value, 0, UpgradeSettings.LIMIT_P)
@@ -113,9 +113,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	
 	is_active = true
 	
-	variable_update_set = PackedByteArray([])
-	for i in VariableUpdateSet.size():
-		variable_update_set.append(0)
+	variable_update_set = 0
 	
 	if not no_comp:
 		x_expr = Expr.new(x)
@@ -126,6 +124,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 		
 	
 func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spell:
+	# TODO: optimise
 	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin, true)
 	result.x_expr = x_expr
 	result.y_expr = y_expr
@@ -361,7 +360,7 @@ func _mass() -> float:
 func build_expressions() -> void:
 	expressions.clear()
 	time_dependent_vars.clear()
-	for i in VariableUpdateSet.size(): variable_update_set.set(i, 0)
+	variable_update_set = 0
 	for k: String in expression_strings:
 		var expr: Expr
 		if (expression_strings[k] as String).contains(";"):
@@ -370,83 +369,40 @@ func build_expressions() -> void:
 		else:
 			expr = Expr.new(expression_strings[k] as String)
 		expressions[k] = expr
-		if expr.contains_variable("t"):
+		
+		if expr.contains_time_dependent():
 			time_dependent_vars[k] = true
-		elif expr.contains_variable("tu") or expr.contains_variable("tv") or expr.contains_variable("tw") or expr.contains_variable("tuvw"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.uvw] = 1
-		elif expr.contains_variable("tru") or expr.contains_variable("trv") or expr.contains_variable("trw") or expr.contains_variable("truvw"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.ruvw] = 1
-		elif expr.contains_variable("tU") or expr.contains_variable("tV") or expr.contains_variable("tW") or expr.contains_variable("tUVW"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.UVW] = 1
-		elif expr.contains_variable("trU") or expr.contains_variable("trV") or expr.contains_variable("trW") or expr.contains_variable("trUVW"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.rUVW] = 1
-		elif expr.contains_variable("ti") or expr.contains_variable("tj") or expr.contains_variable("tk") or expr.contains_variable("tijk"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.ijk] = 1
-		elif expr.contains_variable("tri") or expr.contains_variable("trj") or expr.contains_variable("trk") or expr.contains_variable("trijk"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.rijk] = 1
-		elif expr.contains_variable("tI") or expr.contains_variable("tJ") or expr.contains_variable("tK") or expr.contains_variable("tIJK"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.IJK] = 1
-		elif expr.contains_variable("trI") or expr.contains_variable("trJ") or expr.contains_variable("trK") or expr.contains_variable("trIJK"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.rIJK] = 1
-		elif expr.contains_variable("tC"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.C] = 1
 		else:
 			for variable: String in time_dependent_vars:
 				if expr.contains_variable(variable):
 					time_dependent_vars[k] = true
+					break
+		variable_update_set |= expr.variable_update_set()
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	for k: String in mappings:
-		expression_strings[k] = mappings[k]
-		var expr := Expr.new(mappings[k] as String)
-		expressions[k] = expr
+		if mappings[k] is String:
+			expression_strings[k] = mappings[k]
+			var expr := Expr.new(mappings[k] as String)
+			expressions[k] = expr
+		elif mappings[k] is Expr:
+			expressions[k] = mappings[k]
 		
 	time_dependent_vars.clear()
-	for i in VariableUpdateSet.size(): variable_update_set.set(i, 0)
+	variable_update_set = 0
 	for k: String in expressions:
 		var expr := expressions[k] as Expr
-		if expr.contains_variable("t"):
+		if expr.contains_time_dependent():
 			time_dependent_vars[k] = true
-		elif expr.contains_variable("tu") or expr.contains_variable("tv") or expr.contains_variable("tw") or expr.contains_variable("tuvw"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.uvw] = 1
-		elif expr.contains_variable("tru") or expr.contains_variable("trv") or expr.contains_variable("trw") or expr.contains_variable("truvw"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.ruvw] = 1
-		elif expr.contains_variable("tU") or expr.contains_variable("tV") or expr.contains_variable("tW") or expr.contains_variable("tUVW"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.UVW] = 1
-		elif expr.contains_variable("trU") or expr.contains_variable("trV") or expr.contains_variable("trW") or expr.contains_variable("trUVW"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.rUVW] = 1
-		elif expr.contains_variable("ti") or expr.contains_variable("tj") or expr.contains_variable("tk") or expr.contains_variable("tijk"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.ijk] = 1
-		elif expr.contains_variable("tri") or expr.contains_variable("trj") or expr.contains_variable("trk") or expr.contains_variable("trijk"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.rijk] = 1
-		elif expr.contains_variable("tI") or expr.contains_variable("tJ") or expr.contains_variable("tK") or expr.contains_variable("tIJK"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.IJK] = 1
-		elif expr.contains_variable("trI") or expr.contains_variable("trJ") or expr.contains_variable("trK") or expr.contains_variable("trIJK"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.rIJK] = 1
-		elif expr.contains_variable("tC"):
-			time_dependent_vars[k] = true
-			variable_update_set[VariableUpdateSet.C] = 1
 		else:
 			for variable: String in time_dependent_vars:
 				if expr.contains_variable(variable):
 					time_dependent_vars[k] = true
+					break
+		variable_update_set |= expr.variable_update_set()
+	
+func variable_update_set_contains(kind: VariableUpdateSet) -> bool:
+	return variable_update_set & (1 << kind) != 0
 	
 func compute_expressions(fvars: Vars, additional: Vars = null, only_time_dependent: bool = false) -> void:
 	var temp := Vars.new()
