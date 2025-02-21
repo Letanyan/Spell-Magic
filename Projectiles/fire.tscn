@@ -85,7 +85,6 @@ collide_with_areas = true
 debug_shape_custom_color = Color(0, 0, 1, 1)
 
 [node name="source" type="GPUParticles3D" parent="."]
-visible = false
 cast_shadow = 0
 amount = 40
 local_coords = true

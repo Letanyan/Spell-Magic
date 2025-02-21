@@ -1,7 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://biu6f1jx7is76"]
+[gd_scene load_steps=9 format=3 uid="uid://biu6f1jx7is76"]
+
+[ext_resource type="Shader" path="res://General/standard.gdshader" id="1_klxla"]
 
 [sub_resource type="Gradient" id="Gradient_4gvkm"]
-colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 1)
+colors = PackedColorArray(0.25, 0.25, 0.25, 1, 0.75, 0.75, 0.75, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_uxvb4"]
 gradient = SubResource("Gradient_4gvkm")
@@ -16,23 +18,38 @@ width = 32
 curve = SubResource("Curve_orqv0")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_44c0a"]
-emission_shape = 1
-emission_sphere_radius = 5.0
 particle_flag_align_y = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
 direction = Vector3(0, 1, 0)
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 5.0
-initial_velocity_max = 15.0
-radial_accel_max = 22.39
+spread = 15.0
+initial_velocity_min = 10.0
+initial_velocity_max = 20.0
+gravity = Vector3(0, -30, 0)
+attractor_interaction_enabled = false
 scale_curve = SubResource("CurveTexture_mui11")
+color = Color(0, 0, 0, 1)
 color_ramp = SubResource("GradientTexture1D_uxvb4")
+hue_variation_min = -2.23517e-08
+hue_variation_max = -2.23517e-08
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhtjm"]
-shading_mode = 0
-albedo_color = Color(0, 0.46, 1.5, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jk1m5"]
+render_priority = 0
+shader = ExtResource("1_klxla")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
 
 [sub_resource type="SphereMesh" id="SphereMesh_8rc0f"]
-material = SubResource("StandardMaterial3D_dhtjm")
+material = SubResource("ShaderMaterial_jk1m5")
 radius = 0.1
 height = 0.2
 radial_segments = 4

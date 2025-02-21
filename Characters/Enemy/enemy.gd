@@ -464,6 +464,7 @@ func update_behaviour() -> void:
 func handle_damage() -> void:
 	pass
 	
+static var biome_helper := BiomeHelper.new()
 func die() -> void:
 	if is_dead:
 		return
@@ -471,6 +472,7 @@ func die() -> void:
 	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
 	var source := explosion.get_node("source") as GPUParticles3D
 	(source.process_material as ParticleProcessMaterial).emission_box_extents = bounds
+	(source.process_material as ParticleProcessMaterial).color = biome_helper.color_for_biome(velocity_movement.current_biome)
 		
 	AudioManager.play(sfx_hurt, position, NAN, true)
 	play_animation("death")
