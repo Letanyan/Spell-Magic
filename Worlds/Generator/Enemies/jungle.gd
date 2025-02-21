@@ -128,6 +128,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var platform := pop.spawn_world_item(World.Item.TARGET, center, spacing, config) as TargetShape
 					if platform != null:
 						platform.caster_target_offset = Vec3.y(1.0)
+						platform.should_set_player_on_watch = false
 						
 						var arc := GlobalData.magic_book.copy_spell("arc")
 						arc.configure({"R": "pi/2", "s": "10"}, Spell.Element.AIR, 5, 0, 0.5, 8, 0, 0, 30)

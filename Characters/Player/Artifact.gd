@@ -334,9 +334,9 @@ class Option:
 		if effect != Effect.NONE:
 			var direction: String
 			if amount > 0:
-				direction = "[b]Increase[/b]" if formatted else "Increase"
+				direction = "[b]Increase[/b] your" if formatted else "Increase your"
 			else:
-				direction = "[b][i]Decrease[/i][/b]" if formatted else "Decrease"	
+				direction = "[b][i]Decrease[/i][/b] your" if formatted else "Decrease your"	
 			var am := absi(amount)
 			var buff := ("Damage" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.BOOST_FLAT else "Resistance")
 			var perc := ("%" if effect == Effect.BOOST_PERCENTAGE or effect == Effect.RESISTANCE_PERCENTAGE else "")

@@ -31,6 +31,7 @@ var vitals: Vitals = null
 var current_attack: AttackPatterns = null
 var attack_sequence: AttackSequence = null
 var player: Player = null
+var should_set_player_on_watch: bool = true
 
 var spawner: ItemSpawner = null:
 	set(value):

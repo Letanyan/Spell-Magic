@@ -64,7 +64,7 @@ func update_vitals(delta: float, vitals: Vitals, body: CharacterBody, settings: 
 		if wet_area != null:
 			wet_area.scale = Vector3(vitals.wetness_scale() as float, vitals.wetness_scale() as float, vitals.wetness_scale() as float)
 		vital_tick = 0.0
-		if body.position.y < settings.sea_level and body is Player:
+		if body.get_feet_position().y < settings.sea_level and body is Player:
 			var underwater := clampf(settings.sea_level - body.position.y, 0.0, 10.0) / 10.0
 			var damage := clampf(body.position.y - settings.sea_level, -100.0, 0.0) / 100.0 * lerpf(1.0, 5.0, settings.world_level / 100.0)
 			vitals.handle_damage(Spell.Element.WATER, damage, underwater)

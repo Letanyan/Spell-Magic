@@ -339,14 +339,18 @@ func watch_enemy(enemy: Enemy) -> void:
 func ignore_enemy(enemy: Enemy) -> void:
 	enemies_in_range.erase(enemy)
 	enemy.vitals.reset()
+	if enemies_in_range.is_empty():
+		vitals.mana.reset_to_max()
 	
 func watch_target(target: TargetShape) -> void:
 	targets_in_range[target] = Time.get_unix_time_from_system()
-	target.player = self
+	if target.should_set_player_on_watch:
+		target.player = self
 	
 func ignore_target(target: TargetShape) -> void:
 	targets_in_range.erase(target)
-	target.player = null
+	if target.should_set_player_on_watch:
+		target.player = null
 	
 func kill_multiplier(enemy: Enemy) -> float:
 	if enemies_in_range.has(enemy):

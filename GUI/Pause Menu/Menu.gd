@@ -44,7 +44,7 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 
 func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
-	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: magic_book.add_spell(s))
+	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: magic_book.add_spell(s, false))
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: upgrades.update_state(UpgradeSettings.PurchaseError.NONE))
 
 func update_index(index: int) -> void:

@@ -200,7 +200,7 @@ func delete_spell_at_index(index: int) -> void:
 		book.spells[i].id = i
 	update_book_without_selection()
 
-func add_spell(spell: Spell) -> void:
+func add_spell(spell: Spell, select_on_create: bool = true) -> void:
 	spell.id = book.spells.size()
 	book.add(spell)
 	var chain_spell := spell.chain
@@ -214,7 +214,7 @@ func add_spell(spell: Spell) -> void:
 		if spells_index_map[k] == spell.id:
 			k_index = k
 			break
-	if k_index != -1:
+	if select_on_create and k_index != -1:
 		_on_spell_index_item_selected(k_index)
 		spell_index.select(k_index, true)
 		page.name_edit.grab_focus()
