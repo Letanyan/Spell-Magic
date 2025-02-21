@@ -21,6 +21,14 @@ const audio_streams: Array[AudioStream] = [
 	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
 	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
 	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
+	# FIXME: replace with enemy walking sounds
+	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
+	# FIXME: replace with enemy idle sounds
+	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
 ]
 
 
@@ -30,7 +38,8 @@ enum AudioStreamKind {
 	
 	ATTACK_BEAST, ATTACK_FLY, ATTACK_MED,
 	HURT_BEAST, HURT_FLY, HURT_MED,
-	# TODO: add enemy idle sounds
+	WALK_BEAST, WALK_FLY, WALK_MED,
+	IDLE_BEAST, IDLE_FLY, IDLE_MED,
 }
 
 class FadeParam:
@@ -76,6 +85,9 @@ var world: Node3D = null: # set in Demo._ready and TestArena._ready
 func _ready() -> void:
 	for i in AudioStreamKind.size():
 		streams.append(Stereo.new(audio_streams[i]))
+
+func stop(kind: AudioStreamKind) -> void:
+	play(kind, Vector3(9999999, 9999999, 99999999), 0, false)
 
 func play(kind: AudioStreamKind, position: Vector3, stop_time: float, reset: bool, pitch_scale: Vector2 = Vector2(1, 1)) -> void:	
 	var cam_dir := camera.global_transform.basis.z

@@ -370,7 +370,6 @@ func check_is_underwater() -> bool:
 	return cam.global_position.y < world_settings.sea_level - 0.5
 
 func set_underwater(underwater: float = 0.5) -> float:
-	# FIXME: increase range when player is underwater
 	var screen_mesh: Mesh = screen_filter.mesh
 	var screen_material: ShaderMaterial = screen_mesh.surface_get_material(0)
 	if check_is_underwater():

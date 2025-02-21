@@ -124,7 +124,6 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 		
 	
 func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spell:
-	# TODO: optimise
 	var result := Spell.new(follow, x, y, z, r, power, duration, element, count, delay, is_bomb, mana_cost, player_is_origin, true)
 	result.x_expr = x_expr
 	result.y_expr = y_expr

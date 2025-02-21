@@ -36,6 +36,8 @@ var is_dead: bool = false
 var kind: World.Enemy = World.Enemy.NONE
 var sfx_attack: AudioManager.AudioStreamKind
 var sfx_hurt: AudioManager.AudioStreamKind
+var sfx_walk: AudioManager.AudioStreamKind
+var sfx_idle: AudioManager.AudioStreamKind
 var is_idle := true
 var is_idle_is_set := false
 var spell_drop_probs := {}
@@ -59,7 +61,7 @@ signal spell_was_cast(spell: Spell)
 @onready var level_text: Label3D = $HealthBar/Level
 @onready var effects_mesh: MeshInstance3D = $HealthBar/Effects
 @onready var collision: CollisionShape3D = $Collision
-@onready var area: CollisionShape3D = $WetArea/WetCollision 
+@onready var area: CollisionShape3D = $WetArea/WetCollision
 
 func _ready() -> void:
 	level_text.text = str(int(level))
@@ -172,17 +174,23 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			frame_count = Vector2(30, 17)
 			sfx_attack = AudioManager.AudioStreamKind.ATTACK_MED
 			sfx_hurt = AudioManager.AudioStreamKind.HURT_MED
+			sfx_walk = AudioManager.AudioStreamKind.WALK_MED
+			sfx_idle = AudioManager.AudioStreamKind.IDLE_MED
 		World.Enemy.BIRD, World.Enemy.FISH, World.Enemy.FUNGI, World.Enemy.HOT_BLOB, World.Enemy.MUSHROOM, \
 		World.Enemy.SNOT_BLOB, World.Enemy.SNOT_SPIKE, World.Enemy.WALKER_HEAD, World.Enemy.WIZARD, World.Enemy.BOUGEON: 
 			frame_count = Vector2(13, 13)
 			sfx_attack = AudioManager.AudioStreamKind.ATTACK_BEAST
 			sfx_hurt = AudioManager.AudioStreamKind.HURT_BEAST
+			sfx_walk = AudioManager.AudioStreamKind.WALK_BEAST
+			sfx_idle = AudioManager.AudioStreamKind.IDLE_BEAST
 		World.Enemy.BAT, World.Enemy.BATTY, World.Enemy.BEE, World.Enemy.BUMBLE_BEE, World.Enemy.DRAGON, \
 		World.Enemy.DRAGOON, World.Enemy.GHOST, World.Enemy.GHOSTLY, World.Enemy.UNDEAD_HEAD, World.Enemy.FLYGEON, \
 		World.Enemy.PINKMON, World.Enemy.REDMON, World.Enemy.GOBLIN, World.Enemy.GOBLIN_KING: 
 			frame_count = Vector2(35, 25)
 			sfx_attack = AudioManager.AudioStreamKind.ATTACK_FLY
 			sfx_hurt = AudioManager.AudioStreamKind.HURT_FLY
+			sfx_walk = AudioManager.AudioStreamKind.WALK_FLY
+			sfx_idle = AudioManager.AudioStreamKind.IDLE_FLY
 		_: push_error("missing enemy kind")
 	
 func set_level(lvl: float) -> void:
@@ -399,12 +407,17 @@ func manual_physics_process(delta: float) -> void:
 				if final_is_on_floor:
 					if velocity.length() < 0.166667:
 						play_animation("walk", {"parameters/walk/speed/scale": velocity_movement.movement_speed_animation_scale()})
+						AudioManager.play(sfx_walk, position, NAN, false)
+						AudioManager.stop(sfx_idle)
 					else:
 						play_animation("run", {"parameters/run/speed/scale": velocity_movement.movement_speed_animation_scale()})
+						AudioManager.play(sfx_walk, position, NAN, false)
+						AudioManager.stop(sfx_idle)
 			else:
 				idle_tick += delta
 				if final_is_on_floor and idle_tick > 0.5:
-					play_walking_audio("empty")
+					AudioManager.stop(sfx_walk)
+					AudioManager.play(sfx_idle, position, NAN, false)
 					play_animation("idle")
 					idle_tick = 0
 				
@@ -620,10 +633,6 @@ func drop_note() -> String:
 		#if not GlobalData.game_settings.unlocked_notes.has(key):
 			#return key
 	return ""
-
-func play_walking_audio(stream: String) -> void:
-	# FIXME: add enemy walking sounds
-	pass
 
 # returns the actual value if the enemy with a class (1-20) where 1 is low 
 func fit(mn: float, mx: float) -> float:

@@ -219,8 +219,7 @@ func _on_create_pressed() -> void:
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
-
-		# FIXME: play startup sound (possibly a truck crash ;)
+		UIAudioPlayer.crash()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_save_file.button_pressed:
 		if worlds_list.get_selected_items().is_empty():
@@ -231,6 +230,7 @@ func _on_create_pressed() -> void:
 		settings.world_name = save_name.text
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		UIAudioPlayer.click()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_normal.button_pressed:
 		var settings := WorldSettings.new(get_viewport())
@@ -249,6 +249,7 @@ func _on_create_pressed() -> void:
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		UIAudioPlayer.crash()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_hardcore.button_pressed:
 		var settings := WorldSettings.new(get_viewport())
@@ -269,6 +270,7 @@ func _on_create_pressed() -> void:
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		UIAudioPlayer.crash()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 
 

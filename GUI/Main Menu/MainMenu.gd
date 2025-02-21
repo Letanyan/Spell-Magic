@@ -42,7 +42,7 @@ func _on_new_game_pressed() -> void:
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
-		# FIXME: play startup sound (possibly a truck crash ;)
+		UIAudioPlayer.crash()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	else:
 		main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.NEW)

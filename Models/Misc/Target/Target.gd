@@ -53,7 +53,6 @@ var focus_point := Vector3.ZERO
 var should_be_removed := false
 
 static func make() -> TargetShape:
-	# FIXME: optimise this
 	var result := (preload("res://Models/Misc/Target/Target.tscn") as PackedScene).instantiate() as TargetShape
 	result.kind = World.Item.TARGET
 	result.height = 1.0
