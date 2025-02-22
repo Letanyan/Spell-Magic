@@ -66,7 +66,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				const MIN_DIST := 10.0
 				for i in rng.randi_range(1, pop.fiti(1, 5)) * 2:
 					distance = rng.randf_range(MIN_DIST, MAX_DIST)
-					var dest := cursor + direction * distance
+					var dest := cursor + direction * distance * 1.1
 					var pathway: Pathway
 					if i % 2 == 0:
 						pathway = Pathway.new().from_to_and_back(pop.runs(10) * distance / MIN_DIST, cursor, dest, Easing.linear)
@@ -77,9 +77,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var p := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 					if p != null:
 						result.append(p)
-						var offset_dir: Vector2 = -Vec2.xz(direction)
-						while offset_dir.is_equal_approx(-Vec2.xz(direction)):
-							offset_dir = Rand.entity_from_distribution(rng.randf(), {Vector2.LEFT: 1, Vector2.RIGHT: 1, Vector2.UP: 1, Vector2.DOWN: 1}) as Vector2
+						var offset_dir: Vector3 = -direction
+						while offset_dir.is_equal_approx(-direction):
+							offset_dir = Rand.entity_from_distribution(rng.randf(), {Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
 						if cursor.y > 20 and rng.randf() < 0.5:
 							var op := pop.spawn_enemy(World.Enemy.BIRD, pos + Vec2.xz(cursor) + Rand.point_in_circle_2d(spacing, rng), spacing) as Bird
 							if op != null:
@@ -87,7 +87,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 								op.attack_path.path.apply_transform(Transform3D.IDENTITY.translated(Vec3.y(cursor.y)))
 								op.position.y += cursor.y
 								result.append(op)
-						cursor += (direction * distance) + Vec3.xz(offset_dir) * p.bounds
+						cursor += (direction * distance) + offset_dir * p.bounds
 						direction = Rand.entity_from_distribution(rng.randf(), {Vector3.UP: 5, Vector3.DOWN: 1, Vector3.LEFT: 1, Vector3.RIGHT: 1, Vector3.FORWARD: 1, Vector3.BACK: 1}) as Vector3
 				var artifact := Artifact.from_config({
 					"all": {

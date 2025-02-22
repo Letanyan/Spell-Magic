@@ -160,8 +160,10 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 		elif not body.is_on_floor: 
 			if g < body.feet_position():
 				target_velocity.y = target_velocity.y - fa * delta
-			elif g > body.feet_position():
+			elif g > body.feet_position() and not (body is Player):
 				target_velocity.y = target_velocity.y + fa * delta
+			else:
+				target_velocity.y = target_velocity.y - fa * delta
 		else:
 			target_velocity.y = 0
 	else:
