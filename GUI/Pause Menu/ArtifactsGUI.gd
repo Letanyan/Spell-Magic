@@ -161,13 +161,13 @@ func _on_artifact_grid_on_cell_clicked(coord: Vector2, mouse_button_index: int) 
 		if not artifacts_list.get_selected_items().is_empty():
 			var artifact := artifacts.get_artifact_by_name(artifacts_list.get_item_text(artifacts_list.get_selected_items()[0]))
 			temporary_grid_tile.artifact = artifact
-			attempt_place_artifact(artifact, coord, false)
+			artifact_grid.ignore_cell_click_selection = attempt_place_artifact(artifact, coord, false)
 			
 func _on_artifact_grid_on_cell_selected(coord: Vector2, old_coord: Vector2) -> void:
 	UIAudioPlayer.click()
 	update_list_and_grid()
 
-func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool) -> void:	
+func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: bool) -> bool:	
 	const WARN_COLOR = Color.RED
 	const WARN_INTERVAL = 0.1
 	const WARN_COUNT = 5
@@ -183,16 +183,19 @@ func attempt_place_artifact(artifact: Artifact, coord: Vector2, temporarily: boo
 		temporary_grid_tile.artifact = null
 		
 	if not errors.is_empty():
-		return
+		return false
 		
+	var artifact_placed := false
 	if not temporarily:
 		artifacts.connect_to_grid(artifact, coord)
 		UIAudioPlayer.check(true)
 		update_list_and_grid()
+		artifact_placed = true
 	else:
 		temporary_grid_tile.queue_redraw()
 		
 	artifact_grid.center_grid_on_cell(coord)
+	return artifact_placed
 	
 func attempt_remove_artifact(coord: Vector2) -> bool:
 	var artifact: Artifact = artifacts.get_artifact_at_coord(coord)

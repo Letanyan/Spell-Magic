@@ -118,6 +118,9 @@ func compute_value(vars: Vars, display: bool = false) -> float:
 		return 0.0
 	return back.compute_value(vars, GlobalData.game_settings.user_functions, display)
 	
+func infix_description() -> String:
+	return back.infix_description()
+	
 #	var tape: PackedFloat64Array = [] 
 #	var tape_index := 0
 #	for expr in expression:

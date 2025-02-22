@@ -142,7 +142,7 @@ plane-linear: fires N projectiles in dir driection on the plane defined by dir
 	a ; angle offset
 	c:vec ; unscaled offset
 	
-plane-slice: fires N projectiles in dir direction on the plane defined bas the projection of the up vector on to plane defined by dir
+plane-slice: fires N projectiles in dir direction on the plane defined as the projection of the up vector on to plane defined by dir
 	d ; offset
 	s ; speed
 	R ; radius

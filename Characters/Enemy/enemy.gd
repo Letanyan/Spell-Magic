@@ -638,7 +638,7 @@ func drop_note() -> String:
 
 # returns the actual value if the enemy with a class (1-20) where 1 is low 
 func fit(mn: float, mx: float) -> float:
-	return lerpf(mn, mx, fl)
+	return snappedf(lerpf(mn, mx, fl), 0.01)
 	
 func fiti(mn: int, mx: int) -> int:
 	return roundi(lerpf(mn, mx, fl))

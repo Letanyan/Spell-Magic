@@ -380,12 +380,24 @@ func build_expressions() -> void:
 		
 func overwrite_expressions(mappings: Dictionary) -> void:
 	for k: String in mappings:
+		var expr: Expr
+		var expr_s: String
 		if mappings[k] is String:
-			expression_strings[k] = mappings[k]
-			var expr := Expr.new(mappings[k] as String)
-			expressions[k] = expr
+			expr_s = mappings[k]
+			expr = Expr.new(mappings[k] as String)
 		elif mappings[k] is Expr:
-			expressions[k] = mappings[k]
+			expr = mappings[k]
+			expr_s = expr.infix_description()
+			
+		expressions[k] = expr
+		if expression_strings.has(k):
+			var text := expression_strings[k] as String
+			if text.contains(";"):
+				expression_strings[k] = expr_s + " ;" + text.split(";", false, 2)[1]
+			else:
+				expression_strings[k] = expr_s
+		else:
+			expression_strings[k] = expr_s
 		
 	time_dependent_vars.clear()
 	variable_update_set = 0

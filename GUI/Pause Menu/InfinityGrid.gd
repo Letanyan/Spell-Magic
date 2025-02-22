@@ -23,6 +23,7 @@ var child_grid := {} # [Vector2]Control
 signal on_cell_selected(coord: Vector2, old_coord: Vector2)
 signal on_cell_unselected(coord: Vector2)
 signal on_cell_clicked(coord: Vector2, mouse_button_index: int)
+var ignore_cell_click_selection: bool = false
 signal on_cell_double_clicked(coord: Vector2, mouse_button_index: int)
 signal on_cell_moused_over(coord: Vector2)
 
@@ -156,13 +157,16 @@ func _gui_input(_event: InputEvent) -> void:
 					if event.button_index == MOUSE_BUTTON_LEFT:
 						if m_pos == selected_cell_coord:
 							selected_cell_coord = null
-							on_cell_unselected.emit(m_pos)
+							if not ignore_cell_click_selection:
+								on_cell_unselected.emit(m_pos)
 						else:
 							var old_pos: Vector2
 							if selected_cell_coord != null:
 								old_pos = selected_cell_coord as Vector2
 							selected_cell_coord = m_pos
-							on_cell_selected.emit(m_pos, old_pos)
+							if not ignore_cell_click_selection:
+								on_cell_selected.emit(m_pos, old_pos)
+					ignore_cell_click_selection = false
 					queue_redraw()
 					queue_sort()
 			current_offset = Vector2.ZERO

@@ -1034,6 +1034,7 @@ grow_vertical = 2
 bbcode_enabled = true
 
 [node name="ShowNotesLabel" type="Label" parent="Tabs/Notes"]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -1047,6 +1048,7 @@ text = "Show:"
 vertical_alignment = 1
 
 [node name="ShowNotes" type="OptionButton" parent="Tabs/Notes"]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -1056,6 +1058,7 @@ offset_top = 15.0
 offset_right = -192.0
 offset_bottom = 40.0
 grow_horizontal = 0
+disabled = true
 selected = 0
 item_count = 3
 popup/item_0/text = "Found in Game"
