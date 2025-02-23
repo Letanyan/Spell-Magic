@@ -32,30 +32,27 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	none_pattern = AttackPatterns.none()
 	
 	water_spout1.configure({
-		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(3,9), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": Expr.vec0
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(6,18), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": Expr.vec0
 	}, Spell.Element.WATER, fit(8,16), power(10), radius(3), fiti(3, 5), 33, 99, ea(10))
 	water_spout1.follow = true
 	water_spout2.configure({
-		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(3,9), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": Expr.vec_up
-	}, Spell.Element.WATER, fit(8,16), power(12), radius(3), fiti(3, 10), 66, 66, ea(12))
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(7,21), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": Expr.vec_up
+	}, Spell.Element.WATER, fit(8,16), power(12), radius(5), fiti(3, 10), 66, 66, ea(12))
 	water_spout2.follow = true
 	water_spout3.configure({
-		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(3,9), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": "vec(0,2,0)"
-	}, Spell.Element.WATER, fit(8,16), power(14), radius(3), fiti(3, 15), 99, 33, ea(14))
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(8,24), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": "vec(0,2,0)"
+	}, Spell.Element.WATER, fit(8,16), power(14), radius(7), fiti(3, 15), 99, 33, ea(14))
 	water_spout3.follow = true
 	
 	water_down1.configure({
-		"d": "8", "s":atks(4,10), "R":fits(6,12), "off":Expr.vec_up, "dir":Expr.vec_down, "a":Expr.arc_frac, "c":Expr.vec0
+		"d": "8", "s":atks(4,10), "R":fits(6,12), "off":Expr.vec_up, "dir":Expr.vec_down, "a":Expr.arc_frac, "c":"C*vec(u,0,w)"
 	}, Spell.Element.WATER, fit(4,8), power(10), radius(3), fiti(3,9), 40, 80, ea(11))
-	water_down1.follow = true
 	water_down2.configure({
-		"d": "8", "s":atks(4,10), "R":fits(5,10), "off":Expr.vec_up, "dir":Expr.vec_down, "a":Expr.arc_frac, "c":Expr.vec0
-	}, Spell.Element.WATER, fit(4,8), power(12), radius(3), fiti(3,12), 60, 100, ea(13))
-	water_down2.follow = true
+		"d": "8", "s":atks(4,10), "R":fits(5,10), "off":Expr.vec_up, "dir":Expr.vec_down, "a":Expr.arc_frac, "c":"C*vec(u,0,w)"
+	}, Spell.Element.WATER, fit(4,8), power(12), radius(6), fiti(3,12), 60, 100, ea(13))
 	water_down3.configure({
-		"d": "8", "s":atks(4,10), "R":fits(4,8), "off":Expr.vec_up, "dir":Expr.vec_down, "a":Expr.arc_frac, "c":Expr.vec0
-	}, Spell.Element.WATER, fit(4,8), power(14), radius(3), fiti(3,15), 80, 120, ea(15))
-	water_down3.follow = true
+		"d": "8", "s":atks(4,10), "R":fits(4,8), "off":Expr.vec_up, "dir":Expr.vec_down, "a":Expr.arc_frac, "c":"C*vec(u,0,w)"
+	}, Spell.Element.WATER, fit(4,8), power(14), radius(9), fiti(3,15), 80, 120, ea(15))
 	
 	water_spiral1.configure({
 		"d": "Br*2", "s": "0", "R":fits(6,12), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(4,10), "c": Expr.vec0 
@@ -63,11 +60,11 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	water_spiral1.follow = true
 	water_spiral2.configure({
 		"d": "Br*2", "s": "0", "R":fits(8,14), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(4,10), "c": Expr.vec0 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,10), 66, 122, ea(14))
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(6), fiti(3,10), 66, 122, ea(14))
 	water_spiral2.follow = true
 	water_spiral3.configure({
 		"d": "Br*2", "s": "0", "R":fits(10,16), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(4,10), "c": Expr.vec0 
-	}, Spell.Element.WATER, fit(6, 12), power(12), radius(4), fiti(3,15), 99, 155, ea(16))
+	}, Spell.Element.WATER, fit(6, 12), power(12), radius(8), fiti(3,15), 99, 155, ea(16))
 	water_spiral3.follow = true
 	
 	spell_drop_probs = {
@@ -91,7 +88,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 			water_down2,
 			water_down3,
 		],
-		AttackPatterns.choose_from_distribution(fit(6,10), [ 12, 10, 8, 3, 2, 1 ], -1)
+		AttackPatterns.choose_from_distribution(fit(6,3), [ 12, 10, 8, 3, 2, 1 ], -1)
 	)
 	
 	sequence_pattern = AttackPatterns.new(

@@ -36,38 +36,35 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	}, Spell.Element.WATER, fit(4,8), power(10), radius(5), fiti(5, 20), 33, 99, ea(12))
 	water_spout1.follow = true
 	water_spout2.configure({
-		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(6,12), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": Expr.vec_up
-	}, Spell.Element.WATER, fit(4,8), power(12), radius(5), fiti(5, 20), 66, 66, ea(15))
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(9,15), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": Expr.vec_up
+	}, Spell.Element.WATER, fit(4,8), power(12), radius(7), fiti(5, 20), 66, 66, ea(15))
 	water_spout2.follow = true
 	water_spout3.configure({
-		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(6,12), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": "vec(0,2,0)"
-	}, Spell.Element.WATER, fit(4,8), power(14), radius(5), fiti(5, 20), 99, 33, ea(18))
+		"d":"Br*2", "s":"0", "R":"1+t/T*"+fits(12,18), "off":Expr.vec0, "dir":Expr.vec_right, "a":Expr.arc_frac, "c": "vec(0,2,0)"
+	}, Spell.Element.WATER, fit(4,8), power(14), radius(9), fiti(5, 20), 99, 33, ea(18))
 	water_spout3.follow = true
 	
 	water_down1.configure({
-		"d": "8", "s":atks(6,12), "R":fits(8,14), "off":Expr.vec_up, "dir":Expr.vec_down, "a":"0", "c":Expr.vec0
-	}, Spell.Element.WATER, fit(4,8), power(10), radius(6), fiti(3,15), 40, 80, ea(13))
-	water_down1.follow = true
+		"d": "8", "s":atks(6,12), "R":fits(8,14), "off":Expr.vec_up, "dir":Expr.vec_down, "a":"0", "c":"C*vec(u,0,w)"
+	}, Spell.Element.WATER, fit(4,8), power(10), radius(9), fiti(3,15), 40, 80, ea(13))
 	water_down2.configure({
-		"d": "8", "s":atks(7,13), "R":fits(6,12), "off":Expr.vec_up, "dir":Expr.vec_down, "a":"0", "c":Expr.vec0
-	}, Spell.Element.WATER, fit(4,8), power(12), radius(5), fiti(3,12), 60, 100, ea(16))
-	water_down2.follow = true
+		"d": "8", "s":atks(7,13), "R":fits(6,12), "off":Expr.vec_up, "dir":Expr.vec_down, "a":"0", "c":"C*vec(u,0,w)"
+	}, Spell.Element.WATER, fit(4,8), power(12), radius(6), fiti(3,12), 60, 100, ea(16))
 	water_down3.configure({
-		"d": "8", "s":atks(8,14), "R":fits(4,10), "off":Expr.vec_up, "dir":Expr.vec_down, "a":"0", "c":Expr.vec0
-	}, Spell.Element.WATER, fit(4,8), power(14), radius(4), fiti(3,9), 80, 120, ea(19))
-	water_down3.follow = true
+		"d": "8", "s":atks(8,14), "R":fits(4,10), "off":Expr.vec_up, "dir":Expr.vec_down, "a":"0", "c":"C*vec(u,0,w)"
+	}, Spell.Element.WATER, fit(4,8), power(14), radius(3), fiti(3,9), 80, 120, ea(19))
 	
 	water_spiral1.configure({
-		"d": "Br*2", "s": "0", "R":fits(6,12), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(6,12), "c": Expr.vec0 
-	}, Spell.Element.WATER, fit(5, 10), power(12), radius(5), fiti(3,15), 33, 99, ea(14))
+		"d": "Br*2", "s": "0", "R":fits(6,15), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(6,12), "c": Expr.vec0 
+	}, Spell.Element.WATER, fit(5, 10), power(12), radius(10), fiti(3,15), 33, 99, ea(14))
 	water_spiral1.follow = true
 	water_spiral2.configure({
-		"d": "Br*2", "s": "0", "R":fits(6,12), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(7,14), "c": Expr.vec0 
-	}, Spell.Element.WATER, fit(5, 10), power(15), radius(4), fiti(3,15), 66, 122, ea(17))
+		"d": "Br*2", "s": "0", "R":fits(6,18), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(7,14), "c": Expr.vec0 
+	}, Spell.Element.WATER, fit(5, 10), power(15), radius(12), fiti(3,15), 66, 122, ea(17))
 	water_spiral2.follow = true
 	water_spiral3.configure({
-		"d": "Br*2", "s": "0", "R":fits(6,12), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(8,16), "c": Expr.vec0 
-	}, Spell.Element.WATER, fit(5, 10), power(17), radius(3), fiti(3,15), 99, 155, ea(20))
+		"d": "Br*2", "s": "0", "R":fits(6,24), "off":Expr.vec0, "dir":Expr.vec_right, "a":"n/N*tau+t/T*tau*"+atks(8,16), "c": Expr.vec0 
+	}, Spell.Element.WATER, fit(5, 10), power(17), radius(8), fiti(3,15), 99, 155, ea(20))
 	water_spiral3.follow = true
 	
 	spell_drop_probs = {

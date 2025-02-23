@@ -101,7 +101,11 @@ class Option:
 		match ef:
 			Effect.NONE: return 0
 			Effect.BOOST_PERCENTAGE, Effect.RESISTANCE_PERCENTAGE:
-				return tier * tier * mult
+				match el:
+					Element.HEALTH_BUMP, Element.MANA_BUMP: 
+						return tier * mult
+					_: 
+						return tier * tier * mult
 			Effect.BOOST_FLAT, Effect.RESISTANCE_FLAT:
 				match el:
 					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE: 
@@ -131,9 +135,9 @@ class Option:
 					Element.POWER:
 						return tier * tier * mult
 					Element.HEALTH_BUMP:
-						return tier * tier * tier * mult
+						return tier * tier * mult
 					Element.MANA_BUMP:
-						return tier * tier * tier * mult
+						return tier * tier * mult
 		return 0
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:

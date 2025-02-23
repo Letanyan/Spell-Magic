@@ -623,7 +623,7 @@ func drop_coins() -> Array[int]:
 	
 func drop_health() -> float:
 	var p := class_level / 20.0
-	if randf() < fit(p * 0.5, p) * (1.0 - player.vitals.health.percentage()):
+	if randf() < fit(p * 0.5, p) * ((1.0 - player.vitals.health.percentage()) ** 2.718):
 		return health_drop(class_level)
 	else:
 		return 0.0
@@ -735,10 +735,10 @@ func timings(cls: int, array: Array[float]) -> Array[float]:
 	return array
 
 func health_drop(cls: int) -> float:
-	return float(cls) / 20.0
+	return snappedf(((float(cls) / 21.0) ** 2.718) * 0.5, 0.01)
 	
 func spell_drop(tier: int) -> float:
-	return 1.0 / fit(tier, tier ** 2)
+	return 1.0 / fit(tier, tier ** 2.718)
 	
 func artier(cls: int) -> Vector2i:
 	var p := cls / 20.0
