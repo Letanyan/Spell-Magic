@@ -6,7 +6,7 @@ enum PurchaseError {
 
 signal max_velocity_updated(value: float)
 signal max_radius_updated(value: float)
-signal upgrade_was_purchased(settings: UpgradeSettings)
+signal upgrade_was_purchased(settings: UpgradeSettings, payload: Dictionary)
 
 var currency := 500
 
@@ -221,8 +221,9 @@ func purchase_mana() -> PurchaseError:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	currency -= cost_mana()
+	var upgrade_amount := upgrade_mana()
 	level_mana += 1
-	emit_upgrade_purchase()
+	emit_upgrade_purchase({"mana": upgrade_amount})
 	return PurchaseError.NONE
 
 
@@ -243,8 +244,9 @@ func purchase_health() -> PurchaseError:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	currency -= cost_health()
+	var upgrade_amount := upgrade_health()
 	level_health += 1
-	emit_upgrade_purchase()
+	emit_upgrade_purchase({"health": upgrade_amount})
 	return PurchaseError.NONE
 
 
@@ -434,8 +436,8 @@ func reset_all_stats_to_max_values() -> void:
 	has_chain_method = 0b111
 	currency = 9_999_999
 
-func emit_upgrade_purchase() -> void:
-	upgrade_was_purchased.emit(self)
+func emit_upgrade_purchase(payload: Dictionary = {}) -> void:
+	upgrade_was_purchased.emit(self, payload)
 
 func save_dict() -> Dictionary:
 	return {

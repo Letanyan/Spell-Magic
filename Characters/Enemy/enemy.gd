@@ -452,13 +452,14 @@ func update_behaviour() -> void:
 	if old_is_idle != is_idle or not is_idle_is_set:
 		if is_idle:
 			player.ignore_enemy(self)
+			is_idle_is_set = true
 		elif is_inside_tree():
 			player.watch_enemy(self)
+			is_idle_is_set = true
 			
 		if health_bar != null:
 			health_bar.visible = not is_idle
 			
-		is_idle_is_set = true
 		
 
 func handle_damage() -> void:
@@ -586,7 +587,7 @@ func drop_artifact() -> Artifact:
 	return Artifact.from_config(artifact_drop_probs, player.name_generator, velocity_movement.current_biome)
 	
 func drop_spell() -> Spell:
-	var class_p := class_level / 20.0
+	var class_p := (class_level / 20.0) ** 2.718
 	var level_p := (int(level) % 101) / 100.0
 	var min_p := class_p
 	var max_p := level_p

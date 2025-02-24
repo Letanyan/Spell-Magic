@@ -70,15 +70,15 @@ func update_index(index: int) -> void:
 	settings_button.set_pressed_no_signal(false)
 	if GlobalData.is_demo and (current_index == 2 or current_index == 3):
 		match current_index:
-			2: message_label.text = "Not Available in Demo\nArtifacts Disabled"; artifacts_button.set_pressed_no_signal(true)
-			3: message_label.text = "Not Available in Demo\nUpgrades Disabled"; upgrades_button.set_pressed_no_signal(true)
+			2: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
+			3: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nUpgrades Disabled"
 		message_panel.visible = true
 	elif player_in_combat and current_index < 4:
 		match current_index:
-			0: message_label.text = "Currently in Combat\nMagic Book Disabled"; spells_button.set_pressed_no_signal(true)
-			1: message_label.text = "Currently in Combat\nWand Case Disabled"; wands_button.set_pressed_no_signal(true)
-			2: message_label.text = "Currently in Combat\nArtifacts Disabled"; artifacts_button.set_pressed_no_signal(true)
-			3: message_label.text = "Currently in Combat\nUpgrades Disabled"; upgrades_button.set_pressed_no_signal(true)
+			0: spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nMagic Book Disabled"
+			1: wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nWand Case Disabled"
+			2: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nArtifacts Disabled"
+			3: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nUpgrades Disabled"
 		message_panel.visible = true
 	else:
 		match current_index:

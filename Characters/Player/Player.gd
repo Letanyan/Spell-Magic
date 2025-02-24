@@ -334,12 +334,14 @@ func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: 
 		
 	
 func watch_enemy(enemy: Enemy) -> void:
+	if enemies_in_range.is_empty():
+		vitals.mana.reset_to_max()
 	enemies_in_range[enemy] = CombatStats.new(Time.get_unix_time_from_system())
 	
 func ignore_enemy(enemy: Enemy) -> void:
-	enemies_in_range.erase(enemy)
+	var did_remove := enemies_in_range.erase(enemy)
 	enemy.vitals.reset()
-	if enemies_in_range.is_empty():
+	if did_remove and enemies_in_range.is_empty():
 		vitals.mana.reset_to_max()
 	
 func watch_target(target: TargetShape) -> void:

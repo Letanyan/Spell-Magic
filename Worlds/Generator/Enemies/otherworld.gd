@@ -93,12 +93,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var p := pop.spawn_enemy(World.Enemy.DRAGOON, spike_pos, spacing)
 					if p != null:
 						result.append(p)
-						var subpath := Pathway.new().random_points_in_disc(1, 0, spacing, 0, rng.randi_range(2,3), Easing.linear, rng)
-						subpath.apply_transform(T.translated(Vec3.xz(spike_pos)))
-						for sp in subpath.sample_points_xz(rng.randi_range(2,3)):
-							var q := pop.spawn_enemy(World.Enemy.DRAGON, sp, spacing)
-							if q != null:
-								result.append(q)
+					var subpath := Pathway.new().random_points_in_disc(1, 0, spacing, 0, rng.randi_range(2,3), Easing.linear, rng)
+					subpath.apply_transform(T.translated(Vec3.xz(spike_pos)))
+					for sp in subpath.sample_points_xz(rng.randi_range(2,3)):
+						var q := pop.spawn_enemy(World.Enemy.DRAGON, sp, spacing)
+						if q != null:
+							result.append(q)
 			
 			OtherworldStructuresKind.ARTIFACT:
 				var pos := area[index]

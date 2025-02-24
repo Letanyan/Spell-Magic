@@ -77,12 +77,14 @@ func setup(_settings: WorldSettings) -> void:
 	settings.upgrade_settings.max_radius_updated.connect(func(r: float) -> void:
 		book.update_spell_limits(settings.upgrade_settings.max_v(), r)
 	)
-	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings) -> void:
+	settings.upgrade_settings.upgrade_was_purchased.connect(func(us: UpgradeSettings, payload: Dictionary) -> void:
 		player.vitals.health.max_value = us.max_health()
 		player.vitals.mana.max_value = us.max_mana()
 		player.vitals.mana.change_per_tick = us.max_mana_regen()
 		player.vitals.attack.set_fixed_value(us.max_attack())
 		player.vitals.defence.set_fixed_value(us.max_defence())
+		player.vitals.health.value += payload.get("health", 0.0) as float
+		player.vitals.mana.value += payload.get("mana", 0.0) as float
 	)
 	
 	case = WandCase.new()
