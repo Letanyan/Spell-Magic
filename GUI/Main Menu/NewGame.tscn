@@ -48,6 +48,7 @@ offset_right = -136.0
 offset_bottom = -252.0
 grow_horizontal = 2
 grow_vertical = 2
+tooltip_text = "Generate random save name"
 icon = ExtResource("2_rk2kc")
 
 [node name="Seed" type="TextEdit" parent="."]

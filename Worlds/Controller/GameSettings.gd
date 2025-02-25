@@ -35,7 +35,7 @@ func read() -> void:
 	default_world_settings = WorldSettings.new(null)
 	default_world_settings.load_dict(data.get("default_world_settings", {}) as Dictionary)
 	
-	unlocked_notes = data.get("unlocked_notes", {}) as Dictionary
+	unlocked_notes = data.get("unlocked_notes", {"spell Copy and Load": true, "spell Save and Load": true}) as Dictionary
 	notes_unlock_settings = data.get("notes_unlock_settings", NotesUnlockSettings.IN_GAME) as NotesUnlockSettings
 	notes_sort_settings = data.get("notes_sort_settings", NotesSortSettings.CHRONOLOGICAL) as NotesSortSettings
 	

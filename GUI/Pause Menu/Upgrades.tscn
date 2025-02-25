@@ -384,14 +384,12 @@ scroll_active = false
 
 [node name="elements" type="Control" parent="container"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -552.0
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -263.456
 offset_top = 464.0
-offset_right = -8.0
+offset_right = 280.544
 offset_bottom = 528.0
-grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/elements"]
 layout_mode = 0
@@ -655,11 +653,11 @@ scroll_active = false
 
 [node name="chain_methods" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = 320.544
+anchor_left = 0.754
+anchor_right = 0.754
+offset_left = -256.544
 offset_top = 464.0
-offset_right = 832.544
+offset_right = 255.456
 offset_bottom = 520.0
 
 [node name="label" type="Label" parent="container/chain_methods"]
@@ -830,10 +828,12 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
 [node name="mana_regen" type="Control" parent="container"]
-anchors_preset = 0
-offset_left = 24.0
+layout_mode = 1
+anchor_left = 0.246
+anchor_right = 0.246
+offset_left = -255.456
 offset_top = 392.0
-offset_right = 528.0
+offset_right = 248.544
 offset_bottom = 440.0
 
 [node name="label" type="RichTextLabel" parent="container/mana_regen"]

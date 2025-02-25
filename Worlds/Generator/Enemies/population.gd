@@ -287,6 +287,10 @@ static func points_around(point: Vector2, distance: float, offset: int, area: Pa
 	
 func setup_spawning_state(spawn_enemies: bool = false, spacing: float = 16.0) -> void:
 	spawn_enemies_in_display_only = spawn_enemies
+	if spawn_enemies:
+		foliage_manager = entity_manager.buffer_foliage_lod0
+	else:
+		foliage_manager = entity_manager.buffer_foliage_lod1
 	spawn_point_spacing = spacing
 	rng.seed = hash(coord)
 	var spawn_areas := chunker.group_spawn_points(coord, spawn_point_spacing)
@@ -345,12 +349,18 @@ func update_enemies(delta: float) -> void:
 	if display_only: return
 	
 	var timer := Time.get_ticks_usec()
+	Enemy.p_movement.reset()
+	Enemy.p_nav.reset()
+	Enemy.p_path.reset()
+	Enemy.p_anim.reset()
 	for i in range(inhabitant_cursor, inhabitants.size()):
 		var habitant: Enemy = inhabitants[inhabitants.keys()[i]]
 		habitant.manual_physics_process(delta)
 		inhabitant_cursor += 1
 		if Time.get_ticks_usec() - timer > 500:
 			break
+	if Enemy.p_movement.seconds() + Enemy.p_nav.seconds() + Enemy.p_path.seconds() + Enemy.p_anim.seconds() > 0.25:
+		print("movement: ", Enemy.p_movement.elapsed, ", nav: ", Enemy.p_nav.elapsed, ", path: ", Enemy.p_path.elapsed, ", anim: ", Enemy.p_anim.elapsed)
 		
 	if inhabitant_cursor >= inhabitants.size():
 		inhabitant_cursor = 0
