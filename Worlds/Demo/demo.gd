@@ -193,6 +193,7 @@ func run_on_ready() -> void:
 	hud.book = book
 	hud.wand = wand
 	menu.wand_case.new_wand_selected.connect(hud.set_wand)
+	menu.tab_opened.connect(menu_did_open_tab_index)
 	
 	#for i in 18:
 		#var n: String
@@ -386,8 +387,8 @@ func open_menu_for_player() -> void:
 	totem.hide_message()
 	menu.player_in_combat = not player.enemies_in_range.is_empty()
 	menu.open(Menu.Kind.ANY)
-	if menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Customisation":
-		player.animate_spring_arm_length(3, 0.2)
+	if menu.current_index == 5 and menu.settings.tab_container.get_current_tab_control().name == "Customisation":
+		player.animate_spring_arm(true, 0.2)
 	hud.hide()
 
 func toggle_menu() -> void:
@@ -506,18 +507,25 @@ func show_tutorial_label() -> void:
 			message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
 			message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
 			message += "[/center]"
-			hud.show_message(message)
+			hud.show_message(GameSettings.Tutorials.CONTROLS, message, INF)
 		Controller.InputType.CONTROLLER:
 			var message := "[center]"
 			message += GlobalData.controller.key_images(PackedStringArray(["dpad"])) + "[b]Move[/b] "
 			message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
 			message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
 			message += "[/center]"
-			hud.show_message(message)
+			hud.show_message(GameSettings.Tutorials.CONTROLS, message, INF)
 			
 func hide_tutorial_message() -> void:
 	if hud.message_label.visible:
-		hud.show_message("")
+		hud.hide_message(GameSettings.Tutorials.CONTROLS)
+		
+func menu_did_open_tab_index(index: int) -> void:
+	match index:
+		0: hud.hide_message(GameSettings.Tutorials.SPELLS)
+		2: hud.hide_message(GameSettings.Tutorials.ARTIFACTS)
+		3: hud.hide_message(GameSettings.Tutorials.COINS)
+		4: hud.hide_message(GameSettings.Tutorials.NOTES)
 
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta

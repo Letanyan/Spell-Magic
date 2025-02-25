@@ -77,7 +77,7 @@ func update_items(full_update: bool) -> void:
 	else:			
 		for i: int in _items_to_update.keys():
 			var j := items_offset + posmod(i - min_index, items.size())
-			if j >= 0 and j < total_items:
+			if j >= 0 and j < total_items and i >= 0 and i < items.size():
 				update_item.call(items[i], j)
 				_items_to_update.erase(i)
 			

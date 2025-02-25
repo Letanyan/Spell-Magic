@@ -143,6 +143,8 @@ func _ready() -> void:
 	for t: Array in world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 		
+	use_save_file.disabled = world_data.is_empty()
+		
 	name_generator = NameGenerator.new()
 	name_generator.initial()
 		
@@ -198,14 +200,17 @@ func _on_create_pressed() -> void:
 		return
 	
 	if use_seed.button_pressed:
+		# FIXME: game crashed when setting custom T value
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
 		settings.world_generation_version = generator_version.selected + 1
 		if seed_edit.text.is_valid_int():
 			settings.sed = seed_edit.text.to_int()
-		else:
+		elif not seed_edit.text.is_empty():
 			settings.sed = hash(seed_edit.text)
+		else:
+			settings.sed = int(Time.get_unix_time_from_system())
 		var rng := RandomNumberGenerator.new()
 		rng.seed = settings.sed
 		settings.time_of_day = rng.randf_range(0.0, 24.0)

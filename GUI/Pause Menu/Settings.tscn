@@ -1015,90 +1015,10 @@ metadata/_tab_index = 6
 [node name="MagicBook" parent="Tabs/Universal Magic Book" instance=ExtResource("2_j65m2")]
 layout_mode = 1
 
-[node name="Notes" type="Panel" parent="Tabs"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 7
-
-[node name="Content" type="RichTextLabel" parent="Tabs/Notes"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 47.0
-offset_right = -16.0
-offset_bottom = -16.0
-grow_horizontal = 2
-grow_vertical = 2
-bbcode_enabled = true
-
-[node name="ShowNotesLabel" type="Label" parent="Tabs/Notes"]
-visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -392.0
-offset_top = -1.0
-offset_right = -344.0
-offset_bottom = 55.0
-grow_horizontal = 0
-text = "Show:"
-vertical_alignment = 1
-
-[node name="ShowNotes" type="OptionButton" parent="Tabs/Notes"]
-visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -344.0
-offset_top = 15.0
-offset_right = -192.0
-offset_bottom = 40.0
-grow_horizontal = 0
-disabled = true
-selected = 0
-item_count = 3
-popup/item_0/text = "Found in Game"
-popup/item_1/text = "All"
-popup/item_1/id = 1
-popup/item_2/text = "None"
-popup/item_2/id = 2
-
-[node name="SortNotesLabel" type="Label" parent="Tabs/Notes"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -184.0
-offset_top = -1.0
-offset_right = -144.0
-offset_bottom = 55.0
-grow_horizontal = 0
-text = "Sort: "
-vertical_alignment = 1
-
-[node name="SortNotes" type="OptionButton" parent="Tabs/Notes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.007
-anchor_right = 1.007
-offset_left = -151.952
-offset_top = 15.0
-offset_right = -27.9521
-offset_bottom = 40.0
-selected = 0
-item_count = 2
-popup/item_0/text = "Chronological"
-popup/item_1/text = "Alphabetical"
-popup/item_1/id = 1
-
 [node name="Customisation" type="Control" parent="Tabs"]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 8
+metadata/_tab_index = 7
 
 [node name="Container" type="Panel" parent="Tabs/Customisation"]
 layout_mode = 1
@@ -1316,8 +1236,6 @@ text = "Make Default"
 [connection signal="value_changed" from="Tabs/Sound/UI/Slider" to="." method="_on_ui_slider_value_changed"]
 [connection signal="focus_entered" from="Tabs/Functions/user_functions" to="." method="_on_user_functions_focus_entered"]
 [connection signal="focus_exited" from="Tabs/Functions/user_functions" to="." method="_on_user_functions_focus_exited"]
-[connection signal="item_selected" from="Tabs/Notes/ShowNotes" to="." method="_on_show_notes_item_selected"]
-[connection signal="item_selected" from="Tabs/Notes/SortNotes" to="." method="_on_sort_notes_item_selected"]
 [connection signal="color_changed" from="Tabs/Customisation/Container/Skin/ColorPicker" to="." method="_on_skin_color_picker_color_changed"]
 [connection signal="color_changed" from="Tabs/Customisation/Container/Hair/ColorPicker" to="." method="_on_hair_color_picker_color_changed"]
 [connection signal="color_changed" from="Tabs/Customisation/Container/Eyes/ColorPicker" to="." method="_on_eyes_color_picker_color_changed"]

@@ -96,7 +96,7 @@ var level_T := 1:
 	set(value):
 		level_T = clampi(value, 1, level_max_T)
 const level_max_T := 25
-func max_T(x: int = level_T) -> float: return x
+func max_T(x: int = level_T) -> float: return x + 1
 func upgrade_T() -> float: return max_T(level_T + 1) - max_T(level_T)
 func cost_T() -> int: return ceili(level_T ** 1.5 * 10)
 var buff_T := 0.0
@@ -496,14 +496,15 @@ func default_starter_spell() -> Spell:
 		blast_element = Spell.Element.AIR
 	elif check_if_has_spell_element(Spell.Element.ICE):
 		blast_element = Spell.Element.ICE
-	var blast := Spell.new(false, "ru", "rv", "offset + speed * t", "0.1", 5, 1.0, blast_element)
+	var blast := Spell.new(false, "ru", "rv", "offset + speed * t", "0.1", 5, 2.0, blast_element)
 	blast.name = "Blast"
 	blast.spherical_coords = true
 	blast.mana_cost = 1
 	blast.expression_strings = {
-		"speed": "8",
+		"speed": "9",
 		"offset": "1",
 	}
+	blast.description = "fires a projectile in the direction of the camera"
 	blast.build_expressions()
 	
 	return blast

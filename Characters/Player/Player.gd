@@ -625,9 +625,15 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_close = close
 	menu_callbacks_are_set = true
 		
-func animate_spring_arm_length(target: float, duration: float, on_done: Callable = func() -> void: pass) -> void:
-	var tween := create_tween()
-	tween.tween_property(cam_arm, "spring_length", target, duration)
+func animate_spring_arm(show_face: bool, duration: float, on_done: Callable = func() -> void: pass) -> void:
+	var tween := create_tween().set_parallel()
+	tween.tween_property(cam_arm, "spring_length", 3.0 if show_face else 0.0, duration)
+	if show_face:
+		var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, PI)
+		tween.tween_property(cam_pivot, "transform:basis", target_basis, duration)
+	else:
+		var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
+		tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, duration)
 	tween.finished.connect(on_done)
 	tween.play()
 		
@@ -641,8 +647,6 @@ func transition_menu(is_open: bool, normalise_spring_arm: bool = false) -> void:
 		tween.tween_property(cam, "h_offset", 0.0, D)
 		cam_arm.shape = null
 		tween.tween_property(cam_arm, "position", Vector3(0, -0.3, -0.6), D)
-		cam_pivot_rotation_y = cam_pivot.rotation.y
-		cam_arm_rotation_x = cam_arm.rotation.x
 		var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
 		tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, D)
 		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, -cam_arm.rotation.x)
@@ -661,7 +665,7 @@ func transition_menu(is_open: bool, normalise_spring_arm: bool = false) -> void:
 			interface.visible = true
 		tween.tween_property(cam, "h_offset", 0.4, D)
 		tween.tween_property(cam_arm, "position", Vector3(0, 0, 0), D)
-		var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, cam_pivot_rotation_y + -body_pivot.rotation.y)
+		var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, cam_pivot_rotation_y + -body_pivot.rotation.y + PI)
 		tween.tween_property(cam_pivot, "transform:basis", target_basis, D)
 		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)
 		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)

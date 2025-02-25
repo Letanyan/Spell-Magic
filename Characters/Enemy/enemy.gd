@@ -237,16 +237,16 @@ func set_attack_sequence(atk_seq: AttackSequence) -> void:
 	current_attack = null
 	attack_sequence = atk_seq
 
-static var p_movement := Profiler.new()
-static var p_path := Profiler.new()
-static var p_nav := Profiler.new()
-static var p_anim := Profiler.new()
+#static var p_movement := Profiler.new()
+#static var p_path := Profiler.new()
+#static var p_nav := Profiler.new()
+#static var p_anim := Profiler.new()
 
 func manual_physics_process(delta: float) -> void:
 	if kind == World.Enemy.NONE or player.magic_book.settings.is_paused:
 		return
 	
-	p_movement.start()
+	#p_movement.start()
 	var dist := 1.0 - clampf(maxf(position.distance_to(player.position) - Globals.enemy_update_radius(), 0.0) / Globals.enemy_update_radius(), 0.0, 1.0)
 	var tick_scale := maxf(pow(dist, 2.0), 0.01 * Rand.randf_range(timer_seed, 0.5, 1.0))
 	increment_ticks(delta * tick_scale)
@@ -335,7 +335,7 @@ func manual_physics_process(delta: float) -> void:
 				global_transform.basis.z = global_transform.basis.z.slerp(t.basis.z, v)
 				if not global_transform.basis.is_conformal():
 					global_transform = global_transform.orthonormalized()
-	p_movement.lap()
+	#p_movement.lap()
 
 	var reset_spell_tick := false
 	var behavior_ticked_over := ((behavior_tick > Globals.behaviour_tick()) or is_equal_approx(behavior_tick, Globals.behaviour_tick()))
@@ -347,7 +347,7 @@ func manual_physics_process(delta: float) -> void:
 			update_behaviour()
 			behavior_tick = 0
 		if not velocity_movement.has_navigation_target:
-			p_path.start()
+			#p_path.start()
 			var is_done := Globals.Ref.new(false)
 			var next_pos: Vector3
 			var navigation_time_delta := time_since_navigation_update
@@ -376,11 +376,11 @@ func manual_physics_process(delta: float) -> void:
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN or current_path.coord_y == PathStyle.CoordY.AIR:
 				options |= Navigator.MovementOptions.CAN_FLY
 			var obj := get_node(".") as CharacterBody
-			p_path.lap()
-			p_nav.start()
+			#p_path.lap()
+			#p_nav.start()
 			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 500.0, Vec3.max(player.bounds))
 			velocity_movement.target_position = Navigator.find_next_target_from_path(velocity_movement.target_path, position, obj, next_pos)
-			p_nav.lap()
+			#p_nav.lap()
 			#var clr := Color(randf(), randf(), randf())
 			#Debug3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
 			#for p in velocity_movement.target_path:
@@ -404,7 +404,7 @@ func manual_physics_process(delta: float) -> void:
 			cast_spell(insert_spell, spell)
 		
 
-	p_anim.start()
+	#p_anim.start()
 	spell_caster.update(self, delta)
 	if did_move:
 		var final_is_on_floor: bool
@@ -436,7 +436,7 @@ func manual_physics_process(delta: float) -> void:
 				play_animation("fall")
 			elif current_animation_is("fall"):
 				play_animation("land")
-	p_anim.lap()
+	#p_anim.lap()
 
 
 func cast_spell(insert: Callable, next_spell: Spell) -> MagicBook.DisallowSpellReason:

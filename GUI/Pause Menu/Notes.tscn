@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=3 uid="uid://rtvhjr7mndbx"]
+
+[ext_resource type="Script" path="res://GUI/Pause Menu/Notes.gd" id="1_lp1af"]
+
+[node name="Notes" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lp1af")
+
+[node name="Notes" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_tab_index = 7
+
+[node name="Content" type="RichTextLabel" parent="Notes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 47.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+
+[node name="ShowNotesLabel" type="Label" parent="Notes"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -392.0
+offset_top = -1.0
+offset_right = -344.0
+offset_bottom = 55.0
+grow_horizontal = 0
+text = "Show:"
+vertical_alignment = 1
+
+[node name="ShowNotes" type="OptionButton" parent="Notes"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -344.0
+offset_top = 15.0
+offset_right = -192.0
+offset_bottom = 40.0
+grow_horizontal = 0
+selected = 0
+item_count = 3
+popup/item_0/text = "Found in Game"
+popup/item_1/text = "All"
+popup/item_1/id = 1
+popup/item_2/text = "None"
+popup/item_2/id = 2
+
+[node name="SortNotesLabel" type="Label" parent="Notes"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -184.0
+offset_top = -1.0
+offset_right = -144.0
+offset_bottom = 55.0
+grow_horizontal = 0
+text = "Sort: "
+vertical_alignment = 1
+
+[node name="SortNotes" type="OptionButton" parent="Notes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.007
+anchor_right = 1.007
+offset_left = -151.952
+offset_top = 15.0
+offset_right = -27.9521
+offset_bottom = 40.0
+selected = 0
+item_count = 2
+popup/item_0/text = "Chronological"
+popup/item_1/text = "Alphabetical"
+popup/item_1/id = 1
+
+[connection signal="item_selected" from="Notes/ShowNotes" to="." method="_on_show_notes_item_selected"]
+[connection signal="item_selected" from="Notes/SortNotes" to="." method="_on_sort_notes_item_selected"]

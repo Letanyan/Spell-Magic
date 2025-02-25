@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://b185ji0u0kuxo"]
+[gd_scene load_steps=9 format=3 uid="uid://b185ji0u0kuxo"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/Menu.gd" id="1_op10b"]
 [ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="1_ufdyg"]
 [ext_resource type="PackedScene" uid="uid://b1jnhv7ky6aap" path="res://GUI/Pause Menu/WandCase.tscn" id="2_4jtlr"]
 [ext_resource type="PackedScene" uid="uid://c0eqpohrkp1r7" path="res://GUI/Pause Menu/Artifacts.tscn" id="4_setqv"]
 [ext_resource type="PackedScene" uid="uid://lbdwf4vi4u7w" path="res://GUI/Pause Menu/Upgrades.tscn" id="5_85var"]
+[ext_resource type="PackedScene" uid="uid://rtvhjr7mndbx" path="res://GUI/Pause Menu/Notes.tscn" id="6_kj37x"]
 [ext_resource type="PackedScene" uid="uid://w4lonc2wt7at" path="res://GUI/Pause Menu/Settings.tscn" id="7_nxty0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kjkp2"]
@@ -35,6 +36,11 @@ layout_mode = 1
 [node name="Upgrades" parent="." instance=ExtResource("5_85var")]
 visible = false
 layout_mode = 1
+
+[node name="Notes" parent="." instance=ExtResource("6_kj37x")]
+visible = false
+layout_mode = 1
+offset_top = 48.0
 
 [node name="Settings" parent="." instance=ExtResource("7_nxty0")]
 visible = false
@@ -83,13 +89,13 @@ grow_horizontal = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.49
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -16.5
-offset_right = -104.0
-offset_bottom = 15.5
+anchor_bottom = 0.49
+offset_left = -256.0
+offset_top = -16.01
+offset_right = -160.0
+offset_bottom = 15.99
 grow_horizontal = 2
 focus_neighbor_left = NodePath("../Quit")
 focus_neighbor_right = NodePath("../Wands")
@@ -106,8 +112,9 @@ anchor_left = 0.5
 anchor_top = 0.49
 anchor_right = 0.5
 anchor_bottom = 0.49
-offset_left = -96.0
+offset_left = -152.0
 offset_top = -16.01
+offset_right = -56.0
 offset_bottom = 15.99
 grow_horizontal = 2
 focus_neighbor_left = NodePath("../Spells")
@@ -125,9 +132,9 @@ anchor_left = 0.5
 anchor_top = 0.49
 anchor_right = 0.5
 anchor_bottom = 0.49
-offset_left = 8.0
+offset_left = -48.0
 offset_top = -16.01
-offset_right = 104.0
+offset_right = 48.0
 offset_bottom = 15.99
 focus_neighbor_left = NodePath("../Wands")
 focus_neighbor_right = NodePath("../Upgrades")
@@ -156,9 +163,9 @@ anchor_left = 0.5
 anchor_top = 0.49
 anchor_right = 0.5
 anchor_bottom = 0.49
-offset_left = 112.0
+offset_left = 56.0
 offset_top = -16.01
-offset_right = 208.0
+offset_right = 152.0
 offset_bottom = 15.99
 focus_neighbor_left = NodePath("../Artifacts")
 focus_neighbor_right = NodePath("../Settings")
@@ -186,9 +193,23 @@ focus_previous = NodePath("../Upgrades")
 toggle_mode = true
 text = "Settings"
 
+[node name="Notes" type="Button" parent="Tabbar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.49
+anchor_right = 0.5
+anchor_bottom = 0.49
+offset_left = 160.0
+offset_top = -16.01
+offset_right = 256.0
+offset_bottom = 15.99
+text = "Notes"
+
 [connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]
 [connection signal="pressed" from="Tabbar/Artifacts" to="." method="_on_artifacts_pressed"]
 [connection signal="pressed" from="Tabbar/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="Tabbar/Upgrades" to="." method="_on_upgrades_pressed"]
 [connection signal="pressed" from="Tabbar/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Tabbar/Notes" to="." method="_on_notes_pressed"]

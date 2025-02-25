@@ -3,6 +3,7 @@ class_name GameSettings
 enum ReadyState { NOT, IN, IS }
 enum NotesUnlockSettings { IN_GAME, SHOW_ALL, HIDE_ALL }
 enum NotesSortSettings { CHRONOLOGICAL, ALPHABETICAL }
+enum Tutorials { CONTROLS, SPELLS, ARTIFACTS, COINS, NOTES }
 
 var last_world: String
 var default_world_settings: WorldSettings
@@ -12,6 +13,7 @@ var unlocked_notes: Dictionary
 var notes_unlock_settings: NotesUnlockSettings
 var notes_sort_settings: NotesSortSettings
 var saved_worlds: Dictionary
+var tutorials_shown: Dictionary ## [Tutorials]bool
 
 func save() -> void:
 	var file := FileAccess.open("user://settings.json", FileAccess.WRITE)
@@ -21,6 +23,7 @@ func save() -> void:
 		"default_world_settings": default_world_settings.save_dict(),
 		"unlocked_notes": unlocked_notes, "notes_unlock_settings": notes_unlock_settings,
 		"notes_sort_settings": notes_sort_settings, "saved_worlds": saved_worlds,
+		"tutorials_shown": tutorials_shown,
 	})
 
 func read() -> void:
@@ -38,6 +41,8 @@ func read() -> void:
 	unlocked_notes = data.get("unlocked_notes", {"spell Copy and Load": true, "spell Save and Load": true}) as Dictionary
 	notes_unlock_settings = data.get("notes_unlock_settings", NotesUnlockSettings.IN_GAME) as NotesUnlockSettings
 	notes_sort_settings = data.get("notes_sort_settings", NotesSortSettings.CHRONOLOGICAL) as NotesSortSettings
+	
+	tutorials_shown = data.get("tutorials_shown", {}) as Dictionary
 	
 	build_user_functions(data.get("user_functions_text", "") as String)
 	
@@ -262,3 +267,7 @@ The following effects occur when a character with {Freeze} is hit by the followi
 	"upgrades Elements": "The elements which can be assigned to a spell.",
 	"upgrades Chain Methods": "The ways a spell can be chained to another spell.",
 }
+
+func mark_tutorial(tutorial: Tutorials) -> void:
+	tutorials_shown[tutorial] = true
+	

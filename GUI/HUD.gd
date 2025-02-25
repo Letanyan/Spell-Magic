@@ -25,6 +25,8 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 var image_preview_raws := {} ## [String]Texture2D
 
 @onready var message_label: RichTextLabel = $MessageLabel
+var messages: Dictionary = {} ## [GameSettings.Tutorial]String(Message)
+var message_times: Dictionary = {} ## [GameSettings.Tutorial]int(seconds until expiration)
 
 
 var cooldown_alert: Dictionary
@@ -53,12 +55,12 @@ var book: MagicBook:
 		
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: show_notification(bbcode_new_item(m), 5))
-	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: show_notification(bbcode_new_item(m), 5))
+	SignalBus.pick_up_world_item_artifact.connect(update_pick_up_world_item_artifact)
+	SignalBus.pick_up_world_item_spell.connect(update_pick_up_world_item_spell)
 	SignalBus.pick_up_world_item_key.connect(update_pick_up_world_item_key)
-	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: show_notification(bbcode_new_item(m), 5))
-	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 5))
-	SignalBus.pick_up_world_item_scroll_note.connect(func(c: String, m: String) -> void: show_notification(bbcode_new_item(m), 5))
+	SignalBus.pick_up_world_item_coin.connect(update_pick_up_world_item_coin)
+	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 10))
+	SignalBus.pick_up_world_item_scroll_note.connect(update_pick_up_world_item_scroll_note)
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:
@@ -199,6 +201,7 @@ func update_spell_cooldowns(delta: float) -> void:
 		not_enough_mana_alert = 0.0
 		
 	draw_notifications(delta)
+	draw_messages(delta)
 		
 func show_notification(message: String, duration: float) -> void:
 	notifications[message] = Time.get_unix_time_from_system() + duration
@@ -224,9 +227,33 @@ func draw_notifications(delta: float) -> void:
 	for n: String in to_erase:
 		notifications.erase(n)
 		
-func show_message(text: String) -> void:
-	message_label.text = text
-	message_label.visible = not text.is_empty()
+func show_message(key: GameSettings.Tutorials, text: String, duration: float) -> void:
+	messages[key] = text
+	message_times[key] = Time.get_unix_time_from_system() + duration
+	draw_messages(0.0)
+	
+func hide_message(key: GameSettings.Tutorials) -> void:
+	messages.erase(key)
+	message_times.erase(key)
+	draw_messages(0.0)
+		
+func draw_messages(delta: float) -> void:
+	var to_erase := []
+	var result := ""
+	for key: GameSettings.Tutorials in messages:
+		var d := message_times[key] as float
+		if Time.get_unix_time_from_system() >= d:
+			to_erase.append(key)
+		else:
+			message_times[key] -= delta
+			result = messages[key] as String
+			break
+			
+	message_label.text = result
+	message_label.visible = not result.is_empty()
+	for key: GameSettings.Tutorials in to_erase:
+		messages.erase(key)
+		message_times.erase(key)
 		
 func update_wand_mappings() -> void:
 	const SIZE := 16
@@ -419,10 +446,34 @@ func update_selection_wheel_spells() -> void:
 		var spell := book.find_spell(spell_text)
 		if spell != null:
 			selection_wheel.image_segments[spell_text] = spell.create_thumbnail(false, image_preview_raws)
+
+func update_pick_up_world_item_artifact(a: Artifact, m: String) -> void:
+	show_notification(bbcode_new_item(m), 10)
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.ARTIFACTS):
+		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.ARTIFACTS)
+		show_message(GameSettings.Tutorials.ARTIFACTS, "[center][font_size=21]View 'Artifacts' in the menu to build your character[/font_size][/center]", INF)
+		
+func update_pick_up_world_item_spell(s: Spell, m: String) -> void:
+	show_notification(bbcode_new_item(m), 10)
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.SPELLS):
+		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.SPELLS)
+		show_message(GameSettings.Tutorials.SPELLS, "[center][font_size=21]View 'Spells' in the menu to view and edit your spells[/font_size][/center]", INF)
 		
 func update_pick_up_world_item_key(k: int, m: String) -> void: 
-	show_notification(bbcode_new_item(m), 5)
+	show_notification(bbcode_new_item(m), 10)
 	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)
+
+func update_pick_up_world_item_coin(s: int, m: String) -> void:
+	show_notification(bbcode_new_item(m), 5)
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.COINS):
+		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.COINS)
+		show_message(GameSettings.Tutorials.COINS, "[center][font_size=21]View 'Upgrades' in the menu to upgrade your character[/font_size][/center]", INF)
+
+func update_pick_up_world_item_scroll_note(c: String, m: String) -> void:
+	show_notification(bbcode_new_item(m), 10)
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.NOTES):
+		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.NOTES)
+		show_message(GameSettings.Tutorials.NOTES, "[center][font_size=21]View 'Notes' in the menu to learn about the game[/font_size][/center]", INF)
 
 func update_theme_colors(color: Color, variation: HUDSettings.ThemeKind) -> void:
 	cached_theme_color = color
