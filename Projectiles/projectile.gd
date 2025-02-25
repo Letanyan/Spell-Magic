@@ -561,14 +561,14 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			var body := get_node("body") as MeshInstance3D
 			(body.mesh as SphereMesh).radius = rl
 			(body.mesh as SphereMesh).height = rl * 2
-			#source.local_coords = spell.follow
 			
 		Spell.Element.VOID:
 			var mesh: SphereMesh = (get_node("mesh") as MeshInstance3D).mesh
 			mesh.radius = rl
 			mesh.height = rl * 2
 			(get_shape_cast().shape as SphereShape3D).radius = rl
-#			mesh.surface_get_material(0).albedo_color = Color8(0, 0, 0, mini(int(255 * (spell.power / 100.0)), 255))
+			var color := Color(0, 0, 0, spell.power / UpgradeSettings.LIMIT_P)
+			(mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("albedo", color)
 			
 
 func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:

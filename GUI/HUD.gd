@@ -87,7 +87,7 @@ func set_wand(value: Wand) -> void:
 func update_hud_with_vitals(vitals: Vitals) -> void:
 	health_bar.max_value = vitals.health.max_value
 	health_bar.value = vitals.health.value
-	health_bar_label.text = "%d/%d" % [vitals.health.value, vitals.health.max_value]
+	health_bar_label.text = "%d/%d" % [ceili(vitals.health.value), vitals.health.max_value]
 	mana_bar.max_value = vitals.mana.max_value
 	mana_bar.value = vitals.mana.value
 	mana_bar_label.text = "%d/%d" % [vitals.mana.value, vitals.mana.max_value]
