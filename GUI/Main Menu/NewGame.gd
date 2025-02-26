@@ -1,14 +1,16 @@
 class_name NewGameScreen
 extends Control
 
-@onready var save_name: TextEdit = $SaveName
+@onready var background: Panel = $Background
+
+@onready var save_name: LineEdit = $SaveName
 var name_generator: NameGenerator
 @onready var random_name: Button = $RandomName
 @onready var use_seed: Button = $UseSeed
 @onready var use_save_file: Button = $UseSaveFile
 @onready var use_normal: Button = $UseNormal
 @onready var use_hardcore: Button = $UseHardcore
-@onready var seed_edit: TextEdit = $Seed
+@onready var seed_edit: LineEdit = $Seed
 @onready var worlds_list: ItemList = $WorldsList
 @onready var generation_version_label: Label = $WorldGenerationVersion
 @onready var generator_version: OptionButton = $WorldGenerationVersion/GeneratorVersion
@@ -18,7 +20,6 @@ var name_generator: NameGenerator
 @onready var sandbox: Button = $Sandbox
 
 @onready var respawn_options: Panel = $RespawnOptions
-@onready var game_options: Panel = $GameOptions
 
 @onready var health_slider: HSlider = $StartingUpgradesPanel/Health/Slider
 @onready var attack_slider: HSlider = $StartingUpgradesPanel/Attack/Slider
@@ -499,7 +500,7 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	sandbox.position.x += pos_delta
 	respawn_options.position.x += pos_delta
 	game_mode_description_panel.position.x += pos_delta
-	game_options.position.x += pos_delta
+	background.position.x += pos_delta
 	worlds_list.position.x += pos_delta
 
 
@@ -520,9 +521,8 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		worlds_list.visible = false
 		permadeath.visible = true
 		respawn.visible = true
-		sandbox.visible = true
+		#sandbox.visible = true
 		respawn_options.visible = true
-		game_options.visible = true
 		starting_upgrades.visible = true
 		game_mode_description_panel.visible = false
 		#generation_version_label.visible = true
@@ -539,9 +539,8 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		seed_edit.visible = false
 		permadeath.visible = false
 		respawn.visible = false
-		sandbox.visible = false
+		#sandbox.visible = false
 		respawn_options.visible = false
-		game_options.visible = false
 		starting_upgrades.visible = false
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false
@@ -557,9 +556,8 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		seed_edit.visible = false
 		permadeath.visible = false
 		respawn.visible = false
-		sandbox.visible = false
+		#sandbox.visible = false
 		respawn_options.visible = false
-		game_options.visible = false
 		starting_upgrades.visible = false
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false
@@ -577,9 +575,8 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		seed_edit.visible = false
 		permadeath.visible = false
 		respawn.visible = false
-		sandbox.visible = false
+		#sandbox.visible = false
 		respawn_options.visible = false
-		game_options.visible = true
 		starting_upgrades.visible = false
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false

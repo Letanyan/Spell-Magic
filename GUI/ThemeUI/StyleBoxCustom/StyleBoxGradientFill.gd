@@ -3,6 +3,7 @@ class_name StyleBoxGradientFill
 extends StyleBox
 
 @export var expanded: float = 0.0
+@export var underlay_border: bool = false
 
 @export_group("Corner Radius", "corner_radius")
 @export var corner_radius_top_right: float = 0.0
@@ -26,16 +27,8 @@ extends StyleBox
 
 
 func _draw(to_canvas_item: RID, rect: Rect2) -> void:
-	var ex_rect := rect
-	ex_rect.position -= Vector2(expanded / 2, expanded / 2)
-	ex_rect.size += Vector2(expanded, expanded)
-	if border_width > 0.0:
-		render_rect(to_canvas_item, ex_rect, border_texture, border_texture_flip_vertical, border_texture_flip_horizonal, border_texture_flip_xy)
-	ex_rect.position += Vector2(border_width, border_width)
-	ex_rect.size -= Vector2(border_width * 2, border_width * 2)
-	render_rect(to_canvas_item, ex_rect, fill_texture, fill_texture_flip_vertical, fill_texture_flip_horizonal, fill_texture_flip_xy)
+	render_quad(to_canvas_item, rect)
 	
-
 func _get_draw_rect(rect: Rect2) -> Rect2:
 	return rect
 	
@@ -45,7 +38,27 @@ func _get_minimum_size() -> Vector2:
 func _test_mask(point: Vector2, rect: Rect2) -> bool:
 	return rect.has_point(point)
 
-func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D, flip_vertical: bool, flip_horizontal: bool, flip_xy: bool) -> void:
+func render_quad(canvas_id: RID, rect: Rect2) -> void:
+	if underlay_border or corner_radius_bottom_left != 0 or corner_radius_bottom_right != 0 or corner_radius_top_left != 0 or corner_radius_top_right != 0:
+		var ex_rect := rect
+		ex_rect.position -= Vector2(expanded / 2, expanded / 2)
+		ex_rect.size += Vector2(expanded, expanded)
+		if border_width > 0.0 or underlay_border:
+			render_round_rect(canvas_id, ex_rect, border_texture, border_texture_flip_vertical, border_texture_flip_horizonal, border_texture_flip_xy)
+		ex_rect.position += Vector2(border_width, border_width)
+		ex_rect.size -= Vector2(border_width * 2, border_width * 2)
+		render_round_rect(canvas_id, ex_rect, fill_texture, fill_texture_flip_vertical, fill_texture_flip_horizonal, fill_texture_flip_xy)
+	else:
+		var ex_rect := rect
+		ex_rect.position -= Vector2(expanded / 2, expanded / 2)
+		ex_rect.size += Vector2(expanded, expanded)
+		if border_width > 0.0:
+			render_rect(canvas_id, rect, border_texture, border_texture_flip_vertical, border_texture_flip_horizonal, border_texture_flip_xy, border_width)
+		ex_rect.position += Vector2(border_width, border_width)
+		ex_rect.size -= Vector2(border_width * 2, border_width * 2)
+		render_rect(canvas_id, ex_rect, fill_texture, fill_texture_flip_vertical, fill_texture_flip_horizonal, fill_texture_flip_xy, 0.0)
+
+func render_round_rect(canvas_id: RID, rect: Rect2, texture: Texture2D, flip_vertical: bool, flip_horizontal: bool, flip_xy: bool) -> void:
 	var vertices := PackedVector2Array([])
 	var uvs := PackedVector2Array([])
 	var colors := PackedColorArray([])
@@ -157,11 +170,111 @@ func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D, flip_vertical:
 		vertices.append(top_right_corner_vertex)
 		uvs.append(top_right_corner_uv)
 		
-	if not Geometry2D.triangulate_polygon(vertices).is_empty():
+	if not Geometry2D.triangulate_polygon(vertices).is_empty() and texture != null:
 		RenderingServer.canvas_item_add_polygon(canvas_id, vertices, colors, uvs, texture.get_rid())
 		#RenderingServer.canvas_item_add_circle(canvas_id, rect.position, randf_range(5, 10), Color(1, 0, 0))
 	else:
 		RenderingServer.canvas_item_add_rect(canvas_id, rect, Color(1, 0, 0, 1))
+		
+func render_rect(canvas_id: RID, rect: Rect2, texture: Texture2D, flip_vertical: bool, flip_horizontal: bool, flip_xy: bool, draw_border: float) -> void:
+	var vertices := PackedVector2Array([])
+	var uvs := PackedVector2Array([])
+	var colors := PackedColorArray([])
+	
+	var top_right_corner_vertex := Vector2.ZERO
+	var top_right_corner_uv := Vector2.ZERO
+	
+	if true: # top right
+		top_right_corner_vertex = rect.position + Vector2(rect.size.x, 0)
+		var ux := 1.0
+		var uy := 0.0
+		if flip_horizontal: ux = 1.0 - ux
+		if flip_vertical: uy = 1.0 - uy
+		if flip_xy: var temp := ux; ux = uy; uy = temp
+		top_right_corner_uv = Vector2(ux, uy)
+		vertices.append(top_right_corner_vertex)
+		uvs.append(top_right_corner_uv)
+		
+	if true: # top left
+		vertices.append(rect.position + Vector2(0, 0))
+		var ux := 0.0
+		var uy := 0.0
+		if flip_horizontal: ux = 1.0 - ux
+		if flip_vertical: uy = 1.0 - uy
+		if flip_xy: var temp := ux; ux = uy; uy = temp
+		uvs.append(Vector2(ux, uy))
+		
+	if true: # bottom left
+		vertices.append(rect.position + Vector2(0, rect.size.y))
+		var ux := 0.0
+		var uy := 1.0
+		if flip_horizontal: ux = 1.0 - ux
+		if flip_vertical: uy = 1.0 - uy
+		if flip_xy: var temp := ux; ux = uy; uy = temp
+		uvs.append(Vector2(ux, uy))
+		
+	if true: # bottom right
+		vertices.append(rect.position + Vector2(rect.size.x, rect.size.y))
+		var ux := 1.0
+		var uy := 1.0
+		if flip_horizontal: ux = 1.0 - ux
+		if flip_vertical: uy = 1.0 - uy
+		if flip_xy: var temp := ux; ux = uy; uy = temp
+		uvs.append(Vector2(ux, uy))
+	
+	# top right	
+	vertices.append(top_right_corner_vertex)
+	uvs.append(top_right_corner_uv)
+	
+	if draw_border > 0.0:
+		var y_uv_frac := draw_border / rect.size.y
+		var x_uv_frac := draw_border / rect.size.x
+		if true: # top right
+			top_right_corner_vertex = rect.position + Vector2(rect.size.x - draw_border, 0 + draw_border)
+			var ux := 1.0 - x_uv_frac
+			var uy := 0.0 + y_uv_frac
+			if flip_horizontal: ux = 1.0 - ux
+			if flip_vertical: uy = 1.0 - uy
+			if flip_xy: var temp := ux; ux = uy; uy = temp
+			top_right_corner_uv = Vector2(ux, uy)
+			vertices.append(top_right_corner_vertex)
+			uvs.append(top_right_corner_uv)
+			
+		if true: # bottom right
+			vertices.append(rect.position + Vector2(rect.size.x - draw_border, rect.size.y - draw_border))
+			var ux := 1.0 - x_uv_frac
+			var uy := 1.0 - y_uv_frac
+			if flip_horizontal: ux = 1.0 - ux
+			if flip_vertical: uy = 1.0 - uy
+			if flip_xy: var temp := ux; ux = uy; uy = temp
+			uvs.append(Vector2(ux, uy))
+			
+		if true: # bottom left
+			vertices.append(rect.position + Vector2(0 + draw_border, rect.size.y - draw_border))
+			var ux := 0.0 + x_uv_frac
+			var uy := 1.0 - y_uv_frac
+			if flip_horizontal: ux = 1.0 - ux
+			if flip_vertical: uy = 1.0 - uy
+			if flip_xy: var temp := ux; ux = uy; uy = temp
+			uvs.append(Vector2(ux, uy))
+			
+		if true: # top left
+			vertices.append(rect.position + Vector2(0 + draw_border, 0 + draw_border))
+			var ux := 0.0 + x_uv_frac
+			var uy := 0.0 + y_uv_frac
+			if flip_horizontal: ux = 1.0 - ux
+			if flip_vertical: uy = 1.0 - uy
+			if flip_xy: var temp := ux; ux = uy; uy = temp
+			uvs.append(Vector2(ux, uy))
+			
+		# top right	
+		vertices.append(top_right_corner_vertex)
+		uvs.append(top_right_corner_uv)
+		vertices.append(rect.position + Vector2(rect.size.x, 0))
+		uvs.append(Vector2(1.0, 0.0))
+	
+	if not Geometry2D.triangulate_polygon(vertices).is_empty() and texture != null:
+		RenderingServer.canvas_item_add_polygon(canvas_id, vertices, colors, uvs, texture.get_rid())
 	
 func get_color(tex: Texture2D, coord: Vector2) -> Color:
 	if tex != null:

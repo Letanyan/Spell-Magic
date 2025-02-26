@@ -1,7 +1,7 @@
-[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=3 format=3 uid="uid://bcai3e5tbrdmf"]
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=3 format=3 uid="uid://ctqd25nov5rem"]
 
-[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_hctk5"]
-[ext_resource type="Texture2D" uid="uid://utk065nspovn" path="res://GUI/ThemeUI/NeoColorHighlightGradient.tres" id="1_jh77n"]
+[ext_resource type="Texture2D" uid="uid://cp0dy8gl2oxr5" path="res://GUI/ThemeUI/NeoBaseGradient.tres" id="1_127b3"]
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="2_2bk5g"]
 
 [resource]
 resource_local_to_scene = false
@@ -10,19 +10,18 @@ content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
-script = ExtResource("1_hctk5")
+script = ExtResource("2_2bk5g")
 expanded = 0.0
-underlay_border = null
 corner_radius_top_right = 0.0
 corner_radius_top_left = 0.0
 corner_radius_bottom_left = 0.0
 corner_radius_bottom_right = 0.0
-corner_radius_detail = 4.0
-fill_texture = ExtResource("1_jh77n")
+corner_radius_detail = 1.0
 fill_texture_flip_xy = false
 fill_texture_flip_vertical = false
 fill_texture_flip_horizonal = false
-border_width = 0.0
+border_texture = ExtResource("1_127b3")
+border_width = 1.0
 border_texture_flip_xy = false
 border_texture_flip_vertical = false
 border_texture_flip_horizonal = false

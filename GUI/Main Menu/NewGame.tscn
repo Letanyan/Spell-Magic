@@ -1,10 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=13 format=3 uid="uid://oko6g6intlvw"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
+[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="2_e3h3o"]
+[ext_resource type="StyleBox" uid="uid://biokc78elvw35" path="res://GUI/ThemeUI/NeoBaseBackground.tres" id="2_ilee0"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
 [ext_resource type="Texture2D" uid="uid://7roma70qcf5y" path="res://GUI/Images/cubes.svg" id="2_rk2kc"]
+[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="3_4yv4o"]
 [ext_resource type="Texture2D" uid="uid://c647q188ykknd" path="res://GUI/Images/tinted_water.tres" id="3_cyou0"]
 [ext_resource type="Texture2D" uid="uid://bdnl2u2bg67a7" path="res://GUI/Images/tinted_rock.tres" id="4_4nvek"]
+[ext_resource type="StyleBox" uid="uid://bj87nmhd38825" path="res://GUI/ThemeUI/NeoBasePressedBackground.tres" id="4_6gdnd"]
 [ext_resource type="Texture2D" uid="uid://bs53klavughn" path="res://GUI/Images/tinted_wind.tres" id="5_lff36"]
 [ext_resource type="Texture2D" uid="uid://d04ymp7lmbois" path="res://GUI/Images/tinted_ice.tres" id="6_1jtyh"]
 [ext_resource type="Texture2D" uid="uid://ddt4jjlnnqy2e" path="res://GUI/Images/tinted_electric.tres" id="7_jc3of"]
@@ -18,14 +22,30 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_g78rx")
 
-[node name="SaveName" type="TextEdit" parent="."]
+[node name="Background" type="Panel" parent="."]
+material = ExtResource("2_e3h3o")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -136.0
+offset_top = -300.0
+offset_right = 136.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("3_4yv4o")
+
+[node name="SaveName" type="LineEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -128.0
+offset_left = -88.0
 offset_top = -284.0
 offset_right = 128.0
 offset_bottom = -252.0
@@ -42,16 +62,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -168.0
+offset_left = -128.0
 offset_top = -284.0
-offset_right = -136.0
+offset_right = -96.0
 offset_bottom = -252.0
 grow_horizontal = 2
 grow_vertical = 2
 tooltip_text = "Generate random save name"
 icon = ExtResource("2_rk2kc")
 
-[node name="Seed" type="TextEdit" parent="."]
+[node name="Seed" type="LineEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -150,9 +170,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = -100.0
+offset_top = -108.0
 offset_right = -8.0
-offset_bottom = -60.0
+offset_bottom = -68.0
 tooltip_text = "Death is final. No continues."
 focus_neighbor_top = NodePath("../Seed")
 focus_neighbor_right = NodePath("../Respawn")
@@ -170,9 +190,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = 8.0
-offset_top = -100.0
+offset_top = -108.0
 offset_right = 128.0
-offset_bottom = -60.0
+offset_bottom = -68.0
 tooltip_text = "You can retry after death."
 focus_neighbor_left = NodePath("../Permadeath")
 focus_neighbor_top = NodePath("../Seed")
@@ -205,31 +225,6 @@ focus_previous = NodePath("../Respawn")
 toggle_mode = true
 text = "Sandbox"
 
-[node name="GameOptions" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -128.0
-offset_top = -44.0
-offset_right = 128.0
-offset_bottom = 12.0
-grow_horizontal = 2
-
-[node name="SpellEditing" type="CheckBox" parent="GameOptions"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -104.0
-offset_top = 16.0
-offset_right = 104.0
-offset_bottom = 44.0
-grow_horizontal = 2
-text = "Disallow Spell Editing"
-
 [node name="RespawnOptions" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -238,10 +233,22 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = 20.0
+offset_top = -60.0
 offset_right = 128.0
-offset_bottom = 180.0
+offset_bottom = 116.0
 focus_neighbor_bottom = NodePath("Upgrades")
+
+[node name="SpellEditing" type="CheckBox" parent="RespawnOptions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -104.0
+offset_top = 144.0
+offset_right = 104.0
+offset_bottom = 172.0
+grow_horizontal = 2
+text = "Disallow Spell Editing"
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
 layout_mode = 0
@@ -317,9 +324,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -128.0
-offset_top = -40.0
+offset_top = -48.0
 offset_right = 128.0
-offset_bottom = -9.0
+offset_bottom = -17.0
 focus_neighbor_top = NodePath("../Create")
 focus_neighbor_right = NodePath("../StartingUpgradesPanel")
 focus_next = NodePath("../StartingUpgradesPanel")
@@ -336,6 +343,8 @@ offset_top = 8.0
 offset_right = -4.0
 offset_bottom = 56.0
 grow_horizontal = 0
+theme_override_styles/pressed = ExtResource("4_6gdnd")
+theme_override_styles/normal = ExtResource("2_ilee0")
 toggle_mode = true
 text = "Custom Stats"
 
@@ -347,21 +356,20 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -192.0
+offset_left = -128.0
 offset_top = -148.0
-offset_right = 192.0
-offset_bottom = -52.0
+offset_right = 128.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GameModeDescription" type="Label" parent="GameModeDescriptionPanel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.472
-anchor_right = 0.472
-offset_left = -181.248
-offset_right = 202.752
-offset_bottom = 96.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -375,9 +383,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -192.0
+offset_left = -128.0
 offset_top = -148.0
-offset_right = 192.0
+offset_right = 128.0
 offset_bottom = -96.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -409,6 +417,7 @@ popup/item_0/text = "Version 1"
 
 [node name="StartingUpgradesPanel" type="Panel" parent="."]
 visible = false
+material = ExtResource("2_e3h3o")
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -419,6 +428,7 @@ offset_right = -8.0
 offset_bottom = 384.0
 grow_horizontal = 0
 focus_neighbor_bottom = NodePath("Health/Slider")
+theme_override_styles/panel = ExtResource("3_4yv4o")
 
 [node name="Health" type="RichTextLabel" parent="StartingUpgradesPanel"]
 layout_mode = 0
@@ -1013,7 +1023,7 @@ popup/item_4/id = 4
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
 [connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]
-[connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
+[connection signal="toggled" from="RespawnOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
 [connection signal="toggled" from="RespawnOptions/Upgrades" to="." method="_on_upgrades_toggled"]
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]

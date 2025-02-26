@@ -28,7 +28,7 @@ curve = SubResource("Curve_e4atl")
 resource_local_to_scene = true
 emission_shape = 1
 emission_sphere_radius = 0.5
-direction = Vector3(0, -1, 0)
+direction = Vector3(0, -0.5, 1)
 spread = 0.0
 initial_velocity_max = 1.0
 gravity = Vector3(0, -1, 0)
@@ -62,7 +62,7 @@ rings = 4
 resource_local_to_scene = true
 emission_shape = 1
 emission_sphere_radius = 0.5
-direction = Vector3(0, -0.5, 1)
+direction = Vector3(0, -1, 0)
 spread = 0.0
 initial_velocity_max = 1.0
 gravity = Vector3(0, -1, 0)
@@ -141,7 +141,6 @@ process_material = SubResource("ParticleProcessMaterial_us730")
 draw_pass_1 = SubResource("SphereMesh_37v5l")
 
 [node name="electric_trail" type="GPUParticles3D" parent="."]
-emitting = false
 amount = 40
 lifetime = 2.0
 process_material = SubResource("ParticleProcessMaterial_j1ffy")

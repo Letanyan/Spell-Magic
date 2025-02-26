@@ -1,6 +1,5 @@
-[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=5 format=3 uid="uid://d12shiwt887us"]
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://d12shiwt887us"]
 
-[ext_resource type="Texture2D" uid="uid://cm247a444jxpy" path="res://GUI/ThemeUI/NeoColorDisabledGradient.tres" id="1_puses"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_rylgy"]
 
 [sub_resource type="Gradient" id="Gradient_obhf2"]
@@ -19,12 +18,11 @@ content_margin_right = 4.0
 content_margin_bottom = 2.0
 script = ExtResource("1_rylgy")
 expanded = 0.0
-corner_radius_top_right = 4.0
-corner_radius_top_left = 4.0
-corner_radius_bottom_left = 4.0
-corner_radius_bottom_right = 4.0
-corner_radius_detail = 4.0
-fill_texture = ExtResource("1_puses")
+corner_radius_top_right = 0.0
+corner_radius_top_left = 0.0
+corner_radius_bottom_left = 0.0
+corner_radius_bottom_right = 0.0
+corner_radius_detail = 0.0
 fill_texture_flip_xy = false
 fill_texture_flip_vertical = false
 fill_texture_flip_horizonal = false

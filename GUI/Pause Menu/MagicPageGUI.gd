@@ -23,9 +23,9 @@ var current_preview_index: int = 0
 @onready var y_edit: LineEdit = $container/y_edit
 @onready var z_edit: LineEdit = $container/z_edit
 @onready var r_edit: LineEdit = $container/r_edit
-@onready var x_label: RichTextLabel = $container/x
-@onready var y_label: RichTextLabel = $container/y
-@onready var z_label: RichTextLabel = $container/z
+@onready var x_label: Label = $container/x
+@onready var y_label: Label = $container/y
+@onready var z_label: Label = $container/z
 
 @onready var power_edit: LineEdit = $container/power_edit
 @onready var duration_edit: LineEdit = $container/duration_edit
@@ -45,7 +45,7 @@ var current_preview_index: int = 0
 
 @onready var mana_edit: LineEdit = $container/mana_edit
 @onready var cooldown_label: RichTextLabel = $container/cooldown
-@onready var mana_cost: Label = $container/mana_cost
+@onready var mana_cost: RichTextLabel = $container/mana_cost
 @onready var element_application: RichTextLabel = $container/element_application
 
 @onready var view_chain_button: Button = $container/view_chain_button 
@@ -246,7 +246,7 @@ func update_cooldown() -> void:
 	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " + Globals.format_number_nearest_place(book.spells[current_index].cooldown) + "s[/font_size][/left]"
 	element_application.text = book.spells[current_index].elemental_application_description()
 	if book.spells[current_index].chain_cast_kind != Spell.ChainCastKind.NONE and book.spells[current_index].chain != null:
-		mana_cost.text = "Total (Inc. chain): " + Globals.format_number_nearest_place(book.spells[current_index].actual_mana_cost())
+		mana_cost.text = "[center][font_size=16]Total [img=l,24x24, color=AA00AA]res://GUI/Images/mana.svg[/img] M\n" + Globals.format_number_nearest_place(book.spells[current_index].actual_mana_cost()) + "[/font_size][/center]"
 	else:
 		mana_cost.text = ""
 	

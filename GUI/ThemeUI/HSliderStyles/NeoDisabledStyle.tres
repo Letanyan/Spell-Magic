@@ -1,6 +1,6 @@
-[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://dccgr6rx8d4w8"]
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://cp6nh1t42cptf"]
 
-[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_5calw"]
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_s5rsr"]
 
 [sub_resource type="Gradient" id="Gradient_obhf2"]
 colors = PackedColorArray(0.1, 0.1, 0.1, 1, 0.3, 0.3, 0.3, 1)
@@ -16,7 +16,7 @@ content_margin_left = -1.0
 content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
-script = ExtResource("1_5calw")
+script = ExtResource("1_s5rsr")
 expanded = 0.0
 corner_radius_top_right = 0.0
 corner_radius_top_left = 0.0
@@ -28,6 +28,6 @@ fill_texture_flip_vertical = false
 fill_texture_flip_horizonal = false
 border_texture = SubResource("GradientTexture1D_m5khu")
 border_width = 1.0
-border_texture_flip_xy = true
+border_texture_flip_xy = false
 border_texture_flip_vertical = false
 border_texture_flip_horizonal = false

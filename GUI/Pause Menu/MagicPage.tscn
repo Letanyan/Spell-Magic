@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=38 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -35,6 +35,8 @@
 [ext_resource type="Texture2D" uid="uid://csh82j663nqac" path="res://GUI/Images/Spell Preview/positions/pos11.svg" id="61_qe4fs"]
 [ext_resource type="Texture2D" uid="uid://cnvrxvnkic2d4" path="res://GUI/Images/Spell Preview/positions/pos12.svg" id="62_gl3h1"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_23xhb"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_sv8m3"]
 font_color = Color(1, 0, 0, 1)
 
@@ -57,6 +59,7 @@ anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 focus_neighbor_right = NodePath("name_edit")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_23xhb")
 
 [node name="preview_image" type="Button" parent="container"]
 layout_mode = 0
@@ -122,22 +125,23 @@ popup/item_6/text = "Ice"
 popup/item_6/icon = ExtResource("7_ont23")
 popup/item_6/id = 6
 
-[node name="x" type="RichTextLabel" parent="container"]
+[node name="x" type="Label" parent="container"]
 layout_mode = 2
 offset_left = 8.0
 offset_top = 56.0
-offset_right = 40.0
+offset_right = 56.0
 offset_bottom = 88.0
-bbcode_enabled = true
-text = "[center][font_size=16]x[/font_size][/center]"
+text = "x"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="x_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
-offset_left = 48.0
+anchor_right = 1.0
+offset_left = 64.0
 offset_top = 58.0
-offset_right = 0.0640259
+offset_right = -8.0
 offset_bottom = 90.0
 focus_neighbor_top = NodePath("../name_edit")
 focus_neighbor_right = NodePath("../duration_edit")
@@ -146,24 +150,25 @@ focus_next = NodePath("../y_edit")
 focus_previous = NodePath("../element_combo")
 placeholder_text = "expression"
 
-[node name="y" type="RichTextLabel" parent="container"]
+[node name="y" type="Label" parent="container"]
 layout_mode = 2
 offset_left = 8.0
-offset_top = 104.0
-offset_right = 40.0
-offset_bottom = 136.0
-bbcode_enabled = true
-text = "[center][font_size=16]y[/font_size][/center]
+offset_top = 96.0
+offset_right = 56.0
+offset_bottom = 128.0
+text = "y
 "
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="y_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
-offset_left = 48.0
-offset_top = 104.0
-offset_right = 0.0640259
-offset_bottom = 136.0
+anchor_right = 1.0
+offset_left = 64.0
+offset_top = 96.0
+offset_right = -8.0
+offset_bottom = 128.0
 focus_neighbor_top = NodePath("../x_edit")
 focus_neighbor_right = NodePath("../delay_edit")
 focus_neighbor_bottom = NodePath("../z_edit")
@@ -171,23 +176,24 @@ focus_next = NodePath("../z_edit")
 focus_previous = NodePath("../x_edit")
 placeholder_text = "expression"
 
-[node name="z" type="RichTextLabel" parent="container"]
+[node name="z" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 152.0
-offset_right = 40.0
-offset_bottom = 184.0
-bbcode_enabled = true
-text = "[center][font_size=16]z[/font_size][/center]"
+offset_top = 136.0
+offset_right = 56.0
+offset_bottom = 168.0
+text = "z"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="z_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
-offset_left = 48.0
-offset_top = 152.0
-offset_right = 0.0640259
-offset_bottom = 184.0
+anchor_right = 1.0
+offset_left = 64.0
+offset_top = 136.0
+offset_right = -8.0
+offset_bottom = 168.0
 grow_horizontal = 0
 focus_neighbor_top = NodePath("../y_edit")
 focus_neighbor_right = NodePath("../count_edit")
@@ -196,23 +202,24 @@ focus_next = NodePath("../r_edit")
 focus_previous = NodePath("../y_edit")
 placeholder_text = "expression"
 
-[node name="r" type="RichTextLabel" parent="container"]
+[node name="r" type="Label" parent="container"]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 200.0
-offset_right = 40.0
-offset_bottom = 232.0
-bbcode_enabled = true
-text = "[center][font_size=16]r[/font_size][/center]"
+offset_top = 176.0
+offset_right = 56.0
+offset_bottom = 208.0
+text = "r"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="r_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
-offset_left = 48.0
-offset_top = 200.0
-offset_right = 0.0640259
-offset_bottom = 232.0
+anchor_right = 0.5
+offset_left = 64.0
+offset_top = 176.0
+offset_right = -8.0
+offset_bottom = 208.0
 grow_horizontal = 0
 focus_neighbor_top = NodePath("../z_edit")
 focus_neighbor_right = NodePath("../power_edit")
@@ -224,12 +231,12 @@ placeholder_text = "expression"
 [node name="duration" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.632
-offset_left = -0.0640259
-offset_top = 56.0
-offset_right = 47.9359
-offset_bottom = 88.0
+anchor_left = 0.25
+anchor_right = 0.25
+offset_left = 8.0
+offset_top = 224.0
+offset_right = 56.0
+offset_bottom = 248.0
 bbcode_enabled = true
 text = "[center][font_size=16][img=l,24x24, color=00FF08]res://GUI/Images/time.svg[/img] T[/font_size][/center]"
 scroll_active = false
@@ -237,38 +244,42 @@ scroll_active = false
 [node name="duration_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = 55.936
-offset_top = 56.0
-offset_right = -8.0
-offset_bottom = 88.0
+anchor_left = 0.25
+anchor_right = 0.493
+offset_left = 64.0
+offset_top = 216.0
+offset_right = 0.0639648
+offset_bottom = 248.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../x_edit")
 focus_neighbor_top = NodePath("../element_combo")
 focus_neighbor_bottom = NodePath("../delay_edit")
 focus_next = NodePath("../delay_edit")
 focus_previous = NodePath("../r_edit")
-placeholder_text = "value"
+placeholder_text = "number"
 
-[node name="delay" type="RichTextLabel" parent="container"]
+[node name="delay" type="Label" parent="container"]
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
 offset_left = 8.0
-offset_top = 248.0
-offset_right = 40.0
-offset_bottom = 280.0
-bbcode_enabled = true
-text = "[center][font_size=16]D[/font_size][/center]"
+offset_top = 176.0
+offset_right = 56.0
+offset_bottom = 208.0
+text = "D"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="delay_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
-offset_left = 48.0
-offset_top = 248.0
-offset_right = 0.0640259
-offset_bottom = 280.0
+anchor_left = 0.5
+anchor_right = 1.0
+offset_left = 64.0
+offset_top = 176.0
+offset_right = -8.0
+offset_bottom = 208.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../y_edit")
 focus_neighbor_top = NodePath("../duration_edit")
@@ -280,78 +291,78 @@ placeholder_text = "expression"
 [node name="count" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.632
-offset_left = -0.0640259
-offset_top = 104.0
-offset_right = 47.9359
-offset_bottom = 136.0
+offset_left = 8.0
+offset_top = 224.0
+offset_right = 56.0
+offset_bottom = 248.0
 bbcode_enabled = true
 text = "[center][font_size=16][img=l,24x24, color=F700FF]res://GUI/Images/count.svg[/img] N[/font_size][/center]"
 
 [node name="count_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = 55.936
-offset_top = 104.0
-offset_right = -8.0
-offset_bottom = 136.0
+anchor_right = 0.243
+offset_left = 64.0
+offset_top = 216.0
+offset_right = 0.0639954
+offset_bottom = 248.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../z_edit")
 focus_neighbor_top = NodePath("../delay_edit")
 focus_neighbor_bottom = NodePath("../power_edit")
 focus_next = NodePath("../power_edit")
 focus_previous = NodePath(".")
-placeholder_text = "value"
+placeholder_text = "number"
 
 [node name="power" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.632
-offset_left = -0.0640259
-offset_top = 152.0
-offset_right = 47.9359
-offset_bottom = 184.0
+offset_left = 8.0
+offset_top = 264.0
+offset_right = 56.0
+offset_bottom = 288.0
 bbcode_enabled = true
 text = "[center][font_size=16][img=l,24x24, color=0008FF]res://GUI/Images/power.svg[/img] P[/font_size][/center]"
 
 [node name="power_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = 55.936
-offset_top = 152.0
-offset_right = -8.0
-offset_bottom = 184.0
+anchor_right = 0.243
+offset_left = 64.0
+offset_top = 256.0
+offset_right = 0.0639954
+offset_bottom = 288.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../r_edit")
 focus_neighbor_top = NodePath("../count_edit")
 focus_neighbor_bottom = NodePath("../chain_combo")
 focus_next = NodePath("../chain_edit")
 focus_previous = NodePath("../count_edit")
-placeholder_text = "value"
+placeholder_text = "number"
 
 [node name="chain" type="RichTextLabel" parent="container"]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 296.0
+offset_top = -80.0
 offset_right = 88.0
-offset_bottom = 328.0
+offset_bottom = -48.0
+grow_vertical = 0
 bbcode_enabled = true
 text = "[left][font_size=16][img=l,24x24]res://GUI/Images/chain.svg[/img] Chain[/font_size][/left]"
 
 [node name="chain_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 96.0
-offset_top = 296.0
-offset_right = -191.936
-offset_bottom = 328.0
+offset_top = -80.0
+offset_right = -296.0
+offset_bottom = -48.0
 grow_horizontal = 2
 focus_neighbor_top = NodePath("../r_edit")
 focus_neighbor_right = NodePath("../chain_combo")
@@ -363,12 +374,14 @@ placeholder_text = "Spell Name"
 [node name="chain_combo" type="OptionButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.618
-anchor_right = 0.618
-offset_left = -183.936
-offset_top = 296.0
-offset_right = -55.936
-offset_bottom = 328.0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -288.0
+offset_top = -80.0
+offset_right = -160.0
+offset_bottom = -48.0
 grow_horizontal = 0
 focus_neighbor_left = NodePath("../chain_edit")
 focus_neighbor_top = NodePath("../power_edit")
@@ -389,12 +402,14 @@ popup/item_3/id = 3
 [node name="view_chain_button" type="Button" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.618
-anchor_right = 0.618
-offset_left = -47.936
-offset_top = 296.0
-offset_right = 0.0639648
-offset_bottom = 328.0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -152.0
+offset_top = -80.0
+offset_right = -104.0
+offset_bottom = -48.0
 grow_horizontal = 0
 tooltip_text = "Open chained spell"
 focus_neighbor_left = NodePath("../chain_combo")
@@ -407,12 +422,12 @@ text = "View"
 [node name="player_is_origin" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
+anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -0.0640259
-offset_top = 344.0
+offset_left = -288.0
+offset_top = 304.0
 offset_right = -8.0
-offset_bottom = 376.0
+offset_bottom = 336.0
 focus_neighbor_top = NodePath("../chain_edit")
 focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../is_bomb")
@@ -424,12 +439,12 @@ icon = ExtResource("9_dae3a")
 [node name="is_bomb" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
+anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -0.0640259
-offset_top = 376.0
+offset_left = -288.0
+offset_top = 368.0
 offset_right = -8.0
-offset_bottom = 407.0
+offset_bottom = 399.0
 focus_neighbor_top = NodePath("../player_is_origin")
 focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../is_rel")
@@ -441,12 +456,12 @@ icon = ExtResource("10_5c3hv")
 [node name="is_rel" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
+anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -0.0640259
-offset_top = 408.0
+offset_left = -288.0
+offset_top = 336.0
 offset_right = -8.0
-offset_bottom = 439.0
+offset_bottom = 367.0
 focus_neighbor_top = NodePath("../is_bomb")
 focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../mana_edit")
@@ -458,24 +473,24 @@ icon = ExtResource("11_8d7vq")
 [node name="is_sphere" type="CheckButton" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
+anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -0.0640259
-offset_top = 440.0
+offset_left = -288.0
+offset_top = 400.0
 offset_right = -8.0
-offset_bottom = 472.0
+offset_bottom = 432.0
 text = "Use Spherical Coordinates"
 icon = ExtResource("12_g3iwv")
 
 [node name="mana" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.632
-offset_left = -0.0640259
-offset_top = 296.0
-offset_right = 47.936
-offset_bottom = 328.0
+anchor_left = 0.25
+anchor_right = 0.25
+offset_left = 8.0
+offset_top = 264.0
+offset_right = 56.0
+offset_bottom = 288.0
 bbcode_enabled = true
 text = "[center][font_size=16][img=l,24x24, color=AA00AA]res://GUI/Images/mana.svg[/img] M[/font_size][/center]"
 scroll_active = false
@@ -483,41 +498,44 @@ scroll_active = false
 [node name="mana_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.799
-offset_left = 55.936
-offset_top = 296.0
-offset_right = -0.447998
-offset_bottom = 328.0
+anchor_left = 0.25
+anchor_right = 0.493
+offset_left = 64.0
+offset_top = 256.0
+offset_right = 0.0639648
+offset_bottom = 288.0
 focus_neighbor_top = NodePath("../is_rel")
 focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../Duplicate")
 focus_next = NodePath("../expressions")
 focus_previous = NodePath("../is_rel")
-placeholder_text = "value"
+placeholder_text = "number"
 
-[node name="mana_cost" type="Label" parent="container"]
+[node name="mana_cost" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.806
-anchor_right = 0.806
-offset_left = -0.512085
-offset_top = 296.0
-offset_right = 215.488
-offset_bottom = 328.0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -96.0
+offset_right = -8.0
+offset_bottom = -48.0
 grow_horizontal = 0
-text = "Total (Inc. chain): 0"
-vertical_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=16]Total [img=l,24x24, color=AA00AA]res://GUI/Images/mana.svg[/img] M
+10000[/font_size][/center]"
 
 [node name="expressions" type="TextEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.618
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 344.0
-offset_right = 0.0640259
-offset_bottom = -48.0
+offset_top = 304.0
+offset_right = -296.0
+offset_bottom = -88.0
 focus_neighbor_left = NodePath("../player_is_origin")
 focus_neighbor_top = NodePath("../chain_combo")
 focus_neighbor_bottom = NodePath("../Duplicate")
@@ -532,24 +550,24 @@ scroll_smooth = true
 [node name="element_application" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = -0.0640259
-offset_top = 480.0
-offset_right = -8.0
-offset_bottom = 512.0
+anchor_left = 0.743
+anchor_right = 0.743
+offset_left = 8.06396
+offset_top = 264.0
+offset_right = 288.064
+offset_bottom = 288.0
 bbcode_enabled = true
-text = "Burning: 0"
+text = "Burning: [img=l,20x20, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img] 0"
 
 [node name="cooldown" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = -0.0640259
-offset_top = 512.0
-offset_right = -16.0
-offset_bottom = 544.0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 8.0
+offset_top = 264.0
+offset_right = 280.0
+offset_bottom = 288.0
 bbcode_enabled = true
 text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: 0s[/font_size][/left]"
 
@@ -557,13 +575,14 @@ text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldo
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
-anchor_right = 0.618
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = -40.0
-offset_right = 0.0639648
+offset_right = -8.0
 offset_bottom = -8.0
 label_settings = SubResource("LabelSettings_sv8m3")
+horizontal_alignment = 1
 vertical_alignment = 2
 autowrap_mode = 2
 clip_text = true
@@ -632,35 +651,35 @@ icon = ExtResource("2_ap1iy")
 [node name="CR" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.632
-offset_left = -0.0640259
-offset_top = 200.0
-offset_right = 47.936
-offset_bottom = 232.0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 8.0
+offset_top = 224.0
+offset_right = 56.0
+offset_bottom = 248.0
 bbcode_enabled = true
 text = "[center][font_size=16][img=l,20x20, color=#0000AA]res://GUI/Images/cubes.svg[/img] CR[/font_size][/center]"
 
 [node name="CR_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = 55.936
-offset_top = 200.0
-offset_right = -8.0
-offset_bottom = 232.0
-placeholder_text = "value"
+anchor_left = 0.5
+anchor_right = 0.743
+offset_left = 64.0
+offset_top = 216.0
+offset_right = 0.0639648
+offset_bottom = 248.0
+placeholder_text = "number"
 
 [node name="CD" type="RichTextLabel" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 0.632
-offset_left = -0.0640259
-offset_top = 248.0
-offset_right = 47.936
-offset_bottom = 280.0
+anchor_left = 0.743
+anchor_right = 0.743
+offset_left = 8.06396
+offset_top = 224.0
+offset_right = 64.064
+offset_bottom = 248.0
 grow_horizontal = 2
 bbcode_enabled = true
 text = "[center][font_size=16][img=l,20x20, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img] CD[/font_size][/center]"
@@ -668,14 +687,14 @@ text = "[center][font_size=16][img=l,20x20, color=#AAAA00]res://GUI/Images/hyper
 [node name="CD_edit" type="LineEdit" parent="container"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.632
-anchor_right = 1.0
-offset_left = 55.936
-offset_top = 248.0
-offset_right = -8.0
-offset_bottom = 280.0
+anchor_left = 0.743
+anchor_right = 0.993
+offset_left = 72.064
+offset_top = 216.0
+offset_right = 0.0639648
+offset_bottom = 248.0
 grow_horizontal = 2
-placeholder_text = "value"
+placeholder_text = "number"
 
 [node name="preview_selector" type="Panel" parent="container"]
 visible = false

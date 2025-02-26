@@ -132,21 +132,31 @@ static func replace_ranges_in_string(source: String, ranges: Array, what: String
 
 func get_date_time_string(timestamp: int) -> String:
 	var dict := Time.get_datetime_dict_from_unix_time(timestamp)
+	var today := Time.get_datetime_dict_from_system()
 	var month := ""
 	match dict.month:
-		1: month = "January"
-		2: month = "February"
-		3: month = "March"
-		4: month = "April"
+		1: month = "Jan"
+		2: month = "Feb"
+		3: month = "Mar"
+		4: month = "Apr"
 		5: month = "May"
-		6: month = "June"
-		7: month = "July"
-		8: month = "August"
-		9: month = "September"
-		10: month = "October"
-		11: month = "November"
-		12: month = "December"
-	return "%d %s %d (%02d:%02d)" % [dict.day, month, dict.year, dict.hour, dict.minute]
+		6: month = "Jun"
+		7: month = "Jul"
+		8: month = "Aug"
+		9: month = "Sep"
+		10: month = "Oct"
+		11: month = "Nov"
+		12: month = "Dec"
+	if dict.year == today.year:
+		if dict.month == today.month:
+			if dict.day == today.day:
+				return "%02d:%02d" % [dict.hour, dict.minute]
+			else:
+				return "%d %s" % [dict.day, month]
+		else:
+			return "%d %s" % [dict.day, month]
+	else:
+		return "%d %s %d" % [dict.day, month, dict.year]
 
 static func save_credits() -> void:
 	if not FileAccess.file_exists("user://credits/license/godotengine.txt"):
