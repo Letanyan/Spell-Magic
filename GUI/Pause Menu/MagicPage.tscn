@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=40 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -16,6 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://mk8ss67kt2vf" path="res://GUI/Images/scroll.svg" id="13_cj856"]
 [ext_resource type="Texture2D" uid="uid://b3b3rxit3y2s7" path="res://GUI/Images/files.svg" id="14_20nh8"]
 [ext_resource type="Texture2D" uid="uid://bdud8ym7of11u" path="res://GUI/Images/cloud-upload.svg" id="14_d6mvu"]
+[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="17_58u1o"]
+[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="18_51ci6"]
 [ext_resource type="Texture2D" uid="uid://qeny6kl34ssf" path="res://GUI/Images/horizontal-flip.svg" id="45_5l252"]
 [ext_resource type="Texture2D" uid="uid://j1tb85tfr0iu" path="res://GUI/Images/vertical-flip.svg" id="46_m27cl"]
 [ext_resource type="Texture2D" uid="uid://dbjjasa34u3gb" path="res://GUI/Images/clockwise-rotation.svg" id="47_n6fxk"]
@@ -698,11 +700,13 @@ placeholder_text = "number"
 
 [node name="preview_selector" type="Panel" parent="container"]
 visible = false
+material = ExtResource("17_58u1o")
 layout_mode = 0
 offset_left = 8.0
 offset_top = 48.0
 offset_right = 256.0
 offset_bottom = 424.0
+theme_override_styles/panel = ExtResource("18_51ci6")
 
 [node name="title" type="Label" parent="container/preview_selector"]
 layout_mode = 0

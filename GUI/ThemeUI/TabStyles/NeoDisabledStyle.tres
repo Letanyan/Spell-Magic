@@ -13,6 +13,7 @@ content_margin_right = 4.0
 content_margin_bottom = 2.0
 script = ExtResource("1_v4k5m")
 expanded = 0.0
+underlay_border = true
 corner_radius_top_right = 0.0
 corner_radius_top_left = 0.0
 corner_radius_bottom_left = 0.0

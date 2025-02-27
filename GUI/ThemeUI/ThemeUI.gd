@@ -78,7 +78,7 @@ func change_tint_color(tint: Color, variation: HUDSettings.ThemeKind) -> Color:
 
 func change_tint_color_mono(tint: Color) -> Color:
 	var root_base_style: StyleBoxGradientFill = get_stylebox("normal", "Button") as StyleBoxGradientFill
-	var root_disabled_style: StyleBoxGradientFill = get_stylebox("disabled", "Button") as StyleBoxGradientFill
+	#var root_disabled_style: StyleBoxGradientFill = get_stylebox("disabled", "Button") as StyleBoxGradientFill
 	var root_focus_style: StyleBoxGradientFill = get_stylebox("focus", "Button") as StyleBoxGradientFill
 	var root_hover_style: StyleBoxGradientFill = get_stylebox("hover", "Button") as StyleBoxGradientFill
 	var root_pressed_style: StyleBoxGradientFill = get_stylebox("pressed", "Button") as StyleBoxGradientFill
@@ -101,20 +101,20 @@ func change_tint_color_mono(tint: Color) -> Color:
 	root_pressed_style.set_fill_gradient(tint, degen_tint)
 	
 	degen_tint.a = 0.0
-	root_focus_style.set_fill_gradient(tint, degen_tint)
+	root_focus_style.set_border_gradient(tint, degen_tint)
 	
 	degen_tint.s = 1.0
 	degen_tint.a = 1.0
 	tint.s = 1.0
 	root_pressed_style.set_fill_gradient(tint, degen_tint)
 	
-	tint = base_tint
-	tint.s = 0.7
-	tint.v = 0.7
-	degen_tint = base_degen_tint
-	degen_tint.s = 0.7
-	degen_tint.v = 0.7
-	root_disabled_style.set_fill_gradient(tint, degen_tint)
+	#tint = base_tint
+	#tint.s = 0.7
+	#tint.v = 0.7
+	#degen_tint = base_degen_tint
+	#degen_tint.s = 0.7
+	#degen_tint.v = 0.7
+	#root_disabled_style.set_fill_gradient(tint, degen_tint)
 	
 	#var check_base_style: StyleBoxFlat = get_stylebox("normal", "CheckBox") as StyleBoxFlat
 	#var check_disabled_style: StyleBoxFlat = get_stylebox("disabled", "CheckBox") as StyleBoxFlat
@@ -175,15 +175,15 @@ func change_tint_color_mono(tint: Color) -> Color:
 	tint.s = 1.0
 	degen_tint.s = 1.0
 	slider_pressed_style.set_fill_gradient(tint, degen_tint)
-	scroll_hover_style.set_fill_gradient(tint, degen_tint)
+	#scroll_hover_style.set_fill_gradient(tint, degen_tint)
 	v_slider_pressed_style.set_fill_gradient(tint, degen_tint)
-	v_scroll_hover_style.set_fill_gradient(tint, degen_tint)
+	#v_scroll_hover_style.set_fill_gradient(tint, degen_tint)
 	
 	return result_tint
 
 func change_tint_color_array(tint: PackedColorArray) -> Color:
 	var root_base_style: StyleBoxGradientFill = get_stylebox("normal", "Button") as StyleBoxGradientFill
-	var root_disabled_style: StyleBoxGradientFill = get_stylebox("disabled", "Button") as StyleBoxGradientFill
+	#var root_disabled_style: StyleBoxGradientFill = get_stylebox("disabled", "Button") as StyleBoxGradientFill
 	var root_focus_style: StyleBoxGradientFill = get_stylebox("focus", "Button") as StyleBoxGradientFill
 	var root_hover_style: StyleBoxGradientFill = get_stylebox("hover", "Button") as StyleBoxGradientFill
 	var root_pressed_style: StyleBoxGradientFill = get_stylebox("pressed", "Button") as StyleBoxGradientFill
@@ -201,11 +201,11 @@ func change_tint_color_array(tint: PackedColorArray) -> Color:
 	root_pressed_style.set_complete_border_gradient(tint, offsets)
 	root_pressed_style.set_complete_fill_gradient(tint, offsets)
 	
-	root_focus_style.set_complete_fill_gradient(alpha_tints, offsets)
+	root_focus_style.set_complete_border_gradient(alpha_tints, offsets)
 	
 	root_pressed_style.set_complete_fill_gradient(tint, offsets)
 	
-	root_disabled_style.set_complete_fill_gradient(tint, offsets)
+	#root_disabled_style.set_complete_fill_gradient(tint, offsets)
 	
 	#var check_base_style: StyleBoxFlat = get_stylebox("normal", "CheckBox") as StyleBoxFlat
 	#var check_disabled_style: StyleBoxFlat = get_stylebox("disabled", "CheckBox") as StyleBoxFlat
@@ -243,9 +243,9 @@ func change_tint_color_array(tint: PackedColorArray) -> Color:
 	v_scroll_hover_style.set_complete_border_gradient(tint, offsets)
 	
 	slider_pressed_style.set_complete_fill_gradient(tint, offsets)
-	scroll_hover_style.set_complete_fill_gradient(tint, offsets)
+	#scroll_hover_style.set_complete_fill_gradient(tint, offsets)
 	v_slider_pressed_style.set_complete_fill_gradient(tint, offsets)
-	v_scroll_hover_style.set_complete_fill_gradient(tint, offsets)
+	#v_scroll_hover_style.set_complete_fill_gradient(tint, offsets)
 	
 	match tint.size():
 		1: return tint[0]

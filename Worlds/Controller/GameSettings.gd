@@ -270,4 +270,5 @@ The following effects occur when a character with {Freeze} is hit by the followi
 
 func mark_tutorial(tutorial: Tutorials) -> void:
 	tutorials_shown[tutorial] = true
+	save()
 	

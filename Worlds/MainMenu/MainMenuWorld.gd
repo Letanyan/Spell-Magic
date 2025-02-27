@@ -54,6 +54,8 @@ func _exit_tree() -> void:
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
 	settings_menu.settings_pane.settings_changed.connect(update_settings)
+	cached_theme_color = settings.hud_settings.theme_color
+	cached_theme_variation = settings.hud_settings.theme_variation
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -345,7 +347,7 @@ func update_settings(new_settings: WorldSettings) -> void:
 			GlobalData.controller.last_input_type = Controller.InputType.KEYBOARD
 		HUDSettings.KeyDisplay.CONTROLLER:
 			GlobalData.controller.last_input_type = Controller.InputType.CONTROLLER
-			
+		
 	if cached_theme_color != hud_settings.theme_color or cached_theme_variation != hud_settings.theme_variation:
 		var global_theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		global_theme.change_tint_color(hud_settings.theme_color, hud_settings.theme_variation)

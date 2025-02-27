@@ -520,9 +520,10 @@ func drop_artifact_item(world: Node3D) -> bool:
 	var artifact: Artifact = drop_artifact()
 	if artifact:
 		var item := ArtifactCube.make()
-		item.set_base_position(ground_position(position + Rand.point_in_circle(3, 0)))
+		var tween := item.create_tween_for_drop(position, ground_position(position + Rand.point_in_circle(3, 0)), 0.25)
 		item.artifact = artifact
 		world.add_child(item)
+		tween.play()
 		return true
 	return false
 		
@@ -531,9 +532,10 @@ func drop_spell_item(world: Node3D) -> bool:
 	var spell: Spell = drop_spell()
 	if spell:
 		var item := SpellPaper.make()
-		item.set_base_position(ground_position(position + Rand.point_in_circle(3, 0)))
+		var tween := item.create_tween_for_drop(position, ground_position(position + Rand.point_in_circle(3, 0)), 0.25)
 		item.spell = spell
 		world.add_child(item)
+		tween.play()
 		return true
 	return false
 		
@@ -541,9 +543,10 @@ func drop_key_item(world: Node3D) -> bool:
 	var key: int = drop_key()
 	if key != 0 and (player.world_settings.player_keys & key == 0):
 		var item := KeyPrism.make()
-		item.set_base_position(ground_position(position + Rand.point_in_circle(3, 0)))
+		var tween := item.create_tween_for_drop(position, ground_position(position + Rand.point_in_circle(3, 0)), 0.25)
 		item.key = key
 		world.add_child(item)
+		tween.play()
 		return true
 	return false
 	
@@ -552,9 +555,10 @@ func drop_coin_items(world: Node3D) -> bool:
 	if not coins.is_empty():
 		for coin in coins:
 			var item := CoinDisc.make()
-			item.set_base_position(ground_position(position + Rand.point_in_circle(1.0 + log(coins.size()), 0)))
+			var tween := item.create_tween_for_drop(position, ground_position(position + Rand.point_in_circle(1.0 + log(coins.size()), 0)), 0.25)
 			item.amount = ceili(coin * maxf(level / 10.0, 1.0))
 			world.add_child(item)
+			tween.play()
 		return true
 	return false
 	
@@ -563,9 +567,10 @@ func drop_health_item(world: Node3D, multiplier: float) -> bool:
 	var h := amount * 0.25 + amount * 0.75 * multiplier
 	if h > 0.0:
 		var item := RedCross.make()
-		item.set_base_position(ground_position(position + Rand.point_in_circle(3, 0)))
+		var tween := item.create_tween_for_drop(position, ground_position(position + Rand.point_in_circle(3, 0)), 0.25)
 		item.health = h
 		world.add_child(item)
+		tween.play()
 		return true
 	return false
 	
@@ -573,9 +578,10 @@ func drop_scroll_note(world: Node3D) -> bool:
 	var note_id := drop_note()
 	if note_id != "":
 		var item := ScrollNote.make()
-		item.set_base_position(ground_position(position + Rand.point_in_circle(3, 0)))
+		var tween := item.create_tween_for_drop(position, ground_position(position + Rand.point_in_circle(3, 0)), 0.25)
 		item.note_id = note_id
 		world.add_child(item)
+		tween.play()
 		return true
 	return false
 	

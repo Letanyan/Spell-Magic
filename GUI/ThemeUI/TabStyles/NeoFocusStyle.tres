@@ -12,6 +12,7 @@ content_margin_right = 4.0
 content_margin_bottom = 2.0
 script = ExtResource("1_rc3du")
 expanded = 0.0
+underlay_border = null
 corner_radius_top_right = 0.0
 corner_radius_top_left = 0.0
 corner_radius_bottom_left = 0.0

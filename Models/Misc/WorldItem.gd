@@ -31,6 +31,15 @@ func create_tween_for_key_pick_up(body: Player, duration: float) -> Tween:
 	tween.tween_property(self, "scale", Vector3(0.0001, 0.0001, 0.0001), duration * 0.2).set_delay(duration * 0.5)
 	tween.stop()
 	return tween
+	
+func create_tween_for_drop(start: Vector3, end: Vector3, duration: float) -> Tween:
+	var tween := create_tween().set_parallel()
+	var mid := Globals.midpoint_tangent1(start, end) if randf() < 0.5 else Globals.midpoint_tangent2(start, end)
+	var path := Segment.quad(start, end, mid + Vector3(0, randf_range(-1, 5), 0))
+	tween.tween_method(func(t: float) -> void: set_base_position(path.position_at_time(t)), 0.0, 1.0, duration)
+	tween.stop()
+	return tween
+	
 
 func set_base_position(pos: Vector3) -> void:
 	position = pos + Vec3.y(height)

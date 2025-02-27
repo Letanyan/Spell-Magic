@@ -73,6 +73,7 @@ func update_index(index: int) -> void:
 	wands_button.set_pressed_no_signal(false)
 	artifacts_button.set_pressed_no_signal(false)
 	upgrades_button.set_pressed_no_signal(false)
+	notes_button.set_pressed_no_signal(false)
 	settings_button.set_pressed_no_signal(false)
 	if GlobalData.is_demo and (current_index == 2 or current_index == 3):
 		match current_index:
