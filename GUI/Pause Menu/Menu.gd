@@ -3,6 +3,8 @@ extends Control
 
 enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES, NOTES, SETTINGS }
 
+@onready var background: Panel = $Background
+
 @onready var magic_book: MagicBookGUI = $MagicBook
 @onready var wand_case: WandCaseGUI = $WandCase
 @onready var artifacts: ArtifactsGUI = $Artifacts
@@ -26,6 +28,7 @@ var is_showing: bool = false
 var player: Player
 var world_settings: WorldSettings
 var player_in_combat: bool = false
+var showing_customisation: bool = false
 
 signal close_menu
 signal tab_opened(index: int)
@@ -44,6 +47,8 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	settings.exit_game.connect(func() -> void: get_tree().quit())
 	settings.save_game.connect(func() -> void: save_changes())
 	settings.main_menu.connect(func() -> void: SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
+	
+	settings.tab_changed.connect(update_camera_and_menu)
 
 func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
@@ -96,12 +101,20 @@ func update_index(index: int) -> void:
 			4: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes() 
 			5: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
 	if not is_opening:
-		if current_index == 5 and settings.tab_container.get_current_tab_control().name == "Customisation":
-			player.animate_spring_arm(true, 0.2)
-		else:
-			player.animate_spring_arm(false, 0.2)
+		update_camera_and_menu(settings.tab_container.get_current_tab_control().name)
 	tab_opened.emit(current_index)
-		
+	
+func update_camera_and_menu(settings_tab: String) -> void:
+	if current_index == 5 and settings_tab == "Customisation":
+		showing_customisation = true
+		player.animate_spring_arm(true, 0.2)
+		background.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		background.size.y = 88
+	elif showing_customisation:
+		showing_customisation = false
+		player.animate_spring_arm(false, 0.2)
+		background.set_anchors_preset(Control.PRESET_FULL_RECT)
+		background.size = size
 
 func _on_spells_pressed() -> void:
 	update_index(0)

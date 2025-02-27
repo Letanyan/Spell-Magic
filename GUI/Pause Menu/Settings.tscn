@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://w4lonc2wt7at"]
+[gd_scene load_steps=7 format=3 uid="uid://w4lonc2wt7at"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/SettingsGUI.gd" id="1_r1of0"]
 [ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="2_j65m2"]
 [ext_resource type="FontFile" uid="uid://db7oq7odngmli" path="res://GUI/ThemeUI/ChakraPetch-Italic.ttf" id="2_vytds"]
+[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="4_h0vud"]
+[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="5_fe3hy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_bx0r2"]
 font = ExtResource("2_vytds")
@@ -28,10 +30,9 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
-current_tab = 1
+current_tab = 0
 
 [node name="Game" type="Panel" parent="Tabs"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -90,6 +91,7 @@ offset_bottom = -157.891
 bbcode_enabled = true
 
 [node name="Display" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -1021,6 +1023,7 @@ layout_mode = 2
 metadata/_tab_index = 7
 
 [node name="Container" type="Panel" parent="Tabs/Customisation"]
+material = ExtResource("4_h0vud")
 layout_mode = 1
 anchors_preset = -1
 offset_left = 8.0
@@ -1028,6 +1031,7 @@ offset_top = 8.0
 offset_right = 312.0
 offset_bottom = 399.0
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("5_fe3hy")
 
 [node name="Skin" type="Label" parent="Tabs/Customisation/Container"]
 layout_mode = 0

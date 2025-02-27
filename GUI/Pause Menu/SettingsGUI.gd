@@ -87,6 +87,8 @@ signal save_game
 signal main_menu
 signal exit_game
 
+signal tab_changed(tab: String)
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -475,10 +477,7 @@ func _on_tabs_tab_selected(tab: int) -> void:
 		update_magic_book()
 		
 	if player != null:
-		if tabs.get_current_tab_control().name == "Customisation":
-			player.animate_spring_arm(true, 0.2)
-		else:
-			player.animate_spring_arm(false, 0.2)
+		tab_changed.emit(tabs.get_current_tab_control().name)
 		
 
 func _on_user_functions_focus_exited() -> void:

@@ -157,6 +157,11 @@ func add_shake(amount: float) -> void:
 	shake_intensity += amount
 
 func _physics_process(delta: float) -> void:
+	if not is_animating_cam and not cam_animation_queue.is_empty():
+		is_animating_cam = true
+		var animation := cam_animation_queue.pop_front() as Callable
+		animation.call()
+	
 	if magic_book.settings.is_paused:
 		return
 	
@@ -625,56 +630,84 @@ func setup_menu_transition(open: Callable, close: Callable) -> void:
 	on_menu_close = close
 	menu_callbacks_are_set = true
 		
+var is_animating_cam := false
+var cam_animation_queue: Array[Callable] = []
 func animate_spring_arm(show_face: bool, duration: float, on_done: Callable = func() -> void: pass) -> void:
-	var tween := create_tween().set_parallel()
-	tween.tween_property(cam_arm, "spring_length", 3.0 if show_face else 0.0, duration)
-	if show_face:
-		var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, PI)
-		tween.tween_property(cam_pivot, "transform:basis", target_basis, duration)
+	var animation := func() -> void:
+		is_animating_cam = true
+		var tween := create_tween().set_parallel()
+		tween.tween_property(cam_arm, "spring_length", 3.0 if show_face else 0.0, duration)
+		if show_face:
+			var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, PI)
+			tween.tween_property(cam_pivot, "transform:basis", target_basis, duration)
+		else:
+			var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
+			tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, duration)
+		tween.finished.connect(func() -> void:
+			is_animating_cam = false
+			on_done.call()
+		)
+		tween.play()
+	
+	if is_animating_cam or not cam_animation_queue.is_empty():
+		if cam_animation_queue.is_empty():
+			cam_animation_queue = [animation]
+		else:
+			cam_animation_queue[0] = animation
 	else:
-		var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
-		tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, duration)
-	tween.finished.connect(on_done)
-	tween.play()
+		animation.call()
 		
 func transition_menu(is_open: bool, normalise_spring_arm: bool = false) -> void:
-	if is_open:
-		var tween := create_tween().set_parallel()
-		var D := 0.15
-		if not normalise_spring_arm:
-			interface.visible = true
-			tween.tween_property(cam_arm, "spring_length", 0, D)
-		tween.tween_property(cam, "h_offset", 0.0, D)
-		cam_arm.shape = null
-		tween.tween_property(cam_arm, "position", Vector3(0, -0.3, -0.6), D)
-		var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
-		tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, D)
-		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, -cam_arm.rotation.x)
-		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
-		tween.finished.connect(func() -> void:
-			interface.visible = false
-			on_menu_open.call()
-		)
-		tween.play()
+	var animation := func() -> void:
+		is_animating_cam = true
+		if is_open:
+			var tween := create_tween().set_parallel()
+			var D := 0.15
+			if not normalise_spring_arm:
+				interface.visible = true
+				tween.tween_property(cam_arm, "spring_length", 0, D)
+			tween.tween_property(cam, "h_offset", 0.0, D)
+			cam_arm.shape = null
+			tween.tween_property(cam_arm, "position", Vector3(0, -0.3, -0.6), D)
+			var pivot_target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, -cam_pivot.rotation.y + body_pivot.rotation.y)
+			tween.tween_property(cam_pivot, "transform:basis", pivot_target_basis, D)
+			var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, -cam_arm.rotation.x)
+			tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
+			tween.finished.connect(func() -> void:
+				interface.visible = false
+				is_animating_cam = false
+				on_menu_open.call()
+			)
+			tween.play()
+		else:
+			var tween := create_tween()
+			var D := 0.15
+			tween.set_parallel()
+			if not normalise_spring_arm:
+				tween.tween_property(cam_arm, "spring_length", 1, D)
+				interface.visible = true
+			tween.tween_property(cam, "h_offset", 0.4, D)
+			tween.tween_property(cam_arm, "position", Vector3(0, 0, 0), D)
+			var adjustment_for_customisation_screen := PI if absf(cam_pivot.rotation.y) > PI / 2.0 else 0.0
+			var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, cam_pivot_rotation_y + -body_pivot.rotation.y + adjustment_for_customisation_screen)
+			tween.tween_property(cam_pivot, "transform:basis", target_basis, D)
+			var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)
+			tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
+			tween.finished.connect(func() -> void:
+				interface.visible = false
+				is_animating_cam = false
+				cam_arm.shape = cam_shape
+				on_menu_close.call()
+			)
+			tween.play()
+			
+	if is_animating_cam or not cam_animation_queue.is_empty():
+		if cam_animation_queue.is_empty():
+			cam_animation_queue = [animation]
+		else:
+			cam_animation_queue[0] = animation
 	else:
-		var tween := create_tween()
-		var D := 0.15
-		tween.set_parallel()
-		if not normalise_spring_arm:
-			tween.tween_property(cam_arm, "spring_length", 1, D)
-			interface.visible = true
-		tween.tween_property(cam, "h_offset", 0.4, D)
-		tween.tween_property(cam_arm, "position", Vector3(0, 0, 0), D)
-		var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, cam_pivot_rotation_y + -body_pivot.rotation.y + PI)
-		tween.tween_property(cam_pivot, "transform:basis", target_basis, D)
-		var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)
-		tween.tween_property(cam_arm, ":transform:basis", arm_target_basis, D)
-		tween.finished.connect(func() -> void:
-			interface.visible = false
-			cam_arm.shape = cam_shape
-			on_menu_close.call()
-		)
-		tween.play()
+		animation.call()
 		
 func change_reticule_visible(should_hide: bool) -> void:
 	(get_node("CanvasLayer/Reticule") as TextureRect).visible = not should_hide
