@@ -47,6 +47,7 @@ var daytime_tick: float
 var settings: WorldSettings
 var cached_theme_color := Color(0, 0, 0, 0)
 var cached_theme_variation := HUDSettings.ThemeKind.MONO
+var theme_changed_in_settings: bool = false
 
 func _exit_tree() -> void:
 	chunker.deinit()
@@ -154,7 +155,7 @@ func _physics_process(delta: float) -> void:
 		biome_in_waiting_queue = World.Biome.WATER
 		print(World.Biome.keys()[b])
 		play_bg_audio(b)
-		if cached_theme_color.a == 0:
+		if not theme_changed_in_settings:
 			var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 			biome_helper = BiomeHelper.new()
 			var tint := biome_helper.color_for_biome(b).darkened(0.5)
@@ -349,6 +350,7 @@ func update_settings(new_settings: WorldSettings) -> void:
 			GlobalData.controller.last_input_type = Controller.InputType.CONTROLLER
 		
 	if cached_theme_color != hud_settings.theme_color or cached_theme_variation != hud_settings.theme_variation:
+		theme_changed_in_settings = true
 		var global_theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 		global_theme.change_tint_color(hud_settings.theme_color, hud_settings.theme_variation)
 		cached_theme_color = hud_settings.theme_color

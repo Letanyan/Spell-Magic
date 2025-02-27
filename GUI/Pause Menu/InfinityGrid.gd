@@ -34,11 +34,11 @@ func _ready() -> void:
 	if theme == null:
 		var temp_theme: Theme = load(ProjectSettings.get_setting("gui/theme/custom") as String) as Theme
 		panel_style = temp_theme.get_stylebox("panel", "Panel")
-		hover_style = temp_theme.get_stylebox("focus", "Button")
+		hover_style = temp_theme.get_stylebox("grabber_highlight", "VScrollBar")
 		highlight_style = temp_theme.get_stylebox("focus", "CheckButton")
 	else:
 		panel_style = theme.get_stylebox("panel", "Panel")
-		hover_style = theme.get_stylebox("focus", "Button")
+		hover_style = theme.get_stylebox("grabber_highlight", "VScrollBar")
 		highlight_style = theme.get_stylebox("focus", "CheckButton")
 
 func add_grid_tile(n: Control, coord: Vector2, overwrite: bool = false) -> void:
@@ -72,30 +72,26 @@ func _process(delta: float) -> void:
 	
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_SORT_CHILDREN:
+		var csize := (cell_size * cell_scale).snappedf(1.0)
 		for coord: Vector2 in child_grid:
 			var node := child_grid[coord] as Control
-			var csize := cell_size * cell_scale
-			node.position = coord * csize + offset + current_offset + Vector2(line_width, line_width)
-			node.size = csize - Vector2(line_width * 2, line_width * 2)
+			node.position = coord * csize + offset + current_offset
+			node.size = csize
 
 func _draw() -> void:
 	draw_style_box(panel_style, Rect2(Vector2.ZERO, size))
-	#var font := load("res://GUI/ThemeUI/ChakraPetch-Regular.ttf") as Font
 	
-	var csize := cell_size * cell_scale
-	var off_x := fmod(offset.x + current_offset.x, csize.x)
-	var off_y := fmod(offset.y + current_offset.y, csize.y)
-	#var off_i := (offset + current_offset)
+	var csize := (cell_size * cell_scale).snappedf(1.0)
+	var off_x := fposmod(offset.x + current_offset.x, csize.x)
+	var off_y := fposmod(offset.y + current_offset.y, csize.y)
 	for x in range(0, size.x + csize.x, csize.x):
 		if x + off_x <= 0 or x + off_x > size.x:
 			continue
 		draw_line(Vector2(x + off_x, 0), Vector2(x + off_x, size.y), line_color, line_width, true)
-		#draw_string(font, Vector2(x + off_x, 10), str(floori((off_i.x - x) / csize.x)))
 	for y in range(0, size.y + csize.y, csize.y):
 		if y + off_y <= 0 or y + off_y > size.y:
 			continue
 		draw_line(Vector2(0, y + off_y), Vector2(size.x, y + off_y), line_color, line_width, true)
-		#draw_string(font, Vector2(10, y + off_y), str(floori((off_i.y - y) / csize.y)))
 		
 	draw_line(Vector2(0, 0), Vector2(0, size.y), line_color, line_width, true)
 	draw_line(Vector2(0, 0), Vector2(size.x, 0), line_color, line_width, true)
@@ -103,8 +99,7 @@ func _draw() -> void:
 	draw_line(Vector2(size.x, size.y), Vector2(size.x, 0), line_color, line_width, true)
 	
 	if selected_cell_coord != null:
-		draw_style_box(hover_style, Rect2(selected_cell_coord as Vector2 * csize + offset + current_offset, csize))
-		#draw_rect(Rect2(selected_cell_coord * csize + offset + current_offset, csize), Color(line_color.r, line_color.g, line_color.b, 1), false, line_width)
+		draw_style_box(hover_style, Rect2((selected_cell_coord as Vector2) * csize + offset + current_offset, csize))
 		
 	for highlighted_cell in highlighted_cells:
 		draw_style_box(highlight_style, Rect2(highlighted_cell * csize + offset + current_offset, csize))
@@ -113,7 +108,7 @@ func _gui_input(_event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 	
-	var csize := cell_size * cell_scale
+	var csize := (cell_size * cell_scale).snappedf(1.0)
 	if _event is InputEventMouseButton:
 		var event := _event as InputEventMouseButton
 		var m_pos: Vector2 = event.global_position - global_position
@@ -129,7 +124,7 @@ func _gui_input(_event: InputEvent) -> void:
 				queue_redraw()
 				queue_sort()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			var new_scale := maxf(cell_scale * 0.9, 0.2)
+			var new_scale := maxf(cell_scale * 0.9, 0.05)
 			if not is_equal_approx(new_scale, cell_scale):
 				var vsize := (size / csize).floor() * cell_size * (new_scale - cell_scale)
 				var rm_pos := (m_pos / size) * vsize
@@ -216,7 +211,7 @@ func _gui_input(_event: InputEvent) -> void:
 		queue_sort()
 
 func center_grid_on_cell(coord: Vector2) -> void:
-	var csize := cell_size * cell_scale
+	var csize := (cell_size * cell_scale).snappedf(1.0)
 	offset.x = -coord.x * csize.x - csize.x / 2 + size.x / 2
 	offset.y = -coord.y * csize.y - csize.y / 2 + size.y / 2
 	queue_redraw()
