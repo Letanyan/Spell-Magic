@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode cull_disabled;
+//render_mode cull_disabled;
 //render_mode unshaded;
 
 uniform float alpha = 1.0;
@@ -22,4 +22,5 @@ void vertex() {
 	VERTEX.y = VERTEX.y * len;
 	VERTEX.z = VERTEX.z + sin((VERTEX.y + TIME) * period + float(INSTANCE_ID)) * radius;
 	VERTEX.x = VERTEX.x + cos((VERTEX.y + TIME) * period + float(INSTANCE_ID)) * radius;
+	
 }

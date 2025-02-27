@@ -207,7 +207,10 @@ func increment_ticks(delta: float) -> void:
 	spell_tick += delta
 	move_tick += delta
 	time_since_navigation_update += delta
+	var is_invunerable := invunerable > 0.0
 	invunerable = max(0.0, invunerable - delta)
+	if is_invunerable and invunerable < SpellBody.INVUNERABLE_DURATION * 0.8 and not animation_tree.active:
+		animation_tree.active = true
 		
 func current_animation_is(animation: String) -> bool:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]

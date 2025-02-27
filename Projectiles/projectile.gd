@@ -325,6 +325,7 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 					body.invunerable = INVUNERABLE_DURATION
 					if dmg["dmg"] > 0:
 						body.play_animation("on_hit")
+						body.animation_tree.active = false
 			else:
 				Vitals.apply_damage(get_parent() as Node3D, _body, dmg["dmg"] as float, dmg["el"] as Spell.Element, is_player or is_enemy, true, contact_points, most_recent_radius.length(), velocity, null)
 				if sub_dmg != {}:
@@ -443,13 +444,11 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2
 			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			particles.amount = roundi(80 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
 			(trail.process_material as ParticleProcessMaterial).scale_min = rl * 2
 			(trail.process_material as ParticleProcessMaterial).scale_max = rl * 2
-			(trail.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
 			trail.amount = roundi(80 * rl)
 			
 			(get_shape_cast().shape as SphereShape3D).radius = rl
@@ -478,14 +477,12 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			(get_area_collision().shape as SphereShape3D).radius = rl
 			var particles: GPUParticles3D = get_node("source")
 			(particles.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
-			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 2
+			(particles.process_material as ParticleProcessMaterial).scale_max = rl * 3
 			(particles.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
 			particles.amount = ceili(80 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_sphere_radius = rl
-			(trail.process_material as ParticleProcessMaterial).initial_velocity_max = rl * 2
-			(trail.process_material as ParticleProcessMaterial).scale_max = rl * 2
+			(trail.process_material as ParticleProcessMaterial).scale_max = rl * 3
 			(trail.process_material as ParticleProcessMaterial).scale_min = rl * 2.0 / 3.0
 			trail.amount = ceili(80 * rl)
 			
@@ -509,18 +506,12 @@ func update_shape(r: Vector3, ignore_time: bool) -> void:
 			var source: GPUParticles3D = get_node("source")
 			(source.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			(source.process_material as ParticleProcessMaterial).emission_ring_radius = rl
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", rl / 10.0)
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl / 2)
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 4)
-			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl * 2)
+			(source.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", lerpf(0.01, 0.1, rl))
 			source.amount = ceili(100 * rl)
 			var trail: GPUParticles3D = get_node("source_trail")
 			(trail.process_material as ParticleProcessMaterial).emission_ring_height = rl * 4
 			(trail.process_material as ParticleProcessMaterial).emission_ring_radius = rl
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", rl / 10.0)
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("len", rl / 2)
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("radius", rl / 4)
-			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("period", rl * 2)
+			(trail.draw_pass_1.surface_get_material(0) as ShaderMaterial).set_shader_parameter("width", lerpf(0.01, 0.1, rl))
 			trail.amount = ceili(100 * rl)
 			
 		Spell.Element.ICE:
@@ -625,9 +616,6 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 	match spell.element:
 		Spell.Element.FIRE:
 			position = p
-			var particles: GPUParticles3D = get_node("source_trail")
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
 			Globals.look_at(self, velocity)
 		
 		Spell.Element.ROCK:
@@ -639,9 +627,6 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 				
 		Spell.Element.WATER:
 			position = p
-			var particles: GPUParticles3D = get_node("source_trail")
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
 			Globals.look_at(self, velocity)
 			var biome := World.Biome.WATER
 			var world_radius := 10000.0
@@ -665,16 +650,10 @@ func update_movement(p: Vector3, instance: bool, vars: Vars) -> void:
 			
 		Spell.Element.AIR:
 			position = p
-			var source: GPUParticles3D = get_node("source_trail")
-			(source.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
-			(source.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
 			Globals.look_at(self, velocity)
 			
 		Spell.Element.ICE:
 			position = p
-			var particles: GPUParticles3D = get_node("source_trail")
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_min = 0.0
-			(particles.process_material as ParticleProcessMaterial).initial_velocity_max = velocity_maintained_distance.length()
 			Globals.look_at(self, velocity)
 			
 		Spell.Element.ELECTRIC:

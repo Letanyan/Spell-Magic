@@ -262,7 +262,7 @@ func _physics_process(delta: float) -> void:
 	cam_arm.spring_length = (1.0 + spring_extension) * cam_distance_ratio
 	
 	if shake_intensity > 0.0:
-		var intensity := clampf(shake_intensity, 0.0, 1.0) ** 2.718
+		var intensity := clampf(shake_intensity, 0.0, 1.0) ** 1.2
 		if is_zero_approx(intensity):
 			shake_intensity = 0.0
 		else:
