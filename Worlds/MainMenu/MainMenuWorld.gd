@@ -300,9 +300,9 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		if last_last_biome == biome:
-			biome_transition_duration = elapsed
-		else:
 			biome_transition_duration = duration - elapsed
+		else:
+			biome_transition_duration = duration
 		
 func update_transition_to_biome(delta: float) -> void:
 	if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():

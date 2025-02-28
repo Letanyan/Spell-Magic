@@ -19,6 +19,8 @@ var biome_helper: BiomeHelper
 var population: Dictionary = {} ## [Vector2i]Population
 var entity_manager: EntityManager
 
+var biome_in_waiting_queue: World.Biome = World.Biome.WATER
+var switch_biome_timer: float = 0.0
 var last_last_biome: World.Biome = World.Biome.WATER
 var last_biome: World.Biome = World.Biome.WATER
 
@@ -320,12 +322,19 @@ func _physics_process(delta: float) -> void:
 	var clr := grass_color * MULT
 	player.set_current_biome_grass_color(clr)
 	var b := chunker.get_biome_at_position(player.position.x, player.position.z)
-	if last_biome != b:
+	if last_biome != b and biome_in_waiting_queue != b:
+		biome_in_waiting_queue = b
+		switch_biome_timer = 3.0
+	if (biome_in_waiting_queue != World.Biome.WATER and switch_biome_timer - delta < 0.0) or (last_biome == World.Biome.WATER):
+		b = biome_in_waiting_queue
+		biome_in_waiting_queue = World.Biome.WATER
 		player.set_current_biome(b)
 		player.play_bg_audio(b)
 		transition_to_biome(b, 0.1 if last_biome == World.Biome.WATER else 15.0)
 		last_last_biome = last_biome
 		last_biome = b
+	elif switch_biome_timer > 0.0:
+		switch_biome_timer -= delta
 		
 	if environment_effect_tick >= 2.0:
 		environment_timer += delta
@@ -717,7 +726,7 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var env := get_node("WorldEnvironment") as WorldEnvironment
 	var shader := env.environment.sky.sky_material as ShaderMaterial
 	var lvl := Population.level_relative_to_position_within_radius(null, player.position.x, player.position.z, settings.world_radius, settings.difficulty_level)
-	if biome_final_settings.is_empty():
+	if biome_final_settings.is_empty(): # if no biome set. set it to these settings immediately
 		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		biome_start_settings.merge(biome_final_settings, true)
 		biome_tick = biome_transition_duration
@@ -731,13 +740,13 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 		env.environment.fog_density = biome_start_settings["*fog_density"]
 		env.environment.fog_sky_affect = biome_start_settings["*fog_sky_affect"]
 		env.environment.fog_light_color = biome_start_settings["*fog_light_color"]
-	elif is_equal_approx(biome_tick, biome_transition_duration):
+	elif is_equal_approx(biome_tick, biome_transition_duration): # if no transition is happening start transitioning
 		biome_tick = 0.0
 		shader.set_shader_parameter("transition", 0.0)
 		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		biome_transition_duration = duration
-	else:
+	else: # if in the middle of a transition set the start to the current lerp value and the final to the new settings
 		var t := biome_tick / biome_transition_duration
 		var elapsed := biome_tick
 		biome_tick = 0.0
@@ -751,9 +760,9 @@ func transition_to_biome(biome: World.Biome, duration: float) -> void:
 		biome_helper.update_for_world_environment(biome_final_settings, env, sun, moon, lvl, biome, settings.time_of_day)
 		for key: String in biome_final_settings: if not key.begins_with("*"): shader.set_shader_parameter("final_" + key, biome_final_settings[key])
 		if last_last_biome == biome:
-			biome_transition_duration = elapsed
-		else:
 			biome_transition_duration = duration - elapsed
+		else:
+			biome_transition_duration = duration
 		
 func update_transition_to_biome(delta: float) -> void:
 	if is_equal_approx(biome_tick, biome_transition_duration) or biome_start_settings.is_empty() or biome_final_settings.is_empty():
