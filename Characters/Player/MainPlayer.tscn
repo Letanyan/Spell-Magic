@@ -14321,22 +14321,20 @@ scale_curve = SubResource("CurveTexture_k85sp")
 color = Color(1, 0, 0, 1)
 color_ramp = SubResource("GradientTexture1D_xlvi7")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hk6t5"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p0c7s"]
 render_priority = 0
 shader = ExtResource("9_l817d")
 shader_parameter/alpha = 1.0
-shader_parameter/period = 4.0
+shader_parameter/period = 2.0
 shader_parameter/len = 0.5
 shader_parameter/radius = 0.25
 shader_parameter/width = 0.1
 shader_parameter/use_vertex_color = true
 shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_uaelr"]
-material = SubResource("ShaderMaterial_hk6t5")
-subdivide_width = 1
-subdivide_depth = 3
-orientation = 2
+[sub_resource type="BoxMesh" id="BoxMesh_4wmcu"]
+material = SubResource("ShaderMaterial_p0c7s")
+subdivide_height = 8
 
 [node name="MainPlayer" type="CharacterBody3D" node_paths=PackedStringArray("collider")]
 collision_layer = 2
@@ -14941,4 +14939,4 @@ amount = 80
 one_shot = true
 visibility_aabb = AABB(-6.94052, -2, -6.40496, 13.4095, 13.701, 13.0801)
 process_material = SubResource("ParticleProcessMaterial_rgumj")
-draw_pass_1 = SubResource("PlaneMesh_uaelr")
+draw_pass_1 = SubResource("BoxMesh_4wmcu")

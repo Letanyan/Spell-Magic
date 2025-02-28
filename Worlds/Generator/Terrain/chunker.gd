@@ -75,3 +75,6 @@ func get_biome_at_position(x: float, z: float) -> World.Biome:
 	
 func get_color_at_position(x: float, z: float) -> Color:
 	return back.get_color_at_position(x, z)
+
+func get_distances_at_position(x: float, z: float) -> PackedFloat32Array:
+	return back.get_distances_at_position(x, z)

@@ -146,6 +146,7 @@ func _physics_process(delta: float) -> void:
 		
 	player.position += player_movement_direction * delta
 	player.rotate_y(player_rotation_direction * delta)
+	#var distances := chunker.get_distances_at_position(player.position.x, player.position.z)
 	var b := chunker.get_biome_at_position(player.position.x, player.position.z)
 	if last_biome != b and biome_in_waiting_queue != b:
 		biome_in_waiting_queue = b
