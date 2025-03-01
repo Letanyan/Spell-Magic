@@ -385,7 +385,7 @@ func update_info(world: Node3D) -> void:
 	for g: Vector2i in garden:
 		var pos := garden_item_origin[i]
 		var mxb := garden_item_radius[i]
-		if pos.distance_to(player.position) <= 50 + mxb * 2.0:
+		if foliage_manager.uses_static_body(g) and pos.distance_to(player.position) <= 50 + mxb * 2.0:
 			var s := foliage_manager.get_collision_shape(g)
 			if s == null:
 				var body := foliage_manager.make_static_body(g)

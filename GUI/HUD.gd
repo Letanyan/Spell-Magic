@@ -29,6 +29,13 @@ var image_preview_raws := {} ## [String]Texture2D
 var messages: Dictionary = {} ## [GameSettings.Tutorial]String(Message)
 var message_times: Dictionary = {} ## [GameSettings.Tutorial]int(seconds until expiration)
 
+@onready var compass: Control = $Compass
+@onready var compass_n: Label = $Compass/N
+@onready var compass_e: Label = $Compass/E
+@onready var compass_s: Label = $Compass/S
+@onready var compass_w: Label = $Compass/W
+@onready var compass_overflow: Label = $Compass/Overflow
+
 
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
@@ -396,6 +403,8 @@ func update_settings(settings: WorldSettings) -> void:
 	
 	player.change_reticule_visible(hud_settings.hide_reticule)
 	
+	compass.visible = not settings.hud_settings.hide_compass
+	
 	key_count_label.visible = not hud_settings.hide_collected_keys_label
 	
 	if cached_theme_color != hud_settings.theme_color or cached_theme_variation != hud_settings.theme_variation:
@@ -451,29 +460,30 @@ func update_selection_wheel_spells() -> void:
 func update_pick_up_world_item_artifact(a: Artifact, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.ARTIFACTS):
-		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.ARTIFACTS)
 		show_message(GameSettings.Tutorials.ARTIFACTS, "[center][font_size=21]View 'Artifacts' in the menu to build your character[/font_size][/center]", INF)
 		
 func update_pick_up_world_item_spell(s: Spell, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.SPELLS):
-		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.SPELLS)
 		show_message(GameSettings.Tutorials.SPELLS, "[center][font_size=21]View 'Spells' in the menu to view and edit your spells[/font_size][/center]", INF)
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.WANDS):
+		show_message(GameSettings.Tutorials.SPELLS, "[center][font_size=21]View 'Wands' to assign spells to keys[/font_size][/center]", INF)
 		
 func update_pick_up_world_item_key(k: int, m: String) -> void: 
 	show_notification(bbcode_new_item(m), 10)
 	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.KEYS):
+		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.KEYS)
+		show_message(GameSettings.Tutorials.KEYS, "[center][font_size=21]Defeat more high level enemies in other biomes for more Keys", INF)
 
 func update_pick_up_world_item_coin(s: int, m: String) -> void:
 	show_notification(bbcode_new_item(m), 5)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.COINS):
-		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.COINS)
 		show_message(GameSettings.Tutorials.COINS, "[center][font_size=21]View 'Upgrades' in the menu to upgrade your character[/font_size][/center]", INF)
 
 func update_pick_up_world_item_scroll_note(c: String, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.NOTES):
-		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.NOTES)
 		show_message(GameSettings.Tutorials.NOTES, "[center][font_size=21]View 'Notes' in the menu to learn about the game[/font_size][/center]", INF)
 
 func update_theme_colors(color: Color, variation: HUDSettings.ThemeKind) -> void:
@@ -488,3 +498,27 @@ func update_theme_colors(color: Color, variation: HUDSettings.ThemeKind) -> void
 
 	var stats_theme := (stats_view.get_node("container") as Control).get_theme_stylebox("panel") as StyleBoxFlat
 	stats_theme.border_color = list_theme.border_color
+
+func update_compass_position(looking_angle: float) -> void:
+	var bounds := compass.size.x
+	var offset := (looking_angle / PI * bounds * 0.5)
+	var width := compass_n.size.x
+	compass_n.position.x = fposmod(bounds * 1.0 + offset - width * 0.5, bounds)
+	compass_e.position.x = fposmod(bounds * 0.25 + offset - width * 0.5, bounds)
+	compass_s.position.x = fposmod(bounds * 0.5 + offset - width * 0.5, bounds)
+	compass_w.position.x = fposmod(bounds * 0.75 + offset - width * 0.5, bounds)
+	
+	var max_x := 0.0
+	var max_ratio := 0.0	
+	if compass_n.position.x > max_x: max_x = compass_n.position.x; max_ratio = 1.0
+	if compass_e.position.x > max_x: max_x = compass_e.position.x; max_ratio = 0.25
+	if compass_s.position.x > max_x: max_x = compass_s.position.x; max_ratio = 0.5
+	if compass_w.position.x > max_x: max_x = compass_w.position.x; max_ratio = 0.75
+	
+	if is_equal_approx(max_ratio, 1.0): compass_overflow.text = "N"
+	if is_equal_approx(max_ratio, 0.25): compass_overflow.text = "E"
+	if is_equal_approx(max_ratio, 0.5): compass_overflow.text = "S"
+	if is_equal_approx(max_ratio, 0.75): compass_overflow.text = "W"
+	
+	compass_overflow.position.x = fposmod(bounds * max_ratio + offset - compass_overflow.size.x * 0.5 + compass_overflow.size.x, bounds) - compass_overflow.size.x
+	

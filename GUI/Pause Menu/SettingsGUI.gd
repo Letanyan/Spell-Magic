@@ -11,6 +11,7 @@ extends Control
 @onready var hide_cooldown_timings := $Tabs/Display/HideCooldownTimings as CheckButton
 @onready var hide_stats_view := $Tabs/Display/HideStatsView as CheckButton
 @onready var hide_reticule: CheckButton = $Tabs/Display/HideReticule as CheckButton
+@onready var hide_compass: CheckButton = $Tabs/Display/HideCompass
 @onready var hide_key_count: CheckButton = $Tabs/Display/HideKeyCount
 @onready var projectile_indicator_size: HSlider = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
 @onready var projectile_indicator_size_display: Label = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
@@ -113,6 +114,7 @@ func update_controls() -> void:
 	hide_cooldown_timings.button_pressed = world_settings.hud_settings.hide_cooldown_timings
 	hide_stats_view.button_pressed = world_settings.hud_settings.hide_stats_view
 	hide_reticule.button_pressed = world_settings.hud_settings.hide_reticule
+	hide_compass.button_pressed = world_settings.hud_settings.hide_compass
 	hide_key_count.button_pressed = world_settings.hud_settings.hide_collected_keys_label
 	
 	projectile_indicator_size.value = world_settings.hud_settings.projectile_indicator_size
@@ -228,6 +230,11 @@ func _on_hide_stats_view_toggled(button_pressed: bool) -> void:
 func _on_hide_reticule_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_reticule = button_pressed
 	UIAudioPlayer.check(button_pressed)
+	settings_changed.emit(world_settings)
+	
+func _on_hide_compass_toggled(toggled_on: bool) -> void:
+	world_settings.hud_settings.hide_compass = toggled_on
+	UIAudioPlayer.check(toggled_on)
 	settings_changed.emit(world_settings)
 	
 func _on_hide_key_count_toggled(toggled_on: bool) -> void:

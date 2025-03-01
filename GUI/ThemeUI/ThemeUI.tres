@@ -1,4 +1,4 @@
-[gd_resource type="Theme" script_class="ThemeUI" load_steps=44 format=3 uid="uid://dmnfauhx880ds"]
+[gd_resource type="Theme" script_class="ThemeUI" load_steps=45 format=3 uid="uid://dmnfauhx880ds"]
 
 [ext_resource type="StyleBox" uid="uid://d12shiwt887us" path="res://GUI/ThemeUI/NeoDisabledStyle.tres" id="1_cdj88"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="1_csxah"]
@@ -49,6 +49,16 @@ content_margin_bottom = 2.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_bottom = 1
 border_color = Color(1, 1, 1, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4p136"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_bottom = 1
+border_color = Color(0.5, 0.5, 0.5, 1)
 border_blend = true
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slgeg"]
@@ -118,7 +128,7 @@ ItemList/styles/selected = ExtResource("3_xn2xs")
 ItemList/styles/selected_focus = ExtResource("5_sw5fm")
 LineEdit/styles/focus = ExtResource("2_sdp1v")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_61egc")
-LineEdit/styles/read_only = ExtResource("1_cdj88")
+LineEdit/styles/read_only = SubResource("StyleBoxFlat_4p136")
 Panel/styles/panel = SubResource("StyleBoxEmpty_slgeg")
 PopupDialog/styles/panel = ExtResource("23_1rcva")
 PopupMenu/icons/checked = ExtResource("6_ckjgh")

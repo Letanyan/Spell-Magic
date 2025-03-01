@@ -30,9 +30,10 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="Game" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -91,7 +92,6 @@ offset_bottom = -157.891
 bbcode_enabled = true
 
 [node name="Display" type="Panel" parent="Tabs"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -191,7 +191,7 @@ offset_bottom = 296.0
 grow_horizontal = 2
 text = "Hide Reticule"
 
-[node name="HideKeyCount" type="CheckButton" parent="Tabs/Display"]
+[node name="HideCompass" type="CheckButton" parent="Tabs/Display"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -200,6 +200,17 @@ offset_left = -192.0
 offset_top = 303.0
 offset_right = 192.0
 offset_bottom = 328.0
+text = "Hide Compass"
+
+[node name="HideKeyCount" type="CheckButton" parent="Tabs/Display"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
+offset_top = 335.0
+offset_right = 192.0
+offset_bottom = 360.0
 grow_horizontal = 2
 text = "Hide Key Count"
 
@@ -209,9 +220,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 335.0
+offset_top = 367.0
 offset_right = 192.0
-offset_bottom = 359.0
+offset_bottom = 391.0
 grow_horizontal = 2
 text = "Projectile Indicator Size"
 
@@ -238,9 +249,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 367.0
+offset_top = 399.0
 offset_right = 192.0
-offset_bottom = 391.0
+offset_bottom = 423.0
 grow_horizontal = 2
 text = "Key Display"
 
@@ -264,9 +275,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 399.0
+offset_top = 431.0
 offset_right = 192.0
-offset_bottom = 423.0
+offset_bottom = 455.0
 grow_horizontal = 2
 text = "Theme Variation"
 vertical_alignment = 1
@@ -298,9 +309,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -192.0
-offset_top = 431.0
+offset_top = 463.0
 offset_right = 192.0
-offset_bottom = 455.0
+offset_bottom = 487.0
 grow_horizontal = 2
 text = "Theme Color"
 vertical_alignment = 1
@@ -1208,6 +1219,7 @@ text = "Make Default"
 [connection signal="toggled" from="Tabs/Display/HideCooldownTimings" to="." method="_on_hide_cooldown_timings_toggled"]
 [connection signal="toggled" from="Tabs/Display/HideStatsView" to="." method="_on_hide_stats_view_toggled"]
 [connection signal="toggled" from="Tabs/Display/HideReticule" to="." method="_on_hide_reticule_toggled"]
+[connection signal="toggled" from="Tabs/Display/HideCompass" to="." method="_on_hide_compass_toggled"]
 [connection signal="toggled" from="Tabs/Display/HideKeyCount" to="." method="_on_hide_key_count_toggled"]
 [connection signal="value_changed" from="Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSize" to="." method="_on_projectile_indicator_size_value_changed"]
 [connection signal="item_selected" from="Tabs/Display/KeyDisplayLabel/KeyDisplay" to="." method="_on_key_display_item_selected"]

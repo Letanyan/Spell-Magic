@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=27 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="StyleBox" uid="uid://ckmaf8r6l05na" path="res://GUI/HealthBarBG.tres" id="2_ss7w7"]
 [ext_resource type="PackedScene" uid="uid://cqoqd11ks5vm4" path="res://GUI/Pause Menu/StatsView.tscn" id="3_3d5vo"]
+[ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="3_n867f"]
 [ext_resource type="StyleBox" uid="uid://b4eur8yjip51n" path="res://GUI/HealthBarFG.tres" id="3_tgf4d"]
 [ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="3_uufso"]
 [ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="4_g3pbk"]
@@ -12,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_yr21e"]
 [ext_resource type="StyleBox" uid="uid://ci70pm0jx6gvs" path="res://GUI/ThemeUI/RichTextHolder.tres" id="8_qt3l3"]
 [ext_resource type="Script" path="res://GUI/SelectionWheel.gd" id="10_rpd6m"]
-[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="13_3irt7"]
+[ext_resource type="Texture2D" uid="uid://cgfktoa06l5gn" path="res://GUI/Images/triangle.png" id="14_8m6i1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ny5ey"]
 font = ExtResource("3_uufso")
@@ -37,6 +38,70 @@ border_color = Color(1, 0.701961, 1, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_vi2vj"]
 font = ExtResource("3_uufso")
 font_size = 12
+
+[sub_resource type="Gradient" id="Gradient_7g73k"]
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0.00588235, 1)
+colors = PackedColorArray(1, 0, 0, 0.501961, 1, 0.3, 0.3, 0.501961)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7f26b"]
+gradient = SubResource("Gradient_7g73k")
+
+[sub_resource type="Gradient" id="Gradient_u73qc"]
+interpolation_color_space = 2
+colors = PackedColorArray(0.1, 0.1, 0.1, 0.501961, 0.2, 0.2, 0.2, 0.501961)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v2g3t"]
+noise_type = 2
+frequency = 0.001
+fractal_type = 2
+fractal_octaves = 6
+fractal_lacunarity = 3.0
+cellular_distance_function = 1
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_frequency = 0.01
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 3
+domain_warp_fractal_lacunarity = 8.0
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_m2xi6"]
+width = 1024
+seamless = true
+color_ramp = SubResource("Gradient_u73qc")
+noise = SubResource("FastNoiseLite_v2g3t")
+
+[sub_resource type="StyleBox" id="StyleBox_wv4rg"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+script = ExtResource("3_n867f")
+expanded = 0.0
+underlay_border = false
+corner_radius_top_right = 0.0
+corner_radius_top_left = 0.0
+corner_radius_bottom_left = 0.0
+corner_radius_bottom_right = 0.0
+corner_radius_detail = 4.0
+fill_texture = SubResource("NoiseTexture2D_m2xi6")
+fill_texture_flip_xy = false
+fill_texture_flip_vertical = false
+fill_texture_flip_horizonal = false
+border_texture = SubResource("GradientTexture1D_7f26b")
+border_width = 1.0
+border_texture_flip_xy = false
+border_texture_flip_vertical = false
+border_texture_flip_horizonal = false
+
+[sub_resource type="LabelSettings" id="LabelSettings_3bmqr"]
+font = ExtResource("3_uufso")
+
+[sub_resource type="LabelSettings" id="LabelSettings_mtk11"]
+font = ExtResource("3_uufso")
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -278,7 +343,7 @@ anchor_bottom = 1.0
 offset_top = -152.0
 offset_right = -6.10352e-05
 offset_bottom = -88.0
-theme_override_styles/panel = ExtResource("13_3irt7")
+theme_override_styles/panel = SubResource("StyleBox_wv4rg")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MessagePanel"]
 layout_mode = 1
@@ -297,3 +362,72 @@ text = "[center]Hello, World[/center]"
 fit_content = true
 scroll_active = false
 metadata/_edit_lock_ = true
+
+[node name="Compass" type="Panel" parent="."]
+clip_children = 2
+layout_mode = 0
+offset_left = 384.0
+offset_top = 8.0
+offset_right = 768.0
+offset_bottom = 32.0
+theme_override_styles/panel = ExtResource("4_g3pbk")
+
+[node name="Center" type="TextureRect" parent="Compass"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 16.0
+offset_right = 208.0
+offset_bottom = 48.0
+texture = ExtResource("14_8m6i1")
+expand_mode = 3
+stretch_mode = 3
+
+[node name="N" type="Label" parent="Compass"]
+layout_mode = 0
+offset_left = 184.0
+offset_right = 200.0
+offset_bottom = 24.0
+text = "N"
+label_settings = SubResource("LabelSettings_3bmqr")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="E" type="Label" parent="Compass"]
+layout_mode = 0
+offset_left = 280.0
+offset_right = 296.0
+offset_bottom = 24.0
+text = "E"
+label_settings = SubResource("LabelSettings_mtk11")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="S" type="Label" parent="Compass"]
+layout_mode = 0
+offset_left = -8.0
+offset_right = 8.0
+offset_bottom = 24.0
+text = "S"
+label_settings = SubResource("LabelSettings_mtk11")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="W" type="Label" parent="Compass"]
+layout_mode = 0
+offset_left = 88.0
+offset_right = 104.0
+offset_bottom = 24.0
+text = "W"
+label_settings = SubResource("LabelSettings_mtk11")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Overflow" type="Label" parent="Compass"]
+layout_mode = 0
+offset_left = 376.0
+offset_right = 392.0
+offset_bottom = 24.0
+text = "M"
+label_settings = SubResource("LabelSettings_mtk11")
+horizontal_alignment = 1
+vertical_alignment = 1

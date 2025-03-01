@@ -233,6 +233,8 @@ func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IS
 	if Vec2.xz(player.position).length() < 8:
 		show_tutorial_label()
+		
+	hud.update_compass_position(player.cam_pivot.rotation.y)
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -424,6 +426,7 @@ func _input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
+				hud.update_compass_position(player.cam_pivot.rotation.y)
 				
 	if GlobalData.is_debug and not settings.is_paused:
 		if event is InputEventKey:
@@ -531,10 +534,11 @@ func hide_tutorial_message() -> void:
 		
 func menu_did_open_tab_index(index: int) -> void:
 	match index:
-		0: hud.hide_message(GameSettings.Tutorials.SPELLS)
-		2: hud.hide_message(GameSettings.Tutorials.ARTIFACTS)
-		3: hud.hide_message(GameSettings.Tutorials.COINS)
-		4: hud.hide_message(GameSettings.Tutorials.NOTES)
+		0: hud.hide_message(GameSettings.Tutorials.SPELLS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.SPELLS)
+		1: hud.hide_message(GameSettings.Tutorials.WANDS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.WANDS)
+		2: hud.hide_message(GameSettings.Tutorials.ARTIFACTS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.ARTIFACTS)
+		3: hud.hide_message(GameSettings.Tutorials.COINS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.COINS)
+		4: hud.hide_message(GameSettings.Tutorials.NOTES); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.NOTES)
 
 func _on_player_moved(delta: float) -> void:
 	terrain_update_interval += delta

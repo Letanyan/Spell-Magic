@@ -91,11 +91,11 @@ func setup(_settings: WorldSettings) -> void:
 	#make_targets()
 	make_line_targets()
 	
-	const pX = 100
-	const pY = 100
-	const LVL = 20
-	var enemy := Population.generate_enemy(World.Enemy.SNOT_BLOB, player, pX / 10.0, 1000, pY / 10.0, LVL)
-	add_enemy(enemy)
+	#const pX = 100
+	#const pY = 100
+	#const LVL = 20
+	#var enemy := Population.generate_enemy(World.Enemy.SNOT_BLOB, player, pX / 10.0, 1000, pY / 10.0, LVL)
+	#add_enemy(enemy)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -pX, 1000, -pY)
@@ -377,6 +377,8 @@ func _ready() -> void:
 	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	
+	hud.update_compass_position(player.cam_pivot.rotation.y)
+	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
 	sub_viewport_container.visible = true
@@ -508,6 +510,7 @@ func _input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
+				hud.update_compass_position(player.cam_pivot.rotation.y)
 		
 	if not menu.is_showing:
 		GlobalData.controller.handle_input(event)

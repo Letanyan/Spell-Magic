@@ -11,6 +11,7 @@ var hide_health_mana: bool = false
 var hide_cooldown_timings: bool = false
 var hide_stats_view: bool = true
 var hide_reticule: bool = false
+var hide_compass: bool = false
 var projectile_indicator_size: float = 1.0
 var key_display: KeyDisplay = KeyDisplay.AUTO
 var hide_collected_keys_label: bool = false
@@ -25,7 +26,7 @@ func save_dict() -> Dictionary:
 		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule,
 		"projectile_indicator_size": projectile_indicator_size, "key_display": key_display,
 		"hide_collected_keys_label": hide_collected_keys_label, "theme_color": theme_color,
-		"theme_variation": theme_variation,
+		"theme_variation": theme_variation, "hide_compass": hide_compass,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -42,3 +43,4 @@ func load_dict(dict: Dictionary) -> void:
 	hide_collected_keys_label = dict.get("hide_collected_keys_label", false)
 	theme_variation = dict.get("theme_variation", ThemeKind.MONO)
 	theme_color = dict.get("theme_color", Color(0, 0.533, 0.8))
+	hide_compass = dict.get("hide_compass", false)

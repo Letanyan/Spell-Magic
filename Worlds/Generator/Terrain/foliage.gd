@@ -109,8 +109,11 @@ func _init(lod_level: int) -> void:
 		opened_slots.append(EntityManager.EntityBuffer.new(20, func() -> int: return -1, func(item: int) -> void: pass))
 		transforms.append(transforms_array)
 		
-		@warning_ignore("unsafe_call_argument")
-		static_bodies.append(EntityManager.EntityBuffer.new(8, alloc_static_body.call((base_shapes[kind] as ShapeTemplate).make_shape()), deinit_static_body, World.Foliage.keys()[kind]))
+		if base_shapes[kind].kind == ShapeTemplate.NONE:
+			static_bodies.append(EntityManager.EntityBuffer.new(0, func() -> void: pass, func(body: StaticBody3D) -> void: pass, ""))
+		else:
+			@warning_ignore("unsafe_call_argument")
+			static_bodies.append(EntityManager.EntityBuffer.new(8, alloc_static_body.call((base_shapes[kind] as ShapeTemplate).make_shape()), deinit_static_body, World.Foliage.keys()[kind]))
 		
 		mesh_scaled_shape.append(mesh_transforms[kind].basis.get_scale().inverse().x * base_shapes[kind].size.length())
 	
@@ -173,6 +176,9 @@ func set_albedo_blend(kind: World.Foliage, index: int, color: Color) -> void:
 	
 func get_transform(kind: World.Foliage, index: int) -> Transform3D:
 	return transforms[kind][index]
+	
+func uses_static_body(g: Vector2i) -> bool:
+	return base_shapes[g.x].kind != ShapeTemplate.NONE
 		
 func make_static_body(g: Vector2i) -> StaticBody3D:
 	var body: StaticBody3D = static_bodies[g.x].get_entity()
@@ -186,7 +192,7 @@ func make_static_body(g: Vector2i) -> StaticBody3D:
 	return body
 		
 func free_static_body(g: Vector2i) -> void:
-	if not static_body_map.has(g):
+	if base_shapes[g.x].kind == ShapeTemplate.NONE or not static_body_map.has(g):
 		return
 	var body := static_body_map[g] as StaticBody3D
 	static_bodies[g.x].free_entity(body)
@@ -217,12 +223,12 @@ static var base_shapes: Array[ShapeTemplate] = [
 	ShapeTemplate.cylinder(1.4, 1.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vector3(-0.005, 0.4, 0.039))), # World.Foliage.ROCK_SQUASHED
 	ShapeTemplate.capsule(1.2, 2.8, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vector3(-0.073, 0.906, 0.016))), # World.Foliage.ROCK_TALL
 	ShapeTemplate.capsule(0.65, 1.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.314))), # World.Foliage.BUSH_ROUND
-	ShapeTemplate.cylinder(0.5, 0.9, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.252))), # World.Foliage.BUSH_SPROUT
+	ShapeTemplate.none(), #ShapeTemplate.cylinder(0.5, 0.9, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.252))), # World.Foliage.BUSH_SPROUT
 	ShapeTemplate.capsule(0.55, 1.2, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.214))), # World.Foliage.BUSH_TALL
-	ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.469))), # World.Foliage.FLOWERS_SUN2
-	ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.495))), # World.Foliage.FLOWERS_SUN3
-	ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.496))), # World.Foliage.GRASS_REED
-	ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.484))), # World.Foliage.GRASS_SHRUB
+	ShapeTemplate.none(), #ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.469))), # World.Foliage.FLOWERS_SUN2
+	ShapeTemplate.none(), #ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.495))), # World.Foliage.FLOWERS_SUN3
+	ShapeTemplate.none(), #ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.496))), # World.Foliage.GRASS_REED
+	ShapeTemplate.none(), #ShapeTemplate.sphere(0.5, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.484))), # World.Foliage.GRASS_SHRUB
 	ShapeTemplate.cylinder(0.8, 0.3, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.429))), # World.Foliage.MUSHROOM_BULB
 	ShapeTemplate.capsule(0.35, 1.0, Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0.428))), # World.Foliage.MUSHROOM_POINTED
 ]

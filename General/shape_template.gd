@@ -1,6 +1,7 @@
 class_name ShapeTemplate
 
 enum {
+	NONE,
 	SPHERE,
 	BOX,
 	CYLINDER,
@@ -32,10 +33,16 @@ static func cylinder(height: float, radius: float, transform: Transform3D) -> Sh
 @warning_ignore("shadowed_variable")
 static func capsule(radius: float, height: float, transform: Transform3D) -> ShapeTemplate:
 	return ShapeTemplate.new(CAPSULE, radius * 2.0, height, radius * 2.0, transform)
+	
+static func none() -> ShapeTemplate:
+	return ShapeTemplate.new(NONE, 0, 0, 0, T.I)
 
 func make_shape() -> Shape3D:
 	var result: Shape3D
 	match kind:
+		NONE:
+			result = SphereShape3D.new()
+			(result as SphereShape3D).radius = 0.1
 		SPHERE: 
 			result = SphereShape3D.new()
 			(result as SphereShape3D).radius = size.x / 2.0

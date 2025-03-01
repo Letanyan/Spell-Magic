@@ -3,7 +3,7 @@ class_name GameSettings
 enum ReadyState { NOT, IN, IS }
 enum NotesUnlockSettings { IN_GAME, SHOW_ALL, HIDE_ALL }
 enum NotesSortSettings { CHRONOLOGICAL, ALPHABETICAL }
-enum Tutorials { CONTROLS, SPELLS, ARTIFACTS, COINS, NOTES }
+enum Tutorials { CONTROLS, SPELLS, ARTIFACTS, COINS, NOTES, WANDS, KEYS }
 
 var last_world: String
 var default_world_settings: WorldSettings
