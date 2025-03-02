@@ -1,7 +1,7 @@
 // NOTE: Shader automatically converted from Godot Engine 4.3.stable's StandardMaterial3D.
 
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_toon, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_toon, specular_schlick_ggx, unshaded;
 
 uniform sampler2D wet_tex_under : source_color, filter_linear_mipmap;
 uniform sampler2D wet_tex_progress : source_color, filter_linear_mipmap;
@@ -22,11 +22,18 @@ uniform float burning_progress : hint_range(0.0, 1.0, 0.01);
 void vertex() {
 	// Billboard Mode: Y-Billboard
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
-			vec4(normalize(cross(vec3(0.0, 1.0, 0.0), MAIN_CAM_INV_VIEW_MATRIX[2].xyz)), 0.0),
-			vec4(0.0, 1.0, 0.0, 0.0),
-			vec4(normalize(cross(MAIN_CAM_INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0),
-			MODEL_MATRIX[3]);
-	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+				MAIN_CAM_INV_VIEW_MATRIX[0],
+				MAIN_CAM_INV_VIEW_MATRIX[1],
+				MAIN_CAM_INV_VIEW_MATRIX[2],
+				MODEL_MATRIX[3]);
+		MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+		
+	//MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
+			//vec4(normalize(cross(vec3(0.0, 1.0, 0.0), MAIN_CAM_INV_VIEW_MATRIX[2].xyz)), 0.0),
+			//vec4(0.0, 1.0, 0.0, 0.0),
+			//vec4(normalize(cross(MAIN_CAM_INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0),
+			//MODEL_MATRIX[3]);
+	//MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
 }
 
 vec4 progress_bar(vec2 uv, sampler2D base, sampler2D over, float progress, vec4 highlight) {

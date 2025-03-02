@@ -4624,7 +4624,7 @@ libraries = {
 [node name="AnimationTree" parent="." instance=ExtResource("2_e2wa2")]
 
 [node name="HealthBar" parent="." instance=ExtResource("3_har5l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.71355, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.78479, 0)
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_kcwsj")

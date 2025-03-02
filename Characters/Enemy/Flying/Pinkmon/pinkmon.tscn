@@ -2656,7 +2656,7 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_aj5w3")
 
 [node name="HealthBar" parent="." instance=ExtResource("3_xjgtl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.28645, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.67664, 0)
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

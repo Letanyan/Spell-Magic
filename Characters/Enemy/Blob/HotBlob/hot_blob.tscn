@@ -579,7 +579,7 @@ _data = {
 "Yes": SubResource("Animation_qbobs")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nuij0"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yxt0l"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -595,7 +595,7 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6wfqy"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_k3lml"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
@@ -720,7 +720,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_pwet1"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_nuij0")
+states/attack/node = SubResource("AnimationNodeAnimation_yxt0l")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -730,7 +730,7 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(618, 202)
-states/on_hit/node = SubResource("AnimationNodeAnimation_6wfqy")
+states/on_hit/node = SubResource("AnimationNodeAnimation_k3lml")
 states/on_hit/position = Vector2(464, 282)
 states/run/node = SubResource("AnimationNodeBlendTree_8uqqi")
 states/run/position = Vector2(283, 403)
@@ -802,7 +802,7 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_pwet1")
 
 [node name="HealthBar" parent="." instance=ExtResource("2_nejtq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30727, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.64478, 0)
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_qjfnj")

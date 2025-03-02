@@ -579,7 +579,7 @@ _data = {
 "Yes": SubResource("Animation_i40f8")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f1mau"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6ovn3"]
 resource_local_to_scene = true
 animation = &"Bite_Front"
 
@@ -595,7 +595,7 @@ animation = &"Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_psqsm"]
 animation = &"Yes"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ydg1q"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1xj6t"]
 resource_local_to_scene = true
 animation = &"HitRecieve"
 
@@ -720,7 +720,7 @@ xfade_time = 0.1
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gw3ry"]
 resource_local_to_scene = true
 states/Start/position = Vector2(57, 33)
-states/attack/node = SubResource("AnimationNodeAnimation_f1mau")
+states/attack/node = SubResource("AnimationNodeAnimation_6ovn3")
 states/attack/position = Vector2(82, 289)
 states/death/node = SubResource("AnimationNodeAnimation_6flae")
 states/death/position = Vector2(265, 33)
@@ -730,7 +730,7 @@ states/idle/node = SubResource("AnimationNodeAnimation_vfcxd")
 states/idle/position = Vector2(82, 116)
 states/land/node = SubResource("AnimationNodeAnimation_psqsm")
 states/land/position = Vector2(618, 202)
-states/on_hit/node = SubResource("AnimationNodeAnimation_ydg1q")
+states/on_hit/node = SubResource("AnimationNodeAnimation_1xj6t")
 states/on_hit/position = Vector2(464, 282)
 states/run/node = SubResource("AnimationNodeBlendTree_8uqqi")
 states/run/position = Vector2(283, 403)
@@ -796,7 +796,7 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_gw3ry")
 
 [node name="HealthBar" parent="." instance=ExtResource("2_2b8jv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3216, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5148, 0)
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_c3ajy")

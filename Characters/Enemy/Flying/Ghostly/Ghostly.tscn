@@ -2318,7 +2318,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 shape = SubResource("CapsuleShape3D_xirav")
 
 [node name="HealthBar" parent="." instance=ExtResource("3_wepbq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.42142, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.87653, 0)
 
 [node name="WetArea" type="Area3D" parent="."]
 collision_layer = 36
