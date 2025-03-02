@@ -379,15 +379,11 @@ func manual_physics_process(delta: float) -> void:
 			if current_path.coord_y == PathStyle.CoordY.GROUND_AND_AIR or current_path.coord_y == PathStyle.CoordY.ORIGIN or current_path.coord_y == PathStyle.CoordY.AIR:
 				options |= Navigator.MovementOptions.CAN_FLY
 			var obj := get_node(".") as CharacterBody
-			#p_path.lap()
-			#p_nav.start()
-			velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 500.0, Vec3.max(player.bounds))
+			if is_idle:
+				velocity_movement.target_path = PackedVector3Array([next_pos])
+			else:
+				velocity_movement.target_path = GlobalData.nav.find_target_path(obj, next_pos, collision_shape.shape, options, 500.0, Vec3.max(player.bounds))
 			velocity_movement.target_position = Navigator.find_next_target_from_path(velocity_movement.target_path, position, obj, next_pos)
-			#p_nav.lap()
-			#var clr := Color(randf(), randf(), randf())
-			#Debug3D.draw_sphere(position + Vector3(0, 2, 0), 0.5, clr, 0.2)
-			#for p in velocity_movement.target_path:
-				#Debug3D.draw_sphere(p, 0.1, clr, 0.2)
 			if reset_spell_tick:
 				behavior_tick = Globals.behaviour_tick()
 

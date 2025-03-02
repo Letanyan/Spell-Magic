@@ -365,7 +365,7 @@ func update_enemies(delta: float) -> void:
 	if inhabitant_cursor >= inhabitants.size():
 		inhabitant_cursor = 0
 
-func update_info(world: Node3D) -> void:
+func update_info(world: Node3D, cam: Camera3D) -> void:
 	if display_only: return
 	
 	for habitant: Enemy in inhabitants.values():
@@ -373,7 +373,7 @@ func update_info(world: Node3D) -> void:
 		habitant.collision.disabled = dist > 50
 		habitant.area.disabled = habitant.collision.disabled
 		if habitant.is_node_ready():
-			habitant.animation_tree.active = dist < 50
+			habitant.animation_tree.active = dist < chunker.chunk_width * 1.5 and cam.is_position_in_frustum(habitant.global_position)
 	
 	for g: Vector2i in foliage_manager.static_body_map:
 		var t := foliage_manager.get_transform(g.x, g.y)

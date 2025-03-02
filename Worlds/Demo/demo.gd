@@ -295,7 +295,7 @@ func _physics_process(delta: float) -> void:
 		knowledge_tick = 0.0
 		for loc: Vector2i in population:
 			var pop := population[loc] as Population
-			pop.update_info(self)
+			pop.update_info(self, player.cam)
 			pop.update_enemies(delta)
 	else:
 		for loc: Vector2i in population:
@@ -388,7 +388,7 @@ func open_menu_for_player() -> void:
 	settings.is_paused = true
 	for loc: Vector2i in population:
 		var pop := population[loc] as Population
-		pop.update_info(self)
+		pop.update_info(self, player.cam)
 	sub_viewport_container.visible = true
 	pause_start = Time.get_unix_time_from_system()
 	settings.player_position = player.position

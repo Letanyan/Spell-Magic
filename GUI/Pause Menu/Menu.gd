@@ -1,7 +1,7 @@
 class_name Menu
 extends Control
 
-enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES, NOTES, SETTINGS }
+enum Kind { ANY, UPGRADES, WANDS, ARTIFACTS, SPELLS, NOTES, SETTINGS }
 
 @onready var background: Panel = $Background
 
@@ -11,7 +11,7 @@ enum Kind { ANY, SPELLS, WANDS, ARTIFACTS, UPGRADES, NOTES, SETTINGS }
 @onready var upgrades: UpgradesGUI = $Upgrades
 @onready var notes: NotesUI = $Notes
 @onready var settings: SettingsGUI = $Settings
-var current_index := 0
+var current_index := Kind.UPGRADES
 
 @onready var spells_button: Button = $Tabbar/Spells
 @onready var wands_button: Button = $Tabbar/Wands
@@ -55,15 +55,15 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: magic_book.add_spell(s, false))
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: upgrades.update_state(UpgradeSettings.PurchaseError.NONE))
 
-func update_index(index: int) -> void:
+func update_index(index: Kind) -> void:
 	UIAudioPlayer.switch()
 	save_changes()
-	const MAX_INDEX = 5 # used for wrap around
+	var MAX_INDEX := Kind.size() - 1
 	var old_index := current_index
-	if index < 0:
-		current_index = MAX_INDEX
+	if index < 1:
+		current_index = MAX_INDEX as Kind
 	elif index > MAX_INDEX:
-		current_index = 0
+		current_index = Kind.UPGRADES
 	else:
 		current_index = index
 	var is_opening := current_index == old_index
@@ -82,30 +82,30 @@ func update_index(index: int) -> void:
 	settings_button.set_pressed_no_signal(false)
 	if GlobalData.is_demo and (current_index == 2 or current_index == 3):
 		match current_index:
-			2: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
-			3: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nUpgrades Disabled"
+			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
+			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nUpgrades Disabled"
 		message_panel.visible = true
 	elif player_in_combat and current_index < 4:
 		match current_index:
-			0: spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nMagic Book Disabled"
-			1: wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nWand Case Disabled"
-			2: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nArtifacts Disabled"
-			3: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nUpgrades Disabled"
+			Kind.SPELLS: spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nMagic Book Disabled"
+			Kind.WANDS: wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nWand Case Disabled"
+			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nArtifacts Disabled"
+			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nUpgrades Disabled"
 		message_panel.visible = true
 	else:
 		match current_index:
-			0: magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
-			1: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
-			2: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
-			3: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
-			4: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes() 
-			5: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
+			Kind.SPELLS: magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
+			Kind.WANDS: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
+			Kind.ARTIFACTS: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
+			Kind.UPGRADES: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+			Kind.NOTES: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes() 
+			Kind.SETTINGS: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
 	if not is_opening:
 		update_camera_and_menu(settings.tab_container.get_current_tab_control().name)
 	tab_opened.emit(current_index)
 	
 func update_camera_and_menu(settings_tab: String) -> void:
-	if current_index == 5 and settings_tab == "Customisation":
+	if current_index == Kind.SETTINGS and settings_tab == "Customisation":
 		showing_customisation = true
 		player.animate_spring_arm(true, 0.2)
 		background.set_anchors_preset(Control.PRESET_TOP_WIDE)
@@ -117,43 +117,32 @@ func update_camera_and_menu(settings_tab: String) -> void:
 		background.size = size
 
 func _on_spells_pressed() -> void:
-	update_index(0)
+	update_index(Kind.SPELLS)
 
 func _on_wands_pressed() -> void:
-	update_index(1)
+	update_index(Kind.WANDS)
 
 func _on_artifacts_pressed() -> void:
-	update_index(2)
+	update_index(Kind.ARTIFACTS)
 	
 func _on_upgrades_pressed() -> void:
-	update_index(3)
+	update_index(Kind.UPGRADES)
 	
 func _on_notes_pressed() -> void:
-	update_index(4)
+	update_index(Kind.NOTES)
 	
 func _on_settings_pressed() -> void:
-	update_index(5)
+	update_index(Kind.SETTINGS)
 
 func open(kind: Kind) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	UIAudioPlayer.open()
 	visible = true
 	is_showing = true
-	match kind:
-		Kind.SPELLS:
-			_on_spells_pressed()
-		Kind.WANDS:
-			_on_wands_pressed()
-		Kind.ARTIFACTS:
-			_on_artifacts_pressed()
-		Kind.UPGRADES:
-			_on_upgrades_pressed()
-		Kind.NOTES:
-			_on_notes_pressed()
-		Kind.SETTINGS:
-			_on_settings_pressed()
-		Kind.ANY:
-			update_index(current_index)
+	if kind == Kind.ANY:
+		update_index(current_index)
+	else:
+		update_index(kind)
 	world_settings.save()
 
 func close() -> void:
