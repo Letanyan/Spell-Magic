@@ -133,7 +133,7 @@ orbit-xz: projectiles spin around a point
 	or ; projectile offset
 	R ; radius
 	
-plane-linear: fires N projectiles in dir driection on the plane defined by dir
+plane-linear: fires N projectiles in dir direction on the plane defined by dir
 	d ; offset
 	s ; speed
 	R ; radius

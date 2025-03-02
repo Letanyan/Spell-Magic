@@ -239,9 +239,9 @@ static var mesh_transforms: Array[Transform3D] = [
 	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.TREE_CHRISTMAS
 	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.TREE_SAFARI
 	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.TREE_BRANCHED
-	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1)), # World.Foliage.TREE_PALM
-	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1)), # World.Foliage.TREE_PINE
-	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1)), # World.Foliage.TREE_SAFARI2
+	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.TREE_PALM
+	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.TREE_PINE
+	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.TREE_SAFARI2
 	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(1.0)), # World.Foliage.ROCK_EGG
 	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(10.0)), # World.Foliage.ROCK_FLATTOP
 	Transform3D(Basis(Quaternion(0, 0, 0, 1)), Vec3.y(0)).scaled(Vec3.a(3.0)), # World.Foliage.ROCK_OVERHANG
