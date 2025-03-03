@@ -2,12 +2,14 @@ class_name MainMenuScreen
 extends Control
 
 var main_menu_world: MainMenuWorld = null
-@onready var continue_button: Button = $Continue
-@onready var new_game_button: Button = $NewGame
-@onready var load_button: Button = $Load
-@onready var settings_button: Button = $Settings
-@onready var quit_button: Button = $Quit
+@onready var continue_button: Button = $Background/Continue
+@onready var new_game_button: Button = $Background/NewGame
+@onready var load_button: Button = $Background/Load
+@onready var settings_button: Button = $Background/Settings
+@onready var quit_button: Button = $Background/Quit
 
+@onready var links_panel: Panel = $Links
+@onready var steam_wishlist: Button = $Links/Margin/VBox/SteamWishlist
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -15,6 +17,11 @@ func _ready() -> void:
 	if GlobalData.is_demo:
 		load_button.disabled = true
 		load_button.tooltip_text = "Not Available in Demo"
+		
+	if not GlobalData.is_demo or not Steamworks.is_enabled:
+		steam_wishlist.visible = false
+		links_panel.size.y = 40
+		links_panel.position.y = size.y - 48
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -78,3 +85,11 @@ func _on_settings_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_discord_pressed() -> void:
+	OS.shell_open("https://discord.gg/qWQHPP7YU7")
+
+
+func _on_steam_wishlist_pressed() -> void:
+	Steamworks.show_store()

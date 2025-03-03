@@ -89,3 +89,8 @@ func achievement_pick_up_key(biome: World.Biome) -> Achievements:
 		World.Biome.TAIGA: return Achievements.ACH_TAIGA_KEY
 		World.Biome.TUNDRA: return Achievements.ACH_TUNDRA_KEY
 	return Achievements.ACH_NONE
+
+func show_store() -> void:
+	if not is_enabled:
+		return 
+	Steam.activateGameOverlayToStore(3427990)
