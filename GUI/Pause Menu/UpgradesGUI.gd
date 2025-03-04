@@ -197,6 +197,7 @@ func _on_max_running_speed_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_running_speed()
 	update_state(err)
 	
+# TODO: unlock item in magic page when element is unlocked
 func _on_void_upgrade_pressed() -> void:
 	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.VOID)
 	UIAudioPlayer.click()

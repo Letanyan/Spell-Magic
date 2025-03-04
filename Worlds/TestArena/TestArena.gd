@@ -94,7 +94,7 @@ func setup(_settings: WorldSettings) -> void:
 	#const pX = 100
 	#const pY = 100
 	#const LVL = 20
-	#var enemy := Population.generate_enemy(World.Enemy.SNOT_BLOB, player, pX / 10.0, 1000, pY / 10.0, LVL)
+	#var enemy := Population.generate_enemy(World.Enemy.GOBLIN, player, pX / 10.0, 1000, pY / 10.0, LVL)
 	#add_enemy(enemy)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
@@ -249,7 +249,7 @@ func make_targets() -> void:
 			pathway = Pathway.new().from_to_and_back(distance * 0.5, cursor, dest, Easing.in_out_quad)
 		else:
 			pathway = Pathway.new().from_to_and_back(distance * 0.5, dest, cursor, Easing.in_out_quad)
-		var path := PathStyle.new(0, Vec3.xz__y(pos, 0)).follow_path(pathway).align_y_to_origin().look_at_nothing()
+		var path := PathStyle.new(0, Vec3.xz__y(pos, 0)).follow_path(pathway).align_y_to_ground().look_at_nothing()
 		var config := TargetShape.config_for_platform(Spell.Element.ROCK, 5, path)
 		var p := TargetShape.make()
 		p.configure(config)
@@ -298,7 +298,7 @@ func make_line_targets() -> void:
 	for p in path.sample_points(count):
 		var s := p.length() * 2 * PI * 0.1
 		var subpath := moving_path.call(p, s) as Pathway
-		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_origin().look_at_player().transform_path(tform)
+		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground().look_at_player().transform_path(tform)
 		var config := TargetShape.config_for_gauge(el, null, 2.0, Vitals.default_ea(0.1, 0), path_style)
 		var target := TargetShape.make()
 		target.configure(config)

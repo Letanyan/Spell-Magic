@@ -17,16 +17,16 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	class_level = 14
 	
 	var circle_path := Pathway.new().random_points_in_disc(2, 0, 20, 0, 10)
-	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground()
+	idle_path = PathStyle.new(seedling, position).follow_path(circle_path).align_y_to_ground().initial_position_can_update_at_start()
 	var path := Pathway.new().grid(runs(4), 5, 5, fit(10, 30), fit(10, 30)).apply_transform(T.translated(Vec3.y(fit(2, 8))))
-	attack_path = PathStyle.new(seedling).follow_path(path).origin_is_player().look_at_player_xz().align_y_to_air()
+	attack_path = PathStyle.new(seedling).follow_path(path).origin_is_player().look_at_player_xz().align_y_to_air().initial_position_can_update_when_loop()
 	current_path = idle_path
 	
 	none_pattern = AttackPatterns.none()
 	
 	rock_attack_small.configure({"d": "Br", "s": atks(1,9), "R":"0", "off":"uvw", "dir":"uvw", "a":"0"}, Spell.Element.ROCK, fit(5,10), power(5), radius(2), 1, 40, 80, 0)
-	rock_attack_medium.configure({"d": "Br*2", "s": atks(2,15), "R":fits(2,6), "off":"uvw", "dir":"uvw", "a":"sin(t*tau*%s)" % fits(0.2,1.6)}, Spell.Element.ROCK, fit(5,12), power(5), radius(2), fiti(1,4), 40, 80, 0)
-	rock_attack_large.configure({"d": "Br*2", "s": atks(3,18), "R":fits(3,6), "off":"uvw", "dir":"uvw", "a":"sin(t*tau*%s)" % fits(0.5,2.4)}, Spell.Element.ROCK, fit(5,15), power(5), radius(2), fiti(1,6), 40, 80, 0)
+	rock_attack_medium.configure({"d": "Br*2", "s": atks(2,15), "R":fits(2,6), "off":"uvw", "dir":"uvw", "a":"sin((t+n/N)*tau*%s)" % fits(0.2,1.6)}, Spell.Element.ROCK, fit(5,12), power(5), radius(2), fiti(1,4), 40, 80, 0)
+	rock_attack_large.configure({"d": "Br*2", "s": atks(3,18), "R":fits(3,6), "off":"uvw", "dir":"uvw", "a":"sin((t+n/N)*tau*%s)" % fits(0.5,2.4)}, Spell.Element.ROCK, fit(5,15), power(5), radius(2), fiti(1,6), 40, 80, 0)
 	
 	spell_drop_probs = {
 		rock_attack_small: spell_drop(1),

@@ -80,12 +80,12 @@ func update_index(index: Kind) -> void:
 	upgrades_button.set_pressed_no_signal(false)
 	notes_button.set_pressed_no_signal(false)
 	settings_button.set_pressed_no_signal(false)
-	if GlobalData.is_demo and (current_index == 2 or current_index == 3):
+	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or current_index == Kind.UPGRADES):
 		match current_index:
 			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
 			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nUpgrades Disabled"
 		message_panel.visible = true
-	elif player_in_combat and current_index < 4:
+	elif player_in_combat and current_index <= Kind.SPELLS:
 		match current_index:
 			Kind.SPELLS: spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nMagic Book Disabled"
 			Kind.WANDS: wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nWand Case Disabled"

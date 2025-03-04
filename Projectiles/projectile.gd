@@ -54,7 +54,6 @@ func setup() -> void:
 	velocity = Vector3.ZERO
 	old_velocity = Vector3.ZERO
 	old_pos = Vector3.ZERO
-	rotation_angle = NAN
 	on_hit_casts = {}
 	sub_spell = null
 	skip_update_shape_check = false
@@ -722,6 +721,8 @@ func start_emitting() -> void:
 			var body: RigidBody3D = get_node("body")
 			body.visible = true
 			body.collision_mask = 0b11_1111_1111
+			body.freeze = true
+			body.transform = T.I
 			get_shape_cast().enabled = true
 			(get_node("body/shape") as CollisionShape3D).disabled = false
 			

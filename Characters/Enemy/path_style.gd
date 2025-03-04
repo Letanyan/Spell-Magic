@@ -170,6 +170,8 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 	if me_start_position == null:
 		me_start_position = me_pos
 		me_start_position.y -= me.w / 2.0
+		if origin_kind == OriginKind.ME:
+			old_origin = me_start_position
 	if player_start_position == null:
 		if player is Player:
 			player_start_position = (player as Player).position
@@ -179,6 +181,8 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		elif player is TargetShape:
 			player_start_position = (player as TargetShape).position
 			#player_start_position.y += (player as TargetShape).bounds.y / 2.0
+		if origin_kind == OriginKind.PLAYER or origin_kind == OriginKind.VISION:
+			old_origin = player_start_position
 	if origin_kind == OriginKind.VISION and player_start_vision_rotation == null:
 		if player is Player:
 			if player_vision_angle == PlayerVisionAngle.CAMERA:
@@ -235,6 +239,13 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 		y = next_y_position(me, v.x, v.y, v.z, direct_space_state, temp_origin.y, ignore_ground)
 	else:
 		y = next_y_position(me, v.x, v.y, v.z, (player as Player).get_world_3d().direct_space_state, temp_origin.y, ignore_ground)
+		
+	if not is_on_path and delta > 1.0:
+		time = clampf(time - delta, 0.0, path.total_duration)
+	is_on_path_position = Vec3.xyz(old_position).distance_squared_to(me_pos) < 0.001
+	is_on_path = is_on_path_position and (origin_kind == OriginKind.ABSOLUTE or origin_kind == OriginKind.OFFSET or old_origin.distance_to(temp_origin) < 0.1)
+	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
+	
 	if time_was_up and (when_initial_position_can_update & InitialPositionCanUpdate.WHEN_LOOP != 0):
 		player_start_vision_rotation = null
 		player_start_position = null
@@ -243,13 +254,6 @@ func next_position(delta: float, me: Vector4, player: Variant, is_done: Globals.
 			player_start_vision_rotation = null
 			player_start_position = null
 		previous_path_index = index.data
-		
-	if not is_on_path and delta > 1.0:
-		time = clampf(time - delta, 0.0, path.total_duration)
-	is_on_path_position = Vec3.xyz(old_position).distance_squared_to(me_pos) < 0.001
-	is_on_path = is_on_path_position and old_origin.distance_to(temp_origin) < 0.1
-	old_position = Vector4(v.x, y, v.z, path.speed_at_time(time, delta, is_on_path))
-	old_origin = temp_origin
 	
 	if GlobalData.is_debug and player is Player:
 		Debug3D.draw_sphere(Vector3(v.x, y, v.z), 0.2, Color.RED, 10.0)

@@ -13,8 +13,6 @@ mat2 Rot(float a) {
     return mat2(vec2(c, -s), vec2(s, c));
 }
 
-//ALIEN ORB TYPE SHIT - ART OF CODE
-
 float GyroScope(vec3 p) {
     p *= 10.;
     return abs(.7 * dot(sin(vec3(p.xy * Rot(-sin(TIME * speed) * PI), p.z)), cos(vec3(p.yx * Rot(sin(TIME * speed) * PI), p.z)))) -.03;

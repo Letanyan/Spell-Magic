@@ -18,7 +18,6 @@ uniform sampler2D burning_tex_progress : source_color, filter_linear_mipmap;
 uniform vec4 burning_color: source_color;
 uniform float burning_progress : hint_range(0.0, 1.0, 0.01);
 
-
 void vertex() {
 	// Billboard Mode: Y-Billboard
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
@@ -41,7 +40,7 @@ vec4 progress_bar(vec2 uv, sampler2D base, sampler2D over, float progress, vec4 
 	vec4 tex = vec4(0);
 	if (progress <= 0.0) {
 		highlight.a = 0.0;
-	} else if (uv.y > (1.0 - progress)) {
+	} else if (uv.y >= (1.0 - progress)) {
 		tex = texture(over, uv);
 	} else {
 		highlight = vec4(1);
@@ -53,16 +52,17 @@ vec4 progress_bar(vec2 uv, sampler2D base, sampler2D over, float progress, vec4 
 void fragment() {
 	vec2 uv = UV;
 	if (uv.x < 0.33) {
-		vec4 color = progress_bar(UV, wet_tex_under, wet_tex_progress, wet_progress, wet_color);
+		vec4 color = progress_bar(uv, wet_tex_under, wet_tex_progress, wet_progress, wet_color);
 		ALBEDO = color.rgb;
 		ALPHA = color.a;
 	} else if (uv.x < 0.66) {
-		vec4 color = progress_bar(UV, freeze_tex_under, freeze_tex_progress, freeze_progress, freeze_color);
+		vec4 color = progress_bar(uv, freeze_tex_under, freeze_tex_progress, freeze_progress, freeze_color);
 		ALBEDO = color.rgb;
 		ALPHA = color.a;
 	} else {
-		vec4 color = progress_bar(UV, burning_tex_under, burning_tex_progress, burning_progress, burning_color);
+		vec4 color = progress_bar(uv, burning_tex_under, burning_tex_progress, burning_progress, burning_color);
 		ALBEDO = color.rgb;
 		ALPHA = color.a;
 	}
+	ALPHA = ALPHA * 0.6;
 }

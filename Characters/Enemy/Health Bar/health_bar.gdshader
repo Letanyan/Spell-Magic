@@ -8,7 +8,7 @@ uniform float percentage = 1.0;
 uniform vec2 corner_radius = vec2(0.01, 0.1);
 uniform vec2 outline_size = vec2(0.01, 0.1);
 uniform vec4 outline_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
-uniform sampler2D color_transitions;
+uniform sampler2D color_transitions : source_color;
 uniform bool billboard = true;
 
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;

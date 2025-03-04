@@ -531,7 +531,14 @@ func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	p.expression_vars.copy_from(exvars)
 	compute_expressions(p.expression_vars, fixed_vars)
 	p.spell = self
-	p.rotation_angle = clampf(fixed_vars.get_value(Vars.spinrate), -2 * PI, 2 * PI)
+	if fixed_vars.has("spinrate"):
+		var temp_ra: Variant = fixed_vars.get_raw_now("spinrate")
+		if temp_ra is float or temp_ra is int:
+			p.rotation_angle = clampf(temp_ra as float, -2 * PI, 2 * PI)
+		else:
+			p.rotation_angle = NAN
+	else:
+		p.rotation_angle = NAN
 	p.position = calculate_location(fixed_vars)
 	
 	var nr := Vector3(1, 0.2 if element == Element.ICE else 1.0, 1).normalized()
@@ -575,7 +582,7 @@ func get_particles(fvars: Vars, exvars: Vars) -> Array[SpellBody]:
 	
 const fixed_var_list = {
 	"r0":true,"r1":true,"r2":true,"r3":true,"r4":true,"r5":true,"r6":true,"r7":true,"r8":true,"r9":true,"pi":true,"N":true,"M":true,"C":true,"L":true,"T":true,"P":true,"CR":true,"CD":true,"x":true,"y":true,"z":true,"r":true,
-	"rn0":true,"rn1":true,"rn2":true,"rn3":true,"rn4":true,"rn5":true,"rn6":true,"rn7":true,"rn8":true,"rn9":true,"n":true,"D":true,"spinrate":true,"t":true,"l":true,"fl":true,"Bx":true,"By":true,"Bz":true,"Br":true,
+	"rn0":true,"rn1":true,"rn2":true,"rn3":true,"rn4":true,"rn5":true,"rn6":true,"rn7":true,"rn8":true,"rn9":true,"n":true,"D":true,"t":true,"l":true,"fl":true,"Bx":true,"By":true,"Bz":true,"Br":true,
 	"tC":true,"TC":true,"u":true,"v":true,"w":true,"tu":true,"tv":true,"tw":true,"Tu":true,"Tv":true,"Tw":true,"ru":true,"rv":true,"rw":true,"tru":true,"trv":true,"trw":true,"Tru":true,"Trv":true,"Trw":true,
 	"U":true,"V":true,"W":true,"tU":true,"tV":true,"tW":true,"TU":true,"TV":true,"TW":true,"rU":true,"rV":true,"rW":true,"trU":true,"trV":true,"trW":true,"TrU":true,"TrV":true,"TrW":true,"i":true,"j":true,"k":true,
 	"ti":true,"tj":true,"tk":true,"Ti":true,"Tj":true,"Tk":true,"ri":true,"rj":true,"rk":true,"tri":true,"trj":true,"trk":true,"Tri":true,"Trj":true,"Trk":true,"I":true,"J":true,"K":true,"tI":true,"tJ":true,"tK":true,
