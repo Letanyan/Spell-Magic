@@ -275,9 +275,9 @@ text = "Respawn with Spells"
 layout_mode = 2
 text = "Respawn with Coins"
 
-[node name="ManualUpgrades" type="CheckBox" parent="RespawnOptions"]
+[node name="Shop" type="CheckBox" parent="RespawnOptions"]
 layout_mode = 2
-text = "Manual Upgrades"
+text = "Shop for Upgrades"
 
 [node name="Create" type="Button" parent="."]
 layout_mode = 1
@@ -1009,7 +1009,7 @@ popup/item_4/id = 4
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]
 [connection signal="toggled" from="RespawnOptions/Coins" to="." method="_on_coins_toggled"]
-[connection signal="toggled" from="RespawnOptions/ManualUpgrades" to="." method="_on_manual_upgrades_toggled"]
+[connection signal="toggled" from="RespawnOptions/Shop" to="." method="_on_shop_toggled"]
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="toggled" from="StartingUpgrades" to="." method="_on_starting_upgrades_toggled"]

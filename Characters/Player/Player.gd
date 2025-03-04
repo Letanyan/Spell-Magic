@@ -326,9 +326,14 @@ func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: 
 	#t = t / (clampf(absf(p.lifetime_velocity) * 0.05, 0.0, 1.0) ** 10.0 + 1) 
 	var rv := 1.0 - clampf(absf(p.lifetime_velocity) / (UpgradeSettings.LIMIT_v + spell.buff_v), 0.0, 1.0)
 	t = t * (1.0 - pow(1.0 - rv, 2.0)) # scale payback down when spell has high velocity.
-	vitals.mana.apply_ignoring_resistance(t * p.calculate_overall_complexity())
+	var amount := t * p.calculate_overall_complexity()
+	vitals.mana.apply_ignoring_resistance(amount)
+	if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+		world_settings.upgrade_settings.progress_mana_back(amount)
 	if target.collision_layer & Globals.Layer.ENEMY != 0:
 		update_artifact_effects(Artifact.Event.DEAL, spell)
+		if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+			world_settings.upgrade_settings.progress_damage_deal(damage["dmg"] as float, damage["el"] as Spell.Element)
 		if enemies_in_range.has(target) and (damage["dmg"] as int) > 0:
 			var stats := enemies_in_range[target] as CombatStats
 			stats.hit_count += 1

@@ -54,6 +54,7 @@ var environment_timer: float = 0.0
 
 var settings: WorldSettings
 var pause_start: float
+var player_last_position: Vector3
 
 var is_mouse_down: bool = false
 
@@ -130,6 +131,7 @@ func run_on_ready() -> void:
 	noise_image = noise_tex.get_image()
 		
 	player.position = settings.player_position
+	player_last_position = player.position
 	player.spell_caster.ignore_mana_cost = GlobalData.is_debug
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
@@ -222,8 +224,10 @@ func run_on_ready() -> void:
 	#player.artifacts.save(settings.world_name)
 	#menu.artifacts.update_list_and_grid()
 	
+	hud.world_settings = settings
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
+	settings.upgrade_settings.upgrade_slot_progress.connect(hud.hud_upgrades.upgrade_slot_progress_update)
 	
 	AudioManager.world = self
 	AudioManager.camera = player.cam
@@ -542,6 +546,9 @@ func menu_did_open_tab_index(index: int) -> void:
 		4: hud.hide_message(GameSettings.Tutorials.NOTES); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.NOTES)
 
 func _on_player_moved(delta: float) -> void:
+	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+		settings.upgrade_settings.progress_travel(player.position.distance_to(player_last_position))
+	player_last_position = player.position
 	terrain_update_interval += delta
 	if Vec2.xz(player.position).length() > 8.0:
 		hide_tutorial_message()

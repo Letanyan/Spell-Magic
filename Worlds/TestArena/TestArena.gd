@@ -367,8 +367,10 @@ func _ready() -> void:
 	hud.wand = wand
 	menu.wand_case.new_wand_selected.connect(hud.set_wand)
 	
+	hud.world_settings = settings
 	menu.settings.settings_changed.connect(hud.update_settings)
 	hud.update_settings(settings)
+	settings.upgrade_settings.upgrade_slot_progress.connect(hud.hud_upgrades.upgrade_slot_progress_update)
 	settings.customisation_settings.update_all(player.skeleton_3d)
 	
 	AudioManager.world = self

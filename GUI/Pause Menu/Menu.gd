@@ -44,7 +44,7 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	player = _player
 	world_settings = _world_settings
 	
-	if world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+	if world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		upgrades_button.visible = true
 	else:
 		upgrades_button.visible = false
@@ -169,7 +169,7 @@ func _input(event: InputEvent) -> void:
 	
 func next_index() -> Kind:
 	var index := current_index
-	if settings.world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+	if settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		index = (current_index + 1) as Kind
 	else:
 		if current_index + 1 == Kind.UPGRADES:
@@ -185,7 +185,7 @@ func next_index() -> Kind:
 			
 func prev_index() -> Kind:
 	var index := current_index
-	if settings.world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+	if settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		index = (current_index - 1) as Kind
 	else:
 		if current_index - 1 == Kind.UPGRADES:

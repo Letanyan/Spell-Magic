@@ -43,7 +43,11 @@ var message_times: Dictionary = {} ## [GameSettings.Tutorial]int(seconds until e
 var cooldown_alert: Dictionary
 var not_enough_mana_alert: float = 0.0
 
-var world_settings: WorldSettings = null
+var world_settings: WorldSettings:
+	set(value):
+		world_settings = value
+		hud_settings = world_settings.hud_settings
+		
 var hud_settings: HUDSettings = null
 var cached_theme_color := Color()
 var cached_theme_variation := HUDSettings.ThemeKind.MONO
@@ -377,10 +381,7 @@ func update_wand_mappings() -> void:
 	($WandMappingPanel as Control).size.y = wand_mapping.size.y
 		
 func update_settings(settings: WorldSettings) -> void:
-	world_settings = settings
-	hud_settings = settings.hud_settings
-	
-	hud_upgrades.visible = world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES == 0
+	hud_upgrades.visible = not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES)
 	hud_upgrades.upgrade_slots_refreshed(settings.upgrade_settings)
 	
 	GlobalData.controller.switching_mode = hud_settings.key_display
@@ -420,7 +421,6 @@ func update_settings(settings: WorldSettings) -> void:
 		
 	update_stats_view()
 	update_wand_mappings()
-
 
 func update_stats_view() -> void:
 	if not stats_view.visible or world_settings == null:

@@ -502,7 +502,7 @@ func die() -> void:
 	drop_key_item(world)
 	drop_artifact_item(world)
 	drop_spell_item(world)
-	if player.world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+	if player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		drop_coin_items(world)
 	drop_health_item(world, multiplier)
 	drop_scroll_note(world)

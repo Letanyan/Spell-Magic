@@ -308,6 +308,8 @@ func _on_body_entered(_body: CollisionObject3D, contact_points: Array[Vector3]) 
 				if dmg["dmg"] > 0:
 					body.play_animation("on_hit")
 				body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
+				if not body.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+					body.world_settings.upgrade_settings.progress_damage_receive(dmg["dmg"] as float, dmg["el"] as Spell.Element)
 				body.emit_vitals_update()
 			elif is_enemy:
 				var body := _body as Enemy
@@ -417,6 +419,8 @@ func _on_area_entered(area: Area3D, contact_points: Array[Vector3]) -> void:
 			if dmg["dmg"] > 0:
 				body.play_animation("on_hit")
 			body.update_artifact_effects(Artifact.Event.RECEIVE, spell)
+			if not body.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+				body.world_settings.upgrade_settings.progress_damage_receive(dmg["dmg"] as float, dmg["el"] as Spell.Element)
 			body.emit_vitals_update()
 		if is_enemy and spell.element != Spell.Element.VOID:
 			var body := area.get_parent_node_3d() as Enemy

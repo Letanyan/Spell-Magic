@@ -225,7 +225,7 @@ func _on_create_pressed() -> void:
 		
 		
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
-		if game_flags & GameModeSettings.MANUAL_UPGRADES == 0:
+		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 			settings.upgrade_settings.fill_upgrade_slots(false)
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
@@ -347,12 +347,12 @@ func _on_spell_editing_toggled(toggled_on: bool) -> void:
 	else:
 		game_flags &= ~GameModeSettings.DISALLOW_SPELL_EDITING
 		
-func _on_manual_upgrades_toggled(toggled_on: bool) -> void:
+func _on_shop_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
-		game_flags |= GameModeSettings.MANUAL_UPGRADES
+		game_flags |= GameModeSettings.SHOP_FOR_UPGRADES
 	else:
-		game_flags &= ~GameModeSettings.MANUAL_UPGRADES	
+		game_flags &= ~GameModeSettings.SHOP_FOR_UPGRADES	
 
 
 func _on_health_value_changed(value: float) -> void:

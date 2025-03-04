@@ -33,3 +33,18 @@ func upgrade_slots_refreshed(settings: UpgradeSettings) -> void:
 	condition_2.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_2) + "[/center][/font_size]"
 	condition_3.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_3) + "[/center][/font_size]"
 	condition_4.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_4) + "[/center][/font_size]"
+	progress_1.max_value = settings.upgrade_prog_max_1
+	progress_2.max_value = settings.upgrade_prog_max_2
+	progress_3.max_value = settings.upgrade_prog_max_3
+	progress_4.max_value = settings.upgrade_prog_max_4
+	progress_1.value = settings.upgrade_prog_cur_1
+	progress_2.value = settings.upgrade_prog_cur_2
+	progress_3.value = settings.upgrade_prog_cur_3
+	progress_4.value = settings.upgrade_prog_cur_4
+	
+func upgrade_slot_progress_update(settings: UpgradeSettings) -> void:
+	progress_1.value = settings.upgrade_prog_cur_1
+	progress_2.value = settings.upgrade_prog_cur_2
+	progress_3.value = settings.upgrade_prog_cur_3
+	progress_4.value = settings.upgrade_prog_cur_4
+	
