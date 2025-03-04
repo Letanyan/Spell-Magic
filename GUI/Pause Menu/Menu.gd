@@ -1,7 +1,7 @@
 class_name Menu
 extends Control
 
-enum Kind { ANY, UPGRADES, WANDS, ARTIFACTS, SPELLS, NOTES, SETTINGS }
+enum Kind { ANY, WANDS, UPGRADES, ARTIFACTS, SPELLS, NOTES, SETTINGS }
 
 @onready var background: Panel = $Background
 
@@ -11,15 +11,15 @@ enum Kind { ANY, UPGRADES, WANDS, ARTIFACTS, SPELLS, NOTES, SETTINGS }
 @onready var upgrades: UpgradesGUI = $Upgrades
 @onready var notes: NotesUI = $Notes
 @onready var settings: SettingsGUI = $Settings
-var current_index := Kind.UPGRADES
+var current_index := Kind.WANDS
 
-@onready var spells_button: Button = $Tabbar/Spells
-@onready var wands_button: Button = $Tabbar/Wands
-@onready var artifacts_button: Button = $Tabbar/Artifacts
+@onready var spells_button: Button = $Tabbar/HBox/Spells
+@onready var wands_button: Button = $Tabbar/HBox/Wands
+@onready var artifacts_button: Button = $Tabbar/HBox/Artifacts
 @onready var quit_button: Button = $Tabbar/Quit
-@onready var upgrades_button: Button = $Tabbar/Upgrades
+@onready var upgrades_button: Button = $Tabbar/HBox/Upgrades
 @onready var settings_button: Button = $Tabbar/Settings
-@onready var notes_button: Button = $Tabbar/Notes
+@onready var notes_button: Button = $Tabbar/HBox/Notes
 
 @onready var message_panel: Panel = $MessagePanel
 @onready var message_label: Label = $MessagePanel/MessageLabel
@@ -44,6 +44,12 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	player = _player
 	world_settings = _world_settings
 	
+	if world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+		upgrades_button.visible = true
+	else:
+		upgrades_button.visible = false
+		
+	
 	settings.exit_game.connect(func() -> void: get_tree().quit())
 	settings.save_game.connect(func() -> void: save_changes())
 	settings.main_menu.connect(func() -> void: SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
@@ -58,15 +64,8 @@ func _ready() -> void:
 func update_index(index: Kind) -> void:
 	UIAudioPlayer.switch()
 	save_changes()
-	var MAX_INDEX := Kind.size() - 1
-	var old_index := current_index
-	if index < 1:
-		current_index = MAX_INDEX as Kind
-	elif index > MAX_INDEX:
-		current_index = Kind.UPGRADES
-	else:
-		current_index = index
-	var is_opening := current_index == old_index
+	var is_opening := current_index == index
+	current_index = index
 	magic_book.visible = false
 	wand_case.visible = false
 	artifacts.visible = false
@@ -160,14 +159,46 @@ func _input(event: InputEvent) -> void:
 		
 	if event is InputEventJoypadButton:
 		if event.is_action_pressed("RB"):
-			update_index(current_index + 1)
+			update_index(next_index())
 		elif event.is_action_pressed("LB"):
-			update_index(current_index - 1)
+			update_index(prev_index())
 			
 		if event.is_action_pressed("Back"):
 			if spells_button.has_focus() or wands_button.has_focus() or artifacts_button.has_focus() or quit_button.has_focus() or upgrades_button.has_focus() or notes_button.has_focus() or settings_button.has_focus():
 				close_menu.emit()
 	
+func next_index() -> Kind:
+	var index := current_index
+	if settings.world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+		index = (current_index + 1) as Kind
+	else:
+		if current_index + 1 == Kind.UPGRADES:
+			index = (current_index + 2) as Kind
+		else:
+			index = (current_index + 1) as Kind
+		
+	if index < 1:
+		index = (Kind.size() - 1) as Kind
+	elif index >= Kind.size():
+		index = 1 as Kind
+	return index
+			
+func prev_index() -> Kind:
+	var index := current_index
+	if settings.world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES != 0:
+		index = (current_index - 1) as Kind
+	else:
+		if current_index - 1 == Kind.UPGRADES:
+			index = (current_index - 2) as Kind
+		else:
+			index = (current_index - 1) as Kind
+			
+	if index < 1:
+		index = (Kind.size() - 1) as Kind
+	elif index >= Kind.size():
+		index = 1 as Kind
+	return index
+
 
 func save_changes() -> void:
 	if magic_book.visible:

@@ -1,0 +1,94 @@
+[gd_scene load_steps=3 format=3 uid="uid://drv66hotx4pw4"]
+
+[ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="1_2clrd"]
+[ext_resource type="Script" path="res://GUI/hud_upgrades.gd" id="2_5c4fe"]
+
+[node name="HudUpgrades" type="Panel"]
+offset_right = 272.0
+offset_bottom = 88.0
+theme_override_styles/panel = ExtResource("1_2clrd")
+script = ExtResource("2_5c4fe")
+
+[node name="Grid" type="GridContainer" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 264.0
+offset_bottom = 80.0
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="Progress1" type="ProgressBar" parent="Grid"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+show_percentage = false
+
+[node name="Label" type="RichTextLabel" parent="Grid/Progress1"]
+layout_mode = 0
+offset_right = 120.0
+offset_bottom = 16.0
+bbcode_enabled = true
+text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img] +50[/font_size][/center]"
+
+[node name="Condition" type="RichTextLabel" parent="Grid/Progress1"]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 120.0
+offset_bottom = 32.0
+bbcode_enabled = true
+text = "[center][font_size=12]Deal [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img][/font_size][/center]"
+
+[node name="Progress2" type="ProgressBar" parent="Grid"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+show_percentage = false
+
+[node name="Label" type="RichTextLabel" parent="Grid/Progress2"]
+offset_right = 120.0
+offset_bottom = 16.0
+bbcode_enabled = true
+text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]Level 5[/font_size][/center]"
+
+[node name="Condition" type="RichTextLabel" parent="Grid/Progress2"]
+offset_top = 16.0
+offset_right = 120.0
+offset_bottom = 32.0
+bbcode_enabled = true
+text = "[center][font_size=12]Deal [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img][/font_size][/center]"
+
+[node name="Progress3" type="ProgressBar" parent="Grid"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+show_percentage = false
+
+[node name="Label" type="RichTextLabel" parent="Grid/Progress3"]
+offset_right = 120.0
+offset_bottom = 16.0
+bbcode_enabled = true
+text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]Level 5[/font_size][/center]"
+
+[node name="Condition" type="RichTextLabel" parent="Grid/Progress3"]
+offset_top = 16.0
+offset_right = 120.0
+offset_bottom = 32.0
+bbcode_enabled = true
+text = "[center][font_size=12]Deal [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img][/font_size][/center]"
+
+[node name="Progress4" type="ProgressBar" parent="Grid"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+show_percentage = false
+
+[node name="Label" type="RichTextLabel" parent="Grid/Progress4"]
+offset_right = 120.0
+offset_bottom = 16.0
+bbcode_enabled = true
+text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]Level 5[/font_size][/center]"
+
+[node name="Condition" type="RichTextLabel" parent="Grid/Progress4"]
+offset_top = 16.0
+offset_right = 120.0
+offset_bottom = 32.0
+bbcode_enabled = true
+text = "[center][font_size=12]Deal [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img][/font_size][/center]"

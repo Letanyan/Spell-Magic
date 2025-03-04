@@ -33,6 +33,18 @@ func purchase_spell_element(el: Spell.Element) -> PurchaseError:
 	
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) != 0
+	
+func upgrade_description_spell_element(el: Spell.Element) -> String: 
+	match el:
+		Spell.Element.VOID: return "Unlock Void"
+		Spell.Element.FIRE: return "Unlock Fire"
+		Spell.Element.ROCK: return "Unlock Rock"
+		Spell.Element.ELECTRIC: return "Unlock Electric"
+		Spell.Element.WATER: return "Unlock Water"
+		Spell.Element.AIR: return "Unlock Air"
+		Spell.Element.ICE: return "Unlock Ice"
+	return ""
+	
 
 const HAS_CHAIN_ON_START := 1 << 1
 const HAS_CHAIN_ON_END := 1 << 2
@@ -61,6 +73,21 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
 	return has_chain_method & (1 << el) != 0
 	
+func upgrade_description_chain_method(el: Spell.ChainCastKind) -> String: 
+	match el:
+		Spell.ChainCastKind.START: return "Cast At Start"
+		Spell.ChainCastKind.END: return "Cast At End"
+		Spell.ChainCastKind.HIT: return "Cast At On Hit"
+	return ""
+	
+var upgrade_kind_1: UpgradeKind
+var upgrade_cond_1: UpgradeCondition
+var upgrade_kind_2: UpgradeKind
+var upgrade_cond_2: UpgradeCondition
+var upgrade_kind_3: UpgradeKind
+var upgrade_cond_3: UpgradeCondition
+var upgrade_kind_4: UpgradeKind
+var upgrade_cond_4: UpgradeCondition
 
 # upgrade_* is the amount the upgrade is increased each level increase
 # max_* is the current value
@@ -90,7 +117,7 @@ func purchase_r() -> PurchaseError:
 	level_r += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_r() -> String: return "[img=l,12x12, color=#7700FF]res://GUI/Images/radius.svg[/img]"
 
 var level_T := 1:
 	set(value):
@@ -112,7 +139,7 @@ func purchase_T() -> PurchaseError:
 	level_T += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_T() -> String: return "[img=l,12x12, color=#00FF08]res://GUI/Images/time.svg[/img]"
 
 var level_N := 1:
 	set(value):
@@ -134,7 +161,7 @@ func purchase_N() -> PurchaseError:
 	level_N += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_N() -> String: return "[img=l,12x12, color=#F700FF]res://GUI/Images/count.svg[/img]"
 
 var level_D := 1:
 	set(value):
@@ -156,7 +183,7 @@ func purchase_D() -> PurchaseError:
 	level_D += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_D() -> String: return "D"
 
 var level_P := 1:
 	set(value):
@@ -178,6 +205,7 @@ func purchase_P() -> PurchaseError:
 	level_P += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
+func upgrade_description_P() -> String: return "[img=l,12x12, color=#0008FF]res://GUI/Images/power.svg[/img]"
 
 # max spell velocity should be some multiple of player running speed. 
 # Since max player speed is 10 we arbitrarily decide to limit spell speed to [10]*4=40
@@ -202,7 +230,7 @@ func purchase_v() -> PurchaseError:
 	level_v += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_v() -> String: return "[img=l,12x12, color=#77FF00]res://GUI/Images/radius.svg[/img]"
 
 var level_mana := 1:
 	set(value):
@@ -225,7 +253,7 @@ func purchase_mana() -> PurchaseError:
 	level_mana += 1
 	emit_upgrade_purchase({"mana": upgrade_amount})
 	return PurchaseError.NONE
-
+func upgrade_description_mana() -> String: return "[img=l,12x12, color=#AA00AA]res://GUI/Images/mana.svg[/img]"
 
 var level_health := 1:
 	set(value):
@@ -248,7 +276,7 @@ func purchase_health() -> PurchaseError:
 	level_health += 1
 	emit_upgrade_purchase({"health": upgrade_amount})
 	return PurchaseError.NONE
-
+func upgrade_description_health() -> String: return "[img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]"
 
 var level_attack := 1:
 	set(value):
@@ -270,6 +298,7 @@ func purchase_attack() -> PurchaseError:
 	level_attack += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
+func upgrade_description_attack() -> String: return "[img=l,12x12, color=#AA0000]res://GUI/Images/sword.svg[/img]"
 
 var level_crit_rate := 1:
 	set(value):
@@ -291,6 +320,7 @@ func purchase_crit_rate() -> PurchaseError:
 	level_crit_rate += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
+func upgrade_description_crit_rate() -> String: return "[img=l,12x12, color=#0000AA]res://GUI/Images/cubes.svg[/img]"
 	
 var level_crit_dmg := 1:
 	set(value):
@@ -312,7 +342,7 @@ func purchase_crit_dmg() -> PurchaseError:
 	level_crit_dmg += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_crit_dmg() -> String: return "[img=l,12x12, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img]"
 
 var level_defence := 1:
 	set(value):
@@ -334,7 +364,7 @@ func purchase_defence() -> PurchaseError:
 	level_defence += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_defence() -> String: return "[img=l,12x12, color=#00AAAA]res://GUI/Images/shield.svg[/img]"
 
 var level_spells_in_book := 1:
 	set(value):
@@ -355,7 +385,7 @@ func purchase_spells_in_book() -> PurchaseError:
 	level_spells_in_book += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_spells_in_book() -> String: return "Active Spells"
 
 var level_running_speed := 1:
 	set(value):
@@ -377,7 +407,7 @@ func purchase_running_speed() -> PurchaseError:
 	level_running_speed += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_running_speed() -> String: return "[img=l,12x12, color=#F6FF00]res://GUI/Images/running.svg[/img]"
 
 var level_mana_regen := 1:
 	set(value):
@@ -398,7 +428,7 @@ func purchase_mana_regen() -> PurchaseError:
 	level_mana_regen += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-
+func upgrade_description_mana_regen() -> String: return "[img=l,12x12, color=#AA00AA]res://GUI/Images/mana-outline.svg[/img]"
 	
 func reset_all_stats_to_default_values() -> void:
 	level_r = 1
@@ -459,6 +489,9 @@ func save_dict() -> Dictionary:
 		"level_mana_regen": level_mana_regen,
 		
 		"currency": currency,
+		
+		"upgrade_kind_1": upgrade_kind_1, "upgrade_kind_2": upgrade_kind_2, "upgrade_kind_3": upgrade_kind_3, "upgrade_kind_4": upgrade_kind_4,
+		"upgrade_cond_1": upgrade_cond_1, "upgrade_cond_2": upgrade_cond_2, "upgrade_cond_3": upgrade_cond_3, "upgrade_cond_4": upgrade_cond_4,
 	}
 
 func load_dict(data: Dictionary) -> void:
@@ -481,6 +514,15 @@ func load_dict(data: Dictionary) -> void:
 	level_mana_regen = data.get("level_mana_regen", 1)
 	
 	currency = data.get("currency", 0)
+	
+	upgrade_kind_1 = data.get("upgrade_kind_1", 0) as UpgradeKind
+	upgrade_kind_2 = data.get("upgrade_kind_2", 0) as UpgradeKind
+	upgrade_kind_3 = data.get("upgrade_kind_3", 0) as UpgradeKind
+	upgrade_kind_4 = data.get("upgrade_kind_4", 0) as UpgradeKind
+	upgrade_cond_1 = data.get("upgrade_cond_1", 0) as UpgradeCondition
+	upgrade_cond_2 = data.get("upgrade_cond_2", 0) as UpgradeCondition
+	upgrade_cond_3 = data.get("upgrade_cond_3", 0) as UpgradeCondition
+	upgrade_cond_4 = data.get("upgrade_cond_4", 0) as UpgradeCondition
 
 func default_starter_spell() -> Spell:
 	var blast_element := Spell.Element.FIRE
@@ -508,3 +550,184 @@ func default_starter_spell() -> Spell:
 	blast.build_expressions()
 	
 	return blast
+
+enum UpgradeKind {
+	NONE,
+	VOID, FIRE, ROCK, ELECTRIC, WATER, AIR, ICE, CAST_START, CAST_END, CAST_HIT,
+	UP_r, UP_T, UP_N, UP_P, UP_V, UP_ATK, UP_DEF, UP_RATE, UP_DMG, UP_SPEED, 
+	UP_MANA_REGEN, UP_MANA, UP_HEALTH, UP_ACTIVE
+}
+
+enum UpgradeCondition {
+	DEAL_FIRE, DEAL_ROCK, DEAL_ELECTRIC, DEAL_WATER, DEAL_AIR, DEAL_ICE,
+	RECEIVE_FIRE, RECEIVE_ROCK, RECEIVE_ELECTRIC, RECEIVE_WATER, RECEIVE_AIR, RECEIVE_ICE,
+	TRAVEL, GAIN_BACK, DEAL_CRIT
+}
+
+func random_upgrade_kind() -> UpgradeKind:
+	var options := {}
+	if not check_if_has_spell_element(Spell.Element.VOID): options[UpgradeKind.VOID] = 1
+	if not check_if_has_spell_element(Spell.Element.FIRE): options[UpgradeKind.FIRE] = 1
+	if not check_if_has_spell_element(Spell.Element.ROCK): options[UpgradeKind.ROCK] = 1
+	if not check_if_has_spell_element(Spell.Element.ELECTRIC): options[UpgradeKind.ELECTRIC] = 1
+	if not check_if_has_spell_element(Spell.Element.WATER): options[UpgradeKind.WATER] = 1
+	if not check_if_has_spell_element(Spell.Element.AIR): options[UpgradeKind.AIR] = 1
+	if not check_if_has_spell_element(Spell.Element.ICE): options[UpgradeKind.ICE] = 1
+	
+	if not check_if_has_chain_method(Spell.ChainCastKind.START): options[UpgradeKind.CAST_START] = 1
+	if not check_if_has_chain_method(Spell.ChainCastKind.END): options[UpgradeKind.CAST_END] = 1
+	if not check_if_has_chain_method(Spell.ChainCastKind.HIT): options[UpgradeKind.CAST_HIT] = 1
+	
+	if level_P < level_max_P: options[UpgradeKind.UP_P] = 1
+	if level_spells_in_book < level_max_spells_in_book: options[UpgradeKind.UP_ACTIVE] = 1
+	if level_running_speed < level_max_running_speed: options[UpgradeKind.UP_SPEED] = 1
+	if level_v < level_max_v: options[UpgradeKind.UP_V] = 1
+	if level_T < level_max_T: options[UpgradeKind.UP_T] = 1
+	if level_N < level_max_N: options[UpgradeKind.UP_N] = 1
+	if level_health < level_max_health: options[UpgradeKind.UP_HEALTH] = 1
+	if level_mana < level_max_mana: options[UpgradeKind.UP_MANA] = 1
+	if level_r < level_max_r: options[UpgradeKind.UP_r] = 1
+	if level_attack < level_max_attack: options[UpgradeKind.UP_ATK] = 1
+	if level_defence < level_max_defence: options[UpgradeKind.UP_DEF] = 1
+	if level_mana_regen < level_max_mana_regen: options[UpgradeKind.UP_MANA_REGEN] = 1
+	if level_crit_rate < level_max_crit_rate: options[UpgradeKind.UP_RATE] = 1
+	if level_crit_dmg < level_max_crit_dmg: options[UpgradeKind.UP_DMG] = 1
+	
+	if options.is_empty():
+		return UpgradeKind.NONE
+	return Rand.entity_from_distribution(randf(), options, UpgradeKind.NONE)
+	
+func description_for_upgrade_kind(kind: UpgradeKind) -> String:
+	match kind:
+		UpgradeKind.VOID: return upgrade_description_spell_element(Spell.Element.VOID)
+		UpgradeKind.FIRE: return upgrade_description_spell_element(Spell.Element.FIRE) 
+		UpgradeKind.ROCK: return upgrade_description_spell_element(Spell.Element.ROCK) 
+		UpgradeKind.ELECTRIC: return upgrade_description_spell_element(Spell.Element.ELECTRIC) 
+		UpgradeKind.WATER: return upgrade_description_spell_element(Spell.Element.WATER) 
+		UpgradeKind.AIR: return upgrade_description_spell_element(Spell.Element.AIR) 
+		UpgradeKind.ICE: return upgrade_description_spell_element(Spell.Element.ICE) 
+		UpgradeKind.CAST_START: return upgrade_description_chain_method(Spell.ChainCastKind.START) 
+		UpgradeKind.CAST_END: return upgrade_description_chain_method(Spell.ChainCastKind.END)
+		UpgradeKind.CAST_HIT: return upgrade_description_chain_method(Spell.ChainCastKind.HIT)
+		UpgradeKind.UP_r: return upgrade_description_r() + " +" + str(upgrade_P()) + "m"
+		UpgradeKind.UP_T: return upgrade_description_T() + " +" + str(upgrade_T()) + "s" 
+		UpgradeKind.UP_N: return upgrade_description_N() + " +" + str(upgrade_N()) 
+		UpgradeKind.UP_P: return upgrade_description_P() + " +" + str(upgrade_P()) 
+		UpgradeKind.UP_V: return upgrade_description_v() + " +" + str(upgrade_v()) + "m/s" 
+		UpgradeKind.UP_ATK: return upgrade_description_attack() + " +" + str(upgrade_attack()) 
+		UpgradeKind.UP_DEF: return upgrade_description_defence() + " +" + str(upgrade_defence()) 
+		UpgradeKind.UP_RATE: return upgrade_description_crit_rate() + " +" + str(upgrade_crit_rate()) + "%" 
+		UpgradeKind.UP_DMG: return upgrade_description_crit_dmg() + " +" + str(upgrade_crit_dmg()) 
+		UpgradeKind.UP_SPEED: return upgrade_description_running_speed() + " +" + str(upgrade_running_speed()) + "m/s"
+		UpgradeKind.UP_MANA_REGEN: return upgrade_description_mana_regen() + " +" + str(upgrade_mana_regen()) 
+		UpgradeKind.UP_MANA: return upgrade_description_mana() + " +" + str(upgrade_mana()) 
+		UpgradeKind.UP_HEALTH: return upgrade_description_health() + " +" + str(upgrade_health()) 
+		UpgradeKind.UP_ACTIVE: return upgrade_description_spells_in_book() + " +" + str(upgrade_spells_in_book())
+	return ""
+
+func purchase_upgrade_kind(kind: UpgradeKind) -> void:
+	currency = 9999999
+	match kind:
+		UpgradeKind.VOID: purchase_spell_element(Spell.Element.VOID)
+		UpgradeKind.FIRE: purchase_spell_element(Spell.Element.FIRE) 
+		UpgradeKind.ROCK: purchase_spell_element(Spell.Element.ROCK) 
+		UpgradeKind.ELECTRIC: purchase_spell_element(Spell.Element.ELECTRIC) 
+		UpgradeKind.WATER: purchase_spell_element(Spell.Element.WATER) 
+		UpgradeKind.AIR: purchase_spell_element(Spell.Element.AIR) 
+		UpgradeKind.ICE: purchase_spell_element(Spell.Element.ICE) 
+		UpgradeKind.CAST_START: purchase_chain_method(Spell.ChainCastKind.START) 
+		UpgradeKind.CAST_END: purchase_chain_method(Spell.ChainCastKind.END)
+		UpgradeKind.CAST_HIT: purchase_chain_method(Spell.ChainCastKind.HIT)
+		UpgradeKind.UP_r: purchase_r()
+		UpgradeKind.UP_T: purchase_T()
+		UpgradeKind.UP_N: purchase_N()
+		UpgradeKind.UP_P: purchase_P()
+		UpgradeKind.UP_V: purchase_v()
+		UpgradeKind.UP_ATK: purchase_attack()
+		UpgradeKind.UP_DEF: purchase_defence()
+		UpgradeKind.UP_RATE: purchase_crit_rate()
+		UpgradeKind.UP_DMG: purchase_crit_dmg()
+		UpgradeKind.UP_SPEED: purchase_running_speed()
+		UpgradeKind.UP_MANA_REGEN: purchase_mana_regen()
+		UpgradeKind.UP_MANA: purchase_mana()
+		UpgradeKind.UP_HEALTH: purchase_health()
+		UpgradeKind.UP_ACTIVE: purchase_spells_in_book()
+
+func cost_of_upgrade_kind(kind: UpgradeKind) -> int:
+	match kind:
+		UpgradeKind.VOID: return cost_spell_element
+		UpgradeKind.FIRE: return cost_spell_element
+		UpgradeKind.ROCK: return cost_spell_element
+		UpgradeKind.ELECTRIC: return cost_spell_element
+		UpgradeKind.WATER: return cost_spell_element
+		UpgradeKind.AIR: return cost_spell_element
+		UpgradeKind.ICE: return cost_spell_element
+		UpgradeKind.CAST_START: return cost_chain_method(Spell.ChainCastKind.START)
+		UpgradeKind.CAST_END: return cost_chain_method(Spell.ChainCastKind.END)
+		UpgradeKind.CAST_HIT: return cost_chain_method(Spell.ChainCastKind.HIT)
+		UpgradeKind.UP_r: return cost_r()
+		UpgradeKind.UP_T: return cost_T()
+		UpgradeKind.UP_N: return cost_N()
+		UpgradeKind.UP_P: return cost_P()
+		UpgradeKind.UP_V: return cost_v()
+		UpgradeKind.UP_ATK: return cost_attack()
+		UpgradeKind.UP_DEF: return cost_defence()
+		UpgradeKind.UP_RATE: return cost_crit_rate()
+		UpgradeKind.UP_DMG: return cost_crit_dmg()
+		UpgradeKind.UP_SPEED: return cost_running_speed()
+		UpgradeKind.UP_MANA_REGEN: return cost_mana_regen()
+		UpgradeKind.UP_MANA: return cost_mana()
+		UpgradeKind.UP_HEALTH: return cost_health()
+		UpgradeKind.UP_ACTIVE: return cost_spells_in_book()
+	return 0
+	
+func random_upgrade_condition() -> UpgradeCondition:
+	var options := {
+		UpgradeCondition.DEAL_FIRE: 1,
+		UpgradeCondition.DEAL_ROCK: 1, 
+		UpgradeCondition.DEAL_ELECTRIC: 1, 
+		UpgradeCondition.DEAL_WATER: 1, 
+		UpgradeCondition.DEAL_AIR: 1, 
+		UpgradeCondition.DEAL_ICE: 1, 
+		UpgradeCondition.RECEIVE_FIRE: 1,
+		UpgradeCondition.RECEIVE_ROCK: 1, 
+		UpgradeCondition.RECEIVE_ELECTRIC: 1, 
+		UpgradeCondition.RECEIVE_WATER: 1, 
+		UpgradeCondition.RECEIVE_AIR: 1, 
+		UpgradeCondition.RECEIVE_ICE: 1,
+		UpgradeCondition.TRAVEL: 1,
+		UpgradeCondition.GAIN_BACK: 1,
+		UpgradeCondition.DEAL_CRIT: 1,
+	}
+	return Rand.entity_from_distribution(randf(), options, UpgradeCondition.DEAL_CRIT)
+
+func description_upgrade_condition(condition: UpgradeCondition) -> String:
+	match condition:
+		UpgradeCondition.DEAL_FIRE: return "Deal [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Damage"
+		UpgradeCondition.DEAL_ROCK: return "Deal [img=l,12x12, color=#FF8000]res://GUI/Images/rock.svg[/img] Damage"
+		UpgradeCondition.DEAL_ELECTRIC: return "Deal [img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img] Damage"
+		UpgradeCondition.DEAL_WATER: return "Deal [img=l,12x12, color=#0080FF]res://GUI/Images/water.svg[/img] Damage"
+		UpgradeCondition.DEAL_AIR: return "Deal [img=l,12x12, color=#00FF80]res://GUI/Images/wind.svg[/img] Damage"
+		UpgradeCondition.DEAL_ICE: return "Deal [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Damage"
+		UpgradeCondition.RECEIVE_FIRE: return "Receive [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Damage"
+		UpgradeCondition.RECEIVE_ROCK: return "Receive [img=l,12x12, color=#FF8000]res://GUI/Images/rock.svg[/img] Damage"
+		UpgradeCondition.RECEIVE_ELECTRIC: return "Receive [img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img] Damage"
+		UpgradeCondition.RECEIVE_WATER: return "Receive [img=l,12x12, color=#0080FF]res://GUI/Images/water.svg[/img] Damage"
+		UpgradeCondition.RECEIVE_AIR: return "Receive [img=l,12x12, color=#00FF80]res://GUI/Images/wind.svg[/img] Damage"
+		UpgradeCondition.RECEIVE_ICE: return "Receive [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Damage"
+		UpgradeCondition.TRAVEL: return "Travel"
+		UpgradeCondition.GAIN_BACK: return "Gain Mana Back"
+		UpgradeCondition.DEAL_CRIT: return "Deal Crit Damage"
+	return ""
+	
+func fill_upgrade_slots(emit_changes: bool) -> void:
+	upgrade_kind_1 = random_upgrade_kind()
+	upgrade_cond_1 = random_upgrade_condition()
+	upgrade_kind_2 = random_upgrade_kind()
+	upgrade_cond_2 = random_upgrade_condition()
+	upgrade_kind_3 = random_upgrade_kind()
+	upgrade_cond_3 = random_upgrade_condition()
+	upgrade_kind_4 = random_upgrade_kind()
+	upgrade_cond_4 = random_upgrade_condition()
+	if emit_changes:
+		emit_upgrade_purchase()

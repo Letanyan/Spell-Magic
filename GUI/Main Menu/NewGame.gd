@@ -19,7 +19,7 @@ var name_generator: NameGenerator
 @onready var respawn: Button = $Respawn
 @onready var sandbox: Button = $Sandbox
 
-@onready var respawn_options: Panel = $RespawnOptions
+@onready var respawn_options: VBoxContainer = $RespawnOptions
 
 @onready var health_slider: HSlider = $StartingUpgradesPanel/Health/Slider
 @onready var attack_slider: HSlider = $StartingUpgradesPanel/Attack/Slider
@@ -222,7 +222,11 @@ func _on_create_pressed() -> void:
 		match game_mode:
 			GameModeSettings.GameMode.RESPAWN:
 				settings.game_mode_settings.flags = game_flags
+		
+		
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
+		if game_flags & GameModeSettings.MANUAL_UPGRADES == 0:
+			settings.upgrade_settings.fill_upgrade_slots(false)
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()
@@ -253,6 +257,7 @@ func _on_create_pressed() -> void:
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		settings.upgrade_settings.fill_upgrade_slots(false)
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()
@@ -274,6 +279,7 @@ func _on_create_pressed() -> void:
 		temp_upgrades.reset_all_stats_to_default_values()
 		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << rng.randi_range(1, 6))
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		settings.upgrade_settings.fill_upgrade_slots(false)
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()
@@ -309,7 +315,7 @@ func _on_upgrades_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		game_flags |= GameModeSettings.RESPAWN_WITH_UPGRADES
 	else:
-		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_UPGRADES)
+		game_flags &= ~GameModeSettings.RESPAWN_WITH_UPGRADES
 
 
 func _on_artifacts_toggled(button_pressed: bool) -> void:
@@ -317,7 +323,7 @@ func _on_artifacts_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		game_flags |= GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	else:
-		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_ARTIFACTS)
+		game_flags &= ~GameModeSettings.RESPAWN_WITH_ARTIFACTS
 
 
 func _on_spells_toggled(button_pressed: bool) -> void:
@@ -325,22 +331,29 @@ func _on_spells_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		game_flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
 	else:
-		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS)
+		game_flags &= ~GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
 		
 func _on_coins_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		game_flags |= GameModeSettings.RESPAWN_WITH_COINS
 	else:
-		game_flags &= ~(1 << GameModeSettings.RESPAWN_WITH_COINS)
+		game_flags &= ~GameModeSettings.RESPAWN_WITH_COINS
 		
 func _on_spell_editing_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
 		game_flags |= GameModeSettings.DISALLOW_SPELL_EDITING
 	else:
-		game_flags &= ~(1 << GameModeSettings.DISALLOW_SPELL_EDITING)
+		game_flags &= ~GameModeSettings.DISALLOW_SPELL_EDITING
 		
+func _on_manual_upgrades_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		game_flags |= GameModeSettings.MANUAL_UPGRADES
+	else:
+		game_flags &= ~GameModeSettings.MANUAL_UPGRADES	
+
 
 func _on_health_value_changed(value: float) -> void:
 	upgrades.level_health = ceili(value)

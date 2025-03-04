@@ -32,12 +32,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("3_l8gl3")
 
-[node name="Upgrades" parent="." instance=ExtResource("5_85var")]
+[node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
 layout_mode = 1
 
-[node name="WandCase" parent="." instance=ExtResource("2_4jtlr")]
+[node name="Upgrades" parent="." instance=ExtResource("5_85var")]
 visible = false
 layout_mode = 1
+offset_top = 48.0
 
 [node name="Artifacts" parent="." instance=ExtResource("4_setqv")]
 visible = false
@@ -97,65 +98,6 @@ anchor_right = 1.0
 offset_bottom = 49.0
 grow_horizontal = 2
 
-[node name="Spells" type="Button" parent="Tabbar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.49
-anchor_right = 0.5
-anchor_bottom = 0.49
-offset_left = 56.0
-offset_top = -16.01
-offset_right = 152.0
-offset_bottom = 15.99
-grow_horizontal = 2
-focus_neighbor_left = NodePath("../Quit")
-focus_neighbor_right = NodePath("../Wands")
-focus_neighbor_bottom = NodePath("../../MagicBook")
-focus_next = NodePath("../Wands")
-focus_previous = NodePath("../Quit")
-toggle_mode = true
-text = "Spells"
-
-[node name="Wands" type="Button" parent="Tabbar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.49
-anchor_right = 0.5
-anchor_bottom = 0.49
-offset_left = -152.0
-offset_top = -16.01
-offset_right = -56.0
-offset_bottom = 15.99
-grow_horizontal = 2
-focus_neighbor_left = NodePath("../Spells")
-focus_neighbor_right = NodePath("../Artifacts")
-focus_neighbor_bottom = NodePath("../../WandCase")
-focus_next = NodePath("../Artifacts")
-focus_previous = NodePath("../Spells")
-toggle_mode = true
-text = "Wands"
-
-[node name="Artifacts" type="Button" parent="Tabbar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.49
-anchor_right = 0.5
-anchor_bottom = 0.49
-offset_left = -48.0
-offset_top = -16.01
-offset_right = 48.0
-offset_bottom = 15.99
-focus_neighbor_left = NodePath("../Wands")
-focus_neighbor_right = NodePath("../Upgrades")
-focus_neighbor_bottom = NodePath("../../Artifacts")
-focus_next = NodePath("../Upgrades")
-focus_previous = NodePath("../Wands")
-toggle_mode = true
-text = "Artifacts"
-
 [node name="Quit" type="Button" parent="Tabbar"]
 layout_mode = 0
 offset_left = 8.0
@@ -163,29 +105,10 @@ offset_top = 8.0
 offset_right = 104.0
 offset_bottom = 40.0
 focus_neighbor_left = NodePath("../Settings")
-focus_neighbor_right = NodePath("../Spells")
-focus_next = NodePath("../Spells")
+focus_neighbor_right = NodePath("../HBox/Spells")
+focus_next = NodePath("../HBox/Spells")
 focus_previous = NodePath("../Settings")
 text = "Close"
-
-[node name="Upgrades" type="Button" parent="Tabbar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.49
-anchor_right = 0.5
-anchor_bottom = 0.49
-offset_left = -256.0
-offset_top = -16.01
-offset_right = -160.0
-offset_bottom = 15.99
-focus_neighbor_left = NodePath("../Artifacts")
-focus_neighbor_right = NodePath("../Settings")
-focus_neighbor_bottom = NodePath("../../Upgrades")
-focus_next = NodePath("../Settings")
-focus_previous = NodePath("../Artifacts")
-toggle_mode = true
-text = "Upgrades"
 
 [node name="Settings" type="Button" parent="Tabbar"]
 layout_mode = 1
@@ -197,32 +120,80 @@ offset_top = 8.0
 offset_right = -10.0
 offset_bottom = 40.0
 grow_horizontal = 0
-focus_neighbor_left = NodePath("../Upgrades")
+focus_neighbor_left = NodePath("../HBox/Upgrades")
 focus_neighbor_right = NodePath("../Quit")
 focus_neighbor_bottom = NodePath("../../Settings")
 focus_next = NodePath("../Quit")
-focus_previous = NodePath("../Upgrades")
+focus_previous = NodePath("../HBox/Upgrades")
 toggle_mode = true
 text = "Settings"
 
-[node name="Notes" type="Button" parent="Tabbar"]
+[node name="HBox" type="HBoxContainer" parent="Tabbar"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.49
-anchor_right = 0.5
-anchor_bottom = 0.49
-offset_left = 160.0
-offset_top = -16.01
-offset_right = 256.0
-offset_bottom = 15.99
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 112.0
+offset_top = 8.0
+offset_right = -104.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Wands" type="Button" parent="Tabbar/HBox"]
+custom_minimum_size = Vector2(86, 32)
+layout_mode = 2
+focus_neighbor_left = NodePath("../Spells")
+focus_neighbor_right = NodePath("../Artifacts")
+focus_neighbor_bottom = NodePath("../../../WandCase")
+focus_next = NodePath("../Artifacts")
+focus_previous = NodePath("../Spells")
+toggle_mode = true
+text = "Wands"
+
+[node name="Upgrades" type="Button" parent="Tabbar/HBox"]
+custom_minimum_size = Vector2(86, 32)
+layout_mode = 2
+focus_neighbor_left = NodePath("../Artifacts")
+focus_neighbor_right = NodePath("../../Settings")
+focus_neighbor_bottom = NodePath("../../../Upgrades")
+focus_next = NodePath("../../Settings")
+focus_previous = NodePath("../Artifacts")
+toggle_mode = true
+text = "Upgrades"
+
+[node name="Artifacts" type="Button" parent="Tabbar/HBox"]
+custom_minimum_size = Vector2(86, 32)
+layout_mode = 2
+focus_neighbor_left = NodePath("../Wands")
+focus_neighbor_right = NodePath("../Upgrades")
+focus_neighbor_bottom = NodePath("../../../Artifacts")
+focus_next = NodePath("../Upgrades")
+focus_previous = NodePath("../Wands")
+toggle_mode = true
+text = "Artifacts"
+
+[node name="Spells" type="Button" parent="Tabbar/HBox"]
+custom_minimum_size = Vector2(86, 32)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Quit")
+focus_neighbor_right = NodePath("../Wands")
+focus_neighbor_bottom = NodePath("../../../MagicBook")
+focus_next = NodePath("../Wands")
+focus_previous = NodePath("../../Quit")
+toggle_mode = true
+text = "Spells"
+
+[node name="Notes" type="Button" parent="Tabbar/HBox"]
+custom_minimum_size = Vector2(86, 32)
+layout_mode = 2
 toggle_mode = true
 text = "Notes"
 
-[connection signal="pressed" from="Tabbar/Spells" to="." method="_on_spells_pressed"]
-[connection signal="pressed" from="Tabbar/Wands" to="." method="_on_wands_pressed"]
-[connection signal="pressed" from="Tabbar/Artifacts" to="." method="_on_artifacts_pressed"]
 [connection signal="pressed" from="Tabbar/Quit" to="." method="_on_quit_pressed"]
-[connection signal="pressed" from="Tabbar/Upgrades" to="." method="_on_upgrades_pressed"]
 [connection signal="pressed" from="Tabbar/Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="Tabbar/Notes" to="." method="_on_notes_pressed"]
+[connection signal="pressed" from="Tabbar/HBox/Wands" to="." method="_on_wands_pressed"]
+[connection signal="pressed" from="Tabbar/HBox/Upgrades" to="." method="_on_upgrades_pressed"]
+[connection signal="pressed" from="Tabbar/HBox/Artifacts" to="." method="_on_artifacts_pressed"]
+[connection signal="pressed" from="Tabbar/HBox/Spells" to="." method="_on_spells_pressed"]
+[connection signal="pressed" from="Tabbar/HBox/Notes" to="." method="_on_notes_pressed"]

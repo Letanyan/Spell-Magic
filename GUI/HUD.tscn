@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=28 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="StyleBox" uid="uid://ckmaf8r6l05na" path="res://GUI/HealthBarBG.tres" id="2_ss7w7"]
@@ -12,6 +12,7 @@
 [ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="6_gdtbx"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_yr21e"]
 [ext_resource type="StyleBox" uid="uid://ci70pm0jx6gvs" path="res://GUI/ThemeUI/RichTextHolder.tres" id="8_qt3l3"]
+[ext_resource type="PackedScene" uid="uid://drv66hotx4pw4" path="res://GUI/HUDUpgrades.tscn" id="10_alyrs"]
 [ext_resource type="Script" path="res://GUI/SelectionWheel.gd" id="10_rpd6m"]
 [ext_resource type="Texture2D" uid="uid://cgfktoa06l5gn" path="res://GUI/Images/triangle.png" id="14_8m6i1"]
 
@@ -237,7 +238,7 @@ tint_progress = Color(0, 0.501961, 1, 1)
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 248.0
+offset_right = 280.0
 offset_bottom = 16.0
 mouse_filter = 2
 theme_override_colors/guide_color = Color(0, 0, 0, 0)
@@ -277,17 +278,22 @@ scroll_active = false
 shortcut_keys_enabled = false
 metadata/_edit_lock_ = true
 
-[node name="StatsView" parent="." instance=ExtResource("3_3d5vo")]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_right = 0.0
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 0
 offset_left = 8.0
-offset_top = -304.0
+offset_top = 248.0
 offset_right = 280.0
-offset_bottom = -7.0
-grow_horizontal = 1
-grow_vertical = 0
+offset_bottom = 641.0
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="HudUpgrades" parent="VBox" instance=ExtResource("10_alyrs")]
+custom_minimum_size = Vector2(0, 88)
+layout_mode = 2
+
+[node name="StatsView" parent="VBox" instance=ExtResource("3_3d5vo")]
+custom_minimum_size = Vector2(272, 297)
+layout_mode = 2
 
 [node name="NotificationLabel" type="RichTextLabel" parent="."]
 layout_mode = 1

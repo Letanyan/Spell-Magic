@@ -225,37 +225,26 @@ focus_previous = NodePath("../Respawn")
 toggle_mode = true
 text = "Sandbox"
 
-[node name="RespawnOptions" type="Panel" parent="."]
+[node name="RespawnOptions" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -128.0
+offset_left = -104.0
 offset_top = -60.0
-offset_right = 128.0
-offset_bottom = 116.0
+offset_right = 107.0
+offset_bottom = 148.0
 focus_neighbor_bottom = NodePath("Upgrades")
+alignment = 1
 
 [node name="SpellEditing" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -104.0
-offset_top = 144.0
-offset_right = 104.0
-offset_bottom = 172.0
-grow_horizontal = 2
+layout_mode = 2
 text = "Disallow Spell Editing"
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 16.0
-offset_right = 240.0
-offset_bottom = 44.0
+layout_mode = 2
 focus_neighbor_top = NodePath("../../Sandbox")
 focus_neighbor_right = NodePath("../../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../Artifacts")
@@ -265,11 +254,7 @@ button_pressed = true
 text = "Respawn with Upgrades"
 
 [node name="Artifacts" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 48.0
-offset_right = 232.0
-offset_bottom = 76.0
+layout_mode = 2
 focus_neighbor_top = NodePath("../Upgrades")
 focus_neighbor_right = NodePath("../../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../Spells")
@@ -278,11 +263,7 @@ focus_previous = NodePath("../Upgrades")
 text = "Respawn with Artifacts"
 
 [node name="Spells" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 80.0
-offset_right = 232.0
-offset_bottom = 108.0
+layout_mode = 2
 focus_neighbor_top = NodePath("../Artifacts")
 focus_neighbor_right = NodePath("../../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../../Create")
@@ -291,12 +272,12 @@ focus_previous = NodePath("../Artifacts")
 text = "Respawn with Spells"
 
 [node name="Coins" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 112.0
-offset_right = 205.0
-offset_bottom = 140.0
+layout_mode = 2
 text = "Respawn with Coins"
+
+[node name="ManualUpgrades" type="CheckBox" parent="RespawnOptions"]
+layout_mode = 2
+text = "Manual Upgrades"
 
 [node name="Create" type="Button" parent="."]
 layout_mode = 1
@@ -1028,6 +1009,7 @@ popup/item_4/id = 4
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]
 [connection signal="toggled" from="RespawnOptions/Coins" to="." method="_on_coins_toggled"]
+[connection signal="toggled" from="RespawnOptions/ManualUpgrades" to="." method="_on_manual_upgrades_toggled"]
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="toggled" from="StartingUpgrades" to="." method="_on_starting_upgrades_toggled"]

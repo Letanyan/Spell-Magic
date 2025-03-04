@@ -32,7 +32,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 56.0
+offset_top = 8.0
 offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 2
@@ -40,12 +40,14 @@ grow_vertical = 2
 
 [node name="max_H" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 56.0
-offset_right = 256.544
-offset_bottom = 80.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 59.608
+offset_right = -32.0
+offset_bottom = 83.608
 
 [node name="label" type="RichTextLabel" parent="container/max_H"]
 layout_mode = 2
@@ -88,12 +90,14 @@ scroll_active = false
 
 [node name="attack" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 112.0
-offset_right = 256.544
-offset_bottom = 136.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 115.608
+offset_right = -32.0
+offset_bottom = 139.608
 
 [node name="label" type="RichTextLabel" parent="container/attack"]
 layout_mode = 1
@@ -137,12 +141,14 @@ scroll_active = false
 
 [node name="defence" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 112.0
-offset_right = 239.456
-offset_bottom = 136.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 115.608
+offset_right = 528.0
+offset_bottom = 139.608
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/defence"]
@@ -187,12 +193,14 @@ scroll_active = false
 
 [node name="max_P" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 336.0
-offset_right = 239.456
-offset_bottom = 360.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 339.608
+offset_right = 528.0
+offset_bottom = 363.608
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_P"]
@@ -237,12 +245,14 @@ scroll_active = false
 
 [node name="max_M" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 56.0
-offset_right = 239.456
-offset_bottom = 80.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 59.608
+offset_right = 528.0
+offset_bottom = 83.608
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_M"]
@@ -286,12 +296,14 @@ scroll_active = false
 
 [node name="max_spell_count" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 392.0
-offset_right = 239.456
-offset_bottom = 440.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 395.608
+offset_right = 528.0
+offset_bottom = 443.608
 grow_horizontal = 2
 
 [node name="label" type="Label" parent="container/max_spell_count"]
@@ -335,12 +347,14 @@ scroll_active = false
 
 [node name="running_speed" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 336.0
-offset_right = 248.544
-offset_bottom = 360.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 339.608
+offset_right = -40.0
+offset_bottom = 363.608
 
 [node name="label" type="RichTextLabel" parent="container/running_speed"]
 layout_mode = 0
@@ -384,12 +398,14 @@ scroll_active = false
 
 [node name="elements" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -263.456
-offset_top = 464.0
-offset_right = 280.544
-offset_bottom = 528.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -552.0
+offset_top = 467.608
+offset_right = -8.0
+offset_bottom = 531.608
 
 [node name="label" type="Label" parent="container/elements"]
 layout_mode = 0
@@ -554,12 +570,14 @@ scroll_active = false
 
 [node name="max_N" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 280.0
-offset_right = 239.456
-offset_bottom = 304.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 283.608
+offset_right = 528.0
+offset_bottom = 307.608
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_N"]
@@ -604,12 +622,14 @@ scroll_active = false
 
 [node name="max_T" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 280.0
-offset_right = 248.544
-offset_bottom = 304.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 283.608
+offset_right = -40.0
+offset_bottom = 307.608
 
 [node name="label" type="RichTextLabel" parent="container/max_T"]
 layout_mode = 1
@@ -653,12 +673,14 @@ scroll_active = false
 
 [node name="chain_methods" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -256.544
-offset_top = 464.0
-offset_right = 255.456
-offset_bottom = 520.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 32.0
+offset_top = 467.608
+offset_right = 544.0
+offset_bottom = 523.608
 
 [node name="label" type="Label" parent="container/chain_methods"]
 layout_mode = 0
@@ -731,12 +753,14 @@ scroll_active = false
 
 [node name="max_r" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 224.0
-offset_right = 239.456
-offset_bottom = 248.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 226.936
+offset_right = 528.0
+offset_bottom = 250.936
 grow_horizontal = 2
 
 [node name="label" type="RichTextLabel" parent="container/max_r"]
@@ -780,12 +804,14 @@ scroll_active = false
 
 [node name="max_v" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 224.0
-offset_right = 256.544
-offset_bottom = 248.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 227.608
+offset_right = -32.0
+offset_bottom = 251.608
 
 [node name="label" type="RichTextLabel" parent="container/max_v"]
 layout_mode = 1
@@ -829,12 +855,14 @@ scroll_active = false
 
 [node name="mana_regen" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 392.0
-offset_right = 248.544
-offset_bottom = 440.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 395.608
+offset_right = -40.0
+offset_bottom = 443.608
 
 [node name="label" type="RichTextLabel" parent="container/mana_regen"]
 layout_mode = 0
@@ -877,12 +905,14 @@ scroll_active = false
 
 [node name="crit_dmg" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.754
-anchor_right = 0.754
-offset_left = -264.544
-offset_top = 168.0
-offset_right = 239.456
-offset_bottom = 192.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 171.608
+offset_right = 528.0
+offset_bottom = 195.608
 
 [node name="label" type="RichTextLabel" parent="container/crit_dmg"]
 layout_mode = 0
@@ -918,12 +948,14 @@ text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 
 [node name="crit_rate" type="Control" parent="container"]
 layout_mode = 1
-anchor_left = 0.246
-anchor_right = 0.246
-offset_left = -255.456
-offset_top = 168.0
-offset_right = 248.544
-offset_bottom = 192.0
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -544.0
+offset_top = 171.608
+offset_right = -40.0
+offset_bottom = 195.608
 
 [node name="label" type="RichTextLabel" parent="container/crit_rate"]
 layout_mode = 0
@@ -973,100 +1005,118 @@ scroll_active = false
 
 [node name="HSep0" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 32.0
+offset_top = 40.216
 offset_right = -1.0
-offset_bottom = 48.0
+offset_bottom = 56.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep1" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 88.0
+offset_top = 96.216
 offset_right = -1.0
-offset_bottom = 104.0
+offset_bottom = 112.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep2" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 144.0
+offset_top = 152.216
 offset_right = -1.0
-offset_bottom = 160.0
+offset_bottom = 168.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep3" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 200.0
+offset_top = 208.216
 offset_right = -1.0
-offset_bottom = 216.0
+offset_bottom = 224.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep4" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 256.0
+offset_top = 264.216
 offset_right = -1.0
-offset_bottom = 272.0
+offset_bottom = 280.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep5" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 312.0
+offset_top = 320.216
 offset_right = -1.0
-offset_bottom = 328.0
+offset_bottom = 336.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep6" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 368.0
+offset_top = 376.216
 offset_right = -1.0
-offset_bottom = 384.0
+offset_bottom = 392.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep7" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 440.0
+offset_top = 448.216
 offset_right = -1.0
-offset_bottom = 456.0
+offset_bottom = 464.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
 [node name="HSep8" type="HSeparator" parent="container"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = -0.013
 anchor_right = 1.0
+anchor_bottom = -0.013
 offset_left = 1.0
-offset_top = 528.0
+offset_top = 536.216
 offset_right = -1.0
-offset_bottom = 544.0
+offset_bottom = 552.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1074,11 +1124,13 @@ theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
+anchor_top = -0.013
 anchor_right = 0.5
+anchor_bottom = -0.013
 offset_left = -8.0
-offset_top = 40.0
+offset_top = 48.216
 offset_right = 8.0
-offset_bottom = 535.0
+offset_bottom = 543.216
 grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 

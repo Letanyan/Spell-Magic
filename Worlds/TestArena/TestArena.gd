@@ -48,6 +48,7 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.defence.set_fixed_value(us.max_defence())
 		player.vitals.health.value += payload.get("health", 0.0) as float
 		player.vitals.mana.value += payload.get("mana", 0.0) as float
+		hud.hud_upgrades.upgrade_slots_refreshed(us)
 	)
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()

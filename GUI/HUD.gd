@@ -17,7 +17,10 @@ extends Control
 @onready var notification_label: RichTextLabel = $NotificationLabel
 var notifications: Dictionary = {} ## [String(Message)]int(seconds until expiration)
 
-@onready var stats_view: StatsView = $StatsView
+@onready var stats_view: StatsView = $VBox/StatsView
+
+@onready var hud_upgrades: HUDUpgrades = $VBox/HudUpgrades
+
 
 @onready var key_count_label: RichTextLabel = $KeyCountLabel
 
@@ -376,6 +379,9 @@ func update_wand_mappings() -> void:
 func update_settings(settings: WorldSettings) -> void:
 	world_settings = settings
 	hud_settings = settings.hud_settings
+	
+	hud_upgrades.visible = world_settings.game_mode_settings.flags & GameModeSettings.MANUAL_UPGRADES == 0
+	hud_upgrades.upgrade_slots_refreshed(settings.upgrade_settings)
 	
 	GlobalData.controller.switching_mode = hud_settings.key_display
 	match hud_settings.key_display:
