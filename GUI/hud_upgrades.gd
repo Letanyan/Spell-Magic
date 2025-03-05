@@ -17,6 +17,8 @@ extends Panel
 @onready var label_4: RichTextLabel = $Grid/Progress4/Label
 @onready var condition_4: RichTextLabel = $Grid/Progress4/Condition
 
+signal upgrade_was_complete(message: String)
+
 func _ready() -> void:
 	pass
 	
@@ -42,9 +44,11 @@ func upgrade_slots_refreshed(settings: UpgradeSettings) -> void:
 	progress_3.value = settings.upgrade_prog_cur_3
 	progress_4.value = settings.upgrade_prog_cur_4
 	
-func upgrade_slot_progress_update(settings: UpgradeSettings) -> void:
+func upgrade_slot_progress_update(settings: UpgradeSettings, message: String) -> void:
 	progress_1.value = settings.upgrade_prog_cur_1
 	progress_2.value = settings.upgrade_prog_cur_2
 	progress_3.value = settings.upgrade_prog_cur_3
 	progress_4.value = settings.upgrade_prog_cur_4
+	if not message.is_empty():
+		upgrade_was_complete.emit(message)
 	

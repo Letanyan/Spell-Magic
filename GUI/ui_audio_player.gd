@@ -100,6 +100,9 @@ func attack(version: int = -1) -> void:
 func ringing() -> void:
 	play(ui_player, source_ringing)
 	
+func upgrade() -> void: # TODO: get proper audio 
+	play(ui_player, source_ringing)
+	
 func grabbing() -> void:
 	play(ui_player, source_grabbing)
 	

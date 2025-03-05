@@ -538,12 +538,17 @@ func hide_tutorial_message() -> void:
 		hud.hide_message(GameSettings.Tutorials.CONTROLS)
 		
 func menu_did_open_tab_index(index: int) -> void:
+	var mark_message := func(tutorial: GameSettings.Tutorials) -> void:
+		hud.hide_message(tutorial)
+		if hud.messages.has(tutorial):
+			GlobalData.game_settings.mark_tutorial(tutorial)
+		
 	match index:
-		0: hud.hide_message(GameSettings.Tutorials.SPELLS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.SPELLS)
-		1: hud.hide_message(GameSettings.Tutorials.WANDS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.WANDS)
-		2: hud.hide_message(GameSettings.Tutorials.ARTIFACTS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.ARTIFACTS)
-		3: hud.hide_message(GameSettings.Tutorials.COINS); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.COINS)
-		4: hud.hide_message(GameSettings.Tutorials.NOTES); GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.NOTES)
+		0: mark_message.call(GameSettings.Tutorials.SPELLS)
+		1: mark_message.call(GameSettings.Tutorials.WANDS)
+		2: mark_message.call(GameSettings.Tutorials.ARTIFACTS)
+		3: mark_message.call(GameSettings.Tutorials.COINS)
+		4: mark_message.call(GameSettings.Tutorials.NOTES)
 
 func _on_player_moved(delta: float) -> void:
 	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):

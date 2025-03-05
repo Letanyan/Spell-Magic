@@ -76,6 +76,9 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_coin.connect(update_pick_up_world_item_coin)
 	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 10))
 	SignalBus.pick_up_world_item_scroll_note.connect(update_pick_up_world_item_scroll_note)
+	hud_upgrades.upgrade_was_complete.connect(func(message: String) -> void:
+		show_message(GameSettings.Tutorials.GOT_UPGRADE, message, 8.0)
+	)
 	
 func set_wand(value: Wand) -> void:
 	if wand != null:
@@ -484,7 +487,7 @@ func update_pick_up_world_item_key(k: int, m: String) -> void:
 
 func update_pick_up_world_item_coin(s: int, m: String) -> void:
 	show_notification(bbcode_new_item(m), 5)
-	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.COINS):
+	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.COINS) and world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		show_message(GameSettings.Tutorials.COINS, "[center][font_size=21]View 'Upgrades' in the menu to upgrade your character[/font_size][/center]", INF)
 
 func update_pick_up_world_item_scroll_note(c: String, m: String) -> void:

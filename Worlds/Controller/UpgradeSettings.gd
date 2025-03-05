@@ -7,7 +7,7 @@ enum PurchaseError {
 signal max_velocity_updated(value: float)
 signal max_radius_updated(value: float)
 signal upgrade_was_purchased(settings: UpgradeSettings, payload: Dictionary)
-signal upgrade_slot_progress(settings: UpgradeSettings)
+signal upgrade_slot_progress(settings: UpgradeSettings, message: String)
 
 var currency := 500
 
@@ -37,13 +37,13 @@ func check_if_has_spell_element(el: Spell.Element) -> bool:
 	
 func upgrade_description_spell_element(el: Spell.Element) -> String: 
 	match el:
-		Spell.Element.VOID: return "Unlock Void"
-		Spell.Element.FIRE: return "Unlock Fire"
-		Spell.Element.ROCK: return "Unlock Rock"
-		Spell.Element.ELECTRIC: return "Unlock Electric"
-		Spell.Element.WATER: return "Unlock Water"
-		Spell.Element.AIR: return "Unlock Air"
-		Spell.Element.ICE: return "Unlock Ice"
+		Spell.Element.VOID: return "[img=l,12x12, color=#FFFFFF]res://GUI/Images/void.svg[/img] Void"
+		Spell.Element.FIRE: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Fire"
+		Spell.Element.ROCK: return "[img=l,12x12, color=#FF8000]res://GUI/Images/rock.svg[/img] Rock"
+		Spell.Element.ELECTRIC: return "[img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img] Electric"
+		Spell.Element.WATER: return "[img=l,12x12, color=#7700FF]res://GUI/Images/water.svg[/img] Water"
+		Spell.Element.AIR: return "[img=l,12x12, color=#00FF80]res://GUI/Images/wind.svg[/img] Air"
+		Spell.Element.ICE: return "[img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Ice"
 	return ""
 	
 
@@ -618,16 +618,16 @@ func random_upgrade_kind() -> UpgradeKind:
 	
 func description_for_upgrade_kind(kind: UpgradeKind) -> String:
 	match kind:
-		UpgradeKind.VOID: return upgrade_description_spell_element(Spell.Element.VOID)
-		UpgradeKind.FIRE: return upgrade_description_spell_element(Spell.Element.FIRE) 
-		UpgradeKind.ROCK: return upgrade_description_spell_element(Spell.Element.ROCK) 
-		UpgradeKind.ELECTRIC: return upgrade_description_spell_element(Spell.Element.ELECTRIC) 
-		UpgradeKind.WATER: return upgrade_description_spell_element(Spell.Element.WATER) 
-		UpgradeKind.AIR: return upgrade_description_spell_element(Spell.Element.AIR) 
-		UpgradeKind.ICE: return upgrade_description_spell_element(Spell.Element.ICE) 
-		UpgradeKind.CAST_START: return upgrade_description_chain_method(Spell.ChainCastKind.START) 
-		UpgradeKind.CAST_END: return upgrade_description_chain_method(Spell.ChainCastKind.END)
-		UpgradeKind.CAST_HIT: return upgrade_description_chain_method(Spell.ChainCastKind.HIT)
+		UpgradeKind.VOID: return "Unlock " + upgrade_description_spell_element(Spell.Element.VOID)
+		UpgradeKind.FIRE: return "Unlock " + upgrade_description_spell_element(Spell.Element.FIRE) 
+		UpgradeKind.ROCK: return "Unlock " + upgrade_description_spell_element(Spell.Element.ROCK) 
+		UpgradeKind.ELECTRIC: return "Unlock " + upgrade_description_spell_element(Spell.Element.ELECTRIC) 
+		UpgradeKind.WATER: return "Unlock " + upgrade_description_spell_element(Spell.Element.WATER) 
+		UpgradeKind.AIR: return "Unlock " + upgrade_description_spell_element(Spell.Element.AIR) 
+		UpgradeKind.ICE: return "Unlock " + upgrade_description_spell_element(Spell.Element.ICE) 
+		UpgradeKind.CAST_START: return "Unlock " + upgrade_description_chain_method(Spell.ChainCastKind.START) 
+		UpgradeKind.CAST_END: return "Unlock " + upgrade_description_chain_method(Spell.ChainCastKind.END)
+		UpgradeKind.CAST_HIT: return "Unlock " + upgrade_description_chain_method(Spell.ChainCastKind.HIT)
 		UpgradeKind.UP_r: return upgrade_description_r() + " +" + str(upgrade_P()) + "m"
 		UpgradeKind.UP_T: return upgrade_description_T() + " +" + str(upgrade_T()) + "s" 
 		UpgradeKind.UP_N: return upgrade_description_N() + " +" + str(upgrade_N()) 
@@ -643,6 +643,35 @@ func description_for_upgrade_kind(kind: UpgradeKind) -> String:
 		UpgradeKind.UP_HEALTH: return upgrade_description_health() + " +" + str(upgrade_health()) 
 		UpgradeKind.UP_ACTIVE: return upgrade_description_spells_in_book() + " +" + str(upgrade_spells_in_book())
 	return ""
+	
+func message_for_upgrade_kind(kind: UpgradeKind) -> String:
+	var result := ""
+	match kind:
+		UpgradeKind.VOID: result = upgrade_description_spell_element(Spell.Element.VOID) + " Unlocked"
+		UpgradeKind.FIRE: result = upgrade_description_spell_element(Spell.Element.FIRE) + " Unlocked" 
+		UpgradeKind.ROCK: result = upgrade_description_spell_element(Spell.Element.ROCK) + " Unlocked" 
+		UpgradeKind.ELECTRIC: result = upgrade_description_spell_element(Spell.Element.ELECTRIC) + " Unlocked"
+		UpgradeKind.WATER: result = upgrade_description_spell_element(Spell.Element.WATER) + " Unlocked"
+		UpgradeKind.AIR: result = upgrade_description_spell_element(Spell.Element.AIR) + " Unlocked"
+		UpgradeKind.ICE: result = upgrade_description_spell_element(Spell.Element.ICE) + " Unlocked"
+		UpgradeKind.CAST_START: result = upgrade_description_chain_method(Spell.ChainCastKind.START) + " Unlocked"
+		UpgradeKind.CAST_END: result = upgrade_description_chain_method(Spell.ChainCastKind.END) + " Unlocked"
+		UpgradeKind.CAST_HIT: result = upgrade_description_chain_method(Spell.ChainCastKind.HIT) + " Unlocked"
+		UpgradeKind.UP_r: result = "Max " + upgrade_description_r() + "r " + str(max_P()) + "m"
+		UpgradeKind.UP_T: result = "Max " + upgrade_description_T() + "T " + str(max_T()) + "s" 
+		UpgradeKind.UP_N: result = "Max " + upgrade_description_N() + "N " + str(max_N()) 
+		UpgradeKind.UP_P: result = "Max " + upgrade_description_P() + "P " + str(max_P()) 
+		UpgradeKind.UP_V: result = "Max " + upgrade_description_v() + " Velocity " + str(max_v()) + "m/s" 
+		UpgradeKind.UP_ATK: result = upgrade_description_attack() + "Attack " + str(max_attack())
+		UpgradeKind.UP_DEF: result = upgrade_description_defence() + "Defence " + str(max_defence()) 
+		UpgradeKind.UP_RATE: result = "Max " + upgrade_description_crit_rate() + "Crit Rate " + str(max_crit_rate()) + "%" 
+		UpgradeKind.UP_DMG: result = "Max " + upgrade_description_crit_dmg() + "Crit Dmg " + str(upgrade_crit_dmg()) 
+		UpgradeKind.UP_SPEED: result = "Max " + upgrade_description_running_speed() + "Speed " + str(upgrade_running_speed()) + "m/s"
+		UpgradeKind.UP_MANA_REGEN: result = "Auto " + upgrade_description_mana_regen() + "Mana Regen " + str(upgrade_mana_regen()) 
+		UpgradeKind.UP_MANA: result = "Max " + upgrade_description_mana() + "Mana " + str(upgrade_mana()) 
+		UpgradeKind.UP_HEALTH: result = "Max " + upgrade_description_health() + "Health " + str(upgrade_health()) 
+		UpgradeKind.UP_ACTIVE: result = "Max " + upgrade_description_spells_in_book() + " " + str(upgrade_spells_in_book())
+	return "[center][font_size=21]" + result + "[/font_size][/center]"
 
 func purchase_upgrade_kind(kind: UpgradeKind) -> void:
 	currency = 9999999
@@ -860,16 +889,25 @@ func progress_mana_back(amount: float) -> void:
 	update_upgrade_progress()
 
 func update_upgrade_progress() -> void:
+	var message := ""
 	if upgrade_prog_cur_1 > upgrade_prog_max_1:
 		purchase_upgrade_kind(upgrade_kind_1)
 		fill_upgrade_slots(true)
+		message = message_for_upgrade_kind(upgrade_kind_1)
+		UIAudioPlayer.upgrade()
 	elif upgrade_prog_cur_2 > upgrade_prog_max_2:
 		purchase_upgrade_kind(upgrade_kind_2)
 		fill_upgrade_slots(true)
+		message = message_for_upgrade_kind(upgrade_kind_2)
+		UIAudioPlayer.upgrade()
 	elif upgrade_prog_cur_3 > upgrade_prog_max_3:
 		purchase_upgrade_kind(upgrade_kind_3)
 		fill_upgrade_slots(true)
+		message = message_for_upgrade_kind(upgrade_kind_3)
+		UIAudioPlayer.upgrade()
 	elif upgrade_prog_cur_4 > upgrade_prog_max_4:
 		purchase_upgrade_kind(upgrade_kind_4)
 		fill_upgrade_slots(true)
-	upgrade_slot_progress.emit(self)
+		message = message_for_upgrade_kind(upgrade_kind_4)
+		UIAudioPlayer.upgrade()
+	upgrade_slot_progress.emit(self, message)

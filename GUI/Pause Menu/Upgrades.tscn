@@ -261,7 +261,7 @@ offset_left = 8.0
 offset_right = 120.0
 offset_bottom = 24.0
 bbcode_enabled = true
-text = "Max [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] M"
+text = "Max [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] Mana"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_M"]
@@ -870,7 +870,7 @@ offset_left = 8.0
 offset_right = 120.0
 offset_bottom = 48.0
 bbcode_enabled = true
-text = "Auto [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] M Regeneration"
+text = "Auto [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] Mana Regeneration"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/mana_regen"]
