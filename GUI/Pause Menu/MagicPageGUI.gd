@@ -148,7 +148,12 @@ func refresh_preview_thumbnails(spell: Spell) -> void:
 	else:
 		next_thumbnail.text = ">"
 		next_thumbnail.disabled = true
-	
+
+func update_combo_box_disabled() -> void:
+	for i in range(Spell.Element.size()):
+		element_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_spell_element(Spell.Element.values()[i] as Spell.Element))
+	for i in range(Spell.ChainCastKind.size()):
+		chain_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i] as Spell.ChainCastKind))
 
 func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	UIAudioPlayer.silence = true
@@ -156,10 +161,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	book = magic_book
 	current_index = index
 	
-	for i in range(Spell.Element.size()):
-		element_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_spell_element(Spell.Element.values()[i] as Spell.Element))
-	for i in range(Spell.ChainCastKind.size()):
-		chain_combo.set_item_disabled(i, not book.settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.values()[i] as Spell.ChainCastKind))
+	update_combo_box_disabled()
 	
 	name_edit.text = spell.name
 	

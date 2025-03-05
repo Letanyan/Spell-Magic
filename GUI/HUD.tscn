@@ -338,7 +338,6 @@ bbcode_enabled = true
 text = "[right][font_size=24][color=#ffb500]0 [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]"
 
 [node name="MessagePanel" type="Panel" parent="."]
-visible = false
 material = ExtResource("6_gdtbx")
 layout_mode = 1
 anchors_preset = -1
@@ -364,7 +363,7 @@ metadata/_edit_lock_ = true
 [node name="MessageLabel" type="RichTextLabel" parent="MessagePanel/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[center]Hello, World[/center]"
+text = "[center][font_size=21][img=l,21x21, color=#00AA00]res://GUI/Images/health.svg[/img]Hello, World[/font_size][/center]"
 fit_content = true
 scroll_active = false
 metadata/_edit_lock_ = true

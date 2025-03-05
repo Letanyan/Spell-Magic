@@ -89,6 +89,8 @@ func setup(_settings: WorldSettings) -> void:
 		player.vitals.health.value += payload.get("health", 0.0) as float
 		player.vitals.mana.value += payload.get("mana", 0.0) as float
 		hud.hud_upgrades.upgrade_slots_refreshed(us)
+		if payload.has("element") or payload.has("chain"):
+			menu.magic_book.page.update_combo_box_disabled()
 	)
 	
 	case = WandCase.new()

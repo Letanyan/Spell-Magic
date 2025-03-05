@@ -29,21 +29,21 @@ func purchase_spell_element(el: Spell.Element) -> PurchaseError:
 		
 	has_spell_element |= (1 << el)
 	currency -= cost_spell_element
-	emit_upgrade_purchase()
+	emit_upgrade_purchase({"element": el})
 	return PurchaseError.NONE
 	
 func check_if_has_spell_element(el: Spell.Element) -> bool:
 	return has_spell_element & (1 << el) != 0
 	
-func upgrade_description_spell_element(el: Spell.Element) -> String: 
+func upgrade_description_spell_element(el: Spell.Element, size: int) -> String: 
 	match el:
-		Spell.Element.VOID: return "[img=l,12x12, color=#FFFFFF]res://GUI/Images/void.svg[/img] Void"
-		Spell.Element.FIRE: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Fire"
-		Spell.Element.ROCK: return "[img=l,12x12, color=#FF8000]res://GUI/Images/rock.svg[/img] Rock"
-		Spell.Element.ELECTRIC: return "[img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img] Electric"
-		Spell.Element.WATER: return "[img=l,12x12, color=#7700FF]res://GUI/Images/water.svg[/img] Water"
-		Spell.Element.AIR: return "[img=l,12x12, color=#00FF80]res://GUI/Images/wind.svg[/img] Air"
-		Spell.Element.ICE: return "[img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Ice"
+		Spell.Element.VOID: return "[img=l,%dx%d, color=#FFFFFF]res://GUI/Images/void.svg[/img] Void" % [size, size]
+		Spell.Element.FIRE: return "[img=l,%dx%d, color=#FF0000]res://GUI/Images/fire.svg[/img] Fire" % [size, size]
+		Spell.Element.ROCK: return "[img=l,%dx%d, color=#FF8000]res://GUI/Images/rock.svg[/img] Rock" % [size, size]
+		Spell.Element.ELECTRIC: return "[img=l,%dx%d, color=#FF0080]res://GUI/Images/electric.svg[/img] Electric" % [size, size]
+		Spell.Element.WATER: return "[img=l,%dx%d, color=#0080FF]res://GUI/Images/water.svg[/img] Water" % [size, size]
+		Spell.Element.AIR: return "[img=l,%dx%d, color=#00FF80]res://GUI/Images/wind.svg[/img] Air" % [size, size]
+		Spell.Element.ICE: return "[img=l,%dx%d, color=#00FFFF]res://GUI/Images/ice.svg[/img] Ice" % [size, size]
 	return ""
 	
 
@@ -68,7 +68,7 @@ func purchase_chain_method(cm: Spell.ChainCastKind) -> PurchaseError:
 		
 	has_chain_method |= (1 << cm)
 	currency -= cost_chain_method(cm)
-	emit_upgrade_purchase()
+	emit_upgrade_purchase({"chain": cm})
 	return PurchaseError.NONE
 
 func check_if_has_chain_method(el: Spell.ChainCastKind) -> bool:
@@ -78,7 +78,7 @@ func upgrade_description_chain_method(el: Spell.ChainCastKind) -> String:
 	match el:
 		Spell.ChainCastKind.START: return "Cast At Start"
 		Spell.ChainCastKind.END: return "Cast At End"
-		Spell.ChainCastKind.HIT: return "Cast At On Hit"
+		Spell.ChainCastKind.HIT: return "Cast On Hit"
 	return ""
 	
 var upgrade_kind_1: UpgradeKind
@@ -109,7 +109,7 @@ var level_r := 1:
 	set(value):
 		level_r = clampi(value, 1, level_max_r)
 		max_radius_updated.emit(max_r())
-const level_max_r := 20
+var level_max_r := 2 if GlobalData.is_demo else 20
 func max_r(x: int = level_r) -> float: return x * 0.25
 func upgrade_r() -> float: return max_r(level_r + 1) - max_r(level_r)
 func cost_r() -> int: return (level_r ** 2) * 10
@@ -126,12 +126,12 @@ func purchase_r() -> PurchaseError:
 	level_r += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_r() -> String: return "[img=l,12x12, color=#7700FF]res://GUI/Images/radius.svg[/img]"
+func upgrade_description_r(size: int) -> String: return "[img=l,%dx%d, color=#7700FF]res://GUI/Images/radius.svg[/img]" % [size, size]
 
 var level_T := 1:
 	set(value):
 		level_T = clampi(value, 1, level_max_T)
-const level_max_T := 25
+var level_max_T := 3 if GlobalData.is_demo else 25
 func max_T(x: int = level_T) -> float: return x + 1
 func upgrade_T() -> float: return max_T(level_T + 1) - max_T(level_T)
 func cost_T() -> int: return ceili(level_T ** 1.5 * 10)
@@ -148,12 +148,12 @@ func purchase_T() -> PurchaseError:
 	level_T += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_T() -> String: return "[img=l,12x12, color=#00FF08]res://GUI/Images/time.svg[/img]"
+func upgrade_description_T(size: int) -> String: return "[img=l,%dx%d, color=#00FF08]res://GUI/Images/time.svg[/img]" % [size, size]
 
 var level_N := 1:
 	set(value):
 		level_N = clampi(value, 1, level_max_N)
-const level_max_N := 25
+var level_max_N := 3 if GlobalData.is_demo else 25
 func max_N(x: int = level_N) -> int: return x
 func upgrade_N() -> int: return max_N(level_N + 1) - max_N(level_N)
 func cost_N() -> int: return level_N * 150
@@ -170,12 +170,12 @@ func purchase_N() -> PurchaseError:
 	level_N += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_N() -> String: return "[img=l,12x12, color=#F700FF]res://GUI/Images/count.svg[/img]"
+func upgrade_description_N(size: int) -> String: return "[img=l,%dx%d, color=#F700FF]res://GUI/Images/count.svg[/img]" % [size, size]
 
 var level_D := 1:
 	set(value):
 		level_D = clampi(value, 1, level_max_D)
-const level_max_D := 10
+var level_max_D := 2 if GlobalData.is_demo else 10
 func max_D(x: int = level_D) -> float: return roundf((x - 1) / 36.0 * 100.0)
 func upgrade_D() -> float: return max_D(level_D + 1) - max_D(level_D)
 func cost_D() -> int: return level_D * 25
@@ -197,7 +197,7 @@ func upgrade_description_D() -> String: return "D"
 var level_P := 1:
 	set(value):
 		level_P = clampi(value, 1, level_max_P)
-const level_max_P := 10
+var level_max_P := 3 if GlobalData.is_demo else 10
 func max_P(x: int = level_P) -> int: return x * 10
 func upgrade_P() -> int: return max_P(level_P + 1) - max_P(level_P)
 func cost_P() -> int: return level_P * 200
@@ -214,7 +214,7 @@ func purchase_P() -> PurchaseError:
 	level_P += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_P() -> String: return "[img=l,12x12, color=#0008FF]res://GUI/Images/power.svg[/img]"
+func upgrade_description_P(size: int) -> String: return "[img=l,%dx%d, color=#0008FF]res://GUI/Images/power.svg[/img]" % [size, size]
 
 # max spell velocity should be some multiple of player running speed. 
 # Since max player speed is 10 we arbitrarily decide to limit spell speed to [10]*4=40
@@ -222,7 +222,7 @@ var level_v := 1:
 	set(value):
 		level_v = clampi(value, 1, level_max_v)
 		max_velocity_updated.emit(max_v())
-const level_max_v := 20
+var level_max_v := 5 if GlobalData.is_demo else 20
 func max_v(x: int = level_v) -> float: return 8 + x + floorf(x/20.0*12.0)
 func upgrade_v() -> float: return max_v(level_v + 1) - max_v(level_v)
 func cost_v() -> int: return level_v * 175
@@ -239,12 +239,12 @@ func purchase_v() -> PurchaseError:
 	level_v += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_v() -> String: return "[img=l,12x12, color=#77FF00]res://GUI/Images/velocity.svg[/img]"
+func upgrade_description_v(size: int) -> String: return "[img=l,%dx%d, color=#77FF00]res://GUI/Images/velocity.svg[/img]" % [size, size]
 
 var level_mana := 1:
 	set(value):
 		level_mana = clampi(value, 1, level_max_mana)
-const level_max_mana := 20
+var level_max_mana := 2 if GlobalData.is_demo else 20
 func max_mana(x: int = level_mana) -> float: return x * 50.0
 func upgrade_mana() -> float: return max_mana(level_mana + 1) - max_mana(level_mana)
 func cost_mana() -> int: return level_mana * 50
@@ -262,12 +262,12 @@ func purchase_mana() -> PurchaseError:
 	level_mana += 1
 	emit_upgrade_purchase({"mana": upgrade_amount})
 	return PurchaseError.NONE
-func upgrade_description_mana() -> String: return "[img=l,12x12, color=#AA00AA]res://GUI/Images/mana.svg[/img]"
+func upgrade_description_mana(size: int) -> String: return "[img=l,%dx%d, color=#AA00AA]res://GUI/Images/mana.svg[/img]" % [size, size]
 
 var level_health := 1:
 	set(value):
 		level_health = clampi(value, 1, level_max_health)
-const level_max_health := 20
+var level_max_health := 2 if GlobalData.is_demo else 20
 func max_health(x: int = level_health) -> float: return x * 50.0
 func upgrade_health() -> float: return max_health(level_health + 1) - max_health(level_health)
 func cost_health() -> int: return level_health * 50
@@ -285,12 +285,12 @@ func purchase_health() -> PurchaseError:
 	level_health += 1
 	emit_upgrade_purchase({"health": upgrade_amount})
 	return PurchaseError.NONE
-func upgrade_description_health() -> String: return "[img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]"
+func upgrade_description_health(size: int) -> String: return "[img=l,%dx%d, color=#00AA00]res://GUI/Images/health.svg[/img]" % [size, size]
 
 var level_attack := 1:
 	set(value):
 		level_attack = clampi(value, 1, level_max_attack)
-const level_max_attack := 10
+var level_max_attack := 1 if GlobalData.is_demo else 10
 func max_attack(x: int = level_attack) -> float: return x * 10.0
 func upgrade_attack() -> float: return max_attack(level_attack + 1) - max_attack(level_attack)
 func cost_attack() -> int: return level_attack * 180
@@ -307,12 +307,12 @@ func purchase_attack() -> PurchaseError:
 	level_attack += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_attack() -> String: return "[img=l,12x12, color=#AA0000]res://GUI/Images/sword.svg[/img]"
+func upgrade_description_attack(size: int) -> String: return "[img=l,%dx%d, color=#AA0000]res://GUI/Images/sword.svg[/img]" % [size, size]
 
 var level_crit_rate := 1:
 	set(value):
 		level_crit_rate = clampi(value, 1, level_max_crit_rate)
-const level_max_crit_rate := 10
+var level_max_crit_rate := 1 if GlobalData.is_demo else 10
 func max_crit_rate(x: int = level_crit_rate) -> float: return x * 10.0
 func upgrade_crit_rate() -> float: return max_crit_rate(level_crit_rate + 1) - max_crit_rate(level_crit_rate)
 func cost_crit_rate() -> int: return level_crit_rate * 250
@@ -329,12 +329,12 @@ func purchase_crit_rate() -> PurchaseError:
 	level_crit_rate += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_crit_rate() -> String: return "[img=l,12x12, color=#0000AA]res://GUI/Images/cubes.svg[/img]"
+func upgrade_description_crit_rate(size: int) -> String: return "[img=l,%dx%d, color=#0000AA]res://GUI/Images/cubes.svg[/img]" % [size, size]
 	
 var level_crit_dmg := 1:
 	set(value):
 		level_crit_dmg = clampi(value, 1, level_max_crit_dmg)
-const level_max_crit_dmg := 10
+var level_max_crit_dmg := 1 if GlobalData.is_demo else 10
 func max_crit_dmg(x: int = level_crit_dmg) -> float: return x * 50.0
 func upgrade_crit_dmg() -> float: return max_crit_dmg(level_crit_dmg + 1) - max_crit_dmg(level_crit_dmg)
 func cost_crit_dmg() -> int: return level_crit_dmg * 250
@@ -351,12 +351,12 @@ func purchase_crit_dmg() -> PurchaseError:
 	level_crit_dmg += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_crit_dmg() -> String: return "[img=l,12x12, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img]"
+func upgrade_description_crit_dmg(size: int) -> String: return "[img=l,%dx%d, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img]" % [size, size]
 
 var level_defence := 1:
 	set(value):
 		level_defence = clampi(value, 1, level_max_defence)
-const level_max_defence := 10
+var level_max_defence := 1 if GlobalData.is_demo else 10
 func max_defence(x: int = level_defence) -> float: return x * 10.0
 func upgrade_defence() -> float: return max_defence(level_defence + 1) - max_defence(level_defence) 
 func cost_defence() -> int: return level_defence * 140
@@ -373,12 +373,12 @@ func purchase_defence() -> PurchaseError:
 	level_defence += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_defence() -> String: return "[img=l,12x12, color=#00AAAA]res://GUI/Images/shield.svg[/img]"
+func upgrade_description_defence(size: int) -> String: return "[img=l,%dx%d, color=#00AAAA]res://GUI/Images/shield.svg[/img]" % [size, size]
 
 var level_spells_in_book := 1:
 	set(value):
 		level_spells_in_book = clampi(value, 1, level_max_spells_in_book)
-const level_max_spells_in_book := 50
+var level_max_spells_in_book := 2 if GlobalData.is_demo else 50
 func max_spells_in_book(x: int = level_spells_in_book) -> int: return x * 4
 func upgrade_spells_in_book() -> int: return max_spells_in_book(level_spells_in_book + 1) - max_spells_in_book(level_spells_in_book)
 func cost_spells_in_book() -> int: return 15
@@ -399,7 +399,7 @@ func upgrade_description_spells_in_book() -> String: return "Active Spells"
 var level_running_speed := 1:
 	set(value):
 		level_running_speed = clampi(value, 1, level_max_running_speed)
-const level_max_running_speed := 10
+var level_max_running_speed := 1 if GlobalData.is_demo else 10
 func max_running_speed(x: int = level_running_speed) -> float: return (x * 0.5) + 5.0
 func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
 func cost_running_speed() -> int: return level_running_speed * 500
@@ -416,12 +416,12 @@ func purchase_running_speed() -> PurchaseError:
 	level_running_speed += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_running_speed() -> String: return "[img=l,12x12, color=#F6FF00]res://GUI/Images/running.svg[/img]"
+func upgrade_description_running_speed(size: int) -> String: return "[img=l,%dx%d, color=#F6FF00]res://GUI/Images/running.svg[/img]" % [size, size]
 
 var level_mana_regen := 1:
 	set(value):
 		level_mana_regen = clampi(value, 1, level_max_mana_regen)
-const level_max_mana_regen := 10
+var level_max_mana_regen := 1 if GlobalData.is_demo else 10
 func max_mana_regen(x: int = level_mana_regen) -> float: return x * 0.5
 func upgrade_mana_regen() -> float: return max_mana_regen(level_mana_regen + 1) - max_mana_regen(level_mana_regen)
 func cost_mana_regen() -> int: return level_mana_regen * 300
@@ -437,7 +437,7 @@ func purchase_mana_regen() -> PurchaseError:
 	level_mana_regen += 1
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
-func upgrade_description_mana_regen() -> String: return "[img=l,12x12, color=#AA00AA]res://GUI/Images/mana-outline.svg[/img]"
+func upgrade_description_mana_regen(size: int) -> String: return "[img=l,%dx%d, color=#AA00AA]res://GUI/Images/mana-outline.svg[/img]" % [size, size]
 	
 func reset_all_stats_to_default_values() -> void:
 	level_r = 1
@@ -585,29 +585,36 @@ enum UpgradeCondition {
 
 func random_upgrade_kind() -> UpgradeKind:
 	var options := {}
-	if not check_if_has_spell_element(Spell.Element.VOID): options[UpgradeKind.VOID] = 1
-	if not check_if_has_spell_element(Spell.Element.FIRE): options[UpgradeKind.FIRE] = 1
-	if not check_if_has_spell_element(Spell.Element.ROCK): options[UpgradeKind.ROCK] = 1
-	if not check_if_has_spell_element(Spell.Element.ELECTRIC): options[UpgradeKind.ELECTRIC] = 1
-	if not check_if_has_spell_element(Spell.Element.WATER): options[UpgradeKind.WATER] = 1
-	if not check_if_has_spell_element(Spell.Element.AIR): options[UpgradeKind.AIR] = 1
-	if not check_if_has_spell_element(Spell.Element.ICE): options[UpgradeKind.ICE] = 1
+	var element_odds := Spell.Element.size() - GDNavigator.popcnt(has_spell_element)
+	var elements := Spell.Element.values()
+	elements.shuffle()
+	for element in elements:
+		if not check_if_has_spell_element(element):
+			match element:
+				Spell.Element.VOID: options[UpgradeKind.VOID] = element_odds
+				Spell.Element.FIRE: options[UpgradeKind.FIRE] = element_odds
+				Spell.Element.ROCK: options[UpgradeKind.ROCK] = element_odds
+				Spell.Element.ELECTRIC: options[UpgradeKind.ELECTRIC] = element_odds
+				Spell.Element.WATER: options[UpgradeKind.WATER] = element_odds
+				Spell.Element.AIR: options[UpgradeKind.AIR] = element_odds
+				Spell.Element.ICE: options[UpgradeKind.ICE] = element_odds
+			element_odds *= 0.5
 	
-	if not check_if_has_chain_method(Spell.ChainCastKind.START): options[UpgradeKind.CAST_START] = 1
-	if not check_if_has_chain_method(Spell.ChainCastKind.END): options[UpgradeKind.CAST_END] = 1
-	if not check_if_has_chain_method(Spell.ChainCastKind.HIT): options[UpgradeKind.CAST_HIT] = 1
+	if not check_if_has_chain_method(Spell.ChainCastKind.START): options[UpgradeKind.CAST_START] = 2
+	if not check_if_has_chain_method(Spell.ChainCastKind.END): options[UpgradeKind.CAST_END] = 2
+	if not check_if_has_chain_method(Spell.ChainCastKind.HIT): options[UpgradeKind.CAST_HIT] = 0.2
 	
-	if level_P < level_max_P: options[UpgradeKind.UP_P] = 1
+	if level_P < level_max_P: options[UpgradeKind.UP_P] = 3
 	if level_spells_in_book < level_max_spells_in_book: options[UpgradeKind.UP_ACTIVE] = 1
-	if level_running_speed < level_max_running_speed: options[UpgradeKind.UP_SPEED] = 1
+	if level_running_speed < level_max_running_speed: options[UpgradeKind.UP_SPEED] = 0.5
 	if level_v < level_max_v: options[UpgradeKind.UP_V] = 1
 	if level_T < level_max_T: options[UpgradeKind.UP_T] = 1
 	if level_N < level_max_N: options[UpgradeKind.UP_N] = 1
-	if level_health < level_max_health: options[UpgradeKind.UP_HEALTH] = 1
-	if level_mana < level_max_mana: options[UpgradeKind.UP_MANA] = 1
+	if level_health < level_max_health: options[UpgradeKind.UP_HEALTH] = 3
+	if level_mana < level_max_mana: options[UpgradeKind.UP_MANA] = 3
 	if level_r < level_max_r: options[UpgradeKind.UP_r] = 1
-	if level_attack < level_max_attack: options[UpgradeKind.UP_ATK] = 1
-	if level_defence < level_max_defence: options[UpgradeKind.UP_DEF] = 1
+	if level_attack < level_max_attack: options[UpgradeKind.UP_ATK] = 2
+	if level_defence < level_max_defence: options[UpgradeKind.UP_DEF] = 2
 	if level_mana_regen < level_max_mana_regen: options[UpgradeKind.UP_MANA_REGEN] = 1
 	if level_crit_rate < level_max_crit_rate: options[UpgradeKind.UP_RATE] = 1
 	if level_crit_dmg < level_max_crit_dmg: options[UpgradeKind.UP_DMG] = 1
@@ -618,58 +625,58 @@ func random_upgrade_kind() -> UpgradeKind:
 	
 func description_for_upgrade_kind(kind: UpgradeKind) -> String:
 	match kind:
-		UpgradeKind.VOID: return "Unlock " + upgrade_description_spell_element(Spell.Element.VOID)
-		UpgradeKind.FIRE: return "Unlock " + upgrade_description_spell_element(Spell.Element.FIRE) 
-		UpgradeKind.ROCK: return "Unlock " + upgrade_description_spell_element(Spell.Element.ROCK) 
-		UpgradeKind.ELECTRIC: return "Unlock " + upgrade_description_spell_element(Spell.Element.ELECTRIC) 
-		UpgradeKind.WATER: return "Unlock " + upgrade_description_spell_element(Spell.Element.WATER) 
-		UpgradeKind.AIR: return "Unlock " + upgrade_description_spell_element(Spell.Element.AIR) 
-		UpgradeKind.ICE: return "Unlock " + upgrade_description_spell_element(Spell.Element.ICE) 
+		UpgradeKind.VOID: return "Unlock " + upgrade_description_spell_element(Spell.Element.VOID, 12)
+		UpgradeKind.FIRE: return "Unlock " + upgrade_description_spell_element(Spell.Element.FIRE, 12) 
+		UpgradeKind.ROCK: return "Unlock " + upgrade_description_spell_element(Spell.Element.ROCK, 12) 
+		UpgradeKind.ELECTRIC: return "Unlock " + upgrade_description_spell_element(Spell.Element.ELECTRIC, 12) 
+		UpgradeKind.WATER: return "Unlock " + upgrade_description_spell_element(Spell.Element.WATER, 12) 
+		UpgradeKind.AIR: return "Unlock " + upgrade_description_spell_element(Spell.Element.AIR, 12) 
+		UpgradeKind.ICE: return "Unlock " + upgrade_description_spell_element(Spell.Element.ICE, 12) 
 		UpgradeKind.CAST_START: return "Unlock " + upgrade_description_chain_method(Spell.ChainCastKind.START) 
 		UpgradeKind.CAST_END: return "Unlock " + upgrade_description_chain_method(Spell.ChainCastKind.END)
 		UpgradeKind.CAST_HIT: return "Unlock " + upgrade_description_chain_method(Spell.ChainCastKind.HIT)
-		UpgradeKind.UP_r: return upgrade_description_r() + " +" + str(upgrade_P()) + "m"
-		UpgradeKind.UP_T: return upgrade_description_T() + " +" + str(upgrade_T()) + "s" 
-		UpgradeKind.UP_N: return upgrade_description_N() + " +" + str(upgrade_N()) 
-		UpgradeKind.UP_P: return upgrade_description_P() + " +" + str(upgrade_P()) 
-		UpgradeKind.UP_V: return upgrade_description_v() + " +" + str(upgrade_v()) + "m/s" 
-		UpgradeKind.UP_ATK: return upgrade_description_attack() + " +" + str(upgrade_attack()) 
-		UpgradeKind.UP_DEF: return upgrade_description_defence() + " +" + str(upgrade_defence()) 
-		UpgradeKind.UP_RATE: return upgrade_description_crit_rate() + " +" + str(upgrade_crit_rate()) + "%" 
-		UpgradeKind.UP_DMG: return upgrade_description_crit_dmg() + " +" + str(upgrade_crit_dmg()) 
-		UpgradeKind.UP_SPEED: return upgrade_description_running_speed() + " +" + str(upgrade_running_speed()) + "m/s"
-		UpgradeKind.UP_MANA_REGEN: return upgrade_description_mana_regen() + " +" + str(upgrade_mana_regen()) 
-		UpgradeKind.UP_MANA: return upgrade_description_mana() + " +" + str(upgrade_mana()) 
-		UpgradeKind.UP_HEALTH: return upgrade_description_health() + " +" + str(upgrade_health()) 
+		UpgradeKind.UP_r: return upgrade_description_r(12) + "r +" + str(upgrade_r()) + "m"
+		UpgradeKind.UP_T: return upgrade_description_T(12) + "T +" + str(upgrade_T()) + "s" 
+		UpgradeKind.UP_N: return upgrade_description_N(12) + "N +" + str(upgrade_N()) 
+		UpgradeKind.UP_P: return upgrade_description_P(12) + "P +" + str(upgrade_P()) 
+		UpgradeKind.UP_V: return upgrade_description_v(12) + "v +" + str(upgrade_v()) + "m/s" 
+		UpgradeKind.UP_ATK: return upgrade_description_attack(12) + "ATK +" + str(upgrade_attack()) 
+		UpgradeKind.UP_DEF: return upgrade_description_defence(12) + "DEF +" + str(upgrade_defence()) 
+		UpgradeKind.UP_RATE: return upgrade_description_crit_rate(12) + "Rate +" + str(upgrade_crit_rate()) + "%" 
+		UpgradeKind.UP_DMG: return upgrade_description_crit_dmg(12) + "Dmg +" + str(upgrade_crit_dmg()) 
+		UpgradeKind.UP_SPEED: return upgrade_description_running_speed(12) + "Speed +" + str(upgrade_running_speed()) + "m/s"
+		UpgradeKind.UP_MANA_REGEN: return upgrade_description_mana_regen(12) + "Regen +" + str(upgrade_mana_regen()) 
+		UpgradeKind.UP_MANA: return upgrade_description_mana(12) + "Mana +" + str(upgrade_mana()) 
+		UpgradeKind.UP_HEALTH: return upgrade_description_health(12) + " +" + str(upgrade_health()) 
 		UpgradeKind.UP_ACTIVE: return upgrade_description_spells_in_book() + " +" + str(upgrade_spells_in_book())
 	return ""
 	
 func message_for_upgrade_kind(kind: UpgradeKind) -> String:
 	var result := ""
 	match kind:
-		UpgradeKind.VOID: result = upgrade_description_spell_element(Spell.Element.VOID) + " Unlocked"
-		UpgradeKind.FIRE: result = upgrade_description_spell_element(Spell.Element.FIRE) + " Unlocked" 
-		UpgradeKind.ROCK: result = upgrade_description_spell_element(Spell.Element.ROCK) + " Unlocked" 
-		UpgradeKind.ELECTRIC: result = upgrade_description_spell_element(Spell.Element.ELECTRIC) + " Unlocked"
-		UpgradeKind.WATER: result = upgrade_description_spell_element(Spell.Element.WATER) + " Unlocked"
-		UpgradeKind.AIR: result = upgrade_description_spell_element(Spell.Element.AIR) + " Unlocked"
-		UpgradeKind.ICE: result = upgrade_description_spell_element(Spell.Element.ICE) + " Unlocked"
+		UpgradeKind.VOID: result = upgrade_description_spell_element(Spell.Element.VOID, 21) + " Unlocked"
+		UpgradeKind.FIRE: result = upgrade_description_spell_element(Spell.Element.FIRE, 21) + " Unlocked" 
+		UpgradeKind.ROCK: result = upgrade_description_spell_element(Spell.Element.ROCK, 21) + " Unlocked" 
+		UpgradeKind.ELECTRIC: result = upgrade_description_spell_element(Spell.Element.ELECTRIC, 21) + " Unlocked"
+		UpgradeKind.WATER: result = upgrade_description_spell_element(Spell.Element.WATER, 21) + " Unlocked"
+		UpgradeKind.AIR: result = upgrade_description_spell_element(Spell.Element.AIR, 21) + " Unlocked"
+		UpgradeKind.ICE: result = upgrade_description_spell_element(Spell.Element.ICE, 21) + " Unlocked"
 		UpgradeKind.CAST_START: result = upgrade_description_chain_method(Spell.ChainCastKind.START) + " Unlocked"
 		UpgradeKind.CAST_END: result = upgrade_description_chain_method(Spell.ChainCastKind.END) + " Unlocked"
 		UpgradeKind.CAST_HIT: result = upgrade_description_chain_method(Spell.ChainCastKind.HIT) + " Unlocked"
-		UpgradeKind.UP_r: result = "Max " + upgrade_description_r() + "r " + str(max_P()) + "m"
-		UpgradeKind.UP_T: result = "Max " + upgrade_description_T() + "T " + str(max_T()) + "s" 
-		UpgradeKind.UP_N: result = "Max " + upgrade_description_N() + "N " + str(max_N()) 
-		UpgradeKind.UP_P: result = "Max " + upgrade_description_P() + "P " + str(max_P()) 
-		UpgradeKind.UP_V: result = "Max " + upgrade_description_v() + " Velocity " + str(max_v()) + "m/s" 
-		UpgradeKind.UP_ATK: result = upgrade_description_attack() + "Attack " + str(max_attack())
-		UpgradeKind.UP_DEF: result = upgrade_description_defence() + "Defence " + str(max_defence()) 
-		UpgradeKind.UP_RATE: result = "Max " + upgrade_description_crit_rate() + "Crit Rate " + str(max_crit_rate()) + "%" 
-		UpgradeKind.UP_DMG: result = "Max " + upgrade_description_crit_dmg() + "Crit Dmg " + str(upgrade_crit_dmg()) 
-		UpgradeKind.UP_SPEED: result = "Max " + upgrade_description_running_speed() + "Speed " + str(upgrade_running_speed()) + "m/s"
-		UpgradeKind.UP_MANA_REGEN: result = "Auto " + upgrade_description_mana_regen() + "Mana Regen " + str(upgrade_mana_regen()) 
-		UpgradeKind.UP_MANA: result = "Max " + upgrade_description_mana() + "Mana " + str(upgrade_mana()) 
-		UpgradeKind.UP_HEALTH: result = "Max " + upgrade_description_health() + "Health " + str(upgrade_health()) 
+		UpgradeKind.UP_r: result = "Max " + upgrade_description_r(21) + "r " + str(max_r()) + "m"
+		UpgradeKind.UP_T: result = "Max " + upgrade_description_T(21) + "T " + str(max_T()) + "s" 
+		UpgradeKind.UP_N: result = "Max " + upgrade_description_N(21) + "N " + str(max_N()) 
+		UpgradeKind.UP_P: result = "Max " + upgrade_description_P(21) + "P " + str(max_P()) 
+		UpgradeKind.UP_V: result = "Max " + upgrade_description_v(21) + " Velocity " + str(max_v()) + "m/s" 
+		UpgradeKind.UP_ATK: result = upgrade_description_attack(21) + "Attack " + str(max_attack())
+		UpgradeKind.UP_DEF: result = upgrade_description_defence(21) + "Defence " + str(max_defence()) 
+		UpgradeKind.UP_RATE: result = "Max " + upgrade_description_crit_rate(21) + "Crit Rate " + str(max_crit_rate()) + "%" 
+		UpgradeKind.UP_DMG: result = "Max " + upgrade_description_crit_dmg(21) + "Crit Dmg " + str(upgrade_crit_dmg()) 
+		UpgradeKind.UP_SPEED: result = "Max " + upgrade_description_running_speed(21) + "Speed " + str(upgrade_running_speed()) + "m/s"
+		UpgradeKind.UP_MANA_REGEN: result = "Auto " + upgrade_description_mana_regen(21) + "Mana Regen " + str(upgrade_mana_regen()) 
+		UpgradeKind.UP_MANA: result = "Max " + upgrade_description_mana(21) + "Mana " + str(upgrade_mana()) 
+		UpgradeKind.UP_HEALTH: result = "Max " + upgrade_description_health(21) + "Health " + str(upgrade_health()) 
 		UpgradeKind.UP_ACTIVE: result = "Max " + upgrade_description_spells_in_book() + " " + str(upgrade_spells_in_book())
 	return "[center][font_size=21]" + result + "[/font_size][/center]"
 
@@ -732,26 +739,26 @@ func cost_of_upgrade_kind(kind: UpgradeKind) -> int:
 func random_upgrade_condition() -> UpgradeCondition:
 	var options := {
 		UpgradeCondition.RECEIVE_FIRE: 1,
-		UpgradeCondition.RECEIVE_ROCK: 1, 
-		UpgradeCondition.RECEIVE_ELECTRIC: 1, 
+		UpgradeCondition.RECEIVE_ROCK: 0.5, 
+		UpgradeCondition.RECEIVE_ELECTRIC: 0.5, 
 		UpgradeCondition.RECEIVE_WATER: 1, 
-		UpgradeCondition.RECEIVE_AIR: 1, 
+		UpgradeCondition.RECEIVE_AIR: 0.5, 
 		UpgradeCondition.RECEIVE_ICE: 1,
 		UpgradeCondition.TRAVEL: 0.2,
 		UpgradeCondition.MANA_BACK: 0.2,
 	}
 	if check_if_has_spell_element(Spell.Element.FIRE):
-		options[UpgradeCondition.DEAL_FIRE] = 2
+		options[UpgradeCondition.DEAL_FIRE] = 1
 	if check_if_has_spell_element(Spell.Element.ROCK):
-		options[UpgradeCondition.DEAL_ROCK] = 2
+		options[UpgradeCondition.DEAL_ROCK] = 4
 	if check_if_has_spell_element(Spell.Element.ELECTRIC):
 		options[UpgradeCondition.DEAL_ELECTRIC] = 2
 	if check_if_has_spell_element(Spell.Element.WATER):
-		options[UpgradeCondition.DEAL_WATER] = 2
+		options[UpgradeCondition.DEAL_WATER] = 1
 	if check_if_has_spell_element(Spell.Element.AIR):
-		options[UpgradeCondition.DEAL_AIR] = 2
+		options[UpgradeCondition.DEAL_AIR] = 4
 	if check_if_has_spell_element(Spell.Element.ICE):
-		options[UpgradeCondition.DEAL_ICE] = 2
+		options[UpgradeCondition.DEAL_ICE] = 3
 		
 	return Rand.entity_from_distribution(randf(), options, UpgradeCondition.TRAVEL)
 
@@ -890,24 +897,24 @@ func progress_mana_back(amount: float) -> void:
 
 func update_upgrade_progress() -> void:
 	var message := ""
-	if upgrade_prog_cur_1 > upgrade_prog_max_1:
+	if upgrade_prog_cur_1 >= upgrade_prog_max_1:
 		purchase_upgrade_kind(upgrade_kind_1)
-		fill_upgrade_slots(true)
 		message = message_for_upgrade_kind(upgrade_kind_1)
+		fill_upgrade_slots(true)
 		UIAudioPlayer.upgrade()
-	elif upgrade_prog_cur_2 > upgrade_prog_max_2:
+	elif upgrade_prog_cur_2 >= upgrade_prog_max_2:
 		purchase_upgrade_kind(upgrade_kind_2)
-		fill_upgrade_slots(true)
 		message = message_for_upgrade_kind(upgrade_kind_2)
+		fill_upgrade_slots(true)
 		UIAudioPlayer.upgrade()
-	elif upgrade_prog_cur_3 > upgrade_prog_max_3:
+	elif upgrade_prog_cur_3 >= upgrade_prog_max_3:
 		purchase_upgrade_kind(upgrade_kind_3)
-		fill_upgrade_slots(true)
 		message = message_for_upgrade_kind(upgrade_kind_3)
-		UIAudioPlayer.upgrade()
-	elif upgrade_prog_cur_4 > upgrade_prog_max_4:
-		purchase_upgrade_kind(upgrade_kind_4)
 		fill_upgrade_slots(true)
+		UIAudioPlayer.upgrade()
+	elif upgrade_prog_cur_4 >= upgrade_prog_max_4:
+		purchase_upgrade_kind(upgrade_kind_4)
 		message = message_for_upgrade_kind(upgrade_kind_4)
+		fill_upgrade_slots(true)
 		UIAudioPlayer.upgrade()
 	upgrade_slot_progress.emit(self, message)
