@@ -585,10 +585,10 @@ enum UpgradeCondition {
 
 func random_upgrade_kind() -> UpgradeKind:
 	var options := {}
-	var element_odds := Spell.Element.size() - GDNavigator.popcnt(has_spell_element)
+	var element_odds := float(Spell.Element.size() - GDNavigator.popcnt(has_spell_element))
 	var elements := Spell.Element.values()
 	elements.shuffle()
-	for element in elements:
+	for element: Spell.Element in elements:
 		if not check_if_has_spell_element(element):
 			match element:
 				Spell.Element.VOID: options[UpgradeKind.VOID] = element_odds

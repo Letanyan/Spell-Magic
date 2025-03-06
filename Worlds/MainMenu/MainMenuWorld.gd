@@ -71,6 +71,7 @@ func _ready() -> void:
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
+	# TODO: check world terrain (looks cool) VERSION: -1, WORLD SEED: 9882163, RNG SEED: 9882163
 	# FIXME: check "VERSION: -1, WORLD SEED: 7213014, RNG SEED: 7213014"
 	# FIXME: check color VERSION: -1, WORLD SEED: 8871961, RNG SEED: 8871961
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
@@ -82,6 +83,7 @@ func _ready() -> void:
 	biome_helper = BiomeHelper.new()
 	blender = NoiseBlender.new(settings.world_generation_version, settings.sed)
 	
+	#var summary := {}
 	#blender.count_biomes([
 	#Vector2(0, 0), Vector2(0, 1), Vector2(1, 0), \
 	#Vector2(0, -1), Vector2(-1, 0), Vector2(1, -1), \
@@ -98,7 +100,7 @@ func _ready() -> void:
 	#Vector2(0, 2000), Vector2(2000, 0), \
 	#Vector2(0, -2000), Vector2(-2000, 0), Vector2(2000, -2000), \
 	#Vector2(-2000, 2000), Vector2(2000, 2000), Vector2(-2000, -2000), \
-	#])
+	#], summary, true)
 	#chunker = Terrain.new(blender, 256, 128, 4, 0.0625, 16, true)
 	if GlobalData.is_debug:
 		chunker = Chunker.new(256, 0.0625, 128 * settings.graphics_settings.grass_size, blender, [2, 4], true)
