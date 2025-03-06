@@ -333,7 +333,7 @@ func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: 
 	if target.collision_layer & Globals.Layer.ENEMY != 0:
 		update_artifact_effects(Artifact.Event.DEAL, spell)
 		if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-			world_settings.upgrade_settings.progress_damage_deal(damage["dmg"] as float, damage["el"] as Spell.Element)
+			world_settings.upgrade_settings.progress_damage_deal(damage)
 		if enemies_in_range.has(target) and (damage["dmg"] as int) > 0:
 			var stats := enemies_in_range[target] as CombatStats
 			stats.hit_count += 1

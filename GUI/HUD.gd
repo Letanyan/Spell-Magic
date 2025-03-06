@@ -104,10 +104,14 @@ func set_wand(value: Wand) -> void:
 
 func update_hud_with_vitals(vitals: Vitals) -> void:
 	health_bar.max_value = vitals.health.max_value
-	health_bar.value = vitals.health.value
+	if health_bar.value != vitals.health.value:
+		var tween := create_tween()
+		tween.tween_property(health_bar, "value", vitals.health.value, 0.3)
 	health_bar_label.text = "%d/%d" % [ceili(vitals.health.value), vitals.health.max_value]
 	mana_bar.max_value = vitals.mana.max_value
-	mana_bar.value = vitals.mana.value
+	if mana_bar.value != vitals.mana.value:
+		var tween := create_tween()
+		tween.tween_property(mana_bar, "value", vitals.mana.value, 0.3)
 	mana_bar_label.text = "%d/%d" % [vitals.mana.value, vitals.mana.max_value]
 	burning_bar.value = vitals.burning.value
 	burning_bar.max_value = vitals.burning.max_value

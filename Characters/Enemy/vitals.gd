@@ -98,17 +98,23 @@ static func default_ea(high: float, rate: float) -> Vitals.Stat: return Vitals.S
 static func default_health(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(high, 0, high, rate)
 
 func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
+	var amount: float = 0.0
+	var vape := 0.0
+	var melt := 0.0
+	var overload := 0.0
 	match kind:
 		Spell.Element.FIRE:
-			var amount := burning.amount_of_change(gauge)
+			amount = burning.amount_of_change(gauge)
 			if wetness.value <= 0 and freeze.value <= 0:
 				burning.apply_ignoring_resistance(amount)
 			else:
-				power = power * (1.0 + wetness.value * amount) * (1.0 + 1.5 * freeze.value * amount)
+				vape = wetness.value * amount
+				melt = 1.5 * freeze.value * amount
+				power = power * (1.0 + vape) * (1.0 + melt)
 			wetness.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(-amount * 1.5)
 		Spell.Element.WATER:
-			var amount := wetness.amount_of_change(gauge)
+			amount = wetness.amount_of_change(gauge)
 			if burning.value <= 0:
 				wetness.apply_ignoring_resistance(amount)
 			else:
@@ -116,7 +122,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 			burning.apply_ignoring_resistance(-amount)
 			freeze.apply_ignoring_resistance(amount * freeze.value)
 		Spell.Element.ICE:
-			var amount := freeze.amount_of_change(wetness.value * gauge)
+			amount = freeze.amount_of_change(wetness.value * gauge)
 			if wetness.value > 0:
 				freeze.apply_ignoring_resistance(amount)
 				wetness.apply_ignoring_resistance(-amount)
@@ -124,18 +130,20 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 				power = power * (1.0 - burning.value * 0.66)
 			burning.apply_ignoring_resistance(-amount)
 		Spell.Element.ELECTRIC:
-			var amount := stun.amount_of_change(maxf(wetness.value, freeze.value) * gauge)
+			amount = stun.amount_of_change(maxf(wetness.value, freeze.value) * gauge)
 			var burn_amount := burning.amount_of_change(gauge)
 			if wetness.value > 0:
 				wetness.apply_ignoring_resistance(-amount)
 			if freeze.value > 0:
 				freeze.apply_ignoring_resistance(-amount)
 			if burning.value > 0:
-				power = power * (1.0 + burning.value * burn_amount)
+				overload = burning.value * burn_amount
+				power = power * (1.0 + overload)
 				burning.apply_ignoring_resistance(-burn_amount)
 			stun.apply_ignoring_resistance(amount + burn_amount)
 					
 		Spell.Element.AIR:
+			amount = gauge
 			burning.apply(burning.value * gauge)
 			wetness.apply(wetness.value * -gauge)
 			freeze.apply(freeze.value * -gauge * 0.5)
@@ -156,7 +164,7 @@ func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionar
 		print("health: ", health.value, ", burning: ", burning.value, ", wetness: ", wetness.value, ", freeze: ", freeze.value, ", stun: ", stun.value)
 		print("element: ", Spell.name_from_element(kind))
 	
-	return {"dmg": power, "el": kind}
+	return {"dmg": power, "el": kind, "app": amount, "vape": vape, "melt": melt, "overload": overload}
 
 # we assume this is called once per second everywhere
 func update_vitals(body: Node3D) -> Array[Dictionary]: # [][String(dmg, el)](float, Spell.Element)

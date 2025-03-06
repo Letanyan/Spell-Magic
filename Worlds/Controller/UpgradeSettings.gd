@@ -81,22 +81,11 @@ func upgrade_description_chain_method(el: Spell.ChainCastKind) -> String:
 		Spell.ChainCastKind.HIT: return "Cast On Hit"
 	return ""
 	
-var upgrade_kind_1: UpgradeKind
-var upgrade_cond_1: UpgradeCondition
-var upgrade_prog_cur_1: float
-var upgrade_prog_max_1: float
-var upgrade_kind_2: UpgradeKind
-var upgrade_cond_2: UpgradeCondition
-var upgrade_prog_cur_2: float
-var upgrade_prog_max_2: float
-var upgrade_kind_3: UpgradeKind
-var upgrade_cond_3: UpgradeCondition
-var upgrade_prog_cur_3: float
-var upgrade_prog_max_3: float
-var upgrade_kind_4: UpgradeKind
-var upgrade_cond_4: UpgradeCondition
-var upgrade_prog_cur_4: float
-var upgrade_prog_max_4: float
+var upgrade_kind: Array[UpgradeKind]
+var upgrade_cond: Array[UpgradeCondition]
+var upgrade_prog_cur: Array[float]
+var upgrade_prog_max: Array[float]
+var upgrade_cond_info: Array[int]
 
 # upgrade_* is the amount the upgrade is increased each level increase
 # max_* is the current value
@@ -499,10 +488,7 @@ func save_dict() -> Dictionary:
 		
 		"currency": currency,
 		
-		"upgrade_kind_1": upgrade_kind_1, "upgrade_kind_2": upgrade_kind_2, "upgrade_kind_3": upgrade_kind_3, "upgrade_kind_4": upgrade_kind_4,
-		"upgrade_cond_1": upgrade_cond_1, "upgrade_cond_2": upgrade_cond_2, "upgrade_cond_3": upgrade_cond_3, "upgrade_cond_4": upgrade_cond_4,
-		"upgrade_prog_cur_1": upgrade_prog_cur_1, "upgrade_prog_cur_2": upgrade_prog_cur_2, "upgrade_prog_cur_3": upgrade_prog_cur_3, "upgrade_prog_cur_4": upgrade_prog_cur_4,
-		"upgrade_prog_max_1": upgrade_prog_max_1, "upgrade_prog_max_2": upgrade_prog_max_2, "upgrade_prog_max_3": upgrade_prog_max_3, "upgrade_prog_max_4": upgrade_prog_max_4,
+		"upgrade_kind": upgrade_kind, "upgrade_cond": upgrade_cond, "upgrade_prog_cur": upgrade_prog_cur, "upgrade_prog_max": upgrade_prog_max, "upgrade_cond_info": upgrade_cond_info,
 	}
 
 func load_dict(data: Dictionary) -> void:
@@ -526,22 +512,11 @@ func load_dict(data: Dictionary) -> void:
 	
 	currency = data.get("currency", 0)
 	
-	upgrade_kind_1 = data.get("upgrade_kind_1", 0) as UpgradeKind
-	upgrade_kind_2 = data.get("upgrade_kind_2", 0) as UpgradeKind
-	upgrade_kind_3 = data.get("upgrade_kind_3", 0) as UpgradeKind
-	upgrade_kind_4 = data.get("upgrade_kind_4", 0) as UpgradeKind
-	upgrade_cond_1 = data.get("upgrade_cond_1", 0) as UpgradeCondition
-	upgrade_cond_2 = data.get("upgrade_cond_2", 0) as UpgradeCondition
-	upgrade_cond_3 = data.get("upgrade_cond_3", 0) as UpgradeCondition
-	upgrade_cond_4 = data.get("upgrade_cond_4", 0) as UpgradeCondition
-	upgrade_prog_cur_1 = data.get("upgrade_prog_cur_1", 0.0) as float
-	upgrade_prog_cur_2 = data.get("upgrade_prog_cur_2", 0.0) as float
-	upgrade_prog_cur_3 = data.get("upgrade_prog_cur_3", 0.0) as float
-	upgrade_prog_cur_4 = data.get("upgrade_prog_cur_4", 0.0) as float
-	upgrade_prog_max_1 = data.get("upgrade_prog_max_1", 0.0) as float
-	upgrade_prog_max_2 = data.get("upgrade_prog_max_2", 0.0) as float
-	upgrade_prog_max_3 = data.get("upgrade_prog_max_3", 0.0) as float
-	upgrade_prog_max_4 = data.get("upgrade_prog_max_4", 0.0) as float
+	upgrade_kind.assign(data.get("upgrade_kind", [0, 0, 0, 0]) as Array)
+	upgrade_cond.assign(data.get("upgrade_cond", [0, 0, 0, 0]) as Array)
+	upgrade_prog_cur.assign(data.get("upgrade_prog_cur", [0.0, 0.0, 0.0, 0.0]) as Array)
+	upgrade_prog_max.assign(data.get("upgrade_prog_max", [0.0, 0.0, 0.0, 0.0]) as Array)
+	upgrade_cond_info.assign(data.get("upgrade_cond_info", [0, 0, 0, 0]) as Array)
 
 func default_starter_spell() -> Spell:
 	var blast_element := Spell.Element.FIRE
@@ -580,7 +555,8 @@ enum UpgradeKind {
 enum UpgradeCondition {
 	DEAL_FIRE, DEAL_ROCK, DEAL_ELECTRIC, DEAL_WATER, DEAL_AIR, DEAL_ICE,
 	RECEIVE_FIRE, RECEIVE_ROCK, RECEIVE_ELECTRIC, RECEIVE_WATER, RECEIVE_AIR, RECEIVE_ICE,
-	TRAVEL, MANA_BACK,
+	TRAVEL, MANA_BACK, DEFEAT_ENEMY, BURNING, WETNESS, SHOCK, FREEZE, FEATHER,
+	VAPE, MELT, OVERLOAD
 }
 
 func random_upgrade_kind() -> UpgradeKind:
@@ -738,31 +714,40 @@ func cost_of_upgrade_kind(kind: UpgradeKind) -> int:
 	
 func random_upgrade_condition() -> UpgradeCondition:
 	var options := {
-		UpgradeCondition.RECEIVE_FIRE: 1,
+		UpgradeCondition.RECEIVE_FIRE: 1.0,
 		UpgradeCondition.RECEIVE_ROCK: 0.5, 
 		UpgradeCondition.RECEIVE_ELECTRIC: 0.5, 
-		UpgradeCondition.RECEIVE_WATER: 1, 
+		UpgradeCondition.RECEIVE_WATER: 1.0, 
 		UpgradeCondition.RECEIVE_AIR: 0.5, 
-		UpgradeCondition.RECEIVE_ICE: 1,
+		UpgradeCondition.RECEIVE_ICE: 1.0,
 		UpgradeCondition.TRAVEL: 0.2,
 		UpgradeCondition.MANA_BACK: 0.2,
+		UpgradeCondition.DEFEAT_ENEMY: 1.0,
 	}
 	if check_if_has_spell_element(Spell.Element.FIRE):
-		options[UpgradeCondition.DEAL_FIRE] = 1
+		options[UpgradeCondition.DEAL_FIRE] = 1.0
+		options[UpgradeCondition.BURNING] = 1.0
+		options[UpgradeCondition.VAPE] = 0.25
+		options[UpgradeCondition.MELT] = 0.25
 	if check_if_has_spell_element(Spell.Element.ROCK):
-		options[UpgradeCondition.DEAL_ROCK] = 4
+		options[UpgradeCondition.DEAL_ROCK] = 2.0
 	if check_if_has_spell_element(Spell.Element.ELECTRIC):
-		options[UpgradeCondition.DEAL_ELECTRIC] = 2
+		options[UpgradeCondition.DEAL_ELECTRIC] = 1.5
+		options[UpgradeCondition.SHOCK] = 0.5
+		options[UpgradeCondition.OVERLOAD] = 0.25
 	if check_if_has_spell_element(Spell.Element.WATER):
-		options[UpgradeCondition.DEAL_WATER] = 1
+		options[UpgradeCondition.DEAL_WATER] = 1.0
+		options[UpgradeCondition.WETNESS] = 1.0
 	if check_if_has_spell_element(Spell.Element.AIR):
-		options[UpgradeCondition.DEAL_AIR] = 4
+		options[UpgradeCondition.DEAL_AIR] = 2.0
+		options[UpgradeCondition.FEATHER] = 0.5
 	if check_if_has_spell_element(Spell.Element.ICE):
-		options[UpgradeCondition.DEAL_ICE] = 3
+		options[UpgradeCondition.DEAL_ICE] = 1.75
+		options[UpgradeCondition.FREEZE] = 1.0
 		
 	return Rand.entity_from_distribution(randf(), options, UpgradeCondition.TRAVEL)
 
-func description_upgrade_condition(condition: UpgradeCondition) -> String:
+func description_upgrade_condition(condition: UpgradeCondition, info: int) -> String:
 	match condition:
 		UpgradeCondition.DEAL_FIRE: return "Deal [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Damage"
 		UpgradeCondition.DEAL_ROCK: return "Deal [img=l,12x12, color=#FF8000]res://GUI/Images/rock.svg[/img] Damage"
@@ -778,25 +763,26 @@ func description_upgrade_condition(condition: UpgradeCondition) -> String:
 		UpgradeCondition.RECEIVE_ICE: return "Receive [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Damage"
 		UpgradeCondition.TRAVEL: return "Travel"
 		UpgradeCondition.MANA_BACK: return "Gain Mana Back"
+		UpgradeCondition.DEFEAT_ENEMY: return "Defeat " + World.Enemy.keys()[info] # TODO: format enemy names
+		UpgradeCondition.BURNING: return "Apply [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Burning"
+		UpgradeCondition.WETNESS: return "Apply [img=l,12x12, color=#0080FF]res://GUI/Images/water.svg[/img] Wetness"
+		UpgradeCondition.FREEZE: return "Apply [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Freeze"
+		UpgradeCondition.SHOCK: return "Apply [img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img] Shock"
+		UpgradeCondition.FEATHER: return "Apply [img=l,12x12, color=#00FF80]res://GUI/Images/wind.svg[/img] Feather"
+		UpgradeCondition.VAPE: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] -> [img=l,12x12, color=#0080FF]res://GUI/Images/water.svg[/img]"
+		UpgradeCondition.MELT: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] -> [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img]"
+		UpgradeCondition.OVERLOAD: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] + [img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img]"
+		
 	return ""
 	
 func fill_upgrade_slots(emit_changes: bool) -> void:
-	upgrade_kind_1 = random_upgrade_kind()
-	upgrade_cond_1 = random_upgrade_condition()
-	upgrade_kind_2 = random_upgrade_kind()
-	upgrade_cond_2 = random_upgrade_condition()
-	upgrade_kind_3 = random_upgrade_kind()
-	upgrade_cond_3 = random_upgrade_condition()
-	upgrade_kind_4 = random_upgrade_kind()
-	upgrade_cond_4 = random_upgrade_condition()
-	upgrade_prog_cur_1 = 0.0
-	upgrade_prog_cur_2 = 0.0
-	upgrade_prog_cur_3 = 0.0
-	upgrade_prog_cur_4 = 0.0
-	upgrade_prog_max_1 = upgrade_cond_max(upgrade_kind_1, upgrade_cond_1)
-	upgrade_prog_max_2 = upgrade_cond_max(upgrade_kind_2, upgrade_cond_2)
-	upgrade_prog_max_3 = upgrade_cond_max(upgrade_kind_3, upgrade_cond_3)
-	upgrade_prog_max_4 = upgrade_cond_max(upgrade_kind_4, upgrade_cond_4)
+	for i in 4:
+		upgrade_kind[i] = random_upgrade_kind()
+		upgrade_cond[i] = random_upgrade_condition()
+		upgrade_prog_cur[i] = 0.0
+		upgrade_prog_max[i] = upgrade_cond_max(upgrade_kind[i], upgrade_cond[i])
+		if upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY:
+			upgrade_cond_info[i] = World.Enemy.values().pick_random()
 	if emit_changes:
 		emit_upgrade_purchase()
 
@@ -811,110 +797,112 @@ func upgrade_cond_max(kind: UpgradeKind, cond: UpgradeCondition) -> float:
 			return (cost ** 1.2) * 10000
 		UpgradeCondition.MANA_BACK: 
 			return (cost ** 1.2) * 500
+		UpgradeCondition.DEFEAT_ENEMY: 
+			return (cost ** 1.5) * 1000
+		UpgradeCondition.BURNING:
+			return (cost ** 2) * 10
+		UpgradeCondition.WETNESS:
+			return (cost ** 2) * 10
+		UpgradeCondition.FREEZE:
+			return (cost ** 2) * 8
+		UpgradeCondition.SHOCK:
+			return (cost ** 2) * 7
+		UpgradeCondition.FEATHER:
+			return (cost ** 2) * 8
+		UpgradeCondition.VAPE:
+			return (cost ** 2) * 10
+		UpgradeCondition.MELT:
+			return (cost ** 2) * 15
+		UpgradeCondition.OVERLOAD:
+			return (cost ** 2) * 15
 	return 0.0
 	
-func progress_damage_deal(amount: float, element: Spell.Element) -> void:
+func progress_damage_deal(info: Dictionary) -> void:
+	var amount := info["dmg"] as float
+	var application := info["app"] as float
+	var element := info["el"] as Spell.Element
 	match element:
 		Spell.Element.FIRE:
-			if upgrade_cond_1 == UpgradeCondition.DEAL_FIRE: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.DEAL_FIRE: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.DEAL_FIRE: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.DEAL_FIRE: upgrade_prog_cur_4 += amount
+			for i in 4: 
+				if upgrade_cond[i] == UpgradeCondition.DEAL_FIRE: 
+					upgrade_prog_cur[i] += amount
+				elif upgrade_cond[i] == UpgradeCondition.BURNING:
+					upgrade_prog_cur[i] += application
 		Spell.Element.ROCK:
-			if upgrade_cond_1 == UpgradeCondition.DEAL_ROCK: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.DEAL_ROCK: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.DEAL_ROCK: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.DEAL_ROCK: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.DEAL_ROCK: upgrade_prog_cur[i] += amount
 		Spell.Element.ELECTRIC:
-			if upgrade_cond_1 == UpgradeCondition.DEAL_ELECTRIC: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.DEAL_ELECTRIC: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.DEAL_ELECTRIC: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.DEAL_ELECTRIC: upgrade_prog_cur_4 += amount
+			for i in 4: 
+				if upgrade_cond[i] == UpgradeCondition.DEAL_ELECTRIC: 
+					upgrade_prog_cur[i] += amount
+				elif upgrade_cond[i] == UpgradeCondition.SHOCK:
+					upgrade_prog_cur[i] += application
 		Spell.Element.WATER:
-			if upgrade_cond_1 == UpgradeCondition.DEAL_WATER: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.DEAL_WATER: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.DEAL_WATER: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.DEAL_WATER: upgrade_prog_cur_4 += amount
+			for i in 4: 
+				if upgrade_cond[i] == UpgradeCondition.DEAL_WATER: 
+					upgrade_prog_cur[i] += amount
+				elif upgrade_cond[i] == UpgradeCondition.WETNESS:
+					upgrade_prog_cur[i] += application
 		Spell.Element.AIR:
-			if upgrade_cond_1 == UpgradeCondition.DEAL_AIR: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.DEAL_AIR: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.DEAL_AIR: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.DEAL_AIR: upgrade_prog_cur_4 += amount
+			for i in 4: 
+				if upgrade_cond[i] == UpgradeCondition.DEAL_AIR: 
+					upgrade_prog_cur[i] += amount
+				elif upgrade_prog_cur[i] == UpgradeCondition.FEATHER:
+					upgrade_prog_cur[i] += application
 		Spell.Element.ICE:
-			if upgrade_cond_1 == UpgradeCondition.DEAL_ICE: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.DEAL_ICE: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.DEAL_ICE: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.DEAL_ICE: upgrade_prog_cur_4 += amount
+			for i in 4: 
+				if upgrade_cond[i] == UpgradeCondition.DEAL_ICE: 
+					upgrade_prog_cur[i] += amount
+				elif upgrade_prog_cur[i] == UpgradeCondition.FREEZE:
+					upgrade_prog_cur[i] += application
+	var vape := info["vape"] as float
+	var melt := info["melt"] as float
+	var overload := info["overload"] as float
+	if vape > 0.0:
+		for i in 4: if upgrade_cond[i] == UpgradeCondition.VAPE: upgrade_prog_cur[i] += vape
+	if melt > 0.0:
+		for i in 4: if upgrade_cond[i] == UpgradeCondition.MELT: upgrade_prog_cur[i] += melt
+	if overload > 0.0:
+		for i in 4: if upgrade_cond[i] == UpgradeCondition.OVERLOAD: upgrade_prog_cur[i] += overload
+	
 	update_upgrade_progress()
 	
 func progress_damage_receive(amount: float, element: Spell.Element) -> void:
 	match element:
 		Spell.Element.FIRE:
-			if upgrade_cond_1 == UpgradeCondition.RECEIVE_FIRE: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.RECEIVE_FIRE: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.RECEIVE_FIRE: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.RECEIVE_FIRE: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_FIRE: upgrade_prog_cur[i] += amount
 		Spell.Element.ROCK:
-			if upgrade_cond_1 == UpgradeCondition.RECEIVE_ROCK: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.RECEIVE_ROCK: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.RECEIVE_ROCK: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.RECEIVE_ROCK: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_ROCK: upgrade_prog_cur[i] += amount
 		Spell.Element.ELECTRIC:
-			if upgrade_cond_1 == UpgradeCondition.RECEIVE_ELECTRIC: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.RECEIVE_ELECTRIC: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.RECEIVE_ELECTRIC: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.RECEIVE_ELECTRIC: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_ELECTRIC: upgrade_prog_cur[i] += amount
 		Spell.Element.WATER:
-			if upgrade_cond_1 == UpgradeCondition.RECEIVE_WATER: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.RECEIVE_WATER: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.RECEIVE_WATER: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.RECEIVE_WATER: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_WATER: upgrade_prog_cur[i] += amount
 		Spell.Element.AIR:
-			if upgrade_cond_1 == UpgradeCondition.RECEIVE_AIR: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.RECEIVE_AIR: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.RECEIVE_AIR: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.RECEIVE_AIR: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_AIR: upgrade_prog_cur[i] += amount
 		Spell.Element.ICE:
-			if upgrade_cond_1 == UpgradeCondition.RECEIVE_ICE: upgrade_prog_cur_1 += amount
-			if upgrade_cond_2 == UpgradeCondition.RECEIVE_ICE: upgrade_prog_cur_2 += amount
-			if upgrade_cond_3 == UpgradeCondition.RECEIVE_ICE: upgrade_prog_cur_3 += amount
-			if upgrade_cond_4 == UpgradeCondition.RECEIVE_ICE: upgrade_prog_cur_4 += amount
+			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_ICE: upgrade_prog_cur[i] += amount
 	update_upgrade_progress()
 	
 func progress_travel(amount: float) -> void:
-	if upgrade_cond_1 == UpgradeCondition.TRAVEL: upgrade_prog_cur_1 += amount
-	if upgrade_cond_2 == UpgradeCondition.TRAVEL: upgrade_prog_cur_2 += amount
-	if upgrade_cond_3 == UpgradeCondition.TRAVEL: upgrade_prog_cur_3 += amount
-	if upgrade_cond_4 == UpgradeCondition.TRAVEL: upgrade_prog_cur_4 += amount
+	for i in 4: if upgrade_cond[i] == UpgradeCondition.TRAVEL: upgrade_prog_cur[i] += amount
 	update_upgrade_progress()
 	
 func progress_mana_back(amount: float) -> void:
-	if upgrade_cond_1 == UpgradeCondition.MANA_BACK: upgrade_prog_cur_1 += amount
-	if upgrade_cond_2 == UpgradeCondition.MANA_BACK: upgrade_prog_cur_2 += amount
-	if upgrade_cond_3 == UpgradeCondition.MANA_BACK: upgrade_prog_cur_3 += amount
-	if upgrade_cond_4 == UpgradeCondition.MANA_BACK: upgrade_prog_cur_4 += amount
+	for i in 4: if upgrade_cond[i] == UpgradeCondition.MANA_BACK: upgrade_prog_cur[i] += amount
+	update_upgrade_progress()
+	
+func progress_defeat_enemy(enemy: World.Enemy, lvl: int) -> void:
+	for i in 4:
+		if upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY and enemy == upgrade_cond_info[i]:
+			upgrade_prog_cur[i] += maxi(lvl % 101, 1)
 	update_upgrade_progress()
 
 func update_upgrade_progress() -> void:
 	var message := ""
-	if upgrade_prog_cur_1 >= upgrade_prog_max_1:
-		purchase_upgrade_kind(upgrade_kind_1)
-		message = message_for_upgrade_kind(upgrade_kind_1)
-		fill_upgrade_slots(true)
-		UIAudioPlayer.upgrade()
-	elif upgrade_prog_cur_2 >= upgrade_prog_max_2:
-		purchase_upgrade_kind(upgrade_kind_2)
-		message = message_for_upgrade_kind(upgrade_kind_2)
-		fill_upgrade_slots(true)
-		UIAudioPlayer.upgrade()
-	elif upgrade_prog_cur_3 >= upgrade_prog_max_3:
-		purchase_upgrade_kind(upgrade_kind_3)
-		message = message_for_upgrade_kind(upgrade_kind_3)
-		fill_upgrade_slots(true)
-		UIAudioPlayer.upgrade()
-	elif upgrade_prog_cur_4 >= upgrade_prog_max_4:
-		purchase_upgrade_kind(upgrade_kind_4)
-		message = message_for_upgrade_kind(upgrade_kind_4)
-		fill_upgrade_slots(true)
-		UIAudioPlayer.upgrade()
+	for i in 4:
+		if upgrade_prog_cur[i] >= upgrade_prog_max[i]:
+			purchase_upgrade_kind(upgrade_kind[i])
+			message = message_for_upgrade_kind(upgrade_kind[i])
+			fill_upgrade_slots(true)
+			UIAudioPlayer.upgrade()
+			break
 	upgrade_slot_progress.emit(self, message)

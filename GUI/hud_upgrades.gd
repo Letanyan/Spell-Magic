@@ -23,32 +23,32 @@ func _ready() -> void:
 	pass
 	
 func upgrade_slots_refreshed(settings: UpgradeSettings) -> void:
-	progress_1.visible = settings.upgrade_kind_1 != UpgradeSettings.UpgradeKind.NONE
-	progress_2.visible = settings.upgrade_kind_2 != UpgradeSettings.UpgradeKind.NONE
-	progress_3.visible = settings.upgrade_kind_3 != UpgradeSettings.UpgradeKind.NONE
-	progress_4.visible = settings.upgrade_kind_4 != UpgradeSettings.UpgradeKind.NONE
-	label_1.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind_1) + "[/center][/font_size]"
-	label_2.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind_2) + "[/center][/font_size]"
-	label_3.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind_3) + "[/center][/font_size]"
-	label_4.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind_4) + "[/center][/font_size]"
-	condition_1.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_1) + "[/center][/font_size]"
-	condition_2.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_2) + "[/center][/font_size]"
-	condition_3.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_3) + "[/center][/font_size]"
-	condition_4.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond_4) + "[/center][/font_size]"
-	progress_1.max_value = settings.upgrade_prog_max_1
-	progress_2.max_value = settings.upgrade_prog_max_2
-	progress_3.max_value = settings.upgrade_prog_max_3
-	progress_4.max_value = settings.upgrade_prog_max_4
-	progress_1.value = settings.upgrade_prog_cur_1
-	progress_2.value = settings.upgrade_prog_cur_2
-	progress_3.value = settings.upgrade_prog_cur_3
-	progress_4.value = settings.upgrade_prog_cur_4
+	progress_1.visible = settings.upgrade_kind[0] != UpgradeSettings.UpgradeKind.NONE
+	progress_2.visible = settings.upgrade_kind[1] != UpgradeSettings.UpgradeKind.NONE
+	progress_3.visible = settings.upgrade_kind[2] != UpgradeSettings.UpgradeKind.NONE
+	progress_4.visible = settings.upgrade_kind[3] != UpgradeSettings.UpgradeKind.NONE
+	label_1.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind[0]) + "[/center][/font_size]"
+	label_2.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind[1]) + "[/center][/font_size]"
+	label_3.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind[2]) + "[/center][/font_size]"
+	label_4.text = "[font_size=12][center]" + settings.description_for_upgrade_kind(settings.upgrade_kind[3]) + "[/center][/font_size]"
+	condition_1.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond[0], settings.upgrade_cond_info[0]) + "[/center][/font_size]"
+	condition_2.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond[1], settings.upgrade_cond_info[1]) + "[/center][/font_size]"
+	condition_3.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond[2], settings.upgrade_cond_info[2]) + "[/center][/font_size]"
+	condition_4.text = "[font_size=12][center]" + settings.description_upgrade_condition(settings.upgrade_cond[3], settings.upgrade_cond_info[3]) + "[/center][/font_size]"
+	progress_1.max_value = settings.upgrade_prog_max[0]
+	progress_2.max_value = settings.upgrade_prog_max[1]
+	progress_3.max_value = settings.upgrade_prog_max[2]
+	progress_4.max_value = settings.upgrade_prog_max[3]
+	progress_1.value = settings.upgrade_prog_cur[0]
+	progress_2.value = settings.upgrade_prog_cur[1]
+	progress_3.value = settings.upgrade_prog_cur[2]
+	progress_4.value = settings.upgrade_prog_cur[3]
 	
 func upgrade_slot_progress_update(settings: UpgradeSettings, message: String) -> void:
-	progress_1.value = settings.upgrade_prog_cur_1
-	progress_2.value = settings.upgrade_prog_cur_2
-	progress_3.value = settings.upgrade_prog_cur_3
-	progress_4.value = settings.upgrade_prog_cur_4
+	progress_1.value = settings.upgrade_prog_cur[0]
+	progress_2.value = settings.upgrade_prog_cur[1]
+	progress_3.value = settings.upgrade_prog_cur[2]
+	progress_4.value = settings.upgrade_prog_cur[3]
 	if not message.is_empty():
 		upgrade_was_complete.emit(message)
 	

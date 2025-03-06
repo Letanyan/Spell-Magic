@@ -276,6 +276,10 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 		sidx -= 1
 	sidx += 1
 	
+	if not text.is_empty():
+		while sidx < text.length() and text[sidx] == " ":
+			sidx += 1
+	
 	if sidx == eidx:
 		return text
 		

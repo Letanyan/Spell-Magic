@@ -486,6 +486,8 @@ func die() -> void:
 	(source.process_material as ParticleProcessMaterial).emission_box_extents = bounds
 	(source.process_material as ParticleProcessMaterial).color = biome_helper.color_for_biome(velocity_movement.current_biome)
 		
+	player.world_settings.upgrade_settings.progress_defeat_enemy(kind, int(level))
+		
 	AudioManager.play(sfx_hurt, position, NAN, true)
 	play_animation("death")
 	
@@ -594,7 +596,7 @@ func update_vitals_display() -> void:
 
 func drop_artifact() -> Artifact:
 	var class_p := class_level / 20.0
-	var level_p := (int(level) % 101) / 100.0
+	var level_p := maxi(int(level) % 101, 1) / 100.0
 	var min_p := class_p
 	var max_p := level_p
 	if min_p > max_p:
@@ -606,7 +608,7 @@ func drop_artifact() -> Artifact:
 	
 func drop_spell() -> Spell:
 	var class_p := (class_level / 20.0) ** 2.718
-	var level_p := (int(level) % 101) / 100.0
+	var level_p := maxi(int(level) % 101, 1) / 100.0
 	var min_p := class_p
 	var max_p := level_p
 	if min_p > max_p:
@@ -621,7 +623,7 @@ func drop_spell() -> Spell:
 	return result
 	
 func drop_key() -> int:
-	var norm_level := int(level) % 101 # == [0, 100]
+	var norm_level := maxi(int(level) % 101, 1) # == [1, 100]
 	
 	if norm_level < 95:
 		return 0
