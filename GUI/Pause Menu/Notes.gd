@@ -16,7 +16,7 @@ func update_notes() -> void:
 	var content := ""
 	
 	if GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.HIDE_ALL:
-		note_content.text = "[center]\n\n Notes are hidden. Change the unlock settings if you want to enable notes.[/center]"
+		note_content.text = "[center][font_size=16][b]\n\nAll Notes Are Hidden.\nChange 'Show' Setting Above to Show Notes[/b][/font_size][/center]"
 		return
 	
 	var highlight := func(note: String) -> String:
@@ -69,8 +69,11 @@ func update_notes() -> void:
 		if GlobalData.game_settings.notes.has(note):
 			content += "[font_size=16][b][u]" + highlight.call(note) + "[/u][/b][/font_size]\n"
 			content += tag_t.call(GlobalData.game_settings.notes[note]) + "\n\n"
-	
-	note_content.text = content
+			
+	if not notes_keys.is_empty():
+		note_content.text = content
+	elif GlobalData.game_settings.notes_unlock_settings == GameSettings.NotesUnlockSettings.IN_GAME:
+		note_content.text = "[center][font_size=16][b]\n\nExplore the World to Discover Notes[/b][/font_size][/center]"
 	
 func _on_show_notes_item_selected(index: int) -> void:
 	GlobalData.game_settings.notes_unlock_settings = index as GameSettings.NotesUnlockSettings

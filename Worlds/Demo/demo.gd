@@ -99,6 +99,8 @@ func setup(_settings: WorldSettings) -> void:
 		var opt := w.keys[PackedStringArray(["RT"])] as Wand.Option
 		opt.kind = Wand.Kind.FIRE
 		opt.parse_spells("Blast", book)
+		var opt2 := w.keys[PackedStringArray(["RB"])] as Wand.Option
+		opt2.kind = Wand.Kind.FIRE_PICKED
 	book.spell_was_updated.connect(case.spell_was_updated)
 	
 	artifacts = Artifacts.new()

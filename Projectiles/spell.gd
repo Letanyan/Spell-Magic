@@ -927,6 +927,15 @@ func bake(new_name: String) -> Spell:
 	result.charge = charge
 	result.is_active = is_active
 	return result
+	
+func clamp_variables(settings: UpgradeSettings) -> void:
+	count = mini(settings.max_N(), count)
+	crit_rate = minf(settings.max_crit_rate(), crit_rate)
+	crit_dmg = minf(settings.max_crit_dmg(), crit_dmg)
+	duration = minf(settings.max_T(), duration)
+	power = minf(settings.max_P(), power)
+	if r.is_valid_float():
+		r = str(minf(r.to_float(), settings.max_r()))
 
 func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, samples: int) -> Image:
 	var img := Image.create_empty(floori(size.x), floori(size.y), false, Image.Format.FORMAT_RGBA8)

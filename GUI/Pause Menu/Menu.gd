@@ -58,7 +58,17 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 
 func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
-	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: magic_book.add_spell(s, false))
+	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: 
+		magic_book.add_spell(s, false)
+		var w := wand_case.case.wands[wand_case.case.selected_wand]
+		for i: String in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]:
+			var opt := w.keys[PackedStringArray([i])] as Wand.Option
+			if not opt.spells.is_empty():
+				continue
+			opt.kind = Wand.Kind.PICK
+			opt.parse_spells(s.name, magic_book.book)
+			break
+	)
 	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: upgrades.update_state(UpgradeSettings.PurchaseError.NONE))
 
 func update_index(index: Kind) -> void:

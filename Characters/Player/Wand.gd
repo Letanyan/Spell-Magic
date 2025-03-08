@@ -197,7 +197,17 @@ const basic_keys: Array[String] = [
 	"move_left",
 	"move_right",
 	"move_forward",
-	"move_back"
+	"move_back",
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	"0",
 ]
 
 var name: String
