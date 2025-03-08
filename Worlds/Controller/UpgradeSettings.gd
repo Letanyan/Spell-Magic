@@ -445,6 +445,11 @@ func reset_all_stats_to_default_values() -> void:
 	has_spell_element = 0b11
 	has_chain_method = 1
 	currency = 0
+	upgrade_kind = [UpgradeKind.NONE, UpgradeKind.NONE, UpgradeKind.NONE, UpgradeKind.NONE]
+	upgrade_cond = [UpgradeCondition.DEAL_FIRE, UpgradeCondition.DEAL_FIRE, UpgradeCondition.DEAL_FIRE, UpgradeCondition.DEAL_FIRE]
+	upgrade_prog_cur = [0.0, 0.0, 0.0, 0.0]
+	upgrade_prog_max = [0.0, 0.0, 0.0, 0.0]
+	upgrade_cond_info = [0, 0, 0, 0]
 	
 func reset_all_stats_to_max_values() -> void:
 	level_health = level_max_health
@@ -463,6 +468,11 @@ func reset_all_stats_to_max_values() -> void:
 	has_spell_element = 0b1111_111
 	has_chain_method = 0b111
 	currency = 9_999_999
+	upgrade_kind = [UpgradeKind.NONE, UpgradeKind.NONE, UpgradeKind.NONE, UpgradeKind.NONE]
+	upgrade_cond = [UpgradeCondition.DEAL_FIRE, UpgradeCondition.DEAL_FIRE, UpgradeCondition.DEAL_FIRE, UpgradeCondition.DEAL_FIRE]
+	upgrade_prog_cur = [0.0, 0.0, 0.0, 0.0]
+	upgrade_prog_max = [0.0, 0.0, 0.0, 0.0]
+	upgrade_cond_info = [0, 0, 0, 0]
 
 func emit_upgrade_purchase(payload: Dictionary = {}) -> void:
 	upgrade_was_purchased.emit(self, payload)
@@ -532,9 +542,8 @@ func default_starter_spell() -> Spell:
 		blast_element = Spell.Element.AIR
 	elif check_if_has_spell_element(Spell.Element.ICE):
 		blast_element = Spell.Element.ICE
-	var blast := Spell.new(false, "ru", "rv", "offset + speed * t", "0.1", 5, 2.0, blast_element)
+	var blast := Spell.new(false, "u * speed * t + u * offset", "v * speed * t + u * offset", "w * speed * t + w * offset", "0.1", 5, 2.0, blast_element)
 	blast.name = "Blast"
-	blast.spherical_coords = true
 	blast.mana_cost = 1
 	blast.expression_strings = {
 		"speed": "9",
@@ -556,7 +565,7 @@ enum UpgradeCondition {
 	DEAL_FIRE, DEAL_ROCK, DEAL_ELECTRIC, DEAL_WATER, DEAL_AIR, DEAL_ICE,
 	RECEIVE_FIRE, RECEIVE_ROCK, RECEIVE_ELECTRIC, RECEIVE_WATER, RECEIVE_AIR, RECEIVE_ICE,
 	TRAVEL, MANA_BACK, DEFEAT_ENEMY, BURNING, WETNESS, SHOCK, FREEZE, FEATHER,
-	VAPE, MELT, OVERLOAD
+	VAPE, MELT, OVERLOAD # TODO: add more conditions based on T, r, N
 }
 
 func random_upgrade_kind() -> UpgradeKind:
@@ -714,12 +723,12 @@ func cost_of_upgrade_kind(kind: UpgradeKind) -> int:
 	
 func random_upgrade_condition() -> UpgradeCondition:
 	var options := {
-		UpgradeCondition.RECEIVE_FIRE: 1.0,
-		UpgradeCondition.RECEIVE_ROCK: 0.5, 
-		UpgradeCondition.RECEIVE_ELECTRIC: 0.5, 
-		UpgradeCondition.RECEIVE_WATER: 1.0, 
-		UpgradeCondition.RECEIVE_AIR: 0.5, 
-		UpgradeCondition.RECEIVE_ICE: 1.0,
+		UpgradeCondition.RECEIVE_FIRE: 0.5,
+		UpgradeCondition.RECEIVE_ROCK: 0.25, 
+		UpgradeCondition.RECEIVE_ELECTRIC: 0.25, 
+		UpgradeCondition.RECEIVE_WATER: 0.5, 
+		UpgradeCondition.RECEIVE_AIR: 0.25, 
+		UpgradeCondition.RECEIVE_ICE: 0.5,
 		UpgradeCondition.TRAVEL: 0.2,
 		UpgradeCondition.MANA_BACK: 0.2,
 		UpgradeCondition.DEFEAT_ENEMY: 1.0,
@@ -727,14 +736,14 @@ func random_upgrade_condition() -> UpgradeCondition:
 	if check_if_has_spell_element(Spell.Element.FIRE):
 		options[UpgradeCondition.DEAL_FIRE] = 1.0
 		options[UpgradeCondition.BURNING] = 1.0
-		options[UpgradeCondition.VAPE] = 0.25
-		options[UpgradeCondition.MELT] = 0.25
+		options[UpgradeCondition.VAPE] = 0.5
+		options[UpgradeCondition.MELT] = 0.5
 	if check_if_has_spell_element(Spell.Element.ROCK):
 		options[UpgradeCondition.DEAL_ROCK] = 2.0
 	if check_if_has_spell_element(Spell.Element.ELECTRIC):
 		options[UpgradeCondition.DEAL_ELECTRIC] = 1.5
-		options[UpgradeCondition.SHOCK] = 0.5
-		options[UpgradeCondition.OVERLOAD] = 0.25
+		options[UpgradeCondition.SHOCK] = 0.75
+		options[UpgradeCondition.OVERLOAD] = 0.5
 	if check_if_has_spell_element(Spell.Element.WATER):
 		options[UpgradeCondition.DEAL_WATER] = 1.0
 		options[UpgradeCondition.WETNESS] = 1.0
@@ -771,7 +780,7 @@ func description_upgrade_condition(condition: UpgradeCondition, info: int) -> St
 		UpgradeCondition.FEATHER: return "Apply [img=l,12x12, color=#00FF80]res://GUI/Images/wind.svg[/img] Feather"
 		UpgradeCondition.VAPE: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] -> [img=l,12x12, color=#0080FF]res://GUI/Images/water.svg[/img]"
 		UpgradeCondition.MELT: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] -> [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img]"
-		UpgradeCondition.OVERLOAD: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] + [img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img]"
+		UpgradeCondition.OVERLOAD: return "[img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] -> [img=l,12x12, color=#FF0080]res://GUI/Images/electric.svg[/img]"
 		
 	return ""
 	

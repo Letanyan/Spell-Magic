@@ -16,6 +16,7 @@ var filter_chain := ""
 var book: MagicBook:
 	set(value):
 		book = value
+		page.book = value
 		duplicate_book()
 		reload_list()
 		create_button.disabled = book.settings.game_mode_settings.has_flag(GameModeSettings.DISALLOW_SPELL_EDITING)

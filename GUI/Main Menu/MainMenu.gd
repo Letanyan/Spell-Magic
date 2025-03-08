@@ -32,6 +32,9 @@ func _process(delta: float) -> void:
 func _on_new_game_pressed() -> void:
 	UIAudioPlayer.click()
 	if GlobalData.is_demo:
+		var godot_path := "user://worlds/Demo World/"
+		if DirAccess.dir_exists_absolute(godot_path):
+			DirAccess.remove_absolute(godot_path)
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = "Demo World"
@@ -41,12 +44,13 @@ func _on_new_game_pressed() -> void:
 		rng.seed = settings.sed
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
-		settings.game_mode_settings = GameModeSettings.hardcore_mode()
-		settings.game_mode_settings.flags = GameModeSettings.DISALLOW_SPELL_EDITING
+		settings.game_mode_settings = GameModeSettings.permadeath()
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << randi_range(1, 6))
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
+		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+			settings.upgrade_settings.fill_upgrade_slots(false)
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()

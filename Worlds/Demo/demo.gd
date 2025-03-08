@@ -734,7 +734,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			hud.hide()
 			GlobalData.game_settings.last_world = ""
 			GlobalData.game_settings.save()
-			OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (settings.world_name)))
+			DirAccess.remove_absolute("user://worlds/%s" % (settings.world_name))
 			var overlay := OverlayScreen.display("DEATH", "Game Over", "Main Menu")
 			overlay.confirmed.connect(func() -> void:
 				SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black")
