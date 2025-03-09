@@ -382,6 +382,7 @@ func _physics_process(delta: float) -> void:
 			player.set_feet_position(world_h)
 		else:
 			player.set_feet_position(platform_h)
+		player_last_position = player.position
 		player.set_underwater()
 		#chunker.hide_water(player.position.y, true)
 		chunker.update_environment(player.position.x, player.position.z)
@@ -736,7 +737,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			hud.hide()
 			GlobalData.game_settings.last_world = ""
 			GlobalData.game_settings.save()
-			DirAccess.remove_absolute("user://worlds/%s" % (settings.world_name))
+			GlobalData.remove_folder_that_only_has_files("user://worlds/%s" % (settings.world_name))
 			var overlay := OverlayScreen.display("DEATH", "Game Over", "Main Menu")
 			overlay.confirmed.connect(func() -> void:
 				SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black")

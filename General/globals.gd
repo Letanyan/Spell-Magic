@@ -190,6 +190,11 @@ static func save_credits() -> void:
 		file.flush()
 		file.close()
 			
+func remove_folder_that_only_has_files(folder: String) -> void:
+	if DirAccess.dir_exists_absolute(folder):
+		for file in DirAccess.get_files_at(folder):
+			DirAccess.remove_absolute(folder + "/" + file)
+		DirAccess.remove_absolute(folder)
 
 class Ref extends RefCounted:
 	var storage: Variant = null
