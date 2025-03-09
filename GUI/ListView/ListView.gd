@@ -78,7 +78,7 @@ func update_items(full_update: bool) -> void:
 		for i: int in _items_to_update.keys():
 			var j := items_offset + posmod(i - min_index, items.size())
 			if j >= 0 and j < total_items and i >= 0 and i < items.size():
-				update_item.call(items[i], j) # FIXME: not always updating bottom item
+				update_item.call(items[i], j)
 				_items_to_update.erase(i)
 			
 	for i in items.size():
@@ -102,11 +102,11 @@ func update_y_offset(full_update: bool) -> void:
 		var virtual_y := i * height_for_items + x * view_count * height_for_items
 		var old_pos := item.position.y
 		item.position.y = fmod(virtual_y, items_shown * height_for_items) - height_for_items + (1 - x) * parent_height_correction
-		if abs(old_pos - item.position.y) > height_for_items:
+		if absf(old_pos - item.position.y) > height_for_items:
 			_items_to_update[i] = true
 		i += 1
 	
-	if full_update or items_offset != old_offset:
+	if full_update or items_offset != old_offset or not _items_to_update.is_empty():
 		update_items(full_update)
 
 func _on_scroll_bar_scrolling() -> void:
