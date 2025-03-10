@@ -14,7 +14,7 @@ enum Enemy {
 	FISH, BIRD, FUNGI, HOT_BLOB, MUSHROOM, SNOT_BLOB, SNOT_SPIKE, WALKER_HEAD, WIZARD, BOUGEON, # 34
 	
 	NONE = 255,
-}
+}		
 
 enum Foliage {
 	# !! WARNING: When adding new cases ensure to update foliage.gd

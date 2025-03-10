@@ -157,6 +157,45 @@ func get_date_time_string(timestamp: int) -> String:
 			return "%d %s" % [dict.day, month]
 	else:
 		return "%d %s %d" % [dict.day, month, dict.year]
+		
+static func format_enemy_kind(kind: World.Enemy) -> String:
+	match kind:
+		World.Enemy.UNDEAD: return "Undead"
+		World.Enemy.MOLE: return "Mole"
+		World.Enemy.WALKER: return "Walker"
+		World.Enemy.BIRDMAN: return "Birdman"
+		World.Enemy.FISHMAN: return "Fishman"
+		World.Enemy.BLUEMON: return "Bluemon"
+		World.Enemy.FROG: return "Frogger"
+		World.Enemy.MUSHKING: return "Mushking"
+		World.Enemy.RABBIT: return "Rabbid"
+		World.Enemy.ORC: return "Orc"
+		World.Enemy.ORC_DEAD: return "Orcdead"
+		World.Enemy.BAT: return "Bat"
+		World.Enemy.DRAGON: return "Dragon"
+		World.Enemy.DRAGOON: return "Dragoon"
+		World.Enemy.GHOST: return "Ghost"
+		World.Enemy.GHOSTLY: return "Ghoster"
+		World.Enemy.BATTY: return "Batty"
+		World.Enemy.BEE: return "Bee"
+		World.Enemy.BUMBLE_BEE: return "Bumble"
+		World.Enemy.UNDEAD_HEAD: return "Unhead"
+		World.Enemy.REDMON: return "Redmon"
+		World.Enemy.PINKMON: return "Pinkmon"
+		World.Enemy.FLYGEON: return "Flygeon"
+		World.Enemy.GOBLIN: return "Goblin"
+		World.Enemy.GOBLIN_KING: return "Gobking"
+		World.Enemy.FISH: return "Fish"
+		World.Enemy.BIRD: return "Bird"
+		World.Enemy.FUNGI: return "Fungi"
+		World.Enemy.HOT_BLOB: return "Hotlob"
+		World.Enemy.MUSHROOM: return "Shroom"
+		World.Enemy.SNOT_BLOB: return "Snlob"
+		World.Enemy.SNOT_SPIKE: return "Snike"
+		World.Enemy.WALKER_HEAD: return "Walkead"
+		World.Enemy.WIZARD: return "Wiz"
+		World.Enemy.BOUGEON: return "Bougeon"
+	return ""
 
 static func save_credits() -> void:
 	if not FileAccess.file_exists("user://credits/license/godotengine.txt"):

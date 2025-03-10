@@ -772,7 +772,7 @@ func description_upgrade_condition(condition: UpgradeCondition, info: int) -> St
 		UpgradeCondition.RECEIVE_ICE: return "Receive [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Damage"
 		UpgradeCondition.TRAVEL: return "Travel"
 		UpgradeCondition.MANA_BACK: return "Gain Mana Back"
-		UpgradeCondition.DEFEAT_ENEMY: return "Defeat " + World.Enemy.keys()[info] # TODO: format enemy names
+		UpgradeCondition.DEFEAT_ENEMY: return "Defeat " + Globals.format_enemy_kind(info as World.Enemy)
 		UpgradeCondition.BURNING: return "Apply [img=l,12x12, color=#FF0000]res://GUI/Images/fire.svg[/img] Burning"
 		UpgradeCondition.WETNESS: return "Apply [img=l,12x12, color=#0080FF]res://GUI/Images/water.svg[/img] Wetness"
 		UpgradeCondition.FREEZE: return "Apply [img=l,12x12, color=#00FFFF]res://GUI/Images/ice.svg[/img] Freeze"

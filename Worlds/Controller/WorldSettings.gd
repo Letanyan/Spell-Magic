@@ -126,12 +126,11 @@ func read(filename: String) -> void:
 func enemies_killed_table() -> String:
 	var result := "[table=2]\n"
 	result += "[cell border=white][b]Enemy[/b][/cell][cell border=white][b]Total Killed[/b][/cell]"
-	var keys := World.Enemy.keys() as Array
 	for kind: World.Enemy in World.Enemy.values():
 		var number := enemies_killed.get(kind, 0) as int
 		if kind == World.Enemy.NONE:
 			continue
-		var desc := keys[kind] as String
+		var desc := Globals.format_enemy_kind(kind)
 		result += "[cell border=white][b]%s[/b][/cell][cell border=white]%d[/cell]\n" % [desc, number]
 	result += "[/table]"
 	return result

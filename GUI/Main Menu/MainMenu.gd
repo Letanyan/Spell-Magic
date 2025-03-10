@@ -45,7 +45,7 @@ func _on_new_game_pressed() -> void:
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.permadeath()
 		settings.upgrade_settings.reset_all_stats_to_default_values()
-		settings.upgrade_settings.has_spell_element = UpgradeSettings.HAS_VOID | (1 << rng.randi_range(1, 6))
+		settings.upgrade_settings.has_spell_element = UpgradeSettings.HAS_VOID | (1 << randi_range(1, 6))
 		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 			settings.upgrade_settings.fill_upgrade_slots(false)
 		settings.last_save_time = Time.get_unix_time_from_system()

@@ -1,7 +1,6 @@
 class_name GrasslandGen
 extends BiomeGenerator
 
-# TODO: Add more kinds of artifact spawns where quality scales with rarity
 enum GrasslandStructuresKind {
 	NONE,
 	TREE_ROUND, TREE_BRANCHED,
