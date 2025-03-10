@@ -936,6 +936,50 @@ func clamp_variables(settings: UpgradeSettings) -> void:
 	power = minf(settings.max_P(), power)
 	if r.is_valid_float():
 		r = str(minf(r.to_float(), settings.max_r()))
+	if not settings.check_if_has_spell_element(element):
+		match element:
+			Element.FIRE:
+				if settings.check_if_has_spell_element(Element.ELECTRIC): element = Element.ELECTRIC
+				elif settings.check_if_has_spell_element(Element.ICE): element = Element.ICE
+				elif settings.check_if_has_spell_element(Element.ROCK): element = Element.ROCK
+				elif settings.check_if_has_spell_element(Element.WATER): element = Element.WATER
+				elif settings.check_if_has_spell_element(Element.AIR): element = Element.AIR
+				elif settings.check_if_has_spell_element(Element.VOID): element = Element.VOID
+			Element.ROCK:
+				if settings.check_if_has_spell_element(Element.ICE): element = Element.ICE
+				elif settings.check_if_has_spell_element(Element.FIRE): element = Element.FIRE
+				elif settings.check_if_has_spell_element(Element.ELECTRIC): element = Element.ELECTRIC
+				elif settings.check_if_has_spell_element(Element.WATER): element = Element.WATER
+				elif settings.check_if_has_spell_element(Element.AIR): element = Element.AIR
+				elif settings.check_if_has_spell_element(Element.VOID): element = Element.VOID
+			Element.ELECTRIC:
+				if settings.check_if_has_spell_element(Element.ICE): element = Element.ICE
+				elif settings.check_if_has_spell_element(Element.FIRE): element = Element.FIRE
+				elif settings.check_if_has_spell_element(Element.AIR): element = Element.AIR
+				elif settings.check_if_has_spell_element(Element.WATER): element = Element.WATER
+				elif settings.check_if_has_spell_element(Element.ROCK): element = Element.ROCK
+				elif settings.check_if_has_spell_element(Element.VOID): element = Element.VOID
+			Element.WATER:
+				if settings.check_if_has_spell_element(Element.ICE): element = Element.ICE
+				elif settings.check_if_has_spell_element(Element.ELECTRIC): element = Element.ELECTRIC
+				elif settings.check_if_has_spell_element(Element.FIRE): element = Element.FIRE
+				elif settings.check_if_has_spell_element(Element.AIR): element = Element.AIR
+				elif settings.check_if_has_spell_element(Element.ROCK): element = Element.ROCK
+				elif settings.check_if_has_spell_element(Element.VOID): element = Element.VOID
+			Element.AIR:
+				if settings.check_if_has_spell_element(Element.ELECTRIC): element = Element.ELECTRIC
+				elif settings.check_if_has_spell_element(Element.ICE): element = Element.ICE
+				elif settings.check_if_has_spell_element(Element.FIRE): element = Element.FIRE
+				elif settings.check_if_has_spell_element(Element.WATER): element = Element.WATER
+				elif settings.check_if_has_spell_element(Element.ROCK): element = Element.ROCK
+				elif settings.check_if_has_spell_element(Element.VOID): element = Element.VOID
+			Element.ICE:
+				if settings.check_if_has_spell_element(Element.WATER): element = Element.WATER
+				elif settings.check_if_has_spell_element(Element.ELECTRIC): element = Element.ELECTRIC
+				elif settings.check_if_has_spell_element(Element.AIR): element = Element.AIR
+				elif settings.check_if_has_spell_element(Element.FIRE): element = Element.FIRE
+				elif settings.check_if_has_spell_element(Element.ROCK): element = Element.ROCK
+				elif settings.check_if_has_spell_element(Element.VOID): element = Element.VOID
 
 func generate_image_preview(size: Vector2, caster: SpellCaster, player: Player, samples: int) -> Image:
 	var img := Image.create_empty(floori(size.x), floori(size.y), false, Image.Format.FORMAT_RGBA8)

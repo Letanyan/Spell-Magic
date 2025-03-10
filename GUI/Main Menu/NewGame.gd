@@ -226,7 +226,7 @@ func _on_create_pressed() -> void:
 		
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
 		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-			settings.upgrade_settings.fill_upgrade_slots(false)
+			settings.upgrade_settings.fill_upgrade_slots(false, {})
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()
@@ -257,7 +257,7 @@ func _on_create_pressed() -> void:
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
-		settings.upgrade_settings.fill_upgrade_slots(false)
+		settings.upgrade_settings.fill_upgrade_slots(false, {})
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()
@@ -279,7 +279,7 @@ func _on_create_pressed() -> void:
 		temp_upgrades.reset_all_stats_to_default_values()
 		temp_upgrades.has_spell_element = UpgradeSettings.HAS_VOID | (1 << rng.randi_range(1, 6))
 		settings.upgrade_settings.load_dict(temp_upgrades.save_dict())
-		settings.upgrade_settings.fill_upgrade_slots(false)
+		settings.upgrade_settings.fill_upgrade_slots(false, {})
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()

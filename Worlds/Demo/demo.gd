@@ -557,7 +557,7 @@ func menu_did_open_tab_index(index: int) -> void:
 
 func _on_player_moved(delta: float) -> void:
 	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-		settings.upgrade_settings.progress_travel(player.position.distance_to(player_last_position))
+		settings.upgrade_settings.progress_travel(player.position.distance_to(player_last_position), player.active_enemy_kinds)
 	player_last_position = player.position
 	terrain_update_interval += delta
 	if Vec2.xz(player.position).length() > 8.0:
@@ -580,11 +580,11 @@ func update_terrain_queue() -> void:
 			if _removed.z == 0:
 				var pop := population.get(removed, null) as Population
 				if pop != null:
-					pop.habitant_set_display_only(true)
+					pop.habitant_set_display_only(true, player.active_enemy_kinds)
 			elif _removed.z == 1 and _removed.w > 1:
 				var pop := population.get(removed, null) as Population
 				if pop != null:
-					pop.despawn_all_from_world(get_node(".") as Node3D)
+					pop.despawn_all_from_world(get_node(".") as Node3D, player.active_enemy_kinds)
 					population.erase(removed)
 				
 		for updated in updated_coords:
@@ -592,7 +592,7 @@ func update_terrain_queue() -> void:
 				if updated.z == 0:
 					var pop := population.get(Vector2i(updated.x, updated.y), null) as Population
 					if pop != null:
-						pop.habitant_set_display_only(false)
+						pop.habitant_set_display_only(false, player.active_enemy_kinds)
 				elif updated.z == 1 and updated.w > 1:
 					update_population_at(Vector2i(updated.x, updated.y), updated.z != 0)
 
@@ -637,20 +637,28 @@ func update_population_spawning() -> void:
 		for item: Node3D in items_to_add[pop]:
 			if item.get_parent() == null:
 				add_child(item)
+			if item is Enemy:
+				var enemy := item as Enemy
+				if not player.active_enemy_kinds.has(enemy.kind):
+					player.active_enemy_kinds[enemy.kind] = 0
+				player.active_enemy_kinds[enemy.kind] += 1
 				
 func reset_enemy_populations() -> void:
 	for coord: Vector2i in population:
 		var pop := population[coord] as Population
 		if pop.display_only:
 			continue
-		pop.habitant_set_display_only(true)
-		pop.habitant_set_display_only(false)
+		pop.habitant_set_display_only(true, player.active_enemy_kinds)
+		pop.habitant_set_display_only(false, player.active_enemy_kinds)
 
 func enemy_dies(enemy: Enemy) -> void:
 	if settings.enemies_killed.has(enemy.kind):
 		settings.enemies_killed[enemy.kind] += 1
 	else:
 		settings.enemies_killed[enemy.kind] = 1
+	player.active_enemy_kinds[enemy.kind] -= 1
+	if player.active_enemy_kinds[enemy.kind] < 0:
+		player.active_enemy_kinds[enemy.kind] = 0
 	entity_manager.free_enemy(enemy)
 
 func _on_player_vital_update(vitals: Vitals) -> void:

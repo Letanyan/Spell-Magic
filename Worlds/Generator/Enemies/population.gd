@@ -324,10 +324,13 @@ func spawn_into_world(start_time_us: int, limit: int) -> Array[Node3D]:
 		display_only = false
 	return result
 	
-func despawn_all_from_world(world: Node3D) -> void:
+func despawn_all_from_world(world: Node3D, active_enemy_kinds: Dictionary) -> void:
 	for habitant_index: int in inhabitants:
 		var habitant: Enemy = inhabitants[habitant_index]
 		habitant.spell_caster.free_particles()
+		active_enemy_kinds[habitant.kind] -= 1
+		if active_enemy_kinds[habitant.kind] < 0:
+			active_enemy_kinds[habitant.kind] = 0
 		entity_manager.free_enemy(habitant)
 	for f in garden:
 		var clr := Color(0, 0, 0)
@@ -416,12 +419,15 @@ func update_info(world: Node3D, cam: Camera3D) -> void:
 			item.is_active = not display_only and item.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
 			
 			
-func habitant_set_display_only(only_display: bool) -> void:
+func habitant_set_display_only(only_display: bool, active_enemy_kinds: Dictionary) -> void:
 	display_only = only_display
 	if display_only:
 		for habitant_index: int in inhabitants:
 			var habitant: Enemy = inhabitants[habitant_index]
 			habitant.spell_caster.free_particles()
+			active_enemy_kinds[habitant.kind] -= 1
+			if active_enemy_kinds[habitant.kind] < 0:
+				active_enemy_kinds[habitant.kind] = 0
 			entity_manager.free_enemy(habitant)
 		for item in world_items:
 			entity_manager.free_world_item(item)

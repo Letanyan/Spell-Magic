@@ -784,16 +784,17 @@ func description_upgrade_condition(condition: UpgradeCondition, info: int) -> St
 		
 	return ""
 	
-func fill_upgrade_slots(emit_changes: bool) -> void:
+func fill_upgrade_slots(emit_changes: bool, active_enemy_kinds: Dictionary) -> void:
+	print(active_enemy_kinds)
 	for i in 4:
 		upgrade_kind[i] = random_upgrade_kind()
 		upgrade_cond[i] = random_upgrade_condition()
+		while active_enemy_kinds.is_empty() and upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY:
+			upgrade_cond[i] = random_upgrade_condition()
 		upgrade_prog_cur[i] = 0.0
 		upgrade_prog_max[i] = upgrade_cond_max(upgrade_kind[i], upgrade_cond[i])
 		if upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY:
-			upgrade_cond_info[i] = World.Enemy.values().pick_random()
-			while upgrade_cond_info[i] == World.Enemy.NONE:
-				upgrade_cond_info[i] = World.Enemy.values().pick_random()
+			upgrade_cond_info = Rand.entity_from_distribution(randf(), active_enemy_kinds)
 	if emit_changes:
 		emit_upgrade_purchase()
 
@@ -828,7 +829,7 @@ func upgrade_cond_max(kind: UpgradeKind, cond: UpgradeCondition) -> float:
 			return (cost ** 2) * 15
 	return 0.0
 	
-func progress_damage_deal(info: Dictionary) -> void:
+func progress_damage_deal(info: Dictionary, active_enemy_kinds: Dictionary) -> void:
 	var amount := info["dmg"] as float
 	var application := info["app"] as float
 	var element := info["el"] as Spell.Element
@@ -875,9 +876,9 @@ func progress_damage_deal(info: Dictionary) -> void:
 	if overload > 0.0:
 		for i in 4: if upgrade_cond[i] == UpgradeCondition.OVERLOAD: upgrade_prog_cur[i] += overload
 	
-	update_upgrade_progress()
+	update_upgrade_progress(active_enemy_kinds)
 	
-func progress_damage_receive(amount: float, element: Spell.Element) -> void:
+func progress_damage_receive(amount: float, element: Spell.Element, active_enemy_kinds: Dictionary) -> void:
 	match element:
 		Spell.Element.FIRE:
 			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_FIRE: upgrade_prog_cur[i] += amount
@@ -891,29 +892,29 @@ func progress_damage_receive(amount: float, element: Spell.Element) -> void:
 			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_AIR: upgrade_prog_cur[i] += amount
 		Spell.Element.ICE:
 			for i in 4: if upgrade_cond[i] == UpgradeCondition.RECEIVE_ICE: upgrade_prog_cur[i] += amount
-	update_upgrade_progress()
+	update_upgrade_progress(active_enemy_kinds)
 	
-func progress_travel(amount: float) -> void:
+func progress_travel(amount: float, active_enemy_kinds: Dictionary) -> void:
 	for i in 4: if upgrade_cond[i] == UpgradeCondition.TRAVEL: upgrade_prog_cur[i] += amount
-	update_upgrade_progress()
+	update_upgrade_progress(active_enemy_kinds)
 	
-func progress_mana_back(amount: float) -> void:
+func progress_mana_back(amount: float, active_enemy_kinds: Dictionary) -> void:
 	for i in 4: if upgrade_cond[i] == UpgradeCondition.MANA_BACK: upgrade_prog_cur[i] += amount
-	update_upgrade_progress()
+	update_upgrade_progress(active_enemy_kinds)
 	
-func progress_defeat_enemy(enemy: World.Enemy, lvl: int) -> void:
+func progress_defeat_enemy(enemy: World.Enemy, lvl: int, active_enemy_kinds: Dictionary) -> void:
 	for i in 4:
 		if upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY and enemy == upgrade_cond_info[i]:
 			upgrade_prog_cur[i] += maxi(lvl % 101, 1)
-	update_upgrade_progress()
+	update_upgrade_progress(active_enemy_kinds)
 
-func update_upgrade_progress() -> void:
+func update_upgrade_progress(active_enemy_kinds: Dictionary) -> void:
 	var message := ""
 	for i in 4:
 		if upgrade_prog_cur[i] >= upgrade_prog_max[i]:
 			purchase_upgrade_kind(upgrade_kind[i])
 			message = message_for_upgrade_kind(upgrade_kind[i])
-			fill_upgrade_slots(true)
+			fill_upgrade_slots(true, active_enemy_kinds)
 			UIAudioPlayer.upgrade()
 			break
 	upgrade_slot_progress.emit(self, message)

@@ -486,7 +486,7 @@ func die() -> void:
 	(source.process_material as ParticleProcessMaterial).emission_box_extents = bounds
 	(source.process_material as ParticleProcessMaterial).color = biome_helper.color_for_biome(velocity_movement.current_biome)
 		
-	player.world_settings.upgrade_settings.progress_defeat_enemy(kind, int(level))
+	player.world_settings.upgrade_settings.progress_defeat_enemy(kind, int(level), player.active_enemy_kinds)
 		
 	AudioManager.play(sfx_hurt, position, NAN, true)
 	play_animation("death")

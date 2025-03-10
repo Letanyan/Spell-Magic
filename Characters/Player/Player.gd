@@ -41,6 +41,7 @@ var name_generator: NameGenerator
 var can_level_up_world: bool = false
 
 var enemies_in_range: Dictionary = {} ## [Enemy]Time.get_unix_time_from_system
+var active_enemy_kinds: Dictionary = {} ## [World.Enemy]int
 var targets_in_range: Dictionary = {} ## [TargetShape]Time.get_unix_time_from_system
 var projectile_indicators: Dictionary = {} ## [Node3D]ProjectileIndicator|EnemyIndicator
 var projectile_indicator_store: Array[ProjectileIndicator] = []
@@ -329,11 +330,11 @@ func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: 
 	var amount := t * p.calculate_overall_complexity()
 	vitals.mana.apply_ignoring_resistance(amount)
 	if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-		world_settings.upgrade_settings.progress_mana_back(amount)
+		world_settings.upgrade_settings.progress_mana_back(amount, active_enemy_kinds)
 	if target.collision_layer & Globals.Layer.ENEMY != 0:
 		update_artifact_effects(Artifact.Event.DEAL, spell)
 		if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-			world_settings.upgrade_settings.progress_damage_deal(damage)
+			world_settings.upgrade_settings.progress_damage_deal(damage, active_enemy_kinds)
 		if enemies_in_range.has(target) and (damage["dmg"] as int) > 0:
 			var stats := enemies_in_range[target] as CombatStats
 			stats.hit_count += 1
