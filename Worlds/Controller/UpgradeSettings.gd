@@ -542,11 +542,11 @@ func default_starter_spell() -> Spell:
 		blast_element = Spell.Element.AIR
 	elif check_if_has_spell_element(Spell.Element.ICE):
 		blast_element = Spell.Element.ICE
-	var blast := Spell.new(false, "u * speed * t + u * offset", "v * speed * t + u * offset", "w * speed * t + w * offset", "0.1", 5, 2.0, blast_element)
+	var blast := Spell.new(false, "u * (speed * t + offset)", "v * (speed * t + offset)", "w * (speed * t + offset)", "0.1", 5, 2.0, blast_element)
 	blast.name = "Blast"
 	blast.mana_cost = 1
 	blast.expression_strings = {
-		"speed": "9",
+		"speed": "7",
 		"offset": "1",
 	}
 	blast.description = "fires a projectile in the direction of the camera"
@@ -792,6 +792,8 @@ func fill_upgrade_slots(emit_changes: bool) -> void:
 		upgrade_prog_max[i] = upgrade_cond_max(upgrade_kind[i], upgrade_cond[i])
 		if upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY:
 			upgrade_cond_info[i] = World.Enemy.values().pick_random()
+			while upgrade_cond_info[i] == World.Enemy.NONE:
+				upgrade_cond_info[i] = World.Enemy.values().pick_random()
 	if emit_changes:
 		emit_upgrade_purchase()
 

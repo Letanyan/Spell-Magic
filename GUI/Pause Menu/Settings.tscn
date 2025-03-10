@@ -1029,12 +1029,12 @@ metadata/_tab_index = 6
 [node name="MagicBook" parent="Tabs/Universal Magic Book" instance=ExtResource("2_j65m2")]
 layout_mode = 1
 
-[node name="Customisation" type="Control" parent="Tabs"]
+[node name="Skin" type="Control" parent="Tabs"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 7
 
-[node name="Container" type="Panel" parent="Tabs/Customisation"]
+[node name="Container" type="Panel" parent="Tabs/Skin"]
 material = ExtResource("4_h0vud")
 layout_mode = 1
 anchors_preset = -1
@@ -1045,7 +1045,7 @@ offset_bottom = 399.0
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("5_fe3hy")
 
-[node name="Skin" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Skin" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
@@ -1053,13 +1053,13 @@ offset_right = 184.0
 offset_bottom = 32.0
 text = "Skin"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Skin"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Skin"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="Hair" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Hair" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 40.0
@@ -1067,13 +1067,13 @@ offset_right = 184.0
 offset_bottom = 64.0
 text = "Hair"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Hair"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Hair"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="Eyes" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Eyes" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 72.0
@@ -1081,13 +1081,13 @@ offset_right = 184.0
 offset_bottom = 96.0
 text = "Eyes"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Eyes"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Eyes"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="Overshirt" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Overshirt" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 104.0
@@ -1095,13 +1095,13 @@ offset_right = 184.0
 offset_bottom = 128.0
 text = "Overshirt"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Overshirt"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Overshirt"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="Undershirt" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Undershirt" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 136.0
@@ -1109,13 +1109,13 @@ offset_right = 184.0
 offset_bottom = 160.0
 text = "Undershirt"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Undershirt"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Undershirt"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="BodyArmorTrim" type="Label" parent="Tabs/Customisation/Container"]
+[node name="BodyArmorTrim" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 168.0
@@ -1123,13 +1123,13 @@ offset_right = 184.0
 offset_bottom = 192.0
 text = "Body Armor Trim"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/BodyArmorTrim"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/BodyArmorTrim"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="BodyArmorPlate" type="Label" parent="Tabs/Customisation/Container"]
+[node name="BodyArmorPlate" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 200.0
@@ -1137,13 +1137,13 @@ offset_right = 184.0
 offset_bottom = 224.0
 text = "Body Armor Plate"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/BodyArmorPlate"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/BodyArmorPlate"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="Shoes" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Shoes" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 232.0
@@ -1151,13 +1151,13 @@ offset_right = 184.0
 offset_bottom = 256.0
 text = "Shoes"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Shoes"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Shoes"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="Pants" type="Label" parent="Tabs/Customisation/Container"]
+[node name="Pants" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 264.0
@@ -1165,13 +1165,13 @@ offset_right = 184.0
 offset_bottom = 288.0
 text = "Pants"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/Pants"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/Pants"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="LegsArmorTrim" type="Label" parent="Tabs/Customisation/Container"]
+[node name="LegsArmorTrim" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 296.0
@@ -1179,13 +1179,13 @@ offset_right = 184.0
 offset_bottom = 320.0
 text = "Legs Armor Trim"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/LegsArmorTrim"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/LegsArmorTrim"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="LegsArmorPlate" type="Label" parent="Tabs/Customisation/Container"]
+[node name="LegsArmorPlate" type="Label" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 328.0
@@ -1194,13 +1194,13 @@ offset_bottom = 352.0
 text = "Legs Armor Plate"
 vertical_alignment = 1
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Customisation/Container/LegsArmorPlate"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Tabs/Skin/Container/LegsArmorPlate"]
 layout_mode = 0
 offset_left = 184.0
 offset_right = 288.0
 offset_bottom = 24.0
 
-[node name="MakeCustomisationDefault" type="Button" parent="Tabs/Customisation/Container"]
+[node name="MakeCustomisationDefault" type="Button" parent="Tabs/Skin/Container"]
 layout_mode = 0
 offset_left = 72.0
 offset_top = 359.0
@@ -1253,15 +1253,15 @@ text = "Make Default"
 [connection signal="value_changed" from="Tabs/Sound/UI/Slider" to="." method="_on_ui_slider_value_changed"]
 [connection signal="focus_entered" from="Tabs/Functions/user_functions" to="." method="_on_user_functions_focus_entered"]
 [connection signal="focus_exited" from="Tabs/Functions/user_functions" to="." method="_on_user_functions_focus_exited"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Skin/ColorPicker" to="." method="_on_skin_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Hair/ColorPicker" to="." method="_on_hair_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Eyes/ColorPicker" to="." method="_on_eyes_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Overshirt/ColorPicker" to="." method="_on_overshirt_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Undershirt/ColorPicker" to="." method="_on_undershirt_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/BodyArmorTrim/ColorPicker" to="." method="_on_body_armor_trim_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/BodyArmorPlate/ColorPicker" to="." method="_on_body_armor_plate_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Shoes/ColorPicker" to="." method="_on_shoes_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/Pants/ColorPicker" to="." method="_on_pants_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/LegsArmorTrim/ColorPicker" to="." method="_on_legs_armor_trim_color_picker_color_changed"]
-[connection signal="color_changed" from="Tabs/Customisation/Container/LegsArmorPlate/ColorPicker" to="." method="_on_legs_armor_plate_color_picker_color_changed"]
-[connection signal="pressed" from="Tabs/Customisation/Container/MakeCustomisationDefault" to="." method="_on_make_customisation_default_pressed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Skin/ColorPicker" to="." method="_on_skin_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Hair/ColorPicker" to="." method="_on_hair_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Eyes/ColorPicker" to="." method="_on_eyes_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Overshirt/ColorPicker" to="." method="_on_overshirt_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Undershirt/ColorPicker" to="." method="_on_undershirt_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/BodyArmorTrim/ColorPicker" to="." method="_on_body_armor_trim_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/BodyArmorPlate/ColorPicker" to="." method="_on_body_armor_plate_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Shoes/ColorPicker" to="." method="_on_shoes_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/Pants/ColorPicker" to="." method="_on_pants_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/LegsArmorTrim/ColorPicker" to="." method="_on_legs_armor_trim_color_picker_color_changed"]
+[connection signal="color_changed" from="Tabs/Skin/Container/LegsArmorPlate/ColorPicker" to="." method="_on_legs_armor_plate_color_picker_color_changed"]
+[connection signal="pressed" from="Tabs/Skin/Container/MakeCustomisationDefault" to="." method="_on_make_customisation_default_pressed"]

@@ -62,17 +62,17 @@ extends Control
 
 @onready var magic_book: MagicBookGUI = $"Tabs/Universal Magic Book/MagicBook"
 
-@onready var skin_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Skin/ColorPicker
-@onready var hair_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Hair/ColorPicker
-@onready var eyes_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Eyes/ColorPicker
-@onready var overshirt_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Overshirt/ColorPicker
-@onready var undershirt_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Undershirt/ColorPicker
-@onready var body_armor_trim_color_picker: ColorPickerButton = $Tabs/Customisation/Container/BodyArmorTrim/ColorPicker
-@onready var body_armor_plate_color_picker: ColorPickerButton = $Tabs/Customisation/Container/BodyArmorPlate/ColorPicker
-@onready var shoes_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Shoes/ColorPicker
-@onready var pants_color_picker: ColorPickerButton = $Tabs/Customisation/Container/Pants/ColorPicker
-@onready var legs_armor_trim_color_picker: ColorPickerButton = $Tabs/Customisation/Container/LegsArmorTrim/ColorPicker
-@onready var legs_armor_plate_color_picker: ColorPickerButton = $Tabs/Customisation/Container/LegsArmorPlate/ColorPicker
+@onready var skin_color_picker: ColorPickerButton = $Tabs/Skin/Container/Skin/ColorPicker
+@onready var hair_color_picker: ColorPickerButton = $Tabs/Skin/Container/Hair/ColorPicker
+@onready var eyes_color_picker: ColorPickerButton = $Tabs/Skin/Container/Eyes/ColorPicker
+@onready var overshirt_color_picker: ColorPickerButton = $Tabs/Skin/Container/Overshirt/ColorPicker
+@onready var undershirt_color_picker: ColorPickerButton = $Tabs/Skin/Container/Undershirt/ColorPicker
+@onready var body_armor_trim_color_picker: ColorPickerButton = $Tabs/Skin/Container/BodyArmorTrim/ColorPicker
+@onready var body_armor_plate_color_picker: ColorPickerButton = $Tabs/Skin/Container/BodyArmorPlate/ColorPicker
+@onready var shoes_color_picker: ColorPickerButton = $Tabs/Skin/Container/Shoes/ColorPicker
+@onready var pants_color_picker: ColorPickerButton = $Tabs/Skin/Container/Pants/ColorPicker
+@onready var legs_armor_trim_color_picker: ColorPickerButton = $Tabs/Skin/Container/LegsArmorTrim/ColorPicker
+@onready var legs_armor_plate_color_picker: ColorPickerButton = $Tabs/Skin/Container/LegsArmorPlate/ColorPicker
 
 var player: Player
 var world_settings: WorldSettings:

@@ -487,7 +487,7 @@ func open_menu_for_player() -> void:
 	sub_viewport_container.visible = true
 	menu.player_in_combat = not player.enemies_in_range.is_empty()
 	menu.open(Menu.Kind.ANY)
-	if menu.current_index == 5 and menu.settings.tab_container.get_current_tab_control().name == "Customisation":
+	if menu.current_index == 5 and menu.settings.tab_container.get_current_tab_control().name == "Skin":
 		player.animate_spring_arm(true, 0.2)
 	settings.player_position = player.position
 	settings.player_health = player.vitals.health.value
@@ -503,7 +503,7 @@ func toggle_menu() -> void:
 	settings.is_paused = true
 	sub_viewport_container.visible = false
 	#menu.visible = true
-	player.transition_menu(not menu.is_showing, menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Customisation")
+	player.transition_menu(not menu.is_showing, menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Skin")
 		
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
