@@ -417,17 +417,17 @@ func manual_physics_process(delta: float) -> void:
 				if final_is_on_floor:
 					if velocity.length() < 0.166667:
 						play_animation("walk", {"parameters/walk/speed/scale": velocity_movement.movement_speed_animation_scale()})
-						AudioManager.play(sfx_walk, position, NAN, false)
+						AudioManager.play(sfx_walk, position, NAN, false, Vector2(0.8, 1.2))
 						AudioManager.stop(sfx_idle)
 					else:
 						play_animation("run", {"parameters/run/speed/scale": velocity_movement.movement_speed_animation_scale()})
-						AudioManager.play(sfx_walk, position, NAN, false)
+						AudioManager.play(sfx_walk, position, NAN, false, Vector2(0.8, 1.2))
 						AudioManager.stop(sfx_idle)
 			else:
 				idle_tick += delta
 				if final_is_on_floor and idle_tick > 0.5:
 					AudioManager.stop(sfx_walk)
-					AudioManager.play(sfx_idle, position, NAN, false)
+					AudioManager.play(sfx_idle, position, NAN, false, Vector2(0.8, 1.2))
 					play_animation("idle")
 					idle_tick = 0
 				

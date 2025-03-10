@@ -65,15 +65,12 @@ func _ready() -> void:
 	_settings.graphics_settings.viewport = _settings.viewport
 	_settings.graphics_settings.update_all_settings()
 	#_settings.world_name = "empty"
-	_settings.sed = Time.get_ticks_usec()
+	_settings.sed = 7213014 # Time.get_ticks_usec()
 	setup(_settings)
 	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
 	
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _settings.sed
-	# TODO: check world terrain (looks cool) VERSION: -1, WORLD SEED: 9882163, RNG SEED: 9882163
-	# FIXME: check "VERSION: -1, WORLD SEED: 7213014, RNG SEED: 7213014"
-	# FIXME: check color VERSION: -1, WORLD SEED: 8871961, RNG SEED: 8871961
 	print("VERSION: ", _settings.world_generation_version, ", WORLD SEED: ", _settings.sed, ", RNG SEED: ", rng.seed)
 	player.position.x = rng.randf_range(-10000, 10000)
 	player.position.z = rng.randf_range(-10000, 10000)

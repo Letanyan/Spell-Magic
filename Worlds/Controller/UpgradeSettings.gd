@@ -785,7 +785,6 @@ func description_upgrade_condition(condition: UpgradeCondition, info: int) -> St
 	return ""
 	
 func fill_upgrade_slots(emit_changes: bool, active_enemy_kinds: Dictionary) -> void:
-	print(active_enemy_kinds)
 	for i in 4:
 		upgrade_kind[i] = random_upgrade_kind()
 		upgrade_cond[i] = random_upgrade_condition()
@@ -915,6 +914,6 @@ func update_upgrade_progress(active_enemy_kinds: Dictionary) -> void:
 			purchase_upgrade_kind(upgrade_kind[i])
 			message = message_for_upgrade_kind(upgrade_kind[i])
 			fill_upgrade_slots(true, active_enemy_kinds)
-			UIAudioPlayer.upgrade()
+			UIAudioPlayer.twinkle()
 			break
 	upgrade_slot_progress.emit(self, message)

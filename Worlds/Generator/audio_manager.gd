@@ -21,14 +21,12 @@ const audio_streams: Array[AudioStream] = [
 	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
 	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
 	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
-	# FIXME: replace with enemy walking sounds
 	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
 	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
 	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
-	# FIXME: replace with enemy idle sounds
-	preload("res://Audio/characters/hurt_beast.wav") as AudioStreamWAV,
-	preload("res://Audio/characters/hurt_fly.wav") as AudioStreamWAV,
-	preload("res://Audio/characters/hurt_med.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/idle_beast.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/idle_fly.wav") as AudioStreamWAV,
+	preload("res://Audio/characters/idle_med.wav") as AudioStreamWAV,
 ]
 
 

@@ -18,7 +18,9 @@ const source_grabbing = preload("res://Audio/ui/grabbing.wav") as AudioStreamWAV
 const source_drinking = preload("res://Audio/ui/drinking.wav") as AudioStreamWAV
 const source_world_level_up = preload("res://Audio/ui/world_level_up.wav") as AudioStreamWAV
 const source_pick_up_key = preload("res://Audio/ui/pick_up_key.wav") as AudioStreamWAV
-const source_truck_crash = preload("res://Audio/ui/pick_up_key.wav") as AudioStreamWAV # FIXME: get actual crash sound
+const source_truck_crash = preload("res://Audio/ui/crash.mp3") as AudioStreamMP3
+const source_twinkle = preload("res://Audio/ui/twinkle.mp3") as AudioStreamMP3
+const source_sparkle = preload("res://Audio/ui/sparkle.mp3") as AudioStreamMP3
 
 const source_hurt_human = preload("res://Audio/characters/hurt_human.wav") as AudioStreamWAV
 const source_attack_human_1 = preload("res://Audio/characters/attack_human_1.wav") as AudioStreamWAV
@@ -100,8 +102,11 @@ func attack(version: int = -1) -> void:
 func ringing() -> void:
 	play(ui_player, source_ringing)
 	
-func upgrade() -> void: # TODO: get proper audio 
-	play(ui_player, source_ringing)
+func twinkle() -> void:
+	play(ui_player, source_twinkle)
+	
+func sparkle() -> void:
+	play(ui_player, source_sparkle)
 	
 func grabbing() -> void:
 	play(ui_player, source_grabbing)
