@@ -45,9 +45,10 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	world_settings = _world_settings
 	
 	if world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-		upgrades_button.visible = true
+		upgrades_button.text = "Upgrades"
 	else:
-		upgrades_button.visible = false
+		upgrades_button.text = "Stats"
+		upgrades.make_display_only(true)
 		
 	
 	settings.exit_game.connect(func() -> void: get_tree().quit())

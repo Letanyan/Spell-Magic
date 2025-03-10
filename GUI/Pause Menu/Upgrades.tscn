@@ -32,96 +32,85 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 8.0
 offset_right = -8.0
-offset_bottom = -8.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="max_H" type="Control" parent="container"]
+[node name="max_H" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 59.608
+offset_top = 56.216
 offset_right = -32.0
-offset_bottom = 83.608
+offset_bottom = 88.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_H"]
+custom_minimum_size = Vector2(112, 24)
 layout_mode = 2
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
 bbcode_enabled = true
 text = "Max [img=16, color=00AA00]res://GUI/Images/health.svg[/img] Health"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_H"]
+custom_minimum_size = Vector2(112, 24)
 layout_mode = 2
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_H"]
+custom_minimum_size = Vector2(112, 24)
 layout_mode = 2
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
 focus_neighbor_right = NodePath("../../max_M/upgrade")
 focus_neighbor_bottom = NodePath("../../attack/upgrade")
 focus_next = NodePath("../../max_M/upgrade")
-focus_previous = NodePath("../../chain_methods/on_hit")
+focus_previous = NodePath("../../chain_methods/OnHit/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_H/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/max_H"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="attack" type="Control" parent="container"]
+[node name="attack" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 115.608
+offset_top = 112.216
 offset_right = -32.0
-offset_bottom = 139.608
+offset_bottom = 144.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/attack"]
-layout_mode = 1
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[img=16, color=AA0000]res://GUI/Images/sword.svg[/img] Attack"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/attack"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/attack"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_top = NodePath("../../max_H/upgrade")
 focus_neighbor_right = NodePath("../../defence/upgrade")
 focus_neighbor_bottom = NodePath("../../max_v/upgrade")
@@ -130,50 +119,44 @@ focus_previous = NodePath("../../max_M/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/attack/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/attack"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="defence" type="Control" parent="container"]
+[node name="defence" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 115.608
+offset_top = 112.216
 offset_right = 528.0
-offset_bottom = 139.608
+offset_bottom = 144.216
 grow_horizontal = 2
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/defence"]
-layout_mode = 1
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[img=16, color=00AAAA]res://GUI/Images/shield.svg[/img] Defence"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/defence"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/defence"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_left = NodePath("../../attack/upgrade")
 focus_neighbor_top = NodePath("../../max_M/upgrade")
 focus_neighbor_bottom = NodePath("../../max_r/upgrade")
@@ -182,50 +165,44 @@ focus_previous = NodePath("../../attack/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/defence/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/defence"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="max_P" type="Control" parent="container"]
+[node name="max_P" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 339.608
+offset_top = 336.216
 offset_right = 528.0
-offset_bottom = 363.608
+offset_bottom = 368.216
 grow_horizontal = 2
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_P"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=0008FF]res://GUI/Images/power.svg[/img] P"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_P"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 26.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_P"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_left = NodePath("../../running_speed/upgrade")
 focus_neighbor_top = NodePath("../../max_N/upgrade")
 focus_neighbor_bottom = NodePath("../../max_spell_count/upgrade")
@@ -234,50 +211,44 @@ focus_previous = NodePath("../../running_speed/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_P/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 26.0
+[node name="cost" type="RichTextLabel" parent="container/max_P"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="max_M" type="Control" parent="container"]
+[node name="max_M" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 59.608
+offset_top = 56.216
 offset_right = 528.0
-offset_bottom = 83.608
+offset_bottom = 88.216
 grow_horizontal = 2
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_M"]
-layout_mode = 1
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] Mana"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_M"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_M"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_left = NodePath("../../max_H/upgrade")
 focus_neighbor_bottom = NodePath("../../defence/upgrade")
 focus_next = NodePath("../../attack/upgrade")
@@ -285,100 +256,88 @@ focus_previous = NodePath("../../max_H/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_M/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 25.0
+[node name="cost" type="RichTextLabel" parent="container/max_M"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="max_spell_count" type="Control" parent="container"]
+[node name="max_spell_count" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 395.608
+offset_top = 392.216
 offset_right = 528.0
-offset_bottom = 443.608
+offset_bottom = 424.216
 grow_horizontal = 2
+alignment = 1
 
 [node name="label" type="Label" parent="container/max_spell_count"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 48.0
-text = "Max Active Spells"
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
+text = "Active Spells"
 autowrap_mode = 2
 
 [node name="current" type="Label" parent="container/max_spell_count"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 26.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_spell_count"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_left = NodePath("../../mana_regen/upgrade")
 focus_neighbor_top = NodePath("../../max_P/upgrade")
-focus_neighbor_bottom = NodePath("../../chain_methods/at_start")
-focus_next = NodePath("../../elements/Void")
+focus_neighbor_bottom = NodePath("../../chain_methods/AtStart/upgrade")
+focus_next = NodePath("../../elements/Void/upgrade")
 focus_previous = NodePath("../../mana_regen/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_spell_count/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 26.0
+[node name="cost" type="RichTextLabel" parent="container/max_spell_count"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="running_speed" type="Control" parent="container"]
+[node name="running_speed" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 339.608
-offset_right = -40.0
-offset_bottom = 363.608
+offset_top = 336.216
+offset_right = -32.0
+offset_bottom = 368.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/running_speed"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=F6FF00]res://GUI/Images/running.svg[/img] Speed
 "
 
 [node name="current" type="Label" parent="container/running_speed"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/running_speed"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_top = NodePath("../../max_T/upgrade")
 focus_neighbor_right = NodePath("../../max_P/upgrade")
 focus_neighbor_bottom = NodePath("../../mana_regen/upgrade")
@@ -387,222 +346,44 @@ focus_previous = NodePath("../../max_N/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/running_speed/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/running_speed"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="elements" type="Control" parent="container"]
+[node name="max_N" type="HBoxContainer" parent="container"]
 layout_mode = 1
-anchor_left = 0.5
-anchor_top = -0.013
-anchor_right = 0.5
-anchor_bottom = -0.013
-offset_left = -552.0
-offset_top = 467.608
-offset_right = -8.0
-offset_bottom = 531.608
-
-[node name="label" type="Label" parent="container/elements"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 80.0
-offset_bottom = 26.0
-text = "Elements
-"
-
-[node name="Rock" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 240.0
-offset_right = 272.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../Fire")
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../Electric")
-focus_next = NodePath("../Electric")
-focus_previous = NodePath("../Fire")
-icon = ExtResource("2_gtdpa")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Rock"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="Ice" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 496.0
-offset_right = 528.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../Air")
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../../chain_methods/at_start")
-focus_next = NodePath("../../chain_methods/at_start")
-focus_previous = NodePath("../Air")
-icon = ExtResource("3_hrijs")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Ice"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 66.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="Electric" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 304.0
-offset_right = 336.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../Rock")
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../Water")
-focus_next = NodePath("../Water")
-focus_previous = NodePath("../Rock")
-icon = ExtResource("4_xsfxt")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Electric"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="Fire" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 176.0
-offset_right = 208.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../Void")
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../Rock")
-focus_next = NodePath("../Rock")
-focus_previous = NodePath("../Void")
-icon = ExtResource("5_3buty")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Fire"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="Water" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 368.0
-offset_right = 400.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../Electric")
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../Air")
-focus_next = NodePath("../Air")
-focus_previous = NodePath("../Electric")
-icon = ExtResource("6_qee75")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Water"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="Air" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 432.0
-offset_right = 464.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../Water")
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../Ice")
-focus_next = NodePath("../Ice")
-focus_previous = NodePath("../Water")
-icon = ExtResource("7_wfy6i")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Air"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="Void" type="Button" parent="container/elements"]
-layout_mode = 0
-offset_left = 112.0
-offset_right = 144.0
-offset_bottom = 32.0
-focus_neighbor_top = NodePath("../../mana_regen/upgrade")
-focus_neighbor_right = NodePath("../Fire")
-focus_next = NodePath("../Fire")
-focus_previous = NodePath("../../max_spell_count/upgrade")
-icon = ExtResource("8_6m44h")
-
-[node name="cost" type="RichTextLabel" parent="container/elements/Void"]
-layout_mode = 0
-offset_left = -16.0
-offset_top = 40.0
-offset_right = 48.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="max_N" type="Control" parent="container"]
-layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 283.608
+offset_top = 280.216
 offset_right = 528.0
-offset_bottom = 307.608
+offset_bottom = 312.216
 grow_horizontal = 2
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_N"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=F700FF]res://GUI/Images/count.svg[/img] N"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_N"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 26.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_N"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_left = NodePath("../../max_T/upgrade")
 focus_neighbor_top = NodePath("../../max_r/upgrade")
 focus_neighbor_bottom = NodePath("../../max_P/upgrade")
@@ -611,49 +392,43 @@ focus_previous = NodePath("../../max_T/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_N/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 26.0
+[node name="cost" type="RichTextLabel" parent="container/max_N"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="max_T" type="Control" parent="container"]
+[node name="max_T" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 283.608
-offset_right = -40.0
-offset_bottom = 307.608
+offset_top = 280.216
+offset_right = -32.0
+offset_bottom = 312.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_T"]
-layout_mode = 1
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=00FF08]res://GUI/Images/time.svg[/img] T"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_T"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_T"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_top = NodePath("../../max_v/upgrade")
 focus_neighbor_right = NodePath("../../max_N/upgrade")
 focus_neighbor_bottom = NodePath("../../running_speed/upgrade")
@@ -662,129 +437,43 @@ focus_previous = NodePath("../../max_r/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_T/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/max_T"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="chain_methods" type="Control" parent="container"]
+[node name="max_r" type="HBoxContainer" parent="container"]
 layout_mode = 1
-anchor_left = 0.5
-anchor_top = -0.013
-anchor_right = 0.5
-anchor_bottom = -0.013
-offset_left = 32.0
-offset_top = 467.608
-offset_right = 544.0
-offset_bottom = 523.608
-
-[node name="label" type="Label" parent="container/chain_methods"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
-text = "Chain Methods"
-
-[node name="at_start" type="Button" parent="container/chain_methods"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 249.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../../elements/Ice")
-focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
-focus_neighbor_right = NodePath("../at_end")
-focus_next = NodePath("../at_end")
-focus_previous = NodePath("../../elements/Ice")
-text = "At Start"
-
-[node name="cost" type="RichTextLabel" parent="container/chain_methods/at_start"]
-layout_mode = 0
-offset_top = 40.0
-offset_right = 112.0
-offset_bottom = 65.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="at_end" type="Button" parent="container/chain_methods"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../at_start")
-focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
-focus_neighbor_right = NodePath("../on_hit")
-focus_next = NodePath("../on_hit")
-focus_previous = NodePath("../at_start")
-text = "At End"
-
-[node name="cost" type="RichTextLabel" parent="container/chain_methods/at_end"]
-layout_mode = 0
-offset_top = 40.0
-offset_right = 112.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="on_hit" type="Button" parent="container/chain_methods"]
-layout_mode = 0
-offset_left = 392.0
-offset_right = 504.0
-offset_bottom = 32.0
-focus_neighbor_left = NodePath("../at_end")
-focus_neighbor_top = NodePath("../../max_spell_count/upgrade")
-focus_next = NodePath("../../max_H/upgrade")
-focus_previous = NodePath("../at_end")
-text = "On Hit"
-
-[node name="cost" type="RichTextLabel" parent="container/chain_methods/on_hit"]
-layout_mode = 0
-offset_top = 40.0
-offset_right = 112.0
-offset_bottom = 64.0
-bbcode_enabled = true
-text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
-scroll_active = false
-
-[node name="max_r" type="Control" parent="container"]
-layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 226.936
+offset_top = 224.216
 offset_right = 528.0
-offset_bottom = 250.936
+offset_bottom = 256.216
 grow_horizontal = 2
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_r"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=7700FF]res://GUI/Images/radius.svg[/img] r"
 
 [node name="current" type="Label" parent="container/max_r"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 26.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_r"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_left = NodePath("../../max_v/upgrade")
 focus_neighbor_top = NodePath("../../defence/upgrade")
 focus_neighbor_bottom = NodePath("../../max_N/upgrade")
@@ -793,49 +482,43 @@ focus_previous = NodePath("../../max_v/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_r/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 26.0
+[node name="cost" type="RichTextLabel" parent="container/max_r"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="max_v" type="Control" parent="container"]
+[node name="max_v" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 227.608
+offset_top = 224.216
 offset_right = -32.0
-offset_bottom = 251.608
+offset_bottom = 256.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/max_v"]
-layout_mode = 1
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "Max [img=16, color=77FF00]res://GUI/Images/velocity.svg[/img] Velocity"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/max_v"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 21.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/max_v"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_top = NodePath("../../attack/upgrade")
 focus_neighbor_right = NodePath("../../max_r/upgrade")
 focus_neighbor_bottom = NodePath("../../max_T/upgrade")
@@ -844,150 +527,384 @@ focus_previous = NodePath("../../defence/upgrade")
 text = "+ 5
 "
 
-[node name="cost" type="RichTextLabel" parent="container/max_v/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 25.0
+[node name="cost" type="RichTextLabel" parent="container/max_v"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="mana_regen" type="Control" parent="container"]
+[node name="mana_regen" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 395.608
-offset_right = -40.0
-offset_bottom = 443.608
+offset_top = 392.216
+offset_right = -32.0
+offset_bottom = 424.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/mana_regen"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 120.0
-offset_bottom = 48.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
-text = "Auto [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] Mana Regeneration"
+text = "Auto [img=16, color=AA00AA]res://GUI/Images/mana.svg[/img] Regen"
 scroll_active = false
 
 [node name="current" type="Label" parent="container/mana_regen"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 21.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/mana_regen"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 focus_neighbor_top = NodePath("../../running_speed/upgrade")
 focus_neighbor_right = NodePath("../../max_spell_count/upgrade")
-focus_neighbor_bottom = NodePath("../../elements/Void")
+focus_neighbor_bottom = NodePath("../../elements/Void/upgrade")
 focus_next = NodePath("../../max_spell_count/upgrade")
 focus_previous = NodePath("../../max_P/upgrade")
 text = "+ 5"
 
-[node name="cost" type="RichTextLabel" parent="container/mana_regen/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/mana_regen"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
-[node name="crit_dmg" type="Control" parent="container"]
+[node name="crit_dmg" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = 24.0
-offset_top = 171.608
+offset_top = 168.216
 offset_right = 528.0
-offset_bottom = 195.608
+offset_bottom = 200.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/crit_dmg"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 128.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
-text = "Max [img=l,16x16, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img] Crit Dmg"
+text = "[font_size=14]Max [img=l,16x16, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img]Crit Dmg[/font_size]"
 
 [node name="current" type="Label" parent="container/crit_dmg"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/crit_dmg"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "+ 5"
 
-[node name="cost" type="RichTextLabel" parent="container/crit_dmg/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 224.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/crit_dmg"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 
-[node name="crit_rate" type="Control" parent="container"]
+[node name="crit_rate" type="HBoxContainer" parent="container"]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
-offset_top = 171.608
-offset_right = -40.0
-offset_bottom = 195.608
+offset_top = 168.216
+offset_right = -32.0
+offset_bottom = 200.216
+alignment = 1
 
 [node name="label" type="RichTextLabel" parent="container/crit_rate"]
-layout_mode = 0
-offset_left = 8.0
-offset_right = 128.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
-text = "Max [img=l,16x16, color=#0000AA]res://GUI/Images/cubes.svg[/img] Crit Rate"
+text = "[font_size=14]Max [img=l,16x16, color=#0000AA]res://GUI/Images/cubes.svg[/img]Crit Rate[/font_size]"
 
 [node name="current" type="Label" parent="container/crit_rate"]
-layout_mode = 0
-offset_left = 136.0
-offset_right = 248.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="upgrade" type="Button" parent="container/crit_rate"]
-layout_mode = 0
-offset_left = 264.0
-offset_right = 376.0
-offset_bottom = 25.0
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 text = "+ 5"
 
-[node name="cost" type="RichTextLabel" parent="container/crit_rate/upgrade"]
-layout_mode = 0
-offset_left = 128.0
-offset_right = 240.0
-offset_bottom = 24.0
+[node name="cost" type="RichTextLabel" parent="container/crit_rate"]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+
+[node name="chain_methods" type="HBoxContainer" parent="container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = 24.0
+offset_top = 456.216
+offset_right = 544.0
+offset_bottom = 524.216
+theme_override_constants/separation = 8
+
+[node name="label" type="Label" parent="container/chain_methods"]
+layout_mode = 2
+text = "Chain Methods"
+vertical_alignment = 1
+
+[node name="AtStart" type="VBoxContainer" parent="container/chain_methods"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/chain_methods/AtStart"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../elements/Ice/upgrade")
+focus_neighbor_top = NodePath("../../../max_spell_count/upgrade")
+focus_neighbor_right = NodePath("../../AtEnd/upgrade")
+focus_next = NodePath("../../AtEnd/upgrade")
+focus_previous = NodePath("../../../elements/Ice/upgrade")
+text = "At Start"
+
+[node name="cost" type="RichTextLabel" parent="container/chain_methods/AtStart"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="AtEnd" type="VBoxContainer" parent="container/chain_methods"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/chain_methods/AtEnd"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../AtStart/upgrade")
+focus_neighbor_top = NodePath("../../../max_spell_count/upgrade")
+focus_neighbor_right = NodePath("../../OnHit/upgrade")
+focus_next = NodePath("../../OnHit/upgrade")
+focus_previous = NodePath("../../AtStart/upgrade")
+text = "At End"
+
+[node name="cost" type="RichTextLabel" parent="container/chain_methods/AtEnd"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="OnHit" type="VBoxContainer" parent="container/chain_methods"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/chain_methods/OnHit"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../AtEnd/upgrade")
+focus_neighbor_top = NodePath("../../../max_spell_count/upgrade")
+focus_next = NodePath("../../../max_H/upgrade")
+focus_previous = NodePath("../../AtEnd/upgrade")
+text = "On Hit"
+
+[node name="cost" type="RichTextLabel" parent="container/chain_methods/OnHit"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="elements" type="HBoxContainer" parent="container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = -0.013
+anchor_right = 0.5
+anchor_bottom = -0.013
+offset_left = -552.0
+offset_top = 456.216
+offset_right = -16.0
+offset_bottom = 528.216
+theme_override_constants/separation = 8
+
+[node name="label" type="Label" parent="container/elements"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+text = "Elements
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Fire" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Fire"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Void/upgrade")
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../Rock/upgrade")
+focus_next = NodePath("../../Rock/upgrade")
+focus_previous = NodePath("../../Void/upgrade")
+icon = ExtResource("5_3buty")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Fire"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="Rock" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Rock"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Fire/upgrade")
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../Electric/upgrade")
+focus_next = NodePath("../../Electric/upgrade")
+focus_previous = NodePath("../../Fire/upgrade")
+icon = ExtResource("2_gtdpa")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Rock"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="Electric" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Electric"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Rock/upgrade")
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../Water/upgrade")
+focus_next = NodePath("../../Water/upgrade")
+focus_previous = NodePath("../../Rock/upgrade")
+icon = ExtResource("4_xsfxt")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Electric"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="Air" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Air"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Water/upgrade")
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../Ice/upgrade")
+focus_next = NodePath("../../Ice/upgrade")
+focus_previous = NodePath("../../Water/upgrade")
+icon = ExtResource("7_wfy6i")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Air"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="Water" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Water"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Electric/upgrade")
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../Air/upgrade")
+focus_next = NodePath("../../Air/upgrade")
+focus_previous = NodePath("../../Electric/upgrade")
+icon = ExtResource("6_qee75")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Water"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="Ice" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Ice"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Air/upgrade")
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../../chain_methods/AtStart/upgrade")
+focus_next = NodePath("../../../chain_methods/AtStart/upgrade")
+focus_previous = NodePath("../../Air/upgrade")
+icon = ExtResource("3_hrijs")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Ice"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
+
+[node name="Void" type="VBoxContainer" parent="container/elements"]
+custom_minimum_size = Vector2(56, 72)
+layout_mode = 2
+
+[node name="upgrade" type="Button" parent="container/elements/Void"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_neighbor_top = NodePath("../../../mana_regen/upgrade")
+focus_neighbor_right = NodePath("../../Fire/upgrade")
+focus_next = NodePath("../../Fire/upgrade")
+focus_previous = NodePath("../../../max_spell_count/upgrade")
+icon = ExtResource("8_6m44h")
+icon_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="container/elements/Void"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+scroll_active = false
 
 [node name="Currency" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -1012,7 +929,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 40.216
 offset_right = -1.0
-offset_bottom = 56.216
+offset_bottom = 48.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1025,7 +942,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 96.216
 offset_right = -1.0
-offset_bottom = 112.216
+offset_bottom = 104.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1038,7 +955,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 152.216
 offset_right = -1.0
-offset_bottom = 168.216
+offset_bottom = 160.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1051,7 +968,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 208.216
 offset_right = -1.0
-offset_bottom = 224.216
+offset_bottom = 216.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1064,7 +981,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 264.216
 offset_right = -1.0
-offset_bottom = 280.216
+offset_bottom = 272.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1077,7 +994,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 320.216
 offset_right = -1.0
-offset_bottom = 336.216
+offset_bottom = 328.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1090,7 +1007,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 376.216
 offset_right = -1.0
-offset_bottom = 392.216
+offset_bottom = 384.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1100,10 +1017,9 @@ anchors_preset = -1
 anchor_top = -0.013
 anchor_right = 1.0
 anchor_bottom = -0.013
-offset_left = 1.0
-offset_top = 448.216
-offset_right = -1.0
-offset_bottom = 464.216
+offset_top = 440.216
+offset_right = -2.0
+offset_bottom = 448.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1116,7 +1032,7 @@ anchor_bottom = -0.013
 offset_left = 1.0
 offset_top = 536.216
 offset_right = -1.0
-offset_bottom = 552.216
+offset_bottom = 544.216
 grow_horizontal = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_o3kcg")
 
@@ -1128,9 +1044,9 @@ anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -8.0
-offset_top = 48.216
+offset_top = 44.216
 offset_right = 8.0
-offset_bottom = 543.216
+offset_bottom = 536.216
 grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
@@ -1141,20 +1057,20 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 [connection signal="pressed" from="container/max_M/upgrade" to="." method="_on_max_M_upgrade_pressed"]
 [connection signal="pressed" from="container/max_spell_count/upgrade" to="." method="_on_max_spell_count_upgrade_pressed"]
 [connection signal="pressed" from="container/running_speed/upgrade" to="." method="_on_max_running_speed_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Rock" to="." method="_on_rock_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Ice" to="." method="_on_ice_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Electric" to="." method="_on_electric_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Fire" to="." method="_on_fire_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Water" to="." method="_on_water_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Air" to="." method="_on_air_upgrade_pressed"]
-[connection signal="pressed" from="container/elements/Void" to="." method="_on_void_upgrade_pressed"]
 [connection signal="pressed" from="container/max_N/upgrade" to="." method="_on_max_N_upgrade_pressed"]
 [connection signal="pressed" from="container/max_T/upgrade" to="." method="_on_max_T_upgrade_pressed"]
-[connection signal="pressed" from="container/chain_methods/at_start" to="." method="_on_at_start_upgrade_pressed"]
-[connection signal="pressed" from="container/chain_methods/at_end" to="." method="_on_at_end_upgrade_pressed"]
-[connection signal="pressed" from="container/chain_methods/on_hit" to="." method="_on_on_hit_upgrade_pressed"]
 [connection signal="pressed" from="container/max_r/upgrade" to="." method="_on_max_R_upgrade_pressed"]
 [connection signal="pressed" from="container/max_v/upgrade" to="." method="_on_max_v_upgrade_pressed"]
 [connection signal="pressed" from="container/mana_regen/upgrade" to="." method="_on_mana_regen_upgrade_pressed"]
 [connection signal="pressed" from="container/crit_dmg/upgrade" to="." method="_on_crit_rate_upgrade_pressed"]
 [connection signal="pressed" from="container/crit_rate/upgrade" to="." method="_on_crit_dmg_upgrade_pressed"]
+[connection signal="pressed" from="container/chain_methods/AtStart/upgrade" to="." method="_on_at_start_upgrade_pressed"]
+[connection signal="pressed" from="container/chain_methods/AtEnd/upgrade" to="." method="_on_at_end_upgrade_pressed"]
+[connection signal="pressed" from="container/chain_methods/OnHit/upgrade" to="." method="_on_on_hit_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Fire/upgrade" to="." method="_on_fire_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Rock/upgrade" to="." method="_on_rock_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Electric/upgrade" to="." method="_on_electric_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Air/upgrade" to="." method="_on_air_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Water/upgrade" to="." method="_on_water_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Ice/upgrade" to="." method="_on_ice_upgrade_pressed"]
+[connection signal="pressed" from="container/elements/Void/upgrade" to="." method="_on_void_upgrade_pressed"]
