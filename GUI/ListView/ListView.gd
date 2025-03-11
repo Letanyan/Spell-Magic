@@ -74,7 +74,7 @@ func update_items(full_update: bool) -> void:
 			var j := items_offset + posmod(i - min_index, items.size())
 			if j >= 0 and j < total_items:
 				update_item.call(items[i], j)
-	else:			
+	else:
 		for i: int in _items_to_update.keys():
 			var j := items_offset + posmod(i - min_index, items.size())
 			if j >= 0 and j < total_items and i >= 0 and i < items.size():
@@ -93,21 +93,25 @@ func update_y_offset(full_update: bool) -> void:
 	var x := (1.0 - scroll_bar.value)
 	var parent_height_correction := size.y - (items_shown - 1) * height_for_items
 	var old_offset := items_offset
-	items_offset = roundi(scroll_bar.value * view_count - 0.5)
-	if scroll_bar.value == 1.0:
-		items_offset -= 1
+	items_offset = floori(scroll_bar.value * view_count)
+	var should_decrement_items_offset := scroll_bar.value == 1.0
 		
 	var i := 0
 	for item in items:
 		var virtual_y := i * height_for_items + x * view_count * height_for_items
 		var old_pos := item.position.y
-		item.position.y = fmod(virtual_y, items_shown * height_for_items) - height_for_items + (1 - x) * parent_height_correction
-		if absf(old_pos - item.position.y) > height_for_items:
+		item.position.y = fposmod(virtual_y, items_shown * height_for_items) - height_for_items + (1 - x) * parent_height_correction
+		if absf(old_pos - item.position.y) >= height_for_items:
 			_items_to_update[i] = true
 		i += 1
 	
-	if full_update or items_offset != old_offset or not _items_to_update.is_empty():
+	if full_update or items_offset != old_offset:
+		if should_decrement_items_offset:
+			items_offset -= 1
 		update_items(full_update)
+	else:
+		if should_decrement_items_offset:
+			items_offset -= 1
 
 func _on_scroll_bar_scrolling() -> void:
 	update_y_offset(false)

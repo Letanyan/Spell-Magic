@@ -65,7 +65,7 @@ func _ready() -> void:
 	_settings.graphics_settings.viewport = _settings.viewport
 	_settings.graphics_settings.update_all_settings()
 	#_settings.world_name = "empty"
-	_settings.sed = 7213014 # Time.get_ticks_usec()
+	_settings.sed = Time.get_ticks_usec()
 	setup(_settings)
 	bg_audio_state = AudioState.new(bg_audio1, bg_audio2)
 	
