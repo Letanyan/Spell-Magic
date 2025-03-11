@@ -736,14 +736,17 @@ func random_upgrade_condition() -> UpgradeCondition:
 	if check_if_has_spell_element(Spell.Element.FIRE):
 		options[UpgradeCondition.DEAL_FIRE] = 1.0
 		options[UpgradeCondition.BURNING] = 1.0
-		options[UpgradeCondition.VAPE] = 0.5
-		options[UpgradeCondition.MELT] = 0.5
+		if check_if_has_spell_element(Spell.Element.WATER):
+			options[UpgradeCondition.VAPE] = 0.5
+		if check_if_has_spell_element(Spell.Element.ICE):
+			options[UpgradeCondition.MELT] = 0.5
 	if check_if_has_spell_element(Spell.Element.ROCK):
 		options[UpgradeCondition.DEAL_ROCK] = 2.0
 	if check_if_has_spell_element(Spell.Element.ELECTRIC):
 		options[UpgradeCondition.DEAL_ELECTRIC] = 1.5
 		options[UpgradeCondition.SHOCK] = 0.75
-		options[UpgradeCondition.OVERLOAD] = 0.5
+		if check_if_has_spell_element(Spell.Element.FIRE):
+			options[UpgradeCondition.OVERLOAD] = 0.5
 	if check_if_has_spell_element(Spell.Element.WATER):
 		options[UpgradeCondition.DEAL_WATER] = 1.0
 		options[UpgradeCondition.WETNESS] = 1.0
@@ -752,7 +755,8 @@ func random_upgrade_condition() -> UpgradeCondition:
 		options[UpgradeCondition.FEATHER] = 0.5
 	if check_if_has_spell_element(Spell.Element.ICE):
 		options[UpgradeCondition.DEAL_ICE] = 1.75
-		options[UpgradeCondition.FREEZE] = 1.0
+		if check_if_has_spell_element(Spell.Element.WATER):
+			options[UpgradeCondition.FREEZE] = 1.0
 		
 	return Rand.entity_from_distribution(randf(), options, UpgradeCondition.TRAVEL)
 
@@ -793,7 +797,7 @@ func fill_upgrade_slots(emit_changes: bool, active_enemy_kinds: Dictionary) -> v
 		upgrade_prog_cur[i] = 0.0
 		upgrade_prog_max[i] = upgrade_cond_max(upgrade_kind[i], upgrade_cond[i])
 		if upgrade_cond[i] == UpgradeCondition.DEFEAT_ENEMY:
-			upgrade_cond_info = Rand.entity_from_distribution(randf(), active_enemy_kinds)
+			upgrade_cond_info[i] = Rand.entity_from_distribution(randf(), active_enemy_kinds)
 	if emit_changes:
 		emit_upgrade_purchase()
 

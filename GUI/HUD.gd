@@ -556,6 +556,7 @@ func update_compass_position(looking_angle: float, location: Vector3) -> void:
 		var control := compass_markers[i]
 		var x := loc2.angle_to_point(loc) / PI * 0.5 - 0.25
 		control.position.x = fposmod(bounds * x + offset - width * 0.5, bounds)
+		control.modulate = Color(1, 1, 1, clampf(1.0 - loc2.distance_to(loc) / 1024.0, 0.0, 1.0))
 	
 	var max_x := 0.0
 	var max_ratio := 0.0	

@@ -259,7 +259,7 @@ func _exit_tree() -> void:
 	AudioManager.camera = null
 	
 func _process(delta: float) -> void:
-	if GlobalData.is_debug or true:
+	if GlobalData.is_debug:
 		var b := blender.biome
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
@@ -547,13 +547,13 @@ func menu_did_open_tab_index(index: int) -> void:
 		hud.hide_message(tutorial)
 		if hud.messages.has(tutorial):
 			GlobalData.game_settings.mark_tutorial(tutorial)
-		
+	
 	match index:
-		0: mark_message.call(GameSettings.Tutorials.SPELLS)
-		1: mark_message.call(GameSettings.Tutorials.WANDS)
-		2: mark_message.call(GameSettings.Tutorials.ARTIFACTS)
-		3: mark_message.call(GameSettings.Tutorials.COINS)
-		4: mark_message.call(GameSettings.Tutorials.NOTES)
+		Menu.Kind.SPELLS: mark_message.call(GameSettings.Tutorials.SPELLS)
+		Menu.Kind.WANDS: mark_message.call(GameSettings.Tutorials.WANDS)
+		Menu.Kind.ARTIFACTS: mark_message.call(GameSettings.Tutorials.ARTIFACTS)
+		Menu.Kind.UPGRADES: mark_message.call(GameSettings.Tutorials.COINS)
+		Menu.Kind.NOTES: mark_message.call(GameSettings.Tutorials.NOTES)
 
 func _on_player_moved(delta: float) -> void:
 	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
