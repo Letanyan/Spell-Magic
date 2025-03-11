@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://gy4oggrqctjx"]
+[gd_scene load_steps=27 format=3 uid="uid://gy4oggrqctjx"]
 
 [ext_resource type="Script" path="res://GUI/HUD.gd" id="1_bddbh"]
 [ext_resource type="StyleBox" uid="uid://ckmaf8r6l05na" path="res://GUI/HealthBarBG.tres" id="2_ss7w7"]
@@ -98,11 +98,9 @@ border_texture_flip_xy = false
 border_texture_flip_vertical = false
 border_texture_flip_horizonal = false
 
-[sub_resource type="LabelSettings" id="LabelSettings_3bmqr"]
-font = ExtResource("3_uufso")
-
 [sub_resource type="LabelSettings" id="LabelSettings_mtk11"]
 font = ExtResource("3_uufso")
+font_size = 8
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -381,6 +379,7 @@ offset_left = -192.0
 offset_top = 8.0
 offset_right = 192.0
 offset_bottom = 32.0
+grow_horizontal = 2
 theme_override_styles/panel = ExtResource("4_g3pbk")
 
 [node name="Center" type="TextureRect" parent="Compass"]
@@ -397,9 +396,9 @@ stretch_mode = 3
 layout_mode = 0
 offset_left = 184.0
 offset_right = 200.0
-offset_bottom = 24.0
+offset_bottom = 8.0
 text = "N"
-label_settings = SubResource("LabelSettings_3bmqr")
+label_settings = SubResource("LabelSettings_mtk11")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -407,7 +406,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 280.0
 offset_right = 296.0
-offset_bottom = 24.0
+offset_bottom = 11.0
 text = "E"
 label_settings = SubResource("LabelSettings_mtk11")
 horizontal_alignment = 1
@@ -417,7 +416,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = -8.0
 offset_right = 8.0
-offset_bottom = 24.0
+offset_bottom = 8.0
 text = "S"
 label_settings = SubResource("LabelSettings_mtk11")
 horizontal_alignment = 1
@@ -427,7 +426,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 88.0
 offset_right = 104.0
-offset_bottom = 24.0
+offset_bottom = 8.0
 text = "W"
 label_settings = SubResource("LabelSettings_mtk11")
 horizontal_alignment = 1
@@ -437,7 +436,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 376.0
 offset_right = 392.0
-offset_bottom = 24.0
+offset_bottom = 8.0
 text = "M"
 label_settings = SubResource("LabelSettings_mtk11")
 horizontal_alignment = 1

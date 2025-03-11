@@ -243,7 +243,7 @@ func run_on_ready() -> void:
 	if Vec2.xz(player.position).length() < 8:
 		show_tutorial_label()
 		
-	hud.update_compass_position(player.cam_pivot.rotation.y)
+	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -259,7 +259,7 @@ func _exit_tree() -> void:
 	AudioManager.camera = null
 	
 func _process(delta: float) -> void:
-	if GlobalData.is_debug:
+	if GlobalData.is_debug or true:
 		var b := blender.biome
 		fps.text = "[" + World.Biome.keys()[b] + "] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
@@ -436,7 +436,7 @@ func _input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
-				hud.update_compass_position(player.cam_pivot.rotation.y)
+				hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 				
 	if GlobalData.is_debug and not settings.is_paused:
 		if event is InputEventKey:
@@ -559,6 +559,7 @@ func _on_player_moved(delta: float) -> void:
 	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		settings.upgrade_settings.progress_travel(player.position.distance_to(player_last_position), player.active_enemy_kinds)
 	player_last_position = player.position
+	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	terrain_update_interval += delta
 	if Vec2.xz(player.position).length() > 8.0:
 		hide_tutorial_message()
@@ -580,11 +581,11 @@ func update_terrain_queue() -> void:
 			if _removed.z == 0:
 				var pop := population.get(removed, null) as Population
 				if pop != null:
-					pop.habitant_set_display_only(true, player.active_enemy_kinds)
+					pop.habitant_set_display_only(true, player.active_enemy_kinds, hud)
 			elif _removed.z == 1 and _removed.w > 1:
 				var pop := population.get(removed, null) as Population
 				if pop != null:
-					pop.despawn_all_from_world(get_node(".") as Node3D, player.active_enemy_kinds)
+					pop.despawn_all_from_world(get_node(".") as Node3D, player.active_enemy_kinds, hud)
 					population.erase(removed)
 				
 		for updated in updated_coords:
@@ -592,7 +593,7 @@ func update_terrain_queue() -> void:
 				if updated.z == 0:
 					var pop := population.get(Vector2i(updated.x, updated.y), null) as Population
 					if pop != null:
-						pop.habitant_set_display_only(false, player.active_enemy_kinds)
+						pop.habitant_set_display_only(false, player.active_enemy_kinds, hud)
 				elif updated.z == 1 and updated.w > 1:
 					update_population_at(Vector2i(updated.x, updated.y), updated.z != 0)
 
@@ -642,14 +643,20 @@ func update_population_spawning() -> void:
 				if not player.active_enemy_kinds.has(enemy.kind):
 					player.active_enemy_kinds[enemy.kind] = 0
 				player.active_enemy_kinds[enemy.kind] += 1
+			elif item is ScrollNote:
+				hud.add_marker(item.name, HUD.Indicator.NOTE, Vec2.xz(item.position))
+			elif item is ArtifactCube:
+				hud.add_marker(item.name, HUD.Indicator.CUBE, Vec2.xz(item.position))
+			elif item is SpellPaper:
+				hud.add_marker(item.name, HUD.Indicator.PAPER, Vec2.xz(item.position))
 				
 func reset_enemy_populations() -> void:
 	for coord: Vector2i in population:
 		var pop := population[coord] as Population
 		if pop.display_only:
 			continue
-		pop.habitant_set_display_only(true, player.active_enemy_kinds)
-		pop.habitant_set_display_only(false, player.active_enemy_kinds)
+		pop.habitant_set_display_only(true, player.active_enemy_kinds, hud)
+		pop.habitant_set_display_only(false, player.active_enemy_kinds, hud)
 
 func enemy_dies(enemy: Enemy) -> void:
 	if settings.enemies_killed.has(enemy.kind):

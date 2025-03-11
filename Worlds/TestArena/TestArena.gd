@@ -301,7 +301,7 @@ func make_line_targets() -> void:
 	for p in path.sample_points(count):
 		var s := p.length() * 2 * PI * 0.1
 		var subpath := moving_path.call(p, s) as Pathway
-		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground().look_at_player().transform_path(tform)
+		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground_and_air().look_at_player().transform_path(tform).origin_is_offset()
 		var config := TargetShape.config_for_gauge(el, null, 2.0, Vitals.default_ea(0.1, 0), path_style)
 		var target := TargetShape.make()
 		target.configure(config)
@@ -382,7 +382,7 @@ func _ready() -> void:
 	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	
-	hud.update_compass_position(player.cam_pivot.rotation.y)
+	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -515,7 +515,7 @@ func _input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
-				hud.update_compass_position(player.cam_pivot.rotation.y)
+				hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 		
 	if not menu.is_showing:
 		GlobalData.controller.handle_input(event)
@@ -572,8 +572,8 @@ func insert_spell(p: Node3D) -> void:
 	if p is SpellBody:
 		(p as SpellBody).setup()
 
-func _on_player_moved(delta: float) -> void:	
-	pass
+func _on_player_moved(delta: float) -> void:
+	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 
 
 func quit_to_main_menu() -> void:

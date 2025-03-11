@@ -119,7 +119,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
 					for i in count:
 						var a := float(i) / float(count) * 2.0 * PI
-						var path_style := PathStyle.new(0, pos3d).follow_path(path.duplicate()).align_y_to_origin().look_at_player().transform_path([T.rotated(Vector3.UP, a), transform])
+						var path_style := PathStyle.new(0, pos3d).follow_path(path.duplicate()).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path([T.rotated(Vector3.UP, a), transform])
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 						config["size"] = size
 						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
@@ -134,7 +134,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var path := Pathway.new().circle(radius, 0, 1).apply_transform(transform)
 					var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
 					for p in path.sample_points(count):
-						var path_style := PathStyle.new(0, pos3d).follow_path(Pathway.new().wait(5, p)).align_y_to_origin().look_at_player()
+						var path_style := PathStyle.new(0, pos3d).follow_path(Pathway.new().wait(5, p)).align_y_to_ground_and_air().origin_is_offset().look_at_player()
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 						config["size"] = size
 						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
@@ -186,7 +186,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						pathway = Pathway.new().move_to(start).line_to(end, speed).line_to(start, speed)
 					else:
 						pathway = Pathway.new().wait(5, p)
-					var path_style := PathStyle.new(0, pos3d).follow_path(pathway).align_y_to_origin().look_at_player().transform_path(transform)
+					var path_style := PathStyle.new(0, pos3d).follow_path(pathway).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path(transform)
 					var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
 					if target != null:
@@ -255,7 +255,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				for p in path.sample_points(count):
 					var s := p.length() * 2 * PI * pop.fit(0.05, 1)
 					var subpath := moving_path.call(p, s) as Pathway
-					var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_origin().look_at_player().transform_path(transform)
+					var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path(transform)
 					var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 					config["size"] = size
 					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape

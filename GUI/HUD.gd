@@ -38,6 +38,8 @@ var message_times: Dictionary = {} ## [GameSettings.Tutorial]int(seconds until e
 @onready var compass_s: Label = $Compass/S
 @onready var compass_w: Label = $Compass/W
 @onready var compass_overflow: Label = $Compass/Overflow
+var compass_markers: Array[Control] = []
+var compass_marker_locations: Array[Vector2] = []
 
 
 var cooldown_alert: Dictionary
@@ -512,7 +514,34 @@ func update_theme_colors(color: Color, variation: HUDSettings.ThemeKind) -> void
 	var stats_theme := (stats_view.get_node("container") as Control).get_theme_stylebox("panel") as StyleBoxFlat
 	stats_theme.border_color = list_theme.border_color
 
-func update_compass_position(looking_angle: float) -> void:
+enum Indicator { NOTE, PAPER, CUBE }
+func add_marker(id: String, indicator: Indicator, location: Vector2) -> void:
+	var img := TextureRect.new()
+	img.size = Vector2(16, 16)
+	img.position = Vector2(0, 8)
+	img.name = id
+	match indicator:
+		Indicator.NOTE: img.texture = preload("res://GUI/Images/scroll-note.svg")
+		Indicator.PAPER: img.texture = preload("res://GUI/Images/scroll-paper.svg")
+		Indicator.CUBE: img.texture = preload("res://GUI/Images/artifact-cube.svg")
+	compass_markers.append(img)
+	compass_marker_locations.append(location)
+	compass.add_child(img)
+	
+func remove_marker(id: String) -> void:
+	var index := -1
+	for control in compass_markers:
+		index += 1
+		if control.name == id:
+			break
+			
+	if index > -1:
+		var marker := compass_markers[index]
+		compass_markers.remove_at(index)
+		compass_marker_locations.remove_at(index)
+		marker.queue_free()
+
+func update_compass_position(looking_angle: float, location: Vector3) -> void:
 	var bounds := compass.size.x
 	var offset := (looking_angle / PI * bounds * 0.5)
 	var width := compass_n.size.x
@@ -520,6 +549,13 @@ func update_compass_position(looking_angle: float) -> void:
 	compass_e.position.x = fposmod(bounds * 0.25 + offset - width * 0.5, bounds)
 	compass_s.position.x = fposmod(bounds * 0.5 + offset - width * 0.5, bounds)
 	compass_w.position.x = fposmod(bounds * 0.75 + offset - width * 0.5, bounds)
+	
+	var loc2 := Vec2.xz(location)
+	for i in compass_markers.size():
+		var loc := compass_marker_locations[i]
+		var control := compass_markers[i]
+		var x := loc2.angle_to_point(loc) / PI * 0.5 - 0.25
+		control.position.x = fposmod(bounds * x + offset - width * 0.5, bounds)
 	
 	var max_x := 0.0
 	var max_ratio := 0.0	
