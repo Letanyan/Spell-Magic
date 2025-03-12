@@ -544,9 +544,9 @@ func hide_tutorial_message() -> void:
 		
 func menu_did_open_tab_index(index: int) -> void:
 	var mark_message := func(tutorial: GameSettings.Tutorials) -> void:
-		hud.hide_message(tutorial)
 		if hud.messages.has(tutorial):
 			GlobalData.game_settings.mark_tutorial(tutorial)
+		hud.hide_message(tutorial)
 	
 	match index:
 		Menu.Kind.SPELLS: mark_message.call(GameSettings.Tutorials.SPELLS)

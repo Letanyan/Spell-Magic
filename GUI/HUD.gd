@@ -482,7 +482,7 @@ func update_pick_up_world_item_spell(s: Spell, m: String) -> void:
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.SPELLS):
 		show_message(GameSettings.Tutorials.SPELLS, "[center][font_size=21]View 'Spells' in the menu to view and edit your spells[/font_size][/center]", INF)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.WANDS):
-		show_message(GameSettings.Tutorials.SPELLS, "[center][font_size=21]View 'Wands' to assign spells to keys[/font_size][/center]", INF)
+		show_message(GameSettings.Tutorials.WANDS, "[center][font_size=21]View 'Wands' to assign spells to keys[/font_size][/center]", INF)
 		
 func update_pick_up_world_item_key(k: int, m: String) -> void: 
 	show_notification(bbcode_new_item(m), 10)

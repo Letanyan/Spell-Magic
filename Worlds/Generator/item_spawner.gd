@@ -94,7 +94,8 @@ func drop_artifact_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.ARTIFACT) as ArtifactCube
 		item.position = position
 		item.artifact = artifact
-		world.add_child(item)
+		if item.get_parent() == null:
+			world.add_child(item)
 		return true
 	return false
 		
@@ -104,7 +105,8 @@ func drop_spell_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.SPELL) as SpellPaper
 		item.position = position
 		item.spell = spell
-		world.add_child(item)
+		if item.get_parent() == null:
+			world.add_child(item)
 		return true
 	return false
 		
@@ -113,7 +115,8 @@ func drop_key_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.KEY) as KeyPrism
 		item.position = position
 		item.key = key
-		world.add_child(item)
+		if item.get_parent() == null:
+			world.add_child(item)
 		return true
 	return false
 
@@ -123,7 +126,8 @@ func drop_coin_items(world: Node3D) -> bool:
 			var item := population.entity_manager.get_world_item(World.Item.COIN) as CoinDisc
 			item.position = position + Rand.point_in_circle(1.0 + log(coins.size()), 0)
 			item.amount = coin
-			world.add_child(item)
+			if item.get_parent() == null:
+				world.add_child(item)
 		return true
 	return false
 	
@@ -132,7 +136,8 @@ func drop_health_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.HEALTH) as RedCross
 		item.position = position
 		item.health = health
-		world.add_child(item)
+		if item.get_parent() == null:
+			world.add_child(item)
 		return true
 	return false
 
@@ -141,6 +146,7 @@ func drop_note_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.NOTE) as ScrollNote
 		item.position = position
 		item.note_id = note_id
-		world.add_child(item)
+		if item.get_parent() == null:
+			world.add_child(item)
 		return true
 	return false

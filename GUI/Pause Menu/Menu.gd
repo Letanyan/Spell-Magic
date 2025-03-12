@@ -90,7 +90,7 @@ func update_index(index: Kind) -> void:
 	upgrades_button.set_pressed_no_signal(false)
 	notes_button.set_pressed_no_signal(false)
 	settings_button.set_pressed_no_signal(false)
-	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or current_index == Kind.UPGRADES):
+	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES))):
 		match current_index:
 			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
 			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nUpgrades Disabled"
