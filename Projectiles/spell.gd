@@ -936,6 +936,7 @@ func clamp_variables(settings: UpgradeSettings) -> void:
 	power = minf(settings.max_P(), power)
 	if r.is_valid_float():
 		r = str(minf(r.to_float(), settings.max_r()))
+	mana_cost = minf(settings.max_mana(), mana_cost)
 	if not settings.check_if_has_spell_element(element):
 		match element:
 			Element.FIRE:
