@@ -918,6 +918,6 @@ func update_upgrade_progress(active_enemy_kinds: Dictionary) -> void:
 			purchase_upgrade_kind(upgrade_kind[i])
 			message = message_for_upgrade_kind(upgrade_kind[i])
 			fill_upgrade_slots(true, active_enemy_kinds)
-			UIAudioPlayer.twinkle()
+			UIAudioPlayer.sparkle()
 			break
 	upgrade_slot_progress.emit(self, message)

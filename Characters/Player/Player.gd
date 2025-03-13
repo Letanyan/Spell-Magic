@@ -69,6 +69,7 @@ signal spell_radius_was_buffed(amount: float)
 signal attack_was_buffed(amount: float)
 signal defence_was_buffed(amount: float)
 signal speed_was_buffed(amount: float)
+signal world_object_collision_occurred(location: Vector3, shape: Shape3D, scaling: float)
 
 var active_effects: Dictionary = {} ## [Vector2i][int]bool
 var spell_modifier: Dictionary = {} ## [Artifact.Element]Vector2(flat: int, percentage: float)
@@ -179,7 +180,18 @@ func _physics_process(delta: float) -> void:
 	var direction := movement["direction"] as Vector3
 	var is_underwater := not is_on_floor and position.y <= world_settings.sea_level and direction != Vector3.ZERO and velocity != Vector3.ZERO
 	velocity_movement.rotate_character(get_node(".") as Player, direction, is_underwater)
-	move_and_slide()
+	if move_and_slide():
+		for collision in collision_results:
+			for i in collision.motion_result.get_collision_count():
+				var obj := collision.motion_result.get_collider(i)
+				if not (obj is StaticBody3D):
+					continue
+				var body := obj as StaticBody3D
+				if body.collision_layer & Globals.Layer.OBJECT != 0:
+					var shape := body.get_node("shape") as CollisionShape3D
+					if shape != null:
+						world_object_collision_occurred.emit(body.position, shape.shape, body.transform.basis.get_scale().x)
+			
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor:
 			if velocity.length() < 0.166667:

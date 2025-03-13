@@ -19,6 +19,8 @@ var biome_helper: BiomeHelper
 var population: Dictionary = {} ## [Vector2i]Population
 var entity_manager: EntityManager
 
+var world_object_contacts: Dictionary = {} ## [Vector3]int
+
 var biome_in_waiting_queue: World.Biome = World.Biome.WATER
 var switch_biome_timer: float = 0.0
 var last_last_biome: World.Biome = World.Biome.WATER
@@ -862,3 +864,18 @@ func transition_world_level() -> void:
 		settings.is_paused = false
 		totem.show_message()
 	)
+
+
+func _on_player_world_object_collision_occurred(location: Vector3, shape: Shape3D, scaling: float) -> void:
+	var time := world_object_contacts.get(location, -5000) as int
+	if Time.get_ticks_msec() - time >= 5000:
+		world_object_contacts[location] = Time.get_ticks_msec()
+		var volume := Vec3.volume(Navigator.shape_bounds(shape)) * scaling * 0.1 * (1.0 + player.vitals.mana.change_per_tick)
+		var change := player.vitals.mana.apply(volume)
+		if change > 0.0:
+			UIAudioPlayer.twinkle()
+		
+	for loc: Vector3 in world_object_contacts.keys():
+		time = world_object_contacts[loc]
+		if Time.get_ticks_msec() - time >= 5000:
+			world_object_contacts.erase(loc)

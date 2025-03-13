@@ -14920,11 +14920,9 @@ bus = &"BG"
 process_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.5072, 0)
 visible = false
-emitting = false
 amount = 1000
 lifetime = 3.0
 visibility_aabb = AABB(-4, -22, -4, 8, 36, 8)
-local_coords = true
 process_material = SubResource("ParticleProcessMaterial_mldf1")
 draw_pass_1 = SubResource("QuadMesh_yrfhb")
 

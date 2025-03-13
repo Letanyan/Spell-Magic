@@ -26,3 +26,6 @@ static func polar(radius: float, angle: float, height: float = 0.0) -> Vector3:
 
 static func max(v: Vector3) -> float:
 	return maxf(v.x, maxf(v.y, v.z))
+
+static func volume(vec: Vector3) -> float:
+	return vec.x * vec.y * vec.z
