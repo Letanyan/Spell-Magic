@@ -576,7 +576,7 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 			starting_upgrades.button_pressed = false
 		worlds_list.visible = false
 		game_mode_description_panel.visible = true
-		game_mode_description.text = "When you die you will respawn with all your spells, artifacts and upgrades. However, you will lose all your coins."
+		game_mode_description.text = "When you die you will respawn with all your spells and upgrades. However, you will lose all your artifacts."
 		#generation_version_label.visible = false
 
 func _on_use_hardcore_toggled(toggled_on: bool) -> void:

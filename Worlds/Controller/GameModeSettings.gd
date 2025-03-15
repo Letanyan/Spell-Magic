@@ -23,7 +23,7 @@ static func permadeath() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.PERMADEATH, 0)
 	
 static func normal_mode() -> GameModeSettings:
-	return GameModeSettings.new(GameMode.RESPAWN, RESPAWN_WITH_UPGRADES | RESPAWN_WITH_SPELLS_AND_WANDS | RESPAWN_WITH_ARTIFACTS)
+	return GameModeSettings.new(GameMode.RESPAWN, RESPAWN_WITH_UPGRADES | RESPAWN_WITH_SPELLS_AND_WANDS)
 	
 static func hardcore_mode() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.PERMADEATH, DISALLOW_SPELL_EDITING)

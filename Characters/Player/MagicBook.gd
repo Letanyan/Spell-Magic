@@ -30,14 +30,16 @@ func export_absolute_path(file_path: String) -> void:
 func read(world_name: String) -> bool:
 	return read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
 		
-func read_absolute_path(file_path: String) -> bool:
+func read_absolute_path(file_path: String, create_default_spell: bool = true) -> bool:
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if not file:
-		add(settings.upgrade_settings.default_starter_spell())
+		if create_default_spell:
+			add(settings.upgrade_settings.default_starter_spell())
 		return false
 	var data := file.get_var() as Array
 	if data == null:
-		add(settings.upgrade_settings.default_starter_spell())
+		if create_default_spell:
+			add(settings.upgrade_settings.default_starter_spell())
 		return false
 	var active_count := 0
 	spells = []

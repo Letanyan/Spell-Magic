@@ -3,21 +3,21 @@ extends Control
 
 @onready var tab_container: TabContainer = $Tabs
 
-@onready var hide_wand_mappings := $Tabs/Display/HideWandMappings as CheckButton
-@onready var hide_wand_modifier_hints := $Tabs/Display/HideWandModifierHints as CheckButton
-@onready var hide_notifications := $Tabs/Display/HideNotifications as CheckButton
-@onready var hide_status_effects := $Tabs/Display/HideStatusEffects as CheckButton
-@onready var hide_health_and_mana := $Tabs/Display/HideHealthAndMana as CheckButton
-@onready var hide_cooldown_timings := $Tabs/Display/HideCooldownTimings as CheckButton
-@onready var hide_stats_view := $Tabs/Display/HideStatsView as CheckButton
-@onready var hide_reticule: CheckButton = $Tabs/Display/HideReticule as CheckButton
-@onready var hide_compass: CheckButton = $Tabs/Display/HideCompass
-@onready var hide_key_count: CheckButton = $Tabs/Display/HideKeyCount
-@onready var projectile_indicator_size: HSlider = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
-@onready var projectile_indicator_size_display: Label = $Tabs/Display/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
-@onready var key_display: OptionButton = $Tabs/Display/KeyDisplayLabel/KeyDisplay
-@onready var theme_color: ColorPickerButton = $Tabs/Display/ThemeColor/ThemeColor
-@onready var theme_variation: OptionButton = $Tabs/Display/ThemeVariation/ThemeVariation
+@onready var hide_wand_mappings := $Tabs/UI/HideWandMappings as CheckButton
+@onready var hide_wand_modifier_hints := $Tabs/UI/HideWandModifierHints as CheckButton
+@onready var hide_notifications := $Tabs/UI/HideNotifications as CheckButton
+@onready var hide_status_effects := $Tabs/UI/HideStatusEffects as CheckButton
+@onready var hide_health_and_mana := $Tabs/UI/HideHealthAndMana as CheckButton
+@onready var hide_cooldown_timings := $Tabs/UI/HideCooldownTimings as CheckButton
+@onready var hide_stats_view := $Tabs/UI/HideStatsView as CheckButton
+@onready var hide_reticule: CheckButton = $Tabs/UI/HideReticule as CheckButton
+@onready var hide_compass: CheckButton = $Tabs/UI/HideCompass
+@onready var hide_key_count: CheckButton = $Tabs/UI/HideKeyCount
+@onready var projectile_indicator_size: HSlider = $Tabs/UI/ProjectileIndicatorSize/ProjectileIndicatorSize as HSlider
+@onready var projectile_indicator_size_display: Label = $Tabs/UI/ProjectileIndicatorSize/ProjectileIndicatorSizeDisplay as Label
+@onready var key_display: OptionButton = $Tabs/UI/KeyDisplayLabel/KeyDisplay
+@onready var theme_color: ColorPickerButton = $Tabs/UI/ThemeColor/ThemeColor
+@onready var theme_variation: OptionButton = $Tabs/UI/ThemeVariation/ThemeVariation
 
 @onready var fov_slider: HSlider = $"Tabs/Camera/FOV Label/Slider" as HSlider
 @onready var fov_value: Label = $"Tabs/Camera/FOV Label/Value" as Label
@@ -225,6 +225,11 @@ func _on_hide_cooldown_timings_toggled(button_pressed: bool) -> void:
 func _on_hide_stats_view_toggled(button_pressed: bool) -> void:
 	world_settings.hud_settings.hide_stats_view = button_pressed
 	UIAudioPlayer.check(button_pressed)
+	settings_changed.emit(world_settings)
+	
+func _on_hide_possible_upgrades_toggled(toggled_on: bool) -> void:
+	world_settings.hud_settings.hide_possible_upgrades = toggled_on
+	UIAudioPlayer.check(toggled_on)
 	settings_changed.emit(world_settings)
 	
 func _on_hide_reticule_toggled(button_pressed: bool) -> void:

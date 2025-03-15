@@ -28,6 +28,7 @@ var last_footstep_playback_position := 0.0
 
 @onready var leaves: GPUParticles3D = $leaves
 @onready var breeze: GPUParticles3D = $breeze
+@onready var mana: GPUParticles3D = $mana
 
 var platform: PhysicsBody3D = null
 
@@ -328,6 +329,9 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 func _on_wet_area_body_entered(body: Node3D) -> void:
 	print(body)
 	
+func fire_mana_particles(amount: int) -> void:
+	mana.amount = amount
+	mana.restart()
 
 func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: Spell, time: float, p: SpellBody, damage: Dictionary) -> void:
 	if not origin is Player:

@@ -430,17 +430,26 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 		
-	if not settings.is_paused and event.is_action_pressed("RT"):
+	if settings.is_paused:
+		return
+		
+	if event.is_action_pressed("ui_text_backspace"):
+		var tween := create_tween().set_parallel(false)
+		const DURATION = 4.0
+		tween.tween_property(player.cam_pivot, "rotation:y", rotation.y + PI * 1.5, DURATION * 0.75)
+		tween.tween_property(player.cam_pivot, "rotation:y", rotation.y + PI * 2.0, DURATION * 0.25)
+		tween.play()
+		
+	if event.is_action_pressed("RT"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			
-	if not settings.is_paused:
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			if event is InputEventMouseMotion:
-				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
-				hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		if event is InputEventMouseMotion:
+			player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
+			hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 				
-	if GlobalData.is_debug and not settings.is_paused:
+	if GlobalData.is_editor:
 		if event is InputEventKey:
 			var ev := event as InputEventKey
 			if ev.is_released() and ev.keycode == KEY_2:
@@ -461,45 +470,44 @@ func _input(event: InputEvent) -> void:
 								y = 250.0
 							Debug3D.draw_sphere(Vector3(p.x, y, p.y), 2.0, Color.RED, 5)
 				
-	if not settings.is_paused:
-		GlobalData.controller.handle_input(event)
+	GlobalData.controller.handle_input(event)
+	
+	if player.can_level_up_world and event is InputEventMouseButton:
+		if event.is_action_released("RT") or event.is_action_pressed("S"):
+			UIAudioPlayer.world_level_up()
+			player.world_settings.world_level += 1
+			player.world_settings.player_keys = 0
+			reset_enemy_populations()
+			SignalBus.level_up_world.emit(player, player.world_settings.world_level)
+			Steamworks.set_achievement(Steamworks.Achievements.ACH_INCREASED_WORLD_LEVEL)
+			settings.save()
+			transition_world_level()
+		return
 		
-		if player.can_level_up_world and event is InputEventMouseButton:
-			if event.is_action_released("RT") or event.is_action_pressed("S"):
-				UIAudioPlayer.world_level_up()
-				player.world_settings.world_level += 1
-				player.world_settings.player_keys = 0
-				reset_enemy_populations()
-				SignalBus.level_up_world.emit(player, player.world_settings.world_level)
-				Steamworks.set_achievement(Steamworks.Achievements.ACH_INCREASED_WORLD_LEVEL)
-				settings.save()
-				transition_world_level()
-			return
-			
-		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
-			if settings.camera_settings.distance > 1:
-				settings.camera_settings.distance -= 1
-				menu.settings.settings_changed.emit(settings)
-				menu.settings.update_controls()
-				settings.save()
-		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
-			if settings.camera_settings.distance < 10:
-				settings.camera_settings.distance += 1
-				menu.settings.settings_changed.emit(settings)
-				menu.settings.update_controls()
-				settings.save()
-		
-		for k in wand.basic_keys:
-			var s: Spell = null
-			var is_down := false
-			var is_rapid_fire := Globals.Ref.new(false)
-			if event.is_action_pressed(k):
-				s = wand.action_down(k, book, is_rapid_fire)
-				is_down = true
-			if event.is_action_released(k):
-				s = wand.action_up(k, book)
-			if s != null:
-				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
+		if settings.camera_settings.distance > 1:
+			settings.camera_settings.distance -= 1
+			menu.settings.settings_changed.emit(settings)
+			menu.settings.update_controls()
+			settings.save()
+	elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
+		if settings.camera_settings.distance < 10:
+			settings.camera_settings.distance += 1
+			menu.settings.settings_changed.emit(settings)
+			menu.settings.update_controls()
+			settings.save()
+	
+	for k in wand.basic_keys:
+		var s: Spell = null
+		var is_down := false
+		var is_rapid_fire := Globals.Ref.new(false)
+		if event.is_action_pressed(k):
+			s = wand.action_down(k, book, is_rapid_fire)
+			is_down = true
+		if event.is_action_released(k):
+			s = wand.action_up(k, book)
+		if s != null:
+			cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:
@@ -874,6 +882,7 @@ func _on_player_world_object_collision_occurred(location: Vector3, shape: Shape3
 		var change := player.vitals.mana.apply(volume)
 		if change > 0.0:
 			UIAudioPlayer.twinkle()
+			player.fire_mana_particles(clampi(int(change), 10, 100))
 		
 	for loc: Vector3 in world_object_contacts.keys():
 		time = world_object_contacts[loc]

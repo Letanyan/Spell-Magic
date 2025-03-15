@@ -1,4 +1,4 @@
-[gd_scene load_steps=167 format=4 uid="uid://cs66h1r8861hy"]
+[gd_scene load_steps=176 format=4 uid="uid://cs66h1r8861hy"]
 
 [ext_resource type="Script" path="res://Characters/Player/Player.gd" id="1_pc14x"]
 [ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="2_kw0nn"]
@@ -14337,6 +14337,74 @@ shader_parameter/color = Color(1, 1, 1, 1)
 material = SubResource("ShaderMaterial_p0c7s")
 subdivide_height = 8
 
+[sub_resource type="Gradient" id="Gradient_ewjlo"]
+interpolation_color_space = 2
+colors = PackedColorArray(0.466667, 0, 1, 1, 0.233333, 0, 0.5, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_tjnho"]
+gradient = SubResource("Gradient_ewjlo")
+width = 32
+
+[sub_resource type="Curve" id="Curve_h2xfj"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.498195, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_n3gf6"]
+width = 64
+curve = SubResource("Curve_h2xfj")
+
+[sub_resource type="Curve" id="Curve_nyx5k"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.124567, 0.690042), 1.37001, 1.37001, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_i4dwn"]
+width = 64
+curve = SubResource("Curve_nyx5k")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1d7of"]
+emission_shape = 2
+emission_sphere_radius = 0.2
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = 0.999998
+scale_curve = SubResource("CurveTexture_n3gf6")
+color_ramp = SubResource("GradientTexture1D_tjnho")
+hue_variation_min = -0.02
+hue_variation_max = 0.03
+turbulence_enabled = true
+turbulence_noise_scale = 6.0
+turbulence_noise_speed_random = 2.0
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.113
+turbulence_initial_displacement_min = 2.5
+turbulence_initial_displacement_max = 3.1
+turbulence_influence_over_life = SubResource("CurveTexture_i4dwn")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5j8f8"]
+render_priority = 0
+shader = ExtResource("8_ak60u")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+
+[sub_resource type="SphereMesh" id="SphereMesh_rktgy"]
+material = SubResource("ShaderMaterial_5j8f8")
+radius = 0.05
+height = 0.1
+
 [node name="MainPlayer" type="CharacterBody3D" node_paths=PackedStringArray("collider")]
 collision_layer = 2
 collision_mask = 599
@@ -14939,3 +15007,15 @@ one_shot = true
 visibility_aabb = AABB(-6.94052, -2, -6.40496, 13.4095, 13.701, 13.0801)
 process_material = SubResource("ParticleProcessMaterial_rgumj")
 draw_pass_1 = SubResource("BoxMesh_4wmcu")
+
+[node name="mana" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.676868, -0.204752)
+emitting = false
+amount = 12
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_1d7of")
+draw_pass_1 = SubResource("SphereMesh_rktgy")

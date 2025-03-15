@@ -414,6 +414,8 @@ func update_settings(settings: WorldSettings) -> void:
 	
 	stats_view.visible = not hud_settings.hide_stats_view
 	
+	hud_upgrades.visible = not hud_settings.hide_possible_upgrades
+	
 	player.cam.fov = settings.camera_settings.fov
 	player.cam.far = settings.camera_settings.render_distance
 	

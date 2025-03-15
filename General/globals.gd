@@ -267,6 +267,7 @@ var user_magic_book: MagicBook = null
 var nav: GDNavigator = null
 var is_debug: bool = true
 var is_demo: bool = false
+var is_editor: bool = false
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
 const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
@@ -286,6 +287,7 @@ const encoded_y_noise = "EAAAAEA/DwACAAAAAACAPxMAmpmZPRMAbxIDOwgAAAAAAD8AAAAAAAA
 func _ready() -> void:
 	is_debug = false # OS.is_debug_build()
 	is_demo = false
+	is_editor = OS.has_feature("editor")
 	
 	nav = GDNavigator.new()
 	
@@ -306,8 +308,26 @@ func _ready() -> void:
 	user_magic_book = MagicBook.new()
 	user_magic_book.settings = WorldSettings.new(get_viewport())
 	user_magic_book.settings.upgrade_settings = upgrade_settings
-	user_magic_book.read_absolute_path("user://universal_magic_book.json")
+	var file_exists := user_magic_book .read_absolute_path("user://universal_magic_book.json", false)
 	user_magic_book.rebuild_spell_chains()
+	
+	if not file_exists:
+		var spell_a := Spell.new(false, "2", "2", "2", "0.1", 1, 2.0, Spell.Element.FIRE, 1, "0", false, 0.0, false, false)
+		spell_a.name = "Lesson 1"
+		spell_a.description = "The position of a spell is defined by the 'x', 'y' and 'z' expressions. This spell creates a projectile that is placed 2 meters away from the player on the 'x', 'y' and 'z' dimension."
+		user_magic_book.add(spell_a)
+		var spell_b := Spell.new(false, "2 * u", "2 * v", "2 * w", "0.1", 1, 2.0, Spell.Element.FIRE, 1, "0", false, 0.0, false, false)
+		spell_b.name = "Lesson 2"
+		spell_b.description = "The variables 'u', 'v' and 'w' define the direction the player is looking on the 'x', 'y' and 'z' dimension. This spell creates a projectile that is 2 meters away from the camera in the direction that the camera is looking."
+		user_magic_book.add(spell_b)
+		var spell_c := Spell.new(false, "(2 + t) * u", "(2 + t) * v", "(2 + t) * w", "0.1", 1, 2.0, Spell.Element.FIRE, 1, "0", false, 0.0, false, false)
+		spell_c.name = "Lesson 3"
+		spell_c.description = "The variable 't' defines the current time since a projectile has been cast. The value of t ranges from 0 to T. This spell creates a projectile that starts 2 meters away from the player and moves away from the player at 't' meters per second."
+		user_magic_book.add(spell_c)
+		var spell_d := Spell.new(false, "(2 + t * 3) * u", "(2 + t * 3) * v", "(2 + t * 3) * w", "0.1", 1, 2.0, Spell.Element.FIRE, 1, "0", false, 0.0, false, false)
+		spell_d.name = "Lesson 4"
+		spell_d.description = "One can multiply 't' by some amount to make a projectile move faster (or slower)."
+		user_magic_book.add(spell_d)
 	
 	#if user_magic_book.spells.is_empty():
 		#for spell in magic_book.spells:

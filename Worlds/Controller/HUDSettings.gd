@@ -10,6 +10,7 @@ var hide_status_effects: bool = false
 var hide_health_mana: bool = false
 var hide_cooldown_timings: bool = false
 var hide_stats_view: bool = true
+var hide_possible_upgrades: bool = false
 var hide_reticule: bool = false
 var hide_compass: bool = false
 var projectile_indicator_size: float = 1.0
@@ -23,10 +24,10 @@ func save_dict() -> Dictionary:
 		"hide_wand_mappings": hide_wand_mappings, "hide_wand_modifier_hints": hide_wand_modifier_hints,
 		"hide_notifications": hide_notifications, "hide_status_effects": hide_status_effects,
 		"hide_health_mana": hide_health_mana, "hide_cooldown_timings": hide_cooldown_timings,
-		"hide_stats_view": hide_stats_view, "hide_reticule": hide_reticule,
-		"projectile_indicator_size": projectile_indicator_size, "key_display": key_display,
-		"hide_collected_keys_label": hide_collected_keys_label, "theme_color": theme_color,
-		"theme_variation": theme_variation, "hide_compass": hide_compass,
+		"hide_stats_view": hide_stats_view, "hide_possible_upgrades": hide_possible_upgrades, 
+		"hide_reticule": hide_reticule, "projectile_indicator_size": projectile_indicator_size, 
+		"key_display": key_display, "hide_collected_keys_label": hide_collected_keys_label, 
+		"theme_color": theme_color, "theme_variation": theme_variation, "hide_compass": hide_compass,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -37,6 +38,7 @@ func load_dict(dict: Dictionary) -> void:
 	hide_health_mana = dict.get("hide_health_mana", false)
 	hide_cooldown_timings = dict.get("hide_cooldown_timings", false)
 	hide_stats_view = dict.get("hide_stats_view", true)
+	hide_possible_upgrades = dict.get("hide_possible_upgrades", false)
 	hide_reticule = dict.get("hide_reticule", false)
 	projectile_indicator_size = dict.get("projectile_indicator_size", 1.0)
 	key_display = dict.get("key_display", KeyDisplay.AUTO)
