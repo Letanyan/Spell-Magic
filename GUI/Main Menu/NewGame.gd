@@ -80,12 +80,12 @@ var main_menu_world: MainMenuWorld = null
 var world_data: Array = []
 
 # TODO: add more game modes. Things like: 
-# - Limited Upgrades: only provide 3 upgrades at a time for a player
 # - Artifacts Only: No upgrades only artifacts
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	UIAudioPlayer.silence = true
 	upgrades = UpgradeSettings.new()
+	upgrades.reset_all_stats_to_default_values()
 	
 	health_slider.min_value = upgrades.level_health
 	attack_slider.min_value = upgrades.level_attack
