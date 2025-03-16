@@ -480,6 +480,7 @@ func _on_chain_text_changed(new_text: String) -> void:
 	old_chain_text = n
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
+	delete_chain_key_pressed = false
 
 func _on_is_rel_toggled(button_pressed: bool) -> void:
 	if current_index < 0:
@@ -869,7 +870,7 @@ func _on_copy_to_clipboard_pressed() -> void:
 	UIAudioPlayer.click()
 	var encoded := Marshalls.utf8_to_base64(str(spell.save_dict()))
 	DisplayServer.clipboard_set(encoded)
-	var popup := PopupDialog.display("Spell Copied to the Clipboard", "", "Okay")
+	var popup := PopupDialog.display("Spell Copied to the Clipboard", "Okay", "")
 	popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)

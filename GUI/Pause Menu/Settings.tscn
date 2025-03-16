@@ -865,6 +865,7 @@ offset_left = -192.0
 offset_top = 271.0
 offset_right = 192.0
 offset_bottom = 296.0
+grow_horizontal = 2
 text = "Hide Possible Upgrades"
 
 [node name="HideReticule" type="CheckButton" parent="Tabs/UI"]

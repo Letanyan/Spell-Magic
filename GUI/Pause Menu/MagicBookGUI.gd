@@ -58,7 +58,8 @@ func _ready() -> void:
 	
 	SignalBus.spell_from_global_book_exported.connect(func(spell: Spell) -> void:
 		if not is_universal:
-			add_spell(spell)	
+			add_spell(spell)
+			update_spell_chains(spell)
 	)
 	
 	
@@ -201,6 +202,11 @@ func delete_spell_at_index(index: int) -> void:
 		book.spells[i].id = i
 	update_book_without_selection()
 
+func update_spell_chains(base: Spell) -> void:
+	var updated := book.rebuild_spell_chain(base)
+	for spell in updated:
+		book.spell_was_updated.emit(spell)
+
 func add_spell(spell: Spell, select_on_create: bool = true) -> void:
 	spell.id = book.spells.size()
 	book.add(spell)
@@ -209,6 +215,7 @@ func add_spell(spell: Spell, select_on_create: bool = true) -> void:
 		chain_spell.id = book.spells.size()
 		book.add(chain_spell)
 		chain_spell = chain_spell.chain
+	update_spell_chains(spell)
 	reload_list()
 	var k_index := -1
 	for k: int in spells_index_map:
