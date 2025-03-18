@@ -32,7 +32,7 @@ void fragment() {
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	albedo_tex *= albedo;
 
-	vec3 temp_color = rgb2hsv(albedo.rgb * albedo_tex.rgb);
+	vec3 temp_color = rgb2hsv(albedo_tex.rgb);
 	temp_color.b = 1.0 - pow(1.0 - temp_color.b, 2.0);
 	ALBEDO = hsv2rgb(temp_color);
 

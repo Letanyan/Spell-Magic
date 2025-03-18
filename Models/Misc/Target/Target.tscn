@@ -148,7 +148,7 @@ resource_name = "set_down"
 tracks/0/type = "scale_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("coin")
+tracks/0/path = NodePath("coin:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 5, 5, 5, 1, 1, 0, 0, 0)
@@ -172,7 +172,7 @@ resource_name = "unset_down"
 tracks/0/type = "scale_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("coin")
+tracks/0/path = NodePath("coin:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 5, 5, 5)
@@ -210,7 +210,7 @@ mesh = SubResource("PlaneMesh_1tlu7")
 mesh = SubResource("PlaneMesh_dfnp0")
 
 [node name="coin" type="MeshInstance3D" parent="."]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ycjys")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("5_3qna6")

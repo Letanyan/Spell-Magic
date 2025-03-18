@@ -83,10 +83,10 @@ func _physics_process(delta: float) -> void:
 		return
 		
 	if should_be_removed:
-		if spell_caster.particles.is_empty():
-			if spell_caster != null:
+		if spell_caster != null:
+			if spell_caster.particles.is_empty():
 				spell_caster.free_particles()
-			custom_free.call(self)
+				custom_free.call(self)
 		return
 	
 	invunerable -= 1
@@ -107,6 +107,10 @@ func _physics_process(delta: float) -> void:
 			if spawner != null:
 				spawner.add_condition(self)
 			update_health_bar()
+			var animation := animation_player.get_animation("unset_down")
+			var idx := animation.find_track("coin:scale", Animation.TYPE_SCALE_3D)
+			var key := animation.track_find_key(idx, 1.0, Animation.FIND_MODE_NEAREST)
+			animation.track_set_key_value(idx, key, Vec3.a(5) * bounds.x)
 			animation_player.play("unset_down")
 			
 	movement_tick -= delta
@@ -247,6 +251,10 @@ func set_is_down() -> void:
 	respawn_ticks = 0.0
 	if spawner != null:
 		spawner.remove_node(self)
+	var animation := animation_player.get_animation("set_down")
+	var idx := animation.find_track("coin:scale", Animation.TYPE_SCALE_3D)
+	var key := animation.track_find_key(idx, 0.0, Animation.FIND_MODE_NEAREST)
+	animation.track_set_key_value(idx, key, Vec3.a(5) * bounds.x)
 	animation_player.play("set_down")
 	($static/shape as CollisionShape3D).disabled = true
 	($area/shape as CollisionShape3D).disabled = true

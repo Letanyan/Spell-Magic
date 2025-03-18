@@ -73,7 +73,7 @@ script = ExtResource("1_pf3b3")
 [node name="shape_cast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_htuie")
 target_position = Vector3(0, 0, 0)
-collision_mask = 575
+collision_mask = 1599
 collide_with_areas = true
 
 [node name="source" type="GPUParticles3D" parent="."]
