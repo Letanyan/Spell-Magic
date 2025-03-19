@@ -117,6 +117,7 @@ script = ExtResource("1_lbgqb")
 [node name="label" type="Label3D" parent="."]
 pixel_size = 0.025
 billboard = 1
+double_sided = false
 text = "Placeholder"
 font = ExtResource("2_vi784")
 outline_size = 8

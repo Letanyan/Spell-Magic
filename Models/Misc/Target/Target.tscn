@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://8w1sklpqfgkw"]
+[gd_scene load_steps=28 format=4 uid="uid://8w1sklpqfgkw"]
 
 [ext_resource type="Script" path="res://Models/Misc/Target/Target.gd" id="1_gfhpr"]
 [ext_resource type="PackedScene" uid="uid://c3b4a8jfx75nu" path="res://Characters/Enemy/Health Bar/health_bar.tscn" id="2_02115"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="6_ue5rt"]
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="7_qwwbg"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="8_hqy6b"]
+[ext_resource type="FontFile" uid="uid://b8k3m1pvm0rxt" path="res://GUI/ThemeUI/ChakraPetch-Bold.ttf" id="11_1uo72"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7c4o0"]
 resource_local_to_scene = true
@@ -166,6 +167,13 @@ tracks/1/keys = {
 "method": &"set_down"
 }]
 }
+tracks/2/type = "scale_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("label:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 1, 1, 1)
 
 [sub_resource type="Animation" id="Animation_fc6fs"]
 resource_name = "unset_down"
@@ -190,9 +198,27 @@ tracks/1/keys = {
 "method": &"unset_down"
 }]
 }
+tracks/2/type = "scale_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("label")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 1, 1, 1, 1, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_80j74"]
+length = 0.001
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("label")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1, 1, 1)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fqqaq"]
 _data = {
+"RESET": SubResource("Animation_80j74"),
 "set_down": SubResource("Animation_8ppje"),
 "unset_down": SubResource("Animation_fc6fs")
 }
@@ -210,7 +236,7 @@ mesh = SubResource("PlaneMesh_1tlu7")
 mesh = SubResource("PlaneMesh_dfnp0")
 
 [node name="coin" type="MeshInstance3D" parent="."]
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ycjys")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("5_3qna6")
@@ -220,6 +246,14 @@ transform = Transform3D(0.5, 0, 0, 0, 0.15, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_fp82a")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("5_74v1s")
+
+[node name="label" type="Label3D" parent="."]
+pixel_size = 0.025
+billboard = 1
+double_sided = false
+text = "5.0s"
+font = ExtResource("11_1uo72")
+outline_size = 8
 
 [node name="static" type="StaticBody3D" parent="."]
 collision_layer = 512

@@ -11,6 +11,7 @@ enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID
 @onready var static_body: StaticBody3D = $static
 @onready var coin: MeshInstance3D = $coin
 @onready var platform: MeshInstance3D = $platform
+@onready var label: Label3D = $label
 
 var puzzle_kind: PuzzleKind = PuzzleKind.DAMAGE
 
@@ -87,6 +88,8 @@ func _physics_process(delta: float) -> void:
 			if spell_caster.particles.is_empty():
 				spell_caster.free_particles()
 				custom_free.call(self)
+		else:
+			custom_free.call(self)
 		return
 	
 	invunerable -= 1
@@ -107,11 +110,9 @@ func _physics_process(delta: float) -> void:
 			if spawner != null:
 				spawner.add_condition(self)
 			update_health_bar()
-			var animation := animation_player.get_animation("unset_down")
-			var idx := animation.find_track("coin:scale", Animation.TYPE_SCALE_3D)
-			var key := animation.track_find_key(idx, 1.0, Animation.FIND_MODE_NEAREST)
-			animation.track_set_key_value(idx, key, Vec3.a(5) * bounds.x)
-			animation_player.play("unset_down")
+			unset_is_down()
+		else:
+			label.text = "%.1fs" % (respawn_time - respawn_ticks)
 			
 	movement_tick -= delta
 	const MOVE_TICK_TIME = 0.5
@@ -258,33 +259,52 @@ func set_is_down() -> void:
 	animation_player.play("set_down")
 	($static/shape as CollisionShape3D).disabled = true
 	($area/shape as CollisionShape3D).disabled = true
+	
+func unset_is_down() -> void:
+	var animation := animation_player.get_animation("unset_down")
+	var idx := animation.find_track("coin:scale", Animation.TYPE_SCALE_3D)
+	var key := animation.track_find_key(idx, 1.0, Animation.FIND_MODE_NEAREST)
+	animation.track_set_key_value(idx, key, Vec3.a(5) * bounds.x)
+	animation_player.play("unset_down")
 
 func set_down() -> void:
-	hide()
+	health_bar.hide()
+	($static/shape as CollisionShape3D).disabled = true
+	($area/shape as CollisionShape3D).disabled = true
 	
 func unset_down() -> void:
 	health.value = health.max_value
 	gauge.value = gauge.min_value
 	update_health_bar()
-	show()
 	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
 	($area/shape as CollisionShape3D).disabled = false
 
 func update_mesh_with_color(color: Color) -> void:
 	if puzzle_kind == PuzzleKind.PLATFORM:
 		($platform as MeshInstance3D).show()
-		($coin as MeshInstance3D).hide()		
+		($coin as MeshInstance3D).hide()
+		($label as Label3D).hide()
 		var mat := ($platform as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
 		mat.set_shader_parameter("albedo", color.darkened(0.2))
 	else:
 		($platform as MeshInstance3D).hide()
 		($coin as MeshInstance3D).show()
+		($label as Label3D).show()
+		if is_down:
+			($label as Label3D).scale = Vector3(1, 1, 1)
+		else:
+			($label as Label3D).scale = Vector3.ZERO
 		var mat := ($coin as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
 		mat.set_shader_parameter("albedo", color.darkened(0.2))
+		($label as Label3D).modulate = color
+		($label as Label3D).outline_modulate = color.darkened(0.2)
 	update_health_bar()
 	
 func update_health_bar() -> void:
 	if get_parent() == null:
+		return
+	if is_down:
+		health_bar.hide()
 		return
 	health_bar_level.hide()
 	match puzzle_kind:

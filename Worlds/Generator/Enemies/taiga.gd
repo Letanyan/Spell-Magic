@@ -116,7 +116,19 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				if is_rotating:
 					var path := Pathway.new().circle(radius, 0, 1)
 					coin_cls += 1
-					var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+					var spawner: ItemSpawner
+					if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+						spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+					else:
+						spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
+								{ el: 1 },
+								{ el: 1, Artifact.Element.COUNT: 2, Artifact.Element.DEFENCE: 3, Artifact.Element.MANA_BUMP: 4 },
+								Vector3i(2, 2, 2),
+								pop.artier(Rand.entity_from_distribution(rng.randf(), {5: pop.fit(10, 2), 10: pop.fit(2, 6), 15: pop.fit(2, 10)}) as int)
+							),
+						}, pop.player.name_generator, World.Biome.TAIGA))
 					for i in count:
 						var a := float(i) / float(count) * 2.0 * PI
 						var path_style := PathStyle.new(0, pos3d).follow_path(path.duplicate()).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path([T.rotated(Vector3.UP, a), transform])
@@ -132,7 +144,19 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							spawner.add_condition(target)
 				else:
 					var path := Pathway.new().circle(radius, 0, 1).apply_transform(transform)
-					var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+					var spawner: ItemSpawner
+					if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+						spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+					else:
+						spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+							"all": Artifact.make_config(
+								0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
+								{ el: 1 },
+								{ el: 1, Artifact.Element.SPELL_RADIUS: 2, Artifact.Element.ATTACK: 3, Artifact.Element.HEALTH_BUMP: 4 },
+								Vector3i(2, 2, 2),
+								pop.artier(Rand.entity_from_distribution(rng.randf(), {5: pop.fit(10, 2), 10: pop.fit(2, 6), 15: pop.fit(2, 10)}) as int)
+							),
+						}, pop.player.name_generator, World.Biome.TAIGA))
 					for p in path.sample_points(count):
 						var path_style := PathStyle.new(0, pos3d).follow_path(Pathway.new().wait(5, p)).align_y_to_ground_and_air().origin_is_offset().look_at_player()
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
@@ -175,7 +199,19 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					focus_point = pos3d + transform * Vector3.ZERO
 				elif kind == HORZ:
 					focus_point = pos3d + Vec3.polar(999_999, 2 * PI * rng.randf())
-				var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+				var spawner: ItemSpawner
+				if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+					spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+				else:
+					spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+						"all": Artifact.make_config(
+							0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
+							{ el: 1 },
+							{ el: 1, Artifact.Element.DURATION: 2, Artifact.Element.CRIT_DMG: 3, Artifact.Element.HEALTH: 4 },
+							Vector3i(2, 2, 2),
+							pop.artier(Rand.entity_from_distribution(rng.randf(), {5: pop.fit(10, 2), 10: pop.fit(2, 6), 15: pop.fit(2, 10)}) as int)
+						),
+					}, pop.player.name_generator, World.Biome.TAIGA))
 				for p in path.sample_points(count):
 					var dist := rng.randf_range(pop.fit(5, 10), pop.fit(5, 20))
 					var pathway: Pathway
@@ -251,7 +287,19 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 				if make_circle_path == moving_path:
 					coin_cls += 1
-				var spawner := ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+				var spawner: ItemSpawner
+				if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+					spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+				else:
+					spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+						"all": Artifact.make_config(
+							0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
+							{ el: 1 },
+							{ el: 1, Artifact.Element.SPELL_VELOCITY: 2, Artifact.Element.CRIT_RATE: 3, Artifact.Element.MANA: 4 },
+							Vector3i(2, 2, 2),
+							pop.artier(Rand.entity_from_distribution(rng.randf(), {5: pop.fit(10, 2), 10: pop.fit(2, 6), 15: pop.fit(2, 10)}) as int)
+						),
+					}, pop.player.name_generator, World.Biome.TAIGA))
 				for p in path.sample_points(count):
 					var s := p.length() * 2 * PI * pop.fit(0.05, 1)
 					var subpath := moving_path.call(p, s) as Pathway
