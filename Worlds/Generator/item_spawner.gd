@@ -96,6 +96,7 @@ func drop_artifact_item(world: Node3D) -> bool:
 		item.artifact = artifact
 		if item.get_parent() == null:
 			world.add_child(item)
+		drop_animation(world, item)
 		return true
 	return false
 		
@@ -107,6 +108,7 @@ func drop_spell_item(world: Node3D) -> bool:
 		item.spell = spell
 		if item.get_parent() == null:
 			world.add_child(item)
+		drop_animation(world, item)
 		return true
 	return false
 		
@@ -117,6 +119,7 @@ func drop_key_item(world: Node3D) -> bool:
 		item.key = key
 		if item.get_parent() == null:
 			world.add_child(item)
+		drop_animation(world, item)
 		return true
 	return false
 
@@ -128,6 +131,7 @@ func drop_coin_items(world: Node3D) -> bool:
 			item.amount = coin
 			if item.get_parent() == null:
 				world.add_child(item)
+			drop_animation(world, item)
 		return true
 	return false
 	
@@ -138,6 +142,7 @@ func drop_health_item(world: Node3D) -> bool:
 		item.health = health
 		if item.get_parent() == null:
 			world.add_child(item)
+		drop_animation(world, item)
 		return true
 	return false
 
@@ -148,5 +153,21 @@ func drop_note_item(world: Node3D) -> bool:
 		item.note_id = note_id
 		if item.get_parent() == null:
 			world.add_child(item)
+		drop_animation(world, item)
 		return true
 	return false
+
+func drop_animation(world: Node3D, item: Node3D) -> void:
+	var explosion: Node3D = preload("res://Characters/Enemy/enemy_die.tscn").instantiate()
+	var source := explosion.get_node("source") as GPUParticles3D
+	source.one_shot = false
+	(source.process_material as ParticleProcessMaterial).emission_box_extents = Vector3(3, 3, 3)
+	(source.process_material as ParticleProcessMaterial).color = Color(0.25, 0.25, 1)
+		
+	explosion.position = item.position
+	explosion.global_transform = item.global_transform
+	world.add_child(explosion)
+	source.emitting = true
+	
+	UIAudioPlayer.drop_world_item(position)
+	world.get_tree().create_timer(Globals.particle_system_lifetime(source)).timeout.connect(func() -> void: explosion.queue_free())

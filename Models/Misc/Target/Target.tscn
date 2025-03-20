@@ -144,6 +144,16 @@ size = Vector3(1, 0.25, 1)
 [sub_resource type="SphereShape3D" id="SphereShape3D_cbt3o"]
 resource_local_to_scene = true
 
+[sub_resource type="Animation" id="Animation_80j74"]
+length = 0.001
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("label")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1, 1, 1)
+
 [sub_resource type="Animation" id="Animation_8ppje"]
 resource_name = "set_down"
 tracks/0/type = "scale_3d"
@@ -205,16 +215,6 @@ tracks/2/path = NodePath("label")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = PackedFloat32Array(0, 1, 1, 1, 1, 1, 1, 0, 0, 0)
-
-[sub_resource type="Animation" id="Animation_80j74"]
-length = 0.001
-tracks/0/type = "scale_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("label")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 1, 1)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fqqaq"]
 _data = {

@@ -3,6 +3,7 @@ extends Node
 @onready var ui_player: AudioStreamPlayer = $UIAudioStreamPlayer
 @onready var d3_player: AudioStreamPlayer = $D3AudioStreamPlayer
 @onready var wx_audio_stream_player: AudioStreamPlayer = $WXAudioStreamPlayer
+@onready var audio_stream_player_3d: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 const source_click = preload("res://Audio/ui/click.wav") as AudioStreamWAV
 const source_click_fail = preload("res://Audio/ui/click_fail.wav") as AudioStreamWAV
@@ -38,6 +39,8 @@ const source_tundra = preload("res://Audio/walking/tundra.ogg") as AudioStreamOg
 const source_otherworld = preload("res://Audio/walking/otherworld.ogg") as AudioStreamOggVorbis
 const source_hfil = preload("res://Audio/walking/hfil.ogg") as AudioStreamOggVorbis
 
+const source_drop_item = preload("res://Audio/ui/drop_item.wav") as AudioStreamWAV
+
 var silence: bool = false
 
 func play(player: AudioStreamPlayer, source: AudioStream, pitch_scale: Vector2 = Vector2(1, 1)) -> void:
@@ -54,6 +57,14 @@ func try_play(player: AudioStreamPlayer, source: AudioStream, pitch_scale: Vecto
 	player.pitch_scale = randf_range(pitch_scale.x, pitch_scale.y)
 	player.stream = source
 	player.play()
+	
+func play3d(source: AudioStream, position: Vector3, pitch_scale: Vector2 = Vector2(1, 1)) -> void:
+	if silence:
+		return
+	audio_stream_player_3d.pitch_scale = randf_range(pitch_scale.x, pitch_scale.y)
+	audio_stream_player_3d.position = position
+	audio_stream_player_3d.stream = source
+	audio_stream_player_3d.play()
 
 func click() -> void:
 	play(ui_player, source_click)
@@ -135,3 +146,6 @@ func walk(biome: World.Biome) -> void:
 
 func crash() -> void:
 	play(ui_player, source_truck_crash)
+
+func drop_world_item(position: Vector3) -> void:
+	play3d(source_drop_item, position, Vector2(0.5, 0.0))

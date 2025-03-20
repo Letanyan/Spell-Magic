@@ -111,8 +111,10 @@ func _physics_process(delta: float) -> void:
 				spawner.add_condition(self)
 			update_health_bar()
 			unset_is_down()
-		else:
+		elif not is_inf(respawn_time):
 			label.text = "%.1fs" % (respawn_time - respawn_ticks)
+		else:
+			label.text = ""
 			
 	movement_tick -= delta
 	const MOVE_TICK_TIME = 0.5

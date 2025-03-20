@@ -31,13 +31,13 @@ const audio_streams: Array[AudioStream] = [
 
 
 enum AudioStreamKind {
-	FIRE, ROCK, ELECTRIC, WATER, AIR, ICE,
-	FIRE_EXPLOSION, ROCK_EXPLOSION, ELECTRIC_EXPLOSION, WATER_EXPLOSION, AIR_EXPLOSION, ICE_EXPLOSION, STEAM_EXPLOSION,
+	FIRE, ROCK, ELECTRIC, WATER, AIR, ICE, # 5 
+	FIRE_EXPLOSION, ROCK_EXPLOSION, ELECTRIC_EXPLOSION, WATER_EXPLOSION, AIR_EXPLOSION, ICE_EXPLOSION, STEAM_EXPLOSION, # 12
 	
-	ATTACK_BEAST, ATTACK_FLY, ATTACK_MED,
-	HURT_BEAST, HURT_FLY, HURT_MED,
-	WALK_BEAST, WALK_FLY, WALK_MED,
-	IDLE_BEAST, IDLE_FLY, IDLE_MED,
+	ATTACK_BEAST, ATTACK_FLY, ATTACK_MED, # 15
+	HURT_BEAST, HURT_FLY, HURT_MED, # 18
+	WALK_BEAST, WALK_FLY, WALK_MED, # 21
+	IDLE_BEAST, IDLE_FLY, IDLE_MED, # 24
 }
 
 class FadeParam:
@@ -157,13 +157,21 @@ func update(delta: float) -> void:
 		fade_params.erase(player)
 		
 	var current_time := Time.get_unix_time_from_system()
+	var i := 0
 	for stream in streams:
 		if stream.left_player.playing and (is_inf(stream.left_dist) or stream.left_stop_time <= current_time) and not fade_params.has(stream.left_player):
+			if i == streams.size() - 1:
+				print(stream.left_player.playing, " and ", stream.left_dist, " or ", stream.left_stop_time, " <= ", current_time, " and not ", fade_params.has(stream.left_player))
 			fade_audio(stream.left_player, -40, 0.7)
 			stream.left_stop_time = INF
-		stream.left_dist = INF
+		if (i >= 6 and i <= 12) or (i >= 16 and i <= 18):
+			stream.left_dist = INF
 		
 		if stream.right_player.playing and (is_inf(stream.right_dist) or stream.right_stop_time <= current_time) and not fade_params.has(stream.right_player):
+			if i == streams.size() - 1:
+				print(stream.right_player.playing, " and ", stream.right_dist, " or ", stream.right_stop_time, " <= ", current_time, " and not ", fade_params.has(stream.right_player))
 			fade_audio(stream.right_player, -40, 0.7)
 			stream.right_stop_time = INF
-		stream.right_dist = INF
+		if (i >= 6 and i <= 12) or (i >= 16 and i <= 18):
+			stream.right_dist = INF
+		i += 1
