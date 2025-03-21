@@ -1,0 +1,84 @@
+[gd_scene load_steps=5 format=3 uid="uid://dxqrs2u5fw8rk"]
+
+[ext_resource type="Script" path="res://GUI/Pause Menu/game_menu.gd" id="1_iakqy"]
+[ext_resource type="StyleBox" uid="uid://22jnl8crj7cq" path="res://GUI/Popup Menu/empty_black_bg.tres" id="1_o8kq6"]
+[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="2_2if0o"]
+[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="3_2a4uw"]
+
+[node name="GameMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iakqy")
+
+[node name="background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_o8kq6")
+
+[node name="holder" type="Panel" parent="background"]
+material = ExtResource("2_2if0o")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.099
+anchor_right = 0.5
+anchor_bottom = 0.099
+offset_left = -152.0
+offset_top = 127.848
+offset_right = 152.0
+offset_bottom = 383.848
+theme_override_styles/panel = ExtResource("3_2a4uw")
+
+[node name="Continue" type="Button" parent="background/holder"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 280.0
+offset_bottom = 56.0
+text = "Continue"
+
+[node name="Main Menu" type="Button" parent="background/holder"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 144.0
+offset_right = 280.0
+offset_bottom = 176.0
+text = "Main Menu"
+
+[node name="Save Game" type="Button" parent="background/holder"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 64.0
+offset_right = 280.0
+offset_bottom = 96.0
+text = "Save Game"
+
+[node name="Settings" type="Button" parent="background/holder"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 104.0
+offset_right = 280.0
+offset_bottom = 136.0
+text = "Settings"
+
+[node name="Quit" type="Button" parent="background/holder"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 200.0
+offset_right = 280.0
+offset_bottom = 232.0
+text = "Quit"
+
+[connection signal="pressed" from="background/holder/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="background/holder/Main Menu" to="." method="_on_main_menu_pressed"]
+[connection signal="pressed" from="background/holder/Save Game" to="." method="_on_save_game_pressed"]
+[connection signal="pressed" from="background/holder/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="background/holder/Quit" to="." method="_on_quit_pressed"]

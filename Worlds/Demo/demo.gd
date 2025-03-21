@@ -427,7 +427,11 @@ func toggle_menu() -> void:
 	
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("menu"):
+	if event.is_action_pressed("tab_menu"):
+		menu.is_quick_menu = false
+		toggle_menu()
+	elif event.is_action_pressed("esc_menu"):
+		menu.is_quick_menu = true
 		toggle_menu()
 		
 	if settings.is_paused:

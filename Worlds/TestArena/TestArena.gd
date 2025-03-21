@@ -506,7 +506,11 @@ func toggle_menu() -> void:
 	player.transition_menu(not menu.is_showing, menu.current_index == 4 and menu.settings.tab_container.get_current_tab_control().name == "Skin")
 		
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("menu"):
+	if event.is_action_pressed("tab_menu"):
+		menu.is_quick_menu = false
+		toggle_menu()
+	elif event.is_action_pressed("esc_menu"):
+		menu.is_quick_menu = true
 		toggle_menu()
 		
 	Input.stop_joy_vibration(event.device)

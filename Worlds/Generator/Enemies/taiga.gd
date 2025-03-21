@@ -118,9 +118,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					coin_cls += 1
 					var spawner: ItemSpawner
 					if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-						spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+						spawner = pop.spawn_spawner(World.Item.COIN, pos, pop.cns(coin_cls))
 					else:
-						spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+						spawner = pop.spawn_spawner(World.Item.ARTIFACT, pos, Artifact.from_config({
 							"all": Artifact.make_config(
 								0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
 								{ el: 1 },
@@ -146,9 +146,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var path := Pathway.new().circle(radius, 0, 1).apply_transform(transform)
 					var spawner: ItemSpawner
 					if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-						spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+						spawner = pop.spawn_spawner(World.Item.COIN, pos, pop.cns(coin_cls))
 					else:
-						spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+						spawner = pop.spawn_spawner(World.Item.ARTIFACT, pos, Artifact.from_config({
 							"all": Artifact.make_config(
 								0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
 								{ el: 1 },
@@ -201,9 +201,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					focus_point = pos3d + Vec3.polar(999_999, 2 * PI * rng.randf())
 				var spawner: ItemSpawner
 				if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-					spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+					spawner = pop.spawn_spawner(World.Item.COIN, pos, pop.cns(coin_cls))
 				else:
-					spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+					spawner = pop.spawn_spawner(World.Item.ARTIFACT, pos, Artifact.from_config({
 						"all": Artifact.make_config(
 							0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
 							{ el: 1 },
@@ -289,9 +289,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					coin_cls += 1
 				var spawner: ItemSpawner
 				if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
-					spawner = ItemSpawner.coins_spawner(pop, pop.get_ground_level(pos, 2), pop.cns(coin_cls))
+					spawner = pop.spawn_spawner(World.Item.COIN, pos, pop.cns(coin_cls))
 				else:
-					spawner = ItemSpawner.artifact_spawner(pop, pop.get_ground_level(pos, 2), Artifact.from_config({
+					spawner = pop.spawn_spawner(World.Item.ARTIFACT, pos, Artifact.from_config({
 						"all": Artifact.make_config(
 							0.5, Vector2i(5, 2), Vector4i(5, 5, 5, 5), 
 							{ el: 1 },

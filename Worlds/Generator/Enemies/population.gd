@@ -248,7 +248,7 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	var result: ItemSpawner
 	var world_normal := chunker.terrain_normal(p.x, p.y)
 	var wh: float = world_normal.get("position", Vector3.ZERO).y
-	var pos := Vector3(p.x, wh, p.y)
+	var pos := Vector3(p.x, wh + 2.0, p.y)
 	match item:
 		World.Item.ARTIFACT: result = ItemSpawner.artifact_spawner(self, pos, value as Artifact)
 		World.Item.SPELL: result = ItemSpawner.spell_spawner(self, pos, value as Spell)
@@ -257,7 +257,7 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 		World.Item.HEALTH: result = ItemSpawner.health_spawner(self, pos, value as float)
 		World.Item.NOTE: result = ItemSpawner.note_spawner(self, pos, value as String)
 		
-	result.name = World.Item.keys()[item] + "Spawner" + Globals.encode_v3(pos) + Rand.id(5, seedling)
+	result.name = str(item) + "_" + Rand.id(3, seedling)
 	# if the spawner has already been consumed don't create a new one.
 	# IMPORTANT: Even if the spawner is consumed the generation algorithm must 
 	#            still assume the spawner exists. We do this to maintain the RNG

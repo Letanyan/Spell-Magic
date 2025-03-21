@@ -4,26 +4,28 @@ extends Control
 enum Kind { ANY, WANDS, UPGRADES, ARTIFACTS, SPELLS, NOTES, SETTINGS }
 
 @onready var background: Panel = $Background
+@onready var game_menu: GameMenu = $GameMenu
 
-@onready var magic_book: MagicBookGUI = $MagicBook
-@onready var wand_case: WandCaseGUI = $WandCase
-@onready var artifacts: ArtifactsGUI = $Artifacts
-@onready var upgrades: UpgradesGUI = $Upgrades
-@onready var notes: NotesUI = $Notes
-@onready var settings: SettingsGUI = $Settings
+@onready var magic_book: MagicBookGUI = $Background/MagicBook
+@onready var wand_case: WandCaseGUI = $Background/WandCase
+@onready var artifacts: ArtifactsGUI = $Background/Artifacts
+@onready var upgrades: UpgradesGUI = $Background/Upgrades
+@onready var notes: NotesUI = $Background/Notes
+@onready var settings: SettingsGUI = $Background/Settings
 var current_index := Kind.WANDS
 
-@onready var spells_button: Button = $Tabbar/HBox/Spells
-@onready var wands_button: Button = $Tabbar/HBox/Wands
-@onready var artifacts_button: Button = $Tabbar/HBox/Artifacts
-@onready var quit_button: Button = $Tabbar/Quit
-@onready var upgrades_button: Button = $Tabbar/HBox/Upgrades
-@onready var settings_button: Button = $Tabbar/Settings
-@onready var notes_button: Button = $Tabbar/HBox/Notes
+@onready var spells_button: Button = $Background/Tabbar/HBox/Spells
+@onready var wands_button: Button = $Background/Tabbar/HBox/Wands
+@onready var artifacts_button: Button = $Background/Tabbar/HBox/Artifacts
+@onready var quit_button: Button = $Background/Tabbar/Quit
+@onready var upgrades_button: Button = $Background/Tabbar/HBox/Upgrades
+@onready var settings_button: Button = $Background/Tabbar/Settings
+@onready var notes_button: Button = $Background/Tabbar/HBox/Notes
 
-@onready var message_panel: Panel = $MessagePanel
-@onready var message_label: Label = $MessagePanel/MessageLabel
+@onready var message_panel: Panel = $Background/MessagePanel
+@onready var message_label: Label = $Background/MessagePanel/MessageLabel
 
+var is_quick_menu: bool = false
 var is_showing: bool = false
 var player: Player
 var world_settings: WorldSettings
@@ -55,6 +57,15 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	settings.save_game.connect(func() -> void: save_changes())
 	settings.main_menu.connect(func() -> void: SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
 	
+	game_menu.continue_game.connect(func() -> void: close_menu.emit())
+	game_menu.exit_game.connect(func() -> void: get_tree().quit())
+	game_menu.save_game.connect(func() -> void: save_changes())
+	game_menu.main_menu.connect(func() -> void: SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
+	game_menu.settings.connect(func() -> void:
+		is_quick_menu = false
+		update_index(Kind.SETTINGS)
+	)
+	
 	settings.tab_changed.connect(update_camera_and_menu)
 
 func _ready() -> void:
@@ -84,6 +95,12 @@ func update_index(index: Kind) -> void:
 	notes.visible = false
 	settings.visible = false
 	message_panel.visible = false
+	if is_quick_menu:
+		game_menu.visible = true
+		background.visible = false
+	else:
+		game_menu.visible = false
+		background.visible = true
 	spells_button.set_pressed_no_signal(false)
 	wands_button.set_pressed_no_signal(false)
 	artifacts_button.set_pressed_no_signal(false)
@@ -152,6 +169,7 @@ func open(kind: Kind) -> void:
 	if kind == Kind.ANY:
 		update_index(current_index)
 	else:
+		is_quick_menu = false
 		update_index(kind)
 	world_settings.save()
 
@@ -162,13 +180,22 @@ func close() -> void:
 	visible = false
 	save_changes()
 	
+func open_game_menu() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	UIAudioPlayer.open()
+	visible = true
+	is_showing = true
+	is_quick_menu = true
+	update_index(current_index)
+	world_settings.save()
+	
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
 		
 	GlobalData.controller.handle_input(event)
 		
-	if event is InputEventJoypadButton:
+	if event is InputEventJoypadButton and not is_quick_menu:
 		if event.is_action_pressed("RB"):
 			update_index(next_index())
 		elif event.is_action_pressed("LB"):
