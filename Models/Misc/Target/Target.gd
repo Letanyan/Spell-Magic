@@ -345,7 +345,7 @@ func resize_target(size: float) -> void:
 	($platform as MeshInstance3D).scale = Vector3(0.5 * size, 0.15 * y_size, 0.5 * size)
 	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = Vector3(size, 0.25 * y_size, size)
 	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size / 2.0
-	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
+	($HealthBar as Node3D).position.y = size * 0.5 + 0.575
 	bounds = Vector3(size, 0.25 * y_size, size)
 	
 func rescale_target(size: Vector3) -> void:
@@ -353,6 +353,7 @@ func rescale_target(size: Vector3) -> void:
 	($platform as MeshInstance3D).scale = Vector3(size.x * 0.5, size.y * 0.15, size.z * 0.5)
 	(($static/shape as CollisionShape3D).shape as BoxShape3D).size = size
 	(($area/shape as CollisionShape3D).shape as SphereShape3D).radius = size.y / 2.0
+	($HealthBar as Node3D).position.y = size.y * 0.5 + 0.575
 	#(($HealthBar/Bar as MeshInstance3D).mesh as PlaneMesh).size.x = size * 1.5
 	bounds = size
 	

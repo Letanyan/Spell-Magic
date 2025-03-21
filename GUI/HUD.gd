@@ -138,10 +138,9 @@ func spell_on_cooldown(spell: Spell) -> void:
 	
 func not_enough_mana_for_spell(spell: Spell) -> void:
 	not_enough_mana_alert = Time.get_unix_time_from_system()
-	var style: StyleBoxFlat = load("res://GUI/HUD_progress_bar_bg.tres")
-	style.bg_color = Color(1, 0, 0.3, 1)
+	var style: StyleBoxFlat = mana_bar.get_theme_stylebox("background")
+	style.bg_color = Color(1, 0, 0.3, 0.5)
 	style.border_color = Color(1, 0, 0.3, 1)
-	mana_bar.add_theme_stylebox_override("background", style)
 	
 	
 func bbcode(message: String, font_size: int = 18, color: String = "#F05", outline_color: String = "#000", outline_size: int = 4) -> String:

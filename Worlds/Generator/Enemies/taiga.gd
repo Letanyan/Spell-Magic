@@ -134,7 +134,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						var path_style := PathStyle.new(0, pos3d).follow_path(path.duplicate()).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path([T.rotated(Vector3.UP, a), transform])
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 						config["size"] = size
-						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
+						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config, spawner == null) as TargetShape
 						if target != null:
 							if kind == CENTER:
 								target.focus_point = pop.get_ground_level(Vec2.xz(focus_point), focus_point.y)
@@ -161,7 +161,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						var path_style := PathStyle.new(0, pos3d).follow_path(Pathway.new().wait(5, p)).align_y_to_ground_and_air().origin_is_offset().look_at_player()
 						var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 						config["size"] = size
-						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
+						var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config, spawner == null) as TargetShape
 						if target != null:
 							if kind == CENTER:
 								target.focus_point = pop.get_ground_level(Vec2.xz(focus_point), focus_point.y)
@@ -224,7 +224,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						pathway = Pathway.new().wait(5, p)
 					var path_style := PathStyle.new(0, pos3d).follow_path(pathway).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path(transform)
 					var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
-					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
+					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config, spawner == null) as TargetShape
 					if target != null:
 						if kind == CENTER:
 							target.focus_point = pop.get_ground_level(Vec2.xz(focus_point), focus_point.y)
@@ -306,7 +306,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path(transform)
 					var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)
 					config["size"] = size
-					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config) as TargetShape
+					var target := pop.spawn_world_item(World.Item.TARGET, pos, spacing, config, spawner == null) as TargetShape
 					if target != null:
 						if layout_kind == CENTER:
 							target.focus_point = pop.get_ground_level(Vec2.xz(focus_point), focus_point.y)
