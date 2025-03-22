@@ -26,17 +26,17 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	class_level = 14
 	
 	var idle_pathway := Pathway.new() \
-		.move_to(Vector3(0, 0, 0)) \
-		.quad_to(Vector3(20, 0, 0), Vector3(10, 20, 0), runs(17), Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 20), Vector3(10, 20, 10), runs(17), Easing.out_quart) \
-		.quad_to(Vector3(20, 0, 20), Vector3(10, 20, 10), runs(17), Easing.out_quart) \
-		.quad_to(Vector3(0, 0, 0), Vector3(10, 20, 10), runs(17), Easing.out_quart)
+		.move_to(Vector3(-10, 0, -10)) \
+		.quad_to(Vector3(10, 0, -10), Vector3(0, 20, -10), runs(17), Easing.out_box) \
+		.quad_to(Vector3(-10, 0, 10), Vector3(0, 20, 0), runs(17), Easing.out_box) \
+		.quad_to(Vector3(10, 0, 10), Vector3(0, 20, 10), runs(17), Easing.out_box) \
+		.quad_to(Vector3(-10, 0, -10), Vector3(0, 20, 0), runs(17), Easing.out_box)
 	idle_path = PathStyle.new(seedling, position).follow_path(idle_pathway).align_y_to_ground_and_air() \
 		.initial_position_can_update_on_ground()
 
 	attack_path = PathStyle.new(seedling).follow_path(idle_pathway)\
 		.align_y_to_ground_and_air()\
-		.origin_is_player() \
+		.origin_is_me() \
 		.look_at_player_xz() \
 		.initial_position_can_update_on_ground()
 	

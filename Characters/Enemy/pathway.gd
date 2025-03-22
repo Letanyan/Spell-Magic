@@ -141,7 +141,7 @@ func position_at_time_with_transform(t: float, transform: Transform3D, index: Gl
 	var modifier := (path_modifiers[segment] as Segment).position_at_time(ratio).y
 	return (segments[segment] as Segment).position_at_time_with_transform(modifier, transform)
 	
-func speed_at_time(t: float, delta: float, use_relative_speed: float, index: Globals.Ref = null) -> float:
+func speed_at_time(t: float, delta: float, use_relative_speed: bool, index: Globals.Ref = null) -> float:
 	var running := 0.0
 	var segment := 0
 	for i in range(durations.size()):

@@ -36,3 +36,7 @@ static var in_out_back := Segment.easing(0.68, -0.6, 0.32, 1.6)
 
 static var falling := Segment.easing(0.33, 0, 0.66, 0.33)
 static var rising := Segment.easing(0.33, 0.66, 0.66, 1)
+
+static var out_box := Segment.easing(0.0, 1.0, 0.0, 1.0)
+static var in_box := Segment.easing(1.0, 0.0, 1.0, 0.0)
+static var in_out_box := Segment.easing(0.0, 1.0, 1.0, 0.0)

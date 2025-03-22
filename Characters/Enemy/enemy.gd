@@ -12,11 +12,7 @@ var spell_caster: SpellCaster
 var attack_sequence: AttackSequence = null
 
 var player: Player
-var current_path: PathStyle:
-	set(value):
-		if value != current_path:
-			current_path = value
-			current_path.time = NAN
+var current_path: PathStyle
 var still_path: PathStyle
 var spawn_position: Vector3
 var current_attack: AttackPatterns
@@ -233,6 +229,7 @@ func can_move() -> bool:
 func set_path_and_attack(path: PathStyle, attack: AttackPatterns) -> void:
 	attack_sequence = null
 	current_path = path
+	current_path.time = NAN
 	current_attack = attack
 	
 func set_attack_sequence(atk_seq: AttackSequence) -> void:
@@ -263,6 +260,8 @@ func manual_physics_process(delta: float) -> void:
 	
 	var is_on_floor_1_not_on_floor_2_else_check_0: int = 0
 	var did_move := false
+	if current_path == null:
+		current_path = still_path
 	var is_ground_path_style := current_path.coord_y == PathStyle.CoordY.GROUND or current_path.coord_y == PathStyle.CoordY.GROUND_AND_DIRT
 	if snappedf(move_tick, 0.00001) < Globals.move_tick():
 		if velocity_movement.impulse != Vector3.ZERO or current_path.mover == PathStyle.Mover.PHYSICS:
@@ -391,7 +390,7 @@ func manual_physics_process(delta: float) -> void:
 		var spell: Spell = null
 		if attack_sequence:
 			if attack_sequence.last_attack:
-				spell = current_attack.choose_spell(vitals)
+				spell = attack_sequence.last_attack.choose_spell(vitals)
 		else:
 			spell = current_attack.choose_spell(vitals)
 		spell_tick = 0

@@ -161,6 +161,7 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			__IJK = Vars.TIJK
 			__rIJK = Vars.TrIJK
 		SpellVariableKind.FIXED: # values when the spell is cast
+			_C = Vars.C
 			_uvw = Vector3i(Vars.u, Vars.v, Vars.w)
 			_ruvw = Vector3i(Vars.ru, Vars.rv, Vars.rw)
 			_UVW = Vector3i(Vars.U, Vars.V, Vars.W)
@@ -495,7 +496,6 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 	else:
 		spell_variables(p.fixed_vars, body, SpellVariableKind.FIXED, p, p.spell)
 	p.spell.compute_expressions(p.fixed_vars, null)
-	#p.fixed_vars.print_values()
 	insert.call(p)
 	if q and q.get_parent():
 		SpellBuffer.free_turrent(q)

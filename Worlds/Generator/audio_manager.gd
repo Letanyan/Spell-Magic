@@ -160,16 +160,12 @@ func update(delta: float) -> void:
 	var i := 0
 	for stream in streams:
 		if stream.left_player.playing and (is_inf(stream.left_dist) or stream.left_stop_time <= current_time) and not fade_params.has(stream.left_player):
-			if i == streams.size() - 1:
-				print(stream.left_player.playing, " and ", stream.left_dist, " or ", stream.left_stop_time, " <= ", current_time, " and not ", fade_params.has(stream.left_player))
 			fade_audio(stream.left_player, -40, 0.7)
 			stream.left_stop_time = INF
 		if (i >= 6 and i <= 12) or (i >= 16 and i <= 18):
 			stream.left_dist = INF
 		
 		if stream.right_player.playing and (is_inf(stream.right_dist) or stream.right_stop_time <= current_time) and not fade_params.has(stream.right_player):
-			if i == streams.size() - 1:
-				print(stream.right_player.playing, " and ", stream.right_dist, " or ", stream.right_stop_time, " <= ", current_time, " and not ", fade_params.has(stream.right_player))
 			fade_audio(stream.right_player, -40, 0.7)
 			stream.right_stop_time = INF
 		if (i >= 6 and i <= 12) or (i >= 16 and i <= 18):

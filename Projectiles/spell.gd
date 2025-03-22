@@ -564,7 +564,10 @@ func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	var next_pos := calculate_cartesian_point(fixed_vars)
 	fixed_vars.set_value(Vars.t, 0.0)
 	var dir: Vector3 = next_pos - base_pos
-	Globals.look_at(p, dir)
+	if dir.is_zero_approx():
+		Globals.look_at(p, base_pos.normalized())
+	else:
+		Globals.look_at(p, dir)
 	
 	return p
 		

@@ -92,13 +92,13 @@ func setup(_settings: WorldSettings) -> void:
 	)
 	
 	#make_targets()
-	make_line_targets()
+	#make_line_targets()
 	
-	#const pX = 100
-	#const pY = 100
-	#const LVL = 20
-	#var enemy := Population.generate_enemy(World.Enemy.GOBLIN, player, pX / 10.0, 1000, pY / 10.0, LVL)
-	#add_enemy(enemy)
+	const pX = 100
+	const pY = 100
+	const LVL = 20
+	var enemy := Population.generate_enemy(World.Enemy.BLUEMON, player, pX / 10.0, 1000, pY / 10.0, LVL)
+	add_enemy(enemy)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -pX, 1000, -pY)

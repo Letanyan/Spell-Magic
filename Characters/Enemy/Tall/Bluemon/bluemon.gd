@@ -51,7 +51,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	ice_attack1.configure({"R":"pi*0.5", "s":atks(2,10)}, Spell.Element.ICE, fit(5,15), power(15), radius(5), fiti(3,16), 70, 130, fit(30,60))
 	ice_attack2.configure({"R":"pi*0.75", "s":atks(3,12)}, Spell.Element.ICE, fit(6,18), power(17), radius(4), fiti(4,16), 60, 140, fit(40,60))
 	ice_attack3.configure({"R":"pi", "s":atks(4,15)}, Spell.Element.ICE, fit(7,21), power(19), radius(3), fiti(5,16), 50, 150, fit(50,60))
-	rock_wall.configure({"d": "0.2","S":"0","s":"0","rx":"5","ry":"5","rz":"0.1","ra":"0"}, Spell.Element.ROCK, fit(10,20), power(0), 1.5, 1, 0, 0, 0)
+	rock_wall.configure({"d": "0.1","S":"0","s":"0.0","size":"vec(5, 5, 0.1)","spinrate":"0"}, Spell.Element.ROCK, fit(10,20), power(0), 1.5, 1, 0, 0, 0)
 	
 	spell_drop_probs = {
 		water_bomb_small: spell_drop(5),
@@ -150,7 +150,8 @@ func update_behaviour() -> void:
 	if is_idle:
 		set_path_and_attack(idle_path, none_pattern)
 	elif vitals.health.percentage() > 0.7:
-		set_path_and_attack(attack_path, attack_pattern1)
+		set_attack_sequence(cover_and_attack_sequence)
+		#set_path_and_attack(attack_path, attack_pattern1)
 	elif vitals.health.percentage() > 0.4:
 		set_path_and_attack(attack_path, attack_pattern2)
 	else:
