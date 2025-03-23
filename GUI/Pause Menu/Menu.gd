@@ -132,7 +132,7 @@ func update_index(index: Kind) -> void:
 	tab_opened.emit(current_index)
 	
 func update_camera_and_menu(settings_tab: String) -> void:
-	if current_index == Kind.SETTINGS and settings_tab == "Skin":
+	if not is_quick_menu and current_index == Kind.SETTINGS and settings_tab == "Skin":
 		showing_customisation = true
 		player.animate_spring_arm(true, 0.2)
 		background.set_anchors_preset(Control.PRESET_TOP_WIDE)
