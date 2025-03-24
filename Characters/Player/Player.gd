@@ -713,7 +713,6 @@ func transition_menu(is_open: bool, normalise_spring_arm: bool, showing_face: bo
 			tween.tween_property(cam, "h_offset", 0.4, D)
 			tween.tween_property(cam_arm, "position", Vector3(0, 0, 0), D)
 			var adjustment_for_customisation_screen := PI if normalise_spring_arm and showing_face else 0.0
-			print(normalise_spring_arm, " and ", showing_face)
 			var target_basis := cam_pivot.transform.basis.rotated(Vector3.UP, cam_pivot_rotation_y + -body_pivot.rotation.y + adjustment_for_customisation_screen)
 			tween.tween_property(cam_pivot, "transform:basis", target_basis, D)
 			var arm_target_basis := cam_arm.transform.basis.rotated(cam_arm.basis.x, cam_arm_rotation_x)

@@ -269,6 +269,7 @@ var nav: GDNavigator = null
 var is_debug: bool = true
 var is_demo: bool = false
 var is_editor: bool = false
+var is_trailer_mode: bool = false
 var demo_seed: int = 17312391
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
@@ -289,6 +290,7 @@ const encoded_y_noise = "EAAAAEA/DwACAAAAAACAPxMAmpmZPRMAbxIDOwgAAAAAAD8AAAAAAAA
 func _ready() -> void:
 	is_debug = false # OS.is_debug_build()
 	is_demo = false
+	is_trailer_mode = false
 	is_editor = OS.has_feature("editor")
 	
 	nav = GDNavigator.new()

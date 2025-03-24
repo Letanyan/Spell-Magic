@@ -257,35 +257,13 @@ func run_on_ready() -> void:
 		show_tutorial_label()
 		
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
-	var boundary_radius := settings.world_radius
-	# Y Minus
-	(world_boundary_y_minus.shape as BoxShape3D).size.x = boundary_radius
-	(world_boundary_y_minus.shape as BoxShape3D).size.z = boundary_radius
+	
 	world_boundary_y_minus.position.y = -100.0
-	# X Minus
-	(world_boundary_x_minus.shape as BoxShape3D).size.y = boundary_radius
-	(world_boundary_x_minus.shape as BoxShape3D).size.z = boundary_radius
-	world_boundary_x_minus.position.x = -boundary_radius * 0.5
-	(world_boundary_x_minus_mesh.mesh as QuadMesh).size.x = boundary_radius
-	(world_boundary_x_minus_mesh.mesh as QuadMesh).size.y = boundary_radius
-	# X Plus
-	(world_boundary_x_plus.shape as BoxShape3D).size.y = boundary_radius
-	(world_boundary_x_plus.shape as BoxShape3D).size.z = boundary_radius
-	world_boundary_x_plus.position.x = boundary_radius * 0.5
-	(world_boundary_x_plus_mesh.mesh as QuadMesh).size.x = boundary_radius
-	(world_boundary_x_plus_mesh.mesh as QuadMesh).size.y = boundary_radius
-	# Z Minus
-	(world_boundary_z_minus.shape as BoxShape3D).size.y = boundary_radius
-	(world_boundary_z_minus.shape as BoxShape3D).size.x = boundary_radius
-	world_boundary_z_minus.position.z = -boundary_radius * 0.5
-	(world_boundary_z_minus_mesh.mesh as QuadMesh).size.x = boundary_radius
-	(world_boundary_z_minus_mesh.mesh as QuadMesh).size.y = boundary_radius
-	# Z Plus
-	(world_boundary_z_plus.shape as BoxShape3D).size.y = boundary_radius
-	(world_boundary_z_plus.shape as BoxShape3D).size.x = boundary_radius
-	world_boundary_z_plus.position.z = boundary_radius * 0.5
-	(world_boundary_z_plus_mesh.mesh as QuadMesh).size.x = boundary_radius
-	(world_boundary_z_plus_mesh.mesh as QuadMesh).size.y = boundary_radius
+	world_boundary_x_minus.position.x = -settings.world_radius * 0.1
+	world_boundary_x_plus.position.x = settings.world_radius * 0.1
+	world_boundary_z_minus.position.z = -settings.world_radius * 0.1
+	world_boundary_z_plus.position.z = settings.world_radius * 0.1
+	update_world_boundary()
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -493,6 +471,13 @@ func _input(event: InputEvent) -> void:
 			player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
 			hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 				
+	if GlobalData.is_trailer_mode and event is InputEventKey:
+		var ev := event as InputEventKey
+		if ev.is_released() and ev.keycode == KEY_EQUAL:
+			skybox.day_time = fposmod(skybox.day_time + 1, SkyBox.HOURS_IN_DAY)
+		if ev.is_released() and ev.keycode == KEY_MINUS:
+			skybox.day_time = fposmod(skybox.day_time - 1, SkyBox.HOURS_IN_DAY)
+				
 	if GlobalData.is_editor:
 		if event is InputEventKey:
 			var ev := event as InputEventKey
@@ -529,13 +514,17 @@ func _input(event: InputEvent) -> void:
 		return
 		
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
-		if settings.camera_settings.distance > 1:
+		if GlobalData.is_trailer_mode:
+			player.world_settings.upgrade_settings.level_running_speed -= 1
+		elif settings.camera_settings.distance > 1:
 			settings.camera_settings.distance -= 1
 			menu.settings.settings_changed.emit(settings)
 			menu.settings.update_controls()
 			settings.save()
 	elif Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
-		if settings.camera_settings.distance < 10:
+		if GlobalData.is_trailer_mode:
+			player.world_settings.upgrade_settings.level_running_speed += 1
+		elif settings.camera_settings.distance < 10:
 			settings.camera_settings.distance += 1
 			menu.settings.settings_changed.emit(settings)
 			menu.settings.update_controls()
@@ -609,9 +598,26 @@ func menu_did_open_tab_index(index: int) -> void:
 		Menu.Kind.UPGRADES: mark_message.call(GameSettings.Tutorials.COINS)
 		Menu.Kind.NOTES: mark_message.call(GameSettings.Tutorials.NOTES)
 
+func update_world_boundary() -> void:
+	world_boundary_x_minus.position.z = player.position.z
+	world_boundary_x_minus.position.y = player.position.y
+	world_boundary_x_plus.position.z = player.position.z
+	world_boundary_x_plus.position.y = player.position.y
+	world_boundary_z_minus.position.x = player.position.x
+	world_boundary_z_minus.position.y = player.position.y
+	world_boundary_z_plus.position.x = player.position.x
+	world_boundary_z_plus.position.y = player.position.y
+	world_boundary_y_minus.position.x = player.position.x
+	world_boundary_y_minus.position.z = player.position.z
+	(world_boundary_x_minus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_x_minus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+	(world_boundary_x_plus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_x_plus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+	(world_boundary_z_minus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_z_minus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+	(world_boundary_z_plus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_z_plus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+
 func _on_player_moved(delta: float) -> void:
 	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		settings.upgrade_settings.progress_travel(player.position.distance_to(player_last_position), player.active_enemy_kinds)
+	update_world_boundary()
 	player_last_position = player.position
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	terrain_update_interval += delta

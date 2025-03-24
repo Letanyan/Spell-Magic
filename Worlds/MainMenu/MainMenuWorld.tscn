@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=39 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -12,6 +12,7 @@
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="11_0ki14"]
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="11_sslk6"]
 [ext_resource type="Shader" path="res://Worlds/MainMenu/env_fire.gdshader" id="11_u2pvt"]
+[ext_resource type="Material" uid="uid://b4a377hfvfth6" path="res://Worlds/SkyBox/world_boundary.material" id="13_c3u6r"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
 shader = ExtResource("2_okflh")
@@ -230,6 +231,10 @@ shader_parameter/biome_y = SubResource("NoiseTexture2D_udh5n")
 material = SubResource("ShaderMaterial_hra85")
 size = Vector2(256, 256)
 
+[sub_resource type="QuadMesh" id="QuadMesh_wpxrt"]
+material = ExtResource("13_c3u6r")
+size = Vector2(256, 256)
+
 [node name="MainMenuWorld" type="Node3D"]
 script = ExtResource("1_f55xg")
 
@@ -297,3 +302,7 @@ draw_pass_1 = SubResource("SphereMesh_3prl5")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 visible = false
 mesh = SubResource("PlaneMesh_oqkeh")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("QuadMesh_wpxrt")

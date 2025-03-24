@@ -22,5 +22,5 @@ void vertex() {
 	VERTEX.y = VERTEX.y * len;
 	VERTEX.z = VERTEX.z + sin((VERTEX.y + TIME) * period + float(INSTANCE_ID)) * radius;
 	VERTEX.x = VERTEX.x + cos((VERTEX.y + TIME) * period + float(INSTANCE_ID)) * radius;
-	
+
 }

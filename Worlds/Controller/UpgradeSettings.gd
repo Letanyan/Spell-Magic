@@ -388,7 +388,7 @@ func upgrade_description_spells_in_book() -> String: return "Active Spells"
 var level_running_speed := 1:
 	set(value):
 		level_running_speed = clampi(value, 1, level_max_running_speed)
-var level_max_running_speed := 1 if GlobalData.is_demo else 10
+var level_max_running_speed := 100 if GlobalData.is_trailer_mode else (1 if GlobalData.is_demo else 10)
 func max_running_speed(x: int = level_running_speed) -> float: return (x * 0.5) + 5.0
 func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
 func cost_running_speed() -> int: return level_running_speed * 500

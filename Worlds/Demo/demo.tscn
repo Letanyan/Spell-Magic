@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bkoelg1e85cqg"]
+[gd_scene load_steps=25 format=3 uid="uid://bkoelg1e85cqg"]
 
 [ext_resource type="Script" path="res://Worlds/Demo/demo.gd" id="1_f83i4"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_6wr6k"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="3_xlx08"]
 [ext_resource type="PackedScene" uid="uid://mu4ma6ia4v5j" path="res://Models/Misc/Totem/Totem.tscn" id="7_ohobv"]
 [ext_resource type="Material" uid="uid://b4a377hfvfth6" path="res://Worlds/SkyBox/world_boundary.material" id="8_6mjhk"]
+[ext_resource type="Shader" path="res://Worlds/SkyBox/world_boundary.gdshader" id="8_ul875"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
 shader = ExtResource("2_6wr6k")
@@ -82,31 +83,77 @@ fog_density = 0.0
 fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7mh1e"]
-size = Vector3(1, 8, 1)
+size = Vector3(256, 8, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kpdyt"]
-size = Vector3(8, 1, 1)
+size = Vector3(8, 256, 256)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ubtmr"]
+render_priority = 0
+shader = ExtResource("8_ul875")
+shader_parameter/shatter = true
+shader_parameter/fracture_scale = 1.5
+shader_parameter/roughness = 0.675
+shader_parameter/transparency = 0.675
+shader_parameter/normal_offset_multiplier = 0.375
+shader_parameter/glass_tint = 0.675
+shader_parameter/edge_thickness = null
+shader_parameter/impact_range = 1.25
+shader_parameter/compression_strength = -1.125
+shader_parameter/fade_amount = 1.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_djm8g"]
-material = ExtResource("8_6mjhk")
+material = SubResource("ShaderMaterial_ubtmr")
+size = Vector2(256, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_s6wgh"]
-size = Vector3(8, 1, 1)
+size = Vector3(8, 256, 256)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cmiyy"]
+render_priority = 0
+shader = ExtResource("8_ul875")
+shader_parameter/shatter = true
+shader_parameter/fracture_scale = 1.5
+shader_parameter/roughness = 0.675
+shader_parameter/transparency = 0.675
+shader_parameter/normal_offset_multiplier = 0.375
+shader_parameter/glass_tint = 0.675
+shader_parameter/edge_thickness = null
+shader_parameter/impact_range = 1.25
+shader_parameter/compression_strength = -1.125
+shader_parameter/fade_amount = 1.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_lwwal"]
-material = ExtResource("8_6mjhk")
+material = SubResource("ShaderMaterial_cmiyy")
+size = Vector2(256, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oin2f"]
-size = Vector3(1, 1, 8)
+size = Vector3(256, 256, 8)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m03fk"]
+render_priority = 0
+shader = ExtResource("8_ul875")
+shader_parameter/shatter = true
+shader_parameter/fracture_scale = 1.5
+shader_parameter/roughness = 0.675
+shader_parameter/transparency = 0.675
+shader_parameter/normal_offset_multiplier = 0.375
+shader_parameter/glass_tint = 0.675
+shader_parameter/edge_thickness = null
+shader_parameter/impact_range = 1.25
+shader_parameter/compression_strength = -1.125
+shader_parameter/fade_amount = 1.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_l656p"]
-material = ExtResource("8_6mjhk")
+material = SubResource("ShaderMaterial_m03fk")
+size = Vector2(256, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kg30w"]
-size = Vector3(1, 1, 8)
+size = Vector3(256, 256, 8)
 
 [sub_resource type="QuadMesh" id="QuadMesh_6igwn"]
 material = ExtResource("8_6mjhk")
+size = Vector2(256, 256)
 
 [node name="Demo" type="Node3D"]
 script = ExtResource("1_f83i4")
