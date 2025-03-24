@@ -319,6 +319,7 @@ locale/translations=PackedStringArray("res://Translations/translations.en.transl
 3d_physics/layer_9="electric"
 3d_physics/layer_10="world_object"
 3d_physics/layer_11="world_item"
+3d_physics/layer_12="world_boundary"
 
 [physics]
 

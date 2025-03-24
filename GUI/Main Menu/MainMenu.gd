@@ -38,7 +38,7 @@ func _on_new_game_pressed() -> void:
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = "Demo World"
 		settings.world_generation_version = -1
-		settings.sed = 17312391
+		settings.sed = GlobalData.demo_seed
 		var rng := RandomNumberGenerator.new()
 		rng.seed = settings.sed
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
@@ -61,6 +61,8 @@ func _on_continue_pressed() -> void:
 	UIAudioPlayer.click()
 	var world_settings := WorldSettings.new(get_viewport())
 	world_settings.read(GlobalData.game_settings.last_world)
+	if GlobalData.is_demo:
+		world_settings.sed = GlobalData.demo_seed
 	
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(world_settings), Quotes.random())
 	

@@ -20,6 +20,7 @@ var name_generator: NameGenerator
 @onready var sandbox: Button = $Sandbox
 
 @onready var respawn_options: VBoxContainer = $RespawnOptions
+@onready var game_options: VBoxContainer = $GameOptions
 
 @onready var health_slider: HSlider = $StartingUpgradesPanel/Health/Slider
 @onready var attack_slider: HSlider = $StartingUpgradesPanel/Attack/Slider
@@ -292,6 +293,7 @@ func _on_permadeath_toggled(button_pressed: bool) -> void:
 	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.PERMADEATH
 	respawn_options.visible = false
+	game_options.visible = true
 
 
 func _on_respawn_toggled(button_pressed: bool) -> void:
@@ -300,6 +302,7 @@ func _on_respawn_toggled(button_pressed: bool) -> void:
 	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.RESPAWN
 	respawn_options.visible = true
+	game_options.visible = true
 
 
 func _on_sandbox_toggled(button_pressed: bool) -> void:
@@ -308,6 +311,7 @@ func _on_sandbox_toggled(button_pressed: bool) -> void:
 	permadeath.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.SANDBOX
 	respawn_options.visible = false
+	game_options.visible = false
 
 
 func _on_upgrades_toggled(button_pressed: bool) -> void:
@@ -512,6 +516,7 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	respawn.position.x += pos_delta
 	sandbox.position.x += pos_delta
 	respawn_options.position.x += pos_delta
+	game_options.position.x += pos_delta
 	game_mode_description_panel.position.x += pos_delta
 	background.position.x += pos_delta
 	worlds_list.position.x += pos_delta
@@ -536,6 +541,7 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		respawn.visible = true
 		#sandbox.visible = true
 		respawn_options.visible = true
+		game_options.visible = true
 		starting_upgrades.visible = true
 		game_mode_description_panel.visible = false
 		#generation_version_label.visible = true
@@ -554,6 +560,7 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		respawn.visible = false
 		#sandbox.visible = false
 		respawn_options.visible = false
+		game_options.visible = false
 		starting_upgrades.visible = false
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false
@@ -571,6 +578,7 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		respawn.visible = false
 		#sandbox.visible = false
 		respawn_options.visible = false
+		game_options.visible = false
 		starting_upgrades.visible = false
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false
@@ -590,6 +598,7 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		respawn.visible = false
 		#sandbox.visible = false
 		respawn_options.visible = false
+		game_options.visible = false
 		starting_upgrades.visible = false
 		if starting_upgrades.button_pressed:
 			starting_upgrades.button_pressed = false

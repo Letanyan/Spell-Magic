@@ -244,7 +244,7 @@ class Ref extends RefCounted:
 		storage = value
 		
 enum Layer {
-	WORLD    = 1 << 0, 
+	WORLD    = 1 << 0,
 	PLAYER   = 1 << 1,
 	ENEMY    = 1 << 2,
 	FIRE     = 1 << 3,
@@ -255,6 +255,7 @@ enum Layer {
 	ELECTRIC = 1 << 8,
 	OBJECT   = 1 << 9,
 	ITEM     = 1 << 10,
+	BOUNDARY = 1 << 11,
 }
 
 static func particle_system_lifetime(p: GPUParticles3D) -> float:
@@ -268,6 +269,7 @@ var nav: GDNavigator = null
 var is_debug: bool = true
 var is_demo: bool = false
 var is_editor: bool = false
+var demo_seed: int = 17312391
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
 const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="

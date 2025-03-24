@@ -225,6 +225,22 @@ focus_previous = NodePath("../Respawn")
 toggle_mode = true
 text = "Sandbox"
 
+[node name="GameOptions" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 272.0
+offset_right = 688.0
+offset_bottom = 336.0
+alignment = 1
+
+[node name="SpellEditing" type="CheckBox" parent="GameOptions"]
+layout_mode = 2
+text = "Disallow Spell Editing"
+
+[node name="Shop" type="CheckBox" parent="GameOptions"]
+layout_mode = 2
+text = "Shop for Upgrades"
+
 [node name="RespawnOptions" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -232,16 +248,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -104.0
-offset_top = -60.0
-offset_right = 107.0
+offset_left = -112.0
+offset_top = 12.0
+offset_right = 112.0
 offset_bottom = 148.0
 focus_neighbor_bottom = NodePath("Upgrades")
 alignment = 1
-
-[node name="SpellEditing" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 2
-text = "Disallow Spell Editing"
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
 layout_mode = 2
@@ -274,10 +286,6 @@ text = "Respawn with Spells"
 [node name="Coins" type="CheckBox" parent="RespawnOptions"]
 layout_mode = 2
 text = "Respawn with Coins"
-
-[node name="Shop" type="CheckBox" parent="RespawnOptions"]
-layout_mode = 2
-text = "Shop for Upgrades"
 
 [node name="Create" type="Button" parent="."]
 layout_mode = 1
@@ -1004,12 +1012,12 @@ popup/item_4/id = 4
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
 [connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]
-[connection signal="toggled" from="RespawnOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
+[connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
+[connection signal="toggled" from="GameOptions/Shop" to="." method="_on_shop_toggled"]
 [connection signal="toggled" from="RespawnOptions/Upgrades" to="." method="_on_upgrades_toggled"]
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]
 [connection signal="toggled" from="RespawnOptions/Coins" to="." method="_on_coins_toggled"]
-[connection signal="toggled" from="RespawnOptions/Shop" to="." method="_on_shop_toggled"]
 [connection signal="pressed" from="Create" to="." method="_on_create_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="toggled" from="StartingUpgrades" to="." method="_on_starting_upgrades_toggled"]

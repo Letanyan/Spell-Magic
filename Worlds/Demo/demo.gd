@@ -9,6 +9,17 @@ extends Node3D
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 @onready var totem: Totem = $Totem
 
+@onready var world_boundary_y_minus: CollisionShape3D = $WorldBoundary/YMinus
+@onready var world_boundary_x_minus: CollisionShape3D = $WorldBoundary/XMinus
+@onready var world_boundary_x_plus: CollisionShape3D = $WorldBoundary/XPlus
+@onready var world_boundary_z_minus: CollisionShape3D = $WorldBoundary/ZMinus
+@onready var world_boundary_z_plus: CollisionShape3D = $WorldBoundary/ZPlus
+@onready var world_boundary_x_minus_mesh: MeshInstance3D = $WorldBoundary/XMinus/Mesh
+@onready var world_boundary_x_plus_mesh: MeshInstance3D = $WorldBoundary/XPlus/Mesh
+@onready var world_boundary_z_minus_mesh: MeshInstance3D = $WorldBoundary/ZMinus/Mesh
+@onready var world_boundary_z_plus_mesh: MeshInstance3D = $WorldBoundary/ZPlus/Mesh
+
+
 #var noise_image := preload("res://Worlds/Generator/Terrain/noise_texture.tres") as NoiseTexture2D
 var noise_image: Image
 
@@ -246,6 +257,35 @@ func run_on_ready() -> void:
 		show_tutorial_label()
 		
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
+	var boundary_radius := settings.world_radius
+	# Y Minus
+	(world_boundary_y_minus.shape as BoxShape3D).size.x = boundary_radius
+	(world_boundary_y_minus.shape as BoxShape3D).size.z = boundary_radius
+	world_boundary_y_minus.position.y = -100.0
+	# X Minus
+	(world_boundary_x_minus.shape as BoxShape3D).size.y = boundary_radius
+	(world_boundary_x_minus.shape as BoxShape3D).size.z = boundary_radius
+	world_boundary_x_minus.position.x = -boundary_radius * 0.5
+	(world_boundary_x_minus_mesh.mesh as QuadMesh).size.x = boundary_radius
+	(world_boundary_x_minus_mesh.mesh as QuadMesh).size.y = boundary_radius
+	# X Plus
+	(world_boundary_x_plus.shape as BoxShape3D).size.y = boundary_radius
+	(world_boundary_x_plus.shape as BoxShape3D).size.z = boundary_radius
+	world_boundary_x_plus.position.x = boundary_radius * 0.5
+	(world_boundary_x_plus_mesh.mesh as QuadMesh).size.x = boundary_radius
+	(world_boundary_x_plus_mesh.mesh as QuadMesh).size.y = boundary_radius
+	# Z Minus
+	(world_boundary_z_minus.shape as BoxShape3D).size.y = boundary_radius
+	(world_boundary_z_minus.shape as BoxShape3D).size.x = boundary_radius
+	world_boundary_z_minus.position.z = -boundary_radius * 0.5
+	(world_boundary_z_minus_mesh.mesh as QuadMesh).size.x = boundary_radius
+	(world_boundary_z_minus_mesh.mesh as QuadMesh).size.y = boundary_radius
+	# Z Plus
+	(world_boundary_z_plus.shape as BoxShape3D).size.y = boundary_radius
+	(world_boundary_z_plus.shape as BoxShape3D).size.x = boundary_radius
+	world_boundary_z_plus.position.z = boundary_radius * 0.5
+	(world_boundary_z_plus_mesh.mesh as QuadMesh).size.x = boundary_radius
+	(world_boundary_z_plus_mesh.mesh as QuadMesh).size.y = boundary_radius
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
