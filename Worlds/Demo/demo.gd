@@ -259,10 +259,10 @@ func run_on_ready() -> void:
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	
 	world_boundary_y_minus.position.y = -100.0
-	world_boundary_x_minus.position.x = -settings.world_radius * 0.1
-	world_boundary_x_plus.position.x = settings.world_radius * 0.1
-	world_boundary_z_minus.position.z = -settings.world_radius * 0.1
-	world_boundary_z_plus.position.z = settings.world_radius * 0.1
+	world_boundary_x_minus.position.x = -settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_x_plus.position.x = settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_z_minus.position.z = -settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_z_plus.position.z = settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
 	update_world_boundary()
 	
 	await RenderingServer.frame_post_draw
