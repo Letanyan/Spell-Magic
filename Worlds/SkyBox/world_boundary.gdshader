@@ -129,7 +129,7 @@ void fragment() {
 		vec3 compressed_pos = mix(world_vertex, nearestImpact, 1.0 - scale_factor);
 
 		// Convert to Voronoi space by applying the global voronoi_scale
-		vec3 scaled_world_pos = compressed_pos * fracture_scale;
+		vec3 scaled_world_pos = compressed_pos * fracture_scale + vec3(0.0, - TIME * 0.07, TIME * 0.1);
 
 		// Compute Voronoi color and retrieve the cell's feature point
 		bool should_discard = true;

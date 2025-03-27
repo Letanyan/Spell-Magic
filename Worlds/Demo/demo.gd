@@ -666,11 +666,14 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 	pop.setup_spawning_state(not display_only)
 	population[coord] = pop
 	
-	if coord.x == 0 and coord.y == 0:
+	if not GlobalData.is_demo and coord.x == 0 and coord.y == 0:
 		var rng := RandomNumberGenerator.new()
 		rng.seed = settings.sed
 		var pos := pop.get_flat_ground(Vector2.ZERO, 1.5, 32.0, rng)
-		totem.position = pos
+		if is_nan(pos.y):
+			totem.position = player.position
+		else:
+			totem.position = pos
 		totem.open_book(GDNavigator.popcnt(player.world_settings.player_keys) >= player.world_settings.max_keys())
 		var count := Rand.roll(10, 2, 0, rng, Rand.Accum.AVG)
 		var path := Pathway.new().circle(16.0, 0, 1)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=36 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -9,9 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar_no_fog.gdshader" id="8_al82f"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
+[ext_resource type="Material" uid="uid://dalvvgbm7gren" path="res://Worlds/MainMenu/MainMenuWorldTitle.material" id="10_q4h44"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="11_0ki14"]
 [ext_resource type="Shader" path="res://Worlds/Generator/Terrain/biome_p.gdshader" id="11_sslk6"]
-[ext_resource type="Shader" path="res://Worlds/MainMenu/env_fire.gdshader" id="11_u2pvt"]
 [ext_resource type="Material" uid="uid://b4a377hfvfth6" path="res://Worlds/SkyBox/world_boundary.material" id="13_c3u6r"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xs1mr"]
@@ -111,41 +111,8 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_5mvey")
 size = Vector2(5400, 1200)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_o5clw"]
-noise_type = 2
-seed = 3
-frequency = 0.0172
-fractal_type = 2
-fractal_octaves = 2
-fractal_lacunarity = 5.0
-fractal_gain = 1.0
-cellular_distance_function = 2
-cellular_jitter = 100.0
-cellular_return_type = 2
-domain_warp_type = 2
-domain_warp_amplitude = 1.0
-domain_warp_frequency = 0.5
-domain_warp_fractal_type = 2
-domain_warp_fractal_octaves = 2
-domain_warp_fractal_lacunarity = 10.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3ov41"]
-width = 128
-height = 128
-seamless = true
-noise = SubResource("FastNoiseLite_o5clw")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_agk7x"]
-render_priority = 0
-shader = ExtResource("11_u2pvt")
-shader_parameter/bg_color = Color(1, 1, 1, 1)
-shader_parameter/fg_color = Color(0, 0.74902, 0, 1)
-shader_parameter/movement_speed = Vector2(0, 0.05)
-shader_parameter/scale_speed = 0.5
-shader_parameter/noise_tex = SubResource("NoiseTexture2D_3ov41")
-
 [sub_resource type="TextMesh" id="TextMesh_diikd"]
-material = SubResource("ShaderMaterial_agk7x")
+material = ExtResource("10_q4h44")
 text = "Spell Magic"
 font = ExtResource("9_wxs5t")
 font_size = 127
@@ -204,8 +171,8 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_jmmfe")
 radius = 20.0
 height = 40.0
-radial_segments = 6
-rings = 4
+radial_segments = 4
+rings = 1
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oelc8"]
 frequency = 0.0001

@@ -104,7 +104,8 @@ func get_flat_ground(center: Vector2, offset_y: float, r: float, rang: RandomNum
 		var angle := absf(Vector3.UP.angle_to(norm))
 		if angle < best:
 			best = angle
-			result = Vector3(pos.x, wh + offset_y, pos.z)
+			if not is_nan(wh):
+				result = Vector3(pos.x, wh + offset_y, pos.z)
 	return result
 	
 func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable, seedling: int) -> int:

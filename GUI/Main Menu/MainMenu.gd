@@ -63,6 +63,7 @@ func _on_continue_pressed() -> void:
 	world_settings.read(GlobalData.game_settings.last_world)
 	if GlobalData.is_demo:
 		world_settings.sed = GlobalData.demo_seed
+		world_settings.game_mode_settings = GameModeSettings.permadeath()
 	
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(world_settings), Quotes.random())
 	
