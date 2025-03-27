@@ -44,6 +44,20 @@ func upgrade_slots_refreshed(settings: UpgradeSettings) -> void:
 	progress_3.value = settings.upgrade_prog_cur[2]
 	progress_4.value = settings.upgrade_prog_cur[3]
 	
+	var upgrades_available := 1 if progress_1.visible else 0
+	upgrades_available += 1 if progress_2.visible else 0
+	upgrades_available += 1 if progress_3.visible else 0
+	upgrades_available += 1 if progress_4.visible else 0
+	
+	if upgrades_available >= 3:
+		visible = true
+		size.y = 88
+	elif upgrades_available >= 1:
+		visible = true
+		size.y = 48
+	else:
+		visible = false
+	
 func upgrade_slot_progress_update(settings: UpgradeSettings, message: String) -> void:
 	progress_1.value = settings.upgrade_prog_cur[0]
 	progress_2.value = settings.upgrade_prog_cur[1]

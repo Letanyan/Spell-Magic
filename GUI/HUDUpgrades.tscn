@@ -45,12 +45,14 @@ layout_mode = 2
 show_percentage = false
 
 [node name="Label" type="RichTextLabel" parent="Grid/Progress2"]
+layout_mode = 0
 offset_right = 120.0
 offset_bottom = 16.0
 bbcode_enabled = true
 text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]Level 5[/font_size][/center]"
 
 [node name="Condition" type="RichTextLabel" parent="Grid/Progress2"]
+layout_mode = 0
 offset_top = 16.0
 offset_right = 120.0
 offset_bottom = 32.0
@@ -63,12 +65,14 @@ layout_mode = 2
 show_percentage = false
 
 [node name="Label" type="RichTextLabel" parent="Grid/Progress3"]
+layout_mode = 0
 offset_right = 120.0
 offset_bottom = 16.0
 bbcode_enabled = true
 text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]Level 5[/font_size][/center]"
 
 [node name="Condition" type="RichTextLabel" parent="Grid/Progress3"]
+layout_mode = 0
 offset_top = 16.0
 offset_right = 120.0
 offset_bottom = 32.0
@@ -81,12 +85,14 @@ layout_mode = 2
 show_percentage = false
 
 [node name="Label" type="RichTextLabel" parent="Grid/Progress4"]
+layout_mode = 0
 offset_right = 120.0
 offset_bottom = 16.0
 bbcode_enabled = true
 text = "[center][font_size=12][img=l,12x12, color=#00AA00]res://GUI/Images/health.svg[/img]Level 5[/font_size][/center]"
 
 [node name="Condition" type="RichTextLabel" parent="Grid/Progress4"]
+layout_mode = 0
 offset_top = 16.0
 offset_right = 120.0
 offset_bottom = 32.0
