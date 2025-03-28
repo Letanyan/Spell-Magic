@@ -9,11 +9,11 @@
 [ext_resource type="StyleBox" uid="uid://c2buercnoeubd" path="res://GUI/ThemeUI/PanelStyle.tres" id="4_g3pbk"]
 [ext_resource type="Texture2D" uid="uid://wc8fty1p60op" path="res://GUI/Images/fire.svg" id="4_qngfd"]
 [ext_resource type="Texture2D" uid="uid://b6r4tum5armmg" path="res://GUI/Images/ice.svg" id="5_i3p67"]
-[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="6_gdtbx"]
 [ext_resource type="Texture2D" uid="uid://dkw6yuen6yfge" path="res://GUI/Images/water.svg" id="6_yr21e"]
 [ext_resource type="StyleBox" uid="uid://ci70pm0jx6gvs" path="res://GUI/ThemeUI/RichTextHolder.tres" id="8_qt3l3"]
 [ext_resource type="PackedScene" uid="uid://drv66hotx4pw4" path="res://GUI/HUDUpgrades.tscn" id="10_alyrs"]
 [ext_resource type="Script" path="res://GUI/SelectionWheel.gd" id="10_rpd6m"]
+[ext_resource type="Material" uid="uid://c4b35g68qduf2" path="res://GUI/ThemeUI/MosaicShaderMat.material" id="13_2pfiv"]
 [ext_resource type="Texture2D" uid="uid://cgfktoa06l5gn" path="res://GUI/Images/triangle.png" id="14_8m6i1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ny5ey"]
@@ -339,7 +339,7 @@ bbcode_enabled = true
 text = "[right][font_size=24][color=#ffb500]0 [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]"
 
 [node name="MessagePanel" type="Panel" parent="."]
-material = ExtResource("6_gdtbx")
+material = ExtResource("13_2pfiv")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25

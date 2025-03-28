@@ -1,30 +1,8 @@
-[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=6 format=3 uid="uid://biokc78elvw35"]
+[gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://biokc78elvw35"]
 
 [ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_lkcfu"]
 [ext_resource type="Texture2D" uid="uid://bo4x5b1s3342" path="res://GUI/ThemeUI/NeoColorGradient.tres" id="1_luina"]
-
-[sub_resource type="Gradient" id="Gradient_2suic"]
-colors = PackedColorArray(0.101961, 0.101961, 0.101961, 1, 0.301961, 0.301961, 0.301961, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_cv40e"]
-noise_type = 2
-frequency = 0.001
-fractal_type = 2
-fractal_octaves = 6
-fractal_lacunarity = 3.0
-cellular_distance_function = 1
-domain_warp_enabled = true
-domain_warp_type = 2
-domain_warp_frequency = 0.01
-domain_warp_fractal_type = 2
-domain_warp_fractal_octaves = 3
-domain_warp_fractal_lacunarity = 8.0
-domain_warp_fractal_gain = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6gka5"]
-width = 1024
-color_ramp = SubResource("Gradient_2suic")
-noise = SubResource("FastNoiseLite_cv40e")
+[ext_resource type="Texture2D" uid="uid://b1fk674ddyky5" path="res://GUI/ThemeUI/NeoBackgroundWrap.tres" id="2_053y8"]
 
 [resource]
 resource_local_to_scene = false
@@ -41,7 +19,7 @@ corner_radius_top_left = 0.0
 corner_radius_bottom_left = 0.0
 corner_radius_bottom_right = 0.0
 corner_radius_detail = 4.0
-fill_texture = SubResource("NoiseTexture2D_6gka5")
+fill_texture = ExtResource("2_053y8")
 fill_texture_flip_xy = false
 fill_texture_flip_vertical = false
 fill_texture_flip_horizonal = false

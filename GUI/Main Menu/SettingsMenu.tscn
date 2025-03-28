@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dnyvjydavvxjx"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/SettingsMenu.gd" id="1_6yygw"]
-[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="2_fmqnj"]
+[ext_resource type="Material" uid="uid://c4b35g68qduf2" path="res://GUI/ThemeUI/MosaicShaderMat.material" id="2_hh7k4"]
 [ext_resource type="PackedScene" uid="uid://w4lonc2wt7at" path="res://GUI/Pause Menu/Settings.tscn" id="2_vkxxe"]
 [ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="3_bfqif"]
 
@@ -15,7 +15,7 @@ grow_vertical = 2
 script = ExtResource("1_6yygw")
 
 [node name="Background" type="Panel" parent="."]
-material = ExtResource("2_fmqnj")
+material = ExtResource("2_hh7k4")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

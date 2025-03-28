@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://coiibq4rb4gvs"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/MainMenu.gd" id="1_76i3t"]
-[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="2_dbm67"]
+[ext_resource type="Material" uid="uid://c4b35g68qduf2" path="res://GUI/ThemeUI/MosaicShaderMat.material" id="2_ok7e8"]
 [ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="3_a2d7w"]
 [ext_resource type="Texture2D" uid="uid://c53ujeb3mdxvj" path="res://GUI/Images/discord.svg" id="4_4htpp"]
 [ext_resource type="Texture2D" uid="uid://ci81c4f4gat5d" path="res://GUI/Images/steam.svg" id="5_045ao"]
@@ -16,7 +16,7 @@ grow_vertical = 2
 script = ExtResource("1_76i3t")
 
 [node name="Background" type="Panel" parent="."]
-material = ExtResource("2_dbm67")
+material = ExtResource("2_ok7e8")
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -116,7 +116,7 @@ focus_previous = NodePath("../Settings")
 text = "Quit"
 
 [node name="Links" type="Panel" parent="."]
-material = ExtResource("2_dbm67")
+material = ExtResource("2_ok7e8")
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0

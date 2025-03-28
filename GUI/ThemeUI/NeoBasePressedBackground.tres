@@ -1,7 +1,7 @@
 [gd_resource type="StyleBox" script_class="StyleBoxGradientFill" load_steps=4 format=3 uid="uid://bj87nmhd38825"]
 
+[ext_resource type="Texture2D" uid="uid://b1fk674ddyky5" path="res://GUI/ThemeUI/NeoBackgroundWrap.tres" id="1_cp3br"]
 [ext_resource type="Script" path="res://GUI/ThemeUI/StyleBoxCustom/StyleBoxGradientFill.gd" id="1_f4c8b"]
-[ext_resource type="Texture2D" uid="uid://cfoldxxnlvf6g" path="res://GUI/ThemeUI/NeoBackground.tres" id="1_wc6ca"]
 [ext_resource type="Texture2D" uid="uid://utk065nspovn" path="res://GUI/ThemeUI/NeoColorHighlightGradient.tres" id="2_cviu6"]
 
 [resource]
@@ -23,7 +23,7 @@ fill_texture = ExtResource("2_cviu6")
 fill_texture_flip_xy = false
 fill_texture_flip_vertical = false
 fill_texture_flip_horizonal = false
-border_texture = ExtResource("1_wc6ca")
+border_texture = ExtResource("1_cp3br")
 border_width = 0.0
 border_texture_flip_xy = false
 border_texture_flip_vertical = false

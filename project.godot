@@ -31,8 +31,8 @@ config/use_custom_user_dir.template_release=true
 UIAudioPlayer="*res://GUI/UIAudioPlayerScene.tscn"
 SignalBus="*res://General/SignalBus.gd"
 AudioManager="*res://Worlds/Generator/audio_manager.gd"
-Steamworks="*res://General/global_steam.gd"
 GlobalData="*res://General/globals.gd"
+Steamworks="*res://General/global_steam.gd"
 SceneHandler="*res://GUI/Main Menu/SceneHandler.gd"
 SpellBuffer="*res://Projectiles/spell_buffer.gd"
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://GUI/Popup Menu/popup_menu.gd" id="1_wvl5y"]
 [ext_resource type="StyleBox" uid="uid://22jnl8crj7cq" path="res://GUI/Popup Menu/empty_black_bg.tres" id="2_eqk5v"]
-[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="3_7nmlw"]
+[ext_resource type="Material" uid="uid://c4b35g68qduf2" path="res://GUI/ThemeUI/MosaicShaderMat.material" id="3_r8jc1"]
 [ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="4_5w7ot"]
 
 [node name="PopupDialog" type="Control"]
@@ -24,7 +24,7 @@ grow_vertical = 2
 theme_override_styles/panel = ExtResource("2_eqk5v")
 
 [node name="Panel" type="Panel" parent="confirmation"]
-material = ExtResource("3_7nmlw")
+material = ExtResource("3_r8jc1")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5

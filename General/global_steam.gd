@@ -50,7 +50,7 @@ func _on_steam_stats_ready(game: int, result: int, user: int) -> void:
 		get_achievement(key)
 	
 func get_achievement(key: Achievements) -> void:
-	if not is_enabled:
+	if not is_enabled or GlobalData.is_demo:
 		return
 	var this_achievement: Dictionary = Steam.getAchievement(Achievements.keys()[key] as String)
 	if this_achievement['ret']:
@@ -60,7 +60,7 @@ func get_achievement(key: Achievements) -> void:
 			achievements[key] = false
 			
 func set_achievement(key: Achievements) -> void:
-	if not is_enabled:
+	if not is_enabled or GlobalData.is_demo:
 		return
 	if not achievements[key]:
 		achievements[key] = true
@@ -69,7 +69,7 @@ func set_achievement(key: Achievements) -> void:
 		Steam.storeStats()
 	
 func unset_achievement(key: Achievements) -> void:
-	if not is_enabled:
+	if not is_enabled or GlobalData.is_demo:
 		return
 	if achievements[key]:
 		achievements[key] = false
