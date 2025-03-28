@@ -120,6 +120,9 @@ func get_joypad_type(fallback: Devices = Devices.JOYCON) -> Devices:
 	else:
 		return fallback
 		
+func get_has_tab_menu_key() -> bool:
+	return last_input_type == InputType.KEYBOARD or get_joypad_type() == Devices.PS4 or get_joypad_type() == Devices.PS5 
+		
 func get_image_set() -> Dictionary:
 	if last_input_type == InputType.KEYBOARD:
 		return ControllerImageMap.pc_images

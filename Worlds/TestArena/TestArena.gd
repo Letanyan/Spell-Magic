@@ -510,7 +510,7 @@ func _input(event: InputEvent) -> void:
 		menu.is_quick_menu = false
 		toggle_menu()
 	elif event.is_action_pressed("esc_menu"):
-		menu.is_quick_menu = true
+		menu.is_quick_menu = GlobalData.controller.get_has_tab_menu_key()
 		toggle_menu()
 		
 	Input.stop_joy_vibration(event.device)

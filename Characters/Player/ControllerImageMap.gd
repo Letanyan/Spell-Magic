@@ -30,6 +30,7 @@ const pc_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const luna_images = {
@@ -63,6 +64,7 @@ const luna_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const ouya_images = {
@@ -78,8 +80,8 @@ const ouya_images = {
 	"DOWN": "[img=%d]res://addons/controller_icons/assets/ouya/dpad_down.png[/img]",
 	"LEFT": "[img=%d]res://addons/controller_icons/assets/ouya/dpad_left.png[/img]",
 	"RIGHT": "[img=%d]res://addons/controller_icons/assets/ouya/dpad_right.png[/img]",
-	"L3": "[img=%d]res://addons/controller_icons/assets/xboxone/l_stick_click.png[/img]",
-	"R3": "[img=%d]res://addons/controller_icons/assets/xboxone/r_stick_click.png[/img]",
+	"L3": "[img=%d]res://addons/controller_icons/assets/key/z.png[/img]",
+	"R3": "[img=%d]res://addons/controller_icons/assets/key/alt.png[/img]",
 	"move_forward": "[img=%d]res://addons/controller_icons/assets/ouya/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
 	"move_left": "[img=%d]res://addons/controller_icons/assets/ouya/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
 	"move_back": "[img=%d]res://addons/controller_icons/assets/ouya/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
@@ -96,6 +98,7 @@ const ouya_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const ps3_images = {
@@ -129,6 +132,7 @@ const ps3_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const ps4_images = {
@@ -162,6 +166,7 @@ const ps4_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/ps4/touch_pad.png[/img]",
 }
 
 const ps5_images = {
@@ -195,6 +200,7 @@ const ps5_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/ps5/touch_pad.png[/img]",
 }
 
 const stadia_images = {
@@ -210,8 +216,8 @@ const stadia_images = {
 	"DOWN": "[img=%d]res://addons/controller_icons/assets/stadia/dpad_down.png[/img]",
 	"LEFT": "[img=%d]res://addons/controller_icons/assets/stadia/dpad_left.png[/img]",
 	"RIGHT": "[img=%d]res://addons/controller_icons/assets/stadia/dpad_right.png[/img]",
-	"L3": "[img=%d]res://addons/controller_icons/assets/xboxone/l_stick_click.png[/img]",
-	"R3": "[img=%d]res://addons/controller_icons/assets/xboxone/r_stick_click.png[/img]",
+	"L3": "[img=%d]res://addons/controller_icons/assets/key/z.png[/img]",
+	"R3": "[img=%d]res://addons/controller_icons/assets/key/alt.png[/img]",
 	"move_forward": "[img=%d]res://addons/controller_icons/assets/stadia/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
 	"move_left": "[img=%d]res://addons/controller_icons/assets/stadia/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
 	"move_back": "[img=%d]res://addons/controller_icons/assets/stadia/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
@@ -228,6 +234,7 @@ const stadia_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const steamdeck_images = {
@@ -261,6 +268,7 @@ const steamdeck_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const switch_images = {
@@ -276,8 +284,8 @@ const switch_images = {
 	"DOWN": "[img=%d]res://addons/controller_icons/assets/switch/dpad_down.png[/img]",
 	"LEFT": "[img=%d]res://addons/controller_icons/assets/switch/dpad_left.png[/img]",
 	"RIGHT": "[img=%d]res://addons/controller_icons/assets/switch/dpad_right.png[/img]",
-	"L3": "[img=%d]res://addons/controller_icons/assets/xboxone/l_stick_click.png[/img]",
-	"R3": "[img=%d]res://addons/controller_icons/assets/xboxone/r_stick_click.png[/img]",
+	"L3": "[img=%d]res://addons/controller_icons/assets/key/z.png[/img]",
+	"R3": "[img=%d]res://addons/controller_icons/assets/key/alt.png[/img]",
 	"move_forward": "[img=%d]res://addons/controller_icons/assets/switch/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_up.png[/img]",
 	"move_left": "[img=%d]res://addons/controller_icons/assets/switch/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_left.png[/img]",
 	"move_back": "[img=%d]res://addons/controller_icons/assets/switch/l_stick.png[/img][img=%d]res://addons/controller_icons/assets/key/arrow_down.png[/img]",
@@ -294,6 +302,7 @@ const switch_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const xbox360_images = {
@@ -327,6 +336,7 @@ const xbox360_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const xboxone_images = {
@@ -360,6 +370,7 @@ const xboxone_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }
 
 const xboxseries_images = {
@@ -393,4 +404,5 @@ const xboxseries_images = {
 	"7": "[img=%d]res://addons/controller_icons/assets/key/7.png[/img]",
 	"8": "[img=%d]res://addons/controller_icons/assets/key/8.png[/img]",
 	"9": "[img=%d]res://addons/controller_icons/assets/key/9.png[/img]",
+	"TAB": "[img=%d]res://addons/controller_icons/assets/key/tab.png[/img]",
 }

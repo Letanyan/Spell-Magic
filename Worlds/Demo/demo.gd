@@ -449,7 +449,7 @@ func _input(event: InputEvent) -> void:
 		menu.is_quick_menu = false
 		toggle_menu()
 	elif event.is_action_pressed("esc_menu"):
-		menu.is_quick_menu = true
+		menu.is_quick_menu = GlobalData.controller.get_has_tab_menu_key()
 		toggle_menu()
 		
 	if settings.is_paused:
@@ -570,14 +570,17 @@ func show_tutorial_label() -> void:
 			message += GlobalData.controller.key_images(PackedStringArray(["move_back"]))
 			message += GlobalData.controller.key_images(PackedStringArray(["move_right"])) + "[b]Move[/b] "
 			message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
-			message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
+			message += GlobalData.controller.key_images(PackedStringArray(["TAB"])) + "[b]Menu[/b]"
 			message += "[/center]"
 			hud.show_message(GameSettings.Tutorials.CONTROLS, message, INF)
 		Controller.InputType.CONTROLLER:
 			var message := "[center]"
 			message += GlobalData.controller.key_images(PackedStringArray(["dpad"])) + "[b]Move[/b] "
 			message += GlobalData.controller.key_images(PackedStringArray(["RT"])) + "[b]Attack[/b] "
-			message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
+			if GlobalData.controller.get_has_tab_menu_key():
+				message += GlobalData.controller.key_images(PackedStringArray(["TAB"])) + "[b]Menu[/b]"
+			else:
+				message += GlobalData.controller.key_images(PackedStringArray(["ESC"])) + "[b]Menu[/b]"
 			message += "[/center]"
 			hud.show_message(GameSettings.Tutorials.CONTROLS, message, INF)
 			
