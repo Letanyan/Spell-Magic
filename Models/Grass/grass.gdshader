@@ -47,7 +47,7 @@ void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	instance_custom = INSTANCE_CUSTOM;
 
-	vec4 world_coord = INV_VIEW_MATRIX * vec4(VERTEX, 0);
+	//vec4 world_coord = INV_VIEW_MATRIX * vec4(VERTEX, 0);
 
 	float wind_speed = texture(wind_speed_change, vec2(0.5, sin(TIME) * wind_speed_multiplier)).r;
 	vec2 wind_dir = vec2(

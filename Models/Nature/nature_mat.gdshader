@@ -31,16 +31,17 @@ void vertex() {
 	ROUGHNESS=roughness;
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 
-	if (UV.y > 0.125 && UV.y < 0.125 + 0.0625) {
+	if (UV.y > 0.125 && UV.y < 0.125 + 0.0625) {		
 		float wind_speed = texture(wind_speed_change, vec2(0.5, sin(TIME) * wind_speed_multiplier)).r;
 		vec2 wind_dir = vec2(
 			texture(wind_noise, vec2(sin(TIME) * wind_speed * 0.1, 0.5)).r * 2.0 - 1.0,
 			texture(wind_noise, vec2(0.5, sin(TIME) * wind_speed * 0.1)).r * 2.0 - 1.0
 		);
-		float displacement_affect = pow(1.0 - VERTEX.y, 3.0);
+		vec2 normalized_wind_direction = wind_dir; // normalize(wind_dir);
+		//float displacement_affect = pow(1.0 - VERTEX.y, 3.0);
 
-		VERTEX.x += wind_dir.x * 0.01 * displacement_affect * wind_speed;
-		VERTEX.z += wind_dir.y * 0.01 * displacement_affect * wind_speed;
+		VERTEX.x += normalized_wind_direction.x * 0.1 * wind_speed;
+		VERTEX.z += normalized_wind_direction.y * 0.1 * wind_speed;
 	}
 }
 

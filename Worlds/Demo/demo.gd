@@ -689,6 +689,8 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 				1: pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
 				2: pop.spawn_foliage(World.Foliage.ROCK_EGG, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
 		pop.current_biome_during_generation = saved_pop_biome
+	elif GlobalData.is_demo:
+		totem.visible = false
 				
 func update_population_spawning() -> void:
 	var items_to_add := {}

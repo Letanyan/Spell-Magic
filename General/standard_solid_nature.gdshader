@@ -39,14 +39,14 @@ void vertex() {
 		texture(wind_noise, vec2(sin(TIME) * wind_speed * 0.1, 0.5)).r * 2.0 - 1.0,
 		texture(wind_noise, vec2(0.5, sin(TIME) * wind_speed * 0.1)).r * 2.0 - 1.0
 	);
-	float displacement_effect = pow(1.0 - VERTEX.y, 3.0);
-	if (invert_wind_effect) {
-		displacement_effect = 1.0 - VERTEX.y;
-	}
+	//float displacement_effect = pow(1.0 - VERTEX.y, 3.0);
+	//if (invert_wind_effect) {
+		//displacement_effect = 1.0 - VERTEX.y;
+	//}
 
-	VERTEX.x += wind_dir.x * 1.0 * wind_speed * displacement_effect * wind_speed_strength.x;
-	VERTEX.y += wind_dir.y * 1.0 * wind_speed * displacement_effect * wind_speed_strength.y;
-	VERTEX.z += wind_dir.y * 1.0 * wind_speed * displacement_effect * wind_speed_strength.z;
+	VERTEX.x += wind_dir.x * 1.0 * wind_speed * wind_speed_strength.x;
+	VERTEX.y += wind_dir.y * 1.0 * wind_speed * wind_speed_strength.y;
+	VERTEX.z += wind_dir.y * 1.0 * wind_speed * wind_speed_strength.z;
 }
 
 void fragment() {
