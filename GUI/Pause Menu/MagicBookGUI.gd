@@ -19,7 +19,7 @@ var book: MagicBook:
 		page.book = value
 		duplicate_book()
 		reload_list()
-		create_button.disabled = book.settings.game_mode_settings.has_flag(GameModeSettings.DISALLOW_SPELL_EDITING)
+		create_button.disabled = book.settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING)
 var is_universal: bool = false
 		
 

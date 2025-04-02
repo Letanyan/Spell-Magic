@@ -274,7 +274,7 @@ func _on_create_pressed() -> void:
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
-		settings.game_mode_settings.flags = game_flags & GameModeSettings.DISALLOW_SPELL_EDITING
+		settings.game_mode_settings.flags = game_flags & GameModeSettings.SPELL_DECK_BUILDING
 		settings.difficulty_level = 2
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
@@ -347,9 +347,9 @@ func _on_coins_toggled(toggled_on: bool) -> void:
 func _on_spell_editing_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)
 	if toggled_on:
-		game_flags |= GameModeSettings.DISALLOW_SPELL_EDITING
+		game_flags |= GameModeSettings.SPELL_DECK_BUILDING
 	else:
-		game_flags &= ~GameModeSettings.DISALLOW_SPELL_EDITING
+		game_flags &= ~GameModeSettings.SPELL_DECK_BUILDING
 		
 func _on_shop_toggled(toggled_on: bool) -> void:
 	UIAudioPlayer.check(toggled_on)

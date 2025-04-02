@@ -199,7 +199,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	for n: String in spell.expression_strings:
 		expressions.text += "%s = %s\n" % [n, spell.expression_strings[n]]
 		
-	var is_editable := index >= 0 and not book.settings.game_mode_settings.has_flag(GameModeSettings.DISALLOW_SPELL_EDITING)
+	var is_editable := index >= 0 and not book.settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING)
 	preview_image.disabled = not is_editable
 	name_edit.editable = is_editable
 	x_edit.editable = is_editable

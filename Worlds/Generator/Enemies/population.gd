@@ -470,7 +470,7 @@ static func curve_for_difficulty(difficulty: int, x: float) -> float:
 	return 1.0 - pow(1.0 - x, 0.5)
 
 static func level_relative_to_position_within_radius(rang: RandomNumberGenerator, x: float, z: float, world_radius: float, difficulty_curve: int, world_level: int = 1) -> float:
-	var p := clampf(Vector2(x, z).length() / world_radius, 0.0, 1.0)
+	var p := clampf(Vector2(x, z).length() / world_radius + (0.3 if GlobalData.is_demo else 0.0), 0.0, 1.0)
 	var base := Population.curve_for_difficulty(difficulty_curve, p) * 90
 	var offset_max_range := 10.0 * sin(p * PI * 10.0)
 	var random_offset := 0.0

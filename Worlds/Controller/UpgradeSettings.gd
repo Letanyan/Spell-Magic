@@ -183,10 +183,10 @@ func purchase_D() -> PurchaseError:
 	return PurchaseError.NONE
 func upgrade_description_D() -> String: return "D"
 
-var level_P := 1:
+var level_P := 2 if GlobalData.is_demo else 1:
 	set(value):
 		level_P = clampi(value, 1, level_max_P)
-var level_max_P := 3 if GlobalData.is_demo else 10
+var level_max_P := 4 if GlobalData.is_demo else 10
 func max_P(x: int = level_P) -> int: return x * 10
 func upgrade_P() -> int: return max_P(level_P + 1) - max_P(level_P)
 func cost_P() -> int: return level_P * 200
@@ -230,10 +230,10 @@ func purchase_v() -> PurchaseError:
 	return PurchaseError.NONE
 func upgrade_description_v(size: int) -> String: return "[img=l,%dx%d, color=#77FF00]res://GUI/Images/velocity.svg[/img]" % [size, size]
 
-var level_mana := 1:
+var level_mana := 3 if GlobalData.is_demo else 1:
 	set(value):
 		level_mana = clampi(value, 1, level_max_mana)
-var level_max_mana := 2 if GlobalData.is_demo else 20
+var level_max_mana := 4 if GlobalData.is_demo else 20
 func max_mana(x: int = level_mana) -> float: return x * 50.0
 func upgrade_mana() -> float: return max_mana(level_mana + 1) - max_mana(level_mana)
 func cost_mana() -> int: return level_mana * 50
@@ -276,10 +276,10 @@ func purchase_health() -> PurchaseError:
 	return PurchaseError.NONE
 func upgrade_description_health(size: int) -> String: return "[img=l,%dx%d, color=#00AA00]res://GUI/Images/health.svg[/img]" % [size, size]
 
-var level_attack := 1:
+var level_attack := 4 if GlobalData.is_demo else 1:
 	set(value):
 		level_attack = clampi(value, 1, level_max_attack)
-var level_max_attack := 1 if GlobalData.is_demo else 10
+var level_max_attack := 4 if GlobalData.is_demo else 10
 func max_attack(x: int = level_attack) -> float: return x * 10.0
 func upgrade_attack() -> float: return max_attack(level_attack + 1) - max_attack(level_attack)
 func cost_attack() -> int: return level_attack * 180

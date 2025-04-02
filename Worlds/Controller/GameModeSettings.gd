@@ -5,7 +5,7 @@ enum GameMode { PERMADEATH, RESPAWN, SANDBOX }
 const RESPAWN_WITH_SPELLS_AND_WANDS: int = 1 << 0
 const RESPAWN_WITH_UPGRADES: int = 1 << 1
 const RESPAWN_WITH_ARTIFACTS: int = 1 << 2
-const DISALLOW_SPELL_EDITING: int = 1 << 3
+const SPELL_DECK_BUILDING: int = 1 << 3
 const RESPAWN_WITH_COINS: int = 1 << 4
 const SHOP_FOR_UPGRADES: int = 1 << 5
 
@@ -26,7 +26,7 @@ static func normal_mode() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.RESPAWN, RESPAWN_WITH_UPGRADES | RESPAWN_WITH_SPELLS_AND_WANDS)
 	
 static func hardcore_mode() -> GameModeSettings:
-	return GameModeSettings.new(GameMode.PERMADEATH, DISALLOW_SPELL_EDITING)
+	return GameModeSettings.new(GameMode.PERMADEATH, SPELL_DECK_BUILDING)
 	
 func has_flag(flag: int) -> bool:
 	return flags & flag != 0
@@ -46,7 +46,7 @@ func flags_description() -> PackedStringArray:
 		result.append("Respawn with Spells and Wands")
 	if flags & RESPAWN_WITH_UPGRADES != 0:
 		result.append("Respawn with Upgrades")
-	if flags & DISALLOW_SPELL_EDITING != 0:
+	if flags & SPELL_DECK_BUILDING != 0:
 		result.append("Disallow Spell Editing")
 	if flags & RESPAWN_WITH_COINS != 0:
 		result.append("Respawn with Coins")
