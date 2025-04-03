@@ -79,6 +79,8 @@ var world_settings: WorldSettings:
 	set(value):
 		world_settings = value
 		update_controls()
+		if magic_book.is_universal:
+			tab_container.set_tab_hidden(6, world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))
 		
 var is_magic_book_selected: bool = false
 
@@ -97,7 +99,6 @@ func _ready() -> void:
 	magic_book.book = GlobalData.user_magic_book
 	magic_book.is_universal = true
 	magic_book.page.is_universal = true
-	tab_container.set_tab_hidden(6, GlobalData.is_demo)
 	# TODO hide universal magic book when using spell deck
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
