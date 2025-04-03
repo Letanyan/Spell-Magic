@@ -98,6 +98,7 @@ func _ready() -> void:
 	magic_book.is_universal = true
 	magic_book.page.is_universal = true
 	tab_container.set_tab_hidden(6, GlobalData.is_demo)
+	# TODO hide universal magic book when using spell deck
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

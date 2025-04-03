@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b185ji0u0kuxo"]
+[gd_scene load_steps=14 format=3 uid="uid://b185ji0u0kuxo"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/Menu.gd" id="1_op10b"]
 [ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="1_ufdyg"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://lbdwf4vi4u7w" path="res://GUI/Pause Menu/Upgrades.tscn" id="5_85var"]
 [ext_resource type="PackedScene" uid="uid://rtvhjr7mndbx" path="res://GUI/Pause Menu/Notes.tscn" id="6_kj37x"]
 [ext_resource type="PackedScene" uid="uid://w4lonc2wt7at" path="res://GUI/Pause Menu/Settings.tscn" id="7_nxty0"]
+[ext_resource type="PackedScene" uid="uid://cy10iejisj656" path="res://GUI/Pause Menu/SpellDeckGUI.tscn" id="8_nuh7m"]
 [ext_resource type="PackedScene" uid="uid://dxqrs2u5fw8rk" path="res://GUI/Pause Menu/GameMenu.tscn" id="10_tpunu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0h7sk"]
@@ -53,6 +54,10 @@ visible = false
 layout_mode = 1
 anchors_preset = -1
 offset_top = 48.0
+
+[node name="SpellDeckGUI" parent="Background" instance=ExtResource("8_nuh7m")]
+visible = false
+layout_mode = 1
 
 [node name="Notes" parent="Background" instance=ExtResource("6_kj37x")]
 visible = false

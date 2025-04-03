@@ -12,6 +12,7 @@ enum Kind { ANY, WANDS, UPGRADES, ARTIFACTS, SPELLS, NOTES, SETTINGS }
 @onready var upgrades: UpgradesGUI = $Background/Upgrades
 @onready var notes: NotesUI = $Background/Notes
 @onready var settings: SettingsGUI = $Background/Settings
+@onready var spell_deck: SpellDeckGUI = $Background/SpellDeckGUI
 var current_index := Kind.WANDS
 
 @onready var spells_button: Button = $Background/Tabbar/HBox/Spells
@@ -37,6 +38,7 @@ signal tab_opened(index: int)
 
 func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_settings: WorldSettings, _player: Player) -> void:
 	magic_book.book = book
+	spell_deck.book = book
 	wand_case.book = book
 	wand_case.case = case
 	artifacts.artifacts = artifaces
@@ -72,6 +74,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
 	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: 
 		magic_book.add_spell(s, false)
+		spell_deck.add_spell(s)
 		var w := wand_case.case.wands[wand_case.case.selected_wand]
 		for i: String in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]:
 			var opt := w.keys[PackedStringArray([i])] as Wand.Option
@@ -89,6 +92,7 @@ func update_index(index: Kind) -> void:
 	var is_opening := current_index == index
 	current_index = index
 	magic_book.visible = false
+	spell_deck.visible = false
 	wand_case.visible = false
 	artifacts.visible = false
 	upgrades.visible = false
@@ -114,14 +118,23 @@ func update_index(index: Kind) -> void:
 		message_panel.visible = true
 	elif player_in_combat and current_index <= Kind.SPELLS:
 		match current_index:
-			Kind.SPELLS: spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nMagic Book Disabled"
+			Kind.SPELLS:
+				spells_button.grab_focus(); spells_button.set_pressed_no_signal(true);
+				if settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
+					message_label.text = "Currently in Combat\nSpell Deck Disabled"
+				else:
+					message_label.text = "Currently in Combat\nMagic Book Disabled"
 			Kind.WANDS: wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nWand Case Disabled"
 			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nArtifacts Disabled"
 			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Currently in Combat\nUpgrades Disabled"
 		message_panel.visible = true
 	else:
 		match current_index:
-			Kind.SPELLS: magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
+			Kind.SPELLS:
+				if settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
+					spell_deck.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); spell_deck.duplicate_book()
+				else:
+					magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
 			Kind.WANDS: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
 			Kind.ARTIFACTS: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
 			Kind.UPGRADES: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
@@ -244,6 +257,9 @@ func save_changes() -> void:
 			magic_book.book.save_absolute_path("res://magic_book.json")
 		else:
 			magic_book.book.save(world_settings.world_name)
+	if spell_deck.visible:
+		if not world_settings.is_test_arena:
+			spell_deck.book.save(world_settings.world_name)
 	if wand_case.visible:
 		wand_case.case.save(world_settings.world_name)
 	if artifacts.visible:
