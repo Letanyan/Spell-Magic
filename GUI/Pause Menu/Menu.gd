@@ -111,12 +111,11 @@ func update_index(index: Kind) -> void:
 	upgrades_button.set_pressed_no_signal(false)
 	notes_button.set_pressed_no_signal(false)
 	settings_button.set_pressed_no_signal(false)
-	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES))):
+	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) and not settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))):
 		match current_index:
 			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
-			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nUpgrades Disabled"
 		message_panel.visible = true
-	elif player_in_combat and current_index <= Kind.SPELLS:
+	elif player_in_combat and (current_index == Kind.SPELLS or current_index == Kind.ARTIFACTS or current_index == Kind.WANDS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES))):
 		match current_index:
 			Kind.SPELLS:
 				spells_button.grab_focus(); spells_button.set_pressed_no_signal(true);

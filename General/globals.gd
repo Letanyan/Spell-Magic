@@ -270,7 +270,7 @@ var is_debug: bool = true
 var is_demo: bool = false
 var is_editor: bool = false
 var is_trailer_mode: bool = false
-var demo_seed: int = 17312391
+var demo_seed: int = 17312398 # FIXME: world 17312393 look for magic book
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
 const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="

@@ -1105,8 +1105,13 @@ func preview_offset(idx: int) -> Vector2:
 		
 	return Vector2(0.5, 0.5)
 
-func create_thumbnail(is_small: bool, cache: Dictionary) -> Texture2D:
-	var size := "small" if is_small else "large"
+enum ThumbnailSize { SMALL, LARGE, XLARGE }
+func create_thumbnail(thumb_size: ThumbnailSize, cache: Dictionary) -> Texture2D:
+	var size := "small"
+	match thumb_size:
+		ThumbnailSize.SMALL: size = "small"
+		ThumbnailSize.LARGE: size = "large"
+		ThumbnailSize.XLARGE: size = "xlarge"
 	var result := MultiTexture.new()
 	for i in preview_image.size():
 		if not cache.has(preview_image[i]):

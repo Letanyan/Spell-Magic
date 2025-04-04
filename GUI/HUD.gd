@@ -471,7 +471,7 @@ func update_selection_wheel_spells() -> void:
 	for spell_text in selection_wheel.segments:
 		var spell := book.find_spell(spell_text)
 		if spell != null:
-			selection_wheel.image_segments[spell_text] = spell.create_thumbnail(false, image_preview_raws)
+			selection_wheel.image_segments[spell_text] = spell.create_thumbnail(Spell.ThumbnailSize.LARGE, image_preview_raws)
 
 func update_pick_up_world_item_artifact(a: Artifact, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)

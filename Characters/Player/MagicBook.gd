@@ -34,12 +34,16 @@ func read_absolute_path(file_path: String, create_default_spell: bool = true) ->
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if not file:
 		if create_default_spell:
-			add(settings.upgrade_settings.default_starter_spell())
+			var starters := settings.upgrade_settings.default_starter_spell()
+			for key: String in starters:
+				add(starters[key] as Spell)
 		return false
 	var data := file.get_var() as Array
 	if data == null:
 		if create_default_spell:
-			add(settings.upgrade_settings.default_starter_spell())
+			var starters := settings.upgrade_settings.default_starter_spell()
+			for key: String in starters:
+				add(starters[key] as Spell)
 		return false
 	var active_count := 0
 	spells = []
@@ -74,7 +78,7 @@ func add(spell: Spell) -> void:
 	for s in spells:
 		if s.is_active:
 			active_count += 1
-	spell.is_active = active_count < settings.upgrade_settings.max_spells_in_book()
+	spell.is_active = active_count < settings.upgrade_settings.max_spells_in_book() and can_use_spell(spell, true) == DisallowSpellReason.NONE
 	spells.append(spell)
 	spell_index[spell.name] = spell
 	
@@ -100,11 +104,11 @@ func use_spell(spell: Spell) -> void:
 		ck = ns.chain_cast_kind
 		ns = ns.chain
 	
-func can_use_spell(spell: Spell) -> DisallowSpellReason:
-	if not spell.is_active:
+func can_use_spell(spell: Spell, ignore_perpetual: bool = false) -> DisallowSpellReason:
+	if not spell.is_active and not ignore_perpetual:
 		return DisallowSpellReason.ACTIVE
 	
-	if cooldown.has(spell.name) and not ignore_cooldown:
+	if cooldown.has(spell.name) and not ignore_cooldown and not ignore_perpetual:
 		return DisallowSpellReason.COOLDOWN
 		
 	if spell.count > settings.upgrade_settings.max_N() + settings.upgrade_settings.buff_N:

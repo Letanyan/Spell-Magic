@@ -44,6 +44,7 @@ func _on_new_game_pressed() -> void:
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.permadeath()
+		settings.game_mode_settings.flags = 0 # TODO: remove after better spell drops
 		settings.upgrade_settings.reset_all_stats_to_default_values()
 		settings.upgrade_settings.has_spell_element = UpgradeSettings.HAS_VOID | (1 << randi_range(1, 6))
 		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):

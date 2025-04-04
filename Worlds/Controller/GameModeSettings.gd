@@ -20,7 +20,7 @@ static func respawn_with_upgrades_only() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.RESPAWN, RESPAWN_WITH_UPGRADES)
 	
 static func permadeath() -> GameModeSettings:
-	return GameModeSettings.new(GameMode.PERMADEATH, 0)
+	return GameModeSettings.new(GameMode.PERMADEATH, SPELL_DECK_BUILDING)
 	
 static func normal_mode() -> GameModeSettings:
 	return GameModeSettings.new(GameMode.RESPAWN, RESPAWN_WITH_UPGRADES | RESPAWN_WITH_SPELLS_AND_WANDS)

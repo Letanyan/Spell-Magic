@@ -183,7 +183,7 @@ static var notes := {
 	"spell chain": "A chain spell is a spell (with optional parameters) that is automatically cast based on one of the options selected. {At Start} and {At End} are called at the start at end for each projectile. {On Hit} is called when a projectile hits an object.",
 	"spell M": "The amount of mana the spell will cost to cast. Increasing mana put into the spell will decrease the spell's cooldown time. Any excess mana that no longer decreases the cooldown will increase elemental application up to a certain point.",
 	"spell Player is Origin": "By default a projectiles origin is at the players reticule. Setting {Player is Origin} will make the spell's origin the center of the players feet.",
-	"spell Is Bomb": "By default a projectiles origin will only be set when it enter the world. Setting {Is Bomb} will fix the origin for each projectile to the point when the spell is first cast.",
+	"spell Is Bomb": "By default a projectiles origin will only be set when it enters the world after a delay if any. Setting {Is Bomb} will fix the origin for each projectile to the point when the spell is first cast.",
 	"spell Follow Player": "By default a projectile will not be effected by a players movement once it enters the world. Setting {Follow Player} will make the projectile's movement relative to the players movement.",
 	"spell Use Spherical Coordinates": "Changes the calculation of {x},{y},{z} with {x} being the horizontal angle, {y} the vertical angle and {z} the distance.",
 	"spell Elemental Application": "Certain elements have additional effects. Namely {Fire} applies {Burn}, {Water} applies {Wet}, {Ice} applies {Freeze}, {Electric} applies {Stun} and {Wind} applies {Feather}.",

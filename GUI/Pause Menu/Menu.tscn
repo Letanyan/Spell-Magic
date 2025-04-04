@@ -56,9 +56,11 @@ anchors_preset = -1
 offset_top = 48.0
 
 [node name="SpellDeckGUI" parent="Background" instance=ExtResource("8_nuh7m")]
-visible = false
 layout_mode = 1
-offset_top = 48.0
+offset_left = 8.0
+offset_top = 56.0
+offset_right = -8.0
+offset_bottom = -8.0
 
 [node name="Notes" parent="Background" instance=ExtResource("6_kj37x")]
 visible = false

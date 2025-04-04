@@ -51,6 +51,7 @@ func setup(_settings: WorldSettings) -> void:
 		hud.hud_upgrades.upgrade_slots_refreshed(us)
 		if payload.has("element") or payload.has("chain"):
 			menu.magic_book.page.update_combo_box_disabled()
+		menu.spell_deck.update_cards()
 	)
 	player.world_settings = settings
 	player.name_generator = NameGenerator.new()

@@ -117,7 +117,7 @@ func _ready() -> void:
 	
 func refresh_preview_thumbnails(spell: Spell) -> void:
 	var tint_color := Spell.color_from_element(spell.element)
-	preview_image.icon = spell.create_thumbnail(true, {})
+	preview_image.icon = spell.create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	for btn in preview_selector_thumbnail_buttons:
 		btn.set_pressed_no_signal(false)
 		(btn.icon as TintedTexture).tint = tint_color
@@ -939,7 +939,7 @@ func _on_flip_h_pressed() -> void:
 		(ibtn.icon as TintedTexture).flip_horizontal = result
 		ibtn.queue_redraw()
 	flip_h_thumbnail.set_pressed_no_signal(result)
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 
@@ -955,7 +955,7 @@ func _on_flip_v_pressed() -> void:
 		(ibtn.icon as TintedTexture).flip_vertical = result
 		ibtn.queue_redraw()
 	flip_v_thumbnail.set_pressed_no_signal(result)
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 
@@ -971,7 +971,7 @@ func _on_rotate_cw_pressed() -> void:
 	for ibtn: Button in preview_selector_thumbnail_buttons:
 		(ibtn.icon as TintedTexture).rotation = book.spells[current_index].preview_rotation(current_preview_index)
 		ibtn.queue_redraw()
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 
@@ -987,7 +987,7 @@ func _on_rotate_ccw_pressed() -> void:
 	for ibtn: Button in preview_selector_thumbnail_buttons:
 		(ibtn.icon as TintedTexture).rotation = book.spells[current_index].preview_rotation(current_preview_index)
 		ibtn.queue_redraw()
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 
@@ -1003,7 +1003,7 @@ func _on_scale_down_pressed() -> void:
 	for ibtn: Button in preview_selector_thumbnail_buttons:
 		(ibtn.icon as TintedTexture).scale = book.spells[current_index].preview_scale(current_preview_index)
 		ibtn.queue_redraw()
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 
@@ -1019,7 +1019,7 @@ func _on_scale_up_pressed() -> void:
 	for ibtn: Button in preview_selector_thumbnail_buttons:
 		(ibtn.icon as TintedTexture).scale = book.spells[current_index].preview_scale(current_preview_index)
 		ibtn.queue_redraw()
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 
@@ -1042,7 +1042,7 @@ func _on_pos_pressed(pidx: int) -> void:
 	for ibtn in preview_selector_position_buttons: 
 		ibtn.set_pressed_no_signal(false)
 	preview_selector_position_buttons[pidx].set_pressed_no_signal(not is_pressed)
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.queue_redraw()
 
 func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
@@ -1054,7 +1054,7 @@ func _on_thumbnail_image_pressed(btn: NodePath, img: String, i: int) -> void:
 	for ibtn: Button in preview_selector_thumbnail_buttons:
 		ibtn.set_pressed_no_signal(false)
 	(get_node(btn) as Button).set_pressed_no_signal(true)
-	preview_image.icon = book.spells[current_index].create_thumbnail(true, {})
+	preview_image.icon = book.spells[current_index].create_thumbnail(Spell.ThumbnailSize.SMALL, {})
 	preview_image.button_pressed = false
 
 

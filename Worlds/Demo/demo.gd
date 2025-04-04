@@ -104,6 +104,7 @@ func setup(_settings: WorldSettings) -> void:
 		hud.hud_upgrades.upgrade_slots_refreshed(us)
 		if payload.has("element") or payload.has("chain"):
 			menu.magic_book.page.update_combo_box_disabled()
+		menu.spell_deck.update_cards()
 	)
 	
 	case = WandCase.new()
@@ -114,6 +115,14 @@ func setup(_settings: WorldSettings) -> void:
 		opt.parse_spells("Blast", book)
 		var opt2 := w.keys[PackedStringArray(["RB"])] as Wand.Option
 		opt2.kind = Wand.Kind.FIRE_PICKED
+		
+		var space := w.keys[PackedStringArray(["S"])] as Wand.Option
+		space.kind = Wand.Kind.FIRE
+		space.parse_spells("Jump", book)
+		var shift := w.keys[PackedStringArray(["LB"])] as Wand.Option
+		shift.kind = Wand.Kind.FIRE
+		shift.parse_spells("Dash", book)
+		
 	book.spell_was_updated.connect(case.spell_was_updated)
 	
 	artifacts = Artifacts.new()

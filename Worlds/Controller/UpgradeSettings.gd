@@ -183,7 +183,7 @@ func purchase_D() -> PurchaseError:
 	return PurchaseError.NONE
 func upgrade_description_D() -> String: return "D"
 
-var level_P := 2 if GlobalData.is_demo else 1:
+var level_P := 1:
 	set(value):
 		level_P = clampi(value, 1, level_max_P)
 var level_max_P := 4 if GlobalData.is_demo else 10
@@ -230,7 +230,7 @@ func purchase_v() -> PurchaseError:
 	return PurchaseError.NONE
 func upgrade_description_v(size: int) -> String: return "[img=l,%dx%d, color=#77FF00]res://GUI/Images/velocity.svg[/img]" % [size, size]
 
-var level_mana := 3 if GlobalData.is_demo else 1:
+var level_mana := 1:
 	set(value):
 		level_mana = clampi(value, 1, level_max_mana)
 var level_max_mana := 4 if GlobalData.is_demo else 20
@@ -276,7 +276,7 @@ func purchase_health() -> PurchaseError:
 	return PurchaseError.NONE
 func upgrade_description_health(size: int) -> String: return "[img=l,%dx%d, color=#00AA00]res://GUI/Images/health.svg[/img]" % [size, size]
 
-var level_attack := 4 if GlobalData.is_demo else 1:
+var level_attack := 1:
 	set(value):
 		level_attack = clampi(value, 1, level_max_attack)
 var level_max_attack := 4 if GlobalData.is_demo else 10
@@ -433,13 +433,13 @@ func reset_all_stats_to_default_values() -> void:
 	level_T = 1
 	level_N = 1
 	level_D = 1
-	level_P = 1
+	level_P = 2 if GlobalData.is_demo else 1
 	level_v = 1
-	level_mana = 1
+	level_mana = 3 if GlobalData.is_demo else 1
 	level_health = 1
 	level_spells_in_book = 1
 	level_running_speed = 1
-	level_attack = 1
+	level_attack = 4 if GlobalData.is_demo else 1
 	level_defence = 1
 	level_mana_regen = 1
 	has_spell_element = 0b11
@@ -528,7 +528,7 @@ func load_dict(data: Dictionary) -> void:
 	upgrade_prog_max.assign(data.get("upgrade_prog_max", [0.0, 0.0, 0.0, 0.0]) as Array)
 	upgrade_cond_info.assign(data.get("upgrade_cond_info", [0, 0, 0, 0]) as Array)
 
-func default_starter_spell() -> Spell:
+func default_starter_spell() -> Dictionary:
 	var blast_element := Spell.Element.FIRE
 	if check_if_has_spell_element(Spell.Element.FIRE):
 		blast_element = Spell.Element.FIRE
@@ -552,7 +552,21 @@ func default_starter_spell() -> Spell:
 	blast.description = "fires a projectile in the direction of the camera"
 	blast.build_expressions()
 	
-	return blast
+	var jump := Spell.new(true, "0", "-1 + t * 4", "0", "0.1", 0, 0.4, Spell.Element.AIR, 1, "0", false, 10, true)
+	jump.name = "Jump"
+	jump.description = "A gust of wind blows from below you to lift you up"
+	jump.preview_image = PackedInt64Array([24])
+	jump.set_preview_is_vertical_flip(0, true)
+	jump.build_expressions()
+	
+	var dash := Spell.new(true, "i * (-1 + t * 4)", "1.0", "k * (-1 + t * 4)", "0.1", 0, 0.4, Spell.Element.AIR, 1, "0", false, 10, true)
+	dash.name = "Dash"
+	dash.description = "A gust of wind blows from behind you propelling you forward"
+	dash.preview_image = PackedInt64Array([24])
+	dash.set_preview_rotation_tag(0, 6)
+	dash.build_expressions()
+	
+	return {"blast": blast, "jump": jump, "dash": dash }
 
 enum UpgradeKind {
 	NONE,
