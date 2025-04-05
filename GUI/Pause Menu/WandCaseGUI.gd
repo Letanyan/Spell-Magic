@@ -37,7 +37,7 @@ func scroll_wand_keys_up() -> void:
 func scroll_wand_keys_down() -> void:
 	list_view.shift_scroll_bar(false)
 	
-func reload_wand_shelf_items(index: int = current_index, full_update: bool = false) -> void:
+func reload_wand_shelf_items(index: int = current_index, full_update: bool = false, ignore_signals: bool = false) -> void:
 	if index < 0:
 		return
 	UIAudioPlayer.silence = true
@@ -201,3 +201,21 @@ func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_
 
 func _on_name_focus_entered() -> void:
 	UIAudioPlayer.focus()
+
+func bind_spell_to_key(keys: Dictionary, spell: Spell, cast_kind: Wand.Kind) -> void:
+	var wand := case.current_wand()
+	var packed_key := PackedStringArray(keys.keys())
+	if wand.keys.has(packed_key):
+		var wand_key := wand.keys[packed_key] as Wand.Option
+		wand_key.kind = cast_kind
+		wand_key.add_spell(spell)
+		for item: WandCaseShelfItem in list_view.items:
+			var w := PackedStringArray(item.store_key)
+			if w == packed_key:
+				for index in range(spell_change_callables.size()):
+					if wand.keys.keys()[index] == packed_key:
+						item.spell.text = wand_key.display_rotated_spells_list_plain()
+						item.cast_combo.select(cast_kind)
+						item.spell.editable = cast_kind != Wand.Kind.NONE
+						break
+				break

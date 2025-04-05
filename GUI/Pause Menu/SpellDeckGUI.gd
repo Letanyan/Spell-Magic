@@ -3,7 +3,13 @@ extends Control
 
 @onready var h_flow: HFlowContainer = $ScrollContainer/HFlow
 @onready var key_bind_panel: Panel = $KeyBindPanel
-@onready var key_bind_input: LineEdit = $KeyBindPanel/Dialog/Input
+@onready var key_label: RichTextLabel = $KeyBindPanel/Dialog/KeyVBox/KeyLabel
+@onready var cast_combo: OptionButton = $KeyBindPanel/Dialog/CastCombo
+@onready var cancel_button: Button = $KeyBindPanel/Dialog/Cancel
+
+var key_bind_to_spell: Spell = null # null means key bind panel is hidden
+var found_actions: Dictionary = {}
+var currently_down_actions: Dictionary = {}
 
 var book: MagicBook:
 	set(value):
@@ -13,6 +19,8 @@ var book: MagicBook:
 		
 var thumbnail_cache: Dictionary = {}
 var spell_index: Dictionary = {}
+
+signal key_binding_complete(keys: Dictionary, spell: Spell, cast_kind: Wand.Kind)
 
 func update_spell_chains(base: Spell) -> void:
 	var updated := book.rebuild_spell_chain(base)
@@ -41,6 +49,7 @@ const SPELL_CARD_GUI = preload("res://GUI/Pause Menu/SpellCardGUI.tscn")
 func reload_cards() -> void:
 	for child: SpellCardGUI in h_flow.get_children():
 		child.is_active_toggled.disconnect(change_spell_is_active)
+		child.bind_pressed.disconnect(show_key_bind_panel)
 		h_flow.remove_child(child)
 		child.queue_free()
 	spell_index.clear()
@@ -53,8 +62,10 @@ func reload_cards() -> void:
 		card.tooltip_text = spell.description
 		card.is_active.disabled = book.can_use_spell(spell, true) != MagicBook.DisallowSpellReason.NONE
 		card.is_active.set_pressed_no_signal(spell.is_active)
+		card.bind_button.disabled = card.is_active.disabled or not card.is_active.button_pressed
 		card.spell = spell
 		card.is_active_toggled.connect(change_spell_is_active)
+		card.bind_pressed.connect(show_key_bind_panel)
 			
 func update_cards() -> void:
 	for card: SpellCardGUI in h_flow.get_children():
@@ -64,6 +75,7 @@ func update_cards() -> void:
 		card.tooltip_text = spell.description
 		card.is_active.disabled = book.can_use_spell(spell, true) != MagicBook.DisallowSpellReason.NONE
 		card.is_active.set_pressed_no_signal(spell.is_active)
+		card.bind_button.disabled = card.is_active.disabled or not card.is_active.button_pressed
 	
 func change_spell_is_active(toggled_on: bool, current_index: int) -> void:
 	if current_index < 0:
@@ -104,3 +116,44 @@ func change_spell_is_active(toggled_on: bool, current_index: int) -> void:
 			UIAudioPlayer.check(true)
 			spell.is_active = true
 			update_cards()
+
+func show_key_bind_panel(spell: Spell) -> void:
+	key_bind_panel.visible = true
+	key_bind_to_spell = spell
+
+func handle_input(event: InputEvent) -> void:
+	if key_bind_to_spell != null and event.is_action_type():
+		for action in Wand.basic_keys:
+			if event.is_action_pressed(action):
+				currently_down_actions[action] = true
+				found_actions[action] = true
+			if event.is_action_released(action):
+				currently_down_actions.erase(action)
+	if currently_down_actions.is_empty() and not found_actions.is_empty() and not cancel_button.has_focus():
+		key_binding_complete.emit(found_actions, key_bind_to_spell, cast_combo.get_selected_id() as Wand.Kind)
+		found_actions.clear()
+		key_bind_to_spell = null
+		key_bind_panel.visible = false
+		cast_combo.select(1)
+		
+	if found_actions.is_empty():
+		key_label.text = "[center]Press a Key to Bind Spell[/center]"
+	else:
+		key_label.text = "[center]" + GlobalData.controller.key_images(PackedStringArray(found_actions.keys())) + "[/center]"
+				
+				
+func _on_cast_combo_item_selected(index: int) -> void:
+	if cast_combo.get_selected_id() == 0:
+		key_bind_to_spell = null
+		key_bind_panel.visible = false
+		cast_combo.select(1)
+	
+	found_actions.clear()
+	currently_down_actions.clear()
+		
+func _on_cancel_pressed() -> void:
+	key_bind_to_spell = null
+	key_bind_panel.visible = false
+	cast_combo.select(1)
+	found_actions.clear()
+	currently_down_actions.clear()

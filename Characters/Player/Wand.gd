@@ -87,6 +87,22 @@ class Option:
 		result = result.substr(0, result.length() - 2)
 		return result
 		
+	func display_rotated_spells_list_plain() -> String:
+		if spells.size() == 0:
+			return ""
+		var result := ""
+		
+		var index := 0
+		while true:
+			result += spell_names[index] + ", "	
+			if index == spells.size() - 1:
+				break
+			index += 1
+			if index >= spells.size():
+				index = 0
+		result = result.substr(0, result.length() - 2)
+		return result
+		
 	func spell_was_updated(spell: Spell) -> void:
 		for i in spells.size():
 			var s := spells[i]
@@ -97,6 +113,17 @@ class Option:
 				spells[i].configure_using_parameter_collection(parameters[i], spells[i].basic_fixed_vars())
 			else:
 				spells[i] = spell
+			
+	func add_spell(spell: Spell) -> void:
+		var is_dupe := false
+		for name in spell_names:
+			if name == spell.name:
+				is_dupe = true
+		if not is_dupe:
+			spell_names.append(spell.name)
+			spells.append(spell)
+			parameters.append({})
+			spell_index = spell_names.size() - 1
 			
 	func parse_spells(text: String, book: MagicBook) -> void:
 		const SPELL_NAME = 0

@@ -48,6 +48,8 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	player = _player
 	world_settings = _world_settings
 	
+	spell_deck.key_binding_complete.connect(wand_case.bind_spell_to_key)
+	
 	if world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		upgrades_button.text = "Upgrades"
 	else:
@@ -206,6 +208,9 @@ func _input(event: InputEvent) -> void:
 		return
 		
 	GlobalData.controller.handle_input(event)
+	
+	if spell_deck.visible:
+		spell_deck.handle_input(event)
 		
 	if event is InputEventJoypadButton and not is_quick_menu:
 		if event.is_action_pressed("RB"):
