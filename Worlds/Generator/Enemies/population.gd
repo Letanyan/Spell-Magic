@@ -20,6 +20,7 @@ var garden_item_radius: PackedFloat32Array = PackedFloat32Array([])
 var garden_item_origin: Array[Vector3] = []
 var other_objects: Array = []
 var world_items: Array[WorldItem] = []
+var buildings: Array[Building] = []
 var current_biome_during_generation: World.Biome = World.Biome.WATER
 var current_fl_during_generation: float = 0.0
 #var spawn_areas: Dictionary ## {"points": [][]Vector2, "biomes": []World.Biome} // groups of points categoriesed by biomes
@@ -164,6 +165,25 @@ func prepare_world_item(entity: WorldItem, pos: Vector3, user_info: Callable, se
 			World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
 	return entity
 	
+func prepare_building(building: Building, pos: Vector3, user_info: Callable, seedling: int) -> Node3D:
+	current_spawn_duration_us = Time.get_ticks_usec() - current_spawn_start_time_us
+	if building != null:
+		var world_normal := chunker.terrain_normal(pos.x, pos.z)
+		#var world_normal := Navigator.get_world_normal_height(state, pos.x, pos.z)
+		var wh: float = world_normal.get("position", Vector3.ZERO).y + pos.y
+		var info: Dictionary = user_info.call(world_normal)
+		var below_sea_level := (world_normal.get("position", Vector3.ZERO) as Vector3).y < blender.sea_level
+		var not_hfil := current_biome_during_generation != World.Biome.HFIL
+		if not info.get("valid", true) or (below_sea_level and not_hfil) or is_nan(wh):
+			entity_manager.free_building(building)
+			return null
+		building.position = Vector3(pos.x, wh + info.get("y_offset", 0.0) as float, pos.z)
+		var scur := Globals.Ref.new(seedling)
+		#building.setup(Rand.randi(scur), current_biome_during_generation)
+		building.name = str(building.kind) + "_" + Rand.id(4, Rand.randi(scur))
+		buildings.append(building)
+	return building
+	
 func prepare_enemy(entity: Enemy, pos: Vector3, is_enemy: World.Enemy, user_info: Callable, seedling: int, should_free: bool = false) -> Node3D:
 	current_spawn_duration_us = Time.get_ticks_usec() - current_spawn_start_time_us
 	if entity != null:
@@ -242,6 +262,14 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 		temp.configure(config)
 	
 	return prepare_world_item(result, pos, always_valid, seedling, should_free)
+	
+func spawn_building(building: World.Building, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
+	var seedling := rng.randi()
+	if display_only and not spawn_enemies_in_display_only: return null
+	var result := entity_manager.get_building(building) as Building
+	var pos := Vector3(p.x, 0, p.y)
+	
+	return prepare_building(result, pos, always_valid, seedling)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 	var seedling := rng.randi()
@@ -342,12 +370,15 @@ func despawn_all_from_world(world: Node3D, active_enemy_kinds: Dictionary, hud: 
 		if item is ScrollNote or item is ArtifactCube or item is SpellPaper:
 			hud.remove_marker(item.name)
 		entity_manager.free_world_item(item)
+	for building in buildings:
+		entity_manager.free_building(building)
 	other_objects.clear()
 	inhabitants.clear()
 	garden.clear()
 	garden_item_radius.clear()
 	garden_item_origin.clear()
 	world_items.clear()
+	buildings.clear()
 	spawn_cursor.x = spawn_area_biomes.size()
 	SignalBus.enemy_death.disconnect(mark_entity)
 
@@ -420,6 +451,14 @@ func update_info(world: Node3D, cam: Camera3D) -> void:
 				player.ignore_target(item as TargetShape)
 		else:
 			item.is_active = not display_only and item.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
+			
+	for building in buildings:
+		var body := building.get_node("./static/") as Node3D
+		var is_in_range := building.position.distance_to(player.position) > 50
+		for shape in body.get_children():
+			if shape is CollisionShape3D:
+				(shape as CollisionShape3D).disabled = display_only or is_in_range
+		building.is_active = not display_only and building.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
 			
 			
 func habitant_set_display_only(only_display: bool, active_enemy_kinds: Dictionary, hud: HUD) -> void:

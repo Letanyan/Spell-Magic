@@ -110,6 +110,10 @@ var buffer_key: EntityBuffer
 var buffer_health: EntityBuffer
 var buffer_note: EntityBuffer
 
+var buffer_house_ruined_01: EntityBuffer
+var buffer_house_ruined_02: EntityBuffer
+var buffer_house_ruined_03: EntityBuffer
+
 func _init() -> void:
 	var deinit_enemy := func(node: Enemy) -> void:
 		node.position.y = -1000
@@ -123,6 +127,9 @@ func _init() -> void:
 		if node.is_node_ready():
 			node.animation_tree.active = false
 	var deinit_world_item := func(node: WorldItem) -> void:
+		node.position.y = -1000
+		node.is_active = false
+	var deinit_building := func(node: Building) -> void:
 		node.position.y = -1000
 		node.is_active = false
 	
@@ -155,6 +162,16 @@ func _init() -> void:
 	var make_note := func() -> WorldItem:
 		var result := ScrollNote.make(); result.custom_free = free_world_item
 		return result
+		
+	var make_house_ruined_01 := func() -> Building:
+		var result := Building.make(World.Building.HOUSE_RUINED_01); result.custom_free = free_building
+		return result
+	var make_house_ruined_02 := func() -> Building:
+		var result := Building.make(World.Building.HOUSE_RUINED_02); result.custom_free = free_building
+		return result
+	var make_house_ruined_03 := func() -> Building:
+		var result := Building.make(World.Building.HOUSE_RUINED_03); result.custom_free = free_building
+		return result
 	
 	buffer_target = EntityBuffer.new(20, make_target_shape, deinit_world_item, "TARGET")
 	buffer_artifact = EntityBuffer.new(10, make_artifact, deinit_world_item, "ARTIFACT")
@@ -163,6 +180,10 @@ func _init() -> void:
 	buffer_spell = EntityBuffer.new(10, make_spell, deinit_world_item, "SPELL")
 	buffer_health = EntityBuffer.new(10, make_health, deinit_world_item, "HEALTH")
 	buffer_note = EntityBuffer.new(10, make_note, deinit_world_item, "NOTE")
+	
+	buffer_house_ruined_01 = EntityBuffer.new(10, make_house_ruined_01, deinit_building, "HOUSE_RUINED_01")
+	buffer_house_ruined_02 = EntityBuffer.new(10, make_house_ruined_02, deinit_building, "HOUSE_RUINED_02")
+	buffer_house_ruined_03 = EntityBuffer.new(10, make_house_ruined_03, deinit_building, "HOUSE_RUINED_03")
 
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
@@ -195,3 +216,16 @@ func free_world_item(node: WorldItem) -> void:
 		World.Item.SPELL: buffer_spell.free_entity(node)
 		World.Item.HEALTH: buffer_health.free_entity(node)
 		World.Item.NOTE: buffer_note.free_entity(node)
+		
+func get_building(kind: World.Building) -> Building:
+	match kind:
+		World.Building.HOUSE_RUINED_01: return buffer_house_ruined_01.get_entity()
+		World.Building.HOUSE_RUINED_02: return buffer_house_ruined_02.get_entity()
+		World.Building.HOUSE_RUINED_03: return buffer_house_ruined_03.get_entity()
+	return buffer_house_ruined_01.get_entity()
+
+func free_building(node: Building) -> void:
+	match node.kind:
+		World.Building.HOUSE_RUINED_01: buffer_house_ruined_01.free_entity(node)
+		World.Building.HOUSE_RUINED_02: buffer_house_ruined_02.free_entity(node)
+		World.Building.HOUSE_RUINED_03: buffer_house_ruined_03.free_entity(node)

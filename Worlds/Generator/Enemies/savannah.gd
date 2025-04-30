@@ -5,7 +5,8 @@ enum SavannahStructuresKind {
 	NONE,
 	TREE_SAFARI, TREE_BRANCHED, 
 	PIGEONS, LONE_ORC, ORC_HORDE,
-	ARTIFACT, NOTE
+	ARTIFACT, NOTE,
+	HOUSE_RUINED_03
 }
 
 const savannah_structure_base := {
@@ -17,6 +18,7 @@ const savannah_structure_base := {
 	SavannahStructuresKind.LONE_ORC: 0.1,
 	SavannahStructuresKind.ARTIFACT: 0.01,
 	SavannahStructuresKind.NOTE: 0.1,
+	SavannahStructuresKind.HOUSE_RUINED_03: 5,
 }
 var savannah_structure := {}
 
@@ -45,6 +47,11 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			SavannahStructuresKind.TREE_BRANCHED:
 				var pos := area[index]
 				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
+				
+			SavannahStructuresKind.HOUSE_RUINED_03:
+				var pos := area[index]
+				var building := pop.spawn_building(World.Building.HOUSE_RUINED_03, pos, spacing, {})
+				if building != null: result.append(building)
 				
 			SavannahStructuresKind.PIGEONS:
 				var pos := area[index]

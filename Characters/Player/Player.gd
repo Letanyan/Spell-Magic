@@ -189,9 +189,10 @@ func _physics_process(delta: float) -> void:
 					continue
 				var body := obj as StaticBody3D
 				if body.collision_layer & Globals.Layer.OBJECT != 0:
-					var shape := body.get_node("shape") as CollisionShape3D
-					if shape != null:
-						world_object_collision_occurred.emit(body.position, shape.shape, body.transform.basis.get_scale().x)
+					if body.has_node("shape"):
+						var shape := body.get_node("shape") as CollisionShape3D
+						if shape != null:
+							world_object_collision_occurred.emit(body.position, shape.shape, body.transform.basis.get_scale().x)
 			
 	if direction != Vector3.ZERO and velocity != Vector3.ZERO:
 		if is_on_floor:

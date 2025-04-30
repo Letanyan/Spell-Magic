@@ -549,19 +549,19 @@ func default_starter_spell() -> Dictionary:
 		"speed": "7",
 		"offset": "1",
 	}
-	blast.description = "fires a projectile in the direction of the camera"
+	blast.description = "fires a projectile in the direction of the reticule"
 	blast.build_expressions()
 	
 	var jump := Spell.new(true, "0", "-1 + t * 4", "0", "0.1", 0, 0.4, Spell.Element.AIR, 1, "0", false, 10, true)
 	jump.name = "Jump"
-	jump.description = "A gust of wind blows from below you to lift you up"
+	jump.description = "A gust of wind blows from below to lift you up"
 	jump.preview_image = PackedInt64Array([24])
 	jump.set_preview_is_vertical_flip(0, true)
 	jump.build_expressions()
 	
 	var dash := Spell.new(true, "i * (-1 + t * 4)", "1.0", "k * (-1 + t * 4)", "0.1", 0, 0.4, Spell.Element.AIR, 1, "0", false, 10, true)
 	dash.name = "Dash"
-	dash.description = "A gust of wind blows from behind you propelling you forward"
+	dash.description = "A gust of wind blows from behind propelling you forward"
 	dash.preview_image = PackedInt64Array([24])
 	dash.set_preview_rotation_tag(0, 6)
 	dash.build_expressions()

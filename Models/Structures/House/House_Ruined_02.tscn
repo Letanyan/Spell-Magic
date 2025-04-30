@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://rpt75xnpmk5q"]
+
+[ext_resource type="PackedScene" uid="uid://dtlmjrxrl8112" path="res://Models/Structures/House/House_Ruined_02.fbx" id="1_ig5ac"]
+[ext_resource type="Script" path="res://Models/Structures/building.gd" id="2_ewcaf"]
+
+[node name="House_Ruined_02" instance=ExtResource("1_ig5ac")]
+script = ExtResource("2_ewcaf")
+
+[node name="House_02_LOD0" parent="." index="0"]
+visibility_range_end = 20.0
+
+[node name="House_02_LOD1" parent="." index="1"]
+visibility_range_begin = 20.0
