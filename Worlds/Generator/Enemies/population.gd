@@ -269,6 +269,8 @@ func spawn_building(building: World.Building, p: Vector2, spacing: float, config
 	var result := entity_manager.get_building(building) as Building
 	var pos := Vector3(p.x, 0, p.y)
 	
+	result.scale = Vec3.a(config.get("scale", 1.0) as float)
+	
 	return prepare_building(result, pos, always_valid, seedling)
 	
 func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:

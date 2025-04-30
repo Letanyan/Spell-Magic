@@ -50,7 +50,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			SavannahStructuresKind.HOUSE_RUINED_03:
 				var pos := area[index]
-				var building := pop.spawn_building(World.Building.HOUSE_RUINED_03, pos, spacing, {})
+				var building := pop.spawn_building(World.Building.HOUSE_RUINED_03, pos, spacing, {"scale": rng.randf_range(0.5, 3.0)})
 				if building != null: result.append(building)
 				
 			SavannahStructuresKind.PIGEONS:

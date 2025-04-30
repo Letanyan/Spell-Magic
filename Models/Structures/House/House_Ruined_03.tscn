@@ -4,21 +4,27 @@
 [ext_resource type="Script" path="res://Models/Structures/building.gd" id="2_vv2r2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bh8e6"]
+resource_local_to_scene = true
 size = Vector3(0.705, 2.875, 3.17)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dbty5"]
+resource_local_to_scene = true
 size = Vector3(1.845, 2.875, 0.41)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lt7sc"]
+resource_local_to_scene = true
 size = Vector3(0.41, 2.875, 3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jgy4s"]
+resource_local_to_scene = true
 size = Vector3(2.325, 2.875, 0.4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_yfriv"]
+resource_local_to_scene = true
 size = Vector3(2.58, 3.18, 0.285)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ngxyc"]
+resource_local_to_scene = true
 size = Vector3(6.5, 3.18, 0.285)
 
 [node name="House_Ruined_03" instance=ExtResource("1_t4nu6")]
