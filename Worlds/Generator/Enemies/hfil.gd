@@ -69,7 +69,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_rates := Rand.normalise_distribution({World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf()})
 				for i in rng.randi_range(5, 15):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_rates) as World.Foliage
-					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), spacing)
+					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 					
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
@@ -86,7 +86,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_rates := Rand.normalise_distribution({World.Foliage.ROCK_EGG: rng.randf(), World.Foliage.ROCK_TALL: rng.randf()})
 				for i in rng.randi_range(5, 15):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_rates) as World.Foliage
-					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), spacing)
+					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 				var path := Pathway.new().circle(radius_offset + 5, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
@@ -95,7 +95,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			HFILStructuresKind.SLIMY:
 				var pos := area[index]
 				for i in rng.randi_range(5, 15):
-					pop.spawn_foliage(World.Foliage.ROCK_EGG, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
+					pop.spawn_foliage(World.Foliage.ROCK_EGG, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 2: pop.fit(0.8, 0.5)}) as int
 				var spike_count := rng.randi_range(1, r)
@@ -128,7 +128,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_ratio := Rand.normalise_distribution({World.Foliage.ROCK_EGG: rng.randf(), World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf()})
 				for position in foliage_path.sample_points_xz(foliage_count):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_ratio) as World.Foliage
-					pop.spawn_foliage(kind, position, spacing)
+					pop.spawn_foliage(kind, position, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 						
 			HFILStructuresKind.ENEMY_MIX:
 				var pos := area[index]

@@ -66,7 +66,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_rates := Rand.normalise_distribution({World.Foliage.FLOWERS_SUN2: rng.randf(), World.Foliage.FLOWERS_SUN3: rng.randf()})
 				for i in rng.randi_range(5, 15):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_rates) as World.Foliage
-					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), spacing)
+					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 					
 					
 			OtherworldStructuresKind.LONE_RED:
@@ -78,12 +78,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_rates := Rand.normalise_distribution({World.Foliage.ROCK_EGG: rng.randf(), World.Foliage.ROCK_TALL: rng.randf()})
 				for i in rng.randi_range(5, 15):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_rates) as World.Foliage
-					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), spacing)
+					pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius_offset * 1.25 + 5, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			OtherworldStructuresKind.LONE_DRAGON:
 				var pos := area[index]
 				for i in rng.randi_range(5, 15):
-					pop.spawn_foliage(World.Foliage.FLOWERS_SUN3, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), spacing)
+					pop.spawn_foliage(World.Foliage.FLOWERS_SUN3, pos + Rand.point_in_circle_2d(spacing * 2.0, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 2: pop.fit(0.8, 0.5)}) as int
 				var spike_count := rng.randi_range(1, r)

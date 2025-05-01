@@ -153,13 +153,10 @@ func remove(kind: World.Foliage, index: int) -> void:
 	opened_slots[kind].append(index)
 	
 	
-func setup(kind: World.Foliage, index: int, position: Vector3, seedling: int, biome: World.Biome) -> void:
+func setup(kind: World.Foliage, index: int, position: Vector3, seedling: int, biome: World.Biome, config: Dictionary) -> void:
 	var mesh_transform := mesh_transforms[kind] as Transform3D
 	var scur := Globals.Ref.new(seedling)
-	var s := Rand.randf_range(scur, 2, 5)
-	#var s := Rand.randf_range(scur, 2, 5) * mesh_scales[kind] as float
-	if biome == World.Biome.JUNGLE and World.Foliage.TREE_BRANCHED == kind:
-		s *= Rand.randf_range(scur, 5, 10)
+	var s := config.get("scale", 1.0) as float
 		
 	#var transform := mesh_transform.scaled(Vec3.a(s))
 	

@@ -109,7 +109,7 @@ func get_flat_ground(center: Vector2, offset_y: float, r: float, rang: RandomNum
 				result = Vector3(pos.x, wh + offset_y, pos.z)
 	return result
 	
-func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable, seedling: int) -> int:
+func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: Callable, seedling: int, config: Dictionary) -> int:
 	current_spawn_duration_us = Time.get_ticks_usec() - current_spawn_start_time_us
 	if index != -1:
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
@@ -124,7 +124,7 @@ func prepare_foliage(kind: World.Foliage, index: int, pos: Vector3, user_info: C
 			return -1
 		var position := Vec3.xz_y(pos, wh + info.get("y_offset", 0.0) as float)
 		foliage_manager.set_albedo_blend(kind, index, chunker.get_color_at_position(position.x, position.z))
-		foliage_manager.setup(kind, index, position, seedling, current_biome_during_generation)
+		foliage_manager.setup(kind, index, position, seedling, current_biome_during_generation, config)
 		var g := Vector2i(kind, index)
 		var t := foliage_manager.get_transform(g.x, g.y)
 		garden.append(g)
@@ -241,15 +241,15 @@ static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: flo
 	return result
 
 
-func spawn_foliage(foliage: World.Foliage, p: Vector2, spacing: float, user_info: Callable = on_flat_surface(PI / 8)) -> int:
+func spawn_foliage(foliage: World.Foliage, p: Vector2, config: Dictionary, user_info: Callable = on_flat_surface(PI / 8)) -> int:
 	var seedling := rng.randi()
 	if not display_only: return -1
 	var pos := Vector3(p.x, 0, p.y)
 	var result := foliage_manager.make(foliage)
 	var scur := Globals.Ref.new(seedling)
-	pos.x += spacing * Rand.randf_range(scur, -0.5, 0.5)
-	pos.z += spacing * Rand.randf_range(scur, -0.5, 0.5)
-	return prepare_foliage(foliage, result, pos, user_info, scur.data as int)
+	pos.x += config["spacing"] * Rand.randf_range(scur, -0.5, 0.5)
+	pos.z += config["spacing"] * Rand.randf_range(scur, -0.5, 0.5)
+	return prepare_foliage(foliage, result, pos, user_info, scur.data as int, config)
 	
 func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dictionary, should_free: bool = false) -> Node3D:
 	var seedling := rng.randi()

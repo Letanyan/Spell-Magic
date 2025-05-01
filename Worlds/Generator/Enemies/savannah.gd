@@ -6,7 +6,6 @@ enum SavannahStructuresKind {
 	TREE_SAFARI, TREE_BRANCHED, 
 	PIGEONS, LONE_ORC, ORC_HORDE,
 	ARTIFACT, NOTE,
-	HOUSE_RUINED_03
 }
 
 const savannah_structure_base := {
@@ -18,7 +17,6 @@ const savannah_structure_base := {
 	SavannahStructuresKind.LONE_ORC: 0.1,
 	SavannahStructuresKind.ARTIFACT: 0.01,
 	SavannahStructuresKind.NOTE: 0.1,
-	SavannahStructuresKind.HOUSE_RUINED_03: 5,
 }
 var savannah_structure := {}
 
@@ -42,20 +40,15 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			SavannahStructuresKind.TREE_SAFARI:
 				var pos := area[index]
-				pop.spawn_foliage(World.Foliage.TREE_SAFARI if rng.randf() < 0.5 else World.Foliage.TREE_SAFARI2, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_SAFARI if rng.randf() < 0.5 else World.Foliage.TREE_SAFARI2, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			SavannahStructuresKind.TREE_BRANCHED:
 				var pos := area[index]
-				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
-				
-			SavannahStructuresKind.HOUSE_RUINED_03:
-				var pos := area[index]
-				var building := pop.spawn_building(World.Building.HOUSE_RUINED_03, pos, spacing, {"scale": rng.randf_range(0.5, 3.0)})
-				if building != null: result.append(building)
+				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			SavannahStructuresKind.PIGEONS:
 				var pos := area[index]
-				pop.spawn_foliage(World.Foliage.TREE_SAFARI, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_SAFARI, pos, {"spacing": spacing, "scale": rng.randf_range(5, 15)})
 				
 				var count := rng.randi_range(pop.fiti(1,3), pop.fiti(2,8))
 				var min_radius := rng.randf_range(pop.fit(2, 4), pop.fit(3, 6))
@@ -75,6 +68,13 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				path.apply_transform(T.rotated(Vector3.UP, r).translated(Vec3.xz(pos)))
 				var probs := {World.Enemy.ORC: pop.fit(10, 5), World.Enemy.ORC_DEAD: pop.fit(1, 5)}
 				spawn_enemies_randomly(result, pop, point_count, path, probs, rng, spacing)
+				var house_probs := {World.Building.HOUSE_RUINED_01: pop.fiti(10, 1), World.Building.HOUSE_RUINED_02: 5, World.Building.HOUSE_RUINED_03: pop.fiti(1, 10)}
+				var house_config := func(kind: World.Building) -> Dictionary:
+					return {"scale": rng.randf_range(1.0, 2.0)}
+				var house_count := rng.randi_range(0, pop.fiti(1, 3))
+				var house_path := Pathway.new().random_points_in_rect(1, w * rng.randf_range(1, 2), 0, h * rng.randf_range(1, 2), house_count)
+				house_path.apply_transform(T.rotated(Vector3.UP, r).translated(Vec3.xz(pos)))
+				spawn_buildings_randomly(result, pop, house_count, house_path, house_probs, rng, spacing, house_config) 
 				
 			SavannahStructuresKind.LONE_ORC:
 				var pos := area[index]
@@ -87,6 +87,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
 				var probs := {World.Enemy.BOUGEON: rng.randf_range(2, pop.fit(4, 10)), World.Enemy.FLYGEON: rng.randf_range(5, pop.fit(3, 10))}
 				spawn_enemies_randomly(result, pop, minion_count, path, probs, rng, spacing)
+				var house_probs := {World.Building.HOUSE_RUINED_01: pop.fiti(10, 1), World.Building.HOUSE_RUINED_02: 5, World.Building.HOUSE_RUINED_03: pop.fiti(1, 10)}
+				var house := pop.spawn_building(Rand.entity_from_non_relative_distribution(rng.randf(), house_probs) as World.Building, pos + Rand.point_in_circle_2d(10), spacing, {"scale": rng.randf_range(1, 2)})
+				if house != null: result.append(house)
 				
 			SavannahStructuresKind.ARTIFACT:
 				var pos := area[index]

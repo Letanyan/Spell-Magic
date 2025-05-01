@@ -44,9 +44,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var count := Rand.roll(9, 2, 0, rng, Rand.Accum.AVG)
 				for i in count:
 					if rng.randf() < 0.75:
-						pop.spawn_foliage(World.Foliage.TREE_PALM, pos + Rand.point_in_circle_2d(10, rng), spacing)
+						pop.spawn_foliage(World.Foliage.TREE_PALM, pos + Rand.point_in_circle_2d(10, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 					else:
-						pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, pos + Rand.point_in_circle_2d(10, rng), spacing)
+						pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, pos + Rand.point_in_circle_2d(10, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 						
 				
 			DesertStructuresKind.GHOST:
@@ -60,7 +60,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_ratio := Rand.normalise_distribution({World.Foliage.ROCK_SQUASHED: rng.randf(), World.Foliage.TREE_PALM: rng.randf()})
 				for position in path.sample_points_xz(count):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_ratio) as World.Foliage
-					pop.spawn_foliage(kind, position, spacing)
+					pop.spawn_foliage(kind, position, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			DesertStructuresKind.GHOSTLY:
 				var pos := area[index]
@@ -75,7 +75,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var foliage_ratio := Rand.normalise_distribution({World.Foliage.ROCK_SQUASHED: rng.randf(), World.Foliage.TREE_PALM: rng.randf()})
 				for position in path.sample_points_xz(row_count * col_count):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_ratio) as World.Foliage
-					pop.spawn_foliage(kind, position, spacing)
+					pop.spawn_foliage(kind, position, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			DesertStructuresKind.HOT_BLOB:
 				var pos := area[index]

@@ -40,7 +40,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				pass
 			JungleStructuresKind.TREE_BRANCHED:
 				var pos := area[index]
-				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5) * rng.randf_range(5, 10)})
 			JungleStructuresKind.BUSH:
 				var pos := area[index]
 				var ratio := rng.randf()
@@ -48,14 +48,14 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var radius := rng.randf_range(20, 50)
 					for i in Rand.roll(10, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
-						pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), spacing)
+						pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				else:
 					var w := rng.randf_range(20, 50)
 					var h := rng.randf_range(20, 50)
 					var r := rng.randf_range(-PI, PI)
 					for i in Rand.roll(10, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.BUSH_SPROUT if rng.randf() < ratio else World.Foliage.BUSH_ROUND
-						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing)
+						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 					
 			JungleStructuresKind.ELEVATOR:
 				var pos := area[index]

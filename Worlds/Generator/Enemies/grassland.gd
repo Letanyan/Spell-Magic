@@ -46,10 +46,10 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				pass
 			GrasslandStructuresKind.TREE_ROUND:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.TREE_ROUND, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_ROUND, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 			GrasslandStructuresKind.TREE_BRANCHED:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 					
 			GrasslandStructuresKind.FISH:
 				var pos := area[index]

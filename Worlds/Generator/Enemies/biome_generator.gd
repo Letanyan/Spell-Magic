@@ -23,7 +23,15 @@ func spawn_foliage_randomly(pop: Population, count: int, path: Pathway, probs: D
 	Rand.normalise_distribution(probs)
 	for p in path.sample_points_xz(count):
 		var kind := Rand.entity_from_non_relative_distribution(rng.randf(), probs) as World.Foliage
-		pop.spawn_foliage(kind, p, spacing)
+		pop.spawn_foliage(kind, p, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
+		
+func spawn_buildings_randomly(result: Array[Node3D], pop: Population, count: int, path: Pathway, probs: Dictionary, rng: RandomNumberGenerator, spacing: float, config: Callable) -> void:
+	Rand.normalise_distribution(probs)
+	for p in path.sample_points_xz(count):
+		var kind := Rand.entity_from_non_relative_distribution(rng.randf(), probs) as World.Building
+		var node := pop.spawn_building(kind, p, spacing, config.call(kind) as Dictionary)
+		if node != null:
+			result.append(node)
 
 func spawn_randomly(result: Array[Node3D], pop: Population, count: int, path: Pathway, enemy_odds: float, enemy_probs: Dictionary, foliage_probs: Dictionary, rng: RandomNumberGenerator, spacing: float, spawner: ItemSpawner = null) -> void:
 	Rand.normalise_distribution(foliage_probs)
@@ -39,7 +47,7 @@ func spawn_randomly(result: Array[Node3D], pop: Population, count: int, path: Pa
 				if spawner != null:
 					spawner.add_condition(enemy)
 		else:
-			pop.spawn_foliage(foliage_kind, p, spacing)
+			pop.spawn_foliage(foliage_kind, p, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 
 
 static func print_generater_probs() -> void:

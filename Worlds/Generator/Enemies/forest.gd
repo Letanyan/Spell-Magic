@@ -44,10 +44,10 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				pass
 			ForestStructuresKind.TREE_CHRISTMAS:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_CHRISTMAS, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 			ForestStructuresKind.TREE_PYRAMID:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 			ForestStructuresKind.BAT:
 				var pos := area[index] as Vector2
 				var elite_prob := pop.fit(0.2, 0.8)
@@ -109,7 +109,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 							World.Enemy.BAT: rng.randf_range(7, pop.fit(6, 2)),
 						}
 						if rng.randf() < tree_prob:
-							pop.spawn_foliage(World.Foliage.TREE_PYRAMID if rng.randf() < 0.5 else World.Foliage.TREE_CHRISTMAS, ppos, spacing)
+							pop.spawn_foliage(World.Foliage.TREE_PYRAMID if rng.randf() < 0.5 else World.Foliage.TREE_CHRISTMAS, ppos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 						else:
 							p = pop.spawn_enemy(Rand.entity_from_distribution(rng.randf(), enemy_prob) as World.Enemy, ppos, spacing)
 						if p != null:

@@ -694,9 +694,9 @@ func update_population_at(coord: Vector2i, display_only: bool) -> void:
 		pop.current_biome_during_generation = World.Biome.HFIL # change biome to allow rocks under the ocean
 		for p in path.sample_points_xz(count):
 			match rng.randi_range(0, 2):
-				0: pop.spawn_foliage(World.Foliage.ROCK_TALL, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
-				1: pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
-				2: pop.spawn_foliage(World.Foliage.ROCK_EGG, p + Rand.point_in_circle_2d(2.0, rng), 16.0)
+				0: pop.spawn_foliage(World.Foliage.ROCK_TALL, p + Rand.point_in_circle_2d(2.0, rng), {"spacing": 16.0, "scale": rng.randf_range(2, 5)})
+				1: pop.spawn_foliage(World.Foliage.ROCK_SQUASHED, p + Rand.point_in_circle_2d(2.0, rng), {"spacing": 16.0, "scale": rng.randf_range(2, 5)})
+				2: pop.spawn_foliage(World.Foliage.ROCK_EGG, p + Rand.point_in_circle_2d(2.0, rng), {"spacing": 16.0, "scale": rng.randf_range(2, 5)})
 		pop.current_biome_during_generation = saved_pop_biome
 	elif GlobalData.is_demo:
 		totem.visible = false

@@ -44,15 +44,15 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			TaigaStructuresKind.TREE_PYRAMID:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_PYRAMID, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			TaigaStructuresKind.TREE_PINE:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.TREE_PINE, pos, spacing)
+				pop.spawn_foliage(World.Foliage.TREE_PINE, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			TaigaStructuresKind.BUSH_TALL:
 				var pos := area[index] as Vector2
-				pop.spawn_foliage(World.Foliage.BUSH_TALL, pos, spacing)
+				pop.spawn_foliage(World.Foliage.BUSH_TALL, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			TaigaStructuresKind.FLOWER_SUN3:
 				var pos := area[index]
@@ -61,14 +61,14 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					var radius := rng.randf_range(20, 50)
 					for i in Rand.roll(10, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.FLOWERS_SUN3 if rng.randf() < ratio else World.Foliage.GRASS_SHRUB
-						pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), spacing)
+						pop.spawn_foliage(kind, pos + Rand.point_in_circle_2d(radius, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				else:
 					var w := rng.randf_range(20, 50)
 					var h := rng.randf_range(20, 50)
 					var r := rng.randf_range(-PI, PI)
 					for i in Rand.roll(10, 4, 2, rng, Rand.Accum.AVG):
 						var kind := World.Foliage.FLOWERS_SUN3 if rng.randf() < ratio else World.Foliage.GRASS_SHRUB
-						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), spacing)
+						pop.spawn_foliage(kind, pos + Rand.point_in_rect_2d(w, h, r, rng), {"spacing": spacing, "scale": rng.randf_range(2, 5)})
 				
 			TaigaStructuresKind.GOBLIN_HORDE:
 				var pos := area[index]
