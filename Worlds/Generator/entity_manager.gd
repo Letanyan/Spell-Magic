@@ -114,6 +114,7 @@ var buffer_house_ruined_01: EntityBuffer
 var buffer_house_ruined_02: EntityBuffer
 var buffer_house_ruined_03: EntityBuffer
 var buffer_tower_base: EntityBuffer
+var buffer_tower_body: EntityBuffer
 
 func _init() -> void:
 	var deinit_enemy := func(node: Enemy) -> void:
@@ -176,6 +177,9 @@ func _init() -> void:
 	var make_tower_base := func() -> Building:
 		var result := Building.make(World.Building.TOWER_BASE); result.custom_free = free_building
 		return result
+	var make_tower_body := func() -> Building:
+		var result := Building.make(World.Building.TOWER_BODY); result.custom_free = free_building
+		return result
 	
 	buffer_target = EntityBuffer.new(20, make_target_shape, deinit_world_item, "TARGET")
 	buffer_artifact = EntityBuffer.new(10, make_artifact, deinit_world_item, "ARTIFACT")
@@ -190,6 +194,7 @@ func _init() -> void:
 	buffer_house_ruined_03 = EntityBuffer.new(10, make_house_ruined_03, deinit_building, "HOUSE_RUINED_03")
 	
 	buffer_tower_base = EntityBuffer.new(10, make_tower_base, deinit_building, "TOWER_BASE")
+	buffer_tower_body = EntityBuffer.new(20, make_tower_body, deinit_building, "TOWER_BODY")
 
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
@@ -223,12 +228,20 @@ func free_world_item(node: WorldItem) -> void:
 		World.Item.HEALTH: buffer_health.free_entity(node)
 		World.Item.NOTE: buffer_note.free_entity(node)
 		
-func get_building(kind: World.Building) -> Building:
+func get_building(kind: World.Building, config: Dictionary = {}) -> Building:
 	match kind:
 		World.Building.HOUSE_RUINED_01: return buffer_house_ruined_01.get_entity()
 		World.Building.HOUSE_RUINED_02: return buffer_house_ruined_02.get_entity()
 		World.Building.HOUSE_RUINED_03: return buffer_house_ruined_03.get_entity()
-		World.Building.TOWER_BASE: return buffer_tower_base.get_entity()
+		World.Building.TOWER_BASE: 
+			var base := buffer_tower_base.get_entity() as Building
+			var body_count := config.get("height", 0) as int
+			for i in body_count:
+				var body := buffer_tower_body.get_entity() as Building
+				body.position.y = (i + 1) * 3.0
+				body.rotate(Vector3.UP, i * PI)
+				base.add_child(body)
+			return base
 	return buffer_house_ruined_01.get_entity()
 
 func free_building(node: Building) -> void:
@@ -236,4 +249,10 @@ func free_building(node: Building) -> void:
 		World.Building.HOUSE_RUINED_01: buffer_house_ruined_01.free_entity(node)
 		World.Building.HOUSE_RUINED_02: buffer_house_ruined_02.free_entity(node)
 		World.Building.HOUSE_RUINED_03: buffer_house_ruined_03.free_entity(node)
-		World.Building.TOWER_BASE: buffer_tower_base.free_entity(node)
+		World.Building.TOWER_BASE:
+			for child: Building in node.get_children():
+				match child.kind:
+					World.Building.TOWER_BODY: buffer_tower_body.free_entity(node)
+					World.Building.TOWER_HEAD: buffer_tower_base.free_entity(node)
+					World.Building.TOWER_CAP: buffer_tower_base.free_entity(node)
+			buffer_tower_base.free_entity(node)

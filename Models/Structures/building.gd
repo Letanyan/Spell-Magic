@@ -13,5 +13,6 @@ static func make(_kind: World.Building) -> Building:
 		World.Building.HOUSE_RUINED_02: result = (preload("res://Models/Structures/House/House_Ruined_02.tscn") as PackedScene).instantiate() as Building
 		World.Building.HOUSE_RUINED_03: result = (preload("res://Models/Structures/House/House_Ruined_03.tscn") as PackedScene).instantiate() as Building
 		World.Building.TOWER_BASE: result = (preload("res://Models/Structures/Tower/Tower_Base.tscn") as PackedScene).instantiate() as Building
+		World.Building.TOWER_BODY: result = (preload("res://Models/Structures/Tower/Tower_Body.tscn") as PackedScene).instantiate() as Building
 	result.kind = _kind
 	return result

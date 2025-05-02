@@ -42,7 +42,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				
 			SavannahStructuresKind.TOWER:
 				var pos := area[index]
-				var obj := pop.spawn_building(World.Building.TOWER_BASE, pos, spacing, {"scale": 2.0})
+				var obj := pop.spawn_building(World.Building.TOWER_BASE, pos, spacing, {"scale": 3.0, "height": 2})
 				if obj != null: result.append(obj)
 				
 			SavannahStructuresKind.TREE_SAFARI:

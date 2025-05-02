@@ -266,7 +266,7 @@ func spawn_world_item(item: World.Item, p: Vector2, spacing: float, config: Dict
 func spawn_building(building: World.Building, p: Vector2, spacing: float, config: Dictionary) -> Node3D:
 	var seedling := rng.randi()
 	if display_only and not spawn_enemies_in_display_only: return null
-	var result := entity_manager.get_building(building) as Building
+	var result := entity_manager.get_building(building, config) as Building
 	var pos := Vector3(p.x, 0, p.y)
 	
 	result.scale = Vec3.a(config.get("scale", 1.0) as float)
@@ -461,6 +461,16 @@ func update_info(world: Node3D, cam: Camera3D) -> void:
 			if shape is CollisionShape3D:
 				(shape as CollisionShape3D).disabled = display_only or is_in_range
 		building.is_active = not display_only and building.position.distance_to(player.position) < 50 and not player.world_settings.is_paused
+		if building.has_node("./static_csg/"):
+			var csg := building.get_node("./static_csg/") as CSGShape3D
+			csg.use_collision = not (display_only or is_in_range)
+			if building.kind == World.Building.TOWER_BASE:
+				for child in building.get_children():
+					if child is Building and child.has_node("./static_csg/"):
+						var icsg := child.get_node("./static_csg/") as CSGShape3D
+						icsg.use_collision = not (display_only or is_in_range)
+						
+			
 			
 			
 func habitant_set_display_only(only_display: bool, active_enemy_kinds: Dictionary, hud: HUD) -> void:
