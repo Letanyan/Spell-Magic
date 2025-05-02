@@ -163,7 +163,7 @@ static func make(_kind: World.Enemy) -> Enemy:
 func setup(seedling: int, biome: World.Biome) -> void:
 	spawn_position = position
 	update_behaviour()
-	rotation.y = randf() * 2 * PI
+	rotation.y = randf() * TAU
 	match kind:
 		World.Enemy.BIRDMAN, World.Enemy.BLUEMON, World.Enemy.FISHMAN, World.Enemy.FROG, \
 		World.Enemy.MOLE, World.Enemy.MUSHKING, World.Enemy.RABBIT, World.Enemy.UNDEAD, World.Enemy.WALKER, World.Enemy.ORC, World.Enemy.ORC_DEAD: 

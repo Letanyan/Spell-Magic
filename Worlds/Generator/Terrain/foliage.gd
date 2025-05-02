@@ -161,7 +161,7 @@ func setup(kind: World.Foliage, index: int, position: Vector3, seedling: int, bi
 	#var transform := mesh_transform.scaled(Vec3.a(s))
 	
 	var result := mesh_transform.scaled(Vec3.a(s))
-	var r := Rand.randf_range(scur, 0, 2 * PI)
+	var r := Rand.randf_range(scur, 0, TAU)
 	result = result.rotated(Vector3.UP, r)
 	result = result.translated(position)
 	

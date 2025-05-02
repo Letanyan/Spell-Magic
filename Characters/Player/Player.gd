@@ -291,9 +291,9 @@ func _physics_process(delta: float) -> void:
 		var dx := camera_shake_noise.get_noise_3d(t, 0, 0)
 		var dy := camera_shake_noise.get_noise_3d(0, t, 0)
 		var dz := camera_shake_noise.get_noise_3d(0, 0, t)
-		cam.rotation.x = (dx * intensity) * (2 * PI / 16)
-		cam.rotation.y = (dy * intensity) * (2 * PI / 16)
-		cam.rotation.z = (dz * intensity) * (2 * PI / 16)
+		cam.rotation.x = (dx * intensity) * (TAU / 16)
+		cam.rotation.y = (dy * intensity) * (TAU / 16)
+		cam.rotation.z = (dz * intensity) * (TAU / 16)
 				
 	var reasons := spell_caster.update(self, delta)
 	for spell: Spell in reasons:

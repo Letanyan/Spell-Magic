@@ -6,7 +6,7 @@ extends Texture2D
 @export var tint: Color = Color.WHITE
 @export var flip_vertical: bool = false
 @export var flip_horizontal: bool = false
-@export_range(0, 2 * PI, PI / 4) var rotation: float = 0.0
+@export_range(0, TAU, PI / 4) var rotation: float = 0.0
 @export var stretch_mode: TextureRect.StretchMode = TextureRect.StretchMode.STRETCH_KEEP_ASPECT_CENTERED
 @export var scale: Vector2 = Vector2(1, 1)
 @export var offset: Vector2 = Vector2(0, 0)

@@ -8,8 +8,8 @@ vec2 random(vec2 uv) {
 vec2 voronoi(vec2 uv, float columns, float rows) {
 	vec2 index_uv = floor(vec2(uv.x * columns, uv.y * rows));
 	vec2 fract_uv = fract(vec2(uv.x * columns, uv.y * rows));
-	
-	float minimum_dist = 1000.0;  
+
+	float minimum_dist = 1000.0;
 	vec2 minimum_point;
 
 	for (float y= -1.0; y <= 1.0; y++) {

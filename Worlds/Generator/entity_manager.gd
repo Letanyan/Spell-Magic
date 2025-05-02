@@ -115,6 +115,7 @@ var buffer_house_ruined_02: EntityBuffer
 var buffer_house_ruined_03: EntityBuffer
 var buffer_tower_base: EntityBuffer
 var buffer_tower_body: EntityBuffer
+var buffer_tower_head: EntityBuffer
 
 func _init() -> void:
 	var deinit_enemy := func(node: Enemy) -> void:
@@ -180,6 +181,9 @@ func _init() -> void:
 	var make_tower_body := func() -> Building:
 		var result := Building.make(World.Building.TOWER_BODY); result.custom_free = free_building
 		return result
+	var make_tower_head := func() -> Building:
+		var result := Building.make(World.Building.TOWER_HEAD); result.custom_free = free_building
+		return result
 	
 	buffer_target = EntityBuffer.new(20, make_target_shape, deinit_world_item, "TARGET")
 	buffer_artifact = EntityBuffer.new(10, make_artifact, deinit_world_item, "ARTIFACT")
@@ -195,6 +199,7 @@ func _init() -> void:
 	
 	buffer_tower_base = EntityBuffer.new(10, make_tower_base, deinit_building, "TOWER_BASE")
 	buffer_tower_body = EntityBuffer.new(20, make_tower_body, deinit_building, "TOWER_BODY")
+	buffer_tower_head = EntityBuffer.new(20, make_tower_head, deinit_building, "TOWER_HEAD")
 
 		
 func get_enemy(kind: World.Enemy) -> Enemy:
@@ -241,6 +246,10 @@ func get_building(kind: World.Building, config: Dictionary = {}) -> Building:
 				body.position.y = (i + 1) * 3.0
 				body.rotate(Vector3.UP, i * PI)
 				base.add_child(body)
+			var head := buffer_tower_head.get_entity() as Building
+			head.position.y = (body_count + 1) * 3.0
+			head.rotate(Vector3.UP, (body_count + 1) * PI)
+			base.add_child(head)
 			return base
 	return buffer_house_ruined_01.get_entity()
 
@@ -253,6 +262,5 @@ func free_building(node: Building) -> void:
 			for child: Building in node.get_children():
 				match child.kind:
 					World.Building.TOWER_BODY: buffer_tower_body.free_entity(node)
-					World.Building.TOWER_HEAD: buffer_tower_base.free_entity(node)
-					World.Building.TOWER_CAP: buffer_tower_base.free_entity(node)
+					World.Building.TOWER_HEAD: buffer_tower_head.free_entity(node)
 			buffer_tower_base.free_entity(node)

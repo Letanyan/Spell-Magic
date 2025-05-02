@@ -534,7 +534,7 @@ func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	if fixed_vars.has("spinrate"):
 		var temp_ra: Variant = fixed_vars.get_raw_now("spinrate")
 		if temp_ra is float or temp_ra is int:
-			p.rotation_angle = clampf(temp_ra as float, -2 * PI, 2 * PI)
+			p.rotation_angle = clampf(temp_ra as float, -TAU, TAU)
 		else:
 			p.rotation_angle = NAN
 	else:

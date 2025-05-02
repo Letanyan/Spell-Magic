@@ -101,7 +101,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					transform = T.I
 				else:
 					coin_cls += 1
-					transform = T.rotated(Vector3.FORWARD.rotated(Vector3.UP, rng.randf() * 2 * PI), PI * 0.5).translated(Vec3.y(radius))
+					transform = T.rotated(Vector3.FORWARD.rotated(Vector3.UP, rng.randf() * TAU), PI * 0.5).translated(Vec3.y(radius))
 				var focus_point: Vector3
 				const UP = 0
 				const CENTER = 1
@@ -112,7 +112,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				elif kind == CENTER:
 					focus_point = pos3d + transform * Vector3.ZERO
 				elif kind == HORZ:
-					focus_point = pos3d + Vec3.polar(999_999, 2 * PI * rng.randf())
+					focus_point = pos3d + Vec3.polar(999_999, TAU * rng.randf())
 				if is_rotating:
 					var path := Pathway.new().circle(radius, 0, 1)
 					coin_cls += 1
@@ -178,7 +178,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var distance := rng.randf_range(size, size + pop.fit(1, 5)) * count
 				var is_shifting := rng.randf() < pop.fit(0.0, 0.9)
 				var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
-				var angle := rng.randf() * 2 * PI
+				var angle := rng.randf() * TAU
 				var path := Pathway.new().line_to(Vec3.polar(distance, angle), 1)
 				var is_horz := rng.randf() < pop.fit(0.0, 0.9)
 				var transform: Transform3D
@@ -187,7 +187,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					transform = T.I
 				else:
 					coin_cls += 1
-					transform = T.rotated(Vector3.FORWARD.rotated(Vector3.UP, rng.randf() * 2 * PI), PI * 0.5).translated(Vec3.y(distance * 0.5))
+					transform = T.rotated(Vector3.FORWARD.rotated(Vector3.UP, rng.randf() * TAU), PI * 0.5).translated(Vec3.y(distance * 0.5))
 				var focus_point: Vector3
 				const UP = 0
 				const CENTER = 1
@@ -198,7 +198,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				elif kind == CENTER:
 					focus_point = pos3d + transform * Vector3.ZERO
 				elif kind == HORZ:
-					focus_point = pos3d + Vec3.polar(999_999, 2 * PI * rng.randf())
+					focus_point = pos3d + Vec3.polar(999_999, TAU * rng.randf())
 				var spawner: ItemSpawner
 				if pop.player.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 					spawner = pop.spawn_spawner(World.Item.COIN, pos, pop.cns(coin_cls))
@@ -253,14 +253,14 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					path = Pathway.new().grid(1, rng.randi_range(2, pop.fiti(2, 8)), rng.randi_range(2, pop.fiti(2, 8)), dist, dist)
 					coin_cls += 1
 				elif shape_kind == LINE:
-					path = Pathway.new().line_to(Vec3.polar(dist, 2 * PI * rng.randf(), 0), 1).apply_transform(T.translated(Vector3(dist, 0, dist) * -0.5))
+					path = Pathway.new().line_to(Vec3.polar(dist, TAU * rng.randf(), 0), 1).apply_transform(T.translated(Vector3(dist, 0, dist) * -0.5))
 				var el := Spell.Element.values()[rng.randi_range(1, Spell.Element.values().size() - 1)] as Spell.Element
 				var focus_point: Vector3
 				const UP = 0
 				const CENTER = 1
 				const HORZ = 2
 				var layout_kind := Rand.entity_from_distribution(rng.randf(), {UP: 1, CENTER: 1, HORZ: 1}) as int
-				var facing_tangent := rng.randf() * 2 * PI
+				var facing_tangent := rng.randf() * TAU
 				var is_horz := rng.randf() < pop.fit(0.0, 0.9)
 				var transform: Transform3D
 				if is_horz:
@@ -281,7 +281,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var make_still_path := func(pos: Vector3, speed: float) -> Pathway:
 					return Pathway.new().wait(5, pos)
 				var make_line_path := func(pos: Vector3, speed: float) -> Pathway:
-					return Pathway.new().from_to_and_back(speed, pos, Vec3.polar(dist * 0.5 * rng.randf(), 2 * PI * rng.randf(), dist * 0.1 * rng.randf()))
+					return Pathway.new().from_to_and_back(speed, pos, Vec3.polar(dist * 0.5 * rng.randf(), TAU * rng.randf(), dist * 0.1 * rng.randf()))
 				
 				var moving_path := Rand.entity_from_distribution(rng.randf(), {make_circle_path: pop.fit(0, 10), make_still_path: pop.fit(10, 0), make_line_path: 5}) as Callable
 					
@@ -301,7 +301,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 						),
 					}, pop.player.name_generator, World.Biome.TAIGA))
 				for p in path.sample_points(count):
-					var s := p.length() * 2 * PI * pop.fit(0.05, 1)
+					var s := p.length() * TAU * pop.fit(0.05, 1)
 					var subpath := moving_path.call(p, s) as Pathway
 					var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground_and_air().origin_is_offset().look_at_player().transform_path(transform)
 					var config := TargetShape.config_for_gauge(el, spawner, pop.fit(10, 0.3), Vitals.default_ea(0.1, 0), path_style)

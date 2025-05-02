@@ -9,6 +9,16 @@ size = Vector3(0.2, 0.075, 0.490723)
 [node name="Tower_Body" instance=ExtResource("1_4hcog")]
 script = ExtResource("2_w0eh3")
 
+[node name="Tower_02_LOD0" parent="." index="0"]
+visibility_range_end = 50.0
+
+[node name="Tower_02_LOD1" parent="." index="1"]
+visibility_range_begin = 50.0
+visibility_range_end = 100.0
+
+[node name="Tower_02_LOD2" parent="." index="2"]
+visibility_range_begin = 100.0
+
 [node name="static_csg" type="CSGCylinder3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 visible = false

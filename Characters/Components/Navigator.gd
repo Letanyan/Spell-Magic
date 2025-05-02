@@ -251,7 +251,7 @@ static func neighbours(p: CollisionObject3D, from: Vector3, directions: int, dis
 	var direction := (target - from)
 	direction.y = 0.0
 	direction = direction.normalized()
-	var angle := 2 * PI / float(directions)
+	var angle := TAU / float(directions)
 	for a in range(directions):
 		var to := from + direction * distance
 		if options & MovementOptions.CAN_FLY == 0:

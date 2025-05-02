@@ -18,7 +18,6 @@ const savannah_structure_base := {
 	SavannahStructuresKind.LONE_ORC: 0.1,
 	SavannahStructuresKind.ARTIFACT: 0.01,
 	SavannahStructuresKind.NOTE: 0.1,
-	SavannahStructuresKind.TOWER: 5,
 }
 var savannah_structure := {}
 
@@ -39,11 +38,6 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 		match struct:
 			SavannahStructuresKind.NONE:
 				pass
-				
-			SavannahStructuresKind.TOWER:
-				var pos := area[index]
-				var obj := pop.spawn_building(World.Building.TOWER_BASE, pos, spacing, {"scale": 3.0, "height": 2})
-				if obj != null: result.append(obj)
 				
 			SavannahStructuresKind.TREE_SAFARI:
 				var pos := area[index]
@@ -88,7 +82,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var king := pop.spawn_enemy(World.Enemy.ORC if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.ORC_DEAD, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
-				var angle_offset := rng.randf_range(0, 2 * PI)
+				var angle_offset := rng.randf_range(0, TAU)
 				var radius_offset := rng.randf_range(10, 20)
 				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))

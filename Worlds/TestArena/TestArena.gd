@@ -205,7 +205,7 @@ func setup(_settings: WorldSettings) -> void:
 	#add_child(platform)
 	
 	#var T := Transform3D.IDENTITY.rotated(Vector3.FORWARD, PI / 2).translated(Vector3.UP * 10)
-	#var RT := Transform3D.IDENTITY.rotated(Vector3.UP, 2 * PI / 3)
+	#var RT := Transform3D.IDENTITY.rotated(Vector3.UP, TAU / 3)
 	#var circle_path := Pathway.new().move_to(Vector3.ZERO).circle_with_speed(4, 2, 1)
 	#var path1 := PathStyle.new(0, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path(T)
 	#var path2 := PathStyle.new(1, Vector3(20, 1000, -20)).follow_path(circle_path).align_y_to_ground_and_air().look_at_player_xz().transform_path([RT, T])
@@ -279,7 +279,7 @@ func make_line_targets() -> void:
 	const UP = 0
 	const CENTER = 1
 	const HORZ = 2
-	var facing_tangent := rng.randf() * 2 * PI
+	var facing_tangent := rng.randf() * TAU
 	var is_horz := true # rng.randf() < pop.fit(0.0, 0.9)
 	var tform: Transform3D
 	if is_horz:
@@ -300,7 +300,7 @@ func make_line_targets() -> void:
 	var moving_path := Rand.entity_from_distribution(rng.randf(), {make_circle_path: 0, make_still_path: 10}) as Callable
 		
 	for p in path.sample_points(count):
-		var s := p.length() * 2 * PI * 0.1
+		var s := p.length() * TAU * 0.1
 		var subpath := moving_path.call(p, s) as Pathway
 		var path_style := PathStyle.new(0, pos3d).follow_path(subpath).align_y_to_ground_and_air().look_at_player().transform_path(tform).origin_is_offset()
 		var config := TargetShape.config_for_gauge(el, null, 2.0, Vitals.default_ea(0.1, 0), path_style)

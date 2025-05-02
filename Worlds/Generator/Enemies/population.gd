@@ -98,7 +98,7 @@ func get_flat_ground(center: Vector2, offset_y: float, r: float, rang: RandomNum
 	var best := INF
 	var result := Vector3(center.x, 0, center.y)
 	for i in max_check:
-		var pos := Vector3(center.x, 0, center.y) + Vec3.polar(r, 2 * PI * rang.randf(), 0)
+		var pos := Vector3(center.x, 0, center.y) + Vec3.polar(r, TAU * rang.randf(), 0)
 		var world_normal := chunker.terrain_normal(pos.x, pos.z)
 		var wh: float = world_normal.get("position", Vector3.ZERO).y
 		var norm: Vector3 = world_normal.get("normal", Vector3.UP)
@@ -270,6 +270,7 @@ func spawn_building(building: World.Building, p: Vector2, spacing: float, config
 	var pos := Vector3(p.x, 0, p.y)
 	
 	result.scale = Vec3.a(config.get("scale", 1.0) as float)
+	result.rotate(Vector3.UP, config.get("rot_y", 0.0) as float)
 	
 	return prepare_building(result, pos, always_valid, seedling)
 	

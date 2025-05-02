@@ -73,7 +73,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					
 				var radius := rng.randf_range(15.0, 30.0)
 				var tree_path := Pathway.new().circle(radius, 0, 1)
-				tree_path.apply_transform(T.rotated(Vector3.UP, 2 * PI * rng.randf()).translated(Vec3.xz(pos)))
+				tree_path.apply_transform(T.rotated(Vector3.UP, TAU * rng.randf()).translated(Vec3.xz(pos)))
 				spawn_foliage_randomly(pop, 6, tree_path, {World.Foliage.TREE_BRANCHED: 1}, rng, spacing)
 					
 				var spawner := pop.spawn_spawner(World.Item.ARTIFACT, pos, art)
@@ -88,7 +88,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var pos := area[index]
 				var r := Rand.entity_from_distribution(rng.randf(), {10: pop.fit(0.05, 0.5), 5: pop.fit(0.15, 0.5), 3: pop.fit(0.8, 0.5)}) as int
 				const circle_points = 3
-				var angle_offset := rng.randf_range(0, 2 * PI)
+				var angle_offset := rng.randf_range(0, TAU)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
@@ -106,7 +106,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var pos := area[index]
 				var r := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.05, 0.5), 3: pop.fit(0.15, 0.5), 1: pop.fit(0.8, 0.5)}) as int
 				const circle_points = 3
-				var angle_offset := rng.randf_range(0, 2 * PI)
+				var angle_offset := rng.randf_range(0, TAU)
 				var radius_offset := rng.randf_range(0, float(r))
 				var path := Pathway.new().circle(radius_offset + r * 8, 0, 1)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))

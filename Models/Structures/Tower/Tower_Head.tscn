@@ -1,0 +1,64 @@
+[gd_scene load_steps=4 format=3 uid="uid://cafvcuce8jyas"]
+
+[ext_resource type="PackedScene" uid="uid://d0cji0hnisgqb" path="res://Models/Structures/Tower/Tower_Head.fbx" id="1_ecw61"]
+[ext_resource type="Script" path="res://Models/Structures/building.gd" id="2_if0by"]
+[ext_resource type="Curve3D" uid="uid://m8hpyy7fgexu" path="res://Models/Structures/Tower/tower_floor_hole.tres" id="3_i278j"]
+
+[node name="Tower_Head" instance=ExtResource("1_ecw61")]
+script = ExtResource("2_if0by")
+
+[node name="Tower_03_LOD0" parent="." index="0"]
+visibility_range_end = 50.0
+
+[node name="Tower_03_LOD1" parent="." index="1"]
+visibility_range_begin = 50.0
+visibility_range_end = 100.0
+
+[node name="Tower_03_LOD2" parent="." index="2"]
+visibility_range_begin = 100.0
+
+[node name="static_csg" type="CSGCylinder3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+visible = false
+use_collision = true
+collision_mask = 0
+radius = 2.2
+height = 6.0759
+
+[node name="inner" type="CSGCylinder3D" parent="static_csg" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+operation = 2
+radius = 1.8
+height = 6.2
+
+[node name="second_floor" type="CSGCylinder3D" parent="static_csg" index="1"]
+radius = 2.2
+height = 0.1
+
+[node name="hole" type="CSGBox3D" parent="static_csg/second_floor" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.18956, 0.0119042, 0.0361764)
+operation = 2
+size = Vector3(1, 0.2, 1.09932)
+
+[node name="first_floor" type="CSGCylinder3D" parent="static_csg" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
+radius = 2.2
+height = 0.1
+
+[node name="Path3D" type="Path3D" parent="static_csg/first_floor" index="0"]
+curve = ExtResource("3_i278j")
+
+[node name="hole" type="CSGPolygon3D" parent="static_csg/first_floor" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.280821, -0.0687517, 0)
+operation = 2
+polygon = PackedVector2Array(0, 0, 0, 0.2, 0.5, 0.2, 0.5, 0)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 1
+path_local = true
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false

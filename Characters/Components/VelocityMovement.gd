@@ -193,7 +193,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 	if should_rotate_character and navigation_velocity != Vector3.ZERO and not body.has_node("CamPivot"):
 		var goal_angle := atan2(-navigation_velocity.x, -navigation_velocity.z)
 		if is_zero_approx(navigation_velocity.x) and is_zero_approx(navigation_velocity.z):
-			#body.rotation.y = lerp_angle(body.rotation.y, sin(navigation_velocity.y) * 2 * PI, 0.05)
+			#body.rotation.y = lerp_angle(body.rotation.y, sin(navigation_velocity.y) * TAU, 0.05)
 			pass # dont rotate if character is moving up/down
 		else:
 			body.rotation.y = lerp_angle(body.rotation.y, goal_angle, 0.3)

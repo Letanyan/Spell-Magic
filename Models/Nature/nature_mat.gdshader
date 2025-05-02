@@ -31,7 +31,7 @@ void vertex() {
 	ROUGHNESS=roughness;
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 
-	if (UV.y > 0.125 && UV.y < 0.125 + 0.0625) {		
+	if (UV.y > 0.125 && UV.y < 0.125 + 0.0625) {
 		float wind_speed = texture(wind_speed_change, vec2(0.5, sin(TIME) * wind_speed_multiplier)).r;
 		vec2 wind_dir = vec2(
 			texture(wind_noise, vec2(sin(TIME) * wind_speed * 0.1, 0.5)).r * 2.0 - 1.0,

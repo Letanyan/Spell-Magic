@@ -56,7 +56,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					result.append(p)
 				var count := rng.randi_range(5, 5 + pop.fiti(2, 5))
 				var radius := rng.randf_range(spacing, spacing * pop.fit(1, 3))
-				var path := Pathway.new().ngon(1, 5, radius).apply_transform(T.rotated(Vector3.UP, rng.randf() * 2 * PI).translated(Vec3.xz(pos)))
+				var path := Pathway.new().ngon(1, 5, radius).apply_transform(T.rotated(Vector3.UP, rng.randf() * TAU).translated(Vec3.xz(pos)))
 				var foliage_ratio := Rand.normalise_distribution({World.Foliage.ROCK_SQUASHED: rng.randf(), World.Foliage.TREE_PALM: rng.randf()})
 				for position in path.sample_points_xz(count):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_ratio) as World.Foliage
@@ -71,7 +71,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var col_count := rng.randi_range(1, pop.fiti(2, 7))
 				var width := rng.randf_range(spacing, spacing * pop.fit(1, 3))
 				var height := rng.randf_range(spacing, spacing * pop.fit(1, 3))
-				var path := Pathway.new().grid(1, row_count, col_count, width, height).apply_transform(T.rotated(Vector3.UP, rng.randf() * 2 * PI).translated(Vec3.xz(pos)))
+				var path := Pathway.new().grid(1, row_count, col_count, width, height).apply_transform(T.rotated(Vector3.UP, rng.randf() * TAU).translated(Vec3.xz(pos)))
 				var foliage_ratio := Rand.normalise_distribution({World.Foliage.ROCK_SQUASHED: rng.randf(), World.Foliage.TREE_PALM: rng.randf()})
 				for position in path.sample_points_xz(row_count * col_count):
 					var kind := Rand.entity_from_non_relative_distribution(rng.randf(), foliage_ratio) as World.Foliage

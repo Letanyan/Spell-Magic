@@ -63,7 +63,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var king := pop.spawn_enemy(World.Enemy.MUSHKING, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.25, 0.5), 4: pop.fit(0.125, 0.5), 3: pop.fit(0.5, 0.25), 2: pop.fit(0.25, 0.25), 1: pop.fit(0.125, 0)}) as int
-				var angle_offset := rng.randf_range(0, 2 * PI)
+				var angle_offset := rng.randf_range(0, TAU)
 				var radius_offset := rng.randf_range(10, 20)
 				
 				var foliage_rates := Rand.normalise_distribution({World.Foliage.MUSHROOM_BULB: rng.randf(), World.Foliage.MUSHROOM_POINTED: rng.randf()})
@@ -80,7 +80,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var king := pop.spawn_enemy(World.Enemy.SNOT_BLOB, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.entity_from_distribution(rng.randf(), {5: pop.fit(0.25, 0.5), 4: pop.fit(0.125, 0.5), 3: pop.fit(0.5, 0.25), 2: pop.fit(0.25, 0.25), 1: pop.fit(0.125, 0)}) as int
-				var angle_offset := rng.randf_range(0, 2 * PI)
+				var angle_offset := rng.randf_range(0, TAU)
 				var radius_offset := rng.randf_range(10, 20)
 				
 				var foliage_rates := Rand.normalise_distribution({World.Foliage.ROCK_EGG: rng.randf(), World.Foliage.ROCK_TALL: rng.randf()})
@@ -117,7 +117,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var king := pop.spawn_enemy(World.Enemy.DRAGON if rng.randf() < pop.fit(0.8, 0.2) else World.Enemy.DRAGOON, pos, spacing)
 				if king != null: result.append(king)
 				var minion_count := Rand.roll(8, 3, 0, rng, Rand.Accum.AVG)
-				var angle_offset := rng.randf_range(0, 2 * PI)
+				var angle_offset := rng.randf_range(0, TAU)
 				var radius_offset := rng.randf_range(10, 20)
 				var path := Pathway.new().ngon(1, 3, radius_offset, Easing.linear)
 				path.apply_transform(T.rotated(Vector3.UP, angle_offset).translated(Vec3.xz(pos)))
@@ -135,7 +135,7 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 				var king_count := Rand.entity_from_distribution(rng.randf(), { 4: pop.fit(1, 8), 3: pop.fit(2, 4), 2: pop.fit(4, 2), 1: pop.fit(8, 1)  }) as int
 				var radius := rng.randf_range(10.0, 15.0)
 				var king_path := Pathway.new().ngon(1, king_count, radius, Easing.linear)
-				king_path.apply_transform(T.rotated(Vector3.UP, rng.randf() * 2 * PI).translated(Vec3.xz(pos)))
+				king_path.apply_transform(T.rotated(Vector3.UP, rng.randf() * TAU).translated(Vec3.xz(pos)))
 				var king_ratio := { World.Enemy.SNOT_SPIKE: rng.randf(), World.Enemy.MUSHKING: rng.randf(), World.Enemy.DRAGOON: rng.randf() }
 				spawn_enemies_randomly(result, pop, king_count, king_path, king_ratio, rng, spacing)
 					
