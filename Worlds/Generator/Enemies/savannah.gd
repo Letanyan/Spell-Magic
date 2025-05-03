@@ -18,6 +18,7 @@ const savannah_structure_base := {
 	SavannahStructuresKind.LONE_ORC: 0.1,
 	SavannahStructuresKind.ARTIFACT: 0.01,
 	SavannahStructuresKind.NOTE: 0.1,
+	SavannahStructuresKind.TOWER: 2,
 }
 var savannah_structure := {}
 
@@ -38,6 +39,12 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 		match struct:
 			SavannahStructuresKind.NONE:
 				pass
+				
+			SavannahStructuresKind.TOWER:
+				var pos := area[index]
+				var obj := pop.spawn_building(World.Building.TOWER_BASE, pos, spacing, {"scale": 3.0, "height": 2, "rot_y": rng.randf_range(0, TAU)})
+				if obj != null: 
+					result.append(obj)
 				
 			SavannahStructuresKind.TREE_SAFARI:
 				var pos := area[index]

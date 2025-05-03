@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cafvcuce8jyas"]
+[gd_scene load_steps=5 format=3 uid="uid://cafvcuce8jyas"]
 
 [ext_resource type="PackedScene" uid="uid://d0cji0hnisgqb" path="res://Models/Structures/Tower/Tower_Head.fbx" id="1_ecw61"]
 [ext_resource type="Script" path="res://Models/Structures/building.gd" id="2_if0by"]
 [ext_resource type="Curve3D" uid="uid://m8hpyy7fgexu" path="res://Models/Structures/Tower/tower_floor_hole.tres" id="3_i278j"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fumtu"]
+size = Vector3(0.75, 2.915, 0.2)
 
 [node name="Tower_Head" instance=ExtResource("1_ecw61")]
 script = ExtResource("2_if0by")
@@ -19,7 +22,6 @@ visibility_range_begin = 100.0
 
 [node name="static_csg" type="CSGCylinder3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-visible = false
 use_collision = true
 collision_mask = 0
 radius = 2.2
@@ -49,9 +51,9 @@ height = 0.1
 curve = ExtResource("3_i278j")
 
 [node name="hole" type="CSGPolygon3D" parent="static_csg/first_floor" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.280821, -0.0687517, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.444339, -0.0687517, 0)
 operation = 2
-polygon = PackedVector2Array(0, 0, 0, 0.2, 0.5, 0.2, 0.5, 0)
+polygon = PackedVector2Array(0, 0, 0, 0.2, 0.7, 0.2, 0.7, 0)
 mode = 2
 path_node = NodePath("../Path3D")
 path_interval_type = 0
@@ -62,3 +64,9 @@ path_local = true
 path_continuous_u = true
 path_u_distance = 1.0
 path_joined = false
+
+[node name="static" type="StaticBody3D" parent="." index="4"]
+
+[node name="ladder" type="CollisionShape3D" parent="static" index="0"]
+transform = Transform3D(0.997003, -0.00883553, -0.0768567, -3.72529e-09, 0.993457, -0.114209, 0.0773628, 0.113867, 0.990479, 1.15802, 1.63409, 0.269548)
+shape = SubResource("BoxShape3D_fumtu")

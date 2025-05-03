@@ -178,6 +178,8 @@ func prepare_building(building: Building, pos: Vector3, user_info: Callable, see
 			entity_manager.free_building(building)
 			return null
 		building.position = Vector3(pos.x, wh + info.get("y_offset", 0.0) as float, pos.z)
+		if building.kind == World.Building.TOWER_BASE:
+			building.position.y -= building.scale.x * 0.2
 		var scur := Globals.Ref.new(seedling)
 		#building.setup(Rand.randi(scur), current_biome_during_generation)
 		building.name = str(building.kind) + "_" + Rand.id(4, Rand.randi(scur))
