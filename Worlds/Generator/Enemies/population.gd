@@ -159,7 +159,7 @@ func prepare_world_item(entity: WorldItem, pos: Vector3, user_info: Callable, se
 		match entity.kind:
 			World.Item.ARTIFACT: SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, message: String) -> void: mark_entity(entity))
 			World.Item.SPELL: SignalBus.pick_up_world_item_spell.connect(func(a: Spell, message: String) -> void: mark_entity(entity))
-			World.Item.COIN: SignalBus.pick_up_world_item_coin.connect(func(a: Array[int], message: String) -> void: mark_entity(entity))
+			World.Item.COIN: SignalBus.pick_up_world_item_coin.connect(func(a: int, message: String) -> void: mark_entity(entity))
 			World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
 			World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
 			World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
@@ -443,7 +443,7 @@ func update_info(world: Node3D, cam: Camera3D) -> void:
 		if item is TargetShape:
 			if (item as TargetShape).puzzle_kind == TargetShape.PuzzleKind.PLATFORM:
 				(item.get_node("./static/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > (item as TargetShape).bounds.length() * 1.25 + 50
-			else:
+			elif (item as TargetShape).puzzle_kind != TargetShape.PuzzleKind.EMPTY:
 				(item.get_node("./area/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50
 		else:
 			(item.get_node("./area/shape") as CollisionShape3D).disabled = display_only or item.position.distance_to(player.position) > 50

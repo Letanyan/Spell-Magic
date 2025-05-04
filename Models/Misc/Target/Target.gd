@@ -1,7 +1,7 @@
 class_name TargetShape
 extends WorldItem
 
-enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID_EA, PLATFORM }
+enum PuzzleKind { SINGLE_HIT, DAMAGE, ELEMENTAL_APPLICATION, AVOID_DAMAGE, AVOID_EA, PLATFORM, EMPTY }
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var area_3d: Area3D = $area
@@ -279,10 +279,14 @@ func unset_down() -> void:
 	gauge.value = gauge.min_value
 	update_health_bar()
 	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
-	($area/shape as CollisionShape3D).disabled = false
+	($area/shape as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM or puzzle_kind == PuzzleKind.EMPTY
 
 func update_mesh_with_color(color: Color) -> void:
-	if puzzle_kind == PuzzleKind.PLATFORM:
+	if puzzle_kind == PuzzleKind.EMPTY:
+		($platform as MeshInstance3D).hide()
+		($coin as MeshInstance3D).hide()
+		($label as Label3D).hide()
+	elif puzzle_kind == PuzzleKind.PLATFORM:
 		($platform as MeshInstance3D).show()
 		($coin as MeshInstance3D).hide()
 		($label as Label3D).hide()
@@ -310,7 +314,7 @@ func update_health_bar() -> void:
 		return
 	health_bar_level.hide()
 	match puzzle_kind:
-		PuzzleKind.SINGLE_HIT, PuzzleKind.PLATFORM:
+		PuzzleKind.SINGLE_HIT, PuzzleKind.PLATFORM, PuzzleKind.EMPTY:
 			health_bar.hide()
 		PuzzleKind.DAMAGE, PuzzleKind.AVOID_DAMAGE:
 			health_bar.show()
@@ -399,6 +403,12 @@ static func config_for_platform(el: Spell.Element, size: float, pth: PathStyle, 
 		"element": el, "path": pth, "size": size
 	}
 	
+static func config_for_empty(el: Spell.Element, size: float, pth: PathStyle, atk: AttackSequence) -> Dictionary:
+	return {
+		"puzzle": PuzzleKind.EMPTY, "has_spell": atk != null,
+		"element": el, "path": pth, "size": size, "attack_sequence": atk,
+	}
+	
 func configure(config: Dictionary) -> void:
 	element = config.get("element", Spell.Element.VOID)
 	spawner = config.get("spawner", null)
@@ -409,8 +419,9 @@ func configure(config: Dictionary) -> void:
 	puzzle_kind = config.get("puzzle", PuzzleKind.SINGLE_HIT)
 	current_attack = config.get("spell", null)
 	caster_position = config.get("caster_position", Vector3.ZERO)
+	attack_sequence = config.get("attack_sequence", null)
 	($static/shape as CollisionShape3D).disabled = puzzle_kind != PuzzleKind.PLATFORM
-	($area/shape as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM
+	($area/shape as CollisionShape3D).disabled = puzzle_kind == PuzzleKind.PLATFORM or puzzle_kind == PuzzleKind.EMPTY
 	if config.has("size"):
 		resize_target(config["size"] as float)
 	else:

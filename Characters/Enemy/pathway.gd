@@ -198,9 +198,19 @@ func line_to(end: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
 	cursor = end
 	return self
 	
+func line_by(offset: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.linear(cursor, cursor + offset), speed, m)
+	cursor += offset
+	return self
+	
 func cubic_to(end: Vector3, c1: Vector3, c2: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
 	add_with_speed(Segment.cubic(cursor, end, c1, c2), speed, m)
 	cursor = end
+	return self
+	
+func cubic_by(offset: Vector3, c1: Vector3, c2: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.cubic(cursor, cursor + offset, c1, c2), speed, m)
+	cursor += offset
 	return self
 	
 func quad_to(end: Vector3, c1: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
@@ -208,9 +218,19 @@ func quad_to(end: Vector3, c1: Vector3, speed: float, m: Segment = Easing.linear
 	cursor = end
 	return self
 	
+func quad_by(offset: Vector3, c1: Vector3, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.quad(cursor, cursor + offset, c1), speed, m)
+	cursor += offset
+	return self
+	
 func arc_to(end: Vector3, clockwise: bool, speed: float, m: Segment = Easing.linear) -> Pathway:
 	add_with_speed(Segment.arc_between_points(cursor, end, clockwise), speed, m)
 	cursor = end
+	return self
+	
+func arc_by(offset: Vector3, clockwise: bool, speed: float, m: Segment = Easing.linear) -> Pathway:
+	add_with_speed(Segment.arc_between_points(cursor, cursor + offset, clockwise), speed, m)
+	cursor += offset
 	return self
 	
 ## step_offset: shifts points by the distance between each time step. value must be in range [0, 1].

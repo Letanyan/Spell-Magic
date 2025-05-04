@@ -22,6 +22,7 @@ visibility_range_begin = 100.0
 
 [node name="static_csg" type="CSGCylinder3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+visible = false
 use_collision = true
 collision_mask = 0
 radius = 2.2
