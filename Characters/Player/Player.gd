@@ -334,7 +334,7 @@ func fire_mana_particles(amount: int) -> void:
 	mana.amount = amount
 	mana.restart()
 
-func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: Spell, time: float, p: SpellBody, damage: Dictionary) -> void:
+func give_back_mana_after_hit(origin: Node3D, target: Node3D, target_layer: int, spell: Spell, time: float, p: SpellBody, damage: Dictionary) -> void:
 	if not origin is Player:
 		return
 	var c := spell.cooldown
@@ -348,7 +348,7 @@ func give_back_mana_after_hit(origin: Node3D, target: CollisionObject3D, spell: 
 	vitals.mana.apply_ignoring_resistance(amount)
 	if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		world_settings.upgrade_settings.progress_mana_back(amount, active_enemy_kinds)
-	if target.collision_layer & Globals.Layer.ENEMY != 0:
+	if target_layer & Globals.Layer.ENEMY != 0:
 		update_artifact_effects(Artifact.Event.DEAL, spell)
 		if not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 			world_settings.upgrade_settings.progress_damage_deal(damage, active_enemy_kinds)

@@ -60,8 +60,9 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 					])
 					var config := TargetShape.config_for_empty(Spell.Element.FIRE, 2.0, path, atk)
 					var target := pop.spawn_world_item(World.Item.TARGET, pos, 0.0, config) as TargetShape
-					target.position = pos3
 					if target != null:
+						target.position = pos3
+						target.player = pop.player
 						result.append(target)
 						
 					var art := pop.spawn_world_item(World.Item.COIN, pos, 0.0, {}, false) as CoinDisc
