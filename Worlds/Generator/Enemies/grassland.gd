@@ -9,6 +9,7 @@ enum GrasslandStructuresKind {
 	TARGET_PUZZLE,
 	HIVE, SLIMY, FLOCK, PETS, FISH,
 	ARTIFACT, NOTE,
+	TOWER,
 }
 
 const grassland_structure_base := {
@@ -22,6 +23,7 @@ const grassland_structure_base := {
 	#GrasslandStructuresKind.TARGET_PUZZLE: 0.01
 	GrasslandStructuresKind.ARTIFACT: 0.01,
 	GrasslandStructuresKind.NOTE: 0.1,
+	GrasslandStructuresKind.TOWER: 2,
 }
 var grassland_structure := {}
 
@@ -50,6 +52,39 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 			GrasslandStructuresKind.TREE_BRANCHED:
 				var pos := area[index] as Vector2
 				pop.spawn_foliage(World.Foliage.TREE_BRANCHED, pos, {"spacing": spacing, "scale": rng.randf_range(2, 5)})
+				
+				
+			GrasslandStructuresKind.TOWER:
+				var pos := area[index]
+				var h := pop.fiti(1, 6)
+				var obj := pop.spawn_building(World.Building.TOWER_BASE, pos, spacing, {"scale": 3.0, "height": h, "rot_y": rng.randf_range(0, TAU)})
+				if obj != null:
+					var pos3 := pop.get_ground_level(pos, 10.0)
+					var pathway := Pathway.empty().wait(2)
+					var path := PathStyle.new(0, pos3).follow_path(pathway).align_y_to_origin()
+					
+					var linear := GlobalData.magic_book.copy_spell("linear-arc")
+					linear.configure({"R": "pi*"+pop.fits(0.1, 1.0), "s": pop.fits(2,10), "d": "0"}, Spell.Element.FIRE, 10, pop.fit(0, 50), pop.fit(0.1, 0.5), pop.fiti(1,5), 0, 0, pop.fit(10, 30))
+					var linear_pattern := AttackPatterns.new([linear], AttackPatterns.choose_from_distribution(4, [1], 1))
+					var atk_seq := []
+					for i in h:
+						atk_seq.append(linear_pattern)
+						atk_seq.append(PathStyle.new(0).follow_path(Pathway.new().wait(2, pos3 + Vec3.y(10 * i))).align_y_to_origin())
+					var atk := AttackSequence.new(true, atk_seq)
+					var config := TargetShape.config_for_empty(Spell.Element.FIRE, 2.0, path, atk)
+					var target := pop.spawn_world_item(World.Item.TARGET, pos, 0.0, config) as TargetShape
+					if target != null:
+						target.position = pos3
+						target.player = pop.player
+						result.append(target)
+						
+					var art := pop.spawn_world_item(World.Item.COIN, pos, 0.0, {}, false) as CoinDisc
+					if art != null:
+						art.amount = 10
+						art.position = pop.get_ground_level(pos) + Vec3.y(3.0 * (h + 1.5) * obj.scale.x)
+						result.append(art)
+						
+					result.append(obj)
 					
 			GrasslandStructuresKind.FISH:
 				var pos := area[index]

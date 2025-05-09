@@ -6,6 +6,7 @@ enum OtherworldStructuresKind {
 	FLOWER_FIELD,
 	LONE_PINK, LONE_RED, LONE_DRAGON,
 	ARTIFACT, NOTE,
+	TOWER,
 }
 
 const otherworld_structure_base := {

@@ -6,7 +6,6 @@ enum SavannahStructuresKind {
 	TREE_SAFARI, TREE_BRANCHED, 
 	PIGEONS, LONE_ORC, ORC_HORDE,
 	ARTIFACT, NOTE,
-	TOWER
 }
 
 const savannah_structure_base := {
@@ -18,7 +17,6 @@ const savannah_structure_base := {
 	SavannahStructuresKind.LONE_ORC: 0.1,
 	SavannahStructuresKind.ARTIFACT: 0.01,
 	SavannahStructuresKind.NOTE: 0.1,
-	SavannahStructuresKind.TOWER: 2,
 }
 var savannah_structure := {}
 
@@ -39,39 +37,6 @@ func populate(pop: Population, area: PackedVector2Array, from: Globals.Ref, limi
 		match struct:
 			SavannahStructuresKind.NONE:
 				pass
-				
-			SavannahStructuresKind.TOWER:
-				var pos := area[index]
-				var h := 2
-				var obj := pop.spawn_building(World.Building.TOWER_BASE, pos, spacing, {"scale": 3.0, "height": h, "rot_y": rng.randf_range(0, TAU)})
-				if obj != null:
-					var pos3 := pop.get_ground_level(pos, 10.0)
-					var pathway := Pathway.empty().wait(2)
-					var path := PathStyle.new(0, pos3).follow_path(pathway).align_y_to_origin()
-					
-					var linear := GlobalData.magic_book.copy_spell("linear-arc")
-					linear.configure({"R": "pi", "s": "10", "d": "1"}, Spell.Element.FIRE, 5, 0, 0.5, 2, 0, 0, 30)
-					var linear_pattern := AttackPatterns.new([linear], AttackPatterns.choose_from_distribution(4, [1], 1))
-					var atk := AttackSequence.new(true, [
-						linear_pattern,
-						PathStyle.new(0).follow_path(Pathway.new().wait(2, pos3 + Vec3.y(10))).align_y_to_origin(),
-						linear_pattern,
-						PathStyle.new(0).follow_path(Pathway.new().wait(2, pos3)).align_y_to_origin(),
-					])
-					var config := TargetShape.config_for_empty(Spell.Element.FIRE, 2.0, path, atk)
-					var target := pop.spawn_world_item(World.Item.TARGET, pos, 0.0, config) as TargetShape
-					if target != null:
-						target.position = pos3
-						target.player = pop.player
-						result.append(target)
-						
-					var art := pop.spawn_world_item(World.Item.COIN, pos, 0.0, {}, false) as CoinDisc
-					if art != null:
-						art.amount = 10
-						art.position = pop.get_ground_level(pos) + Vec3.y(3.0 * (h + 1.5) * obj.scale.x)
-						result.append(art)
-						
-					result.append(obj)
 				
 			SavannahStructuresKind.TREE_SAFARI:
 				var pos := area[index]
