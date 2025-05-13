@@ -6,6 +6,7 @@ var origin_node: Node3D
 var entity: Entity
 var particles: Array[SpellBody] = []
 var ignore_mana_cost: bool
+var spells_on_hold: Dictionary = {}
 
 var complexity_tracker := {} ## [int]{count: float, mean: float, M2: float}
 var update_index := 0
@@ -402,10 +403,12 @@ func all_spell_variables(body: Node3D, p: SpellBody, spell: Spell) -> Vars:
 	spell_variables(result, body, SpellVariableKind.TIMED, p, spell)
 	return result
 
-func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Vars = null) -> MagicBook.DisallowSpellReason:
+## is_projection: when given an object will fill with turret nodes
+func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, target: Node3D = null, inherited_vars: Vars = null, is_projection: Globals.Ref = null) -> MagicBook.DisallowSpellReason:
 	if vitals != null:
 		if vitals.mana.value >= spell.actual_mana_cost() or ignore_mana_cost:
-			vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
+			if is_projection == null:
+				vitals.mana.apply_ignoring_resistance(-spell.actual_mana_cost())
 		else:
 			return MagicBook.DisallowSpellReason.MANA
 			
@@ -457,9 +460,17 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		particles.append(p)
 		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 		var delay := spell.calculate_delay(p.fixed_vars)
-		start_particle(delay, body, p, insert)
+		if is_projection != null:
+			var turret := start_projecting_particle(delay, body, p, insert)
+			turret.projectile = p
+			turret.spell_caster = self
+			turret.body = body
+			(is_projection.data as Array).append(turret)
+		else:
+			start_particle(delay, body, p, insert)
 		
 	return MagicBook.DisallowSpellReason.NONE
+	
 		
 func get_spell_tracking_offset(spell: Spell, vars: Vars) -> Vector3:
 	var temp_U := vars.get_value(Vars.U)
@@ -485,7 +496,7 @@ func get_spell_tracking_offset(spell: Spell, vars: Vars) -> Vector3:
 	
 
 func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) -> void:
-	var q: Node3D = null
+	var q: SpellTurret = null
 	if delay > 0 and p.spell.is_bomb:
 		q = p.spell.get_turret(p.n, p.fixed_vars)
 		insert.call(q)
@@ -499,11 +510,17 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 	insert.call(p)
 	if q and q.get_parent():
 		SpellBuffer.free_turrent(q)
+		
+func start_projecting_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) -> SpellTurret:
+	var q := p.spell.get_turret(p.n, p.fixed_vars)
+	insert.call(q)
+	return q
 
 func free_particles() -> void:
 	for p: SpellBody in particles:
 		p.free_particle()
 	particles.clear()
+		
 
 func update_complexity(id: int, value: float) -> void:
 	var dict := complexity_tracker.get(id, {"count": 0.0, "mean": 0.0, "M2": 0.0}) as Dictionary

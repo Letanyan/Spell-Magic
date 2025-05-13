@@ -22,6 +22,7 @@ var inhabitants: Array[Enemy] = []
 var spawner: ItemSpawner
 
 var is_mouse_down: bool = false
+var spells_on_hold: Dictionary = {}
 
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
@@ -95,11 +96,11 @@ func setup(_settings: WorldSettings) -> void:
 	#make_targets()
 	#make_line_targets()
 	
-	const pX = 100
-	const pY = 100
-	const LVL = 20
-	var enemy := Population.generate_enemy(World.Enemy.BLUEMON, player, pX / 10.0, 1000, pY / 10.0, LVL)
-	add_enemy(enemy)
+	#const pX = 100
+	#const pY = 100
+	#const LVL = 20
+	#var enemy := Population.generate_enemy(World.Enemy.BLUEMON, player, pX / 10.0, 1000, pY / 10.0, LVL)
+	#add_enemy(enemy)
 	#var bat := Population.generate_enemy(World.Enemy.BAT, player, pX, 1000, -pY)
 	#add_enemy(bat)
 	#var bat2 := Population.generate_enemy(World.Enemy.BAT, player, -pX, 1000, -pY)
@@ -432,6 +433,11 @@ func _physics_process(delta: float) -> void:
 	
 	for inhabitant in inhabitants:
 		inhabitant.manual_physics_process(delta)
+		
+	for turret_key: String in spells_on_hold:
+		for turret: SpellTurret in spells_on_hold[turret_key]:
+			turret.update_position(delta)
+			
 			
 	if daytime_tick >= 1.0:
 		if skybox.day_time + 0.016667 >= SkyBox.HOURS_IN_DAY:
@@ -551,10 +557,17 @@ func _input(event: InputEvent) -> void:
 			var is_down := false
 			var is_rapid_fire := Globals.Ref.new(false)
 			if event.is_action_pressed(k):
-				s = wand.action_down(k, book, is_rapid_fire)
+				var hold_spell := Globals.Ref.new(null)
+				s = wand.action_down(k, book, is_rapid_fire, hold_spell)
 				is_down = true
+				if hold_spell.data != null:
+					spells_on_hold[k] = player.project_spell(insert_spell, hold_spell.data as Spell)
 			if event.is_action_released(k):
 				s = wand.action_up(k, book)
+				if spells_on_hold.has(k):
+					for t: SpellTurret in spells_on_hold[k]:
+						SpellBuffer.free_turrent(t)
+					spells_on_hold.erase(k)
 			if s != null:
 				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
 				
@@ -564,7 +577,8 @@ func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> v
 	if is_down:
 		get_tree().create_timer(maxf(s.cooldown + 0.02, 0.1)).timeout.connect(func() -> void: 
 			var is_rapid_fire := Globals.Ref.new(false)
-			var ns := wand.action_down("", book, is_rapid_fire)
+			var hold_spell := Globals.Ref.new(null)
+			var ns := wand.action_down("", book, is_rapid_fire, hold_spell)
 			if ns != null and is_rapid_fire.data:
 				cast_spell_with_recusive_check_for_rapid_fire(ns, true)
 		)

@@ -22,17 +22,17 @@ func _ready() -> void:
 		var buffer := EntityManager.EntityBuffer.new(20, func() -> SpellBody: return packed_scenes[el].instantiate(), deinit_spell, str(Spell.Element.keys()[el]))
 		projectiles.append(buffer)
 
-	var deinit_turret := func(body: Node3D) -> void:
+	var deinit_turret := func(body: SpellTurret) -> void:
 		pass		
-	turrets = EntityManager.EntityBuffer.new(10, func() -> Node3D: return turret.instantiate(), deinit_turret, "TURRET")
+	turrets = EntityManager.EntityBuffer.new(10, func() -> SpellTurret: return turret.instantiate(), deinit_turret, "TURRET")
 
 func get_projectile(element: Spell.Element) -> SpellBody:
 	var result := projectiles[element].get_entity() as SpellBody
 	result.time_stamp = -1
 	return result
 	
-func get_turret() -> Node3D:
-	var result := turrets.get_entity() as Node3D
+func get_turret() -> SpellTurret:
+	var result := turrets.get_entity() as SpellTurret
 	return result
 	
 func free_projectile(s: SpellBody) -> void:
@@ -40,6 +40,6 @@ func free_projectile(s: SpellBody) -> void:
 	s.position.y = 1000
 	projectiles[s.spell.element].free_entity(s)
 
-func free_turrent(t: Node3D) -> void:
+func free_turrent(t: SpellTurret) -> void:
 	t.position.y = -1000
 	turrets.free_entity(t)

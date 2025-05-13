@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://cpt25moa3ter4"]
+[gd_scene load_steps=9 format=3 uid="uid://cpt25moa3ter4"]
 
+[ext_resource type="Script" path="res://Projectiles/turret/SpellTurret.gd" id="1_32erf"]
 [ext_resource type="Material" uid="uid://cwh0ctj5wk7pj" path="res://Projectiles/turret/turret.tres" id="1_tdy1p"]
 
 [sub_resource type="TorusMesh" id="TorusMesh_376pw"]
@@ -113,6 +114,7 @@ _data = {
 }
 
 [node name="Turret" type="Node3D"]
+script = ExtResource("1_32erf")
 
 [node name="outer" type="MeshInstance3D" parent="."]
 mesh = SubResource("TorusMesh_376pw")

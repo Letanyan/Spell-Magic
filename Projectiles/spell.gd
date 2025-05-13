@@ -635,7 +635,7 @@ func global_constant_variables() -> Vars:
 		result.set_raw(key, (expressions[key] as Expr).compute(result))
 	return result
 	
-func get_turret(n: int, fvars: Vars) -> Node3D:
+func get_turret(n: int, fvars: Vars) -> SpellTurret:
 	var fixed_vars := Vars.new()
 	fixed_vars.set_value(Vars.rn0, randf())
 	fixed_vars.set_value(Vars.rn1, randf())
@@ -654,6 +654,10 @@ func get_turret(n: int, fvars: Vars) -> Node3D:
 	
 	var p := SpellBuffer.get_turret()
 			
+	p.fixed_vars = fixed_vars
+	p.spell = self
+	p.charge = 0.0
+	print(fixed_vars.get_value(Vars.C))
 	p.position = calculate_location(fixed_vars)
 	
 	var radius := fixed_vars.get_value(Vars.r)

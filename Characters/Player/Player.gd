@@ -310,6 +310,7 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 		return
 	
 	var new_spell := next_spell.duplicate({}, true)
+	next_spell.charge = 0.0
 	for e: Artifact.Element in spell_modifier:
 		if e == new_spell.element or e == Artifact.Element.ANY:
 			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
@@ -326,6 +327,19 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 		spell_was_disallowed.emit(new_spell, err)
 	emit_vitals_update()
 			
+func project_spell(insert: Callable, next_spell: Spell) -> Array:
+	if vitals.stun.value > 0 or vitals.freeze.value >= 1.0:
+		return []
+	
+	var new_spell := next_spell.duplicate({}, true)
+	for e: Artifact.Element in spell_modifier:
+		if e == new_spell.element or e == Artifact.Element.ANY:
+			new_spell.power = new_spell.power * (1.0 + spell_modifier[e].y / 100.0) + spell_modifier[e].x
+	new_spell.crit_rate = new_spell.crit_rate * (1.0 + buff_crit_rate.y / 100.0) + buff_crit_rate.x 
+	new_spell.crit_dmg = new_spell.crit_dmg * (1.0 + buff_crit_dmg.y / 100.0) + buff_crit_dmg.x
+	var turrets := Globals.Ref.new([])
+	spell_caster.cast_spell(self, vitals, insert, new_spell, null, null, turrets)
+	return turrets.data
 		
 func _on_wet_area_body_entered(body: Node3D) -> void:
 	print(body)
