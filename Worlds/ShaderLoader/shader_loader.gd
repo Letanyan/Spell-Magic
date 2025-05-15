@@ -55,7 +55,8 @@ func _ready() -> void:
 	await get_tree().create_timer(WAIT_TIME).timeout
 	
 	if GlobalData.is_debug:
-		SceneHandler.load_new_scene("res://Worlds/TestArena/TestArena.tscn", "blink_to", func(content: Node3D) -> void: pass)
+		SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "blink_to", func(content: Node3D) -> void: pass)
+		#SceneHandler.load_new_scene("res://Worlds/TestArena/TestArena.tscn", "blink_to", func(content: Node3D) -> void: pass)
 		#SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "blink_to", func(content: Node3D) -> void: pass, Quotes.random())
 	else:
 		SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "blink_to", func(content: Node3D) -> void: pass, Quotes.random())

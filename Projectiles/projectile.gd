@@ -705,12 +705,18 @@ func update_spell(delta: float, vars: Vars) -> MagicBook.DisallowSpellReason:
 	if not is_active():
 		return MagicBook.DisallowSpellReason.NONE
 	time_stamp += delta
+	var did_reset := false
+	if spell.is_infinite and time_stamp >= spell.duration:
+		time_stamp = delta
+		did_reset = true
 	fixed_vars.set_value(Vars.t, time_stamp)
 	vars.set_value(Vars.frame_time, delta)
 	spell.compute_expressions(vars, expression_vars, true)
 	var exceeds := Globals.Ref.new(false)
 	var p := spell.calculate_location(vars, false, exceeds)
 	update_movement(p, false, vars)
+	if did_reset:
+		exceeds.data = false
 	return MagicBook.DisallowSpellReason.VELOCITY if exceeds.data else MagicBook.DisallowSpellReason.NONE
 
 func start_emitting() -> void:

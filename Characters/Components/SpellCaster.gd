@@ -16,7 +16,7 @@ func _init(o: Node3D, e: Entity) -> void:
 	entity = e
 	ignore_mana_cost = true
 	
-func update(body: Node3D, delta: float) -> Dictionary:
+func update(body: Node3D, delta: float, is_level_editor: bool = false) -> Dictionary:
 	var should_remove := []
 	var should_halt := []
 	var limit_reasons := {}
@@ -39,7 +39,7 @@ func update(body: Node3D, delta: float) -> Dictionary:
 		else:
 			p.update_tick = 0.0
 		
-		if p.is_active() and not p.has_expired():
+		if p.is_active() and (not p.has_expired() or (p.spell.is_infinite and is_level_editor)):
 			spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 			if entity == Entity.PLAYER:
 				p.tracking_offset = get_spell_tracking_offset(p.spell, p.fixed_vars)
@@ -56,7 +56,7 @@ func update(body: Node3D, delta: float) -> Dictionary:
 		else:
 			can_remove = true
 			
-		if p.has_expired():
+		if p.has_expired() and (not is_level_editor or is_level_editor and not p.spell.is_infinite):
 			if p.is_emitting and p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
 				can_remove = false
 				var insert_func := func(np: Node3D) -> void:

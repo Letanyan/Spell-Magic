@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://etbb6djyr1vu"]
+[gd_scene load_steps=41 format=3 uid="uid://etbb6djyr1vu"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/MagicPageGUI.gd" id="1_ruo5p"]
 [ext_resource type="Texture2D" uid="uid://dmxyaipyjam7j" path="res://GUI/Images/delete.svg" id="2_ap1iy"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://b432kdsd0kipn" path="res://GUI/Images/bomb.svg" id="10_5c3hv"]
 [ext_resource type="Texture2D" uid="uid://by6khnu0udj6o" path="res://GUI/Images/trail.svg" id="11_8d7vq"]
 [ext_resource type="Texture2D" uid="uid://5kr3ouhyf7f6" path="res://GUI/Images/sphere.svg" id="12_g3iwv"]
+[ext_resource type="Texture2D" uid="uid://4dgpi8j0fcy5" path="res://GUI/Images/infinity.svg" id="13_3mk3n"]
 [ext_resource type="Texture2D" uid="uid://mk8ss67kt2vf" path="res://GUI/Images/scroll.svg" id="13_cj856"]
 [ext_resource type="Texture2D" uid="uid://b3b3rxit3y2s7" path="res://GUI/Images/files.svg" id="14_20nh8"]
 [ext_resource type="Texture2D" uid="uid://bdud8ym7of11u" path="res://GUI/Images/cloud-upload.svg" id="14_d6mvu"]
@@ -483,6 +484,19 @@ offset_right = -8.0
 offset_bottom = 432.0
 text = "Use Spherical Coordinates"
 icon = ExtResource("12_g3iwv")
+
+[node name="is_infinite" type="CheckButton" parent="container"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -288.0
+offset_top = 432.0
+offset_right = -8.0
+offset_bottom = 460.0
+grow_horizontal = 0
+text = "Is Infinite"
+icon = ExtResource("13_3mk3n")
 
 [node name="mana" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -1488,6 +1502,8 @@ icon = ExtResource("62_gl3h1")
 [connection signal="toggled" from="container/is_rel" to="." method="_on_is_rel_toggled"]
 [connection signal="focus_entered" from="container/is_sphere" to="." method="_on_control_focus_entered"]
 [connection signal="toggled" from="container/is_sphere" to="." method="_on_is_sphere_toggled"]
+[connection signal="focus_entered" from="container/is_infinite" to="." method="_on_control_focus_entered"]
+[connection signal="toggled" from="container/is_infinite" to="." method="_on_is_infinite_toggled"]
 [connection signal="focus_entered" from="container/mana_edit" to="." method="_on_control_focus_entered"]
 [connection signal="text_changed" from="container/mana_edit" to="." method="_on_M_text_changed"]
 [connection signal="caret_changed" from="container/expressions" to="." method="_on_expressions_caret_changed"]

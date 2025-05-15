@@ -295,7 +295,7 @@ func _physics_process(delta: float) -> void:
 		cam.rotation.y = (dy * intensity) * (TAU / 16)
 		cam.rotation.z = (dz * intensity) * (TAU / 16)
 				
-	var reasons := spell_caster.update(self, delta)
+	var reasons := spell_caster.update(self, delta, world_settings.is_level_editor)
 	for spell: Spell in reasons:
 		spell_was_limited.emit(spell, reasons[spell])
 	

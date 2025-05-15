@@ -1,88 +1,15 @@
-[gd_scene load_steps=24 format=3 uid="uid://bayn6retdbrwm"]
+[gd_scene load_steps=20 format=3 uid="uid://bayn6retdbrwm"]
 
 [ext_resource type="Script" path="res://Worlds/TestArena/TestArena.gd" id="1_so5kd"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_g4l27"]
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Pause Menu/Menu.tscn" id="3_k0fau"]
-[ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="4_0c2pf"]
-[ext_resource type="Texture2D" uid="uid://f5rxr2duwopd" path="res://Worlds/SkyBox/stars.png" id="5_5ldaq"]
+[ext_resource type="Environment" uid="uid://dnhhg210yvls1" path="res://Worlds/Demo/world_environment.tres" id="4_hd6mj"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="6_wqlw8"]
 [ext_resource type="Material" uid="uid://d0gmvf62uyhd0" path="res://addons/kenney_prototype_tools/materials/red/material_01.tres" id="7_ul78n"]
 [ext_resource type="Material" uid="uid://bx6qeabdhq2s" path="res://addons/kenney_prototype_tools/materials/dark/material_01.tres" id="7_xb0vc"]
 [ext_resource type="Material" uid="uid://bmrckkx3cdrkk" path="res://addons/kenney_prototype_tools/materials/red/material_13.tres" id="8_m1hqp"]
 [ext_resource type="Material" uid="uid://ddal25jay8fq1" path="res://addons/kenney_prototype_tools/materials/purple/material_01.tres" id="9_fy4ku"]
 [ext_resource type="Material" uid="uid://duhk80o1wa5hh" path="res://addons/kenney_prototype_tools/materials/purple/material_13.tres" id="10_wuc0v"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rh1cl"]
-shader = ExtResource("4_0c2pf")
-shader_parameter/transition = 0.0
-shader_parameter/start_day_top_color = Color(0.1, 0.6, 1, 1)
-shader_parameter/start_day_bottom_color = Color(0.4, 0.8, 1, 1)
-shader_parameter/start_sunset_top_color = Color(0.7, 0.75, 1, 1)
-shader_parameter/start_sunset_bottom_color = Color(1, 0.5, 0.7, 1)
-shader_parameter/start_night_top_color = Color(0.02, 0, 0.04, 1)
-shader_parameter/start_night_bottom_color = Color(0.1, 0, 0.2, 1)
-shader_parameter/final_day_top_color = Color(0.1, 0.6, 1, 1)
-shader_parameter/final_day_bottom_color = Color(0.4, 0.8, 1, 1)
-shader_parameter/final_sunset_top_color = Color(0.7, 0.75, 1, 1)
-shader_parameter/final_sunset_bottom_color = Color(1, 0.5, 0.7, 1)
-shader_parameter/final_night_top_color = Color(0.02, 0, 0.04, 1)
-shader_parameter/final_night_bottom_color = Color(0.1, 0, 0.2, 1)
-shader_parameter/start_horizon_color = Color(0, 0.7, 0.8, 1)
-shader_parameter/start_horizon_blur = 1.0
-shader_parameter/final_horizon_color = Color(0, 0.7, 0.8, 1)
-shader_parameter/final_horizon_blur = 1.0
-shader_parameter/start_sun_color = Color(10, 8, 1, 1)
-shader_parameter/start_sun_sunset_color = Color(10, 0, 0, 1)
-shader_parameter/start_sun_size = 0.2
-shader_parameter/start_sun_blur = 10.0
-shader_parameter/final_sun_color = Color(10, 8, 1, 1)
-shader_parameter/final_sun_sunset_color = Color(10, 0, 0, 1)
-shader_parameter/final_sun_size = 0.2
-shader_parameter/final_sun_blur = 10.0
-shader_parameter/start_moon_color = Color(1, 0.95, 0.7, 1)
-shader_parameter/start_moon_size = 0.06
-shader_parameter/start_moon_blur = 0.1
-shader_parameter/final_moon_color = Color(1, 0.95, 0.7, 1)
-shader_parameter/final_moon_size = 0.06
-shader_parameter/final_moon_blur = 0.1
-shader_parameter/start_clouds_edge_color = Color(1, 1, 1, 1)
-shader_parameter/start_clouds_top_color = Color(1, 1, 1, 1)
-shader_parameter/start_clouds_middle_color = Color(0.92, 0.92, 0.98, 1)
-shader_parameter/start_clouds_bottom_color = Color(0.83, 0.83, 0.94, 1)
-shader_parameter/final_clouds_edge_color = Color(0.8, 0.8, 0.98, 1)
-shader_parameter/final_clouds_top_color = Color(1, 1, 1, 1)
-shader_parameter/final_clouds_middle_color = Color(0.92, 0.92, 0.98, 1)
-shader_parameter/final_clouds_bottom_color = Color(0.83, 0.83, 0.94, 1)
-shader_parameter/start_clouds_speed = 2.0
-shader_parameter/start_clouds_direction = 0.2
-shader_parameter/start_clouds_scale = 1.0
-shader_parameter/start_clouds_cutoff = 0.3
-shader_parameter/start_clouds_fuzziness = 0.0
-shader_parameter/start_clouds_weight = 0.0
-shader_parameter/start_clouds_blur = 0.25
-shader_parameter/final_clouds_speed = 2.0
-shader_parameter/final_clouds_direction = 0.2
-shader_parameter/final_clouds_scale = 1.0
-shader_parameter/final_clouds_cutoff = 0.3
-shader_parameter/final_clouds_fuzziness = 0.0
-shader_parameter/final_clouds_weight = 0.0
-shader_parameter/final_clouds_blur = 0.25
-shader_parameter/stars_speed = 1.0
-shader_parameter/stars_texture = ExtResource("5_5ldaq")
-shader_parameter/overwritten_time = 0.0
-
-[sub_resource type="Sky" id="Sky_ntni5"]
-sky_material = SubResource("ShaderMaterial_rh1cl")
-
-[sub_resource type="Environment" id="Environment_7ri5e"]
-background_mode = 2
-sky = SubResource("Sky_ntni5")
-ambient_light_source = 3
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_sky_contribution = 0.5
-fog_enabled = true
-fog_density = 0.0
-fog_sky_affect = 0.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wjmcb"]
 material = ExtResource("7_xb0vc")
@@ -147,7 +74,7 @@ render_target_update_mode = 4
 visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_7ri5e")
+environment = ExtResource("4_hd6mj")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.245646, 0.96936, 0, -0.96936, -0.245646, -9.93047, 10.2263, 0)

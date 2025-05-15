@@ -13,6 +13,7 @@ var is_paused: bool
 var day_of_the_year: int
 var time_of_day: float
 var is_test_arena: bool = false
+var is_level_editor: bool = false
 var world_generation_version: int = -1
 var sea_level: float = 0.0
 var world_radius: float = 10000.0
@@ -53,7 +54,7 @@ func save_dict() -> Dictionary:
 		"enemies_killed": enemies_killed, "marked_entities": marked_entities, "day_of_the_year": day_of_the_year,
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		"world_generation_version": world_generation_version, "sea_level": sea_level, "world_radius": world_radius,
-		"difficulty_level": difficulty_level,
+		"difficulty_level": difficulty_level, "is_level_editor": is_level_editor,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
@@ -89,6 +90,7 @@ func load_dict(data: Dictionary) -> void:
 	day_of_the_year = data.get("day_of_the_year", 1)
 	time_of_day = data.get("time_of_day", 12.0)
 	is_test_arena = data.get("is_test_arena", false)
+	is_level_editor = data.get("is_level_editor", false)
 	world_generation_version = data.get("world_generation_version", -1) 
 	sea_level = data.get("sea_level", 0.0)
 	world_radius = data.get("world_radius", 10000.0)

@@ -40,6 +40,7 @@ var current_preview_index: int = 0
 @onready var is_rel: CheckButton = $container/is_rel
 @onready var is_bomb: CheckButton = $container/is_bomb
 @onready var is_sphere: CheckButton = $container/is_sphere
+@onready var is_infinite: CheckButton = $container/is_infinite
 @onready var player_is_origin: CheckButton = $container/player_is_origin
 @onready var expressions: TextEdit = $container/expressions
 
@@ -191,6 +192,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	is_rel.button_pressed = spell.follow
 	is_bomb.button_pressed = spell.is_bomb
 	is_sphere.button_pressed = spell.spherical_coords
+	is_infinite.button_pressed = spell.is_infinite
 	player_is_origin.button_pressed = spell.player_is_origin
 	
 	expressions.text = ""
@@ -217,6 +219,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	is_rel.disabled = not is_editable
 	is_bomb.disabled = not is_editable
 	is_sphere.disabled = not is_editable
+	is_infinite.disabled = not is_editable
 	player_is_origin.disabled = not is_editable
 	expressions.editable = is_editable
 	delete_button.disabled = not is_editable
@@ -512,6 +515,14 @@ func _on_is_sphere_toggled(toggled_on: bool) -> void:
 		return
 	UIAudioPlayer.check(toggled_on)
 	book.spells[current_index].spherical_coords = toggled_on
+	update_spells_that_chain_to_current_spell()
+	
+func _on_is_infinite_toggled(toggled_on: bool) -> void:
+	if current_index < 0:
+		UIAudioPlayer.failed_click()
+		return
+	UIAudioPlayer.check(toggled_on)
+	book.spells[current_index].is_infinite = toggled_on
 	update_spells_that_chain_to_current_spell()
 	
 func _on_M_text_changed(new_text: String) -> void:

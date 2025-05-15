@@ -59,6 +59,7 @@ var d_expr: Expr
 var follow: bool
 var is_bomb: bool
 var player_is_origin: bool
+var is_infinite: bool
 var is_active: bool
 var cooldown: float
 var charge: float
@@ -101,6 +102,7 @@ func _init(_follow: bool = false, _x: String = "0", _y: String = "0", _z: String
 	
 	follow = _follow
 	is_bomb = _is_bomb
+	is_infinite = false
 	player_is_origin = _player_is_origin
 	charge = 0.0
 	expression_strings = {}
@@ -159,6 +161,7 @@ func duplicate(override_expr: Dictionary = {}, for_player: bool = false) -> Spel
 	result.cooldown = cooldown
 	result.charge = charge
 	result.is_active = is_active
+	result.is_infinite = is_infinite
 	result.chain = chain
 	result.chain_cast_kind = chain_cast_kind
 	result.description = description
@@ -685,7 +688,7 @@ func get_turret(n: int, fvars: Vars) -> SpellTurret:
 const all_spell_fields: Array[String] = ["x", "y", "z", "r", "power", "duration", "count", "delay", "chain", "is_bomb",
 			"is_rel", "el", "chain_cast_kind", "name", "id", "mana", "player_is_origin", "expression_strings", "is_active", 
 			"elemental_application", "crit_rate", "crit_dmg", "spherical_coords", "preview_image", "preview_flags",
-			"configuration_parameters_for_chain", "seen_by_player", "description"] 
+			"configuration_parameters_for_chain", "seen_by_player", "description"] # , "is_infinite" 
 
 func save_dict() -> Dictionary:
 	var pimages: Array[int] = []
@@ -702,7 +705,7 @@ func save_dict() -> Dictionary:
 		"elemental_application": elemental_application, "crit_rate": crit_rate, "crit_dmg": crit_dmg,
 		"spherical_coords": spherical_coords, "preview_image": pimages, "preview_flags": pflags,
 		"configuration_parameters_for_chain": configuration_parameters_for_chain, "seen_by_player": seen_by_player,
-		"description": description,
+		"description": description, "is_infinite": is_infinite,
 	}
 
 func load_dict(dict: Dictionary) -> void:
@@ -729,6 +732,7 @@ func load_dict(dict: Dictionary) -> void:
 	delay = dict.get("delay", "0") as String
 	is_bomb = dict.get("is_bomb", false) as bool
 	follow = dict.get("is_rel", false) as bool
+	is_infinite = dict.get("is_infinite", false) as bool
 	crit_rate = dict.get("crit_rate", 0.0) as float
 	crit_dmg = dict.get("crit_dmg", 0.0) as float
 	spherical_coords = dict.get("spherical_coords", false) as bool
@@ -821,6 +825,7 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 %s.calculate_cooldown()
 %s.charge = %s
 %s.is_active = %s
+%s.is_infinite = %s
 %s.crit_rate = %s
 %s.crit_dmg = %s
 %s.spherical_coords = %s
@@ -845,6 +850,7 @@ var %s := Spell.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 	variable_name,
 	variable_name, repr.call(charge),
 	variable_name, repr.call(is_active),
+	variable_name, repr.call(is_infinite),
 	variable_name, repr.call(crit_rate),
 	variable_name, repr.call(crit_dmg),
 	variable_name, repr.call(spherical_coords),
@@ -933,6 +939,7 @@ func bake(new_name: String) -> Spell:
 	result.calculate_cooldown()
 	result.charge = charge
 	result.is_active = is_active
+	result.is_infinite = is_infinite
 	return result
 	
 func clamp_variables(settings: UpgradeSettings) -> void:
