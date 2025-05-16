@@ -44,6 +44,7 @@ func update(body: Node3D, delta: float, is_level_editor: bool = false) -> Dictio
 			if entity == Entity.PLAYER:
 				p.tracking_offset = get_spell_tracking_offset(p.spell, p.fixed_vars)
 			var reason := p.update_spell(delta, p.fixed_vars)
+			#p.fixed_vars.print_values()
 			if reason != MagicBook.DisallowSpellReason.NONE:
 				limit_reasons[p.spell] = reason
 			
@@ -450,7 +451,6 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 	var ps := spell.get_particles(vars, exvars)
 	var spell_offset := get_spell_tracking_offset(spell, vars)
 	for p: SpellBody in ps:
-		p.name += str(randi())
 		p.origin_node = origin_node
 		p.tracking_target = node_to_track
 		p.tracking_position = cdir

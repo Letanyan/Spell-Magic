@@ -88,6 +88,7 @@ func _ready() -> void:
 		_settings.is_level_editor = true
 		setup(_settings)
 		
+		
 	for enemy in inhabitants:
 		enemy.animation_tree.active = true
 		
@@ -101,6 +102,11 @@ func _ready() -> void:
 		
 	menu.close_menu.connect(toggle_menu)
 		
+	var projectiles := menu.build_menu.read(settings.world_name, book, player.spell_caster)
+	for proj in projectiles:
+		proj.time_stamp = 0.0
+		insert_spell(proj)
+	
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)

@@ -57,3 +57,39 @@ func _on_delete_pressed() -> void:
 func _on_spells_in_world_item_selected(index: int) -> void:
 	var proj := projectiles_in_world[index]
 	projectile_name.text = proj.name
+
+func save(world_name: String) -> void:
+	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)
+	
+	var result := {}
+	for proj in projectiles_in_world:
+		if proj.spell.is_infinite:
+			result[proj.name] = {"spell": proj.spell.name, "vars": proj.fixed_vars.export_dict(), "exprs": proj.expression_vars.export_dict()}
+		
+	file.store_var(result)
+
+func read(world_name: String, book: MagicBook, caster: SpellCaster) -> Array[SpellBody]:
+	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.READ)
+	if not file:
+		projectiles_in_world = []
+		return []
+	var data := file.get_var() as Dictionary
+	if data == null:
+		projectiles_in_world = []
+		return []
+		
+	projectiles_in_world = []
+	for key: String in data:
+		var info := data[key] as Dictionary
+		var spell := book.find_spell(info["spell"] as String).duplicate()
+		var proj := SpellBuffer.get_projectile(spell.element)
+		proj.fixed_vars = Vars.new()
+		proj.fixed_vars.import_dict(info["vars"] as Dictionary)
+		proj.expression_vars = Vars.new()
+		proj.expression_vars.import_dict(info.get("exprs", {}) as Dictionary)
+		proj.spell = spell
+		proj.origin_spell_caster = caster
+		caster.particles.append(proj)
+		projectiles_in_world.append(proj)
+		
+	return projectiles_in_world

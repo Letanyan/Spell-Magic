@@ -29,7 +29,7 @@ func _ready() -> void:
 func get_projectile(element: Spell.Element) -> SpellBody:
 	var result := projectiles[element].get_entity() as SpellBody
 	result.time_stamp = -1
-	result.name = Spell.Element.keys()[element] + Rand.id(5)
+	result.name = Spell.Element.keys()[element] + Rand.id(5, Time.get_ticks_usec())
 	return result
 	
 func get_turret() -> SpellTurret:

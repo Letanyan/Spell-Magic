@@ -146,7 +146,7 @@ func update_index(index: Kind) -> void:
 			Kind.ARTIFACTS: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
 			Kind.UPGRADES: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
 			Kind.NOTES: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes()
-			Kind.BUILD: build_menu.visible = true; build_button.grab_focus(); build_button.set_pressed_no_signal(true); 
+			Kind.BUILD: build_menu.visible = true; build_button.grab_focus(); build_button.set_pressed_no_signal(true); build_menu.update_projectile_list()
 			Kind.SETTINGS: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
 	if not is_opening:
 		update_camera_and_menu(settings.tab_container.get_current_tab_control().name)
@@ -284,6 +284,8 @@ func save_changes() -> void:
 		settings.world_settings.save()
 		if settings.is_magic_book_selected:
 			settings.save_user_magic_book()
+	if world_settings.is_level_editor:
+		build_menu.save(world_settings.world_name)
 	world_settings.save()
 
 
