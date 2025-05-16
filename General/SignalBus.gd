@@ -17,3 +17,6 @@ signal key_collected(player: Player)
 signal player_is_ready(player: Player)
 
 signal spell_from_global_book_exported(spell: Spell)
+
+signal spell_added_to_world(projectile: SpellBody)
+signal spell_removed_from_world(projectile: SpellBody)

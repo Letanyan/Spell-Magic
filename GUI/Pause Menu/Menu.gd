@@ -1,7 +1,7 @@
 class_name Menu
 extends Control
 
-enum Kind { ANY, WANDS, UPGRADES, ARTIFACTS, SPELLS, NOTES, SETTINGS }
+enum Kind { ANY, WANDS, UPGRADES, ARTIFACTS, SPELLS, NOTES, BUILD, SETTINGS }
 
 @onready var background: Panel = $Background
 @onready var game_menu: GameMenu = $GameMenu
@@ -13,6 +13,7 @@ enum Kind { ANY, WANDS, UPGRADES, ARTIFACTS, SPELLS, NOTES, SETTINGS }
 @onready var notes: NotesUI = $Background/Notes
 @onready var settings: SettingsGUI = $Background/Settings
 @onready var spell_deck: SpellDeckGUI = $Background/SpellDeckGUI
+@onready var build_menu: BuildMenuGUI = $Background/BuildMenu
 var current_index := Kind.WANDS
 
 @onready var spells_button: Button = $Background/Tabbar/HBox/Spells
@@ -22,6 +23,7 @@ var current_index := Kind.WANDS
 @onready var upgrades_button: Button = $Background/Tabbar/HBox/Upgrades
 @onready var settings_button: Button = $Background/Tabbar/Settings
 @onready var notes_button: Button = $Background/Tabbar/HBox/Notes
+@onready var build_button: Button = $Background/Tabbar/Build
 
 @onready var message_panel: Panel = $Background/MessagePanel
 @onready var message_label: Label = $Background/MessagePanel/MessageLabel
@@ -56,6 +58,8 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 		upgrades_button.text = "Stats"
 		upgrades.make_display_only(true)
 		
+		
+	build_button.visible = world_settings.is_level_editor
 	
 	settings.exit_game.connect(func() -> void: get_tree().quit())
 	settings.save_game.connect(func() -> void: save_changes())
@@ -99,6 +103,7 @@ func update_index(index: Kind) -> void:
 	artifacts.visible = false
 	upgrades.visible = false
 	notes.visible = false
+	build_menu.visible = false
 	settings.visible = false
 	message_panel.visible = false
 	if is_quick_menu:
@@ -113,6 +118,7 @@ func update_index(index: Kind) -> void:
 	upgrades_button.set_pressed_no_signal(false)
 	notes_button.set_pressed_no_signal(false)
 	settings_button.set_pressed_no_signal(false)
+	build_button.set_pressed_no_signal(false)
 	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) and not settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))):
 		match current_index:
 			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
@@ -139,7 +145,8 @@ func update_index(index: Kind) -> void:
 			Kind.WANDS: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
 			Kind.ARTIFACTS: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
 			Kind.UPGRADES: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
-			Kind.NOTES: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes() 
+			Kind.NOTES: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes()
+			Kind.BUILD: build_menu.visible = true; build_button.grab_focus(); build_button.set_pressed_no_signal(true); 
 			Kind.SETTINGS: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
 	if not is_opening:
 		update_camera_and_menu(settings.tab_container.get_current_tab_control().name)
@@ -171,6 +178,9 @@ func _on_upgrades_pressed() -> void:
 	
 func _on_notes_pressed() -> void:
 	update_index(Kind.NOTES)
+	
+func _on_build_pressed() -> void:
+	update_index(Kind.BUILD)
 	
 func _on_settings_pressed() -> void:
 	update_index(Kind.SETTINGS)

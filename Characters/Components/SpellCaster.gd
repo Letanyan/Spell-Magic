@@ -508,6 +508,7 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 		spell_variables(p.fixed_vars, body, SpellVariableKind.FIXED, p, p.spell)
 	p.spell.compute_expressions(p.fixed_vars, null)
 	insert.call(p)
+	SignalBus.spell_added_to_world.emit(p)
 	if q and q.get_parent():
 		SpellBuffer.free_turrent(q)
 		

@@ -61,6 +61,10 @@ var current_preview_index: int = 0
 var errors_list := {}
 
 var book: MagicBook
+var is_level_editor: bool = false:
+	set(value):
+		is_level_editor = value
+		is_infinite.visible = value
 var is_universal: bool = false:
 	set(value):
 		if value:
@@ -229,6 +233,8 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	save_to_uni_book.disabled = not is_editable
 	cr_edit.editable = is_editable
 	cd_edit.editable = is_editable
+	
+	is_infinite.visible = is_level_editor
 		
 	check_all_errors()
 	

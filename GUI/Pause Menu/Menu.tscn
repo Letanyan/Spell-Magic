@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b185ji0u0kuxo"]
+[gd_scene load_steps=15 format=3 uid="uid://b185ji0u0kuxo"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/Menu.gd" id="1_op10b"]
 [ext_resource type="PackedScene" uid="uid://dwlh6xe128lt6" path="res://GUI/Pause Menu/MagicBook.tscn" id="1_ufdyg"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://w4lonc2wt7at" path="res://GUI/Pause Menu/Settings.tscn" id="7_nxty0"]
 [ext_resource type="PackedScene" uid="uid://cy10iejisj656" path="res://GUI/Pause Menu/SpellDeckGUI.tscn" id="8_nuh7m"]
 [ext_resource type="PackedScene" uid="uid://dxqrs2u5fw8rk" path="res://GUI/Pause Menu/GameMenu.tscn" id="10_tpunu"]
+[ext_resource type="PackedScene" uid="uid://dahy2pwkmiwvl" path="res://GUI/Pause Menu/BuildMenu.tscn" id="11_j1y3d"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0h7sk"]
 shader = ExtResource("2_gbw5q")
@@ -72,6 +73,11 @@ offset_top = 48.0
 visible = false
 layout_mode = 1
 anchors_preset = -1
+offset_top = 48.0
+
+[node name="BuildMenu" parent="Background" instance=ExtResource("11_j1y3d")]
+visible = false
+layout_mode = 1
 offset_top = 48.0
 
 [node name="MessagePanel" type="Panel" parent="Background"]
@@ -145,9 +151,9 @@ text = "Settings"
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 112.0
+offset_left = 192.0
 offset_top = 8.0
-offset_right = -104.0
+offset_right = -192.0
 offset_bottom = 40.0
 grow_horizontal = 2
 theme_override_constants/separation = 8
@@ -203,6 +209,14 @@ layout_mode = 2
 toggle_mode = true
 text = "Notes"
 
+[node name="Build" type="Button" parent="Background/Tabbar"]
+layout_mode = 0
+offset_left = 968.0
+offset_top = 8.0
+offset_right = 1045.0
+offset_bottom = 40.0
+text = "Build"
+
 [node name="GameMenu" parent="." instance=ExtResource("10_tpunu")]
 visible = false
 layout_mode = 1
@@ -214,3 +228,4 @@ layout_mode = 1
 [connection signal="pressed" from="Background/Tabbar/HBox/Artifacts" to="." method="_on_artifacts_pressed"]
 [connection signal="pressed" from="Background/Tabbar/HBox/Spells" to="." method="_on_spells_pressed"]
 [connection signal="pressed" from="Background/Tabbar/HBox/Notes" to="." method="_on_notes_pressed"]
+[connection signal="pressed" from="Background/Tabbar/Build" to="." method="_on_build_pressed"]

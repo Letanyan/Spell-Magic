@@ -29,6 +29,7 @@ func _ready() -> void:
 func get_projectile(element: Spell.Element) -> SpellBody:
 	var result := projectiles[element].get_entity() as SpellBody
 	result.time_stamp = -1
+	result.name = Spell.Element.keys()[element] + Rand.id(5)
 	return result
 	
 func get_turret() -> SpellTurret:
@@ -39,6 +40,7 @@ func free_projectile(s: SpellBody) -> void:
 	s.free_when_ready = NAN
 	s.position.y = 1000
 	projectiles[s.spell.element].free_entity(s)
+	SignalBus.spell_removed_from_world.emit(s)
 
 func free_turrent(t: SpellTurret) -> void:
 	t.position.y = -1000
