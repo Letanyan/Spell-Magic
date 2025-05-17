@@ -117,6 +117,7 @@ func update_wand_shelf_item(widx: int = current_index) -> Callable:
 		item.spell_changed = spell_change_callables[index]
 		item.action_changed = action_change_callables[index]
 		item.autocomplete = book.autocomplete
+		item.make_level_editor_shelf(book.settings.is_level_editor)
 		item.setup()
 
 func update_wand_shelf_relative_item(item: WandCaseShelfItem, prev: WandCaseShelfItem, next: WandCaseShelfItem) -> void:

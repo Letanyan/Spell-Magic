@@ -18,30 +18,39 @@ anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 248.0
-offset_bottom = -8.0
+offset_bottom = -72.0
 grow_vertical = 2
 
 [node name="ProjectileName" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = 256.0
-offset_top = 8.0
-offset_right = 576.0
-offset_bottom = 33.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -64.0
+offset_right = 248.0
+offset_bottom = -39.0
 
 [node name="Rename" type="Button" parent="."]
-layout_mode = 0
-offset_left = 256.0
-offset_top = 40.0
-offset_right = 324.0
-offset_bottom = 65.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -32.0
+offset_right = 76.0
+offset_bottom = -7.0
 text = "Rename"
 
 [node name="Delete" type="Button" parent="."]
-layout_mode = 0
-offset_left = 328.0
-offset_top = 40.0
-offset_right = 384.0
-offset_bottom = 65.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -32.0
+offset_right = 136.0
+offset_bottom = -7.0
 text = "Delete"
 
 [connection signal="item_selected" from="SpellsInWorld" to="." method="_on_spells_in_world_item_selected"]

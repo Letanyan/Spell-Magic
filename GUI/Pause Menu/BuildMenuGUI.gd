@@ -10,8 +10,9 @@ func _ready() -> void:
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
 	
 func spell_added_into_world(projectile: SpellBody) -> void:
-	projectiles_in_world.append(projectile)
-	update_projectile_list()
+	if projectile.spell.is_infinite:
+		projectiles_in_world.append(projectile)
+		update_projectile_list()
 	
 func spell_removed_from_world(projectile: SpellBody) -> void:
 	var pidx := -1
@@ -53,6 +54,21 @@ func _on_delete_pressed() -> void:
 	projectile_name.text = ""
 	update_projectile_list()
 
+func delete_projectile(projectile: SpellBody) -> void:
+	var idx := -1
+	for i in projectiles_in_world.size():
+		var proj := projectiles_in_world[i]
+		if proj == projectile:
+			idx = i
+			break
+			
+	if idx != -1:
+		var proj := projectiles_in_world[idx]
+		proj.expired = true
+		proj.spell.is_infinite = false
+		projectiles_in_world.remove_at(idx)
+		projectile_name.text = ""
+		update_projectile_list()
 
 func _on_spells_in_world_item_selected(index: int) -> void:
 	var proj := projectiles_in_world[index]

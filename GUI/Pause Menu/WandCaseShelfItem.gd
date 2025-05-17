@@ -90,3 +90,8 @@ func _on_spell_gui_input(event: InputEvent) -> void:
 		var ev := event as InputEventKey
 		if ev.is_action_pressed("ui_text_backspace") or ev.is_action_pressed("ui_text_delete"):
 			delete_key_pressed = true
+
+func make_level_editor_shelf(is_level_editor: bool) -> void:
+	if is_level_editor:
+		cast_combo.add_item("Remove Projectile", 9)
+		cast_combo.add_item("Place Spell Scroll", 10)

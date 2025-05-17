@@ -46,7 +46,11 @@ var chain_cast_kind: ChainCastKind = ChainCastKind.NONE:
 		calculate_cooldown()
 var chain: Spell = null:
 	set(spell):
-		chain = spell
+		if spell == null:
+			chain = null
+		else:
+			chain = spell.duplicate()
+			chain.is_infinite = false
 		calculate_cooldown()
 
 var x_expr: Expr
@@ -451,6 +455,11 @@ func find_chain_list(include_self: bool) -> PackedStringArray:
 		s = s.chain
 	return result
 			
+func can_cast_chain() -> bool:
+	var start_end := chain != null and (chain_cast_kind == Spell.ChainCastKind.START or chain_cast_kind == Spell.ChainCastKind.END) and not is_infinite
+	var on_hit := chain != null and (chain_cast_kind == Spell.ChainCastKind.HIT)
+	return start_end or on_hit
+			
 func calculate_cooldown() -> float:
 	var chain_cost := 0.0
 	var basic_cost: float 
@@ -468,7 +477,7 @@ func calculate_cooldown() -> float:
 		(duration / UpgradeSettings.LIMIT_T + 1.0) * \
 		(((radius + 1) ** 2) / UpgradeSettings.LIMIT_r + 1.0) * \
 		(maxf(1.0, count * 0.98))
-	if chain_cast_kind != ChainCastKind.NONE and chain != null:
+	if can_cast_chain():
 		chain_cost = chain.calculate_cooldown() * count
 		
 	elemental_application = clampf(power / UpgradeSettings.LIMIT_P * 0.25, 0.0, 0.25)

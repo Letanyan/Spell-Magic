@@ -124,9 +124,10 @@ static func get_ray_collision(p: CollisionObject3D, from: Vector3, direction: Ve
 		return Vector3.ZERO
 	return result.get("position")
 	
-static func get_ray_intersection(p: CollisionObject3D, from: Vector3, target: Vector3) -> CollisionShape3D:
+static func get_ray_intersection(p: CollisionObject3D, from: Vector3, target: Vector3, collide_with_areas: bool = false) -> CollisionShape3D:
 	var space_state := p.get_world_3d().direct_space_state
-	var query := PhysicsRayQueryParameters3D.create(from + Vector3(0, 1, 0), target + Vector3(0, 1, 0), ~1, [p.get_rid()])
+	var query := PhysicsRayQueryParameters3D.create(from, target, ~1, [p.get_rid()])
+	query.collide_with_areas = collide_with_areas
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
 		return null
@@ -139,6 +140,18 @@ static func get_ray_intersection(p: CollisionObject3D, from: Vector3, target: Ve
 			c = o
 			break
 	return c
+	
+static func get_ray_intersection_of_projectile(p: CollisionObject3D, from: Vector3, target: Vector3) -> SpellBody:
+	var space_state := p.get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(from, target, ~1, [p.get_rid()])
+	query.collide_with_areas = true
+	var result := space_state.intersect_ray(query)
+	if result.is_empty():
+		return null
+	var obj: Area3D = result.get("collider")
+	if obj.get_parent_node_3d() != null:
+		return obj.get_parent_node_3d() as SpellBody
+	return null
 	
 static func get_ray_intersection_from_spell_body(p: SpellBody, from: Vector3, target: Vector3) -> CollisionShape3D:
 	var space_state := p.get_world_3d().direct_space_state

@@ -61,10 +61,6 @@ var current_preview_index: int = 0
 var errors_list := {}
 
 var book: MagicBook
-var is_level_editor: bool = false:
-	set(value):
-		is_level_editor = value
-		is_infinite.visible = value
 var is_universal: bool = false:
 	set(value):
 		if value:
@@ -234,7 +230,9 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	cr_edit.editable = is_editable
 	cd_edit.editable = is_editable
 	
-	is_infinite.visible = is_level_editor
+	is_infinite.visible = book.settings.is_level_editor
+	chain_edit.editable = not spell.is_infinite
+	chain_combo.disabled = spell.is_infinite
 		
 	check_all_errors()
 	
@@ -256,7 +254,7 @@ func update_cooldown() -> void:
 	
 	cooldown_label.text = "[left][font_size=16][img=l,24x24]res://GUI/Images/watch.svg[/img] Cooldown: " + Globals.format_number_nearest_place(book.spells[current_index].cooldown) + "s[/font_size][/left]"
 	element_application.text = book.spells[current_index].elemental_application_description()
-	if book.spells[current_index].chain_cast_kind != Spell.ChainCastKind.NONE and book.spells[current_index].chain != null:
+	if book.spells[current_index].can_cast_chain():
 		mana_cost.text = "[center][font_size=16]Total [img=l,24x24, color=AA00AA]res://GUI/Images/mana.svg[/img] M\n" + Globals.format_number_nearest_place(book.spells[current_index].actual_mana_cost()) + "[/font_size][/center]"
 	else:
 		mana_cost.text = ""
@@ -529,6 +527,8 @@ func _on_is_infinite_toggled(toggled_on: bool) -> void:
 		return
 	UIAudioPlayer.check(toggled_on)
 	book.spells[current_index].is_infinite = toggled_on
+	chain_edit.editable = not toggled_on
+	chain_combo.disabled = toggled_on
 	update_spells_that_chain_to_current_spell()
 	
 func _on_M_text_changed(new_text: String) -> void:

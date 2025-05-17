@@ -62,7 +62,7 @@ func setup() -> void:
 	
 	update_sub_entities(false)
 	spell_caster = SpellCaster.new(origin_node, SpellCaster.Entity.PROJECTILE)
-	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null:
+	if spell.chain_cast_kind == Spell.ChainCastKind.START and spell.chain != null and not spell.is_infinite:
 		cast_spell(insert_spell, spell.chain)
 	rng.seed = hash(spell.name)
 	if origin_node is Player:

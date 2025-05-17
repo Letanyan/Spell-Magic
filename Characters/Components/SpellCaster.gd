@@ -44,7 +44,6 @@ func update(body: Node3D, delta: float, is_level_editor: bool = false) -> Dictio
 			if entity == Entity.PLAYER:
 				p.tracking_offset = get_spell_tracking_offset(p.spell, p.fixed_vars)
 			var reason := p.update_spell(delta, p.fixed_vars)
-			#p.fixed_vars.print_values()
 			if reason != MagicBook.DisallowSpellReason.NONE:
 				limit_reasons[p.spell] = reason
 			
@@ -58,7 +57,7 @@ func update(body: Node3D, delta: float, is_level_editor: bool = false) -> Dictio
 			can_remove = true
 			
 		if p.has_expired() and (not is_level_editor or is_level_editor and not p.spell.is_infinite):
-			if p.is_emitting and p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null:
+			if p.is_emitting and p.spell.chain_cast_kind == Spell.ChainCastKind.END and p.spell.chain != null and not p.spell.is_infinite:
 				can_remove = false
 				var insert_func := func(np: Node3D) -> void:
 					if np == null:

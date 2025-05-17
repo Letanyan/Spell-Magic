@@ -148,7 +148,7 @@ func can_use_spell(spell: Spell, ignore_perpetual: bool = false) -> DisallowSpel
 	if spell.actual_mana_cost() > settings.upgrade_settings.max_mana() + settings.upgrade_settings.buff_mana:
 		return DisallowSpellReason.MANA
 		
-	if spell.chain_cast_kind != Spell.ChainCastKind.NONE and spell.chain != null:
+	if spell.can_cast_chain():
 		var chain_issue := can_use_spell(spell.chain)
 		if chain_issue != DisallowSpellReason.NONE:
 			return DisallowSpellReason.CHAINED_SPELL
