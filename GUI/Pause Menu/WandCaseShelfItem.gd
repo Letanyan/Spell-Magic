@@ -43,7 +43,7 @@ func _on_cast_combo_selected(id: int) -> void:
 		UIAudioPlayer.switch()
 		action_changed.call(get_node(".") as WandCaseShelfItem, store_action as Wand.Kind, id as Wand.Kind)
 		spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, true)
-		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD
+		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD and id != Wand.Kind.REMOVE_ITEM
 
 func _on_spell_text_changed(new_text: String) -> void:
 	var updated_text: String = autocomplete.call(old_text, spell, true) if not delete_key_pressed else new_text
@@ -93,5 +93,5 @@ func _on_spell_gui_input(event: InputEvent) -> void:
 
 func make_level_editor_shelf(is_level_editor: bool) -> void:
 	if is_level_editor:
-		cast_combo.add_item("Remove Projectile", 9)
-		cast_combo.add_item("Place Spell Scroll", 10)
+		cast_combo.add_item("Remove", 9)
+		cast_combo.add_item("Place", 10)

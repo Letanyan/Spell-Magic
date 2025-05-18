@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player and spell != null:
+	if not eaten and body is Player and spell != null and not (body as Player).world_settings.is_level_editor:
 		eaten = true
 		if not (body as Player).magic_book.spell_exists(spell.name):
 			UIAudioPlayer.grabbing()
@@ -33,3 +33,11 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		var tween := create_tween_for_world_item_pick_up(body, 0.25)
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()
+
+func save_to_dict(dict: Dictionary) -> void:
+	super.save_to_dict(dict)
+	dict["spell"] = spell.save_dict()
+
+func load_from_dict(dict: Dictionary) -> void:
+	super.load_from_dict(dict)
+	spell.load_dict(dict.get("spell", {}) as Dictionary)

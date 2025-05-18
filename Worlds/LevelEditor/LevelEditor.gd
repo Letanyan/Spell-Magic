@@ -102,10 +102,12 @@ func _ready() -> void:
 		
 	menu.close_menu.connect(toggle_menu)
 		
-	var projectiles := menu.build_menu.read(settings.world_name, book, player.spell_caster)
-	for proj in projectiles:
+	menu.build_menu.read(settings.world_name, book, player.spell_caster)
+	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
 		insert_spell(proj)
+	for item in menu.build_menu.items_in_world:
+		add_child(item)
 	
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
@@ -300,7 +302,7 @@ func _input(event: InputEvent) -> void:
 			var s: Spell = null
 			var is_down := false
 			var is_rapid_fire := Globals.Ref.new(false)
-			var action_kind := Globals.Ref.new(Wand.Kind.NONE)
+			var action_option := Globals.Ref.new(null)
 			if event.is_action_pressed(k):
 				var hold_spell := Globals.Ref.new(null)
 				s = wand.action_down(k, book, is_rapid_fire, hold_spell)
@@ -308,25 +310,35 @@ func _input(event: InputEvent) -> void:
 				if hold_spell.data != null:
 					spells_on_hold[k] = player.project_spell(insert_spell, hold_spell.data as Spell)
 			if event.is_action_released(k):
-				s = wand.action_up(k, book, action_kind)
+				s = wand.action_up(k, book, action_option)
 				if spells_on_hold.has(k):
 					for t: SpellTurret in spells_on_hold[k]:
 						SpellBuffer.free_turrent(t)
 					spells_on_hold.erase(k)
 			if s != null:
 				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
-			else:
-				if action_kind.data == Wand.Kind.REMOVE_ITEM:
+			elif action_option.data != null:
+				var option := action_option.data as Wand.Option
+				if option.kind == Wand.Kind.REMOVE_ITEM:
 					var cdir := Vector3.ZERO
 					var port := get_viewport()
 					var pos := port.get_visible_rect().size / 2.0
 					var coord := port.get_camera_3d().project_ray_origin(pos)
 					cdir = port.get_camera_3d().project_ray_normal(pos)
-					var node_to_track := Navigator.get_ray_intersection_of_projectile(player, coord, coord + cdir * 500)
+					var node_to_track := Navigator.get_ray_intersection_of_node(player, coord, coord + cdir * 500)
 					if node_to_track != null:
-						menu.build_menu.delete_projectile(node_to_track)
-				elif action_kind.data == Wand.Kind.DROP_ITEM:
-					print("drop")
+						if node_to_track is SpellBody:
+							menu.build_menu.delete_projectile(node_to_track as SpellBody)
+						elif node_to_track is WorldItem:
+							menu.build_menu.delete_item(node_to_track as WorldItem)
+				elif option.kind == Wand.Kind.PLACE_ITEM:
+					var spell := option.get_spell()
+					if spell != null:
+						var paper := SpellPaper.make()
+						paper.spell = spell
+						paper.position = player.position
+						add_child(paper)
+						SignalBus.item_added_to_world.emit(paper)
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:

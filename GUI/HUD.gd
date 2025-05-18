@@ -367,6 +367,13 @@ func update_wand_mappings() -> void:
 				var spell := wand.get_spell(s, book)
 				if spell != null:
 					rich_text += build_desc.call(kd, "[i]Rapid[/i]", spell)
+					
+			Wand.Kind.REMOVE_ITEM:
+				rich_text += kd + " [b]Remove[/b]\n"
+			Wand.Kind.PLACE_ITEM:
+				var colored_list := s.display_rotated_spells_list(color_spell_option)
+				if not colored_list.is_empty(): 
+					rich_text += kd + " [b]Place[/b]: " + colored_list + "\n"
 	
 	rich_text += "[/font_size]"
 	var old_text := wand_mapping.text

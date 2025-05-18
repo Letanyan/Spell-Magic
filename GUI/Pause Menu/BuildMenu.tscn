@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0dalk")
 
-[node name="SpellsInWorld" type="ItemList" parent="."]
+[node name="ProjectilesInWorld" type="ItemList" parent="."]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -31,7 +31,7 @@ offset_top = -64.0
 offset_right = 248.0
 offset_bottom = -39.0
 
-[node name="Rename" type="Button" parent="."]
+[node name="RenameProjectile" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -42,7 +42,7 @@ offset_right = 76.0
 offset_bottom = -7.0
 text = "Rename"
 
-[node name="Delete" type="Button" parent="."]
+[node name="DeleteProjectile" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -53,6 +53,52 @@ offset_right = 136.0
 offset_bottom = -7.0
 text = "Delete"
 
-[connection signal="item_selected" from="SpellsInWorld" to="." method="_on_spells_in_world_item_selected"]
-[connection signal="pressed" from="Rename" to="." method="_on_rename_pressed"]
-[connection signal="pressed" from="Delete" to="." method="_on_delete_pressed"]
+[node name="ItemsInWorld" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 264.0
+offset_top = 8.0
+offset_right = 504.0
+offset_bottom = -72.0
+
+[node name="ItemName" type="LineEdit" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 264.0
+offset_top = -64.0
+offset_right = 504.0
+offset_bottom = -39.0
+
+[node name="RenameItem" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.007
+anchor_top = 1.0
+anchor_right = 0.007
+anchor_bottom = 1.0
+offset_left = 255.936
+offset_top = -32.0
+offset_right = 303.936
+offset_bottom = -8.0
+text = "Rename"
+
+[node name="DeleteItem" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 336.0
+offset_top = -32.0
+offset_right = 392.0
+offset_bottom = -7.0
+text = "Delete"
+
+[connection signal="item_selected" from="ProjectilesInWorld" to="." method="_on_spells_in_world_item_selected"]
+[connection signal="pressed" from="RenameProjectile" to="." method="_on_rename_projectile_pressed"]
+[connection signal="pressed" from="DeleteProjectile" to="." method="_on_delete_projectile_pressed"]
+[connection signal="item_selected" from="ItemsInWorld" to="." method="_on_items_in_world_item_selected"]
+[connection signal="pressed" from="RenameItem" to="." method="_on_rename_item_pressed"]
+[connection signal="pressed" from="DeleteItem" to="." method="_on_delete_item_pressed"]

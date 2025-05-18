@@ -20,3 +20,5 @@ signal spell_from_global_book_exported(spell: Spell)
 
 signal spell_added_to_world(projectile: SpellBody)
 signal spell_removed_from_world(projectile: SpellBody)
+signal item_added_to_world(item: WorldItem)
+signal item_removed_from_world(item: WorldItem)

@@ -43,3 +43,15 @@ func create_tween_for_drop(start: Vector3, end: Vector3, duration: float) -> Twe
 
 func set_base_position(pos: Vector3) -> void:
 	position = pos + Vec3.y(height)
+
+func save_to_dict(dict: Dictionary) -> void:
+	dict["kind"] = kind
+	dict["height"] = height
+	dict["is_active"] = is_active
+	dict["position"] = position
+	
+func load_from_dict(dict: Dictionary) -> void:
+	kind = dict.get("kind", 0)
+	height = dict.get("height", 0.5)
+	is_active = dict.get("is_active", true)
+	position = dict.get("position", Vector3.ZERO)

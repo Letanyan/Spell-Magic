@@ -1,6 +1,6 @@
 class_name Wand
 
-enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD, REMOVE_ITEM, DROP_ITEM  }
+enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD, REMOVE_ITEM, PLACE_ITEM  }
 
 class Option:
 	var kind: Kind
@@ -447,7 +447,7 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, ho
 	key_down.emit()
 	return null
 	
-func action_up(action: String, book: MagicBook, kind_activated: Globals.Ref = null) -> Spell:
+func action_up(action: String, book: MagicBook, option_activated: Globals.Ref = null) -> Spell:
 	var best_candidate := PackedStringArray([])
 	for key: PackedStringArray in keys:
 		if key.size() > current_actions.size():
@@ -468,9 +468,9 @@ func action_up(action: String, book: MagicBook, kind_activated: Globals.Ref = nu
 			
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
-		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.DROP_ITEM:
-			if kind_activated != null:
-				kind_activated.data = opt.kind
+		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.PLACE_ITEM:
+			if option_activated != null:
+				option_activated.data = opt
 			return null
 		elif opt.kind == Kind.PICK:
 			var charge := Time.get_unix_time_from_system() - opt.start_hold

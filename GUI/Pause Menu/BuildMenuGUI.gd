@@ -2,12 +2,17 @@ class_name BuildMenuGUI
 extends Control
 
 var projectiles_in_world: Array[SpellBody] = []
-@onready var spells_in_world: ItemList = $SpellsInWorld
+var items_in_world: Array[WorldItem] = []
+@onready var projectiles_in_world_list: ItemList = $ProjectilesInWorld
 @onready var projectile_name: LineEdit = $ProjectileName
+@onready var items_in_world_list: ItemList = $ItemsInWorld
+@onready var item_name: LineEdit = $ItemName
 
 func _ready() -> void:
 	SignalBus.spell_added_to_world.connect(spell_added_into_world)
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
+	SignalBus.item_added_to_world.connect(item_added_into_world)
+	SignalBus.item_removed_from_world.connect(item_removed_from_world)
 	
 func spell_added_into_world(projectile: SpellBody) -> void:
 	if projectile.spell.is_infinite:
@@ -27,12 +32,12 @@ func spell_removed_from_world(projectile: SpellBody) -> void:
 	update_projectile_list()
 		
 func update_projectile_list() -> void:
-	spells_in_world.clear()
+	projectiles_in_world_list.clear()
 	for p in projectiles_in_world:
-		spells_in_world.add_item(p.name)
+		projectiles_in_world_list.add_item(p.name)
 
-func _on_rename_pressed() -> void:
-	var selected := spells_in_world.get_selected_items()
+func _on_rename_projectile_pressed() -> void:
+	var selected := projectiles_in_world_list.get_selected_items()
 	if selected.is_empty():
 		return
 		
@@ -41,8 +46,8 @@ func _on_rename_pressed() -> void:
 	update_projectile_list()
 
 
-func _on_delete_pressed() -> void:
-	var selected := spells_in_world.get_selected_items()
+func _on_delete_projectile_pressed() -> void:
+	var selected := projectiles_in_world_list.get_selected_items()
 	if selected.is_empty():
 		return
 	var idx := selected[0]
@@ -74,29 +79,110 @@ func _on_spells_in_world_item_selected(index: int) -> void:
 	var proj := projectiles_in_world[index]
 	projectile_name.text = proj.name
 
+func item_added_into_world(item: WorldItem) -> void:
+	items_in_world.append(item)
+	update_item_list()
+	
+func item_removed_from_world(item: WorldItem) -> void:
+	var pidx := -1
+	for i in items_in_world.size():
+		var it := items_in_world[pidx]
+		if item == it:
+			pidx = i
+			break
+			
+	if pidx != -1:
+		items_in_world.remove_at(pidx)
+	update_item_list()
+		
+func update_item_list() -> void:
+	items_in_world_list.clear()
+	var i := 0
+	for p in items_in_world:
+		items_in_world_list.add_item(p.name)
+		match p.kind:
+			World.Item.SPELL:
+				items_in_world_list.set_item_tooltip(i, (p as SpellPaper).spell.name)
+		i += 1
+
+func _on_rename_item_pressed() -> void:
+	var selected := items_in_world_list.get_selected_items()
+	if selected.is_empty():
+		return
+		
+	var idx := selected[0]
+	items_in_world[idx].name = item_name.text
+	update_item_list()
+
+
+func _on_delete_item_pressed() -> void:
+	var selected := items_in_world_list.get_selected_items()
+	if selected.is_empty():
+		return
+	var idx := selected[0]
+	
+	var item := items_in_world[idx]
+	item.queue_free()
+	items_in_world.remove_at(idx)
+	projectile_name.text = ""
+	update_item_list()
+
+func delete_item(item: WorldItem) -> void:
+	var idx := -1
+	for i in items_in_world.size():
+		var it := items_in_world[i]
+		if it == item:
+			idx = i
+			break
+			
+	if idx != -1:
+		var it := items_in_world[idx]
+		it.queue_free()
+		items_in_world.remove_at(idx)
+		item_name.text = ""
+		update_item_list()
+
+func _on_items_in_world_item_selected(index: int) -> void:
+	var it := items_in_world[index]
+	item_name.text = it.name
+
+
 func save(world_name: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)
 	
-	var result := {}
+	var projectiles := {}
 	for proj in projectiles_in_world:
 		if proj.spell.is_infinite:
-			result[proj.name] = {"spell": proj.spell.name, "vars": proj.fixed_vars.export_dict(), "exprs": proj.expression_vars.export_dict()}
+			projectiles[proj.name] = {"spell": proj.spell.name, "vars": proj.fixed_vars.export_dict(), "exprs": proj.expression_vars.export_dict()}
+			
+	var items := {}
+	for item in items_in_world:
+		var dict := {}
+		item.save_to_dict(dict)
+		items[item.name] = dict
+		
+	var result := {}
+	result["projectiles"] = projectiles
+	result["items"] = items 
 		
 	file.store_var(result)
 
-func read(world_name: String, book: MagicBook, caster: SpellCaster) -> Array[SpellBody]:
+func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.READ)
-	if not file:
+	if file == null:
 		projectiles_in_world = []
-		return []
+		items_in_world = []
+		return
 	var data := file.get_var() as Dictionary
 	if data == null:
 		projectiles_in_world = []
-		return []
+		items_in_world = []
+		return
 		
 	projectiles_in_world = []
-	for key: String in data:
-		var info := data[key] as Dictionary
+	var projectiles := data.get("projectiles", {}) as Dictionary
+	for key: String in projectiles:
+		var info := projectiles[key] as Dictionary
 		var spell := book.find_spell(info["spell"] as String).duplicate()
 		var proj := SpellBuffer.get_projectile(spell.element)
 		proj.fixed_vars = Vars.new()
@@ -108,4 +194,15 @@ func read(world_name: String, book: MagicBook, caster: SpellCaster) -> Array[Spe
 		caster.particles.append(proj)
 		projectiles_in_world.append(proj)
 		
-	return projectiles_in_world
+	items_in_world = []
+	var items := data.get("items", {}) as Dictionary
+	for key: String in items:
+		var info := items[key] as Dictionary
+		var item: WorldItem = null
+		match info.get("kind", 0):
+			World.Item.SPELL:
+				item = SpellPaper.make()
+				item.load_from_dict(info)
+				
+		if item != null:				
+			items_in_world.append(item)

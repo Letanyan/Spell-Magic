@@ -669,7 +669,6 @@ func get_turret(n: int, fvars: Vars) -> SpellTurret:
 	p.fixed_vars = fixed_vars
 	p.spell = self
 	p.charge = 0.0
-	print(fixed_vars.get_value(Vars.C))
 	p.position = calculate_location(fixed_vars)
 	
 	var radius := fixed_vars.get_value(Vars.r)
