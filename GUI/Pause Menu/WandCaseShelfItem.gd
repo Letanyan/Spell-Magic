@@ -62,7 +62,10 @@ func build_spell_list() -> String:
 			result += "("
 			var j := 0
 			for k: String in store_params[i]:
-				result += k + " = " + store_params[i][k]
+				if k.is_valid_int():
+					result += store_params[i][k]
+				else:
+					result += k + " = " + store_params[i][k]
 				if j < store_params[i].size() - 1:
 					result += ", "
 				j += 1
@@ -93,5 +96,10 @@ func _on_spell_gui_input(event: InputEvent) -> void:
 
 func make_level_editor_shelf(is_level_editor: bool) -> void:
 	if is_level_editor:
-		cast_combo.add_item("Remove", 9)
-		cast_combo.add_item("Place", 10)
+		if cast_combo.item_count < 11:
+			cast_combo.add_item("Remove", 9)
+			cast_combo.add_item("Place", 10)
+	else:
+		if cast_combo.item_count == 11:
+			cast_combo.remove_item(9)
+			cast_combo.remove_item(9)

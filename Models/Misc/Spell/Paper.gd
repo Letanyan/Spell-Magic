@@ -8,6 +8,7 @@ static func make() -> SpellPaper:
 	var result := (preload("res://Models/Misc/Spell/Paper.tscn") as PackedScene).instantiate() as SpellPaper
 	result.kind = World.Item.SPELL
 	result.height = 2.0
+	result.name = "Spell" + Rand.id(5, Time.get_ticks_usec())
 	return result
 
 # Called when the node enters the scene tree for the first time.
@@ -40,4 +41,5 @@ func save_to_dict(dict: Dictionary) -> void:
 
 func load_from_dict(dict: Dictionary) -> void:
 	super.load_from_dict(dict)
+	spell = Spell.new()
 	spell.load_dict(dict.get("spell", {}) as Dictionary)

@@ -8,6 +8,7 @@ static func make() -> CoinDisc:
 	var result := (preload("res://Models/Misc/Coin/Coin.tscn") as PackedScene).instantiate() as CoinDisc
 	result.height = 1.0
 	result.kind = World.Item.COIN
+	result.name = "Coin" + Rand.id(5, Time.get_ticks_usec())
 	return result
 
 func _ready() -> void:
@@ -18,7 +19,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	update_mesh_color()
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player and amount != 0:
+	if not eaten and body is Player and amount != 0 and not (body as Player).world_settings.is_level_editor:
 		eaten = true
 		(body as Player).world_settings.upgrade_settings.currency += amount
 		UIAudioPlayer.ringing()
@@ -49,3 +50,11 @@ func update_mesh_color() -> void:
 		update_mesh_with_color(silver.lerp(gold, (amount - 50) / 50.0))
 	else:
 		update_mesh_with_color(gold.lerp(Color(gold.r * 10, gold.g * 10, gold.b * 10), (amount - 100.0) / 100.0))
+
+func save_to_dict(dict: Dictionary) -> void:
+	super.save_to_dict(dict)
+	dict["amount"] = amount
+
+func load_from_dict(dict: Dictionary) -> void:
+	super.load_from_dict(dict)
+	amount = dict.get("amount", 0) as int

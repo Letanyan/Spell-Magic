@@ -69,7 +69,7 @@ _data = {
 }
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_nwj3g"]
-radius = 5.0
+radius = 3.0
 
 [node name="Coin" type="Node3D"]
 script = ExtResource("1_5dj36")

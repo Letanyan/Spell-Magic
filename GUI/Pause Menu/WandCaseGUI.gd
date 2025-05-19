@@ -62,7 +62,12 @@ func reload_wand_shelf_items(index: int = current_index, full_update: bool = fal
 			for i in range(option.spells.size()):
 				var s := option.spells[i]
 				if s == null:
-					missing_errors.append("'[b]" + option.spell_names[i] + "[/b]'")
+					if option.kind != Wand.Kind.PLACE_ITEM:
+						missing_errors.append("'[b]" + option.spell_names[i] + "[/b]'")
+					else:
+						var spell_name := option.spell_names[i]
+						if spell_name != "coin" and spell_name != "health":
+							missing_errors.append("'[b]" + spell_name + "[/b]'")
 				elif not s.is_active:
 					not_active_errors.append("'[b]" + s.name + "[/b]'")
 

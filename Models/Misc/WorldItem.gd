@@ -49,9 +49,11 @@ func save_to_dict(dict: Dictionary) -> void:
 	dict["height"] = height
 	dict["is_active"] = is_active
 	dict["position"] = position
+	dict["name"] = name
 	
 func load_from_dict(dict: Dictionary) -> void:
 	kind = dict.get("kind", 0)
 	height = dict.get("height", 0.5)
 	is_active = dict.get("is_active", true)
 	position = dict.get("position", Vector3.ZERO)
+	name = dict.get("name", "Item" + Rand.id(5, Time.get_ticks_usec()))

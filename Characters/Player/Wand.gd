@@ -169,6 +169,9 @@ class Option:
 						buffer = ""
 					elif s == ")":
 						state = SPELL_NAME
+						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						var param_list := parameters[parameters.size() - 1]
+						param_list[str(param_list.size())] = buffer
 						buffer = ""
 				PARAM_VALUE:
 					if "1234567890.-qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_ (+-*/^".contains(s) or (param_paren_count > 0 and (s == "," or s == ")")):

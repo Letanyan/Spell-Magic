@@ -339,6 +339,21 @@ func _input(event: InputEvent) -> void:
 						paper.position = player.position
 						add_child(paper)
 						SignalBus.item_added_to_world.emit(paper)
+					else:
+						option.next_spell()
+						var spell_name := option.get_spell_name()
+						if spell_name == "health":
+							var cross := RedCross.make()
+							cross.health = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_float() / 100.0
+							cross.position = player.position
+							add_child(cross)
+							SignalBus.item_added_to_world.emit(cross)
+						elif spell_name == "coin":
+							var coin := CoinDisc.make()
+							coin.amount = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_int()
+							coin.position = player.position
+							add_child(coin)
+							SignalBus.item_added_to_world.emit(coin)
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:

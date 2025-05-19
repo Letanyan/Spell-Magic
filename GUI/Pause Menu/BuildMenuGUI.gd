@@ -103,6 +103,10 @@ func update_item_list() -> void:
 		match p.kind:
 			World.Item.SPELL:
 				items_in_world_list.set_item_tooltip(i, (p as SpellPaper).spell.name)
+			World.Item.HEALTH:
+				items_in_world_list.set_item_tooltip(i, "Amount: %d%%" % ceili((p as RedCross).health * 100))
+			World.Item.COIN:
+				items_in_world_list.set_item_tooltip(i, "Amount: " + Globals.format_number_nearest_place((p as CoinDisc).amount))
 		i += 1
 
 func _on_rename_item_pressed() -> void:
@@ -203,6 +207,15 @@ func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
 			World.Item.SPELL:
 				item = SpellPaper.make()
 				item.load_from_dict(info)
+			World.Item.HEALTH:
+				item = RedCross.make()
+				item.load_from_dict(info)
+			World.Item.COIN:
+				item = CoinDisc.make()
+				item.load_from_dict(info)
 				
 		if item != null:				
 			items_in_world.append(item)
+			
+	update_item_list()
+	update_projectile_list()
