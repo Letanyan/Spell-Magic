@@ -227,15 +227,19 @@ func can_move() -> bool:
 	return is_zero_approx(invunerable) # and (current == "idle" or current == "walk" or current == "run")
 	
 func set_path_and_attack(path: PathStyle, attack: AttackPatterns) -> void:
-	attack_sequence = null
-	current_path = path
-	current_path.time = NAN
-	current_attack = attack
+	var is_new_set := path != current_path or attack != current_attack
+	if is_new_set:
+		attack_sequence = null
+		current_path = path
+		current_path.time = NAN
+		current_attack = attack
 	
 func set_attack_sequence(atk_seq: AttackSequence) -> void:
-	current_path = null
-	current_attack = null
-	attack_sequence = atk_seq
+	var is_new_set := atk_seq != attack_sequence
+	if is_new_set:
+		current_path = null
+		current_attack = null
+		attack_sequence = atk_seq
 
 #static var p_movement := Profiler.new()
 #static var p_path := Profiler.new()

@@ -196,7 +196,7 @@ func update(delta: float, vitals: Vitals, movement_speed: float, body: Character
 			#body.rotation.y = lerp_angle(body.rotation.y, sin(navigation_velocity.y) * TAU, 0.05)
 			pass # dont rotate if character is moving up/down
 		else:
-			body.rotation.y = lerp_angle(body.rotation.y, goal_angle, 0.3)
+			body.rotation.y = lerp_angle(body.rotation.y, goal_angle, 0.05)
 		
 	return result
 
