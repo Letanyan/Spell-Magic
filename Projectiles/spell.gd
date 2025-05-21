@@ -577,7 +577,10 @@ func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 	fixed_vars.set_value(Vars.t, 0.0)
 	var dir: Vector3 = next_pos - base_pos
 	if dir.is_zero_approx():
-		Globals.look_at(p, base_pos.normalized())
+		if is_nan(p.rotation_angle):
+			Globals.look_at(p, base_pos.normalized())
+		else:
+			Globals.look_at(p, Vector3.FORWARD.rotated(Vector3.UP, p.rotation_angle))
 	else:
 		Globals.look_at(p, dir)
 	

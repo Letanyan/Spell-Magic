@@ -162,6 +162,7 @@ static var notes := {
 	"func vec": "{vec(x,y,z)} returns a 3 dimensional vector. You can access each component using the {'.'} operator. The {.} operator take a vector on the left side ({lhs}) and a number on the right ({rhs}). The result will be the {rhs}th component of {lhs} (components are 0 indexed). Example {vec(101, 202, 303).0} will return {101}, {vec(101, 202, 303).1} will return {202} and {vec(101, 202, 303).2} will return {303}",
 	"func perp": "{perp(v)} returns some vector that is perpendicular to {v}",
 	"func perp_x, perp_y, perp_z": "{perp_#(v)} returns the {#} component of some vector that is perpendicular to {v}",
+	"func snap": "{snap(x, y)} returns {x} rounded to the nearest {y}. For example, you can use {snap(x, 1)} to return the the nearest whole number to {x}. Or, you could have {snap(x, 0.1)} to return x to 1 decimal place.",
 	
 	"artifact Pattern": "Each artifact has either a {circle}, {square} or {triangle} on each of its 4 sides of the artifact. Artifacts can only join on to other artifacts that have the same shape between the connecting edges.",
 	"artifact Connections": "An artifact can either have an event or effect on each of its 4 sides. Connecting artifact edges requires one to be an event and the other an effect.",
@@ -212,6 +213,7 @@ The following effects occur when a character with {Freeze} is hit by the followi
 [ul]{Wind}: The amount of {Freeze} is decreased. [/ul]""",
 	"spell Stun": "{Stun} shocks a character still for a small period of time. The amount of time scales with the amount of {Stun}.",
 	"spell Feather": "{Feather} reduces the weight of a character to the {Wind} attack being applied. Increasing the amount of {Feather} increases the push applied.",
+	"spell Is Infinite": "[i]Only available in the level editor.[/i] Spells will stay in the world forever. The duration of a spell will still be respected. However, when the projectile exceeds its defined duration the will reset to 0 and start again.",
 	
 	"variable uvw, u, v, w": "A unit vector {(u,v,w)} describing the direction from the player to the camera aim. {uvw} is the vector combination.",
 	"variable UVW, U, V, W": "A unit vector {(U,V,W)} decsribing the direction from the player to an enemy that was in line with the players aim when the spell was cast. {UVW} is the vector combination.",
@@ -236,7 +238,7 @@ The following effects occur when a character with {Freeze} is hit by the followi
 	"variable M": "The base mana cost for this spell",
 	"variable C": "The charge time in seconds. Spell must be set to a {Charged Cast} on the {Wand}.",
 	"variable size": "{size} is either a vector or number that describes the ratio to the radius of each projectile. When {size} is a vector it describes the ratio, {(a normalized vector)}, of {width},{height} and {depth} to the radius of a spell respectivly. When {size} is just a number it describes the ratio, {([0, 1])}, of each projectile in all dimensions. {size} only takes effect when each projectile is cast. {size} can only be set in the variables field of the spell.",
-	"variable spinrate": "{spinrate} describe the rotation speed of {Rock} spells. Limited to {[-tau, tau]}.  {spinrate} can only be set in the variables field of the spell.",
+	"variable spinrate": "{spinrate} describe the rotation speed of {Rock} spells if the projectile has velocity. If a projectile is not moving {spinrate} will define the angle the projectile faces. Limited to {[-tau, tau]}. {spinrate} can only be set in the variables field of the spell.",
 	"variable x, y, z": "These are typically used with the {'.'} operator. Since {x=0},{y=1} and {z=2} you can use them to get the corrosponding component of a vector.",
 	"variable position": "{position} is a vector that describes the position of the player in the world.",
 	"variable pi and tau": "{pi} and {tau} are constants defined as approximatly {3.14} and {6.28} respectively.",
@@ -251,6 +253,13 @@ The following effects occur when a character with {Freeze} is hit by the followi
 	"wand Modifier Key": "The key will become a modifier key for all other non modifier keys. Use this to increase the availble key combinations.",
 	"wand Spell Parameters": "Sometimes you might want to cast a spell but with only a few changes. You can do this using spell parameters. Each spell can have a set of customised parameters set from a wand action. Parameters must be set inside a pair of parentheses '()' which appear after the spell name. Parameters are a set of '=' separated key-value pairs separated by commas. For example, if we have a spell called 'Blast', we can set its values by declaring the spell like 'Blast(N=5, element=ice, speed=10).' In this example we change 'N' to 5, change the element of the spell to {Ice} and change its custom variable 'speed' to 10.",
 	"wand Cast Spell Lists": "Using a comma separated list for {Cast}, {Charged Cast} and {Rapid Cast} will auto rotate to the next spell after each cast.",
+	"wand Remove": "[i]Only available in the level editor.[/i] When cast will remove the nearest spell or item intersecting the player reticule.",
+	"wand Place": """[i]Only available in the level editor.[/i]
+Place items in the world. You can assign spells using their name in text field. For other items you can use the special syntax described below.
+{Spells}: Add a spell item into the world. Use the normal syntax for casting a spell to describe the spell that a player will receive when picked up.
+{Health}: Add a health item into the world. Use the syntax '{health(x)}' to place an item that restores '{x%}' health when picked up.
+{Coin}: Add a coin item into the world. Use the syntax '{coin(x)}' to place an item that gives the player '{x}' money when picked up. 
+""",
 	
 	"upgrades Max Health": "The maximum health of the player.",
 	"upgrades Max M": "The maximum mana of the player.",
