@@ -17,12 +17,14 @@ extends Panel
 @onready var label_4: RichTextLabel = $Grid/Progress4/Label
 @onready var condition_4: RichTextLabel = $Grid/Progress4/Condition
 
+var is_enabled: bool = true
+
 signal upgrade_was_complete(message: String)
 
 func _ready() -> void:
 	pass
 	
-func upgrade_slots_refreshed(settings: UpgradeSettings) -> void:
+func upgrade_slots_refreshed(settings: UpgradeSettings, world_settings: WorldSettings = null) -> void:
 	progress_1.visible = settings.upgrade_kind[0] != UpgradeSettings.UpgradeKind.NONE
 	progress_2.visible = settings.upgrade_kind[1] != UpgradeSettings.UpgradeKind.NONE
 	progress_3.visible = settings.upgrade_kind[2] != UpgradeSettings.UpgradeKind.NONE
@@ -49,7 +51,12 @@ func upgrade_slots_refreshed(settings: UpgradeSettings) -> void:
 	upgrades_available += 1 if progress_3.visible else 0
 	upgrades_available += 1 if progress_4.visible else 0
 	
-	if upgrades_available >= 3:
+	if world_settings != null:
+		is_enabled = not world_settings.is_editing_level and not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES)
+		
+	if not is_enabled:
+		visible = false
+	elif upgrades_available >= 3:
 		visible = true
 		size.y = 88
 	elif upgrades_available >= 1:

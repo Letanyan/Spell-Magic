@@ -19,7 +19,7 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	update_mesh_color()
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player and amount != 0 and not (body as Player).world_settings.is_level_editor:
+	if not eaten and body is Player and amount != 0 and not (body as Player).world_settings.is_editing_level:
 		eaten = true
 		(body as Player).world_settings.upgrade_settings.currency += amount
 		UIAudioPlayer.ringing()

@@ -24,7 +24,7 @@ func _process(delta: float) -> void:
 
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player and spell != null and not (body as Player).world_settings.is_level_editor:
+	if not eaten and body is Player and spell != null and not (body as Player).world_settings.is_editing_level:
 		eaten = true
 		if not (body as Player).magic_book.spell_exists(spell.name):
 			UIAudioPlayer.grabbing()

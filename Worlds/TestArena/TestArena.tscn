@@ -4,15 +4,15 @@
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_g4l27"]
 [ext_resource type="PackedScene" uid="uid://b185ji0u0kuxo" path="res://GUI/Pause Menu/Menu.tscn" id="3_k0fau"]
 [ext_resource type="Environment" uid="uid://dnhhg210yvls1" path="res://Worlds/Demo/world_environment.tres" id="4_hd6mj"]
+[ext_resource type="Material" uid="uid://cggmnw6bjnv4a" path="res://Worlds/LevelEditor/floor.material" id="6_1x2vc"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="6_wqlw8"]
 [ext_resource type="Material" uid="uid://d0gmvf62uyhd0" path="res://addons/kenney_prototype_tools/materials/red/material_01.tres" id="7_ul78n"]
-[ext_resource type="Material" uid="uid://bx6qeabdhq2s" path="res://addons/kenney_prototype_tools/materials/dark/material_01.tres" id="7_xb0vc"]
 [ext_resource type="Material" uid="uid://bmrckkx3cdrkk" path="res://addons/kenney_prototype_tools/materials/red/material_13.tres" id="8_m1hqp"]
 [ext_resource type="Material" uid="uid://ddal25jay8fq1" path="res://addons/kenney_prototype_tools/materials/purple/material_01.tres" id="9_fy4ku"]
 [ext_resource type="Material" uid="uid://duhk80o1wa5hh" path="res://addons/kenney_prototype_tools/materials/purple/material_13.tres" id="10_wuc0v"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wjmcb"]
-material = ExtResource("7_xb0vc")
+material = ExtResource("6_1x2vc")
 size = Vector2(1000, 1000)
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_ru3nu"]

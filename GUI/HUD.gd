@@ -396,8 +396,7 @@ func update_wand_mappings() -> void:
 	($WandMappingPanel as Control).size.y = wand_mapping.size.y
 		
 func update_settings(settings: WorldSettings) -> void:
-	hud_upgrades.visible = not world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES)
-	hud_upgrades.upgrade_slots_refreshed(settings.upgrade_settings)
+	hud_upgrades.upgrade_slots_refreshed(settings.upgrade_settings, settings)
 	
 	GlobalData.controller.switching_mode = hud_settings.key_display
 	match hud_settings.key_display:
@@ -420,7 +419,7 @@ func update_settings(settings: WorldSettings) -> void:
 	
 	stats_view.visible = not hud_settings.hide_stats_view
 	
-	hud_upgrades.visible = not hud_settings.hide_possible_upgrades
+	hud_upgrades.visible = hud_upgrades.visible and not hud_settings.hide_possible_upgrades
 	
 	player.cam.fov = settings.camera_settings.fov
 	player.cam.far = settings.camera_settings.render_distance

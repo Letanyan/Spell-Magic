@@ -233,7 +233,7 @@ The following effects occur when a character with {Freeze} is hit by the followi
 	"variable r": "The size of each projectile of the spell.",
 	"variable rn0, rn1, rn2, rn3, rn4, rn5, rn6, rn7, rn8, rn9": "Each represents a different random number between {0} and {1} for each different projectile cast.",
 	"variable r0, r1, r2, r3, r4, r5, r6, r7, r8, r9": "Each represents a different random number between {0} and {1} for each spell cast.",
-	"variable D": "The delay for this projectile.",
+	"variable D": "The delay for each projectile.",
 	"variable P": "The base damage multipler for all projectiles of the spell.",
 	"variable M": "The base mana cost for this spell",
 	"variable C": "The charge time in seconds. Spell must be set to a {Charged Cast} on the {Wand}.",

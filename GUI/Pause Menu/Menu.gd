@@ -47,19 +47,20 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	upgrades.settings = _world_settings
 	settings.world_settings = _world_settings
 	settings.player = _player
+	build_menu.settings = _world_settings
 	player = _player
 	world_settings = _world_settings
 	
 	spell_deck.key_binding_complete.connect(wand_case.bind_spell_to_key)
 	
-	if world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+	if world_settings.is_editing_level or world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		upgrades_button.text = "Upgrades"
 	else:
 		upgrades_button.text = "Stats"
 		upgrades.make_display_only(true)
 		
 		
-	build_button.visible = world_settings.is_level_editor
+	build_button.visible = world_settings.is_editing_level
 	
 	settings.exit_game.connect(func() -> void: get_tree().quit())
 	settings.save_game.connect(func() -> void: save_changes())
@@ -284,7 +285,7 @@ func save_changes() -> void:
 		settings.world_settings.save()
 		if settings.is_magic_book_selected:
 			settings.save_user_magic_book()
-	if world_settings.is_level_editor:
+	if world_settings.is_editing_level:
 		build_menu.save(world_settings.world_name)
 	world_settings.save()
 

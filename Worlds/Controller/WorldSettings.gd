@@ -14,6 +14,7 @@ var day_of_the_year: int
 var time_of_day: float
 var is_test_arena: bool = false
 var is_level_editor: bool = false
+var is_editing_level: bool = false
 var world_generation_version: int = -1
 var sea_level: float = 0.0
 var world_radius: float = 10000.0

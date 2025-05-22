@@ -25,6 +25,8 @@ var spawner: ItemSpawner
 var is_mouse_down: bool = false
 var spells_on_hold: Dictionary = {}
 
+var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
+
 func setup(_settings: WorldSettings) -> void:
 	settings = _settings
 	
@@ -55,11 +57,6 @@ func setup(_settings: WorldSettings) -> void:
 			menu.magic_book.page.update_combo_box_disabled()
 		menu.spell_deck.update_cards()
 	)
-	player.world_settings = settings
-	player.name_generator = NameGenerator.new()
-	player.name_generator.read(settings.world_name)
-	player.set_current_biome(World.Biome.GRASSLAND)
-	#player.play_bg_audio(World.Biome.WATER)
 	
 	case = WandCase.new()
 	case.read(settings.world_name, book)
@@ -80,11 +77,16 @@ func setup(_settings: WorldSettings) -> void:
 		print(e, " died")
 	)
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if ready_state == GameSettings.ReadyState.NOT:
+		run_on_ready()
+
+# Called when the node enters the scene tree for the first time.
+func run_on_ready() -> void:
+	ready_state = GameSettings.ReadyState.IN
 	if book == null:
 		var _settings := WorldSettings.new(get_viewport())
-		_settings.read("level+editor")
+		_settings.read("test+arena")
 		_settings.is_level_editor = true
 		setup(_settings)
 		
@@ -92,8 +94,6 @@ func _ready() -> void:
 	for enemy in inhabitants:
 		enemy.animation_tree.active = true
 		
-	settings.upgrade_settings.currency = 10000
-	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
 	menu.setup(book, case, artifacts, settings, player)
 	
 	wand = case.current_wand()
@@ -129,6 +129,11 @@ func _ready() -> void:
 	player.vitals.mana.set_value(settings.player_mana)
 	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack())
 	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence())
+	player.world_settings = settings
+	player.name_generator = NameGenerator.new()
+	player.name_generator.read(settings.world_name)
+	player.set_current_biome(World.Biome.GRASSLAND)
+	#player.play_bg_audio(World.Biome.WATER)
 	
 	skybox = SkyBox.new($WorldEnvironment as WorldEnvironment, $Sun as DirectionalLight3D, $Moon as DirectionalLight3D)
 	skybox.day_time = 14
@@ -153,6 +158,7 @@ func _ready() -> void:
 	var theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
 	theme.change_tint_color(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
 	hud.update_theme_colors(settings.hud_settings.theme_color, settings.hud_settings.theme_variation)
+	ready_state = GameSettings.ReadyState.IS
 	
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	

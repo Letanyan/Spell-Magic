@@ -11,12 +11,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0dalk")
 
+[node name="ProjectilesLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 88.0
+offset_bottom = 32.0
+text = "Projectiles"
+
 [node name="ProjectilesInWorld" type="ItemList" parent="."]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 8.0
+offset_top = 40.0
 offset_right = 248.0
 offset_bottom = -72.0
 grow_vertical = 2
@@ -56,12 +64,20 @@ offset_bottom = -7.0
 grow_vertical = 0
 text = "Delete"
 
+[node name="ItemsLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 264.0
+offset_top = 8.0
+offset_right = 305.0
+offset_bottom = 32.0
+text = "Items"
+
 [node name="ItemsInWorld" type="ItemList" parent="."]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 264.0
-offset_top = 8.0
+offset_top = 40.0
 offset_right = 504.0
 offset_bottom = -72.0
 grow_vertical = 2
@@ -102,9 +118,88 @@ offset_bottom = -7.0
 grow_vertical = 0
 text = "Delete"
 
+[node name="GameSettingsLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 8.0
+offset_right = 628.0
+offset_bottom = 32.0
+text = "Game Settings"
+
+[node name="DeckBuilding" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 40.0
+offset_right = 695.0
+offset_bottom = 72.0
+text = "Spell Deck Building"
+
+[node name="ShopUpgrades" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 72.0
+offset_right = 693.0
+offset_bottom = 104.0
+text = "Shop for Upgrades"
+
+[node name="Respawn" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 104.0
+offset_right = 622.0
+offset_bottom = 136.0
+text = "Respawn"
+
+[node name="RespawnSettingsLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 144.0
+offset_right = 652.0
+offset_bottom = 168.0
+text = "Respawn Settings"
+
+[node name="RespawnUpgrades" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 176.0
+offset_right = 731.0
+offset_bottom = 208.0
+text = "Respawn with Upgrades"
+
+[node name="RespawnArtifacts" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 208.0
+offset_right = 724.0
+offset_bottom = 240.0
+text = "Respawn with Artifacts"
+
+[node name="RespawnSpells" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 240.0
+offset_right = 705.0
+offset_bottom = 272.0
+text = "Respawn with Spells"
+
+[node name="RespawnCoins" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 272.0
+offset_right = 701.0
+offset_bottom = 304.0
+text = "Respawn with Coins"
+
 [connection signal="item_selected" from="ProjectilesInWorld" to="." method="_on_spells_in_world_item_selected"]
 [connection signal="pressed" from="RenameProjectile" to="." method="_on_rename_projectile_pressed"]
 [connection signal="pressed" from="DeleteProjectile" to="." method="_on_delete_projectile_pressed"]
 [connection signal="item_selected" from="ItemsInWorld" to="." method="_on_items_in_world_item_selected"]
 [connection signal="pressed" from="RenameItem" to="." method="_on_rename_item_pressed"]
 [connection signal="pressed" from="DeleteItem" to="." method="_on_delete_item_pressed"]
+[connection signal="toggled" from="DeckBuilding" to="." method="_on_deck_building_toggled"]
+[connection signal="toggled" from="ShopUpgrades" to="." method="_on_shop_upgrades_toggled"]
+[connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
+[connection signal="toggled" from="RespawnUpgrades" to="." method="_on_respawn_upgrades_toggled"]
+[connection signal="toggled" from="RespawnArtifacts" to="." method="_on_respawn_artifacts_toggled"]
+[connection signal="toggled" from="RespawnSpells" to="." method="_on_respawn_spells_toggled"]
+[connection signal="toggled" from="RespawnCoins" to="." method="_on_respawn_coins_toggled"]

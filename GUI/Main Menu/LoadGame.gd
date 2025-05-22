@@ -19,20 +19,16 @@ func _on_cancel_pressed() -> void:
 	UIAudioPlayer.click()
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
-func load_current_item(selected: int) -> void:
+func load_current_item(selected: int, in_editing_mode: bool) -> void:
 	var world_name := filenames[selected]
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(world_name)
 	
-	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
-	
-	#var demo = load("res://Worlds/Demo/demo.tscn").instantiate()
-	#demo.setup(settings)
-	#
-	#var current = get_tree().current_scene
-	#get_tree().root.add_child(demo)
-	#current.call_deferred("free")
-	#get_tree().current_scene = demo
+	if settings.is_level_editor:
+		settings.is_editing_level = in_editing_mode
+		SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "fade_to_black", func(content: LevelEditor) -> void: content.setup(settings), Quotes.random())
+	else:
+		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 
 func _on_load_pressed() -> void:
 	var list: ItemList = $WorldsList
@@ -40,10 +36,31 @@ func _on_load_pressed() -> void:
 	var selected := list.get_selected_items()
 	if selected.is_empty():
 		return
-	load_current_item(selected[0])
+	load_current_item(selected[0], false)
+	
+func _on_load_editor_pressed() -> void:
+	var list: ItemList = $WorldsList
+	UIAudioPlayer.click()
+	var selected := list.get_selected_items()
+	if selected.is_empty():
+		return
+	load_current_item(selected[0], true)
+	
 	
 func _on_worlds_list_item_activated(index: int) -> void:
-	load_current_item(index)
+	load_current_item(index, false)
+	
+func _on_worlds_list_item_selected(index: int) -> void:
+	var list: ItemList = $WorldsList
+	var load_editor: Button = $LoadEditor
+	load_editor.disabled = true
+	var selected := list.get_selected_items()
+	if selected.is_empty():
+		return
+	var world_name := filenames[selected[0]]
+	var settings := WorldSettings.new(get_viewport())
+	settings.read(world_name)
+	load_editor.disabled = not settings.is_level_editor
 
 func _on_delete_pressed() -> void:
 	var list: ItemList = $WorldsList

@@ -1,6 +1,10 @@
 class_name BuildMenuGUI
 extends Control
 
+var settings: WorldSettings:
+	set(value):
+		settings = value
+		update_settings()
 var projectiles_in_world: Array[SpellBody] = []
 var items_in_world: Array[WorldItem] = []
 @onready var projectiles_in_world_list: ItemList = $ProjectilesInWorld
@@ -8,11 +12,30 @@ var items_in_world: Array[WorldItem] = []
 @onready var items_in_world_list: ItemList = $ItemsInWorld
 @onready var item_name: LineEdit = $ItemName
 
+@onready var deck_building: CheckBox = $DeckBuilding
+@onready var shop_upgrades: CheckBox = $ShopUpgrades
+@onready var respawn: CheckBox = $Respawn
+@onready var respawn_upgrades: CheckBox = $RespawnUpgrades
+@onready var respawn_artifacts: CheckBox = $RespawnArtifacts
+@onready var respawn_spells: CheckBox = $RespawnSpells
+@onready var respawn_coins: CheckBox = $RespawnCoins
+
+
 func _ready() -> void:
 	SignalBus.spell_added_to_world.connect(spell_added_into_world)
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
 	SignalBus.item_added_to_world.connect(item_added_into_world)
 	SignalBus.item_removed_from_world.connect(item_removed_from_world)
+	
+func update_settings() -> void:
+	print("build: ", String.num_int64(settings.game_mode_settings.flags, 2))
+	deck_building.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))
+	shop_upgrades.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES))
+	respawn.set_pressed_no_signal(settings.game_mode_settings.mode == GameModeSettings.GameMode.RESPAWN)
+	respawn_artifacts.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_ARTIFACTS))
+	respawn_upgrades.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_UPGRADES))
+	respawn_spells.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS))
+	respawn_coins.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_COINS))
 	
 func spell_added_into_world(projectile: SpellBody) -> void:
 	if projectile.spell.is_infinite:
@@ -219,3 +242,58 @@ func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
 			
 	update_item_list()
 	update_projectile_list()
+
+
+func _on_deck_building_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.flags |= GameModeSettings.SPELL_DECK_BUILDING
+	else:
+		settings.game_mode_settings.flags &= ~GameModeSettings.SPELL_DECK_BUILDING
+
+func _on_shop_upgrades_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.flags |= GameModeSettings.SHOP_FOR_UPGRADES
+	else:
+		settings.game_mode_settings.flags &= ~GameModeSettings.SHOP_FOR_UPGRADES
+
+
+func _on_respawn_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.mode = GameModeSettings.GameMode.RESPAWN
+	else:
+		settings.game_mode_settings.mode = GameModeSettings.GameMode.PERMADEATH
+	
+	
+func _on_respawn_upgrades_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_UPGRADES
+	else:
+		settings.game_mode_settings.flags &= ~GameModeSettings.RESPAWN_WITH_UPGRADES
+
+
+func _on_respawn_artifacts_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_ARTIFACTS
+	else:
+		settings.game_mode_settings.flags &= ~GameModeSettings.RESPAWN_WITH_ARTIFACTS
+
+
+func _on_respawn_spells_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
+	else:
+		settings.game_mode_settings.flags &= ~GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS
+
+
+func _on_respawn_coins_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_COINS
+	else:
+		settings.game_mode_settings.flags &= ~GameModeSettings.RESPAWN_WITH_COINS

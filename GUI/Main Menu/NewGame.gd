@@ -17,7 +17,6 @@ var name_generator: NameGenerator
 
 @onready var permadeath: Button = $Permadeath
 @onready var respawn: Button = $Respawn
-@onready var sandbox: Button = $Sandbox
 
 @onready var respawn_options: VBoxContainer = $RespawnOptions
 @onready var game_options: VBoxContainer = $GameOptions
@@ -73,6 +72,7 @@ var name_generator: NameGenerator
 
 var game_mode: GameModeSettings.GameMode = GameModeSettings.GameMode.RESPAWN
 var game_flags: int = GameModeSettings.RESPAWN_WITH_UPGRADES
+var is_level_editor_set: bool = false
 
 var upgrades: UpgradeSettings
 
@@ -202,7 +202,6 @@ func _on_create_pressed() -> void:
 		return
 	
 	if use_seed.button_pressed:
-		# FIXME: game crashed when setting custom T value
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.world_name = save_name.text
@@ -220,9 +219,9 @@ func _on_create_pressed() -> void:
 		settings.difficulty_level = difficulty_value.get_item_id(difficulty_value.selected)
 		
 		settings.game_mode_settings.mode = game_mode
-		match game_mode:
-			GameModeSettings.GameMode.RESPAWN:
-				settings.game_mode_settings.flags = game_flags
+		settings.is_level_editor = is_level_editor_set
+		if game_mode == GameModeSettings.GameMode.RESPAWN or settings.is_level_editor:
+			settings.game_mode_settings.flags = game_flags
 		
 		
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
@@ -231,7 +230,11 @@ func _on_create_pressed() -> void:
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
 		UIAudioPlayer.crash()
-		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
+		if settings.is_level_editor:
+			settings.is_editing_level = true
+			SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "fade_to_black", func(content: LevelEditor) -> void: content.setup(settings), Quotes.random())
+		else:
+			SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_save_file.button_pressed:
 		if worlds_list.get_selected_items().is_empty():
 			return
@@ -290,7 +293,6 @@ func _on_create_pressed() -> void:
 func _on_permadeath_toggled(button_pressed: bool) -> void:
 	UIAudioPlayer.check(button_pressed)
 	respawn.set_pressed_no_signal(not button_pressed)
-	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.PERMADEATH
 	respawn_options.visible = false
 	game_options.visible = true
@@ -299,7 +301,6 @@ func _on_permadeath_toggled(button_pressed: bool) -> void:
 func _on_respawn_toggled(button_pressed: bool) -> void:
 	UIAudioPlayer.check(button_pressed)
 	permadeath.set_pressed_no_signal(not button_pressed)
-	sandbox.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.RESPAWN
 	respawn_options.visible = true
 	game_options.visible = true
@@ -310,8 +311,8 @@ func _on_sandbox_toggled(button_pressed: bool) -> void:
 	respawn.set_pressed_no_signal(not button_pressed)
 	permadeath.set_pressed_no_signal(not button_pressed)
 	game_mode = GameModeSettings.GameMode.SANDBOX
-	respawn_options.visible = false
-	game_options.visible = false
+	respawn_options.visible = true
+	game_options.visible = true
 
 
 func _on_upgrades_toggled(button_pressed: bool) -> void:
@@ -358,6 +359,12 @@ func _on_shop_toggled(toggled_on: bool) -> void:
 	else:
 		game_flags &= ~GameModeSettings.SHOP_FOR_UPGRADES	
 
+func _on_level_editor_toggled(toggled_on: bool) -> void:
+	UIAudioPlayer.check(toggled_on)
+	if toggled_on:
+		is_level_editor_set = true
+	else:
+		is_level_editor_set = false
 
 func _on_health_value_changed(value: float) -> void:
 	upgrades.level_health = ceili(value)
@@ -514,7 +521,6 @@ func _on_starting_upgrades_toggled(button_pressed: bool) -> void:
 	($Cancel as Button).position.x += pos_delta
 	permadeath.position.x += pos_delta
 	respawn.position.x += pos_delta
-	sandbox.position.x += pos_delta
 	respawn_options.position.x += pos_delta
 	game_options.position.x += pos_delta
 	game_mode_description_panel.position.x += pos_delta
@@ -539,7 +545,6 @@ func _on_use_seed_toggled(toggled_on: bool) -> void:
 		worlds_list.visible = false
 		permadeath.visible = true
 		respawn.visible = true
-		#sandbox.visible = true
 		respawn_options.visible = true
 		game_options.visible = true
 		starting_upgrades.visible = true
@@ -558,7 +563,6 @@ func _on_use_save_file_toggled(toggled_on: bool) -> void:
 		seed_edit.visible = false
 		permadeath.visible = false
 		respawn.visible = false
-		#sandbox.visible = false
 		respawn_options.visible = false
 		game_options.visible = false
 		starting_upgrades.visible = false
@@ -576,7 +580,6 @@ func _on_use_normal_toggled(toggled_on: bool) -> void:
 		seed_edit.visible = false
 		permadeath.visible = false
 		respawn.visible = false
-		#sandbox.visible = false
 		respawn_options.visible = false
 		game_options.visible = false
 		starting_upgrades.visible = false
@@ -596,7 +599,6 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 		seed_edit.visible = false
 		permadeath.visible = false
 		respawn.visible = false
-		#sandbox.visible = false
 		respawn_options.visible = false
 		game_options.visible = false
 		starting_upgrades.visible = false

@@ -23,7 +23,7 @@ const grassland_structure_base := {
 	#GrasslandStructuresKind.TARGET_PUZZLE: 0.01
 	GrasslandStructuresKind.ARTIFACT: 0.01,
 	GrasslandStructuresKind.NOTE: 0.1,
-	GrasslandStructuresKind.TOWER: 2,
+	GrasslandStructuresKind.TOWER: 0.2,
 }
 var grassland_structure := {}
 

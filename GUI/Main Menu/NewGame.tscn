@@ -197,41 +197,23 @@ offset_bottom = -68.0
 tooltip_text = "You can retry after death."
 focus_neighbor_left = NodePath("../Permadeath")
 focus_neighbor_top = NodePath("../Seed")
-focus_neighbor_right = NodePath("../Sandbox")
 focus_neighbor_bottom = NodePath("../RespawnOptions")
-focus_next = NodePath("../Sandbox")
 focus_previous = NodePath("../Permadeath")
 toggle_mode = true
 button_pressed = true
 text = "Respawn"
 
-[node name="Sandbox" type="Button" parent="."]
-visible = false
+[node name="GameOptions" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 72.0
-offset_top = -100.0
-offset_right = 184.0
-offset_bottom = -60.0
-focus_neighbor_left = NodePath("../Respawn")
-focus_neighbor_top = NodePath("../Seed")
-focus_neighbor_right = NodePath("../StartingUpgradesPanel")
-focus_neighbor_bottom = NodePath("../RespawnOptions")
-focus_next = NodePath("../RespawnOptions")
-focus_previous = NodePath("../Respawn")
-toggle_mode = true
-text = "Sandbox"
-
-[node name="GameOptions" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 464.0
-offset_top = 272.0
-offset_right = 688.0
-offset_bottom = 336.0
+offset_left = -112.0
+offset_top = -44.0
+offset_right = 112.0
+offset_bottom = 52.0
 alignment = 1
 
 [node name="SpellEditing" type="CheckBox" parent="GameOptions"]
@@ -242,6 +224,10 @@ text = "Spell Deck Building"
 layout_mode = 2
 text = "Shop for Upgrades"
 
+[node name="LevelEditor" type="CheckBox" parent="GameOptions"]
+layout_mode = 2
+text = "Level Editor"
+
 [node name="RespawnOptions" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -250,19 +236,17 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -112.0
-offset_top = 12.0
+offset_top = 52.0
 offset_right = 112.0
-offset_bottom = 148.0
+offset_bottom = 188.0
 focus_neighbor_bottom = NodePath("Upgrades")
 alignment = 1
 
 [node name="Upgrades" type="CheckBox" parent="RespawnOptions"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../Sandbox")
 focus_neighbor_right = NodePath("../../StartingUpgradesPanel")
 focus_neighbor_bottom = NodePath("../Artifacts")
 focus_next = NodePath("../Artifacts")
-focus_previous = NodePath("../../Sandbox")
 button_pressed = true
 text = "Respawn with Upgrades"
 
@@ -1012,9 +996,9 @@ popup/item_4/id = 4
 [connection signal="toggled" from="UseHardcore" to="." method="_on_use_hardcore_toggled"]
 [connection signal="toggled" from="Permadeath" to="." method="_on_permadeath_toggled"]
 [connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
-[connection signal="toggled" from="Sandbox" to="." method="_on_sandbox_toggled"]
 [connection signal="toggled" from="GameOptions/SpellEditing" to="." method="_on_spell_editing_toggled"]
 [connection signal="toggled" from="GameOptions/Shop" to="." method="_on_shop_toggled"]
+[connection signal="toggled" from="GameOptions/LevelEditor" to="." method="_on_level_editor_toggled"]
 [connection signal="toggled" from="RespawnOptions/Upgrades" to="." method="_on_upgrades_toggled"]
 [connection signal="toggled" from="RespawnOptions/Artifacts" to="." method="_on_artifacts_toggled"]
 [connection signal="toggled" from="RespawnOptions/Spells" to="." method="_on_spells_toggled"]

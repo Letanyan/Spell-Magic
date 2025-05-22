@@ -230,7 +230,7 @@ func display_spell(magic_book: MagicBook, spell: Spell, index: int) -> void:
 	cr_edit.editable = is_editable
 	cd_edit.editable = is_editable
 	
-	is_infinite.visible = book.settings.is_level_editor
+	is_infinite.visible = book.settings.is_editing_level
 	chain_edit.editable = not spell.is_infinite
 	chain_combo.disabled = spell.is_infinite
 		
