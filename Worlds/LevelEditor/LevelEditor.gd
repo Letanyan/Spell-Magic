@@ -32,10 +32,17 @@ func setup(_settings: WorldSettings) -> void:
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
-	book = GlobalData.magic_book
-	book.settings = settings
-	book.ignore_cooldown = true
-	book.settings.upgrade_settings.level_spells_in_book = 25
+	if settings.is_editing_level:
+		book = GlobalData.magic_book
+		book.settings = settings
+		book.ignore_cooldown = true
+		book.settings.upgrade_settings.level_spells_in_book = 25
+	else:
+		book = MagicBook.new()
+		book.settings = settings
+		book.read(settings.world_name, false)
+		book.rebuild_spell_chains()
+		book.ignore_cooldown = GlobalData.is_debug
 	
 	book.update_spell_limits(settings.upgrade_settings.max_v(), settings.upgrade_settings.max_r())
 	settings.upgrade_settings.max_velocity_updated.connect(func(v: float) -> void:

@@ -27,8 +27,8 @@ func export_absolute_path(file_path: String) -> void:
 		data += s.make_gdscript_init(s.name, true)
 	file.store_string(data)
 	
-func read(world_name: String) -> bool:
-	return read_absolute_path("user://worlds/%s/magic_book.json" % (world_name))
+func read(world_name: String, create_default_spell: bool = true) -> bool:
+	return read_absolute_path("user://worlds/%s/magic_book.json" % (world_name), create_default_spell)
 		
 func read_absolute_path(file_path: String, create_default_spell: bool = true) -> bool:
 	var file := FileAccess.open(file_path, FileAccess.READ)

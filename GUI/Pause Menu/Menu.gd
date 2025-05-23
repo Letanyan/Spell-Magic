@@ -270,11 +270,14 @@ func save_changes() -> void:
 	if magic_book.visible:
 		if world_settings.is_test_arena:
 			magic_book.book.save_absolute_path("res://magic_book.json")
-		else:
+			print("save Test")
+		elif not world_settings.is_editing_level:
 			magic_book.book.save(world_settings.world_name)
+			print("save A")
 	if spell_deck.visible:
-		if not world_settings.is_test_arena:
+		if not world_settings.is_test_arena and not world_settings.is_editing_level:
 			spell_deck.book.save(world_settings.world_name)
+			print("save B")
 	if wand_case.visible:
 		wand_case.case.save(world_settings.world_name)
 	if artifacts.visible:

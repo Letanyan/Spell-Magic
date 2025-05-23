@@ -28,7 +28,6 @@ func _ready() -> void:
 	SignalBus.item_removed_from_world.connect(item_removed_from_world)
 	
 func update_settings() -> void:
-	print("build: ", String.num_int64(settings.game_mode_settings.flags, 2))
 	deck_building.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))
 	shop_upgrades.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES))
 	respawn.set_pressed_no_signal(settings.game_mode_settings.mode == GameModeSettings.GameMode.RESPAWN)

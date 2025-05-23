@@ -200,7 +200,7 @@ func _on_create_pressed() -> void:
 		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
 		return
-	
+		
 	if use_seed.button_pressed:
 		var settings := WorldSettings.new(get_viewport())
 		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
@@ -222,7 +222,6 @@ func _on_create_pressed() -> void:
 		settings.is_level_editor = is_level_editor_set
 		if game_mode == GameModeSettings.GameMode.RESPAWN or settings.is_level_editor:
 			settings.game_mode_settings.flags = game_flags
-		
 		
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
 		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
