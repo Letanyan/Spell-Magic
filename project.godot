@@ -35,6 +35,7 @@ GlobalData="*res://General/globals.gd"
 Steamworks="*res://General/global_steam.gd"
 SceneHandler="*res://GUI/Main Menu/SceneHandler.gd"
 SpellBuffer="*res://Projectiles/spell_buffer.gd"
+HttpLevels="*res://GUI/Pause Menu/HttpLevels.tscn"
 
 [debug]
 

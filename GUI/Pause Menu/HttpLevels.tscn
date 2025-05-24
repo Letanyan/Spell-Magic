@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cphmhnn6ykpna"]
+
+[ext_resource type="Script" path="res://GUI/Pause Menu/http_levels.gd" id="1_l5tyg"]
+
+[node name="HttpLevels" type="Node"]
+script = ExtResource("1_l5tyg")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]

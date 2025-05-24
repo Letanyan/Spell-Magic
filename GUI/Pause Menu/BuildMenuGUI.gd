@@ -22,6 +22,9 @@ var items_in_world: Array[WorldItem] = []
 
 
 func _ready() -> void:
+	#HttpLevels.got_level.connect(func(id: int, data: Dictionary) -> void: print(id, data))
+	#HttpLevels.added_level.connect(func(id: int) -> void: HttpLevels.get_level(id))
+	#HttpLevels.save_level("New Level", {"projectiles": {}, "items": {}})
 	SignalBus.spell_added_to_world.connect(spell_added_into_world)
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
 	SignalBus.item_added_to_world.connect(item_added_into_world)
