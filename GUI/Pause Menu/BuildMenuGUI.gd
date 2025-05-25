@@ -7,6 +7,10 @@ var settings: WorldSettings:
 		update_settings()
 var projectiles_in_world: Array[SpellBody] = []
 var items_in_world: Array[WorldItem] = []
+
+@onready var desc_edit: LineEdit = $DescEdit
+@onready var share_online: CheckBox = $ShareOnline
+
 @onready var projectiles_in_world_list: ItemList = $ProjectilesInWorld
 @onready var projectile_name: LineEdit = $ProjectileName
 @onready var items_in_world_list: ItemList = $ItemsInWorld
@@ -25,6 +29,7 @@ func _ready() -> void:
 	#HttpLevels.got_level.connect(func(id: int, data: Dictionary) -> void: print(id, data))
 	#HttpLevels.added_level.connect(func(id: int) -> void: HttpLevels.get_level(id))
 	#HttpLevels.save_level("New Level", {"projectiles": {}, "items": {}})
+	HttpLevels.added_level.connect(level_added)
 	SignalBus.spell_added_to_world.connect(spell_added_into_world)
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
 	SignalBus.item_added_to_world.connect(item_added_into_world)
@@ -177,8 +182,14 @@ func _on_items_in_world_item_selected(index: int) -> void:
 
 
 func save(world_name: String) -> void:
-	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)
+	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)	
+	var dict := get_dict()
+	file.store_var(dict)
 	
+	if settings.is_shared_online != -1:
+		HttpLevels.put_level(settings.is_shared_online, desc_edit.text, dict)
+	
+func get_dict() -> Dictionary:
 	var projectiles := {}
 	for proj in projectiles_in_world:
 		if proj.spell.is_infinite:
@@ -192,9 +203,12 @@ func save(world_name: String) -> void:
 		
 	var result := {}
 	result["projectiles"] = projectiles
-	result["items"] = items 
-		
-	file.store_var(result)
+	result["items"] = items
+	result["name"] = settings.world_name
+	result["desc"] = desc_edit.text
+	result["settings"] = settings.game_mode_settings.save_dict()
+ 	
+	return result
 
 func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.READ)
@@ -242,6 +256,11 @@ func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
 		if item != null:				
 			items_in_world.append(item)
 			
+	desc_edit.text = data.get("desc", "") as String
+	share_online.set_pressed_no_signal(settings.is_shared_online != -1)
+	
+	settings.game_mode_settings.load_dict(data.get("settings", {}) as Dictionary)
+		
 	update_item_list()
 	update_projectile_list()
 
@@ -299,3 +318,15 @@ func _on_respawn_coins_toggled(toggled_on: bool) -> void:
 		settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_COINS
 	else:
 		settings.game_mode_settings.flags &= ~GameModeSettings.RESPAWN_WITH_COINS
+
+
+func _on_share_online_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		if settings.is_shared_online == -1:
+			HttpLevels.add_level(settings.world_name, desc_edit.text, get_dict())
+		else:
+			HttpLevels.put_level(settings.is_shared_online, desc_edit.text, get_dict())
+
+func level_added(id: int) -> void:
+	settings.is_shared_online = id
+	settings.save()

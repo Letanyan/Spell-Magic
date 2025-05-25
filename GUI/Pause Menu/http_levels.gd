@@ -1,27 +1,41 @@
 extends Node
 
 @onready var http: HTTPRequest = $HTTPRequest
+var session_id: String = ""
+const BASE_ADDR = "http://127.0.0.1:8181/"
 
 signal got_level(level_id: int, data: Dictionary)
 signal added_level(level_id: int)
+signal placed_level(level_id: int)
+
+func _ready() -> void:
+	if session_id.is_empty():
+		http.request(BASE_ADDR + "api/v1/user/sign_in/", [], HTTPClient.METHOD_POST, "name=%s&password=%s" % [GlobalData.game_settings.username, GlobalData.game_settings.password])
 
 func get_level(id: int) -> void:
-	http.request("http://127.0.0.1:8181/api/v1/level?id=%d" % id, PackedStringArray(["Cookie: user_token=I3ygQBvLIrJIPfx3Y97U1y8n42pxXXoi57YSyufi2NI4yjMYiXcxDfZcIqSh3aJnqvDMPNBGyJkY0LseRhz6QIwBkElWQWxqw7tCepvjAVoJLT8iu6URcj9lM3gPwGg85"]), HTTPClient.METHOD_GET)
+	http.request(BASE_ADDR + "api/v1/level?id=%d" % id, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_GET)
 
-func save_level(level_name: String, data: Dictionary) -> void:
-	http.request_raw("http://127.0.0.1:8181/api/v1/level/?name=%s" % level_name.replace(" ", "%20"), PackedStringArray(["Cookie: user_token=I3ygQBvLIrJIPfx3Y97U1y8n42pxXXoi57YSyufi2NI4yjMYiXcxDfZcIqSh3aJnqvDMPNBGyJkY0LseRhz6QIwBkElWQWxqw7tCepvjAVoJLT8iu6URcj9lM3gPwGg85"]), HTTPClient.METHOD_POST, var_to_bytes(data))
+func add_level(level_name: String, level_desciption: String, data: Dictionary) -> void:
+	http.request_raw(BASE_ADDR + "api/v1/level/?name=%s&desc=%s" % [level_name.replace(" ", "%20"), level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, var_to_bytes(data))
+
+func put_level(level_id: int, level_desciption: String, data: Dictionary) -> void:
+	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s" % [level_id, level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, var_to_bytes(data))
 
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	#prints(result, response_code, headers, body)
 	var kind := -1
-	print(result)
-	print(response_code)
-	print(headers)
 	for header in headers:
 		if header == "Kind: AddLevel":
 			kind = 0
 			break
 		elif header == "Kind: GetLevel":
 			kind = 1
+			break
+		elif header == "Kind: PutLevel":
+			kind = 2
+			break
+		elif header == "Kind: SignIn":
+			kind = 3
 			break
 			
 	if kind == 0:
@@ -32,4 +46,9 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 		var data := json.get("Data", "") as String
 		var bytes := Marshalls.base64_to_raw(data)
 		got_level.emit(json.get("Id", -1) as int, bytes_to_var(bytes) as Dictionary)
+	elif kind == 2:
+		var id := body.get_string_from_utf8().to_int()
+		placed_level.emit(id)
+	elif kind == 3:
+		session_id = body.get_string_from_utf8()
 	

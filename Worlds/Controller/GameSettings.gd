@@ -14,6 +14,8 @@ var notes_unlock_settings: NotesUnlockSettings
 var notes_sort_settings: NotesSortSettings
 var saved_worlds: Dictionary
 var tutorials_shown: Dictionary ## [Tutorials]bool
+var username: String
+var password: String
 
 func save() -> void:
 	var file := FileAccess.open("user://settings.json", FileAccess.WRITE)
@@ -47,6 +49,9 @@ func read() -> void:
 	build_user_functions(data.get("user_functions_text", "") as String)
 	
 	saved_worlds = data.get("saved_worlds", {}) as Dictionary
+	
+	username = data.get("username", Rand.id(5, Time.get_ticks_usec() + 1) + "-" + Rand.id(5, Time.get_ticks_usec() + 2))
+	password = data.get("password", Rand.id(20, Time.get_ticks_usec() + 3))
 	
 func build_user_functions(text: String) -> void:
 	user_functions_text = text
