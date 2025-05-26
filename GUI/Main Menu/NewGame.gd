@@ -231,7 +231,7 @@ func _on_create_pressed() -> void:
 		UIAudioPlayer.crash()
 		if settings.is_level_editor:
 			settings.is_editing_level = true
-			SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "fade_to_black", func(content: LevelEditor) -> void: content.setup(settings), Quotes.random())
+			SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "fade_to_black", func(content: LevelEditor) -> void: content.setup(settings, {}), Quotes.random())
 		else:
 			SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_save_file.button_pressed:

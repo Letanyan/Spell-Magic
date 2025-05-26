@@ -21,7 +21,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.988
 offset_left = -136.0
-offset_top = 48.0
+offset_top = 8.0
 offset_right = 136.0
 offset_bottom = -0.223999
 grow_horizontal = 2
@@ -96,17 +96,51 @@ focus_next = NodePath("../Load")
 focus_previous = NodePath("../WorldsList")
 text = "Delete"
 
-[node name="LoadEditor" type="Button" parent="."]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 520.0
-offset_right = 704.0
-offset_bottom = 552.0
+[node name="Edit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Edit"
+
+[node name="Local" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -128.0
+offset_top = 16.0
+offset_right = -8.0
+offset_bottom = 48.0
+toggle_mode = true
+button_pressed = true
+text = "Local"
+
+[node name="Shared" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 8.0
+offset_top = 16.0
+offset_right = 128.0
+offset_bottom = 48.0
+toggle_mode = true
+text = "Shared"
 
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
 [connection signal="item_selected" from="WorldsList" to="." method="_on_worlds_list_item_selected"]
 [connection signal="pressed" from="Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="pressed" from="Delete" to="." method="_on_delete_pressed"]
-[connection signal="pressed" from="LoadEditor" to="." method="_on_load_editor_pressed"]
+[connection signal="pressed" from="Edit" to="." method="_on_load_editor_pressed"]
+[connection signal="toggled" from="Local" to="." method="_on_local_toggled"]
+[connection signal="toggled" from="Shared" to="." method="_on_shared_toggled"]

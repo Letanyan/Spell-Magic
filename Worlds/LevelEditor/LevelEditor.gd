@@ -27,8 +27,11 @@ var spells_on_hold: Dictionary = {}
 
 var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
 
-func setup(_settings: WorldSettings) -> void:
+var level_build_data: Dictionary = {}
+
+func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	settings = _settings
+	level_build_data = level_data
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
@@ -95,7 +98,7 @@ func run_on_ready() -> void:
 		var _settings := WorldSettings.new(get_viewport())
 		_settings.read("test+arena")
 		_settings.is_level_editor = true
-		setup(_settings)
+		setup(_settings, {})
 		
 		
 	for enemy in inhabitants:
@@ -109,7 +112,10 @@ func run_on_ready() -> void:
 		
 	menu.close_menu.connect(toggle_menu)
 		
-	menu.build_menu.read(settings.world_name, book, player.spell_caster)
+	if level_build_data.is_empty():
+		menu.build_menu.read(settings.world_name, book, player.spell_caster)
+	else:
+		menu.build_menu.load_data(level_build_data, book, player.spell_caster)
 	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
 		insert_spell(proj)
