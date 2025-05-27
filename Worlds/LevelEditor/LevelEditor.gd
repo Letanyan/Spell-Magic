@@ -113,9 +113,9 @@ func run_on_ready() -> void:
 	menu.close_menu.connect(toggle_menu)
 		
 	if level_build_data.is_empty():
-		menu.build_menu.read(settings.world_name, book, player.spell_caster)
+		menu.build_menu.read(settings.world_name, player.spell_caster)
 	else:
-		menu.build_menu.load_data(level_build_data, book, player.spell_caster)
+		menu.build_menu.load_data(level_build_data, player.spell_caster)
 	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
 		insert_spell(proj)

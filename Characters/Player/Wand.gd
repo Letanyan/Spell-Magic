@@ -64,7 +64,7 @@ class Option:
 		return spells[spell_index]
 		
 	func get_spell_name() -> String:
-		if not (spell_index >= 0 and spell_index < spells.size()):
+		if not (spell_index >= 0 and spell_index < spell_names.size()):
 			return ""
 		return spell_names[spell_index]
 		

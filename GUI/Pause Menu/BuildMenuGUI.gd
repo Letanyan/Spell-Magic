@@ -191,9 +191,12 @@ func save(world_name: String) -> void:
 	
 func get_dict() -> Dictionary:
 	var projectiles := {}
+	var spells := {}
 	for proj in projectiles_in_world:
 		if proj.spell.is_infinite:
 			projectiles[proj.name] = {"spell": proj.spell.name, "vars": proj.fixed_vars.export_dict(), "exprs": proj.expression_vars.export_dict()}
+			if not spells.has(proj.spell.name):
+				spells[proj.spell.name] = proj.spell.save_dict()
 			
 	var items := {}
 	for item in items_in_world:
@@ -201,16 +204,18 @@ func get_dict() -> Dictionary:
 		item.save_to_dict(dict)
 		items[item.name] = dict
 		
+		
 	var result := {}
 	result["projectiles"] = projectiles
 	result["items"] = items
+	result["spells"] = spells
 	result["name"] = settings.world_name
 	result["desc"] = desc_edit.text
 	result["settings"] = settings.game_mode_settings.save_dict()
  	
 	return result
 
-func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
+func read(world_name: String, caster: SpellCaster) -> void:
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.READ)
 	if file == null:
 		projectiles_in_world = []
@@ -222,24 +227,25 @@ func read(world_name: String, book: MagicBook, caster: SpellCaster) -> void:
 		items_in_world = []
 		return
 		
-	load_data(data, book, caster)
+	load_data(data, caster)
 		
-func load_data(data: Dictionary, book: MagicBook, caster: SpellCaster) -> void:
+func load_data(data: Dictionary, caster: SpellCaster) -> void:
 	projectiles_in_world = []
-	#var projectiles := data.get("projectiles", {}) as Dictionary
-	# FIXME: save global magic book to load spell correctly OR save spell instead
-	#for key: String in projectiles:
-		#var info := projectiles[key] as Dictionary
-		#var spell := book.find_spell(info["spell"] as String).duplicate()
-		#var proj := SpellBuffer.get_projectile(spell.element)
-		#proj.fixed_vars = Vars.new()
-		#proj.fixed_vars.import_dict(info["vars"] as Dictionary)
-		#proj.expression_vars = Vars.new()
-		#proj.expression_vars.import_dict(info.get("exprs", {}) as Dictionary)
-		#proj.spell = spell
-		#proj.origin_spell_caster = caster
-		#caster.particles.append(proj)
-		#projectiles_in_world.append(proj)
+	var projectiles := data.get("projectiles", {}) as Dictionary
+	var spells := data.get("spells", {}) as Dictionary
+	for key: String in projectiles:
+		var info := projectiles[key] as Dictionary
+		var spell := Spell.new()
+		spell.load_dict(spells.get(info["spell"] as String, {}) as Dictionary)
+		var proj := SpellBuffer.get_projectile(spell.element)
+		proj.fixed_vars = Vars.new()
+		proj.fixed_vars.import_dict(info["vars"] as Dictionary)
+		proj.expression_vars = Vars.new()
+		proj.expression_vars.import_dict(info.get("exprs", {}) as Dictionary)
+		proj.spell = spell
+		proj.origin_spell_caster = caster
+		caster.particles.append(proj)
+		projectiles_in_world.append(proj)
 		
 	items_in_world = []
 	var items := data.get("items", {}) as Dictionary

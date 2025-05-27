@@ -326,7 +326,7 @@ func update_wand_mappings() -> void:
 	var color_spell_option := func(opt: Wand.Option) -> String:
 		var s := wand.get_spell(opt, book)
 		if s == null:
-			return "[color=#333]" + opt.get_spell_name() + "[/color]"
+			return "[color=%s]" % ("#FFF" if opt.kind == Wand.Kind.REMOVE_ITEM or opt.kind == Wand.Kind.PLACE_ITEM else "#333") + opt.get_spell_name() + "[/color]"
 		else:
 			return color_spell.call(s)
 		
