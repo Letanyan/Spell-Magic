@@ -226,7 +226,7 @@ text = "Shop for Upgrades"
 
 [node name="LevelEditor" type="CheckBox" parent="GameOptions"]
 layout_mode = 2
-text = "Level Editor"
+text = "Level Editor (WIP)"
 
 [node name="RespawnOptions" type="VBoxContainer" parent="."]
 layout_mode = 1

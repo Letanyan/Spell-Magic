@@ -33,11 +33,11 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.728
+anchor_bottom = 1.0
 offset_left = -128.0
 offset_top = 56.0
 offset_right = 128.0
-offset_bottom = 0.255981
+offset_bottom = -176.0
 focus_neighbor_bottom = NodePath("../Delete")
 focus_next = NodePath("../Delete")
 focus_previous = NodePath("../Cancel")
@@ -134,8 +134,9 @@ offset_top = 16.0
 offset_right = 128.0
 offset_bottom = 48.0
 toggle_mode = true
-text = "Shared"
+text = "Shared (WIP)"
 
+[connection signal="gui_input" from="WorldsList" to="." method="_on_worlds_list_gui_input"]
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
 [connection signal="item_selected" from="WorldsList" to="." method="_on_worlds_list_item_selected"]
 [connection signal="pressed" from="Load" to="." method="_on_load_pressed"]

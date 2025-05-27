@@ -14,6 +14,7 @@ var main_menu_world: MainMenuWorld = null
 var shared_worlds: Array[Dictionary] = []
 var shared_worlds_page: int = 0
 var filenames_with_times: Array = []
+var can_check_for_shared_worlds := true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -26,6 +27,7 @@ func _ready() -> void:
 			shared_worlds.append_array(data)
 			shared_worlds_page = page
 			update_list_items()
+			can_check_for_shared_worlds = true
 	)
 	HttpLevels.got_level.connect(func(id: int, data: Dictionary) -> void:
 		var settings := WorldSettings.new(get_viewport())
@@ -133,5 +135,14 @@ func _on_shared_toggled(toggled_on: bool) -> void:
 	delete_button.disabled = is_showing_local
 	edit_button.disabled = is_showing_local
 	if shared_worlds_page == 0:
+		can_check_for_shared_worlds = false
 		HttpLevels.get_levels(shared_worlds_page)
 		# TODO: show loading
+
+
+func _on_worlds_list_gui_input(event: InputEvent) -> void:
+	if not is_showing_local:
+		var scroll := worlds_list.get_v_scroll_bar()
+		if can_check_for_shared_worlds and (scroll.value + scroll.page) > scroll.max_value * 0.75:
+			can_check_for_shared_worlds = false
+			HttpLevels.get_levels(shared_worlds_page)

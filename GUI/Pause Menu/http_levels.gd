@@ -23,7 +23,7 @@ func put_level(level_id: int, level_desciption: String, data: Dictionary) -> voi
 	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s" % [level_id, level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, var_to_bytes(data))
 
 func get_levels(page: int) -> void:
-	http.request(BASE_ADDR + "api/v1/levels?page=%d&limit=20" % page, [], HTTPClient.METHOD_GET, "")
+	http.request(BASE_ADDR + "api/v1/levels?page=%d&limit=2" % page, [], HTTPClient.METHOD_GET, "")
 
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	#prints(result, response_code, headers, body)
