@@ -13,11 +13,11 @@ var currency := 500
 
 const HAS_VOID := 1 << 0
 const HAS_FIRE := 1 << 1
-const HAS_WATER := 1 << 2
-const HAS_ROCK := 1 << 3
-const HAS_AIR := 1 << 4
-const HAS_ICE := 1 << 5
-const HAS_ELECTRIC := 1 << 6
+const HAS_ROCK := 1 << 2
+const HAS_ELECTRIC := 1 << 3
+const HAS_WATER := 1 << 4
+const HAS_AIR := 1 << 5
+const HAS_ICE := 1 << 6
 var has_spell_element := HAS_VOID | HAS_FIRE # Start with fire and void
 var cost_spell_element := 100
 func purchase_spell_element(el: Spell.Element) -> PurchaseError:
@@ -538,10 +538,10 @@ func default_starter_spell() -> Dictionary:
 		blast_element = Spell.Element.ELECTRIC
 	elif check_if_has_spell_element(Spell.Element.WATER):
 		blast_element = Spell.Element.WATER
-	elif check_if_has_spell_element(Spell.Element.AIR):
-		blast_element = Spell.Element.AIR
 	elif check_if_has_spell_element(Spell.Element.ICE):
 		blast_element = Spell.Element.ICE
+	elif check_if_has_spell_element(Spell.Element.AIR):
+		blast_element = Spell.Element.AIR
 	var blast := Spell.new(false, "u * (speed * t + offset)", "v * (speed * t + offset)", "w * (speed * t + offset)", "0.1", 5, 2.0, blast_element)
 	blast.name = "Blast"
 	blast.mana_cost = 1
