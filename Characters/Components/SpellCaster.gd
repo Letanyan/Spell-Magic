@@ -189,6 +189,52 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			var body := _body as TargetShape
 			var pos := body.get_caster_target_position()
 			result.set_value(_C, body.caster_position.distance_to(pos))
+			
+	
+	var origin_position := Vector3.ZERO
+	if s.player_is_origin:
+		if variable_kind == SpellVariableKind.FIXED:
+			if entity == Entity.PLAYER or entity == Entity.ENEMY:
+				origin_position = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
+				result.set_vector(Vars.abs_pos, origin_position)
+			else:
+				origin_position = _body.position
+				result.set_vector(Vars.abs_pos, origin_position)
+		elif s.follow and variable_kind == SpellVariableKind.TIMED:
+			if entity == Entity.PLAYER or entity == Entity.ENEMY:
+				origin_position = Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position())
+				result.set_vector(Vars.rel_pos, origin_position)
+			else:
+				origin_position = _body.position
+				result.set_vector(Vars.rel_pos, origin_position)
+	else:
+		if entity == Entity.PLAYER:
+			var port := _body.get_viewport()
+			var pos := port.get_visible_rect().size / 2.0
+			var dist: SpringArm3D = _body.get_node("./CamPivot/Arm")
+			origin_position = port.get_camera_3d().project_position(pos, dist.spring_length)
+			if variable_kind == SpellVariableKind.FIXED:
+				result.set_vector(Vars.abs_pos, origin_position)
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
+				result.set_vector(Vars.rel_pos, origin_position)
+		elif entity == Entity.ENEMY:
+			origin_position = _body.position + Vector3(0, (_body as CharacterBody).bounds.y / 4.0, 0)
+			if variable_kind == SpellVariableKind.FIXED:
+				result.set_vector(Vars.abs_pos, origin_position)
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
+				result.set_vector(Vars.rel_pos, origin_position)
+		elif entity == Entity.PROJECTILE:
+			origin_position = _body.position
+			if variable_kind == SpellVariableKind.FIXED:
+				result.set_vector(Vars.abs_pos, origin_position)
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
+				result.set_vector(Vars.rel_pos, origin_position)
+		elif entity == Entity.TARGET:
+			origin_position = (_body as TargetShape).caster_position
+			if variable_kind == SpellVariableKind.FIXED:
+				result.set_vector(Vars.abs_pos, origin_position)
+			elif s.follow and variable_kind == SpellVariableKind.TIMED:
+				result.set_vector(Vars.rel_pos, origin_position)
 	
 	var cdir := Vector3.ZERO
 	if not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.uvw) or s.variable_update_set_contains(Spell.VariableUpdateSet.ruvw):
@@ -209,8 +255,8 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 					
 			Entity.ENEMY:
 				var body := _body as Enemy
-				result.set_value(_C, (body as Enemy).player.global_position.distance_to(body.global_position))
-				cdir = ((body as Enemy).player.global_position - body.global_position).normalized() # direction to player
+				result.set_value(_C, (body as Enemy).player.global_position.distance_to(origin_position))
+				cdir = ((body as Enemy).player.global_position - origin_position).normalized() # direction to player
 				if variable_kind == SpellVariableKind.FIXED:
 					result.set_value(Vars.l, body.level)
 					result.set_value(Vars.fl, body.level / 100.0)
@@ -322,43 +368,6 @@ func spell_variables(result: Vars, _body: Node3D, variable_kind: SpellVariableKi
 			result.set_value(_rijk.x, rijk.x)
 			result.set_value(_rijk.y, rijk.y)
 			result.set_value(_rijk.z, rijk.z)
-	
-	
-	if s.player_is_origin:
-		if variable_kind == SpellVariableKind.FIXED:
-			if entity == Entity.PLAYER or entity == Entity.ENEMY:
-				result.set_vector(Vars.abs_pos, Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position()))
-			else:
-				result.set_vector(Vars.abs_pos, _body.position)
-		elif s.follow and variable_kind == SpellVariableKind.TIMED:
-			if entity == Entity.PLAYER or entity == Entity.ENEMY:
-				result.set_vector(Vars.rel_pos, Vec3.xz_y(_body.position, (_body as CharacterBody).feet_position()))
-			else:
-				result.set_vector(Vars.rel_pos, _body.position)
-	else:
-		if entity == Entity.PLAYER:
-			var port := _body.get_viewport()
-			var pos := port.get_visible_rect().size / 2.0
-			var dist: SpringArm3D = _body.get_node("./CamPivot/Arm")
-			if variable_kind == SpellVariableKind.FIXED:
-				result.set_vector(Vars.abs_pos, port.get_camera_3d().project_position(pos, dist.spring_length))
-			elif s.follow and variable_kind == SpellVariableKind.TIMED:
-				result.set_vector(Vars.rel_pos, port.get_camera_3d().project_position(pos, dist.spring_length))
-		elif entity == Entity.ENEMY:
-			if variable_kind == SpellVariableKind.FIXED:
-				result.set_vector(Vars.abs_pos, _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4)
-			elif s.follow and variable_kind == SpellVariableKind.TIMED:
-				result.set_vector(Vars.rel_pos, _body.position + cdir + Vector3(0, (_body as CharacterBody).bounds.y, 0) / 4)
-		elif entity == Entity.PROJECTILE:
-			if variable_kind == SpellVariableKind.FIXED:
-				result.set_vector(Vars.abs_pos, _body.position + cdir)
-			elif s.follow and variable_kind == SpellVariableKind.TIMED:
-				result.set_vector(Vars.rel_pos, _body.position + cdir)
-		elif entity == Entity.TARGET:
-			if variable_kind == SpellVariableKind.FIXED:
-				result.set_vector(Vars.abs_pos, (_body as TargetShape).caster_position + cdir)
-			elif s.follow and variable_kind == SpellVariableKind.TIMED:
-				result.set_vector(Vars.rel_pos, (_body as TargetShape).caster_position + cdir)
 	
 	
 	if p != null and (not is_timed or s.variable_update_set_contains(Spell.VariableUpdateSet.IJK) or s.variable_update_set_contains(Spell.VariableUpdateSet.rIJK)): # direction from character to spell

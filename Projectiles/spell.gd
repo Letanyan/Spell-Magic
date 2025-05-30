@@ -674,7 +674,7 @@ func get_turret(n: int, fvars: Vars) -> SpellTurret:
 	p.charge = 0.0
 	p.position = calculate_location(fixed_vars)
 	
-	var radius := fixed_vars.get_value(Vars.r)
+	var radius := clampf(fixed_vars.get_value(Vars.r), 0.1, UpgradeSettings.LIMIT_r)
 	var mesh: MeshInstance3D = p.get_node("outer") as MeshInstance3D
 	var ring: TorusMesh = mesh.mesh as TorusMesh
 	ring.inner_radius = radius
