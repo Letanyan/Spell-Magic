@@ -79,6 +79,7 @@ func display_loading(is_loading: bool) -> void:
 func _on_load_pressed() -> void:
 	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.LOAD)
+	#main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.IMPORT)
 	
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/LoadGame.tscn")
 

@@ -10,20 +10,30 @@ signal placed_level(level_id: int)
 signal got_levels(data: Array, page: int)
 
 func _ready() -> void:
+	if GlobalData.is_demo:
+		return
 	if session_id.is_empty():
 		http.request(BASE_ADDR + "api/v1/user/sign_in/", [], HTTPClient.METHOD_POST, "name=%s&password=%s" % [GlobalData.game_settings.username, GlobalData.game_settings.password])
 
 func get_level(id: int) -> void:
+	if GlobalData.is_demo:
+		return
 	http.request(BASE_ADDR + "api/v1/level?id=%d" % id, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_GET)
 
 func add_level(level_name: String, level_desciption: String, data: Dictionary) -> void:
+	if GlobalData.is_demo:
+		return
 	http.request_raw(BASE_ADDR + "api/v1/level/?name=%s&desc=%s" % [level_name.replace(" ", "%20"), level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, var_to_bytes(data))
 
 func put_level(level_id: int, level_desciption: String, data: Dictionary) -> void:
+	if GlobalData.is_demo:
+		return
 	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s" % [level_id, level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, var_to_bytes(data))
 
 func get_levels(page: int) -> void:
-	http.request(BASE_ADDR + "api/v1/levels?page=%d&limit=2" % page, [], HTTPClient.METHOD_GET, "")
+	if GlobalData.is_demo:
+		return
+	http.request(BASE_ADDR + "api/v1/levels?page=%d&limit=50" % page, [], HTTPClient.METHOD_GET, "")
 
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	#prints(result, response_code, headers, body)

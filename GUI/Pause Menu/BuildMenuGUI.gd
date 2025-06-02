@@ -210,6 +210,7 @@ func get_dict() -> Dictionary:
 	result["items"] = items
 	result["spells"] = spells
 	result["name"] = settings.world_name
+	result["username"] = GlobalData.game_settings.username
 	result["desc"] = desc_edit.text
 	result["settings"] = settings.game_mode_settings.save_dict()
  	
