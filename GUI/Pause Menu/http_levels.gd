@@ -4,6 +4,8 @@ extends Node
 var session_id: String = ""
 const BASE_ADDR = "http://127.0.0.1:8181/"
 
+enum SearchKind { NONE, NAME, USER }
+
 signal got_level(level_id: int, data: Dictionary)
 signal added_level(level_id: int)
 signal placed_level(level_id: int)
@@ -30,10 +32,15 @@ func put_level(level_id: int, level_desciption: String, data: Dictionary) -> voi
 		return
 	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s" % [level_id, level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, var_to_bytes(data))
 
-func get_levels(page: int) -> void:
+func get_levels(page: int, search: String, search_kind: SearchKind) -> void:
 	if GlobalData.is_demo:
 		return
-	http.request(BASE_ADDR + "api/v1/levels?page=%d&limit=50" % page, [], HTTPClient.METHOD_GET, "")
+	if search.is_empty():
+		search_kind = SearchKind.NONE
+	match search_kind:
+		SearchKind.NONE: http.request(BASE_ADDR + "api/v1/levels?page=%d&limit=50" % page, [], HTTPClient.METHOD_GET, "")
+		SearchKind.NAME: http.request(BASE_ADDR + "api/v1/levels?name=%s&page=%d&limit=50" % [search, page], [], HTTPClient.METHOD_GET, "")
+		SearchKind.USER: http.request(BASE_ADDR + "api/v1/levels?user=%s&page=%d&limit=50" % [search, page], [], HTTPClient.METHOD_GET, "")
 
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	#prints(result, response_code, headers, body)

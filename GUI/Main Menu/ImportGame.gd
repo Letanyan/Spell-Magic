@@ -2,6 +2,8 @@ class_name ImportGame
 extends Control
 
 @onready var worlds_list: ItemList = $Background/WorldsList
+@onready var search_option: OptionButton = $Background/SearchOption
+@onready var search_edit: LineEdit = $Background/SearchEdit
 
 var main_menu_world: MainMenuWorld = null
 
@@ -25,7 +27,7 @@ func _ready() -> void:
 	)
 	if shared_worlds_page == 0:
 		can_check_for_shared_worlds = false
-		HttpLevels.get_levels(shared_worlds_page)
+		HttpLevels.get_levels(shared_worlds_page, "", HttpLevels.SearchKind.NONE)
 
 func update_list_items() -> void:
 	worlds_list.clear()
@@ -43,7 +45,10 @@ func _on_worlds_list_gui_input(event: InputEvent) -> void:
 	var scroll := worlds_list.get_v_scroll_bar()
 	if can_check_for_shared_worlds and (scroll.value + scroll.page) > scroll.max_value * 0.75:
 		can_check_for_shared_worlds = false
-		HttpLevels.get_levels(shared_worlds_page)
+		if search_option.selected == 0: # world name
+			HttpLevels.get_levels(shared_worlds_page, search_edit.text, HttpLevels.SearchKind.NAME)
+		elif search_option.selected == 1:
+			HttpLevels.get_levels(shared_worlds_page, search_edit.text, HttpLevels.SearchKind.USER)
 
 
 func _on_worlds_list_item_activated(index: int) -> void:
@@ -62,3 +67,20 @@ func _on_import_pressed() -> void:
 func _on_cancel_pressed() -> void:
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.MAIN)
 	UIAudioPlayer.click()
+
+func search() -> void:
+	shared_worlds.clear()
+	worlds_list.clear()
+	shared_worlds_page = 0
+	can_check_for_shared_worlds = false
+	if search_option.selected == 0: # world name
+		HttpLevels.get_levels(shared_worlds_page, search_edit.text, HttpLevels.SearchKind.NAME)
+	elif search_option.selected == 1:
+		HttpLevels.get_levels(shared_worlds_page, search_edit.text, HttpLevels.SearchKind.USER)
+	# TODO: show loading
+
+func _on_search_button_pressed() -> void:
+	search()
+
+func _on_search_edit_text_submitted(new_text: String) -> void:
+	search()
