@@ -42,6 +42,31 @@ func get_levels(page: int, search: String, search_kind: SearchKind) -> void:
 		SearchKind.NAME: http.request(BASE_ADDR + "api/v1/levels?name=%s&page=%d&limit=50" % [search, page], [], HTTPClient.METHOD_GET, "")
 		SearchKind.USER: http.request(BASE_ADDR + "api/v1/levels?user=%s&page=%d&limit=50" % [search, page], [], HTTPClient.METHOD_GET, "")
 
+func add_level_user_data(level: int) -> void:
+	if GlobalData.is_demo:
+		return
+	http.request(BASE_ADDR + "api/v1/level/data/?levelId=%d" % level, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, "")
+	
+func put_level_user_data(level: int, vote: int) -> void:
+	if GlobalData.is_demo:
+		return
+	var vote_text := ""
+	if vote == 1:
+		vote_text = "upvote"
+	elif vote == -1:
+		vote_text = "downvote"
+	http.request(BASE_ADDR + "api/v1/level/data/?levelId=%d&vote=%s" % [level, vote_text], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, "")
+	
+func begin_level_user_data_play(level: int) -> void:
+	if GlobalData.is_demo:
+		return
+	http.request(BASE_ADDR + "api/v1/level/data/start/?levelId=%d" % level, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, "")
+	
+func save_level_user_data_play(level: int) -> void:
+	if GlobalData.is_demo:
+		return
+	http.request(BASE_ADDR + "api/v1/level/data/save/?levelId=%d" % level, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, "")
+
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	#prints(result, response_code, headers, body)
 	var kind := -1
@@ -67,7 +92,7 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 		var json := JSON.parse_string(body.get_string_from_utf8()) as Dictionary
 		var data := json.get("Data", "") as String
 		var bytes := Marshalls.base64_to_raw(data)
-		got_level.emit(json.get("Id", -1) as int, bytes_to_var(bytes) as Dictionary)
+		got_level.emit(json.get("Id", -1) as int, bytes_to_var(bytes) as Dictionary, json)
 	elif kind == 2:
 		var id := body.get_string_from_utf8().to_int()
 		placed_level.emit(id)

@@ -57,6 +57,8 @@ extends Control
 @onready var ui_value: Label = $Tabs/Sound/UI/Value
 
 @onready var info_label: RichTextLabel = $Tabs/Game/Info
+@onready var upvote: Button = $Tabs/Game/Upvote
+@onready var downvote: Button = $Tabs/Game/Downvote
 
 @onready var user_functions: TextEdit = $Tabs/Functions/user_functions
 
@@ -174,6 +176,11 @@ func update_controls() -> void:
 		update_info()
 	if tab_container.get_current_tab_control().name == "Universal Magic Book":
 		update_magic_book()
+		
+	upvote.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
+	downvote.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
+	upvote.set_pressed_no_signal(world_settings.online_vote > 0)
+	downvote.set_pressed_no_signal(world_settings.online_vote < 0)
 		
 	skin_color_picker.color = world_settings.customisation_settings.skin
 	hair_color_picker.color = world_settings.customisation_settings.hair
@@ -567,3 +574,22 @@ func _on_make_customisation_default_pressed() -> void:
 	GlobalData.game_settings.default_world_settings.customisation_settings.update_legs_armor_plate(player.skeleton_3d, legs_armor_plate_color_picker.color)
 	GlobalData.game_settings.save()
 	UIAudioPlayer.click()
+
+
+func _on_upvote_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		downvote.set_pressed_no_signal(false)
+		world_settings.online_vote = 1
+	else:
+		world_settings.online_vote = 0
+
+	HttpLevels.put_level_user_data(world_settings.is_shared_online, world_settings.online_vote)
+
+func _on_downvote_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		upvote.set_pressed_no_signal(false)
+		world_settings.online_vote = -1
+	else:
+		world_settings.online_vote = 0
+		
+	HttpLevels.put_level_user_data(world_settings.is_shared_online, world_settings.online_vote)

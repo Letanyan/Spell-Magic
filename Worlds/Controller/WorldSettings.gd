@@ -16,6 +16,8 @@ var is_test_arena: bool = false
 var is_level_editor: bool = false
 var is_editing_level: bool = false
 var is_shared_online: int = -1
+var is_my_level: bool = false
+var online_vote: int = 0
 var world_generation_version: int = -1
 var sea_level: float = 0.0
 var world_radius: float = 10000.0
@@ -57,6 +59,7 @@ func save_dict() -> Dictionary:
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		"world_generation_version": world_generation_version, "sea_level": sea_level, "world_radius": world_radius,
 		"difficulty_level": difficulty_level, "is_level_editor": is_level_editor, "is_shared_online": is_shared_online,
+		"online_vote": online_vote, "is_my_level": is_my_level,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),

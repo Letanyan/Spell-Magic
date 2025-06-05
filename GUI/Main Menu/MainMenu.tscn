@@ -161,6 +161,15 @@ text = "Wishlist"
 icon = ExtResource("5_045ao")
 expand_icon = true
 
+[node name="Import" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 200.0
+offset_bottom = 39.0
+text = "Import Game"
+
 [connection signal="pressed" from="Background/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Background/NewGame" to="." method="_on_new_game_pressed"]
 [connection signal="pressed" from="Background/Load" to="." method="_on_load_pressed"]
@@ -168,3 +177,4 @@ expand_icon = true
 [connection signal="pressed" from="Background/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="Links/Margin/VBox/Discord" to="." method="_on_discord_pressed"]
 [connection signal="pressed" from="Links/Margin/VBox/SteamWishlist" to="." method="_on_steam_wishlist_pressed"]
+[connection signal="pressed" from="Import" to="." method="_on_import_pressed"]

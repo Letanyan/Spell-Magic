@@ -90,6 +90,32 @@ offset_right = -255.952
 offset_bottom = -157.891
 bbcode_enabled = true
 
+[node name="Upvote" type="Button" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = -0.054
+anchor_right = 0.5
+anchor_bottom = -0.054
+offset_top = 47.778
+offset_right = 128.0
+offset_bottom = 72.778
+toggle_mode = true
+text = "Upvote"
+
+[node name="Downvote" type="Button" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = -0.054
+anchor_right = 0.5
+anchor_bottom = -0.054
+offset_left = -128.0
+offset_top = 47.778
+offset_bottom = 72.778
+toggle_mode = true
+text = "Downvote"
+
 [node name="Graphics" type="Panel" parent="Tabs"]
 visible = false
 layout_mode = 2
@@ -1224,6 +1250,8 @@ text = "Make Default"
 [connection signal="pressed" from="Tabs/Game/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Tabs/Game/Main Menu" to="." method="_on_main_menu_pressed"]
 [connection signal="pressed" from="Tabs/Game/Exit Game" to="." method="_on_exit_game_pressed"]
+[connection signal="toggled" from="Tabs/Game/Upvote" to="." method="_on_upvote_toggled"]
+[connection signal="toggled" from="Tabs/Game/Downvote" to="." method="_on_downvote_toggled"]
 [connection signal="item_selected" from="Tabs/Graphics/Scaling Mode/Options" to="." method="_on_scaling_mode_options_item_selected"]
 [connection signal="drag_ended" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_drag_ended"]
 [connection signal="value_changed" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_value_changed"]

@@ -19,10 +19,14 @@ func _ready() -> void:
 			update_list_items()
 			can_check_for_shared_worlds = true
 	)
-	HttpLevels.got_level.connect(func(id: int, data: Dictionary) -> void:
+	HttpLevels.got_level.connect(func(id: int, data: Dictionary, level: Dictionary) -> void:
 		var settings := WorldSettings.new(get_viewport())
 		settings.game_mode_settings.load_dict(data.get("settings", {}) as Dictionary)
 		settings.world_name = data.get("name", Rand.id(8, Time.get_ticks_usec())) + " (" + data.get("username", Rand.id(8, Time.get_ticks_usec())) + ")"
+		settings.is_shared_online = id
+		settings.online_vote = level.get("UserVote", 0)
+		settings.save()
+		HttpLevels.add_level_user_data(id)
 		SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "fade_to_black", func(content: LevelEditor) -> void: content.setup(settings, data), Quotes.random())
 	)
 	if shared_worlds_page == 0:
@@ -34,7 +38,9 @@ func update_list_items() -> void:
 	for t: Dictionary in shared_worlds:
 		var n := t.get("Name", "???") as String
 		var u := t.get("UserName", "???") as String
-		worlds_list.add_item("%s (%s)" % [n, u])
+		var v := t.get("Votes", 0) as int
+		var p := t.get("Playtime", 0.0) as float
+		worlds_list.add_item("%s - %s [%d] (%dm)" % [n, u, v, int(p / 60.0)])
 		
 func load_current_item(selected: int, in_editing_mode: bool) -> void:
 	var world := shared_worlds[selected]

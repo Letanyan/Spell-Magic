@@ -17,6 +17,7 @@ var artifacts: Artifacts
 var knowledge_tick: float = 0.0
 var daytime_tick: float = 0.0
 var test_tick: float = 0.0
+var playtime_tick: float = 0.0
 
 var settings: WorldSettings
 var inhabitants: Array[Enemy] = []
@@ -178,8 +179,13 @@ func run_on_ready() -> void:
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
 	sub_viewport_container.visible = true
+	
+	if settings.is_shared_online != -1:
+		HttpLevels.begin_level_user_data_play(settings.is_shared_online)
 
 func _exit_tree() -> void:
+	if settings.is_shared_online != -1:
+		HttpLevels.save_level_user_data_play(settings.is_shared_online)
 	AudioManager.world = null
 	AudioManager.camera = null
 
@@ -215,6 +221,7 @@ func _physics_process(delta: float) -> void:
 	
 	knowledge_tick += delta
 	daytime_tick += delta
+	playtime_tick += delta
 
 	#player.play_bg_audio(World.Biome.GRASSLAND)
 	book.update_spell_cooldowns(delta)
@@ -238,6 +245,11 @@ func _physics_process(delta: float) -> void:
 		else:
 			skybox.day_time += 0.016667
 		daytime_tick = 0.0
+		
+	if playtime_tick >= 300.0:
+		if settings.is_shared_online != -1:
+			HttpLevels.save_level_user_data_play(settings.is_shared_online)
+		playtime_tick = 0.0
 
 func close_menu_for_player() -> void:
 	settings.is_paused = false

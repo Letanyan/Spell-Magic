@@ -220,6 +220,7 @@ func _on_create_pressed() -> void:
 		
 		settings.game_mode_settings.mode = game_mode
 		settings.is_level_editor = is_level_editor_set
+		settings.is_my_level = is_level_editor_set
 		if game_mode == GameModeSettings.GameMode.RESPAWN or settings.is_level_editor:
 			settings.game_mode_settings.flags = game_flags
 		

@@ -69,7 +69,7 @@ func _on_worlds_list_item_selected(index: int) -> void:
 	var world_name := filenames[selected[0]]
 	var settings := WorldSettings.new(null)
 	settings.read(world_name)
-	load_editor.disabled = not settings.is_level_editor
+	load_editor.disabled = not settings.is_level_editor or not settings.is_my_level
 
 func _on_delete_pressed() -> void:
 	var list: ItemList = $WorldsList
