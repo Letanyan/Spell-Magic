@@ -277,7 +277,6 @@ func _on_create_pressed() -> void:
 		settings.time_of_day = rng.randf_range(0.0, 24.0)
 		settings.day_of_the_year = rng.randi_range(1, 365)
 		settings.game_mode_settings = GameModeSettings.hardcore_mode()
-		settings.game_mode_settings.flags = game_flags & GameModeSettings.SPELL_DECK_BUILDING
 		settings.difficulty_level = 2
 		var temp_upgrades := UpgradeSettings.new()
 		temp_upgrades.reset_all_stats_to_default_values()
@@ -606,7 +605,7 @@ func _on_use_hardcore_toggled(toggled_on: bool) -> void:
 			starting_upgrades.button_pressed = false
 		worlds_list.visible = false
 		game_mode_description_panel.visible = true
-		game_mode_description.text = "When you die the game is over"
+		game_mode_description.text = "When you die the game is over. No manual spell creation and editing."
 		#generation_version_label.visible = false
 
 

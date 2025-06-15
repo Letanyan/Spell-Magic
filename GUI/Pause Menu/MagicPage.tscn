@@ -229,7 +229,7 @@ focus_neighbor_right = NodePath("../power_edit")
 focus_neighbor_bottom = NodePath("../chain_edit")
 focus_next = NodePath("../duration_edit")
 focus_previous = NodePath("../z_edit")
-placeholder_text = "expression"
+placeholder_text = "radius (expression)"
 
 [node name="duration" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -259,7 +259,7 @@ focus_neighbor_top = NodePath("../element_combo")
 focus_neighbor_bottom = NodePath("../delay_edit")
 focus_next = NodePath("../delay_edit")
 focus_previous = NodePath("../r_edit")
-placeholder_text = "number"
+placeholder_text = "duration (number)"
 
 [node name="delay" type="Label" parent="container"]
 layout_mode = 1
@@ -289,7 +289,7 @@ focus_neighbor_top = NodePath("../duration_edit")
 focus_neighbor_bottom = NodePath("../count_edit")
 focus_next = NodePath("../count_edit")
 focus_previous = NodePath("../duration_edit")
-placeholder_text = "expression"
+placeholder_text = "delay (expression)"
 
 [node name="count" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -315,7 +315,7 @@ focus_neighbor_top = NodePath("../delay_edit")
 focus_neighbor_bottom = NodePath("../power_edit")
 focus_next = NodePath("../power_edit")
 focus_previous = NodePath(".")
-placeholder_text = "number"
+placeholder_text = "count (number)"
 
 [node name="power" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -341,7 +341,7 @@ focus_neighbor_top = NodePath("../count_edit")
 focus_neighbor_bottom = NodePath("../chain_combo")
 focus_next = NodePath("../chain_edit")
 focus_previous = NodePath("../count_edit")
-placeholder_text = "number"
+placeholder_text = "power (number)"
 
 [node name="chain" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -525,7 +525,7 @@ focus_neighbor_right = NodePath("../expressions")
 focus_neighbor_bottom = NodePath("../Duplicate")
 focus_next = NodePath("../expressions")
 focus_previous = NodePath("../is_rel")
-placeholder_text = "number"
+placeholder_text = "mana (number)"
 
 [node name="mana_cost" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -573,7 +573,7 @@ offset_top = 264.0
 offset_right = 288.064
 offset_bottom = 288.0
 bbcode_enabled = true
-text = "Burning: [img=l,20x20, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img] 0"
+text = "Burning: [img=l,20x20, color=#AAAA00]res://GUI/Images/fire.svg[/img] 0"
 
 [node name="cooldown" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -685,7 +685,7 @@ offset_left = 64.0
 offset_top = 216.0
 offset_right = 0.0639648
 offset_bottom = 248.0
-placeholder_text = "number"
+placeholder_text = "crit rate (number)"
 
 [node name="CD" type="RichTextLabel" parent="container"]
 layout_mode = 1
@@ -710,7 +710,7 @@ offset_top = 216.0
 offset_right = 0.0639648
 offset_bottom = 248.0
 grow_horizontal = 2
-placeholder_text = "number"
+placeholder_text = "crit damage (number)"
 
 [node name="preview_selector" type="Panel" parent="container"]
 visible = false

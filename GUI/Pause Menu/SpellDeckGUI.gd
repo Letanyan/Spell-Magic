@@ -66,6 +66,7 @@ func reload_cards() -> void:
 		card.spell = spell
 		card.is_active_toggled.connect(change_spell_is_active)
 		card.bind_pressed.connect(show_key_bind_panel)
+		card.delete_pressed.connect(delete_spell)
 			
 func update_cards() -> void:
 	for card: SpellCardGUI in h_flow.get_children():
@@ -120,6 +121,26 @@ func change_spell_is_active(toggled_on: bool, current_index: int) -> void:
 func show_key_bind_panel(spell: Spell) -> void:
 	key_bind_panel.visible = true
 	key_bind_to_spell = spell
+	
+func delete_spell(current_index: int) -> void:
+	if current_index < 0:
+		UIAudioPlayer.failed_click()
+		return
+		
+	UIAudioPlayer.click()
+	var s := book.spells[current_index]
+	var popup := PopupDialog.display("Are you sure you want to delete the spell '" + s.name + "'")
+	popup.confirmed.connect(func() -> void:
+		if current_index < 0:
+			return
+		UIAudioPlayer.delete()
+		book.spells.remove_at(current_index)
+		for i in book.spells.size():
+			book.spells[i].id = i
+		reload_cards()
+	)
+	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
+	popup.show_in_root(self)
 
 func handle_input(event: InputEvent) -> void:
 	if key_bind_to_spell != null and event.is_action_type():

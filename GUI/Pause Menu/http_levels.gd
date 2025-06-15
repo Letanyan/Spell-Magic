@@ -3,6 +3,7 @@ extends Node
 @onready var http: HTTPRequest = $HTTPRequest
 var session_id: String = ""
 const BASE_ADDR = "http://127.0.0.1:8181/"
+const IS_WIP = true
 
 enum SearchKind { NONE, NAME, USER }
 
@@ -12,28 +13,28 @@ signal placed_level(level_id: int)
 signal got_levels(data: Array, page: int)
 
 func _ready() -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	if session_id.is_empty():
 		http.request(BASE_ADDR + "api/v1/user/sign_in/", [], HTTPClient.METHOD_POST, "name=%s&password=%s" % [GlobalData.game_settings.username, GlobalData.game_settings.password])
 
 func get_level(id: int) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	http.request(BASE_ADDR + "api/v1/level?id=%d" % id, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_GET)
 
 func add_level(level_name: String, level_desciption: String, data: Dictionary) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	http.request_raw(BASE_ADDR + "api/v1/level/?name=%s&desc=%s" % [level_name.replace(" ", "%20"), level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, var_to_bytes(data))
 
 func put_level(level_id: int, level_desciption: String, data: Dictionary) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s" % [level_id, level_desciption.replace(" ", "%20")], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, var_to_bytes(data))
 
 func get_levels(page: int, search: String, search_kind: SearchKind) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	if search.is_empty():
 		search_kind = SearchKind.NONE
@@ -43,12 +44,12 @@ func get_levels(page: int, search: String, search_kind: SearchKind) -> void:
 		SearchKind.USER: http.request(BASE_ADDR + "api/v1/levels?user=%s&page=%d&limit=50" % [search, page], [], HTTPClient.METHOD_GET, "")
 
 func add_level_user_data(level: int) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	http.request(BASE_ADDR + "api/v1/level/data/?levelId=%d" % level, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, "")
 	
 func put_level_user_data(level: int, vote: int) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	var vote_text := ""
 	if vote == 1:
@@ -58,12 +59,12 @@ func put_level_user_data(level: int, vote: int) -> void:
 	http.request(BASE_ADDR + "api/v1/level/data/?levelId=%d&vote=%s" % [level, vote_text], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, "")
 	
 func begin_level_user_data_play(level: int) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	http.request(BASE_ADDR + "api/v1/level/data/start/?levelId=%d" % level, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, "")
 	
 func save_level_user_data_play(level: int) -> void:
-	if GlobalData.is_demo:
+	if GlobalData.is_demo or IS_WIP:
 		return
 	http.request(BASE_ADDR + "api/v1/level/data/save/?levelId=%d" % level, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, "")
 

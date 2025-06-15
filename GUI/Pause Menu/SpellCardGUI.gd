@@ -9,6 +9,7 @@ var spell: Spell = null
 
 signal bind_pressed(spell: Spell)
 signal is_active_toggled(toggled_on: bool, spell_id: int)
+signal delete_pressed(spell_id: int)
 
 func _on_is_active_toggled(toggled_on: bool) -> void:
 	var sid := spell.id if spell != null else -1
@@ -16,3 +17,7 @@ func _on_is_active_toggled(toggled_on: bool) -> void:
 
 func _on_bind_pressed() -> void:
 	bind_pressed.emit(spell)
+
+func _on_delete_pressed() -> void:
+	var sid := spell.id if spell != null else -1
+	delete_pressed.emit(sid)
