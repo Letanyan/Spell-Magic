@@ -122,6 +122,8 @@ func run_on_ready() -> void:
 		insert_spell(proj)
 	for item in menu.build_menu.items_in_world:
 		add_child(item)
+	for enemy in menu.build_menu.enemies_in_world:
+		add_enemy(enemy)
 	
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
@@ -362,6 +364,8 @@ func _input(event: InputEvent) -> void:
 							menu.build_menu.delete_projectile(node_to_track as SpellBody)
 						elif node_to_track is WorldItem:
 							menu.build_menu.delete_item(node_to_track as WorldItem)
+						elif node_to_track is Enemy:
+							menu.build_menu.delete_enemy(node_to_track as Enemy)
 				elif option.kind == Wand.Kind.PLACE_ITEM:
 					var spell := option.get_spell()
 					if spell != null:
@@ -376,15 +380,35 @@ func _input(event: InputEvent) -> void:
 						if spell_name == "health":
 							var cross := RedCross.make()
 							cross.health = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_float() / 100.0
-							cross.position = player.position
+							cross.position = player.position # TODO: replace with player raycast intersection with world
 							add_child(cross)
 							SignalBus.item_added_to_world.emit(cross)
 						elif spell_name == "coin":
 							var coin := CoinDisc.make()
 							coin.amount = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_int()
-							coin.position = player.position
+							coin.position = player.position # TODO: replace with player raycast intersection with world
 							add_child(coin)
 							SignalBus.item_added_to_world.emit(coin)
+						elif spell_name == "enemy":
+							var opts := option.parameters[option.spell_index] as Dictionary
+							var enemy_name := opts.get("0", "") as String
+							var enemy_level := (opts.get("1", "1") as String).to_int()
+							var enemy_flag := (opts.get("2", "1") as String).to_int()
+							var enemy_kind := World.Enemy.NONE
+							var idx := 0
+							for kind: String in World.Enemy.keys():
+								if enemy_name.to_lower() == kind.to_lower():
+									enemy_kind = idx as World.Enemy
+									break
+								idx += 1
+							if enemy_kind != World.Enemy.NONE:
+								# TODO: replace position with player raycast intersection with world
+								var enemy := Population.generate_enemy(enemy_kind, player, player.position.x, player.position.y, player.position.z, enemy_level)
+								enemy.level_flag = enemy_flag
+								add_enemy(enemy)
+								SignalBus.enemy_added_to_world.emit(enemy)
+						elif spell_name == "flag":
+							pass # TODO: add flag points that player can reach to compete level
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:
@@ -405,6 +429,11 @@ func insert_spell(p: Node3D) -> void:
 		add_child(p)
 	if p is SpellBody:
 		(p as SpellBody).setup()
+
+func add_enemy(enemy: Enemy) -> void:
+	inhabitants.append(enemy)
+	add_child(enemy)
+	enemy.animation_tree.active = true
 
 func _on_player_moved(delta: float) -> void:
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)

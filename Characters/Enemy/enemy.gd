@@ -17,6 +17,7 @@ var still_path: PathStyle
 var spawn_position: Vector3
 var current_attack: AttackPatterns
 var class_level: int = 10 # [1, 20]
+var level_flag: int = -1 # TODO: use level flags to determine level completion. Beating a flag 0 enemy completes level. Enemies can only show the enemies with the highest flag number. Once all of the highest flags are beaten then the next lowest flag numbered enemies are spawned. 
 var level: float: # Use float so it's easy to use in expressions. However, should only be whole numbers.
 	set(value):
 		level = value

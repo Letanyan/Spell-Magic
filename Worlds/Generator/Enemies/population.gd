@@ -235,7 +235,7 @@ func spawn_enemy(enemy: World.Enemy, p: Vector2, spacing: float) -> Enemy:
 	
 static func generate_enemy(enemy: World.Enemy, _player: Player, x: float, y: float, z: float, lvl: int = 1) -> Enemy:
 	var result := Enemy.make(enemy)
-	result.name = World.Enemy.keys()[enemy] + Globals.encode_v3(Vector3(x, y, z))
+	result.name = World.Enemy.keys()[enemy] + "_" + Rand.id(4, Time.get_ticks_usec())
 	result.set_level(lvl)
 	result.player = _player
 	result.position = Vector3(x, y, z)

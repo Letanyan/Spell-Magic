@@ -166,6 +166,9 @@ class Option:
 						buffer = ""
 					elif s == ",":
 						state = PARAM_NAME
+						buffer = buffer.lstrip("\t\n\r ").rstrip("\t\n\r ")
+						var param_list := parameters[parameters.size() - 1]
+						param_list[str(param_list.size())] = buffer
 						buffer = ""
 					elif s == ")":
 						state = SPELL_NAME

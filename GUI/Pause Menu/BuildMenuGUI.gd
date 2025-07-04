@@ -5,8 +5,10 @@ var settings: WorldSettings:
 	set(value):
 		settings = value
 		update_settings()
+var player: Player = null
 var projectiles_in_world: Array[SpellBody] = []
 var items_in_world: Array[WorldItem] = []
+var enemies_in_world: Array[Enemy] = []
 
 @onready var desc_edit: LineEdit = $DescEdit
 @onready var share_online: CheckBox = $ShareOnline
@@ -15,14 +17,16 @@ var items_in_world: Array[WorldItem] = []
 @onready var projectile_name: LineEdit = $ProjectileName
 @onready var items_in_world_list: ItemList = $ItemsInWorld
 @onready var item_name: LineEdit = $ItemName
+@onready var enemies_in_world_list: ItemList = $EnemiesInWorld
+@onready var enemies_name: LineEdit = $EnemiesName
 
-@onready var deck_building: CheckBox = $DeckBuilding
-@onready var shop_upgrades: CheckBox = $ShopUpgrades
-@onready var respawn: CheckBox = $Respawn
-@onready var respawn_upgrades: CheckBox = $RespawnUpgrades
-@onready var respawn_artifacts: CheckBox = $RespawnArtifacts
-@onready var respawn_spells: CheckBox = $RespawnSpells
-@onready var respawn_coins: CheckBox = $RespawnCoins
+@onready var deck_building: CheckBox = $Settings/DeckBuilding
+@onready var shop_upgrades: CheckBox = $Settings/ShopUpgrades
+@onready var respawn: CheckBox = $Settings/Respawn
+@onready var respawn_upgrades: CheckBox = $Settings/RespawnUpgrades
+@onready var respawn_artifacts: CheckBox = $Settings/RespawnArtifacts
+@onready var respawn_spells: CheckBox = $Settings/RespawnSpells
+@onready var respawn_coins: CheckBox = $Settings/RespawnCoins
 
 
 func _ready() -> void:
@@ -34,6 +38,9 @@ func _ready() -> void:
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
 	SignalBus.item_added_to_world.connect(item_added_into_world)
 	SignalBus.item_removed_from_world.connect(item_removed_from_world)
+	SignalBus.enemy_added_to_world.connect(enemy_added_into_world)
+	SignalBus.enemy_removed_from_world.connect(enemy_removed_from_world)
+	
 	
 func update_settings() -> void:
 	deck_building.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))
@@ -179,6 +186,68 @@ func delete_item(item: WorldItem) -> void:
 func _on_items_in_world_item_selected(index: int) -> void:
 	var it := items_in_world[index]
 	item_name.text = it.name
+	
+func enemy_added_into_world(enemy: Enemy) -> void:
+	enemies_in_world.append(enemy)
+	update_enemies_list()
+	
+func enemy_removed_from_world(enemy: Enemy) -> void:
+	var pidx := -1
+	for i in enemies_in_world.size():
+		var en := enemies_in_world[pidx]
+		if en == enemy:
+			pidx = i
+			break
+			
+	if pidx != -1:
+		enemies_in_world.remove_at(pidx)
+	update_enemies_list()
+		
+func update_enemies_list() -> void:
+	enemies_in_world_list.clear()
+	for e in enemies_in_world:
+		enemies_in_world_list.add_item(e.name)
+
+func _on_rename_enemy_pressed() -> void:
+	var selected := enemies_in_world_list.get_selected_items()
+	if selected.is_empty():
+		return
+		
+	var idx := selected[0]
+	enemies_in_world[idx].name = enemies_name.text
+	update_enemies_list()
+
+
+func _on_delete_enemy_pressed() -> void:
+	var selected := enemies_in_world_list.get_selected_items()
+	if selected.is_empty():
+		return
+	var idx := selected[0]
+	
+	var en := enemies_in_world[idx]
+	en.queue_free()
+	enemies_in_world.remove_at(idx)
+	enemies_name.text = ""
+	update_enemies_list()
+
+func delete_enemy(enemy: Enemy) -> void:
+	var idx := -1
+	for i in enemies_in_world.size():
+		var en := enemies_in_world[i]
+		if en == enemy:
+			idx = i
+			break
+			
+	if idx != -1:
+		var en := enemies_in_world[idx]
+		en.queue_free()
+		enemies_in_world.remove_at(idx)
+		enemies_name.text = ""
+		update_enemies_list()
+
+func _on_enemies_in_world_item_selected(index: int) -> void:
+	var en := enemies_in_world[index]
+	enemies_name.text = en.name
 
 
 func save(world_name: String) -> void:
@@ -204,11 +273,15 @@ func get_dict() -> Dictionary:
 		item.save_to_dict(dict)
 		items[item.name] = dict
 		
+	var enemies := {}
+	for enemy in enemies_in_world:
+		enemies[enemy.name] = {"kind": World.Enemy.keys()[enemy.kind], "level": enemy.level, "position": enemy.position, "flag": enemy.level_flag}
 		
 	var result := {}
 	result["projectiles"] = projectiles
 	result["items"] = items
 	result["spells"] = spells
+	result["enemies"] = enemies
 	result["name"] = settings.world_name
 	result["username"] = GlobalData.game_settings.username
 	result["desc"] = desc_edit.text
@@ -221,11 +294,13 @@ func read(world_name: String, caster: SpellCaster) -> void:
 	if file == null:
 		projectiles_in_world = []
 		items_in_world = []
+		enemies_in_world = []
 		return
 	var data := file.get_var() as Dictionary
 	if data == null:
 		projectiles_in_world = []
 		items_in_world = []
+		enemies_in_world = []
 		return
 		
 	load_data(data, caster)
@@ -266,6 +341,27 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 				
 		if item != null:				
 			items_in_world.append(item)
+			
+	var enemies := data.get("enemies", {}) as Dictionary
+	for key: String in enemies:
+		var enemy_data := enemies[key] as Dictionary
+		var enemy_name := enemy_data.get("kind", "") as String
+		var enemy_level := enemy_data.get("level", "1") as int
+		var enemy_flag := enemy_data.get("flag", "1") as int
+		var enemy_position := enemy_data.get("position", Vector3(0, 1000, 0)) as Vector3
+		var enemy_kind := World.Enemy.NONE
+		var idx := 0
+		for kind: String in World.Enemy.keys():
+			if enemy_name == kind:
+				enemy_kind = idx as World.Enemy
+				break
+			idx += 1
+		if enemy_kind != World.Enemy.NONE:
+			var enemy := Population.generate_enemy(enemy_kind, player, enemy_position.x, enemy_position.y, enemy_position.z, enemy_level)
+			enemy.level_flag = enemy_flag
+			enemy.name = key
+			enemies_in_world.append(enemy)
+	
 			
 	desc_edit.text = data.get("desc", "") as String
 	share_online.set_pressed_no_signal(settings.is_shared_online != -1)

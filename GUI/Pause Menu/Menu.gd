@@ -48,6 +48,7 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	settings.world_settings = _world_settings
 	settings.player = _player
 	build_menu.settings = _world_settings
+	build_menu.player = _player
 	player = _player
 	world_settings = _world_settings
 	

@@ -97,6 +97,7 @@ func load_dict(data: Dictionary) -> void:
 	is_test_arena = data.get("is_test_arena", false)
 	is_level_editor = data.get("is_level_editor", false)
 	is_shared_online = data.get("is_shared_online", -1)
+	is_my_level = data.get("is_my_level", false)
 	world_generation_version = data.get("world_generation_version", -1) 
 	sea_level = data.get("sea_level", 0.0)
 	world_radius = data.get("world_radius", 10000.0)

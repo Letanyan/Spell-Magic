@@ -118,76 +118,124 @@ offset_bottom = -7.0
 grow_vertical = 0
 text = "Delete"
 
-[node name="GameSettingsLabel" type="Label" parent="."]
+[node name="EnemiesLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 520.0
 offset_top = 40.0
-offset_right = 628.0
+offset_right = 582.0
 offset_bottom = 64.0
+text = "Enemies"
+
+[node name="EnemiesInWorld" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 520.0
+offset_top = 64.0
+offset_right = 760.0
+offset_bottom = -72.0
+
+[node name="EnemiesName" type="LineEdit" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 520.0
+offset_top = -64.0
+offset_right = 760.0
+offset_bottom = -39.0
+
+[node name="RenameEnemy" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.007
+anchor_top = 1.0
+anchor_right = 0.007
+anchor_bottom = 1.0
+offset_left = 511.936
+offset_top = -32.0
+offset_right = 579.936
+offset_bottom = -7.0
+text = "Rename"
+
+[node name="DeleteEnemy" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 592.0
+offset_top = -32.0
+offset_right = 648.0
+offset_bottom = -7.0
+text = "Delete"
+
+[node name="Settings" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 776.0
+offset_top = 64.0
+offset_right = 1016.0
+offset_bottom = 360.0
+
+[node name="GameSettingsLabel" type="Label" parent="Settings"]
+layout_mode = 0
+offset_right = 108.0
+offset_bottom = 24.0
 text = "Game Settings"
 
-[node name="DeckBuilding" type="CheckBox" parent="."]
+[node name="DeckBuilding" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 72.0
-offset_right = 695.0
-offset_bottom = 104.0
+offset_top = 32.0
+offset_right = 175.0
+offset_bottom = 64.0
 text = "Spell Deck Building"
 
-[node name="ShopUpgrades" type="CheckBox" parent="."]
+[node name="ShopUpgrades" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 104.0
-offset_right = 693.0
-offset_bottom = 136.0
+offset_top = 64.0
+offset_right = 173.0
+offset_bottom = 96.0
 text = "Shop for Upgrades"
 
-[node name="Respawn" type="CheckBox" parent="."]
+[node name="Respawn" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 136.0
-offset_right = 622.0
-offset_bottom = 168.0
+offset_top = 96.0
+offset_right = 102.0
+offset_bottom = 128.0
 text = "Respawn"
 
-[node name="RespawnSettingsLabel" type="Label" parent="."]
+[node name="RespawnSettingsLabel" type="Label" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 176.0
-offset_right = 652.0
-offset_bottom = 200.0
+offset_top = 136.0
+offset_right = 132.0
+offset_bottom = 160.0
 text = "Respawn Settings"
 
-[node name="RespawnUpgrades" type="CheckBox" parent="."]
+[node name="RespawnUpgrades" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 208.0
-offset_right = 731.0
-offset_bottom = 240.0
+offset_top = 168.0
+offset_right = 211.0
+offset_bottom = 200.0
 text = "Respawn with Upgrades"
 
-[node name="RespawnArtifacts" type="CheckBox" parent="."]
+[node name="RespawnArtifacts" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 240.0
-offset_right = 724.0
-offset_bottom = 272.0
+offset_top = 200.0
+offset_right = 204.0
+offset_bottom = 232.0
 text = "Respawn with Artifacts"
 
-[node name="RespawnSpells" type="CheckBox" parent="."]
+[node name="RespawnSpells" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 272.0
-offset_right = 705.0
-offset_bottom = 304.0
+offset_top = 232.0
+offset_right = 185.0
+offset_bottom = 264.0
 text = "Respawn with Spells"
 
-[node name="RespawnCoins" type="CheckBox" parent="."]
+[node name="RespawnCoins" type="CheckBox" parent="Settings"]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 304.0
-offset_right = 701.0
-offset_bottom = 336.0
+offset_top = 264.0
+offset_right = 181.0
+offset_bottom = 296.0
 text = "Respawn with Coins"
 
 [node name="DescLabel" type="Label" parent="."]
@@ -218,6 +266,7 @@ offset_left = -136.0
 offset_top = 8.0
 offset_right = -8.0
 offset_bottom = 40.0
+grow_horizontal = 0
 text = "Share Online"
 
 [connection signal="item_selected" from="ProjectilesInWorld" to="." method="_on_spells_in_world_item_selected"]
@@ -226,11 +275,14 @@ text = "Share Online"
 [connection signal="item_selected" from="ItemsInWorld" to="." method="_on_items_in_world_item_selected"]
 [connection signal="pressed" from="RenameItem" to="." method="_on_rename_item_pressed"]
 [connection signal="pressed" from="DeleteItem" to="." method="_on_delete_item_pressed"]
-[connection signal="toggled" from="DeckBuilding" to="." method="_on_deck_building_toggled"]
-[connection signal="toggled" from="ShopUpgrades" to="." method="_on_shop_upgrades_toggled"]
-[connection signal="toggled" from="Respawn" to="." method="_on_respawn_toggled"]
-[connection signal="toggled" from="RespawnUpgrades" to="." method="_on_respawn_upgrades_toggled"]
-[connection signal="toggled" from="RespawnArtifacts" to="." method="_on_respawn_artifacts_toggled"]
-[connection signal="toggled" from="RespawnSpells" to="." method="_on_respawn_spells_toggled"]
-[connection signal="toggled" from="RespawnCoins" to="." method="_on_respawn_coins_toggled"]
+[connection signal="item_selected" from="EnemiesInWorld" to="." method="_on_enemies_in_world_item_selected"]
+[connection signal="pressed" from="RenameEnemy" to="." method="_on_rename_enemy_pressed"]
+[connection signal="pressed" from="DeleteEnemy" to="." method="_on_delete_enemy_pressed"]
+[connection signal="toggled" from="Settings/DeckBuilding" to="." method="_on_deck_building_toggled"]
+[connection signal="toggled" from="Settings/ShopUpgrades" to="." method="_on_shop_upgrades_toggled"]
+[connection signal="toggled" from="Settings/Respawn" to="." method="_on_respawn_toggled"]
+[connection signal="toggled" from="Settings/RespawnUpgrades" to="." method="_on_respawn_upgrades_toggled"]
+[connection signal="toggled" from="Settings/RespawnArtifacts" to="." method="_on_respawn_artifacts_toggled"]
+[connection signal="toggled" from="Settings/RespawnSpells" to="." method="_on_respawn_spells_toggled"]
+[connection signal="toggled" from="Settings/RespawnCoins" to="." method="_on_respawn_coins_toggled"]
 [connection signal="toggled" from="ShareOnline" to="." method="_on_share_online_toggled"]

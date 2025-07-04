@@ -84,6 +84,7 @@ func _on_delete_pressed() -> void:
 		if current_selected.is_empty():
 			return
 		UIAudioPlayer.delete()
+		filenames.remove_at(selected[0])
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
 		list.remove_item(current_selected[0])
 	)
