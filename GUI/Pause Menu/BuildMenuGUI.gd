@@ -295,7 +295,9 @@ func get_dict() -> Dictionary:
 	result["username"] = GlobalData.game_settings.username
 	result["desc"] = desc_edit.text
 	result["settings"] = settings.game_mode_settings.save_dict()
-	result["base_upgrades"] = settings.upgrade_settings.save_dict()
+	if settings.is_editing_level:
+		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
+	result["base_upgrades"] = base_upgrades.save_dict()
  	
 	return result
 
@@ -453,13 +455,12 @@ func level_added(id: int) -> void:
 
 func _on_test_mode_pressed() -> void:
 	settings.is_editing_level = not settings.is_editing_level
-	settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
 	test_mode_changed.emit(settings.is_editing_level)
 	if settings.is_editing_level:
 		test_mode_button.text = "Test Level"
+		settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
 	else:
 		test_mode_button.text = "Edit Level"
-		
-	# TODO: make upgrades available when in editing
+		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		
 		

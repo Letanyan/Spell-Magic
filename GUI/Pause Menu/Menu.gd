@@ -140,13 +140,18 @@ func update_index(index: Kind) -> void:
 	else:
 		match current_index:
 			Kind.SPELLS:
-				if settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
+				if not settings.world_settings.is_editing_level and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
 					spell_deck.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); spell_deck.duplicate_book()
 				else:
 					magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
 			Kind.WANDS: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
 			Kind.ARTIFACTS: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
-			Kind.UPGRADES: upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+			Kind.UPGRADES:
+				if world_settings.is_editing_level or world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+					upgrades.make_display_only(false)
+				else:
+					upgrades.make_display_only(true)
+				upgrades.visible = true; upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true); upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
 			Kind.NOTES: notes.visible = true; notes_button.grab_focus(); notes_button.set_pressed_no_signal(true); notes.update_notes()
 			Kind.BUILD: build_menu.visible = true; build_button.grab_focus(); build_button.set_pressed_no_signal(true); build_menu.update_projectile_list()
 			Kind.SETTINGS: settings.visible = true; settings_button.grab_focus(); settings_button.set_pressed_no_signal(true); settings.update_controls()
@@ -282,6 +287,8 @@ func save_changes() -> void:
 		artifacts.artifacts.save(world_settings.world_name)
 	if upgrades.visible:
 		upgrades.settings.save()
+		if world_settings.is_editing_level:
+			build_menu.save(world_settings.world_name)
 	if settings.visible:
 		settings.world_settings.save()
 		if settings.is_magic_book_selected:

@@ -112,7 +112,7 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	const coin_suffix := " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/center]"
 	currency.text = "[right]" + str(settings.upgrade_settings.currency) + " [img color=#ffc000]res://GUI/Images/coins.svg[/img][/right]"
 	
-	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
+	if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) and not settings.is_editing_level:
 		element_void.visible = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID)
 		element_fire.visible = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE)
 		element_water.visible = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER)
@@ -123,17 +123,28 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 		chain_at_start.visible = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.START)
 		chain_at_end.visible = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END)
 		chain_on_hit.visible = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT)
+	else:
+		element_void.visible = true
+		element_fire.visible = true
+		element_water.visible = true
+		element_air.visible = true
+		element_rock.visible = true
+		element_ice.visible = true
+		element_electric.visible = true
+		chain_at_start.visible = true
+		chain_at_end.visible = true
+		chain_on_hit.visible = true
 	
-	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	element_water_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	element_air_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.AIR) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	element_rock_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ROCK) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	element_ice_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ICE) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	element_electric_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ELECTRIC) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element
-	chain_at_start_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.START) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.START)
-	chain_at_end_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.END)
-	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT) or settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.HIT)
+	element_void_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	element_fire_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	element_water_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	element_air_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.AIR) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	element_rock_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ROCK) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	element_ice_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ICE) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	element_electric_upgrade.disabled = settings.upgrade_settings.check_if_has_spell_element(Spell.Element.ELECTRIC) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spell_element and not settings.is_editing_level)
+	chain_at_start_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.START) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.START) and not settings.is_editing_level)
+	chain_at_end_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.END) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.END) and not settings.is_editing_level)
+	chain_on_hit_upgrade.disabled = settings.upgrade_settings.check_if_has_chain_method(Spell.ChainCastKind.HIT) or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_chain_method(Spell.ChainCastKind.HIT) and not settings.is_editing_level)
 	element_void_cost.text = ("[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix if settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) else "") if not settings.upgrade_settings.check_if_has_spell_element(Spell.Element.VOID) else "[center][font_size=11]UNLOCKED[/font_size][/center]"
 	element_fire_cost.text = ("[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix if settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) else "") if not settings.upgrade_settings.check_if_has_spell_element(Spell.Element.FIRE) else "[center][font_size=11]UNLOCKED[/font_size][/center]"
 	element_water_cost.text = ("[center]" + str(settings.upgrade_settings.cost_spell_element) + coin_suffix if settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) else "") if not settings.upgrade_settings.check_if_has_spell_element(Spell.Element.WATER) else "[center][font_size=11]UNLOCKED[/font_size][/center]"
@@ -159,20 +170,20 @@ func update_state(purchase_error: UpgradeSettings.PurchaseError) -> void:
 	mana_regen_current.text = str(settings.upgrade_settings.max_mana_regen())
 	max_cr_current.text = str(settings.upgrade_settings.max_crit_rate()) + "%"
 	max_cd_current.text = str(settings.upgrade_settings.max_crit_dmg())
-	max_spell_count_upgrade.disabled = settings.upgrade_settings.level_spells_in_book >= settings.upgrade_settings.level_max_spells_in_book or settings.upgrade_settings.currency < settings.upgrade_settings.cost_spells_in_book()
-	max_running_speed_upgrade.disabled = settings.upgrade_settings.level_running_speed >= settings.upgrade_settings.level_max_running_speed or settings.upgrade_settings.currency < settings.upgrade_settings.cost_running_speed()
-	max_P_upgrade.disabled = settings.upgrade_settings.level_P >= settings.upgrade_settings.level_max_P or settings.upgrade_settings.currency < settings.upgrade_settings.cost_P()
-	max_v_upgrade.disabled = settings.upgrade_settings.level_v >= settings.upgrade_settings.level_max_v or settings.upgrade_settings.currency < settings.upgrade_settings.cost_v()
-	max_T_upgrade.disabled = settings.upgrade_settings.level_T >= settings.upgrade_settings.level_max_T or settings.upgrade_settings.currency < settings.upgrade_settings.cost_T()
-	max_N_upgrade.disabled = settings.upgrade_settings.level_N >= settings.upgrade_settings.level_max_N or settings.upgrade_settings.currency < settings.upgrade_settings.cost_N()
-	max_H_upgrade.disabled = settings.upgrade_settings.level_health >= settings.upgrade_settings.level_max_health or settings.upgrade_settings.currency < settings.upgrade_settings.cost_health()
-	max_M_upgrade.disabled = settings.upgrade_settings.level_mana >= settings.upgrade_settings.level_max_mana or settings.upgrade_settings.currency < settings.upgrade_settings.cost_mana()
-	max_r_upgrade.disabled = settings.upgrade_settings.level_r >= settings.upgrade_settings.level_max_r or settings.upgrade_settings.currency < settings.upgrade_settings.cost_r()
-	attack_upgrade.disabled = settings.upgrade_settings.level_attack >= settings.upgrade_settings.level_max_attack or settings.upgrade_settings.currency < settings.upgrade_settings.cost_attack()
-	defence_upgrade.disabled = settings.upgrade_settings.level_defence >= settings.upgrade_settings.level_max_defence or settings.upgrade_settings.currency < settings.upgrade_settings.cost_defence()
-	mana_regen_upgrade.disabled = settings.upgrade_settings.level_mana_regen >= settings.upgrade_settings.level_max_mana_regen or settings.upgrade_settings.currency < settings.upgrade_settings.cost_mana_regen()
-	max_cr_upgrade.disabled = settings.upgrade_settings.level_crit_rate >= settings.upgrade_settings.level_max_crit_rate or settings.upgrade_settings.currency < settings.upgrade_settings.cost_crit_rate()
-	max_cd_upgrade.disabled = settings.upgrade_settings.level_crit_dmg >= settings.upgrade_settings.level_max_crit_dmg or settings.upgrade_settings.currency < settings.upgrade_settings.cost_crit_dmg()
+	max_spell_count_upgrade.disabled = settings.upgrade_settings.level_spells_in_book >= settings.upgrade_settings.level_max_spells_in_book or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_spells_in_book() and not settings.is_editing_level)
+	max_running_speed_upgrade.disabled = settings.upgrade_settings.level_running_speed >= settings.upgrade_settings.level_max_running_speed or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_running_speed() and not settings.is_editing_level)
+	max_P_upgrade.disabled = settings.upgrade_settings.level_P >= settings.upgrade_settings.level_max_P or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_P() and not settings.is_editing_level)
+	max_v_upgrade.disabled = settings.upgrade_settings.level_v >= settings.upgrade_settings.level_max_v or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_v() and not settings.is_editing_level)
+	max_T_upgrade.disabled = settings.upgrade_settings.level_T >= settings.upgrade_settings.level_max_T or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_T() and not settings.is_editing_level)
+	max_N_upgrade.disabled = settings.upgrade_settings.level_N >= settings.upgrade_settings.level_max_N or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_N() and not settings.is_editing_level)
+	max_H_upgrade.disabled = settings.upgrade_settings.level_health >= settings.upgrade_settings.level_max_health or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_health() and not settings.is_editing_level)
+	max_M_upgrade.disabled = settings.upgrade_settings.level_mana >= settings.upgrade_settings.level_max_mana or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_mana() and not settings.is_editing_level)
+	max_r_upgrade.disabled = settings.upgrade_settings.level_r >= settings.upgrade_settings.level_max_r or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_r() and not settings.is_editing_level)
+	attack_upgrade.disabled = settings.upgrade_settings.level_attack >= settings.upgrade_settings.level_max_attack or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_attack() and not settings.is_editing_level)
+	defence_upgrade.disabled = settings.upgrade_settings.level_defence >= settings.upgrade_settings.level_max_defence or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_defence() and not settings.is_editing_level)
+	mana_regen_upgrade.disabled = settings.upgrade_settings.level_mana_regen >= settings.upgrade_settings.level_max_mana_regen or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_mana_regen() and not settings.is_editing_level)
+	max_cr_upgrade.disabled = settings.upgrade_settings.level_crit_rate >= settings.upgrade_settings.level_max_crit_rate or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_crit_rate() and not settings.is_editing_level)
+	max_cd_upgrade.disabled = settings.upgrade_settings.level_crit_dmg >= settings.upgrade_settings.level_max_crit_dmg or (settings.upgrade_settings.currency < settings.upgrade_settings.cost_crit_dmg() and not settings.is_editing_level)
 	max_spell_count_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_spells_in_book()) if settings.upgrade_settings.level_spells_in_book < settings.upgrade_settings.level_max_spells_in_book else "MAXED"
 	max_running_speed_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_running_speed()) + "m/s" if settings.upgrade_settings.level_running_speed < settings.upgrade_settings.level_max_running_speed else "MAXED"
 	max_P_upgrade.text = "+ " + str(settings.upgrade_settings.upgrade_P()) if settings.upgrade_settings.level_P < settings.upgrade_settings.level_max_P else "MAXED"
@@ -234,121 +245,121 @@ func make_display_only(is_demo: bool) -> void:
 	max_cd_cost.visible = not is_demo
 
 func _on_max_spell_count_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spells_in_book()
+	var err := settings.upgrade_settings.purchase_spells_in_book(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_max_running_speed_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_running_speed()
+	var err := settings.upgrade_settings.purchase_running_speed(settings.is_editing_level)
 	update_state(err)
 	
 func _on_void_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.VOID)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.VOID, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_fire_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.FIRE)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.FIRE, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_water_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.WATER)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.WATER, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_air_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.AIR)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.AIR, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_rock_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ROCK)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ROCK, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_ice_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ICE)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ICE, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_electric_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ELECTRIC)
+	var err := settings.upgrade_settings.purchase_spell_element(Spell.Element.ELECTRIC, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_P_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_P()
+	var err := settings.upgrade_settings.purchase_P(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_max_v_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_v()
+	var err := settings.upgrade_settings.purchase_v(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_T_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_T()
+	var err := settings.upgrade_settings.purchase_T(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_N_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_N()
+	var err := settings.upgrade_settings.purchase_N(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_M_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_mana()
+	var err := settings.upgrade_settings.purchase_mana(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_max_R_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_r()
+	var err := settings.upgrade_settings.purchase_r(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_at_start_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.START)
+	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.START, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_at_end_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.END)
+	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.END, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_on_hit_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.HIT)
+	var err := settings.upgrade_settings.purchase_chain_method(Spell.ChainCastKind.HIT, settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_max_H_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_health()
+	var err := settings.upgrade_settings.purchase_health(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_attack_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_attack()
+	var err := settings.upgrade_settings.purchase_attack(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_defence_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_defence()
+	var err := settings.upgrade_settings.purchase_defence(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 	
 func _on_mana_regen_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_mana_regen()
+	var err := settings.upgrade_settings.purchase_mana_regen(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 
 func _on_crit_rate_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_crit_rate()
+	var err := settings.upgrade_settings.purchase_crit_rate(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
 
 func _on_crit_dmg_upgrade_pressed() -> void:
-	var err := settings.upgrade_settings.purchase_crit_dmg()
+	var err := settings.upgrade_settings.purchase_crit_dmg(settings.is_editing_level)
 	UIAudioPlayer.click()
 	update_state(err)
