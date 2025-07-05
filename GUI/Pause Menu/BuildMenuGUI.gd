@@ -9,6 +9,7 @@ var player: Player = null
 var projectiles_in_world: Array[SpellBody] = []
 var items_in_world: Array[WorldItem] = []
 var enemies_in_world: Array[Enemy] = []
+var base_upgrades: UpgradeSettings = null
 
 @onready var desc_edit: LineEdit = $DescEdit
 @onready var share_online: CheckBox = $ShareOnline
@@ -28,6 +29,9 @@ var enemies_in_world: Array[Enemy] = []
 @onready var respawn_spells: CheckBox = $Settings/RespawnSpells
 @onready var respawn_coins: CheckBox = $Settings/RespawnCoins
 
+@onready var test_mode_button: Button = $TestMode
+
+signal test_mode_changed(is_editing: bool)
 
 func _ready() -> void:
 	#HttpLevels.got_level.connect(func(id: int, data: Dictionary) -> void: print(id, data))
@@ -40,6 +44,9 @@ func _ready() -> void:
 	SignalBus.item_removed_from_world.connect(item_removed_from_world)
 	SignalBus.enemy_added_to_world.connect(enemy_added_into_world)
 	SignalBus.enemy_removed_from_world.connect(enemy_removed_from_world)
+	
+	base_upgrades = UpgradeSettings.new()
+	base_upgrades.reset_all_stats_to_default_values()
 	
 	
 func update_settings() -> void:
@@ -240,7 +247,7 @@ func delete_enemy(enemy: Enemy) -> void:
 			
 	if idx != -1:
 		var en := enemies_in_world[idx]
-		en.queue_free()
+		SignalBus.enemy_death.emit(en)
 		enemies_in_world.remove_at(idx)
 		enemies_name.text = ""
 		update_enemies_list()
@@ -251,6 +258,8 @@ func _on_enemies_in_world_item_selected(index: int) -> void:
 
 
 func save(world_name: String) -> void:
+	if not settings.is_editing_level:
+		return
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)	
 	var dict := get_dict()
 	file.store_var(dict)
@@ -286,6 +295,7 @@ func get_dict() -> Dictionary:
 	result["username"] = GlobalData.game_settings.username
 	result["desc"] = desc_edit.text
 	result["settings"] = settings.game_mode_settings.save_dict()
+	result["base_upgrades"] = settings.upgrade_settings.save_dict()
  	
 	return result
 
@@ -367,6 +377,8 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 	share_online.set_pressed_no_signal(settings.is_shared_online != -1)
 	
 	settings.game_mode_settings.load_dict(data.get("settings", {}) as Dictionary)
+	base_upgrades.load_dict(data.get("base_upgrades", {}) as Dictionary)
+	settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
 		
 	update_item_list()
 	update_projectile_list()
@@ -437,3 +449,17 @@ func _on_share_online_toggled(toggled_on: bool) -> void:
 func level_added(id: int) -> void:
 	settings.is_shared_online = id
 	settings.save()
+
+
+func _on_test_mode_pressed() -> void:
+	settings.is_editing_level = not settings.is_editing_level
+	settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
+	test_mode_changed.emit(settings.is_editing_level)
+	if settings.is_editing_level:
+		test_mode_button.text = "Test Level"
+	else:
+		test_mode_button.text = "Edit Level"
+		
+	# TODO: make upgrades available when in editing
+		
+		

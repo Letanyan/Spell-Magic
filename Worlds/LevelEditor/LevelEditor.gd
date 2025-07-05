@@ -84,8 +84,7 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 				break
 		if i != -1:
 			inhabitants.remove_at(i)
-		e.queue_free()
-		print(e, " died")
+		remove_child(e)
 	)
 
 func _ready() -> void:
@@ -121,6 +120,7 @@ func run_on_ready() -> void:
 		proj.time_stamp = 0.0
 		insert_spell(proj)
 	for item in menu.build_menu.items_in_world:
+		item.custom_free = remove_world_item
 		add_child(item)
 	for enemy in menu.build_menu.enemies_in_world:
 		add_enemy(enemy)
@@ -177,6 +177,8 @@ func run_on_ready() -> void:
 	ready_state = GameSettings.ReadyState.IS
 	
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
+	
+	menu.build_menu.test_mode_changed.connect(test_mode_changed)
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -290,6 +292,10 @@ func toggle_menu() -> void:
 	sub_viewport_container.visible = false
 	#menu.visible = true
 	player.transition_menu(not menu.is_showing, not menu.is_quick_menu and menu.current_index == Menu.Kind.SETTINGS and menu.settings.tab_container.get_current_tab_control().name == "Skin", menu.showing_customisation)
+	
+func remove_world_item(this: WorldItem) -> void:
+	print("removing item: ", this)
+	remove_child(this)
 		
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("tab_menu"):
@@ -367,11 +373,20 @@ func _input(event: InputEvent) -> void:
 						elif node_to_track is Enemy:
 							menu.build_menu.delete_enemy(node_to_track as Enemy)
 				elif option.kind == Wand.Kind.PLACE_ITEM:
+					var cdir := Vector3.ZERO
+					var port := get_viewport()
+					var pos := port.get_visible_rect().size / 2.0
+					var coord := port.get_camera_3d().project_ray_origin(pos)
+					cdir = port.get_camera_3d().project_ray_normal(pos)
+					var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY)
 					var spell := option.get_spell()
-					if spell != null:
+					if not place_pos.is_finite():
+						hud.show_notification("Can not place there", 3.0)
+					elif spell != null:
 						var paper := SpellPaper.make()
 						paper.spell = spell
-						paper.position = player.position
+						paper.set_base_position(place_pos)
+						paper.custom_free = remove_world_item
 						add_child(paper)
 						SignalBus.item_added_to_world.emit(paper)
 					else:
@@ -380,13 +395,15 @@ func _input(event: InputEvent) -> void:
 						if spell_name == "health":
 							var cross := RedCross.make()
 							cross.health = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_float() / 100.0
-							cross.position = player.position # TODO: replace with player raycast intersection with world
+							cross.set_base_position(place_pos)
+							cross.custom_free = remove_world_item
 							add_child(cross)
 							SignalBus.item_added_to_world.emit(cross)
 						elif spell_name == "coin":
 							var coin := CoinDisc.make()
 							coin.amount = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_int()
-							coin.position = player.position # TODO: replace with player raycast intersection with world
+							coin.set_base_position(place_pos)
+							coin.custom_free = remove_world_item
 							add_child(coin)
 							SignalBus.item_added_to_world.emit(coin)
 						elif spell_name == "enemy":
@@ -402,8 +419,7 @@ func _input(event: InputEvent) -> void:
 									break
 								idx += 1
 							if enemy_kind != World.Enemy.NONE:
-								# TODO: replace position with player raycast intersection with world
-								var enemy := Population.generate_enemy(enemy_kind, player, player.position.x, player.position.y, player.position.z, enemy_level)
+								var enemy := Population.generate_enemy(enemy_kind, player, place_pos.x, place_pos.y, place_pos.z, enemy_level)
 								enemy.level_flag = enemy_flag
 								add_enemy(enemy)
 								SignalBus.enemy_added_to_world.emit(enemy)
@@ -432,6 +448,9 @@ func insert_spell(p: Node3D) -> void:
 
 func add_enemy(enemy: Enemy) -> void:
 	inhabitants.append(enemy)
+	enemy.is_dead = settings.is_editing_level
+	enemy.is_idle = settings.is_editing_level
+	enemy.invunerable = INF if settings.is_editing_level else 0.0
 	add_child(enemy)
 	enemy.animation_tree.active = true
 
@@ -460,3 +479,28 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				return
 			
 			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
+
+func test_mode_changed(is_editing: bool) -> void:
+	for proj in menu.build_menu.projectiles_in_world:
+		proj.time_stamp = 0.0
+	for item in menu.build_menu.items_in_world:
+		if item.get_parent() == null:
+			if item is CoinDisc:
+				(item as CoinDisc).eaten = false
+			elif item is SpellPaper:
+				(item as SpellPaper).eaten = false
+			elif item is RedCross:
+				(item as RedCross).eaten = false
+			item.reset_to_original()
+			add_child(item)
+	for enemy in menu.build_menu.enemies_in_world:
+		if enemy.get_parent() == null:
+			add_enemy(enemy)
+			
+	player.vitals.reset()
+	
+	for enemy in inhabitants:
+		enemy.vitals.reset()
+		enemy.is_dead = is_editing
+		enemy.invunerable = INF if is_editing else 0.0
+		enemy.animation_tree.active = true

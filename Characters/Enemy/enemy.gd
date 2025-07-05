@@ -458,10 +458,10 @@ func insert_spell(p: Node3D) -> void:
 func update_behaviour() -> void:
 	var old_is_idle := is_idle
 	if is_idle:
-		if player.position.distance_to(position) < vitals.perception.min_value:
+		if not is_dead and player.position.distance_to(position) < vitals.perception.min_value:
 			is_idle = false
 	else:
-		if player.position.distance_to(position) > vitals.perception.max_value or position.distance_to(spawn_position) > player.get_chunk_width():
+		if is_dead or player.position.distance_to(position) > vitals.perception.max_value or position.distance_to(spawn_position) > player.get_chunk_width():
 			is_idle = true
 	
 	if old_is_idle != is_idle or not is_idle_is_set:

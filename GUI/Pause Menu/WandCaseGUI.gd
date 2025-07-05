@@ -135,7 +135,7 @@ func update_wand_shelf_relative_item(item: WandCaseShelfItem, prev: WandCaseShel
 	
 func _on_wand_index_item_selected(index: int) -> void:
 	UIAudioPlayer.click()
-	reload_wand_shelf_items(index)
+	reload_wand_shelf_items(index, true)
 
 func reload_list() -> void:
 	wand_index.clear()
@@ -203,6 +203,7 @@ func _on_wand_index_item_clicked(index: int, at_position: Vector2, mouse_button_
 		use_current_wand.call(current_index)
 		new_wand_selected.emit(case.wands[current_index])
 		reload_list()
+		
 
 
 func _on_name_focus_entered() -> void:

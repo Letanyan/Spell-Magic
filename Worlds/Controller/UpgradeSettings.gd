@@ -473,6 +473,29 @@ func reset_all_stats_to_max_values() -> void:
 	upgrade_prog_cur = [0.0, 0.0, 0.0, 0.0]
 	upgrade_prog_max = [0.0, 0.0, 0.0, 0.0]
 	upgrade_cond_info = [0, 0, 0, 0]
+	
+func reset_all_stats_to_other(other: UpgradeSettings) -> void:
+	level_health = other.level_health
+	level_mana = other.level_mana
+	level_attack = other.level_attack
+	level_defence = other.level_defence
+	level_D = other.level_D
+	level_N = other.level_N
+	level_P = other.level_P
+	level_r = other.level_r
+	level_spells_in_book = other.level_spells_in_book
+	level_running_speed = other.level_running_speed
+	level_v = other.level_v
+	level_T = other.level_T
+	level_mana_regen = other.level_mana_regen
+	has_spell_element = other.has_spell_element
+	has_chain_method = other.has_chain_method
+	currency = other.currency
+	upgrade_kind = other.upgrade_kind
+	upgrade_cond = other.upgrade_cond
+	upgrade_prog_cur = other.upgrade_prog_cur
+	upgrade_prog_max = other.upgrade_prog_max
+	upgrade_cond_info = other.upgrade_cond_info
 
 func emit_upgrade_purchase(payload: Dictionary = {}) -> void:
 	upgrade_was_purchased.emit(self, payload)

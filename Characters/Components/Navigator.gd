@@ -140,15 +140,27 @@ static func get_ray_intersection(p: CollisionObject3D, from: Vector3, target: Ve
 			c = o
 			break
 	return c
-	
-static func get_ray_intersection_of_node(p: CollisionObject3D, from: Vector3, target: Vector3) -> Node3D:
+
+static func get_ray_intersection_point_of_node(p: CollisionObject3D, from: Vector3, target: Vector3, collision_mask: int = ~1) -> Vector3:
 	var space_state := p.get_world_3d().direct_space_state
-	var query := PhysicsRayQueryParameters3D.create(from, target, ~1, [p.get_rid()])
+	var query := PhysicsRayQueryParameters3D.create(from, target, collision_mask, [p.get_rid()])
+	query.collide_with_areas = true
+	var result := space_state.intersect_ray(query)
+	if result.is_empty():
+		return Vector3(INF, INF, INF)
+	var obj := result.get("collider") as CollisionObject3D
+	if obj.get_parent_node_3d() != null:
+		return result.get("position") as Vector3
+	return Vector3(INF, INF, INF)
+	
+static func get_ray_intersection_of_node(p: CollisionObject3D, from: Vector3, target: Vector3, collision_mask: int = ~1) -> Node3D:
+	var space_state := p.get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(from, target, collision_mask, [p.get_rid()])
 	query.collide_with_areas = true
 	var result := space_state.intersect_ray(query)
 	if result.is_empty():
 		return null
-	var obj: Area3D = result.get("collider")
+	var obj := result.get("collider") as CollisionObject3D
 	if obj.get_parent_node_3d() != null:
 		return obj.get_parent_node_3d() as Node3D
 	return null
