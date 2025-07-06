@@ -413,7 +413,7 @@ func _input(event: InputEvent) -> void:
 							var enemy_flag := (opts.get("2", "1") as String).to_int()
 							var enemy_kind := World.Enemy.NONE
 							var idx := 0
-							for kind: String in World.Enemy.keys():
+							for kind: String in World.Enemy:
 								if enemy_name.to_lower() == kind.to_lower():
 									enemy_kind = idx as World.Enemy
 									break

@@ -20,14 +20,17 @@ const HAS_AIR := 1 << 5
 const HAS_ICE := 1 << 6
 var has_spell_element := HAS_VOID | HAS_FIRE # Start with fire and void
 var cost_spell_element := 100
-func purchase_spell_element(el: Spell.Element, ignore_currency: bool = false) -> PurchaseError:
+func purchase_spell_element(el: Spell.Element, ignore_currency: bool = false, remove: bool = false) -> PurchaseError:
 	if currency < cost_spell_element and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if check_if_has_spell_element(el):
+	if not remove and check_if_has_spell_element(el) or remove and not check_if_has_spell_element(el):
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	has_spell_element |= (1 << el)
+	if remove:
+		has_spell_element &= ~(1 << el)
+	else:
+		has_spell_element |= (1 << el)
 	if not ignore_currency:
 		currency -= cost_spell_element
 	emit_upgrade_purchase({"element": el})
@@ -60,14 +63,17 @@ func cost_chain_method(method: Spell.ChainCastKind) -> int:
 	else:
 		return 0
 		
-func purchase_chain_method(cm: Spell.ChainCastKind, ignore_currency: bool = false) -> PurchaseError:
+func purchase_chain_method(cm: Spell.ChainCastKind, ignore_currency: bool = false, remove: bool = false) -> PurchaseError:
 	if currency < cost_spell_element and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if check_if_has_chain_method(cm):
+	if not remove and check_if_has_chain_method(cm) or remove and not check_if_has_chain_method(cm):
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
-	has_chain_method |= (1 << cm)
+	if remove:
+		has_chain_method &= ~(1 << cm)
+	else:
+		has_chain_method |= (1 << cm)
 	if not ignore_currency:
 		currency -= cost_chain_method(cm)
 	emit_upgrade_purchase({"chain": cm})
@@ -103,19 +109,20 @@ var level_r := 1:
 var level_max_r := 2 if GlobalData.is_demo else 20
 func max_r(x: int = level_r) -> float: return x * 0.25
 func upgrade_r() -> float: return max_r(level_r + 1) - max_r(level_r)
+func downgrade_r() -> float: return max_r(level_r) - max_r(level_r - 1)
 func cost_r() -> int: return (level_r ** 2) * 10
 var buff_r := 0.0
 const LIMIT_r := 5.0
-func purchase_r(ignore_currency: bool = false) -> PurchaseError:
+func purchase_r(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_r() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_r >= level_max_r:
+	if level_r + amount > level_max_r or level_r + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_r()
-	level_r += 1
+	level_r += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_r(size: int) -> String: return "[img=l,%dx%d, color=#7700FF]res://GUI/Images/radius.svg[/img]" % [size, size]
@@ -126,19 +133,20 @@ var level_T := 1:
 var level_max_T := 3 if GlobalData.is_demo else 25
 func max_T(x: int = level_T) -> float: return x + 1
 func upgrade_T() -> float: return max_T(level_T + 1) - max_T(level_T)
+func downgrade_T() -> float: return max_T(level_T) - max_T(level_T - 1)
 func cost_T() -> int: return ceili(level_T ** 1.5 * 10)
 var buff_T := 0.0
 const LIMIT_T := 25.0
-func purchase_T(ignore_currency: bool = false) -> PurchaseError:
+func purchase_T(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_T() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_T >= level_max_T:
+	if level_T + amount > level_max_T or level_T + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_T()
-	level_T += 1
+	level_T += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_T(size: int) -> String: return "[img=l,%dx%d, color=#00FF08]res://GUI/Images/time.svg[/img]" % [size, size]
@@ -149,19 +157,20 @@ var level_N := 1:
 var level_max_N := 3 if GlobalData.is_demo else 25
 func max_N(x: int = level_N) -> int: return x
 func upgrade_N() -> int: return max_N(level_N + 1) - max_N(level_N)
+func downgrade_N() -> int: return max_N(level_N) - max_N(level_N - 1)
 func cost_N() -> int: return level_N * 150
 var buff_N := 0.0
 const LIMIT_N := 25
-func purchase_N(ignore_currency: bool = false) -> PurchaseError:
+func purchase_N(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_N() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_N >= level_max_N:
+	if level_N + amount > level_max_N or level_N + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_N()
-	level_N += 1
+	level_N += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_N(size: int) -> String: return "[img=l,%dx%d, color=#F700FF]res://GUI/Images/count.svg[/img]" % [size, size]
@@ -172,19 +181,20 @@ var level_D := 1:
 var level_max_D := 2 if GlobalData.is_demo else 10
 func max_D(x: int = level_D) -> float: return roundf((x - 1) / 36.0 * 100.0)
 func upgrade_D() -> float: return max_D(level_D + 1) - max_D(level_D)
+func downgrade_D() -> float: return max_D(level_D) - max_D(level_D - 1)
 func cost_D() -> int: return level_D * 25
 var buff_D := 0.0
 const LIMIT_D := 25.0
-func purchase_D(ignore_currency: bool = false) -> PurchaseError:
+func purchase_D(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_D() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_D >= level_max_D:
+	if level_D + amount > level_max_D or level_D + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_D()
-	level_D += 1
+	level_D += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_D() -> String: return "D"
@@ -195,19 +205,20 @@ var level_P := 1:
 var level_max_P := 4 if GlobalData.is_demo else 10
 func max_P(x: int = level_P) -> int: return x * 10
 func upgrade_P() -> int: return max_P(level_P + 1) - max_P(level_P)
+func downgrade_P() -> int: return max_P(level_P) - max_P(level_P - 1)
 func cost_P() -> int: return level_P * 200
 var buff_P := 0.0
 const LIMIT_P := 100
-func purchase_P(ignore_currency: bool = false) -> PurchaseError:
+func purchase_P(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_P() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_P >= level_max_P:
+	if level_P + amount > level_max_P or level_P + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_P()
-	level_P += 1
+	level_P += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_P(size: int) -> String: return "[img=l,%dx%d, color=#0008FF]res://GUI/Images/power.svg[/img]" % [size, size]
@@ -221,19 +232,20 @@ var level_v := 1:
 var level_max_v := 5 if GlobalData.is_demo else 20
 func max_v(x: int = level_v) -> float: return 8 + x + floorf(x/20.0*12.0)
 func upgrade_v() -> float: return max_v(level_v + 1) - max_v(level_v)
+func downgrade_v() -> float: return max_v(level_v) - max_v(level_v - 1)
 func cost_v() -> int: return level_v * 175
 var buff_v := 0.0
 const LIMIT_v := 40.0
-func purchase_v(ignore_currency: bool = false) -> PurchaseError:
+func purchase_v(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_v() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_v >= level_max_v:
+	if level_v + amount > level_max_v or level_v + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_v()
-	level_v += 1
+	level_v += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_v(size: int) -> String: return "[img=l,%dx%d, color=#77FF00]res://GUI/Images/velocity.svg[/img]" % [size, size]
@@ -244,20 +256,21 @@ var level_mana := 1:
 var level_max_mana := 4 if GlobalData.is_demo else 20
 func max_mana(x: int = level_mana) -> float: return x * 50.0
 func upgrade_mana() -> float: return max_mana(level_mana + 1) - max_mana(level_mana)
+func downgrade_mana() -> float: return max_mana(level_mana) - max_mana(level_mana - 1)
 func cost_mana() -> int: return level_mana * 50
 var buff_mana := 0.0
 const LIMIT_MANA := 1000
-func purchase_mana(ignore_currency: bool = false) -> PurchaseError:
+func purchase_mana(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_mana() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_mana >= level_max_mana:
+	if level_mana + amount > level_max_mana or level_mana + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_mana()
 	var upgrade_amount := upgrade_mana()
-	level_mana += 1
+	level_mana += amount
 	emit_upgrade_purchase({"mana": upgrade_amount})
 	return PurchaseError.NONE
 func upgrade_description_mana(size: int) -> String: return "[img=l,%dx%d, color=#AA00AA]res://GUI/Images/mana.svg[/img]" % [size, size]
@@ -268,20 +281,21 @@ var level_health := 1:
 var level_max_health := 2 if GlobalData.is_demo else 20
 func max_health(x: int = level_health) -> float: return x * 50.0
 func upgrade_health() -> float: return max_health(level_health + 1) - max_health(level_health)
+func downgrade_health() -> float: return max_health(level_health) - max_health(level_health - 1)
 func cost_health() -> int: return level_health * 50
 var buff_health := 0.0
 const LIMIT_HEALTH := 1000.0
-func purchase_health(ignore_currency: bool = false) -> PurchaseError:
+func purchase_health(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_health() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_health >= level_max_health:
+	if level_health + amount > level_max_health or level_health + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_health()
 	var upgrade_amount := upgrade_health()
-	level_health += 1
+	level_health += amount
 	emit_upgrade_purchase({"health": upgrade_amount})
 	return PurchaseError.NONE
 func upgrade_description_health(size: int) -> String: return "[img=l,%dx%d, color=#00AA00]res://GUI/Images/health.svg[/img]" % [size, size]
@@ -292,19 +306,20 @@ var level_attack := 1:
 var level_max_attack := 4 if GlobalData.is_demo else 10
 func max_attack(x: int = level_attack) -> float: return x * 10.0
 func upgrade_attack() -> float: return max_attack(level_attack + 1) - max_attack(level_attack)
+func downgrade_attack() -> float: return max_attack(level_attack) - max_attack(level_attack - 1)
 func cost_attack() -> int: return level_attack * 180
 var buff_attack := 0.0
 const LIMIT_ATTACK := 100
-func purchase_attack(ignore_currency: bool = false) -> PurchaseError:
+func purchase_attack(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_attack() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_attack >= level_max_attack:
+	if level_attack + amount > level_max_attack or level_attack + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_attack()
-	level_attack += 1
+	level_attack += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_attack(size: int) -> String: return "[img=l,%dx%d, color=#AA0000]res://GUI/Images/sword.svg[/img]" % [size, size]
@@ -315,19 +330,20 @@ var level_crit_rate := 1:
 var level_max_crit_rate := 1 if GlobalData.is_demo else 10
 func max_crit_rate(x: int = level_crit_rate) -> float: return x * 10.0
 func upgrade_crit_rate() -> float: return max_crit_rate(level_crit_rate + 1) - max_crit_rate(level_crit_rate)
+func downgrade_crit_rate() -> float: return max_crit_rate(level_crit_rate) - max_crit_rate(level_crit_rate - 1)
 func cost_crit_rate() -> int: return level_crit_rate * 250
 var buff_crit_rate := 0.0
 const LIMIT_CRIT_RATE := 100
-func purchase_crit_rate(ignore_currency: bool = false) -> PurchaseError:
+func purchase_crit_rate(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_crit_rate() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_crit_rate >= level_max_crit_rate:
+	if level_crit_rate + amount > level_max_crit_rate or level_crit_rate + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_crit_rate()
-	level_crit_rate += 1
+	level_crit_rate += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_crit_rate(size: int) -> String: return "[img=l,%dx%d, color=#0000AA]res://GUI/Images/cubes.svg[/img]" % [size, size]
@@ -338,19 +354,20 @@ var level_crit_dmg := 1:
 var level_max_crit_dmg := 1 if GlobalData.is_demo else 10
 func max_crit_dmg(x: int = level_crit_dmg) -> float: return x * 50.0
 func upgrade_crit_dmg() -> float: return max_crit_dmg(level_crit_dmg + 1) - max_crit_dmg(level_crit_dmg)
+func downgrade_crit_dmg() -> float: return max_crit_dmg(level_crit_dmg) - max_crit_dmg(level_crit_dmg - 1)
 func cost_crit_dmg() -> int: return level_crit_dmg * 250
 var buff_crit_dmg := 0.0
 const LIMIT_CRIT_DMG := 500
-func purchase_crit_dmg(ignore_currency: bool = false) -> PurchaseError:
+func purchase_crit_dmg(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_crit_dmg() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_crit_dmg >= level_max_crit_dmg:
+	if level_crit_dmg + amount > level_max_crit_dmg or level_crit_dmg + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_crit_dmg()
-	level_crit_dmg += 1
+	level_crit_dmg += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_crit_dmg(size: int) -> String: return "[img=l,%dx%d, color=#AAAA00]res://GUI/Images/hypersonic.svg[/img]" % [size, size]
@@ -361,19 +378,20 @@ var level_defence := 1:
 var level_max_defence := 1 if GlobalData.is_demo else 10
 func max_defence(x: int = level_defence) -> float: return x * 10.0
 func upgrade_defence() -> float: return max_defence(level_defence + 1) - max_defence(level_defence) 
+func downgrade_defence() -> float: return max_defence(level_defence) - max_defence(level_defence - 1) 
 func cost_defence() -> int: return level_defence * 140
 var buff_defence := 0.0
 const LIMIT_DEFENCE := 100
-func purchase_defence(ignore_currency: bool = false) -> PurchaseError:
+func purchase_defence(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_defence() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_defence >= level_max_defence:
+	if level_defence + amount > level_max_defence or level_defence + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_defence()
-	level_defence += 1
+	level_defence += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_defence(size: int) -> String: return "[img=l,%dx%d, color=#00AAAA]res://GUI/Images/shield.svg[/img]" % [size, size]
@@ -384,18 +402,19 @@ var level_spells_in_book := 1:
 var level_max_spells_in_book := 2 if GlobalData.is_demo else 50
 func max_spells_in_book(x: int = level_spells_in_book) -> int: return x * 4
 func upgrade_spells_in_book() -> int: return max_spells_in_book(level_spells_in_book + 1) - max_spells_in_book(level_spells_in_book)
+func downgrade_spells_in_book() -> int: return max_spells_in_book(level_spells_in_book) - max_spells_in_book(level_spells_in_book - 1)
 func cost_spells_in_book() -> int: return 15
 const LIMIT_SPELLS_IN_BOOK := 200
-func purchase_spells_in_book(ignore_currency: bool = false) -> PurchaseError:
+func purchase_spells_in_book(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_spells_in_book() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_spells_in_book >= level_max_spells_in_book:
+	if level_spells_in_book + amount > level_max_spells_in_book or level_spells_in_book + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_spells_in_book()
-	level_spells_in_book += 1
+	level_spells_in_book += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_spells_in_book() -> String: return "Active Spells"
@@ -406,19 +425,20 @@ var level_running_speed := 1:
 var level_max_running_speed := 100 if GlobalData.is_trailer_mode else (1 if GlobalData.is_demo else 10)
 func max_running_speed(x: int = level_running_speed) -> float: return (x * 0.5) + 5.0
 func upgrade_running_speed() -> float: return max_running_speed(level_running_speed + 1) - max_running_speed(level_running_speed)
+func downgrade_running_speed() -> float: return max_running_speed(level_running_speed) - max_running_speed(level_running_speed - 1)
 func cost_running_speed() -> int: return level_running_speed * 500
 var buff_running_speed := 0.0
 const LIMIT_RUNNING_SPEED := 10.0
-func purchase_running_speed(ignore_currency: bool = false) -> PurchaseError:
+func purchase_running_speed(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_running_speed() and not ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_running_speed >= level_max_running_speed:
+	if level_running_speed + amount > level_max_running_speed or level_running_speed + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_running_speed()
-	level_running_speed += 1
+	level_running_speed += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_running_speed(size: int) -> String: return "[img=l,%dx%d, color=#F6FF00]res://GUI/Images/running.svg[/img]" % [size, size]
@@ -429,18 +449,19 @@ var level_mana_regen := 1:
 var level_max_mana_regen := 1 if GlobalData.is_demo else 10
 func max_mana_regen(x: int = level_mana_regen) -> float: return x * 0.5
 func upgrade_mana_regen() -> float: return max_mana_regen(level_mana_regen + 1) - max_mana_regen(level_mana_regen)
+func downgrade_mana_regen() -> float: return max_mana_regen(level_mana_regen) - max_mana_regen(level_mana_regen - 1)
 func cost_mana_regen() -> int: return level_mana_regen * 300
 const LIMIT_MANA_REGEN := 5
-func purchase_mana_regen(ignore_currency: bool = false) -> PurchaseError:
+func purchase_mana_regen(ignore_currency: bool = false, amount: int = 1) -> PurchaseError:
 	if currency < cost_mana_regen() and ignore_currency:
 		return PurchaseError.NOT_ENOUGH_CURRENCY
 		
-	if level_mana_regen >= level_max_mana_regen:
+	if level_mana_regen + amount > level_max_mana_regen or level_mana_regen + amount < 1:
 		return PurchaseError.UPGRADE_IS_OVER_LIMIT
 		
 	if not ignore_currency:
 		currency -= cost_mana_regen()
-	level_mana_regen += 1
+	level_mana_regen += amount
 	emit_upgrade_purchase()
 	return PurchaseError.NONE
 func upgrade_description_mana_regen(size: int) -> String: return "[img=l,%dx%d, color=#AA00AA]res://GUI/Images/mana-outline.svg[/img]" % [size, size]

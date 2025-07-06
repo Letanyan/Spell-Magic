@@ -46,7 +46,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 56.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 88.216
 alignment = 1
 
@@ -81,6 +81,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_H"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="attack" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -90,7 +95,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 112.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 144.216
 alignment = 1
 
@@ -126,6 +131,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/attack"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="defence" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -133,9 +143,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 112.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 144.216
 grow_horizontal = 2
 alignment = 1
@@ -172,6 +182,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/defence"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_P" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -179,9 +194,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 336.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 368.216
 grow_horizontal = 2
 alignment = 1
@@ -218,6 +233,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_P"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_M" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -225,9 +245,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 56.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 88.216
 grow_horizontal = 2
 alignment = 1
@@ -263,6 +283,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_M"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_spell_count" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -270,9 +295,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 392.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 424.216
 grow_horizontal = 2
 alignment = 1
@@ -308,6 +333,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_spell_count"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="running_speed" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -317,7 +347,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 336.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 368.216
 alignment = 1
 
@@ -353,6 +383,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/running_speed"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_N" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -360,9 +395,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 280.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 312.216
 grow_horizontal = 2
 alignment = 1
@@ -399,6 +434,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_N"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_T" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -408,7 +448,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 280.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 312.216
 alignment = 1
 
@@ -444,6 +484,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_T"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_r" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -451,9 +496,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 224.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 256.216
 grow_horizontal = 2
 alignment = 1
@@ -489,6 +534,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_r"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="max_v" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -498,7 +548,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 224.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 256.216
 alignment = 1
 
@@ -534,6 +584,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/max_v"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="mana_regen" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -543,7 +598,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 392.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 424.216
 alignment = 1
 
@@ -578,6 +633,11 @@ bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 scroll_active = false
 
+[node name="downgrade" type="Button" parent="container/mana_regen"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="crit_dmg" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -585,9 +645,9 @@ anchor_left = 0.5
 anchor_top = -0.013
 anchor_right = 0.5
 anchor_bottom = -0.013
-offset_left = 24.0
+offset_left = 16.0
 offset_top = 168.216
-offset_right = 528.0
+offset_right = 544.0
 offset_bottom = 200.216
 alignment = 1
 
@@ -615,6 +675,11 @@ layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
 
+[node name="downgrade" type="Button" parent="container/crit_dmg"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
+
 [node name="crit_rate" type="HBoxContainer" parent="container"]
 layout_mode = 1
 anchors_preset = -1
@@ -624,7 +689,7 @@ anchor_right = 0.5
 anchor_bottom = -0.013
 offset_left = -544.0
 offset_top = 168.216
-offset_right = -32.0
+offset_right = -16.0
 offset_bottom = 200.216
 alignment = 1
 
@@ -651,6 +716,11 @@ custom_minimum_size = Vector2(112, 24)
 layout_mode = 2
 bbcode_enabled = true
 text = "[center]100 [img]res://GUI/Images/coins.svg[/img][/center]"
+
+[node name="downgrade" type="Button" parent="container/crit_rate"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+text = "- 5"
 
 [node name="chain_methods" type="HBoxContainer" parent="container"]
 layout_mode = 1
@@ -1051,19 +1121,33 @@ grow_vertical = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6wbvy")
 
 [connection signal="pressed" from="container/max_H/upgrade" to="." method="_on_max_H_upgrade_pressed"]
+[connection signal="pressed" from="container/max_H/downgrade" to="." method="_on_max_H_downgrade_pressed"]
 [connection signal="pressed" from="container/attack/upgrade" to="." method="_on_attack_upgrade_pressed"]
+[connection signal="pressed" from="container/attack/downgrade" to="." method="_on_attack_downgrade_pressed"]
 [connection signal="pressed" from="container/defence/upgrade" to="." method="_on_defence_upgrade_pressed"]
+[connection signal="pressed" from="container/defence/downgrade" to="." method="_on_defence_downgrade_pressed"]
 [connection signal="pressed" from="container/max_P/upgrade" to="." method="_on_max_P_upgrade_pressed"]
+[connection signal="pressed" from="container/max_P/downgrade" to="." method="_on_max_P_downgrade_pressed"]
 [connection signal="pressed" from="container/max_M/upgrade" to="." method="_on_max_M_upgrade_pressed"]
+[connection signal="pressed" from="container/max_M/downgrade" to="." method="_on_max_M_downgrade_pressed"]
 [connection signal="pressed" from="container/max_spell_count/upgrade" to="." method="_on_max_spell_count_upgrade_pressed"]
+[connection signal="pressed" from="container/max_spell_count/downgrade" to="." method="_on_max_spell_count_downgrade_pressed"]
 [connection signal="pressed" from="container/running_speed/upgrade" to="." method="_on_max_running_speed_upgrade_pressed"]
+[connection signal="pressed" from="container/running_speed/downgrade" to="." method="_on_max_running_speed_downgrade_pressed"]
 [connection signal="pressed" from="container/max_N/upgrade" to="." method="_on_max_N_upgrade_pressed"]
+[connection signal="pressed" from="container/max_N/downgrade" to="." method="_on_max_N_downgrade_pressed"]
 [connection signal="pressed" from="container/max_T/upgrade" to="." method="_on_max_T_upgrade_pressed"]
+[connection signal="pressed" from="container/max_T/downgrade" to="." method="_on_max_T_downgrade_pressed"]
 [connection signal="pressed" from="container/max_r/upgrade" to="." method="_on_max_R_upgrade_pressed"]
+[connection signal="pressed" from="container/max_r/downgrade" to="." method="_on_max_r_downgrade_pressed"]
 [connection signal="pressed" from="container/max_v/upgrade" to="." method="_on_max_v_upgrade_pressed"]
+[connection signal="pressed" from="container/max_v/downgrade" to="." method="_on_max_v_downgrade_pressed"]
 [connection signal="pressed" from="container/mana_regen/upgrade" to="." method="_on_mana_regen_upgrade_pressed"]
+[connection signal="pressed" from="container/mana_regen/downgrade" to="." method="_on_mana_regen_downgrade_pressed"]
 [connection signal="pressed" from="container/crit_dmg/upgrade" to="." method="_on_crit_rate_upgrade_pressed"]
+[connection signal="pressed" from="container/crit_dmg/downgrade" to="." method="_on_crit_dmg_downgrade_pressed"]
 [connection signal="pressed" from="container/crit_rate/upgrade" to="." method="_on_crit_dmg_upgrade_pressed"]
+[connection signal="pressed" from="container/crit_rate/downgrade" to="." method="_on_crit_rate_downgrade_pressed"]
 [connection signal="pressed" from="container/chain_methods/AtStart/upgrade" to="." method="_on_at_start_upgrade_pressed"]
 [connection signal="pressed" from="container/chain_methods/AtEnd/upgrade" to="." method="_on_at_end_upgrade_pressed"]
 [connection signal="pressed" from="container/chain_methods/OnHit/upgrade" to="." method="_on_on_hit_upgrade_pressed"]

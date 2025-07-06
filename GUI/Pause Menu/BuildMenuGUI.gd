@@ -463,7 +463,6 @@ func _on_test_mode_pressed() -> void:
 		test_mode_button.text = "Edit Level"
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		
-	# TODO: support degrading stats when editing
 	# TODO: add creating custom artifacts for level editor
 		
 		
