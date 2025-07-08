@@ -10,6 +10,7 @@ var projectiles_in_world: Array[SpellBody] = []
 var items_in_world: Array[WorldItem] = []
 var enemies_in_world: Array[Enemy] = []
 var base_upgrades: UpgradeSettings = null
+var base_artifacts: Artifacts = null
 
 @onready var desc_edit: LineEdit = $DescEdit
 @onready var share_online: CheckBox = $ShareOnline
@@ -47,6 +48,7 @@ func _ready() -> void:
 	
 	base_upgrades = UpgradeSettings.new()
 	base_upgrades.reset_all_stats_to_default_values()
+	base_artifacts = Artifacts.new()
 	
 	
 func update_settings() -> void:
@@ -297,7 +299,9 @@ func get_dict() -> Dictionary:
 	result["settings"] = settings.game_mode_settings.save_dict()
 	if settings.is_editing_level:
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
+		base_artifacts.reset_from_other(player.artifacts)
 	result["base_upgrades"] = base_upgrades.save_dict()
+	result["base_artifacts"] = base_artifacts.save_dict()
  	
 	return result
 
@@ -381,6 +385,11 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 	settings.game_mode_settings.load_dict(data.get("settings", {}) as Dictionary)
 	base_upgrades.load_dict(data.get("base_upgrades", {}) as Dictionary)
 	settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
+	base_artifacts.load_dict(data.get("base_artifacts", {}) as Dictionary)
+	player.artifacts.reset_from_other(base_artifacts)
+	if not settings.is_editing_level:
+		player.artifacts.collection.clear()
+		
 		
 	update_item_list()
 	update_projectile_list()
@@ -459,10 +468,10 @@ func _on_test_mode_pressed() -> void:
 	if settings.is_editing_level:
 		test_mode_button.text = "Test Level"
 		settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
+		player.artifacts.reset_from_other(base_artifacts)
 	else:
 		test_mode_button.text = "Edit Level"
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
-		
-	# TODO: manage separate artifacts for level editing and playing
-		
+		base_artifacts.reset_from_other(player.artifacts)
+		player.artifacts.collection.clear()
 		

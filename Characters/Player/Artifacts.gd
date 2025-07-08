@@ -11,6 +11,25 @@ func reset_by_deleting_all_artifacts() -> void:
 	connected = {}
 	active_options = {}
 	effects = {}
+	
+func reset_from_other(other: Artifacts) -> void:
+	reset_by_deleting_all_artifacts()
+	var cache := {}
+	for a: Artifact in other.connected:
+		var clone := a.clone()
+		cache[a] = clone
+		connected[clone] = other.connected[a]
+	for a in other.collection:
+		if other.connected.has(a):
+			collection.append(cache[a])
+		else:
+			collection.append(a.clone())
+	for coord: Vector2 in other.active_options:
+		active_options[coord] = {}
+		for k: int in other.active_options[coord]:
+			active_options[coord][k] = other.active_options[coord][k]
+	for coord: Vector2i in other.effects:
+		effects[coord] = other.effects[coord]
 
 func unconnected() -> Array[Artifact]:
 	var result: Array[Artifact] = []
@@ -321,8 +340,7 @@ func all_effects_description() -> String:
 				
 	return result
 	
-func save(world_name: String) -> void:
-	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
+func save_dict() -> Dictionary:
 	var data := []
 	for a: Artifact in collection:
 		data.append(a.save_dict())
@@ -334,18 +352,14 @@ func save(world_name: String) -> void:
 		act_options[c] = {}
 		for i: int in active_options[c]:
 			act_options[c][i] = (active_options[c][i] as Artifact.Option).save_int()
-	file.store_var({"artifacts": data, "connected": connections, "active_options": act_options, "effects": effects})
+	return {"artifacts": data, "connected": connections, "active_options": act_options, "effects": effects}
 	
-func read(world_name: String) -> void:
-	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.READ)
-	if not file:
-		collection = []
-		connected = {}
-		active_options = {}
-		effects = {}
-		return 
-	var data := file.get_var() as Dictionary
-	if data == null:
+func save(world_name: String) -> void:
+	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
+	file.store_var(save_dict())
+	
+func load_dict(data: Dictionary) -> void:
+	if data == null or data.is_empty():
 		collection = []
 		connected = {}
 		active_options = {}
@@ -369,3 +383,20 @@ func read(world_name: String) -> void:
 		for a: Artifact in collection:
 			if a.name == w.name:
 				connected[a] = data["connected"][c]
+	if collection.is_empty():
+		connected.clear()
+	if connected.is_empty():
+		active_options.clear()
+		effects.clear()
+	
+	
+func read(world_name: String) -> void:
+	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.READ)
+	if not file:
+		collection = []
+		connected = {}
+		active_options = {}
+		effects = {}
+		return 
+	var data := file.get_var() as Dictionary
+	load_dict(data)

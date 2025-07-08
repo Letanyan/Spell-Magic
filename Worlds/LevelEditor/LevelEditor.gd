@@ -112,6 +112,8 @@ func run_on_ready() -> void:
 		
 	menu.close_menu.connect(toggle_menu)
 		
+	player.magic_book = book
+	player.artifacts = artifacts
 	if level_build_data.is_empty():
 		menu.build_menu.read(settings.world_name, player.spell_caster)
 	else:
@@ -155,8 +157,6 @@ func run_on_ready() -> void:
 	skybox.day_time = 14
 	daytime_tick = 0.0
 	
-	player.magic_book = book
-	player.artifacts = artifacts
 	hud.player = player
 	hud.book = book
 	hud.wand = wand
@@ -509,6 +509,7 @@ func test_mode_changed(is_editing: bool) -> void:
 			add_enemy(enemy)
 			
 	player.vitals.reset()
+	menu.artifacts.update_list_and_grid()
 	
 	for enemy in inhabitants:
 		enemy.vitals.reset()

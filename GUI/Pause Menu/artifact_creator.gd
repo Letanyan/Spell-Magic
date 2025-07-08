@@ -200,6 +200,7 @@ func _on_create_pressed() -> void:
 	if name_text.is_empty():
 		name_text = "ART_" + Rand.id(5)
 	var artifact := Artifact.new(name_text, top, right, bottom, left)
+	artifact.seen_by_player = true
 	
 	artifact_created.emit(artifact)
 
@@ -235,4 +236,6 @@ func reset() -> void:
 	bottom_option.get_popup().set_item_checked(0, true)
 	bottom_option.icon = null
 	bottom_option.text = "Any"
+	
+	name_edit.clear()
 	

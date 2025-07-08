@@ -147,6 +147,9 @@ class Option:
 		amount = am
 		pattern = pt
 		
+	func clone() -> Artifact.Option:
+		return Artifact.Option.new(effect, event, element, amount, pattern)
+		
 	func save_dict() -> Dictionary:
 		return {"effect": effect, "event": event, "element": element, "amount": amount, "pattern": pattern}
 		
@@ -387,6 +390,11 @@ func _init(n: String, t: Option = Option.empty(), r: Option = Option.empty(), b:
 	bottom = b
 	left = l
 	seen_by_player = false
+	
+func clone() -> Artifact:
+	var result := Artifact.new(name, top, right, bottom, left)
+	result.seen_by_player = seen_by_player
+	return result
 	
 static func nulled(n: String) -> Artifact:
 	return Artifact.new(n, null, null, null, null)
