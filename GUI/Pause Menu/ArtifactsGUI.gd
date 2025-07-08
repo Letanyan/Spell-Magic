@@ -14,6 +14,9 @@ extends Control
 @onready var filter_bottom: MenuButton = $Bottom
 @onready var filter_all: MenuButton = $FilterAll
 
+@onready var artifact_creator_panel: Panel = $ArtifactCreator
+@onready var artifact_creator: ArtifactCreator = $ArtifactCreator/ArtifactCreator
+
 var filter_top_options := FilterOptions.new()
 var filter_left_options := FilterOptions.new()
 var filter_right_options := FilterOptions.new()
@@ -35,6 +38,8 @@ var list_mouse_down := false
 
 var is_first_view: bool = true
 
+var settings: WorldSettings
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	temporary_grid_tile = GridTile.new()
@@ -46,6 +51,9 @@ func _ready() -> void:
 	filter_right.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_right, id, filter_right_options))
 	filter_bottom.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_bottom, id, filter_bottom_options))
 	filter_all.get_popup().id_pressed.connect(func(id: int) -> void: filter_id_pressed(filter_all, id, filter_all_options))
+	
+	artifact_creator.cancelled.connect(func() -> void: artifact_creator_panel.hide())
+	artifact_creator.artifact_created.connect(create_new_artifact)
 	
 func update_temporary_grid_tile() -> void:
 	temporary_grid_tile.is_hidden = false
@@ -64,14 +72,15 @@ func update_artifact_list_height() -> void:
 	if artifact_grid.selected_cell_coord != null:
 		var grid_artifact := artifacts.get_artifact_at_coord(artifact_grid.selected_cell_coord as Vector2)
 		should_disconnect_artifact = grid_artifact != null
-	if artifact_preview.artifact == null and not should_disconnect_artifact:
+	if artifact_preview.artifact == null and not should_disconnect_artifact and not settings.is_editing_level:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, size.y - artifacts_list.position.y - 8))
-	elif should_disconnect_artifact:
+	elif should_disconnect_artifact or settings.is_editing_level:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, destroy_artifact.position.y - artifacts_list.position.y - 8))
 	else:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, artifact_preview.position.y - artifacts_list.position.y - 8))
-	destroy_artifact.text = "Destroy" if artifact_preview.artifact != null else "Disconnect"
-	destroy_artifact.visible = artifact_preview.artifact != null or should_disconnect_artifact
+		
+	destroy_artifact.text = "Destroy" if artifact_preview.artifact != null else ("Disconnect" if should_disconnect_artifact else "Create")
+	destroy_artifact.visible = artifact_preview.artifact != null or should_disconnect_artifact or settings.is_editing_level
 	
 	
 func update_list() -> void:
@@ -363,6 +372,9 @@ func _on_destroy_pressed() -> void:
 		attempt_delete_artifact()
 	elif artifact_grid.selected_cell_coord != null:
 		disconnect_artifact(artifact_grid.selected_cell_coord as Vector2)
+	elif destroy_artifact.text == "Create":
+		artifact_creator.reset()
+		artifact_creator_panel.show()
 			
 func disconnect_artifact(coord: Vector2) -> void:
 	if not attempt_remove_artifact(coord):
@@ -652,3 +664,15 @@ func _on_effects_button_mouse_exited() -> void:
 func _on_effects_button_mouse_entered() -> void:
 	if effects_button.has_focus():
 		effects_list.visible = true
+
+func create_new_artifact(artifact: Artifact) -> void:
+	if artifact == null:
+		artifact_creator_panel.hide()
+		# TODO: show error message
+		return
+		
+	artifacts.collection.append(artifact)
+	update_list_and_grid()
+	artifacts.save(settings.world_name)
+	artifact_creator_panel.hide()
+	

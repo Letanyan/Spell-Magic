@@ -1,0 +1,356 @@
+[gd_scene load_steps=7 format=3 uid="uid://dihafxbnj4d0r"]
+
+[ext_resource type="Script" path="res://GUI/Pause Menu/artifact_creator.gd" id="1_mnln4"]
+[ext_resource type="Material" uid="uid://c4b35g68qduf2" path="res://GUI/ThemeUI/MosaicShaderMat.material" id="1_wl6g3"]
+[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="2_4t2vt"]
+[ext_resource type="Texture2D" uid="uid://cgfktoa06l5gn" path="res://GUI/Images/triangle.png" id="2_twoww"]
+[ext_resource type="Texture2D" uid="uid://bsgikasvuo124" path="res://GUI/Images/square.png" id="3_ncabo"]
+[ext_resource type="Texture2D" uid="uid://o3cab8bv33d" path="res://GUI/Images/circle.png" id="4_j54h5"]
+
+[node name="ArtifactCreator" type="Panel"]
+material = ExtResource("1_wl6g3")
+anchors_preset = -1
+anchor_right = 0.472
+anchor_bottom = 0.79
+offset_right = -3.74402
+offset_bottom = 0.0799866
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("2_4t2vt")
+script = ExtResource("1_mnln4")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Name" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Name"
+
+[node name="Top" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="MarginContainer/VBoxContainer/Top"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "Top"
+vertical_alignment = 2
+
+[node name="Type" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Top"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Effect" type="Button" parent="MarginContainer/VBoxContainer/Top/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Effect"
+
+[node name="Event" type="Button" parent="MarginContainer/VBoxContainer/Top/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Event"
+
+[node name="Kind" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Top"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+alignment = 1
+
+[node name="Level" type="SpinBox" parent="MarginContainer/VBoxContainer/Top/Kind"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+min_value = -10.0
+max_value = 10.0
+value = 1.0
+rounded = true
+prefix = "level"
+
+[node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/Top/Kind"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Triangle"
+popup/item_0/icon = ExtResource("2_twoww")
+popup/item_1/text = "Square"
+popup/item_1/icon = ExtResource("3_ncabo")
+popup/item_1/id = 1
+popup/item_2/text = "Circle"
+popup/item_2/icon = ExtResource("4_j54h5")
+popup/item_2/id = 2
+
+[node name="Value" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Top"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Kind" type="OptionButton" parent="MarginContainer/VBoxContainer/Top/Value"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+
+[node name="Option" type="MenuButton" parent="MarginContainer/VBoxContainer/Top/Value"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+text = "Kind"
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LeftRight" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Left" type="VBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="MarginContainer/VBoxContainer/LeftRight/Left"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "Left"
+vertical_alignment = 2
+
+[node name="Type" type="HBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight/Left"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Effect" type="Button" parent="MarginContainer/VBoxContainer/LeftRight/Left/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Effect"
+
+[node name="Event" type="Button" parent="MarginContainer/VBoxContainer/LeftRight/Left/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Event"
+
+[node name="Kind" type="HBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight/Left"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+alignment = 1
+
+[node name="Level" type="SpinBox" parent="MarginContainer/VBoxContainer/LeftRight/Left/Kind"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+min_value = -10.0
+max_value = 10.0
+value = 1.0
+rounded = true
+prefix = "level"
+
+[node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/LeftRight/Left/Kind"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Triangle"
+popup/item_0/icon = ExtResource("2_twoww")
+popup/item_1/text = "Square"
+popup/item_1/icon = ExtResource("3_ncabo")
+popup/item_1/id = 1
+popup/item_2/text = "Circle"
+popup/item_2/icon = ExtResource("4_j54h5")
+popup/item_2/id = 2
+
+[node name="Value" type="HBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight/Left"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Kind" type="OptionButton" parent="MarginContainer/VBoxContainer/LeftRight/Left/Value"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+
+[node name="Option" type="MenuButton" parent="MarginContainer/VBoxContainer/LeftRight/Left/Value"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+text = "Kind"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/LeftRight"]
+layout_mode = 2
+
+[node name="Right" type="VBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="MarginContainer/VBoxContainer/LeftRight/Right"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "Right"
+vertical_alignment = 2
+
+[node name="Type" type="HBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight/Right"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Effect" type="Button" parent="MarginContainer/VBoxContainer/LeftRight/Right/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Effect"
+
+[node name="Event" type="Button" parent="MarginContainer/VBoxContainer/LeftRight/Right/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Event"
+
+[node name="Kind" type="HBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight/Right"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+alignment = 1
+
+[node name="Level" type="SpinBox" parent="MarginContainer/VBoxContainer/LeftRight/Right/Kind"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+min_value = -10.0
+max_value = 10.0
+value = 1.0
+rounded = true
+prefix = "level"
+
+[node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/LeftRight/Right/Kind"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Triangle"
+popup/item_0/icon = ExtResource("2_twoww")
+popup/item_1/text = "Square"
+popup/item_1/icon = ExtResource("3_ncabo")
+popup/item_1/id = 1
+popup/item_2/text = "Circle"
+popup/item_2/icon = ExtResource("4_j54h5")
+popup/item_2/id = 2
+
+[node name="Value" type="HBoxContainer" parent="MarginContainer/VBoxContainer/LeftRight/Right"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Kind" type="OptionButton" parent="MarginContainer/VBoxContainer/LeftRight/Right/Value"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+
+[node name="Option" type="MenuButton" parent="MarginContainer/VBoxContainer/LeftRight/Right/Value"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+text = "Kind"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Bottom" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="MarginContainer/VBoxContainer/Bottom"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "Bottom"
+vertical_alignment = 2
+
+[node name="Type" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Bottom"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Effect" type="Button" parent="MarginContainer/VBoxContainer/Bottom/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Effect"
+
+[node name="Event" type="Button" parent="MarginContainer/VBoxContainer/Bottom/Type"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+toggle_mode = true
+text = "Event"
+
+[node name="Kind" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Bottom"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+alignment = 1
+
+[node name="Level" type="SpinBox" parent="MarginContainer/VBoxContainer/Bottom/Kind"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+min_value = -10.0
+max_value = 10.0
+value = 1.0
+rounded = true
+prefix = "level"
+
+[node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/Bottom/Kind"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Triangle"
+popup/item_0/icon = ExtResource("2_twoww")
+popup/item_1/text = "Square"
+popup/item_1/icon = ExtResource("3_ncabo")
+popup/item_1/id = 1
+popup/item_2/text = "Circle"
+popup/item_2/icon = ExtResource("4_j54h5")
+popup/item_2/id = 2
+
+[node name="Value" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Bottom"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Kind" type="OptionButton" parent="MarginContainer/VBoxContainer/Bottom/Value"]
+custom_minimum_size = Vector2(64, 24)
+layout_mode = 2
+
+[node name="Option" type="MenuButton" parent="MarginContainer/VBoxContainer/Bottom/Value"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+text = "Kind"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Options" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/Options"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "Cancel"
+
+[node name="Create" type="Button" parent="MarginContainer/VBoxContainer/Options"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "Create"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Options/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Options/Create" to="." method="_on_create_pressed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c0eqpohrkp1r7"]
+[gd_scene load_steps=14 format=3 uid="uid://c0eqpohrkp1r7"]
 
 [ext_resource type="Script" path="res://GUI/Pause Menu/ArtifactsGUI.gd" id="1_lsxrb"]
 [ext_resource type="Script" path="res://GUI/Pause Menu/InfinityGrid.gd" id="2_reg1r"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://c4ahek33r0tva" path="res://GUI/Images/right.svg" id="6_j6i0q"]
 [ext_resource type="Texture2D" uid="uid://bql6w7l7jeygc" path="res://GUI/Images/bottom.svg" id="7_s27d8"]
 [ext_resource type="Texture2D" uid="uid://xncojprr0p71" path="res://GUI/Images/top bottom left right.svg" id="10_qgfxf"]
+[ext_resource type="StyleBox" uid="uid://22jnl8crj7cq" path="res://GUI/Popup Menu/empty_black_bg.tres" id="11_ibfdr"]
+[ext_resource type="PackedScene" uid="uid://dihafxbnj4d0r" path="res://GUI/Pause Menu/ArtifactCreator.tscn" id="12_xk7jw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rb180"]
 content_margin_left = 4.0
@@ -249,6 +251,28 @@ offset_bottom = 72.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_rb180")
 bbcode_enabled = true
 fit_content = true
+
+[node name="ArtifactCreator" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("11_ibfdr")
+
+[node name="ArtifactCreator" parent="ArtifactCreator" instance=ExtResource("12_xk7jw")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -257.0
+offset_right = 270.0
+offset_bottom = 257.0
 
 [connection signal="gui_input" from="artifact_grid" to="." method="_on_artifact_grid_gui_input"]
 [connection signal="on_cell_clicked" from="artifact_grid" to="." method="_on_artifact_grid_on_cell_clicked"]

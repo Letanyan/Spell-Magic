@@ -43,6 +43,7 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	spell_deck.book = book
 	wand_case.book = book
 	wand_case.case = case
+	artifacts.settings = _world_settings
 	artifacts.artifacts = artifaces
 	upgrades.settings = _world_settings
 	settings.world_settings = _world_settings
