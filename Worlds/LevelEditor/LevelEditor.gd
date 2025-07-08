@@ -406,6 +406,17 @@ func _input(event: InputEvent) -> void:
 							coin.custom_free = remove_world_item
 							add_child(coin)
 							SignalBus.item_added_to_world.emit(coin)
+						elif spell_name == "artifact":
+							var cube := ArtifactCube.make()
+							var art_name := (option.parameters[option.spell_index] as Dictionary).get("0", "") as String
+							for art in artifacts.collection:
+								if art.name == art_name:
+									cube.artifact = art
+									break
+							cube.set_base_position(place_pos)
+							cube.custom_free = remove_world_item
+							add_child(cube)
+							SignalBus.item_added_to_world.emit(cube)
 						elif spell_name == "enemy":
 							var opts := option.parameters[option.spell_index] as Dictionary
 							var enemy_name := opts.get("0", "") as String
