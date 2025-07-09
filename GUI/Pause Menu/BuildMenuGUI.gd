@@ -14,6 +14,7 @@ var base_artifacts: Artifacts = null
 
 @onready var desc_edit: LineEdit = $DescEdit
 @onready var share_online: CheckBox = $ShareOnline
+@onready var username_edit: LineEdit = $Username
 
 @onready var projectiles_in_world_list: ItemList = $ProjectilesInWorld
 @onready var projectile_name: LineEdit = $ProjectileName
@@ -265,6 +266,7 @@ func save(world_name: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)	
 	var dict := get_dict()
 	file.store_var(dict)
+	GlobalData.game_settings.username = username_edit.text
 	
 	if settings.is_shared_online != -1:
 		HttpLevels.put_level(settings.is_shared_online, desc_edit.text, dict)
@@ -389,7 +391,6 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 	player.artifacts.reset_from_other(base_artifacts)
 	if not settings.is_editing_level:
 		player.artifacts.collection.clear()
-		
 		
 	update_item_list()
 	update_projectile_list()

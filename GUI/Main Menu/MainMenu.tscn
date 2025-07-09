@@ -24,7 +24,7 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -136.0
-offset_top = -224.0
+offset_top = -264.0
 offset_right = 136.0
 offset_bottom = -8.0
 grow_horizontal = 2
@@ -39,9 +39,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -128.0
-offset_top = -208.0
+offset_top = -248.0
 offset_right = 128.0
-offset_bottom = -176.0
+offset_bottom = -216.0
 focus_neighbor_bottom = NodePath("../NewGame")
 focus_next = NodePath("../NewGame")
 focus_previous = NodePath("../Quit")
@@ -55,9 +55,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -128.0
-offset_top = -168.0
+offset_top = -208.0
 offset_right = 128.0
-offset_bottom = -136.0
+offset_bottom = -176.0
 focus_neighbor_top = NodePath("../Continue")
 focus_neighbor_bottom = NodePath("../Load")
 focus_next = NodePath("../Load")
@@ -72,15 +72,30 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -128.0
-offset_top = -128.0
+offset_top = -168.0
 offset_right = 128.0
-offset_bottom = -96.0
+offset_bottom = -136.0
 focus_neighbor_top = NodePath("../NewGame")
 focus_neighbor_bottom = NodePath("../Settings")
 focus_next = NodePath("../Settings")
 focus_previous = NodePath("../NewGame")
 text = "Load Game
 "
+
+[node name="Import" type="Button" parent="Background"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = -97.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Import Game"
 
 [node name="Settings" type="Button" parent="Background"]
 layout_mode = 1
@@ -161,20 +176,11 @@ text = "Wishlist"
 icon = ExtResource("5_045ao")
 expand_icon = true
 
-[node name="Import" type="Button" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 200.0
-offset_bottom = 39.0
-text = "Import Game"
-
 [connection signal="pressed" from="Background/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Background/NewGame" to="." method="_on_new_game_pressed"]
 [connection signal="pressed" from="Background/Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Background/Import" to="." method="_on_import_pressed"]
 [connection signal="pressed" from="Background/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Background/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="Links/Margin/VBox/Discord" to="." method="_on_discord_pressed"]
 [connection signal="pressed" from="Links/Margin/VBox/SteamWishlist" to="." method="_on_steam_wishlist_pressed"]
-[connection signal="pressed" from="Import" to="." method="_on_import_pressed"]

@@ -134,6 +134,7 @@ offset_left = 520.0
 offset_top = 64.0
 offset_right = 760.0
 offset_bottom = -72.0
+grow_vertical = 2
 
 [node name="EnemiesName" type="LineEdit" parent="."]
 layout_mode = 1
@@ -144,6 +145,7 @@ offset_left = 520.0
 offset_top = -64.0
 offset_right = 760.0
 offset_bottom = -39.0
+grow_vertical = 0
 
 [node name="RenameEnemy" type="Button" parent="."]
 layout_mode = 1
@@ -167,6 +169,7 @@ offset_left = 592.0
 offset_top = -32.0
 offset_right = 648.0
 offset_bottom = -7.0
+grow_vertical = 0
 text = "Delete"
 
 [node name="Settings" type="Panel" parent="."]
@@ -240,9 +243,9 @@ text = "Respawn with Coins"
 
 [node name="DescLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 8.0
+offset_left = 216.0
 offset_top = 8.0
-offset_right = 96.0
+offset_right = 304.0
 offset_bottom = 32.0
 text = "Description:"
 vertical_alignment = 1
@@ -251,7 +254,7 @@ vertical_alignment = 1
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 104.0
+offset_left = 312.0
 offset_top = 8.0
 offset_right = -144.0
 offset_bottom = 33.0
@@ -280,7 +283,18 @@ offset_left = -88.0
 offset_top = -32.0
 offset_right = -7.0
 offset_bottom = -7.0
+grow_horizontal = 0
+grow_vertical = 0
 text = "Test Level"
+
+[node name="Username" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 33.0
+placeholder_text = "Username"
+max_length = 16
 
 [connection signal="item_selected" from="ProjectilesInWorld" to="." method="_on_spells_in_world_item_selected"]
 [connection signal="pressed" from="RenameProjectile" to="." method="_on_rename_projectile_pressed"]
