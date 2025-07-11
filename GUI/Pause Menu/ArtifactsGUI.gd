@@ -72,12 +72,12 @@ func update_artifact_list_height() -> void:
 	if artifact_grid.selected_cell_coord != null:
 		var grid_artifact := artifacts.get_artifact_at_coord(artifact_grid.selected_cell_coord as Vector2)
 		should_disconnect_artifact = grid_artifact != null
-	if artifact_preview.artifact == null and not should_disconnect_artifact and not settings.is_editing_level:
+	if artifact_preview.artifact == null and destroy_artifact.visible == false:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, size.y - artifacts_list.position.y - 8))
-	elif should_disconnect_artifact or settings.is_editing_level:
-		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, destroy_artifact.position.y - artifacts_list.position.y - 8))
-	else:
+	elif artifact_preview.artifact != null:
 		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, artifact_preview.position.y - artifacts_list.position.y - 8))
+	elif destroy_artifact.visible == true:
+		artifacts_list.set_deferred("size", Vector2(artifacts_list.size.x, destroy_artifact.position.y - artifacts_list.position.y - 8))
 		
 	destroy_artifact.text = "Destroy" if artifact_preview.artifact != null else ("Disconnect" if should_disconnect_artifact else "Create")
 	destroy_artifact.visible = artifact_preview.artifact != null or should_disconnect_artifact or settings.is_editing_level

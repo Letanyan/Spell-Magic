@@ -30,10 +30,12 @@ var base_artifacts: Artifacts = null
 @onready var respawn_artifacts: CheckBox = $Settings/RespawnArtifacts
 @onready var respawn_spells: CheckBox = $Settings/RespawnSpells
 @onready var respawn_coins: CheckBox = $Settings/RespawnCoins
+@onready var world_radius_edit: SpinBox = $Settings/WorldRadiusEdit
 
 @onready var test_mode_button: Button = $TestMode
 
 signal test_mode_changed(is_editing: bool)
+signal world_radius_changed(radius: float)
 
 func _ready() -> void:
 	#HttpLevels.got_level.connect(func(id: int, data: Dictionary) -> void: print(id, data))
@@ -62,6 +64,7 @@ func update_settings() -> void:
 	respawn_upgrades.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_UPGRADES))
 	respawn_spells.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS))
 	respawn_coins.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_COINS))
+	world_radius_edit.value = settings.world_radius
 	
 func spell_added_into_world(projectile: SpellBody) -> void:
 	if projectile.spell.is_infinite:
@@ -479,3 +482,7 @@ func _on_test_mode_pressed() -> void:
 		base_artifacts.reset_from_other(player.artifacts)
 		player.artifacts.collection.clear()
 		
+
+func _on_world_radius_edit_value_changed(value: float) -> void:
+	settings.world_radius = value
+	world_radius_changed.emit(settings.world_radius)

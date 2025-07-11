@@ -8,6 +8,18 @@ extends Node3D
 @onready var sub_viewport_container: SubViewportContainer = $SubViewportContainer
 
 @onready var skybox: SkyBox
+@onready var ground: MeshInstance3D = $Ground
+@onready var ground_collision: CollisionShape3D = $Ground/StaticBody3D/CollisionShape3D
+
+@onready var world_boundary_y_minus: CollisionShape3D = $WorldBoundary/YMinus
+@onready var world_boundary_x_minus: CollisionShape3D = $WorldBoundary/XMinus
+@onready var world_boundary_x_plus: CollisionShape3D = $WorldBoundary/XPlus
+@onready var world_boundary_z_minus: CollisionShape3D = $WorldBoundary/ZMinus
+@onready var world_boundary_z_plus: CollisionShape3D = $WorldBoundary/ZPlus
+@onready var world_boundary_x_minus_mesh: MeshInstance3D = $WorldBoundary/XMinus/Mesh
+@onready var world_boundary_x_plus_mesh: MeshInstance3D = $WorldBoundary/XPlus/Mesh
+@onready var world_boundary_z_minus_mesh: MeshInstance3D = $WorldBoundary/ZMinus/Mesh
+@onready var world_boundary_z_plus_mesh: MeshInstance3D = $WorldBoundary/ZPlus/Mesh
 
 var book: MagicBook
 var case: WandCase
@@ -179,6 +191,14 @@ func run_on_ready() -> void:
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 	
 	menu.build_menu.test_mode_changed.connect(test_mode_changed)
+	menu.build_menu.world_radius_changed.connect(update_world_radius)
+	
+	world_boundary_y_minus.position.y = 900.0
+	world_boundary_x_minus.position.x = -settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_x_plus.position.x = settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_z_minus.position.z = -settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_z_plus.position.z = settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	update_world_boundary()
 	
 	await RenderingServer.frame_post_draw
 	(player.interface.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("texture_albedo", sub_viewport.get_texture())
@@ -464,8 +484,34 @@ func add_enemy(enemy: Enemy) -> void:
 	enemy.invunerable = INF if settings.is_editing_level else 0.0
 	add_child(enemy)
 	enemy.animation_tree.active = true
+		
+func update_world_radius(radius: float) -> void:
+	world_boundary_x_minus.position.x = -radius
+	world_boundary_x_plus.position.x = radius
+	world_boundary_z_minus.position.z = -radius
+	world_boundary_z_plus.position.z = radius
+	(ground.mesh as PlaneMesh).size = Vector2(radius, radius)
+	(ground_collision.shape as BoxShape3D).size = Vector3(radius, 1, radius)
+		
+func update_world_boundary() -> void:
+	world_boundary_x_minus.position.z = player.position.z
+	world_boundary_x_minus.position.y = player.position.y
+	world_boundary_x_plus.position.z = player.position.z
+	world_boundary_x_plus.position.y = player.position.y
+	world_boundary_z_minus.position.x = player.position.x
+	world_boundary_z_minus.position.y = player.position.y
+	world_boundary_z_plus.position.x = player.position.x
+	world_boundary_z_plus.position.y = player.position.y
+	world_boundary_y_minus.position.x = player.position.x
+	world_boundary_y_minus.position.z = player.position.z
+	(world_boundary_x_minus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_x_minus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+	(world_boundary_x_plus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_x_plus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+	(world_boundary_z_minus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_z_minus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+	(world_boundary_z_plus_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("fade_amount", clampf((1.0 - player.position.distance_to(world_boundary_z_plus.position) / 256.0) ** 3.0 * 2.0, 0.0, 1.0))
+
 
 func _on_player_moved(delta: float) -> void:
+	update_world_boundary()
 	hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 
 
@@ -516,3 +562,5 @@ func test_mode_changed(is_editing: bool) -> void:
 		enemy.is_dead = is_editing
 		enemy.invunerable = INF if is_editing else 0.0
 		enemy.animation_tree.active = true
+		
+	($FPS as Label).visible = is_editing

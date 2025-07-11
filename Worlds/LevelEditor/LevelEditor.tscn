@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6vd12e4dwa2x"]
+[gd_scene load_steps=23 format=3 uid="uid://b6vd12e4dwa2x"]
 
 [ext_resource type="Script" path="res://Worlds/LevelEditor/LevelEditor.gd" id="1_qxjnh"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_w8e00"]
@@ -6,6 +6,8 @@
 [ext_resource type="Environment" uid="uid://dnhhg210yvls1" path="res://Worlds/Demo/world_environment.tres" id="4_f7rti"]
 [ext_resource type="PackedScene" uid="uid://cs66h1r8861hy" path="res://Characters/Player/MainPlayer.tscn" id="5_w6d7c"]
 [ext_resource type="Material" uid="uid://cggmnw6bjnv4a" path="res://Worlds/LevelEditor/floor.material" id="6_7ct1e"]
+[ext_resource type="Shader" path="res://Worlds/SkyBox/world_boundary.gdshader" id="7_vweng"]
+[ext_resource type="Material" uid="uid://b4a377hfvfth6" path="res://Worlds/SkyBox/world_boundary.material" id="8_bjjw1"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pvrol"]
 material = ExtResource("6_7ct1e")
@@ -13,6 +15,79 @@ size = Vector2(10000, 10000)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ydl0"]
 size = Vector3(10000, 1, 10000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b7uc0"]
+size = Vector3(256, 8, 256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0t1qu"]
+size = Vector3(8, 256, 256)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ubtmr"]
+render_priority = 0
+shader = ExtResource("7_vweng")
+shader_parameter/shatter = true
+shader_parameter/fracture_scale = 1.5
+shader_parameter/roughness = 0.675
+shader_parameter/transparency = 0.675
+shader_parameter/normal_offset_multiplier = 0.375
+shader_parameter/glass_tint = 0.675
+shader_parameter/edge_thickness = null
+shader_parameter/impact_range = 1.25
+shader_parameter/compression_strength = -1.125
+shader_parameter/fade_amount = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_tmed7"]
+material = SubResource("ShaderMaterial_ubtmr")
+size = Vector2(256, 256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dvhv1"]
+size = Vector3(8, 256, 256)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cmiyy"]
+render_priority = 0
+shader = ExtResource("7_vweng")
+shader_parameter/shatter = true
+shader_parameter/fracture_scale = 1.5
+shader_parameter/roughness = 0.675
+shader_parameter/transparency = 0.675
+shader_parameter/normal_offset_multiplier = 0.375
+shader_parameter/glass_tint = 0.675
+shader_parameter/edge_thickness = null
+shader_parameter/impact_range = 1.25
+shader_parameter/compression_strength = -1.125
+shader_parameter/fade_amount = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_3do7p"]
+material = SubResource("ShaderMaterial_cmiyy")
+size = Vector2(256, 256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cock4"]
+size = Vector3(256, 256, 8)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m03fk"]
+render_priority = 0
+shader = ExtResource("7_vweng")
+shader_parameter/shatter = true
+shader_parameter/fracture_scale = 1.5
+shader_parameter/roughness = 0.675
+shader_parameter/transparency = 0.675
+shader_parameter/normal_offset_multiplier = 0.375
+shader_parameter/glass_tint = 0.675
+shader_parameter/edge_thickness = null
+shader_parameter/impact_range = 1.25
+shader_parameter/compression_strength = -1.125
+shader_parameter/fade_amount = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_u04hg"]
+material = SubResource("ShaderMaterial_m03fk")
+size = Vector2(256, 256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_05rkh"]
+size = Vector3(256, 256, 8)
+
+[sub_resource type="QuadMesh" id="QuadMesh_wp8xk"]
+material = ExtResource("8_bjjw1")
+size = Vector2(256, 256)
 
 [node name="LevelEditor" type="Node3D"]
 script = ExtResource("1_qxjnh")
@@ -67,6 +142,53 @@ collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D"]
 shape = SubResource("BoxShape3D_5ydl0")
+
+[node name="WorldBoundary" type="StaticBody3D" parent="."]
+collision_layer = 2048
+collision_mask = 0
+
+[node name="YMinus" type="CollisionShape3D" parent="WorldBoundary"]
+shape = SubResource("BoxShape3D_b7uc0")
+
+[node name="XMinus" type="CollisionShape3D" parent="WorldBoundary"]
+shape = SubResource("BoxShape3D_0t1qu")
+
+[node name="Mesh" type="MeshInstance3D" parent="WorldBoundary/XMinus"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4, 0, 0)
+visibility_range_end = 512.0
+visibility_range_end_margin = 1.0
+visibility_range_fade_mode = 1
+mesh = SubResource("QuadMesh_tmed7")
+
+[node name="XPlus" type="CollisionShape3D" parent="WorldBoundary"]
+shape = SubResource("BoxShape3D_dvhv1")
+
+[node name="Mesh" type="MeshInstance3D" parent="WorldBoundary/XPlus"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -4, 0, 0)
+visibility_range_end = 512.0
+visibility_range_end_margin = 1.0
+visibility_range_fade_mode = 1
+mesh = SubResource("QuadMesh_3do7p")
+
+[node name="ZMinus" type="CollisionShape3D" parent="WorldBoundary"]
+shape = SubResource("BoxShape3D_cock4")
+
+[node name="Mesh" type="MeshInstance3D" parent="WorldBoundary/ZMinus"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+visibility_range_end = 512.0
+visibility_range_end_margin = 1.0
+visibility_range_fade_mode = 1
+mesh = SubResource("QuadMesh_u04hg")
+
+[node name="ZPlus" type="CollisionShape3D" parent="WorldBoundary"]
+shape = SubResource("BoxShape3D_05rkh")
+
+[node name="Mesh" type="MeshInstance3D" parent="WorldBoundary/ZPlus"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -4)
+visibility_range_end = 512.0
+visibility_range_end_margin = 1.0
+visibility_range_fade_mode = 1
+mesh = SubResource("QuadMesh_wp8xk")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
 [connection signal="vital_update" from="Player" to="." method="_on_player_vital_update"]
