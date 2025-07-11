@@ -211,6 +211,8 @@ func close() -> void:
 	is_showing = false
 	visible = false
 	save_changes()
+	if world_settings.is_editing_level:
+		build_menu.save(world_settings.world_name)
 	
 func open_game_menu() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -288,14 +290,10 @@ func save_changes() -> void:
 		artifacts.artifacts.save(world_settings.world_name)
 	if upgrades.visible:
 		upgrades.settings.save()
-		if world_settings.is_editing_level:
-			build_menu.save(world_settings.world_name)
 	if settings.visible:
 		settings.world_settings.save()
 		if settings.is_magic_book_selected:
 			settings.save_user_magic_book()
-	if world_settings.is_editing_level:
-		build_menu.save(world_settings.world_name)
 	world_settings.save()
 
 

@@ -2,11 +2,11 @@ class_name MainMenuScreen
 extends Control
 
 var main_menu_world: MainMenuWorld = null
-@onready var continue_button: Button = $Background/Continue
-@onready var new_game_button: Button = $Background/NewGame
-@onready var load_button: Button = $Background/Load
-@onready var settings_button: Button = $Background/Settings
-@onready var quit_button: Button = $Background/Quit
+@onready var continue_button: Button = $Background/MarginContainer/VBoxContainer/Continue
+@onready var new_game_button: Button = $Background/MarginContainer/VBoxContainer/NewGame
+@onready var load_button: Button = $Background/MarginContainer/VBoxContainer/Load
+@onready var settings_button: Button = $Background/MarginContainer/VBoxContainer/Settings
+@onready var quit_button: Button = $Background/MarginContainer/VBoxContainer/Quit
 
 @onready var links_panel: Panel = $Links
 @onready var steam_wishlist: Button = $Links/Margin/VBox/SteamWishlist

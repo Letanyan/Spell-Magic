@@ -293,7 +293,7 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 192.0
 offset_bottom = 33.0
-placeholder_text = "Username"
+placeholder_text = "Online Username"
 max_length = 16
 
 [connection signal="item_selected" from="ProjectilesInWorld" to="." method="_on_spells_in_world_item_selected"]

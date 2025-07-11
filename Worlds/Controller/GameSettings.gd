@@ -266,7 +266,9 @@ The following effects occur when a character with {Freeze} is hit by the followi
 Place items in the world. You can assign spells using their name in text field. For other items you can use the special syntax described below.
 {Spells}: Add a spell item into the world. Use the normal syntax for casting a spell to describe the spell that a player will receive when picked up.
 {Health}: Add a health item into the world. Use the syntax '{health(x)}' to place an item that restores '{x%}' health when picked up.
-{Coin}: Add a coin item into the world. Use the syntax '{coin(x)}' to place an item that gives the player '{x}' money when picked up. 
+{Coin}: Add a coin item into the world. Use the syntax '{coin(x)}' to place an item that gives the player '{x}' money when picked up.
+{Artifact}: Add an artifact into the world. Use the syntax '{artifact(x)}' to place the artifact into the world. '{x}' must be the name of the artifact in your list of artifacts.
+{Enemy}: Add an enemy into the world. Use the syntax '{enemy(x)}' to place an enemy. '{x}' must be the type of enemy. A list of all enemies can be found in the settings 'Game' tab.  
 """,
 	
 	"upgrades Max Health": "The maximum health of the player.",

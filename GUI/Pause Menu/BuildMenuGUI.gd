@@ -51,6 +51,8 @@ func _ready() -> void:
 	base_upgrades.reset_all_stats_to_default_values()
 	base_artifacts = Artifacts.new()
 	
+	share_online.disabled = HttpLevels.IS_WIP
+	
 	
 func update_settings() -> void:
 	deck_building.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))
@@ -394,6 +396,7 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 		
 	update_item_list()
 	update_projectile_list()
+	update_enemies_list()
 
 
 func _on_deck_building_toggled(toggled_on: bool) -> void:

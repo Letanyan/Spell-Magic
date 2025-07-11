@@ -3,7 +3,7 @@ extends Node
 @onready var http: HTTPRequest = $HTTPRequest
 var session_id: String = ""
 const BASE_ADDR = "http://127.0.0.1:8181/"
-const IS_WIP = false
+const IS_WIP = true
 
 enum SearchKind { NONE, NAME, USER }
 
