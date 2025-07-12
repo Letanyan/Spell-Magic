@@ -79,7 +79,7 @@ min_value = -10.0
 max_value = 10.0
 value = 1.0
 rounded = true
-prefix = "level"
+prefix = "tier"
 
 [node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/Top/Kind"]
 custom_minimum_size = Vector2(64, 0)
@@ -157,7 +157,7 @@ min_value = -10.0
 max_value = 10.0
 value = 1.0
 rounded = true
-prefix = "level"
+prefix = "tier"
 
 [node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/LeftRight/Left/Kind"]
 custom_minimum_size = Vector2(64, 0)
@@ -231,7 +231,7 @@ min_value = -10.0
 max_value = 10.0
 value = 1.0
 rounded = true
-prefix = "level"
+prefix = "tier"
 
 [node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/LeftRight/Right/Kind"]
 custom_minimum_size = Vector2(64, 0)
@@ -304,7 +304,7 @@ min_value = -10.0
 max_value = 10.0
 value = 1.0
 rounded = true
-prefix = "level"
+prefix = "tier"
 
 [node name="Pattern" type="OptionButton" parent="MarginContainer/VBoxContainer/Bottom/Kind"]
 custom_minimum_size = Vector2(64, 0)

@@ -12,7 +12,7 @@ var panel_style: StyleBox
 var hover_style: StyleBox
 var highlight_style: StyleBox
 
-var selected_cell_coord: Variant = null
+var selected_cell_coord: Variant = null # Vector2|null
 var highlighted_cells := PackedVector2Array([])
 
 var mouse_down: Variant = null

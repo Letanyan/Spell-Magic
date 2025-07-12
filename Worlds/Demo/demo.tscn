@@ -15,7 +15,7 @@ size = Vector3(256, 8, 256)
 [sub_resource type="BoxShape3D" id="BoxShape3D_kpdyt"]
 size = Vector3(8, 256, 256)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ubtmr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ps6iv"]
 render_priority = 0
 shader = ExtResource("8_ul875")
 shader_parameter/shatter = true
@@ -30,13 +30,13 @@ shader_parameter/compression_strength = -1.125
 shader_parameter/fade_amount = 1.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_djm8g"]
-material = SubResource("ShaderMaterial_ubtmr")
+material = SubResource("ShaderMaterial_ps6iv")
 size = Vector2(256, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_s6wgh"]
 size = Vector3(8, 256, 256)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cmiyy"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dhva5"]
 render_priority = 0
 shader = ExtResource("8_ul875")
 shader_parameter/shatter = true
@@ -51,13 +51,13 @@ shader_parameter/compression_strength = -1.125
 shader_parameter/fade_amount = 1.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_lwwal"]
-material = SubResource("ShaderMaterial_cmiyy")
+material = SubResource("ShaderMaterial_dhva5")
 size = Vector2(256, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oin2f"]
 size = Vector3(256, 256, 8)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m03fk"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s0c55"]
 render_priority = 0
 shader = ExtResource("8_ul875")
 shader_parameter/shatter = true
@@ -72,7 +72,7 @@ shader_parameter/compression_strength = -1.125
 shader_parameter/fade_amount = 1.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_l656p"]
-material = SubResource("ShaderMaterial_m03fk")
+material = SubResource("ShaderMaterial_s0c55")
 size = Vector2(256, 256)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kg30w"]

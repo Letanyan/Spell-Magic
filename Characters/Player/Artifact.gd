@@ -94,6 +94,15 @@ class Option:
 						return roundi(tier * (tier + 1.0) / 2.0)
 		return 0
 		
+	static func tier_for_event_amount(value: int, ev: Event, el: Element) -> int:
+		match ev:
+			Event.NONE: return 0
+			Event.RECEIVE, Event.DEAL:
+				match el:
+					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE: 
+						return int(0.5 * (sqrt(8 * value + 1) - 1))
+		return 0
+		
 	# tier between [1,10] and [-1,-10]
 	static func effect_amount_at_tier(tier: int, ef: Effect, el: Element) -> int:
 		var mult := signi(tier)
@@ -129,7 +138,7 @@ class Option:
 					Element.RUNNING_SPEED:
 						return tier * mult
 					Element.SPELL_RADIUS:
-						return roundi(tier * tier / 20.0) * mult
+						return roundi(tier * mult)
 					Element.COUNT:
 						return roundi(tier * tier / 4.0) * mult
 					Element.POWER:
@@ -139,6 +148,44 @@ class Option:
 					Element.MANA_BUMP:
 						return tier * tier * mult
 		return 0
+		
+	static func tier_for_effect_amount(value: int, ef: Effect, el: Element) -> int:
+		var mult := signi(value)
+		value = absi(value)
+		match ef:
+			Effect.NONE: return 0
+			Effect.BOOST_PERCENTAGE, Effect.RESISTANCE_PERCENTAGE:
+				match el:
+					Element.HEALTH_BUMP, Element.MANA_BUMP:
+						@warning_ignore("integer_division")
+						return roundi(value) * mult
+					_: 
+						@warning_ignore("integer_division")
+						return roundi(sqrt(value)) * mult
+			Effect.BOOST_FLAT, Effect.RESISTANCE_FLAT:
+				match el:
+					Element.ANY, Element.FIRE, Element.ROCK, Element.ELECTRIC, Element.WATER, Element.AIR, Element.ICE, Element.ATTACK, Element.DEFENCE, Element.CRIT_RATE, Element.CRIT_DMG, Element.POWER, Element.HEALTH_BUMP, Element.MANA_BUMP: 
+						@warning_ignore("integer_division")
+						return roundi(sqrt(value)) * mult
+						
+					Element.HEALTH, Element.MANA: 
+						@warning_ignore("integer_division")
+						return roundi(pow(value, 0.333)) * mult
+						
+					Element.CRIT_RATE, Element.DURATION, Element.COUNT:
+						@warning_ignore("integer_division")
+						return roundi(sqrt(value * 4.0)) * mult
+						
+					Element.RUNNING_SPEED, Element.SPELL_RADIUS:
+						@warning_ignore("integer_division")
+						return roundi(value) * mult
+		return 0
+	
+	func tier_level() -> int:
+		if is_effect():
+			return Option.tier_for_effect_amount(amount, effect, element)
+		else:
+			return Option.tier_for_event_amount(amount, event, element)
 	
 	func _init(ef: Effect, ev: Event, el: Element, am: int, pt: Pattern) -> void:
 		effect = ef

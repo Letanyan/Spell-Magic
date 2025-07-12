@@ -2,6 +2,7 @@ class_name ArtifactCreator
 extends Panel
 
 @onready var name_edit: LineEdit = $MarginContainer/VBoxContainer/Name
+@onready var create_button: Button = $MarginContainer/VBoxContainer/Options/Create
 
 
 @onready var top_effect: Button = $MarginContainer/VBoxContainer/Top/Type/Effect
@@ -32,28 +33,50 @@ extends Panel
 @onready var bottom_kind: OptionButton = $MarginContainer/VBoxContainer/Bottom/Value/Kind
 @onready var bottom_option: MenuButton = $MarginContainer/VBoxContainer/Bottom/Value/Option
 
+var editable_artifact: Artifact = null
+
 signal artifact_created(artifact: Artifact)
+signal artifact_edited
 signal cancelled
 
 func _ready() -> void:
+	name_edit.focus_entered.connect(text_focus_entered)
+	
 	top_effect.pressed.connect(press_effect(top_effect, top_event, top_lvl, top_kind, top_option))
 	top_event.pressed.connect(press_event(top_event, top_effect, top_lvl, top_kind, top_option))
 	top_option.get_popup().index_pressed.connect(option_index_pressed(top_option))
+	top_pattern.pressed.connect(option_selected)
+	top_kind.pressed.connect(option_selected)
+	top_lvl.focus_entered.connect(text_focus_entered)
 	
 	left_effect.pressed.connect(press_effect(left_effect, left_event, left_lvl, left_kind, left_option))
 	left_event.pressed.connect(press_event(left_event, left_effect, left_lvl, left_kind, left_option))
 	left_option.get_popup().index_pressed.connect(option_index_pressed(left_option))
+	left_pattern.pressed.connect(option_selected)
+	left_kind.pressed.connect(option_selected)
+	left_lvl.focus_entered.connect(text_focus_entered)
 	
 	right_effect.pressed.connect(press_effect(right_effect, right_event, right_lvl, right_kind, right_option))
 	right_event.pressed.connect(press_event(right_event, right_effect, right_lvl, right_kind, right_option))
 	right_option.get_popup().index_pressed.connect(option_index_pressed(right_option))
+	right_pattern.pressed.connect(option_selected)
+	right_kind.pressed.connect(option_selected)
+	right_lvl.focus_entered.connect(text_focus_entered)
 	
 	bottom_effect.pressed.connect(press_effect(bottom_effect, bottom_event, bottom_lvl, bottom_kind, bottom_option))
 	bottom_event.pressed.connect(press_event(bottom_event, bottom_effect, bottom_lvl, bottom_kind, bottom_option))
 	bottom_option.get_popup().index_pressed.connect(option_index_pressed(bottom_option))
+	bottom_pattern.pressed.connect(option_selected)
+	bottom_kind.pressed.connect(option_selected)
+	bottom_lvl.focus_entered.connect(text_focus_entered)
+	
+	
+func option_selected() -> void:
+	UIAudioPlayer.switch()
 	
 func press_event(this: Button, other: Button, level: SpinBox, kind: OptionButton, option: MenuButton) -> Callable:
 	return func() -> void:
+		UIAudioPlayer.click()
 		this.set_pressed_no_signal(true)
 		other.set_pressed_no_signal(false)
 		
@@ -87,6 +110,7 @@ func press_event(this: Button, other: Button, level: SpinBox, kind: OptionButton
 		
 func press_effect(this: Button, other: Button, level: SpinBox, kind: OptionButton, option: MenuButton) -> Callable:
 	return func() -> void:
+		UIAudioPlayer.click()
 		this.set_pressed_no_signal(true)
 		other.set_pressed_no_signal(false)
 		
@@ -151,17 +175,21 @@ func press_effect(this: Button, other: Button, level: SpinBox, kind: OptionButto
 func option_index_pressed(button: MenuButton) -> Callable:
 	return func (index: int) -> void:
 		var menu := button.get_popup()
+		var did_set_true := false
 		for i in menu.item_count:
 			if i == index:
+				did_set_true = true
 				menu.set_item_checked(i, true)
 				button.text = menu.get_item_text(i)
 				button.modulate = menu.get_item_icon_modulate(i)
 				button.icon = menu.get_item_icon(i) 
 			else:
 				menu.set_item_checked(i, false) 
+		UIAudioPlayer.check(did_set_true)
 				
 
 func _on_cancel_pressed() -> void:
+	UIAudioPlayer.click()
 	cancelled.emit()
 	
 func get_index_of_selected_radio(button: MenuButton) -> int:
@@ -172,6 +200,8 @@ func get_index_of_selected_radio(button: MenuButton) -> int:
 	return -1
 	
 func _on_create_pressed() -> void:
+	UIAudioPlayer.click()
+	
 	var top: Artifact.Option
 	if top_effect.button_pressed:
 		top = Artifact.Option.make_effect(top_kind.selected + 1 as Artifact.Effect, get_index_of_selected_radio(top_option), int(top_lvl.value), top_pattern.selected as Artifact.Pattern)
@@ -199,12 +229,22 @@ func _on_create_pressed() -> void:
 	var name_text := name_edit.text
 	if name_text.is_empty():
 		name_text = "ART_" + Rand.id(5)
-	var artifact := Artifact.new(name_text, top, right, bottom, left)
-	artifact.seen_by_player = true
 	
-	artifact_created.emit(artifact)
+	if editable_artifact == null:
+		var artifact := Artifact.new(name_text, top, right, bottom, left)
+		artifact.seen_by_player = true
+		artifact_created.emit(artifact)
+	else:
+		editable_artifact.name = name_text
+		editable_artifact.top = top
+		editable_artifact.left = left
+		editable_artifact.right = right
+		editable_artifact.bottom = bottom
+		artifact_edited.emit()
 
 func reset() -> void:
+	editable_artifact = null
+	
 	top_effect.pressed.emit()
 	top_lvl.value = 1
 	top_pattern.select(0)
@@ -238,4 +278,57 @@ func reset() -> void:
 	bottom_option.text = "Any"
 	
 	name_edit.clear()
+	create_button.text = "Create"
 	
+func reset_to_other(other: Artifact) -> void:
+	editable_artifact = other
+	
+	top_effect.pressed.emit()
+	if other.top.is_effect():
+		top_effect.pressed.emit()
+		top_kind.select(other.top.effect - 1)
+	else:
+		top_event.pressed.emit()
+		top_kind.select(other.top.event - 1)
+	top_pattern.select(other.top.pattern)
+	top_lvl.value = other.top.tier_level()
+	top_option.get_popup().index_pressed.emit(other.top.element)
+	
+	left_effect.pressed.emit()
+	if other.left.is_effect():
+		left_effect.pressed.emit()
+		left_kind.select(other.left.effect - 1)
+	else:
+		left_event.pressed.emit()
+		left_kind.select(other.left.event - 1)
+	left_pattern.select(other.left.pattern)
+	left_lvl.value = other.left.tier_level()
+	left_option.get_popup().index_pressed.emit(other.left.element)
+	
+	right_effect.pressed.emit()
+	if other.right.is_effect():
+		right_effect.pressed.emit()
+		right_kind.select(other.right.effect - 1)
+	else:
+		right_event.pressed.emit()
+		right_kind.select(other.right.event - 1)
+	right_pattern.select(other.right.pattern)
+	right_lvl.value = other.right.tier_level()
+	right_option.get_popup().index_pressed.emit(other.right.element)
+	
+	bottom_effect.pressed.emit()
+	if other.bottom.is_effect():
+		bottom_effect.pressed.emit()
+		bottom_kind.select(other.bottom.effect - 1)
+	else:
+		bottom_event.pressed.emit()
+		bottom_kind.select(other.bottom.event - 1)
+	bottom_pattern.select(other.bottom.pattern)
+	bottom_lvl.value = other.bottom.tier_level()
+	bottom_option.get_popup().index_pressed.emit(other.bottom.element)
+	
+	name_edit.text = other.name
+	create_button.text = "Confirm"
+
+func text_focus_entered() -> void:
+	UIAudioPlayer.focus()
