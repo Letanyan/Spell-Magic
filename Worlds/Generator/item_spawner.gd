@@ -14,6 +14,7 @@ var key: int = 0
 var coins: Array[int] = []
 var health: float = 0.0
 var note_id: String = ""
+var flag_tag: int = 0
 
 signal condition_met
 
@@ -63,6 +64,13 @@ static func note_spawner(pop: Population, pos: Vector3, id: String) -> ItemSpawn
 	var result := ItemSpawner.new()
 	result.population = pop
 	result.note_id = id
+	result.position = pos
+	return result
+	
+static func flag_spawner(pop: Population, pos: Vector3, tag: int) -> ItemSpawner:
+	var result := ItemSpawner.new()
+	result.population = pop
+	result.flag_tag = tag
 	result.position = pos
 	return result
 	
@@ -151,6 +159,17 @@ func drop_note_item(world: Node3D) -> bool:
 		var item := population.entity_manager.get_world_item(World.Item.NOTE) as ScrollNote
 		item.position = position
 		item.note_id = note_id
+		if item.get_parent() == null:
+			world.add_child(item)
+		drop_animation(world, item)
+		return true
+	return false
+	
+func drop_flag_item(world: Node3D) -> bool:
+	if note_id != "":
+		var item := population.entity_manager.get_world_item(World.Item.FLAG) as Flag
+		item.position = position
+		item.tag = flag_tag
 		if item.get_parent() == null:
 			world.add_child(item)
 		drop_animation(world, item)

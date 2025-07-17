@@ -88,6 +88,7 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
+	# TODO: complete level when flag tag is 0 
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void:
 		var i := -1
 		for x in inhabitants:
@@ -96,7 +97,18 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 				break
 		if i != -1:
 			inhabitants.remove_at(i)
+		menu.build_menu.remove_current_enemy(e)
 		remove_child(e)
+		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
+			if enemy.get_parent() == null:
+				add_enemy(enemy)
+	)
+	SignalBus.pick_up_world_item_flag.connect(func(f: Flag, m: String) -> void:
+		menu.build_menu.remove_current_flag(f)
+		for flag in menu.build_menu.retrieve_flags_based_on_flag_state():
+			if flag.get_parent() == null:
+				flag.custom_free = remove_world_item
+				add_child(flag)
 	)
 
 func _ready() -> void:
@@ -133,11 +145,24 @@ func run_on_ready() -> void:
 	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
 		insert_spell(proj)
-	for item in menu.build_menu.items_in_world:
-		item.custom_free = remove_world_item
-		add_child(item)
-	for enemy in menu.build_menu.enemies_in_world:
-		add_enemy(enemy)
+	if settings.is_editing_level:
+		for item in menu.build_menu.items_in_world:
+			item.custom_free = remove_world_item
+			add_child(item)
+		for enemy in menu.build_menu.enemies_in_world:
+			add_enemy(enemy)
+	else:
+		for item in menu.build_menu.items_in_world:
+			if not (item is Flag):
+				item.custom_free = remove_world_item
+				add_child(item)
+		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
+			if enemy.get_parent() == null:
+				add_enemy(enemy)
+		for flag in menu.build_menu.retrieve_flags_based_on_flag_state():
+			if flag.get_parent() == null:
+				flag.custom_free = remove_world_item
+				add_child(flag)
 	
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
@@ -214,7 +239,7 @@ func _exit_tree() -> void:
 	AudioManager.camera = null
 
 func _process(delta: float) -> void:
-	($FPS as Label).text = str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	($FPS as Label).text = "[EDIT MODE] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 	
 	
 func _physics_process(delta: float) -> void:
@@ -455,7 +480,12 @@ func _input(event: InputEvent) -> void:
 								add_enemy(enemy)
 								SignalBus.enemy_added_to_world.emit(enemy)
 						elif spell_name == "flag":
-							pass # TODO: add flag points that player can reach to compete level
+							var flag := Flag.make()
+							flag.tag = ((option.parameters[option.spell_index] as Dictionary).get("0", "0") as String).to_int()
+							flag.set_base_position(place_pos)
+							flag.custom_free = remove_world_item
+							add_child(flag)
+							SignalBus.item_added_to_world.emit(flag)
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:
@@ -548,6 +578,8 @@ func test_mode_changed(is_editing: bool) -> void:
 				(item as SpellPaper).eaten = false
 			elif item is RedCross:
 				(item as RedCross).eaten = false
+			elif item is Flag:
+				(item as Flag).eaten = false
 			item.reset_to_original()
 			add_child(item)
 	for enemy in menu.build_menu.enemies_in_world:
@@ -562,5 +594,21 @@ func test_mode_changed(is_editing: bool) -> void:
 		enemy.is_dead = is_editing
 		enemy.invunerable = INF if is_editing else 0.0
 		enemy.animation_tree.active = true
+		
+	if not is_editing:
+		for item in menu.build_menu.items_in_world:
+			if item is Flag:
+				remove_child(item)
+		for enemy in menu.build_menu.enemies_in_world:
+			remove_child(enemy)
+		menu.build_menu.current_flags_in_world.clear()
+		menu.build_menu.current_enemies_in_world.clear()
+		menu.build_menu.item_flag_state.clear()
+		menu.build_menu.enemy_flag_state.clear()
+		
+		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
+			add_enemy(enemy)
+		for flag in menu.build_menu.retrieve_flags_based_on_flag_state():
+			add_child(flag)
 		
 	($FPS as Label).visible = is_editing

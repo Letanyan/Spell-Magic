@@ -163,6 +163,7 @@ func prepare_world_item(entity: WorldItem, pos: Vector3, user_info: Callable, se
 			World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
 			World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
 			World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
+			World.Item.FLAG: SignalBus.pick_up_world_item_flag.connect(func(a: Flag, message: String) -> void: mark_entity(entity))
 	return entity
 	
 func prepare_building(building: Building, pos: Vector3, user_info: Callable, seedling: int) -> Node3D:
@@ -290,6 +291,7 @@ func spawn_spawner(item: World.Item, p: Vector2, value: Variant) -> ItemSpawner:
 		World.Item.COIN: result = ItemSpawner.coins_spawner(self, pos, value as Array[int])
 		World.Item.HEALTH: result = ItemSpawner.health_spawner(self, pos, value as float)
 		World.Item.NOTE: result = ItemSpawner.note_spawner(self, pos, value as String)
+		World.Item.FLAG: result = ItemSpawner.flag_spawner(self, pos, value as int)
 		
 	result.name = str(item) + "_" + Rand.id(3, seedling)
 	# if the spawner has already been consumed don't create a new one.

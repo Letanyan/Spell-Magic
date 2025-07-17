@@ -109,6 +109,7 @@ var buffer_spell: EntityBuffer
 var buffer_key: EntityBuffer
 var buffer_health: EntityBuffer
 var buffer_note: EntityBuffer
+var buffer_flag: EntityBuffer
 
 var buffer_house_ruined_01: EntityBuffer
 var buffer_house_ruined_02: EntityBuffer
@@ -165,6 +166,9 @@ func _init() -> void:
 	var make_note := func() -> WorldItem:
 		var result := ScrollNote.make(); result.custom_free = free_world_item
 		return result
+	var make_flag := func() -> WorldItem:
+		var result := Flag.make(); result.custom_free = free_world_item
+		return result
 		
 	var make_house_ruined_01 := func() -> Building:
 		var result := Building.make(World.Building.HOUSE_RUINED_01); result.custom_free = free_building
@@ -192,6 +196,7 @@ func _init() -> void:
 	buffer_spell = EntityBuffer.new(10, make_spell, deinit_world_item, "SPELL")
 	buffer_health = EntityBuffer.new(10, make_health, deinit_world_item, "HEALTH")
 	buffer_note = EntityBuffer.new(10, make_note, deinit_world_item, "NOTE")
+	buffer_flag = EntityBuffer.new(10, make_flag, deinit_world_item, "FLAG")
 	
 	buffer_house_ruined_01 = EntityBuffer.new(10, make_house_ruined_01, deinit_building, "HOUSE_RUINED_01")
 	buffer_house_ruined_02 = EntityBuffer.new(10, make_house_ruined_02, deinit_building, "HOUSE_RUINED_02")
@@ -221,6 +226,7 @@ func get_world_item(kind: World.Item) -> WorldItem:
 		World.Item.SPELL: return buffer_spell.get_entity()
 		World.Item.HEALTH: return buffer_health.get_entity()
 		World.Item.NOTE: return buffer_note.get_entity()
+		World.Item.FLAG: return buffer_flag.get_entity()
 	return buffer_target.get_entity()
 
 func free_world_item(node: WorldItem) -> void:
@@ -232,6 +238,7 @@ func free_world_item(node: WorldItem) -> void:
 		World.Item.SPELL: buffer_spell.free_entity(node)
 		World.Item.HEALTH: buffer_health.free_entity(node)
 		World.Item.NOTE: buffer_note.free_entity(node)
+		World.Item.FLAG: buffer_flag.free_entity(node)
 		
 func get_building(kind: World.Building, config: Dictionary = {}) -> Building:
 	match kind:

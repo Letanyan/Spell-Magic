@@ -32,7 +32,7 @@ enum Foliage {
 enum Item {
 	# !! WARNING: When adding new cases ensure to update `spawn_world_item` in `Population` and add methods in entity_manager.gd
 	NONE,
-	TARGET, KEY, ARTIFACT, COIN, SPELL, HEALTH, NOTE
+	TARGET, KEY, ARTIFACT, COIN, SPELL, HEALTH, NOTE, FLAG
 }
 
 enum Building {

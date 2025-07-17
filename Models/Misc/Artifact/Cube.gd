@@ -25,3 +25,11 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		var tween := create_tween_for_world_item_pick_up(body, 0.25)
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()
+
+func save_to_dict(dict: Dictionary) -> void:
+	super.save_to_dict(dict)
+	dict["artifact"] = artifact.save_dict()
+
+func load_from_dict(dict: Dictionary) -> void:
+	super.load_from_dict(dict)
+	artifact = dict.get("artifact", null) as Artifact

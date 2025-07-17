@@ -1,0 +1,74 @@
+[gd_scene load_steps=9 format=3 uid="uid://dvxieht2jdl3i"]
+
+[ext_resource type="PackedScene" uid="uid://b48sakyys61jf" path="res://Models/Misc/Flag/Flag_01.fbx" id="1_oiuu8"]
+[ext_resource type="Script" path="res://Models/Misc/Flag/flag.gd" id="2_6mvh4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y2usc"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4wrhh"]
+resource_local_to_scene = true
+albedo_color = Color(0, 0.74902, 1, 1)
+
+[sub_resource type="Animation" id="Animation_8do0w"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flag_01_LOD1")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 2, 1, 0, 0, 0, -1)
+
+[sub_resource type="Animation" id="Animation_hj0xh"]
+length = 0.001
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flag_01_LOD1")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pnno5"]
+_data = {
+"RESET": SubResource("Animation_hj0xh"),
+"idle": SubResource("Animation_8do0w")
+}
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_m7qua"]
+radius = 0.25
+height = 1.5
+
+[node name="Flag" instance=ExtResource("1_oiuu8")]
+script = ExtResource("2_6mvh4")
+
+[node name="Flag_01_LOD0" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+visible = false
+surface_material_override/0 = SubResource("StandardMaterial3D_y2usc")
+
+[node name="Flag_01_LOD1" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+surface_material_override/0 = SubResource("StandardMaterial3D_4wrhh")
+
+[node name="Flag_01_LOD2" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+libraries = {
+"": SubResource("AnimationLibrary_pnno5")
+}
+
+[node name="area" type="Area3D" parent="." index="4"]
+collision_layer = 1024
+collision_mask = 2
+
+[node name="shape" type="CollisionShape3D" parent="area" index="0"]
+shape = SubResource("CapsuleShape3D_m7qua")
+
+[connection signal="body_entered" from="area" to="." method="_on_area_3d_body_entered"]

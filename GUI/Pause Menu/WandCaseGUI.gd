@@ -66,7 +66,7 @@ func reload_wand_shelf_items(index: int = current_index, full_update: bool = fal
 						missing_errors.append("'[b]" + option.spell_names[i] + "[/b]'")
 					else:
 						var spell_name := option.spell_names[i]
-						if spell_name != "coin" and spell_name != "health" and spell_name != "enemy" and spell_name != "artifact":
+						if spell_name != "coin" and spell_name != "health" and spell_name != "enemy" and spell_name != "artifact" and spell_name != "flag":
 							missing_errors.append("'[b]" + spell_name + "[/b]'")
 				elif not s.is_active:
 					not_active_errors.append("'[b]" + s.name + "[/b]'")

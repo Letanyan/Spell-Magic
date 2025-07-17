@@ -8,7 +8,11 @@ var settings: WorldSettings:
 var player: Player = null
 var projectiles_in_world: Array[SpellBody] = []
 var items_in_world: Array[WorldItem] = []
+var item_flag_state: Array[int] = []
+var current_flags_in_world: Array[Flag] = []
 var enemies_in_world: Array[Enemy] = []
+var enemy_flag_state: Array[int] = []
+var current_enemies_in_world: Array[Enemy] = []
 var base_upgrades: UpgradeSettings = null
 var base_artifacts: Artifacts = null
 
@@ -159,6 +163,8 @@ func update_item_list() -> void:
 				items_in_world_list.set_item_tooltip(i, "Amount: %d%%" % ceili((p as RedCross).health * 100))
 			World.Item.COIN:
 				items_in_world_list.set_item_tooltip(i, "Amount: " + Globals.format_number_nearest_place((p as CoinDisc).amount))
+			World.Item.FLAG:
+				items_in_world_list.set_item_tooltip(i, "Tag: %d" % (p as Flag).tag)
 		i += 1
 
 func _on_rename_item_pressed() -> void:
@@ -264,6 +270,70 @@ func _on_enemies_in_world_item_selected(index: int) -> void:
 	var en := enemies_in_world[index]
 	enemies_name.text = en.name
 
+func retrieve_enemies_based_on_flag_state() -> Array[Enemy]:
+	if not current_enemies_in_world.is_empty():
+		return current_enemies_in_world
+	else:
+		var current_max := 999999999
+		if not enemy_flag_state.is_empty():
+			current_max = enemy_flag_state[enemy_flag_state.size() - 1]
+		var max_below_current := -1
+		for enemy in current_enemies_in_world if not current_enemies_in_world.is_empty() else enemies_in_world:
+			if enemy.level_flag < current_max:
+				max_below_current = maxi(max_below_current, enemy.level_flag)
+		
+		if max_below_current != current_max:
+			enemy_flag_state.append(max_below_current)
+		
+		for enemy in enemies_in_world:
+			if enemy.level_flag == max_below_current:
+				current_enemies_in_world.append(enemy)
+		
+		return current_enemies_in_world
+
+func retrieve_flags_based_on_flag_state() -> Array[Flag]:
+	if not current_flags_in_world.is_empty():
+		return current_flags_in_world
+	else:
+		var current_max := 999999999
+		if not item_flag_state.is_empty():
+			current_max = item_flag_state[item_flag_state.size() - 1]
+		var max_below_current := -1
+		if current_flags_in_world.is_empty():
+			for item in items_in_world:
+				if item is Flag and (item as Flag).tag < current_max:
+					max_below_current = maxi(max_below_current, (item as Flag).tag)
+		else:
+			for flag in current_flags_in_world:
+				if flag.tag < current_max:
+					max_below_current = maxi(max_below_current, flag.tag)
+		
+		if max_below_current != current_max:
+			item_flag_state.append(max_below_current)
+			
+		for item in items_in_world:
+			if item is Flag and (item as Flag).tag == max_below_current:
+				current_flags_in_world.append(item)
+		
+		return current_flags_in_world
+
+func remove_current_enemy(enemy: Enemy) -> void:
+	var i := -1
+	for x in current_enemies_in_world:
+		i += 1
+		if x == enemy:
+			break
+	if i != -1:
+		current_enemies_in_world.remove_at(i)
+		
+func remove_current_flag(flag: Flag) -> void:
+	var i := -1
+	for x in current_flags_in_world:
+		i += 1
+		if x == flag:
+			break
+	if i != -1:
+		current_flags_in_world.remove_at(i)
 
 func save(world_name: String) -> void:
 	if not settings.is_editing_level:
@@ -309,7 +379,19 @@ func get_dict() -> Dictionary:
 		base_artifacts.reset_from_other(player.artifacts)
 	result["base_upgrades"] = base_upgrades.save_dict()
 	result["base_artifacts"] = base_artifacts.save_dict()
- 	
+	result["item_flag_state"] = item_flag_state
+	result["enemy_flag_state"] = enemy_flag_state
+	
+	var current_enemies: Array[String] = []
+	for enemy in current_enemies_in_world:
+		current_enemies.append(enemy.name)
+	result["current_enemies"] = current_enemies
+	
+	var current_flags: Array[String] = []
+	for flag in current_flags_in_world:
+		current_flags.append(flag.name)
+	result["current_flags"] = current_flags
+	
 	return result
 
 func read(world_name: String, caster: SpellCaster) -> void:
@@ -361,6 +443,9 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 			World.Item.COIN:
 				item = CoinDisc.make()
 				item.load_from_dict(info)
+			World.Item.FLAG:
+				item = Flag.make()
+				item.load_from_dict(info)
 				
 		if item != null:				
 			items_in_world.append(item)
@@ -396,6 +481,19 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 	player.artifacts.reset_from_other(base_artifacts)
 	if not settings.is_editing_level:
 		player.artifacts.collection.clear()
+	item_flag_state.assign(data.get("item_flag_state", []) as Array)
+	enemy_flag_state.assign(data.get("enemy_flag_state", []) as Array)
+	
+	var current_enemies := data.get("current_enemies", []) as Array
+	for enemy_name: String in current_enemies:
+		for e in enemies_in_world:
+			if e.name == enemy_name:
+				current_enemies_in_world.append(e)
+	var current_flags := data.get("current_flags", []) as Array
+	for flag_name: String in current_flags:
+		for f in current_flags_in_world:
+			if f.name == flag_name:
+				current_flags_in_world.append(f)
 		
 	update_item_list()
 	update_projectile_list()

@@ -6,6 +6,7 @@ signal pick_up_world_item_key(key: int, message: String)
 signal pick_up_world_item_coin(coin: int, message: String)
 signal pick_up_world_item_red_cross(health: float, message: String)
 signal pick_up_world_item_scroll_note(note_id: String, message: String)
+signal pick_up_world_item_flag(flag: Flag, message: String)
 
 signal projectile_hit(origin: Node3D, collision_object: Node3D, collision_layer: int, spell: Spell, time: float, p: SpellBody, damage: Dictionary)
 signal not_enough_mana_for_spell(spell: Spell) 
