@@ -20,10 +20,10 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	update_color()
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player and tag != -1:
+	if not eaten and body is Player and tag != -1 and not (body as Player).world_settings.is_editing_level:
 		eaten = true
 		UIAudioPlayer.ringing()
-		SignalBus.pick_up_world_item_flag.emit(self, "Flag picked up")
+		SignalBus.pick_up_world_item_flag.emit(self, tag, "Flag picked up")
 		var tween := create_tween_for_world_item_pick_up(body, 0.25)
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()

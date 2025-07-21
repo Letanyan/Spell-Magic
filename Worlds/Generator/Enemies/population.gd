@@ -52,6 +52,20 @@ func _init(version: int, _coord: Vector2i, _chunk_size: float, _chunker: Chunker
 		foliage_manager = entity_manager.buffer_foliage_lod0
 	seed_location()
 	SignalBus.enemy_death.connect(mark_entity)
+	#SignalBus.pick_up_world_item_artifact.connect(func(entity: ArtifactCube, a: Artifact, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_spell.connect(func(entity: SpellPaper, a: Spell, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_coin.connect(func(entity: CoinDisc, a: int, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_key.connect(func(entity: KeyPrism, a: int, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_red_cross.connect(func(entity: RedCross, a: float, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_scroll_note.connect(func(entity: ScrollNote, id: String, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_flag.connect(func(entity: Flag, tag: int, message: String) -> void: mark_entity(entity))
+	SignalBus.pick_up_world_item_artifact.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_spell.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_coin.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_key.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_red_cross.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_scroll_note.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_flag.connect(mark_world_item_entity)
 	match version:
 		1: build_generators_version1()
 		_: build_generators_version1()
@@ -156,14 +170,6 @@ func prepare_world_item(entity: WorldItem, pos: Vector3, user_info: Callable, se
 			entity_manager.free_world_item(entity)
 			return null
 		world_items.append(entity) 
-		match entity.kind:
-			World.Item.ARTIFACT: SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, message: String) -> void: mark_entity(entity))
-			World.Item.SPELL: SignalBus.pick_up_world_item_spell.connect(func(a: Spell, message: String) -> void: mark_entity(entity))
-			World.Item.COIN: SignalBus.pick_up_world_item_coin.connect(func(a: int, message: String) -> void: mark_entity(entity))
-			World.Item.KEY: SignalBus.pick_up_world_item_key.connect(func(a: int, message: String) -> void: mark_entity(entity))
-			World.Item.HEALTH: SignalBus.pick_up_world_item_red_cross.connect(func(a: float, message: String) -> void: mark_entity(entity))
-			World.Item.NOTE: SignalBus.pick_up_world_item_scroll_note.connect(func(id: String, message: String) -> void: mark_entity(entity))
-			World.Item.FLAG: SignalBus.pick_up_world_item_flag.connect(func(a: Flag, message: String) -> void: mark_entity(entity))
 	return entity
 	
 func prepare_building(building: Building, pos: Vector3, user_info: Callable, seedling: int) -> Node3D:
@@ -388,6 +394,13 @@ func despawn_all_from_world(world: Node3D, active_enemy_kinds: Dictionary, hud: 
 	buildings.clear()
 	spawn_cursor.x = spawn_area_biomes.size()
 	SignalBus.enemy_death.disconnect(mark_entity)
+	SignalBus.pick_up_world_item_artifact.disconnect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_spell.disconnect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_coin.disconnect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_key.disconnect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_red_cross.disconnect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_scroll_note.disconnect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_flag.disconnect(mark_world_item_entity)
 
 func update_enemies(delta: float) -> void:
 	if display_only: return
@@ -506,6 +519,9 @@ func habitant_vitals_update(index: int, vitals: Vitals) -> void:
 		inhabitants.erase(index)
 
 func mark_entity(entity: Node3D) -> void:
+	mark_entity_name(entity.name)
+	
+func mark_world_item_entity(entity: WorldItem, x: Variant, y: Variant) -> void:
 	mark_entity_name(entity.name)
 
 func mark_entity_name(name: String) -> void:

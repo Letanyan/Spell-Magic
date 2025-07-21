@@ -60,9 +60,16 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	else:
 		upgrades_button.text = "Stats"
 		upgrades.make_display_only(true)
+	if world_settings.is_editing_level:
+		build_button.text = "Build"
+		build_button.tooltip_text = ""
+	else:
+		build_button.text = "Reset"
+		build_button.tooltip_text = "Reset Game"
 		
 		
-	build_button.visible = world_settings.is_editing_level
+		
+	build_button.visible = world_settings.is_level_editor
 	
 	settings.exit_game.connect(func() -> void: get_tree().quit())
 	settings.save_game.connect(func() -> void: save_changes())
@@ -80,8 +87,8 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	settings.tab_changed.connect(update_camera_and_menu)
 
 func _ready() -> void:
-	SignalBus.pick_up_world_item_artifact.connect(func(a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
-	SignalBus.pick_up_world_item_spell.connect(func(s: Spell, m: String) -> void: 
+	SignalBus.pick_up_world_item_artifact.connect(func(entity: ArtifactCube, a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
+	SignalBus.pick_up_world_item_spell.connect(func(entity: SpellPaper, s: Spell, m: String) -> void: 
 		magic_book.add_spell(s, false)
 		spell_deck.add_spell(s)
 		var w := wand_case.case.wands[wand_case.case.selected_wand]
@@ -93,7 +100,7 @@ func _ready() -> void:
 			opt.parse_spells(s.name, magic_book.book)
 			break
 	)
-	SignalBus.pick_up_world_item_coin.connect(func(c: int, m: String) -> void: upgrades.update_state(UpgradeSettings.PurchaseError.NONE))
+	SignalBus.pick_up_world_item_coin.connect(func(entity: CoinDisc, c: int, m: String) -> void: upgrades.update_state(UpgradeSettings.PurchaseError.NONE))
 
 func update_index(index: Kind) -> void:
 	UIAudioPlayer.switch()
@@ -125,6 +132,7 @@ func update_index(index: Kind) -> void:
 	if GlobalData.is_demo and (current_index == Kind.ARTIFACTS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES) and not settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING))):
 		match current_index:
 			Kind.ARTIFACTS: artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); message_label.text = "Not Available in Demo\nArtifacts Disabled"
+			Kind.UPGRADES: upgrades_button.grab_focus(); upgrades_button.set_pressed_no_signal(true);
 		message_panel.visible = true
 	elif player_in_combat and (current_index == Kind.SPELLS or current_index == Kind.ARTIFACTS or current_index == Kind.WANDS or (current_index == Kind.UPGRADES and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES))):
 		match current_index:
@@ -188,7 +196,11 @@ func _on_notes_pressed() -> void:
 	update_index(Kind.NOTES)
 	
 func _on_build_pressed() -> void:
-	update_index(Kind.BUILD)
+	if build_button.text == "Build":
+		update_index(Kind.BUILD)
+	else:
+		build_menu.reset_level_when_playing()
+		close_menu.emit()
 	
 func _on_settings_pressed() -> void:
 	update_index(Kind.SETTINGS)
@@ -211,7 +223,7 @@ func close() -> void:
 	is_showing = false
 	visible = false
 	save_changes()
-	if world_settings.is_editing_level:
+	if world_settings.is_level_editor:
 		build_menu.save(world_settings.world_name)
 	
 func open_game_menu() -> void:

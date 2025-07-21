@@ -28,9 +28,9 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		eaten = true
 		if not (body as Player).magic_book.spell_exists(spell.name):
 			UIAudioPlayer.grabbing()
-			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' picked up" % spell.name)		
+			SignalBus.pick_up_world_item_spell.emit(self, spell, "Spell '%s' picked up" % spell.name)		
 		else:
-			SignalBus.pick_up_world_item_spell.emit(spell, "Spell '%s' already in Magic Book" % spell.name)
+			SignalBus.pick_up_world_item_spell.emit(self, spell, "Spell '%s' already in Magic Book" % spell.name)
 		var tween := create_tween_for_world_item_pick_up(body, 0.25)
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()

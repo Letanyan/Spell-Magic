@@ -18,16 +18,16 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	update_mesh_color()
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player:
+	if not eaten and body is Player and not (body as Player).world_settings.is_editing_level:
 		eaten = true
 		if (body as Player).pick_up_key(key):
 			UIAudioPlayer.pick_up_key()
 			Steamworks.set_achievement(Steamworks.achievement_pick_up_key(key_to_biome()))
-			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' picked up" % key)
+			SignalBus.pick_up_world_item_key.emit(self, key, "Key '%d' picked up" % key)
 		elif key != 0:
-			SignalBus.pick_up_world_item_key.emit(key, "Key '%d' already obtained" % key)
+			SignalBus.pick_up_world_item_key.emit(self, key, "Key '%d' already obtained" % key)
 		else:
-			SignalBus.pick_up_world_item_key.emit(key, "Key 0 shouldn't exist")
+			SignalBus.pick_up_world_item_key.emit(self, key, "Key 0 shouldn't exist")
 		var tween := create_tween_for_key_pick_up(body as Player, 2.0)
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()

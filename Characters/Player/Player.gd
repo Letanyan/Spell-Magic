@@ -762,27 +762,27 @@ func play_walking_audio(biome: World.Biome, is_empty: bool = false) -> void:
 			elif footstep_next_checkpoint == 1.0:
 				footstep_next_checkpoint = 0.0
 		
-func on_pick_up_artifact(artifact: Artifact, message: String) -> void:
+func on_pick_up_artifact(entity: ArtifactCube, artifact: Artifact, message: String) -> void:
 	artifacts.save(world_settings.world_name)
 	save_name_generator()
 	
-func on_pick_up_spell(spell: Spell, message: String) -> void:
+func on_pick_up_spell(entity: SpellPaper, spell: Spell, message: String) -> void:
 	magic_book.save(world_settings.world_name)
 	save_name_generator()
 	
-func on_pick_up_key(key: int, message: String) -> void:
+func on_pick_up_key(entity: KeyPrism, key: int, message: String) -> void:
 	world_settings.save()
 	
-func on_pick_up_coin(coin: int, message: String) -> void:
+func on_pick_up_coin(entity: CoinDisc, coin: int, message: String) -> void:
 	world_settings.save()
 	
-func on_pick_up_red_cross(health: float, message: String) -> void:
+func on_pick_up_red_cross(entity: RedCross, health: float, message: String) -> void:
 	vitals.health.apply_by_percentage_on_max(health)
 	emit_vitals_update()
 	UIAudioPlayer.drinking()
 	world_settings.save()
 	
-func on_pick_up_scroll_note(note_id: String, message: String) -> void:
+func on_pick_up_scroll_note(entity: ScrollNote, note_id: String, message: String) -> void:
 	if not GlobalData.game_settings.unlocked_notes.has(note_id):
 		GlobalData.game_settings.unlocked_notes[note_id] = true
 		UIAudioPlayer.grabbing()

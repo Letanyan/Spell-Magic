@@ -76,7 +76,7 @@ func _ready() -> void:
 	SignalBus.pick_up_world_item_spell.connect(update_pick_up_world_item_spell)
 	SignalBus.pick_up_world_item_key.connect(update_pick_up_world_item_key)
 	SignalBus.pick_up_world_item_coin.connect(update_pick_up_world_item_coin)
-	SignalBus.pick_up_world_item_red_cross.connect(func(c: float, m: String) -> void: show_notification(bbcode_new_item(m), 10))
+	SignalBus.pick_up_world_item_red_cross.connect(func(entity: RedCross, c: float, m: String) -> void: show_notification(bbcode_new_item(m), 10))
 	SignalBus.pick_up_world_item_scroll_note.connect(update_pick_up_world_item_scroll_note)
 	hud_upgrades.upgrade_was_complete.connect(func(message: String) -> void:
 		show_message(GameSettings.Tutorials.GOT_UPGRADE, message, 8.0)
@@ -479,31 +479,31 @@ func update_selection_wheel_spells() -> void:
 		if spell != null:
 			selection_wheel.image_segments[spell_text] = spell.create_thumbnail(Spell.ThumbnailSize.LARGE, image_preview_raws)
 
-func update_pick_up_world_item_artifact(a: Artifact, m: String) -> void:
+func update_pick_up_world_item_artifact(entity: ArtifactCube, a: Artifact, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.ARTIFACTS):
 		show_message(GameSettings.Tutorials.ARTIFACTS, "[center][font_size=21]View 'Artifacts' in the menu to build your character[/font_size][/center]", INF)
 		
-func update_pick_up_world_item_spell(s: Spell, m: String) -> void:
+func update_pick_up_world_item_spell(entity: SpellPaper, s: Spell, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.SPELLS):
 		show_message(GameSettings.Tutorials.SPELLS, "[center][font_size=21]View 'Spells' in the menu to view and edit your spells[/font_size][/center]", INF)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.WANDS):
 		show_message(GameSettings.Tutorials.WANDS, "[center][font_size=21]View 'Wands' to assign spells to keys[/font_size][/center]", INF)
 		
-func update_pick_up_world_item_key(k: int, m: String) -> void: 
+func update_pick_up_world_item_key(entity: KeyPrism, k: int, m: String) -> void: 
 	show_notification(bbcode_new_item(m), 10)
 	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.KEYS):
 		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.KEYS)
 		show_message(GameSettings.Tutorials.KEYS, "[center][font_size=21]Defeat more high level enemies in other biomes for more Keys", INF)
 
-func update_pick_up_world_item_coin(s: int, m: String) -> void:
+func update_pick_up_world_item_coin(entity: CoinDisc, s: int, m: String) -> void:
 	show_notification(bbcode_new_item(m), 5)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.COINS) and world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 		show_message(GameSettings.Tutorials.COINS, "[center][font_size=21]View 'Upgrades' in the menu to upgrade your character[/font_size][/center]", INF)
 
-func update_pick_up_world_item_scroll_note(c: String, m: String) -> void:
+func update_pick_up_world_item_scroll_note(entity: ScrollNote, c: String, m: String) -> void:
 	show_notification(bbcode_new_item(m), 10)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.NOTES):
 		show_message(GameSettings.Tutorials.NOTES, "[center][font_size=21]View 'Notes' in the menu to learn about the game[/font_size][/center]", INF)

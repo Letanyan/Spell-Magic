@@ -6,8 +6,8 @@ var kind: World.Item = World.Item.NONE
 var custom_free: Callable = func(this: WorldItem) -> void:
 	this.queue_free()
 var height: float = 0.5
-var original_scale := Vector3(1, 1, 1)
-var original_position := Vector3.ZERO
+var original_scale := Vector3.INF
+var original_position := Vector3.INF
 
 func setup(seedling: int, biome: World.Biome) -> void:
 	pass
@@ -47,8 +47,10 @@ func create_tween_for_drop(start: Vector3, end: Vector3, duration: float) -> Twe
 	return tween
 	
 func reset_to_original() -> void:
-	position = original_position
-	scale = original_scale
+	if original_position.is_finite():
+		position = original_position
+	if original_scale.is_finite():
+		scale = original_scale
 
 func set_base_position(pos: Vector3) -> void:
 	position = pos + Vec3.y(height)
@@ -57,8 +59,10 @@ func save_to_dict(dict: Dictionary) -> void:
 	dict["kind"] = kind
 	dict["height"] = height
 	dict["is_active"] = is_active
-	dict["position"] = position
+	dict["position"] = original_position if original_position.is_finite() else position 
 	dict["name"] = name
+	dict["o_pos"] = original_position
+	dict["o_scale"] = original_scale
 	
 func load_from_dict(dict: Dictionary) -> void:
 	kind = dict.get("kind", 0)
@@ -66,3 +70,5 @@ func load_from_dict(dict: Dictionary) -> void:
 	is_active = dict.get("is_active", true)
 	position = dict.get("position", Vector3.ZERO)
 	name = dict.get("name", "Item" + Rand.id(5, Time.get_ticks_usec()))
+	original_position = dict.get("original_position", Vector3.INF) as Vector3
+	original_scale = dict.get("original_scale", Vector3.INF) as Vector3

@@ -15,6 +15,7 @@ var enemy_flag_state: Array[int] = []
 var current_enemies_in_world: Array[Enemy] = []
 var base_upgrades: UpgradeSettings = null
 var base_artifacts: Artifacts = null
+var base_position := Vector3.ZERO
 
 @onready var desc_edit: LineEdit = $DescEdit
 @onready var share_online: CheckBox = $ShareOnline
@@ -336,8 +337,6 @@ func remove_current_flag(flag: Flag) -> void:
 		current_flags_in_world.remove_at(i)
 
 func save(world_name: String) -> void:
-	if not settings.is_editing_level:
-		return
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)	
 	var dict := get_dict()
 	file.store_var(dict)
@@ -374,22 +373,27 @@ func get_dict() -> Dictionary:
 	result["username"] = GlobalData.game_settings.username
 	result["desc"] = desc_edit.text
 	result["settings"] = settings.game_mode_settings.save_dict()
+	
+	var current_enemies: Array[String] = []
+	var current_flags: Array[String] = []
 	if settings.is_editing_level:
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		base_artifacts.reset_from_other(player.artifacts)
+		base_position = player.position
+		item_flag_state.clear()
+		enemy_flag_state.clear()
+	else:
+		for enemy in current_enemies_in_world:
+			current_enemies.append(enemy.name)
+		for flag in current_flags_in_world:
+			current_flags.append(flag.name)
+		
 	result["base_upgrades"] = base_upgrades.save_dict()
 	result["base_artifacts"] = base_artifacts.save_dict()
 	result["item_flag_state"] = item_flag_state
 	result["enemy_flag_state"] = enemy_flag_state
-	
-	var current_enemies: Array[String] = []
-	for enemy in current_enemies_in_world:
-		current_enemies.append(enemy.name)
+	result["base_position"] = base_position
 	result["current_enemies"] = current_enemies
-	
-	var current_flags: Array[String] = []
-	for flag in current_flags_in_world:
-		current_flags.append(flag.name)
 	result["current_flags"] = current_flags
 	
 	return result
@@ -483,6 +487,8 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 		player.artifacts.collection.clear()
 	item_flag_state.assign(data.get("item_flag_state", []) as Array)
 	enemy_flag_state.assign(data.get("enemy_flag_state", []) as Array)
+	base_position = data.get("base_position", Vector3(0, 1000.95, 0)) as Vector3
+	player.position = base_position
 	
 	var current_enemies := data.get("current_enemies", []) as Array
 	for enemy_name: String in current_enemies:
@@ -491,9 +497,9 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 				current_enemies_in_world.append(e)
 	var current_flags := data.get("current_flags", []) as Array
 	for flag_name: String in current_flags:
-		for f in current_flags_in_world:
-			if f.name == flag_name:
-				current_flags_in_world.append(f)
+		for item: WorldItem in items_in_world:
+			if (item is Flag) and item.name == flag_name:
+				current_flags_in_world.append(item)
 		
 	update_item_list()
 	update_projectile_list()
@@ -567,19 +573,30 @@ func level_added(id: int) -> void:
 	settings.save()
 
 
-func _on_test_mode_pressed() -> void:
-	settings.is_editing_level = not settings.is_editing_level
+func switch_editing_mode(is_editing: bool) -> void:
+	settings.is_editing_level = is_editing
 	test_mode_changed.emit(settings.is_editing_level)
 	if settings.is_editing_level:
 		test_mode_button.text = "Test Level"
 		settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
 		player.artifacts.reset_from_other(base_artifacts)
+		player.position = base_position
 	else:
 		test_mode_button.text = "Edit Level"
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		base_artifacts.reset_from_other(player.artifacts)
+		base_position = player.position
 		player.artifacts.collection.clear()
 		
+		
+func reset_level_when_playing() -> void:
+	test_mode_changed.emit(false)
+	settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
+	player.artifacts.reset_from_other(base_artifacts)
+	player.position = base_position
+
+func _on_test_mode_pressed() -> void:
+	switch_editing_mode(not settings.is_editing_level)
 
 func _on_world_radius_edit_value_changed(value: float) -> void:
 	settings.world_radius = value

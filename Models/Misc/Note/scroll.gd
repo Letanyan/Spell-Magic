@@ -19,9 +19,9 @@ func setup(seedling: int, biome: World.Biome) -> void:
 	($AnimationPlayer as AnimationPlayer).play("idle")
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if not eaten and body is Player:
+	if not eaten and body is Player and not (body as Player).world_settings.is_editing_level:
 		eaten = true
-		SignalBus.pick_up_world_item_scroll_note.emit(note_id, "Note '%s' picked up" % note_id)
+		SignalBus.pick_up_world_item_scroll_note.emit(self, note_id, "Note '%s' picked up" % note_id)
 		var tween := create_tween_for_world_item_pick_up(body, 0.25) 
 		tween.finished.connect(custom_free.bind(self))
 		tween.play()

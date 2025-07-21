@@ -11,6 +11,16 @@ albedo_color = Color(0, 0, 0, 1)
 resource_local_to_scene = true
 albedo_color = Color(0, 0.74902, 1, 1)
 
+[sub_resource type="Animation" id="Animation_hj0xh"]
+length = 0.001
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flag_01_LOD1")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
 [sub_resource type="Animation" id="Animation_8do0w"]
 resource_name = "idle"
 length = 2.0
@@ -22,16 +32,6 @@ tracks/0/path = NodePath("Flag_01_LOD1")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 2, 1, 0, 0, 0, -1)
-
-[sub_resource type="Animation" id="Animation_hj0xh"]
-length = 0.001
-tracks/0/type = "rotation_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Flag_01_LOD1")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pnno5"]
 _data = {

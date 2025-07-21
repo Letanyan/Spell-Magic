@@ -88,6 +88,19 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
+	#SignalBus.pick_up_world_item_artifact.connect(func(entity: ArtifactCube, a: Artifact, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_spell.connect(func(entity: SpellPaper, a: Spell, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_coin.connect(func(entity: CoinDisc, a: int, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_key.connect(func(entity: KeyPrism, a: int, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_red_cross.connect(func(entity: RedCross, a: float, message: String) -> void: mark_entity(entity))
+	#SignalBus.pick_up_world_item_scroll_note.connect(func(entity: ScrollNote, id: String, message: String) -> void: mark_entity(entity))
+	SignalBus.pick_up_world_item_artifact.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_spell.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_coin.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_key.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_red_cross.connect(mark_world_item_entity)
+	SignalBus.pick_up_world_item_scroll_note.connect(mark_world_item_entity)
+	
 	# TODO: complete level when flag tag is 0 
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void:
 		var i := -1
@@ -98,13 +111,15 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 		if i != -1:
 			inhabitants.remove_at(i)
 		menu.build_menu.remove_current_enemy(e)
+		mark_entity(e)
 		remove_child(e)
 		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
 			if enemy.get_parent() == null:
 				add_enemy(enemy)
 	)
-	SignalBus.pick_up_world_item_flag.connect(func(f: Flag, m: String) -> void:
+	SignalBus.pick_up_world_item_flag.connect(func(f: Flag, tag: int, m: String) -> void:
 		menu.build_menu.remove_current_flag(f)
+		mark_entity(f)
 		for flag in menu.build_menu.retrieve_flags_based_on_flag_state():
 			if flag.get_parent() == null:
 				flag.custom_free = remove_world_item
@@ -153,17 +168,18 @@ func run_on_ready() -> void:
 			add_enemy(enemy)
 	else:
 		for item in menu.build_menu.items_in_world:
-			if not (item is Flag):
+			if not (item is Flag) and not entity_name_is_marked(item.name):
 				item.custom_free = remove_world_item
 				add_child(item)
 		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
-			if enemy.get_parent() == null:
+			if enemy.get_parent() == null and not entity_name_is_marked(enemy.name):
 				add_enemy(enemy)
 		for flag in menu.build_menu.retrieve_flags_based_on_flag_state():
-			if flag.get_parent() == null:
+			if flag.get_parent() == null and not entity_name_is_marked(flag.name):
 				flag.custom_free = remove_world_item
 				add_child(flag)
 	
+	player.position = settings.player_position
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
@@ -219,10 +235,10 @@ func run_on_ready() -> void:
 	menu.build_menu.world_radius_changed.connect(update_world_radius)
 	
 	world_boundary_y_minus.position.y = 900.0
-	world_boundary_x_minus.position.x = -settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
-	world_boundary_x_plus.position.x = settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
-	world_boundary_z_minus.position.z = -settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
-	world_boundary_z_plus.position.z = settings.world_radius * (0.25 if GlobalData.is_demo else 1.0)
+	world_boundary_x_minus.position.x = -settings.world_radius
+	world_boundary_x_plus.position.x = settings.world_radius
+	world_boundary_z_minus.position.z = -settings.world_radius
+	world_boundary_z_plus.position.z = settings.world_radius
 	update_world_boundary()
 	
 	await RenderingServer.frame_post_draw
@@ -339,7 +355,6 @@ func toggle_menu() -> void:
 	player.transition_menu(not menu.is_showing, not menu.is_quick_menu and menu.current_index == Menu.Kind.SETTINGS and menu.settings.tab_container.get_current_tab_control().name == "Skin", menu.showing_customisation)
 	
 func remove_world_item(this: WorldItem) -> void:
-	print("removing item: ", this)
 	remove_child(this)
 		
 func _input(event: InputEvent) -> void:
@@ -520,8 +535,8 @@ func update_world_radius(radius: float) -> void:
 	world_boundary_x_plus.position.x = radius
 	world_boundary_z_minus.position.z = -radius
 	world_boundary_z_plus.position.z = radius
-	(ground.mesh as PlaneMesh).size = Vector2(radius, radius)
-	(ground_collision.shape as BoxShape3D).size = Vector3(radius, 1, radius)
+	(ground.mesh as PlaneMesh).size = Vector2(radius * 2, radius * 2)
+	(ground_collision.shape as BoxShape3D).size = Vector3(radius * 2, 1, radius * 2)
 		
 func update_world_boundary() -> void:
 	world_boundary_x_minus.position.z = player.position.z
@@ -548,6 +563,19 @@ func _on_player_moved(delta: float) -> void:
 func quit_to_main_menu() -> void:
 	get_tree().change_scene_to_file("res://GUI/Menu/MainMenu.tscn")
 
+func mark_entity(entity: Node3D) -> void:
+	mark_entity_name(entity.name)
+	
+func mark_world_item_entity(entity: WorldItem, x: Variant, y: Variant) -> void:
+	mark_entity_name(entity.name)
+
+func mark_entity_name(ename: String) -> void:
+	if not player.world_settings.marked_entities.has(Vector2i.ZERO):
+		settings.marked_entities[Vector2i.ZERO] = []
+	(settings.marked_entities[Vector2i.ZERO] as Array[String]).append(ename)
+	
+func entity_name_is_marked(ename: String) -> bool:
+	return (settings.marked_entities.get(Vector2i.ZERO, []) as Array[String]).find(ename) != -1
 
 func _on_player_vital_update(vitals: Vitals) -> void:
 	if settings == null or settings.game_mode_settings == null:
@@ -568,6 +596,8 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
 
 func test_mode_changed(is_editing: bool) -> void:
+	settings.marked_entities.clear()
+	
 	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
 	for item in menu.build_menu.items_in_world:
