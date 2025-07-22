@@ -41,6 +41,7 @@ var spells_on_hold: Dictionary = {}
 var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
 
 var level_build_data: Dictionary = {}
+var is_in_testing_mode: bool = false
 
 func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	settings = _settings
@@ -101,7 +102,6 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	SignalBus.pick_up_world_item_red_cross.connect(mark_world_item_entity)
 	SignalBus.pick_up_world_item_scroll_note.connect(mark_world_item_entity)
 	
-	# TODO: complete level when flag tag is 0 
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void:
 		var i := -1
 		for x in inhabitants:
@@ -116,6 +116,8 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
 			if enemy.get_parent() == null:
 				add_enemy(enemy)
+		if e.level_flag == 0:
+			win_condition_met()
 	)
 	SignalBus.pick_up_world_item_flag.connect(func(f: Flag, tag: int, m: String) -> void:
 		menu.build_menu.remove_current_flag(f)
@@ -124,6 +126,8 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 			if flag.get_parent() == null:
 				flag.custom_free = remove_world_item
 				add_child(flag)
+		if f.tag == 0:
+			win_condition_met()
 	)
 
 func _ready() -> void:
@@ -161,12 +165,14 @@ func run_on_ready() -> void:
 		proj.time_stamp = 0.0
 		insert_spell(proj)
 	if settings.is_editing_level:
+		is_in_testing_mode = true
 		for item in menu.build_menu.items_in_world:
 			item.custom_free = remove_world_item
 			add_child(item)
 		for enemy in menu.build_menu.enemies_in_world:
 			add_enemy(enemy)
 	else:
+		is_in_testing_mode = false
 		for item in menu.build_menu.items_in_world:
 			if not (item is Flag) and not entity_name_is_marked(item.name):
 				item.custom_free = remove_world_item
@@ -367,13 +373,13 @@ func _input(event: InputEvent) -> void:
 		
 	Input.stop_joy_vibration(event.device)
 			
-	if not menu.is_showing:
+	if not menu.is_showing and hud.visible:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if event is InputEventMouseMotion:
 				player.pan_camera((event as InputEventMouseMotion).relative * settings.camera_settings.panning_speed())
 				hud.update_compass_position(player.cam_pivot.rotation.y, player.position)
 		
-	if not menu.is_showing:
+	if not menu.is_showing and hud.visible:
 		GlobalData.controller.handle_input(event)
 		
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
@@ -580,20 +586,110 @@ func entity_name_is_marked(ename: String) -> bool:
 func _on_player_vital_update(vitals: Vitals) -> void:
 	if settings == null or settings.game_mode_settings == null:
 		return
-		
+	
 	match settings.game_mode_settings.mode:
 		GameModeSettings.GameMode.RESPAWN:
 			if vitals.health.value > 0:
 				return
 				
+			settings.is_paused = true
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			UIAudioPlayer.hurt()
-			vitals.health.value = vitals.health.max_value
+			player.play_animation("death")
+			var subtitle_components := []
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_ARTIFACTS == 0:
+				subtitle_components.append("Artifacts")
+				artifacts.reset_by_deleting_all_artifacts()
+				menu.artifacts.update_list_and_grid()
+				menu.artifacts.artifacts.save(settings.world_name)
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_UPGRADES == 0:
+				subtitle_components.append("Upgrades")
+				settings.upgrade_settings.reset_all_stats_to_default_values()
+				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+				menu.upgrades.settings.save()
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
+				subtitle_components.append("Spells")
+				book.reset_by_deleting_all_spells()
+				case.reset_by_deleting_all_wands()
+				wand = case.wands[0]
+				hud.wand = wand
+				menu.magic_book.update_book_without_selection()
+				menu.wand_case.reload_wand_shelf_items(0, true)
+				menu.wand_case.case.save(settings.world_name)
+				menu.magic_book.book.save(settings.world_name)
+			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_COINS == 0:
+				subtitle_components.append("Coins")
+				settings.upgrade_settings.currency = 0
+				menu.upgrades.update_state(UpgradeSettings.PurchaseError.NONE)
+				menu.upgrades.settings.save()
+				
+			settings.player_position = player.position
+			settings.player_health = player.vitals.health.max_value
+			settings.player_mana = player.vitals.mana.max_value
+			settings.last_save_time = Time.get_unix_time_from_system()
+			settings.save()
+			hud.hide()
+			
+			for enemy: Enemy in player.enemies_in_range:
+				enemy.vitals.reset()
+				
+			var subtitle := ""
+			if subtitle_components.size() == 1:
+				subtitle = subtitle_components[0] + " have been removed"
+			elif subtitle_components.size() == 2:
+				subtitle = subtitle_components[0] + " and " + subtitle_components[1] + " have been removed"
+			elif subtitle_components.size() == 3:
+				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + " and " + subtitle_components[2] + " have been removed"
+			elif subtitle_components.size() == 4:
+				subtitle = subtitle_components[0] + ", " + subtitle_components[1] + ", " + subtitle_components[2] + " and " + subtitle_components[3] + " have been removed"
+			var overlay := OverlayScreen.display("DEATH", subtitle, "Revive")
+			overlay.confirmed.connect(func() -> void:
+				player.play_animation("revive")
+				hud.show()
+				settings.is_paused = false
+				vitals.reset()
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			)
+			overlay.show_in_root(self)
+			
 			
 		GameModeSettings.GameMode.PERMADEATH:
 			if vitals.health.value > 0:
 				return
 			
-			SceneHandler.load_new_scene("res://GUI/Main Menu/MainMenu.tscn", "fade_to_black")
+			UIAudioPlayer.hurt()
+			player.play_animation("death")
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			settings.is_paused = true
+			hud.hide()
+			GlobalData.game_settings.last_world = ""
+			GlobalData.game_settings.save()
+			GlobalData.remove_folder_that_only_has_files("user://worlds/%s" % (settings.world_name))
+			var overlay := OverlayScreen.display("DEATH", "Game Over", "Main Menu")
+			overlay.confirmed.connect(func() -> void:
+				SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black")
+			)
+			overlay.show_in_root(self)
+			
+func win_condition_met() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	settings.is_paused = true
+	hud.hide()
+	var overlay := OverlayScreen.display("VICTORY", "You've Beaten the Level", "Edit Mode" if is_in_testing_mode else "Main Menu")
+	overlay.confirmed.connect(func() -> void:
+		if is_in_testing_mode:
+			menu.build_menu.switch_editing_mode(not settings.is_editing_level)
+			hud.show()
+			settings.is_paused = false
+			player.vitals.reset()
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		else:
+			menu.build_menu.reset_level_when_playing()
+			menu.save_changes()
+			menu.build_menu.save(settings.world_name)
+			SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black")
+	)
+	overlay.show_in_root(self)
 
 func test_mode_changed(is_editing: bool) -> void:
 	settings.marked_entities.clear()

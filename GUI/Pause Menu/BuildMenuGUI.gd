@@ -227,8 +227,11 @@ func enemy_removed_from_world(enemy: Enemy) -> void:
 		
 func update_enemies_list() -> void:
 	enemies_in_world_list.clear()
+	var i := 0
 	for e in enemies_in_world:
 		enemies_in_world_list.add_item(e.name)
+		enemies_in_world_list.set_item_tooltip(i, "Tag: %d" % e.level_flag)
+		i += 1
 
 func _on_rename_enemy_pressed() -> void:
 	var selected := enemies_in_world_list.get_selected_items()

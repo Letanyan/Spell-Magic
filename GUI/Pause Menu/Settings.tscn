@@ -38,15 +38,15 @@ metadata/_tab_index = 0
 
 [node name="Save" type="Button" parent="Tabs/Game"]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 1.013
 anchor_right = 0.5
-anchor_bottom = 1.0
+anchor_bottom = 1.013
 offset_left = -64.0
-offset_top = -126.0
+offset_top = -135.891
 offset_right = 64.0
-offset_bottom = -101.0
+offset_bottom = -110.891
 grow_horizontal = 2
 grow_vertical = 0
 text = "Save Game"
@@ -55,26 +55,26 @@ text = "Save Game"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 1.003
+anchor_top = 1.013
 anchor_right = 0.5
-anchor_bottom = 1.003
+anchor_bottom = 1.013
 offset_left = -64.0
-offset_top = -95.809
+offset_top = -103.891
 offset_right = 64.0
-offset_bottom = -70.809
+offset_bottom = -78.891
 text = "Main Menu"
 
 [node name="Exit Game" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 1.003
+anchor_top = 1.013
 anchor_right = 0.5
-anchor_bottom = 1.003
+anchor_bottom = 1.013
 offset_left = -64.0
-offset_top = -55.809
+offset_top = -63.891
 offset_right = 64.0
-offset_bottom = -30.809
+offset_bottom = -38.891
 text = "Exit Game"
 
 [node name="Info" type="RichTextLabel" parent="Tabs/Game"]
@@ -87,7 +87,7 @@ anchor_bottom = 1.013
 offset_left = 255.952
 offset_top = 82.206
 offset_right = -255.952
-offset_bottom = -157.891
+offset_bottom = -143.891
 bbcode_enabled = true
 
 [node name="Upvote" type="Button" parent="Tabs/Game"]
@@ -115,6 +115,19 @@ offset_top = 47.778
 offset_bottom = 72.778
 toggle_mode = true
 text = "Downvote"
+
+[node name="Reset" type="Button" parent="Tabs/Game"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.013
+anchor_right = 0.5
+anchor_bottom = 1.013
+offset_left = 72.0
+offset_top = -135.891
+offset_right = 200.0
+offset_bottom = -110.891
+text = "Reset Game"
 
 [node name="Graphics" type="Panel" parent="Tabs"]
 visible = false
@@ -1252,6 +1265,7 @@ text = "Make Default"
 [connection signal="pressed" from="Tabs/Game/Exit Game" to="." method="_on_exit_game_pressed"]
 [connection signal="toggled" from="Tabs/Game/Upvote" to="." method="_on_upvote_toggled"]
 [connection signal="toggled" from="Tabs/Game/Downvote" to="." method="_on_downvote_toggled"]
+[connection signal="pressed" from="Tabs/Game/Reset" to="." method="_on_reset_pressed"]
 [connection signal="item_selected" from="Tabs/Graphics/Scaling Mode/Options" to="." method="_on_scaling_mode_options_item_selected"]
 [connection signal="drag_ended" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_drag_ended"]
 [connection signal="value_changed" from="Tabs/Graphics/Scaling/Slider" to="." method="_on_scaling_slider_value_changed"]

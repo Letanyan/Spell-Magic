@@ -59,6 +59,7 @@ extends Control
 @onready var info_label: RichTextLabel = $Tabs/Game/Info
 @onready var upvote: Button = $Tabs/Game/Upvote
 @onready var downvote: Button = $Tabs/Game/Downvote
+@onready var reset: Button = $Tabs/Game/Reset
 
 @onready var user_functions: TextEdit = $Tabs/Functions/user_functions
 
@@ -89,6 +90,7 @@ var is_magic_book_selected: bool = false
 signal settings_changed(settings: WorldSettings)
 
 signal save_game
+signal reset_game
 signal main_menu
 signal exit_game
 
@@ -179,6 +181,7 @@ func update_controls() -> void:
 		
 	upvote.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
 	downvote.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
+	reset.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
 	upvote.set_pressed_no_signal(world_settings.online_vote > 0)
 	downvote.set_pressed_no_signal(world_settings.online_vote < 0)
 		
@@ -475,6 +478,9 @@ func _on_save_pressed() -> void:
 	save_game.emit()
 	UIAudioPlayer.click()
 
+func _on_reset_pressed() -> void:
+	reset_game.emit()
+	UIAudioPlayer.click()
 
 func _on_main_menu_pressed() -> void:
 	main_menu.emit()

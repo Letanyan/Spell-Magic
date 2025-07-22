@@ -60,19 +60,13 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 	else:
 		upgrades_button.text = "Stats"
 		upgrades.make_display_only(true)
-	if world_settings.is_editing_level:
-		build_button.text = "Build"
-		build_button.tooltip_text = ""
-	else:
-		build_button.text = "Reset"
-		build_button.tooltip_text = "Reset Game"
 		
-		
-		
-	build_button.visible = world_settings.is_level_editor
+	
+	build_button.visible = world_settings.is_editing_level
 	
 	settings.exit_game.connect(func() -> void: get_tree().quit())
 	settings.save_game.connect(func() -> void: save_changes())
+	settings.reset_game.connect(func() -> void: build_menu.reset_level_when_playing(); close_menu.emit())
 	settings.main_menu.connect(func() -> void: SceneHandler.load_new_scene("res://Worlds/MainMenu/MainMenuWorld.tscn", "fade_to_black"))
 	
 	game_menu.continue_game.connect(func() -> void: close_menu.emit())
@@ -196,11 +190,7 @@ func _on_notes_pressed() -> void:
 	update_index(Kind.NOTES)
 	
 func _on_build_pressed() -> void:
-	if build_button.text == "Build":
-		update_index(Kind.BUILD)
-	else:
-		build_menu.reset_level_when_playing()
-		close_menu.emit()
+	update_index(Kind.BUILD)
 	
 func _on_settings_pressed() -> void:
 	update_index(Kind.SETTINGS)
