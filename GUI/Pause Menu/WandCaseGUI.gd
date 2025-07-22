@@ -57,17 +57,17 @@ func reload_wand_shelf_items(index: int = current_index, full_update: bool = fal
 		var spell_changed := func(item: WandCaseShelfItem, text: String, ignore_signals: bool) -> void:
 			var option := wand.keys[w] as Wand.Option
 			option.parse_spells(text, book)
-			var missing_errors := []
+			var missing_errors := {}
 			var not_active_errors := []
 			for i in range(option.spells.size()):
 				var s := option.spells[i]
 				if s == null:
-					if option.kind != Wand.Kind.PLACE_ITEM:
-						missing_errors.append("'[b]" + option.spell_names[i] + "[/b]'")
+					if option.kind != Wand.Kind.PLACE_ITEM and option.kind != Wand.Kind.PICK:
+						missing_errors["'[b]" + option.spell_names[i] + "[/b]'"] = true
 					else:
 						var spell_name := option.spell_names[i]
-						if spell_name != "coin" and spell_name != "health" and spell_name != "enemy" and spell_name != "artifact" and spell_name != "flag":
-							missing_errors.append("'[b]" + spell_name + "[/b]'")
+						if not Wand.is_item_place_spell(spell_name):
+							missing_errors["'[b]" + spell_name + "[/b]'"] = true
 				elif not s.is_active:
 					not_active_errors.append("'[b]" + s.name + "[/b]'")
 
@@ -76,7 +76,7 @@ func reload_wand_shelf_items(index: int = current_index, full_update: bool = fal
 			else:
 				var errors := ""
 				if not missing_errors.is_empty():
-					errors = ", ".join(missing_errors) + " missing"
+					errors = ", ".join(missing_errors.keys()) + " missing"
 				if not not_active_errors.is_empty():
 					errors += ("" if missing_errors.is_empty() else ".") + ", ".join(not_active_errors) + " not active"
 				item.key.text = "[center][color=#f33]" + errors + "[/color][/center]"

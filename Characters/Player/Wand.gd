@@ -1,6 +1,6 @@
 class_name Wand
 
-enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD, REMOVE_ITEM, PLACE_ITEM  }
+enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD, REMOVE_ITEM, PLACE_ITEM, PLACE_PICKED  }
 
 class Option:
 	var kind: Kind
@@ -67,6 +67,22 @@ class Option:
 		if not (spell_index >= 0 and spell_index < spell_names.size()):
 			return ""
 		return spell_names[spell_index]
+		
+	func get_spell_params_desc(with_keys: bool, index: int = spell_index) -> String:
+		if not (index >= 0 and index < spell_names.size()):
+			return "()"
+		var result := "("
+		var dict := parameters[index]
+		var i := 0
+		for key: String in dict:
+			if with_keys:
+				result += key + "="
+			if i == dict.size() - 1:
+				result += dict[key]
+			else:
+				result += dict[key] + ", "
+			i += 1
+		return result + ")"
 		
 	func display_rotated_spells_list(color_spell: Callable) -> String:
 		if spells.size() == 0:
@@ -333,23 +349,25 @@ func add_mod(mod: String) -> void:
 	build_keys()
 	
 func picked_name() -> String:
-	if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spells as Array).size():
+	if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spell_names as Array).size():
 		return ""
-	return keys[picked_key].spells[picked_index]
+	return keys[picked_key].spell_names[picked_index]
 	
 func spell_was_updated(spell: Spell) -> void:
 	for key: PackedStringArray in keys:
 		(keys[key] as Option).spell_was_updated(spell)
 	
-func get_spell(opt: Option, book: MagicBook) -> Spell:
-	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD:
+func get_spell(opt: Option, book: MagicBook, option_activated: Globals.Ref = null) -> Spell:
+	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD or opt.kind == Kind.PLACE_PICKED:
 		if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spells as Array).size():
 			return null
 		var picked_option := keys[picked_key] as Option
-		var picked := picked_option.spells[picked_index].name
+		var picked := picked_option.spell_names[picked_index]
 		var picked_parameters := picked_option.parameters[picked_index]
+		if option_activated != null:
+			option_activated.data = picked_option
 		for s in book.spells:
-			if s.name == picked:
+			if s != null and s.name == picked:
 				if picked_parameters.is_empty():
 					return s
 				else:
@@ -363,16 +381,18 @@ func get_spell(opt: Option, book: MagicBook) -> Spell:
 		return opt.get_spell()
 	return null
 	
-func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
+func find_spell(key: PackedStringArray, book: MagicBook, option_activated: Globals.Ref = null) -> Spell:
 	var opt: Option = keys[key]
-	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD:
+	if opt.kind == Kind.FIRE_PICKED or opt.kind == Kind.FIRE_PICKED_RAPID or opt.kind == Kind.FIRE_PICKED_HOLD or opt.kind == Kind.PLACE_PICKED:
 		if picked_key.is_empty() or picked_index < 0 or not keys.has(picked_key) or picked_index >= (keys[picked_key].spells as Array).size():
 			return null
 		var picked_option := keys[picked_key] as Option
-		var picked := picked_option.spells[picked_index].name
+		var picked := picked_option.spell_names[picked_index]
 		var picked_parameters := picked_option.parameters[picked_index]
+		if option_activated != null:
+			option_activated.data = picked_option
 		for s in book.spells:
-			if s.name == picked:
+			if s != null and s.name == picked:
 				if picked_parameters.is_empty():
 					return s
 				else:
@@ -383,7 +403,7 @@ func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 	elif opt.kind == Kind.MOD or opt.kind == Kind.NONE:
 		return null
 	var opt_spell := opt.next_spell()
-	if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.RAPID_FIRE:
+	if opt.kind == Kind.FIRE or opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.PLACE_ITEM:
 		return opt_spell
 	elif opt.kind == Kind.PICK:
 		picked_key = key
@@ -391,6 +411,7 @@ func find_spell(key: PackedStringArray, book: MagicBook) -> Spell:
 		picked_spell_changed.emit()
 		return null
 	return null
+	
 
 func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, hold_spell: Globals.Ref) -> Spell:
 	if action != "":
@@ -416,8 +437,11 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, ho
 				hold_spell.data = find_spell(best_candidate, book)
 			if opt.kind == Kind.PICK and selection_wheel != null:
 				var spell_names: Array[String] = []
-				for spell in opt.spells:
-					spell_names.append(spell.name)
+				for idx in opt.spell_names.size():
+					var spell_name := opt.spell_names[idx]
+					if Wand.is_item_place_spell(spell_name):
+						spell_name += opt.get_spell_params_desc(false, idx)
+					spell_names.append(spell_name)
 				selection_wheel.segments = spell_names
 				will_show_selection_wheel.emit()
 				selection_wheel.get_tree().create_timer(0.123).timeout.connect(func() -> void:
@@ -474,7 +498,7 @@ func action_up(action: String, book: MagicBook, option_activated: Globals.Ref = 
 			
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
-		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.PLACE_ITEM:
+		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.PLACE_ITEM or opt.kind == Kind.PLACE_PICKED:
 			if option_activated != null:
 				option_activated.data = opt
 			return null
@@ -534,3 +558,6 @@ func load_dict(dict: Dictionary, book: MagicBook) -> void:
 			keys[PackedStringArray(k as Array)] = opt
 		else:
 			keys[k] = opt
+
+static func is_item_place_spell(spell_name: String) -> bool:
+	return spell_name == "coin" or spell_name == "health" or spell_name == "enemy" or spell_name == "artifact" or spell_name == "flag"

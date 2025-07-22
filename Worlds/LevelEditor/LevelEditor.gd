@@ -438,7 +438,10 @@ func _input(event: InputEvent) -> void:
 							menu.build_menu.delete_item(node_to_track as WorldItem)
 						elif node_to_track is Enemy:
 							menu.build_menu.delete_enemy(node_to_track as Enemy)
-				elif option.kind == Wand.Kind.PLACE_ITEM:
+				elif option.kind == Wand.Kind.PLACE_ITEM or option.kind == Wand.Kind.PLACE_PICKED:
+					if option.kind == Wand.Kind.PLACE_PICKED:
+						wand.get_spell(option, book, action_option)
+						option = action_option.data
 					var cdir := Vector3.ZERO
 					var port := get_viewport()
 					var pos := port.get_visible_rect().size / 2.0

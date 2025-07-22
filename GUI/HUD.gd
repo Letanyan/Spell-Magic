@@ -297,7 +297,10 @@ func update_wand_mappings() -> void:
 				reason = MagicBook.DisallowSpellReason.MANA
 		match reason:
 			MagicBook.DisallowSpellReason.NONE:
-				return s.name
+				if Wand.is_item_place_spell(s.name):
+					return s.name
+				else:
+					return s.name
 			MagicBook.DisallowSpellReason.COOLDOWN:
 				return "[color=#F05]" + s.name + "[/color]"
 			MagicBook.DisallowSpellReason.MANA:
@@ -326,13 +329,18 @@ func update_wand_mappings() -> void:
 	var color_spell_option := func(opt: Wand.Option) -> String:
 		var s := wand.get_spell(opt, book)
 		if s == null:
-			return "[color=%s]" % ("#FFF" if opt.kind == Wand.Kind.REMOVE_ITEM or opt.kind == Wand.Kind.PLACE_ITEM else "#333") + opt.get_spell_name() + "[/color]"
+			var name_str := opt.get_spell_name()
+			var is_item_spell := Wand.is_item_place_spell(name_str)
+			var color_str := ("#FFF" if opt.kind == Wand.Kind.REMOVE_ITEM or opt.kind == Wand.Kind.PLACE_ITEM or opt.kind == Wand.Kind.PLACE_PICKED or is_item_spell else "#333")
+			if is_item_spell:
+				name_str += opt.get_spell_params_desc(false)
+			return "[color=%s]" % color_str + name_str + "[/color]"
 		else:
 			return color_spell.call(s)
 		
 		
-	var build_desc := func(kd: String, title: String, spell: Spell) -> String:
-		return kd + " [b]" + title + "[/b]: " + color_spell.call(spell) + "\n"
+	var build_desc := func(kd: String, title: String, option: Wand.Option) -> String:
+		return kd + " [b]" + title + "[/b]: " + color_spell_option.call(option) + "\n"
 		
 	for k: PackedStringArray in wand.get_bound_keys():
 		var s: Wand.Option = wand.keys[k]
@@ -358,15 +366,15 @@ func update_wand_mappings() -> void:
 			Wand.Kind.FIRE_PICKED:
 				var spell := wand.get_spell(s, book)
 				if spell != null:
-					rich_text += build_desc.call(kd, "[i]Cast[/i]", spell)
+					rich_text += build_desc.call(kd, "[i]Cast[/i]", s)
 			Wand.Kind.FIRE_PICKED_HOLD:
 				var spell := wand.get_spell(s, book)
 				if spell != null:
-					rich_text += build_desc.call(kd, "[i]Charge[/i]", spell)
+					rich_text += build_desc.call(kd, "[i]Charge[/i]", s)
 			Wand.Kind.FIRE_PICKED_RAPID:
 				var spell := wand.get_spell(s, book)
 				if spell != null:
-					rich_text += build_desc.call(kd, "[i]Rapid[/i]", spell)
+					rich_text += build_desc.call(kd, "[i]Rapid[/i]", s)
 					
 			Wand.Kind.REMOVE_ITEM:
 				rich_text += kd + " [b]Remove[/b]\n"
@@ -374,6 +382,11 @@ func update_wand_mappings() -> void:
 				var colored_list := s.display_rotated_spells_list(color_spell_option)
 				if not colored_list.is_empty(): 
 					rich_text += kd + " [b]Place[/b]: " + colored_list + "\n"
+			Wand.Kind.PLACE_PICKED:
+				var option := Globals.Ref.new(null)
+				wand.get_spell(s, book, option)
+				if option.data != null:
+					rich_text += build_desc.call(kd, "[i]Place[/i]", option.data)
 	
 	rich_text += "[/font_size]"
 	var old_text := wand_mapping.text
