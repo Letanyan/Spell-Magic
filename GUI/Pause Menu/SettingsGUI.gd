@@ -181,7 +181,7 @@ func update_controls() -> void:
 		
 	upvote.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
 	downvote.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
-	reset.visible = world_settings.is_shared_online != -1 and not world_settings.is_my_level
+	reset.visible = world_settings.is_level_editor and not world_settings.is_editing_level
 	upvote.set_pressed_no_signal(world_settings.online_vote > 0)
 	downvote.set_pressed_no_signal(world_settings.online_vote < 0)
 		
@@ -445,8 +445,10 @@ func update_info() -> void:
 		
 	var hour := floori(world_settings.time_of_day)
 	var time := "%02d:%02d" % [hour, clampi(int((world_settings.time_of_day - hour) * 60), 0, 59)]
+	var best_score := ("[b]Score:[/b] %d\n" % world_settings.best_score) if world_settings.track_score else ""
+	var best_time := ("[b]Time:[/b] %s\n" % Globals.format_seconds_into_minute_and_seconds(world_settings.best_time)) if world_settings.track_time else ""
 	info_label.text = """[center][b]World Name:[/b] %s
-[b]Keys Obtained:[/b] %d / 8
+%s%s[b]Keys Obtained:[/b] %d / 8
 [b]Day of the Year:[/b] %d
 [b]Time of Day:[/b] %s
 [b]Game Mode:[/b] %s
@@ -461,6 +463,7 @@ func update_info() -> void:
 [/center]
 """ % [
 	world_settings.world_name,
+	best_score, best_time,
 	GDNavigator.popcnt(world_settings.player_keys),
 	world_settings.day_of_the_year, time,
 	world_settings.game_mode_settings.game_mode_description(), game_flags,

@@ -23,6 +23,12 @@ var sea_level: float = 0.0
 var world_radius: float = 10000.0
 var world_level: int = 1
 var difficulty_level: int = 2
+var best_time: float = INF
+var best_score: int = 0
+var current_time: float = 0.0
+var current_score: int = 0
+var track_time: bool = true
+var track_score: bool = false
 
 var hud_settings: HUDSettings
 var camera_settings: CameraSettings
@@ -59,7 +65,8 @@ func save_dict() -> Dictionary:
 		"time_of_day": time_of_day, "is_test_arena": is_test_arena, "last_save_time": last_save_time,
 		"world_generation_version": world_generation_version, "sea_level": sea_level, "world_radius": world_radius,
 		"difficulty_level": difficulty_level, "is_level_editor": is_level_editor, "is_shared_online": is_shared_online,
-		"online_vote": online_vote, "is_my_level": is_my_level,
+		"online_vote": online_vote, "is_my_level": is_my_level, "best_time": best_time, "best_score": best_score, 
+		"current_time": current_time, "current_score": current_score, "track_score": track_score, "track_time": track_time,
 		
 		"upgrade_settings": upgrade_settings.save_dict(),
 		"hud_settings": hud_settings.save_dict(),
@@ -102,6 +109,12 @@ func load_dict(data: Dictionary) -> void:
 	sea_level = data.get("sea_level", 0.0)
 	world_radius = data.get("world_radius", 10000.0)
 	difficulty_level = data.get("difficulty_level", 2)
+	best_score = data.get("best_score", 0) as int
+	best_time = data.get("best_time", INF) as float
+	current_score = data.get("current_score", 0) as int
+	current_time = data.get("current_time", 0.0) as float
+	track_score = data.get("track_score", true) as bool
+	track_time = data.get("track_time", false) as bool
 	
 	upgrade_settings = UpgradeSettings.new()
 	upgrade_settings.load_dict(data.get("upgrade_settings", {}) as Dictionary)

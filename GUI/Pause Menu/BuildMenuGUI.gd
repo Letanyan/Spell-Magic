@@ -36,6 +36,8 @@ var base_position := Vector3.ZERO
 @onready var respawn_spells: CheckBox = $Settings/RespawnSpells
 @onready var respawn_coins: CheckBox = $Settings/RespawnCoins
 @onready var world_radius_edit: SpinBox = $Settings/WorldRadiusEdit
+@onready var track_time: CheckBox = $Settings/TrackTime
+@onready var track_score: CheckBox = $Settings/TrackScore
 
 @onready var test_mode_button: Button = $TestMode
 
@@ -70,6 +72,9 @@ func update_settings() -> void:
 	respawn_spells.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS))
 	respawn_coins.set_pressed_no_signal(settings.game_mode_settings.has_flag(GameModeSettings.RESPAWN_WITH_COINS))
 	world_radius_edit.value = settings.world_radius
+	track_time.set_pressed_no_signal(settings.track_time)
+	track_score.set_pressed_no_signal(settings.track_score)
+	
 	
 func spell_added_into_world(projectile: SpellBody) -> void:
 	if projectile.spell.is_infinite:
@@ -365,7 +370,7 @@ func get_dict() -> Dictionary:
 		
 	var enemies := {}
 	for enemy in enemies_in_world:
-		enemies[enemy.name] = {"kind": World.Enemy.keys()[enemy.kind], "level": enemy.level, "position": enemy.position, "flag": enemy.level_flag}
+		enemies[enemy.name] = {"kind": World.Enemy.keys()[enemy.kind], "level": enemy.level, "position": enemy.position, "flag": enemy.level_flag, "score": enemy.level_score}
 		
 	var result := {}
 	result["projectiles"] = projectiles
@@ -463,6 +468,7 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 		var enemy_name := enemy_data.get("kind", "") as String
 		var enemy_level := enemy_data.get("level", "1") as int
 		var enemy_flag := enemy_data.get("flag", "1") as int
+		var enemy_score := enemy_data.get("score", "0") as int
 		var enemy_position := enemy_data.get("position", Vector3(0, 1000, 0)) as Vector3
 		var enemy_kind := World.Enemy.NONE
 		var idx := 0
@@ -474,6 +480,7 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 		if enemy_kind != World.Enemy.NONE:
 			var enemy := Population.generate_enemy(enemy_kind, player, enemy_position.x, enemy_position.y, enemy_position.z, enemy_level)
 			enemy.level_flag = enemy_flag
+			enemy.level_score = enemy_score
 			enemy.name = key
 			enemies_in_world.append(enemy)
 	
@@ -604,3 +611,10 @@ func _on_test_mode_pressed() -> void:
 func _on_world_radius_edit_value_changed(value: float) -> void:
 	settings.world_radius = value
 	world_radius_changed.emit(settings.world_radius)
+
+
+func _on_track_time_toggled(toggled_on: bool) -> void:
+	settings.track_time = toggled_on
+
+func _on_track_score_toggled(toggled_on: bool) -> void:
+	settings.track_score = toggled_on

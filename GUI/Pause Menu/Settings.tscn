@@ -39,13 +39,13 @@ metadata/_tab_index = 0
 [node name="Save" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 1.007
 anchor_top = 1.013
-anchor_right = 0.5
+anchor_right = 1.007
 anchor_bottom = 1.013
-offset_left = -64.0
+offset_left = -119.952
 offset_top = -135.891
-offset_right = 64.0
+offset_right = -7.95215
 offset_bottom = -110.891
 grow_horizontal = 2
 grow_vertical = 0
@@ -54,27 +54,27 @@ text = "Save Game"
 [node name="Main Menu" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 1.007
 anchor_top = 1.013
-anchor_right = 0.5
+anchor_right = 1.007
 anchor_bottom = 1.013
-offset_left = -64.0
-offset_top = -103.891
-offset_right = 64.0
-offset_bottom = -78.891
+offset_left = -119.952
+offset_top = -71.891
+offset_right = -7.95215
+offset_bottom = -46.891
 text = "Main Menu"
 
 [node name="Exit Game" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 1.007
 anchor_top = 1.013
-anchor_right = 0.5
+anchor_right = 1.007
 anchor_bottom = 1.013
-offset_left = -64.0
-offset_top = -63.891
-offset_right = 64.0
-offset_bottom = -38.891
+offset_left = -119.952
+offset_top = -39.891
+offset_right = -7.95215
+offset_bottom = -14.891
 text = "Exit Game"
 
 [node name="Info" type="RichTextLabel" parent="Tabs/Game"]
@@ -84,49 +84,51 @@ anchor_left = -0.007
 anchor_top = -0.058
 anchor_right = 1.007
 anchor_bottom = 1.013
-offset_left = 255.952
-offset_top = 82.206
-offset_right = -255.952
-offset_bottom = -143.891
+offset_left = 7.952
+offset_top = 66.206
+offset_right = -127.952
+offset_bottom = -7.89099
 bbcode_enabled = true
 
 [node name="Upvote" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 1.007
 anchor_top = -0.054
-anchor_right = 0.5
+anchor_right = 1.007
 anchor_bottom = -0.054
-offset_top = 47.778
-offset_right = 128.0
-offset_bottom = 72.778
+offset_left = -119.952
+offset_top = 63.778
+offset_right = -7.95215
+offset_bottom = 88.778
 toggle_mode = true
 text = "Upvote"
 
 [node name="Downvote" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 1.007
 anchor_top = -0.054
-anchor_right = 0.5
+anchor_right = 1.007
 anchor_bottom = -0.054
-offset_left = -128.0
-offset_top = 47.778
-offset_bottom = 72.778
+offset_left = -119.952
+offset_top = 87.778
+offset_right = -7.95215
+offset_bottom = 112.778
 toggle_mode = true
 text = "Downvote"
 
 [node name="Reset" type="Button" parent="Tabs/Game"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 1.007
 anchor_top = 1.013
-anchor_right = 0.5
+anchor_right = 1.007
 anchor_bottom = 1.013
-offset_left = 72.0
-offset_top = -135.891
-offset_right = 200.0
-offset_bottom = -110.891
+offset_left = -119.952
+offset_top = -103.891
+offset_right = -7.95215
+offset_bottom = -78.891
 text = "Reset Game"
 
 [node name="Graphics" type="Panel" parent="Tabs"]

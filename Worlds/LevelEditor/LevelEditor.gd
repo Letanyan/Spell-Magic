@@ -113,6 +113,7 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 		menu.build_menu.remove_current_enemy(e)
 		mark_entity(e)
 		remove_child(e)
+		settings.current_score += e.level_score
 		for enemy in menu.build_menu.retrieve_enemies_based_on_flag_state():
 			if enemy.get_parent() == null:
 				add_enemy(enemy)
@@ -143,6 +144,9 @@ func run_on_ready() -> void:
 		_settings.is_level_editor = true
 		setup(_settings, {})
 		
+	GlobalData.game_settings.unlocked_notes["wand Remove"] = true
+	GlobalData.game_settings.unlocked_notes["wand Place"] = true
+	GlobalData.game_settings.unlocked_notes["wand Place Chosen"] = true
 		
 	for enemy in inhabitants:
 		enemy.animation_tree.active = true
@@ -261,7 +265,19 @@ func _exit_tree() -> void:
 	AudioManager.camera = null
 
 func _process(delta: float) -> void:
-	($FPS as Label).text = "[EDIT MODE] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+	if not settings.is_editing_level:
+		if not settings.is_paused:
+			settings.current_time += delta
+		($FPS as Label).text = ""
+		if settings.track_score:
+			($FPS as Label).text = "Score: " + str(settings.current_score)
+		if settings.track_time:
+			if not ($FPS as Label).text.is_empty():
+				($FPS as Label).text += " "
+			($FPS as Label).text += "Time: " + Globals.format_seconds_into_minute_and_seconds(settings.current_time)
+	else:
+		($FPS as Label).text = "[EDIT MODE] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
+		
 	
 	
 func _physics_process(delta: float) -> void:
@@ -491,6 +507,7 @@ func _input(event: InputEvent) -> void:
 							var enemy_name := opts.get("0", "") as String
 							var enemy_level := (opts.get("1", "1") as String).to_int()
 							var enemy_flag := (opts.get("2", "1") as String).to_int()
+							var enemy_score := (opts.get("3", "0") as String).to_int()
 							var enemy_kind := World.Enemy.NONE
 							var idx := 0
 							for kind: String in World.Enemy:
@@ -501,6 +518,7 @@ func _input(event: InputEvent) -> void:
 							if enemy_kind != World.Enemy.NONE:
 								var enemy := Population.generate_enemy(enemy_kind, player, place_pos.x, place_pos.y, place_pos.z, enemy_level)
 								enemy.level_flag = enemy_flag
+								enemy.level_score = enemy_score
 								add_enemy(enemy)
 								SignalBus.enemy_added_to_world.emit(enemy)
 						elif spell_name == "flag":
@@ -687,6 +705,11 @@ func win_condition_met() -> void:
 			player.vitals.reset()
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		else:
+			if settings.current_score > settings.best_score:
+				settings.best_score = settings.current_score
+			if settings.current_time < settings.best_time:
+				settings.best_time = settings.current_time
+			settings.is_editing_level = true
 			menu.build_menu.reset_level_when_playing()
 			menu.save_changes()
 			menu.build_menu.save(settings.world_name)
@@ -717,6 +740,8 @@ func test_mode_changed(is_editing: bool) -> void:
 			
 	player.vitals.reset()
 	menu.artifacts.update_list_and_grid()
+	settings.current_time = 0.0
+	settings.current_score = 0
 	
 	for enemy in inhabitants:
 		enemy.vitals.reset()
@@ -739,5 +764,3 @@ func test_mode_changed(is_editing: bool) -> void:
 			add_enemy(enemy)
 		for flag in menu.build_menu.retrieve_flags_based_on_flag_state():
 			add_child(flag)
-		
-	($FPS as Label).visible = is_editing

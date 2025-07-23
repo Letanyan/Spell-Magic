@@ -22,6 +22,13 @@ static func format_number_nearest_place(x: float, max_places: int = 2, show_sign
 		while snappedf(x, 0.1 ** i) != x and i < max_places:
 			i += 1
 		return ("%%.%s%df" % [s, i]) % x
+		
+static func format_seconds_into_minute_and_seconds(seconds: float) -> String:
+	if is_inf(seconds):
+		return "Infinite"
+	var minutes := floori(seconds / 60.0)
+	var secs := roundi(seconds - (minutes * 60))
+	return "%d:%02d" % [minutes, secs]
 
 static func invf(v: float) -> float:
 	if is_zero_approx(v):

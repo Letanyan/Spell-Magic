@@ -17,7 +17,8 @@ var still_path: PathStyle
 var spawn_position: Vector3
 var current_attack: AttackPatterns
 var class_level: int = 10 # [1, 20]
-var level_flag: int = -1 
+var level_flag: int = -1
+var level_score: int = 0
 var level: float: # Use float so it's easy to use in expressions. However, should only be whole numbers.
 	set(value):
 		level = value
