@@ -89,18 +89,17 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
 	
-	#SignalBus.pick_up_world_item_artifact.connect(func(entity: ArtifactCube, a: Artifact, message: String) -> void: mark_entity(entity))
-	#SignalBus.pick_up_world_item_spell.connect(func(entity: SpellPaper, a: Spell, message: String) -> void: mark_entity(entity))
-	#SignalBus.pick_up_world_item_coin.connect(func(entity: CoinDisc, a: int, message: String) -> void: mark_entity(entity))
-	#SignalBus.pick_up_world_item_key.connect(func(entity: KeyPrism, a: int, message: String) -> void: mark_entity(entity))
-	#SignalBus.pick_up_world_item_red_cross.connect(func(entity: RedCross, a: float, message: String) -> void: mark_entity(entity))
-	#SignalBus.pick_up_world_item_scroll_note.connect(func(entity: ScrollNote, id: String, message: String) -> void: mark_entity(entity))
 	SignalBus.pick_up_world_item_artifact.connect(mark_world_item_entity)
 	SignalBus.pick_up_world_item_spell.connect(mark_world_item_entity)
 	SignalBus.pick_up_world_item_coin.connect(mark_world_item_entity)
 	SignalBus.pick_up_world_item_key.connect(mark_world_item_entity)
 	SignalBus.pick_up_world_item_red_cross.connect(mark_world_item_entity)
 	SignalBus.pick_up_world_item_scroll_note.connect(mark_world_item_entity)
+	
+	SignalBus.observe_world_item_scroll_note.connect(func(entity: ScrollNote, note_id: String, message: String) -> void: 
+		const DURATION = 10.0
+		hud.show_message(GameSettings.Tutorials.PLAYER_MESSAGE, note_id.replace("\"", ""), DURATION)
+	)
 	
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void:
 		var i := -1
@@ -130,6 +129,11 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 		if f.tag == 0:
 			win_condition_met()
 	)
+	
+func uneat(entity: ScrollNote) -> void:
+	print("uneat")
+	if is_instance_valid(entity) and entity != null:
+		entity.eaten = false
 
 func _ready() -> void:
 	if ready_state == GameSettings.ReadyState.NOT:
@@ -528,6 +532,13 @@ func _input(event: InputEvent) -> void:
 							flag.custom_free = remove_world_item
 							add_child(flag)
 							SignalBus.item_added_to_world.emit(flag)
+						elif spell_name == "note":
+							var note := ScrollNote.make()
+							note.note_id = (option.parameters[option.spell_index] as Dictionary).get("0", "0") as String
+							note.set_base_position(place_pos)
+							note.custom_free = remove_world_item
+							add_child(note)
+							SignalBus.item_added_to_world.emit(note)
 				
 
 func cast_spell_with_recusive_check_for_rapid_fire(s: Spell, is_down: bool) -> void:

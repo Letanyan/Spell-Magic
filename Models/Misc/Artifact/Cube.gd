@@ -8,6 +8,7 @@ static func make() -> ArtifactCube:
 	var result := (preload("res://Models/Misc/Artifact/Cube.tscn") as PackedScene).instantiate() as ArtifactCube
 	result.height = 2.0
 	result.kind = World.Item.ARTIFACT
+	result.name = "Artifact" + Rand.id(5, Time.get_ticks_usec())
 	return result
 
 func _ready() -> void:

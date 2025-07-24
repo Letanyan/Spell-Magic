@@ -149,6 +149,7 @@ class Option:
 		var state := SPELL_NAME
 		var buffer := ""
 		var param_name := ""
+		var state_in_string := false
 		
 		spells.clear()
 		spell_names.clear()
@@ -174,7 +175,7 @@ class Option:
 							parameters.append({})
 							buffer = ""
 				PARAM_NAME:
-					if "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890_".contains(s):
+					if "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890_".contains(s) or (state_in_string and s != "\""):
 						buffer += s
 					elif s == "=":
 						state = PARAM_VALUE
@@ -192,6 +193,9 @@ class Option:
 						var param_list := parameters[parameters.size() - 1]
 						param_list[str(param_list.size())] = buffer
 						buffer = ""
+					elif s == "\"":
+						buffer += s
+						state_in_string = not state_in_string
 				PARAM_VALUE:
 					if "1234567890.-qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_ (+-*/^".contains(s) or (param_paren_count > 0 and (s == "," or s == ")")):
 						buffer += s
@@ -560,4 +564,4 @@ func load_dict(dict: Dictionary, book: MagicBook) -> void:
 			keys[k] = opt
 
 static func is_item_place_spell(spell_name: String) -> bool:
-	return spell_name == "coin" or spell_name == "health" or spell_name == "enemy" or spell_name == "artifact" or spell_name == "flag"
+	return spell_name == "coin" or spell_name == "health" or spell_name == "enemy" or spell_name == "artifact" or spell_name == "flag" or spell_name == "note"

@@ -6,6 +6,7 @@ signal pick_up_world_item_key(entity: KeyPrism, key: int, message: String)
 signal pick_up_world_item_coin(entity: CoinDisc, coin: int, message: String)
 signal pick_up_world_item_red_cross(entity: RedCross, health: float, message: String)
 signal pick_up_world_item_scroll_note(entity: ScrollNote, note_id: String, message: String)
+signal observe_world_item_scroll_note(entity: ScrollNote, note_id: String, message: String)
 signal pick_up_world_item_flag(entity: Flag, flag: int, message: String)
 
 signal projectile_hit(origin: Node3D, collision_object: Node3D, collision_layer: int, spell: Spell, time: float, p: SpellBody, damage: Dictionary)

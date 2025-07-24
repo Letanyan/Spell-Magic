@@ -171,6 +171,8 @@ func update_item_list() -> void:
 				items_in_world_list.set_item_tooltip(i, "Amount: " + Globals.format_number_nearest_place((p as CoinDisc).amount))
 			World.Item.FLAG:
 				items_in_world_list.set_item_tooltip(i, "Tag: %d" % (p as Flag).tag)
+			World.Item.NOTE:
+				items_in_world_list.set_item_tooltip(i, "Note: %s" % (p as ScrollNote).note_id)
 		i += 1
 
 func _on_rename_item_pressed() -> void:
@@ -457,6 +459,9 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 				item.load_from_dict(info)
 			World.Item.FLAG:
 				item = Flag.make()
+				item.load_from_dict(info)
+			World.Item.NOTE:
+				item = ScrollNote.make()
 				item.load_from_dict(info)
 				
 		if item != null:				
