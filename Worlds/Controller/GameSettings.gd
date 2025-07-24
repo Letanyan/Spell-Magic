@@ -269,7 +269,8 @@ Place items in the world. You can assign spells using their name in text field. 
 {Coin}: Add a coin item into the world. Use the syntax '{coin(x)}' to place an item that gives the player '{x}' money when picked up.
 {Artifact}: Add an artifact into the world. Use the syntax '{artifact(x)}' to place the artifact into the world. '{x}' must be the name of the artifact in your list of artifacts.
 {Enemy}: Add an enemy into the world. Use the syntax '{enemy(x, level, tag, score)}' to place an enemy. '{x}' must be the type of enemy and is a required parameter. '{level}', '{tag}' and '{score}' are optional parameters. {level} controls the level of the enemy and has a deault value of 1. **{tag} sets the enemy flag state and has a default value of 1. {score} sets the value a player gets when defeating the enemy. The default score value is 0. A list of all enemies can be found in the settings 'Game' tab.  
-{Flag}: Add to flag place marker which the player can obtain. Use the syntax '{flag(tag)}' to place a flag with a flag state set to **{tag}.
+{Flag}: Add flag to place marker which the player can obtain. Use the syntax '{flag(tag)}' to place a flag with a flag state set to **{tag}.
+{Note}: Add note to show the player a message when in range. Use syntax '{note(message)}' to place a note with a message {message}. [i]Note: You can use quotes (") to add spaces and other characters to the message. Example: {note("This is a message! With spaces 'and' punctuation?")}.[/i] 
 
 **{tag}: {tag} controls when entities are shown and how to defeat a level. 
 	- Entities with the highest tag value are shown:

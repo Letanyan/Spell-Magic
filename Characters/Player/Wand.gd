@@ -77,6 +77,9 @@ class Option:
 		for key: String in dict:
 			if with_keys:
 				result += key + "="
+			var value := dict[key] as String
+			if value.length() >= 15:
+				value = value.substr(0, 12) + "..."
 			if i == dict.size() - 1:
 				result += dict[key]
 			else:
