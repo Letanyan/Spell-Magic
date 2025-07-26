@@ -271,6 +271,7 @@ var mods: Dictionary ## [String]bool
 var keys: Dictionary ## [PackedStringArray]Option
 var picked_key: PackedStringArray
 var picked_index: int
+var is_for_user: bool = false
 
 var current_actions: Dictionary ## [String]bool
 var selection_wheel: SelectionWheel
@@ -549,7 +550,7 @@ func action_up(action: String, book: MagicBook, option_activated: Globals.Ref = 
 
 func save_dict() -> Dictionary:
 	var result := {
-		"name": name, "keys": {}, "mods": mods,
+		"name": name, "keys": {}, "mods": mods, "is_for_user": is_for_user,
 	}
 	for key: PackedStringArray in keys:
 		result["keys"][key] = (keys[key] as Option).save_dict()
@@ -558,6 +559,7 @@ func save_dict() -> Dictionary:
 func load_dict(dict: Dictionary, book: MagicBook) -> void:
 	name = dict["name"]
 	mods = dict["mods"]
+	is_for_user = dict.get("is_for_user", false)
 	for k: Variant in dict["keys"]:
 		var opt := Option.new()
 		opt.load_dict(dict["keys"][k] as Dictionary, book)

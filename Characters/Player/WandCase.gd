@@ -69,6 +69,18 @@ func reset_by_deleting_all_wands() -> void:
 	play_mode_wands = [Wand.basic()]
 	selected_play_wand = 0
 	
+func reset_by_setting_is_for_user(book: MagicBook) -> void:
+	play_mode_wands.clear()
+	selected_play_wand = 0
+	for wand in build_mode_wands:
+		if not wand.is_for_user:
+			continue
+		var w := Wand.new()
+		w.load_dict(wand.save_dict(), book)
+		play_mode_wands.append(w)
+	if play_mode_wands.is_empty():
+		play_mode_wands.append(Wand.basic())
+	
 func add(wand: Spell) -> void:
 	if is_build_mode:
 		build_mode_wands.append(wand)

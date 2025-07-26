@@ -83,8 +83,10 @@ func setup(book: MagicBook, case: WandCase, artifaces: Artifacts, _world_setting
 func _ready() -> void:
 	SignalBus.pick_up_world_item_artifact.connect(func(entity: ArtifactCube, a: Artifact, m: String) -> void: artifacts.update_list_and_grid())
 	SignalBus.pick_up_world_item_spell.connect(func(entity: SpellPaper, s: Spell, m: String) -> void: 
-		magic_book.add_spell(s, false)
-		spell_deck.add_spell(s)
+		if settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
+			spell_deck.add_spell(s)
+		else:
+			magic_book.add_spell(s, false)
 		var w := wand_case.case.wands[wand_case.case.selected_wand]
 		for i: String in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]:
 			var opt := w.keys[PackedStringArray([i])] as Wand.Option

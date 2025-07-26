@@ -8,10 +8,11 @@ var case: WandCase:
 		current_index = value.selected_wand
 		reload_list()
 
-@onready var name_edit: LineEdit = $name
+@onready var name_edit: LineEdit = $hcontainer/name
 
 @onready var create_button: Button = $create
-@onready var delete_button: Button = $delete
+@onready var delete_button: Button = $hcontainer/delete
+@onready var available: CheckBox = $hcontainer/available
 
 @onready var list_view: ListView = $panel/ListView
 
@@ -44,6 +45,7 @@ func reload_wand_shelf_items(index: int = current_index, full_update: bool = fal
 	var wand: Wand = case.wands[index]
 	current_index = index
 	name_edit.text = wand.name
+	available.set_pressed_no_signal(wand.is_for_user)
 	var make := func() -> WandCaseShelfItem:
 		var result := (load("res://GUI/Pause Menu/WandCaseShelfItem.tscn") as PackedScene).instantiate() as WandCaseShelfItem
 		result.move_up_request.connect(scroll_wand_keys_up)
@@ -139,6 +141,7 @@ func _on_wand_index_item_selected(index: int) -> void:
 
 func reload_list() -> void:
 	wand_index.clear()
+	available.visible = case.is_build_mode
 	var i := 0
 	for w: Wand in case.wands:
 		if i == case.selected_wand:
@@ -226,3 +229,8 @@ func bind_spell_to_key(keys: Dictionary, spell: Spell, cast_kind: Wand.Kind) -> 
 						item.spell.editable = cast_kind != Wand.Kind.NONE
 						break
 				break
+
+
+func _on_available_toggled(toggled_on: bool) -> void:
+	if case.is_build_mode and current_index > -1:
+		case.wands[current_index].is_for_user = toggled_on
