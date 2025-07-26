@@ -15,7 +15,7 @@ var hide_reticule: bool = false
 var hide_compass: bool = false
 var projectile_indicator_size: float = 1.0
 var key_display: KeyDisplay = KeyDisplay.AUTO
-var hide_collected_keys_label: bool = false
+var hide_collected_keys_label: bool = false # NOTE: should be hide_objective_label. But, keeping the current name for backwards compatability
 var theme_variation: ThemeKind = ThemeKind.MONO
 var theme_color: Color = Color(0, 0.533, 0.8)
 

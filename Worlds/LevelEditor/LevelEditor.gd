@@ -269,12 +269,14 @@ func _process(delta: float) -> void:
 		if not settings.is_paused:
 			settings.current_time += delta
 		($FPS as Label).text = ""
+		var score_text := ""
 		if settings.track_score:
-			($FPS as Label).text = "Score: " + str(settings.current_score)
+			score_text = "Score: " + str(settings.current_score)
 		if settings.track_time:
-			if not ($FPS as Label).text.is_empty():
-				($FPS as Label).text += " "
-			($FPS as Label).text += "Time: " + Globals.format_seconds_into_minute_and_seconds(settings.current_time)
+			if not score_text.is_empty():
+				score_text += " "
+			score_text += "Time: " + Globals.format_seconds_into_minute_and_seconds(settings.current_time)
+		hud.objective_label.text = "[right][font_size=24]%s[/font_size][/right]" % score_text
 	else:
 		($FPS as Label).text = "[EDIT MODE] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 		

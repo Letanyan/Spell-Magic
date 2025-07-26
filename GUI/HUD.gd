@@ -22,7 +22,7 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 @onready var hud_upgrades: HUDUpgrades = $VBox/HudUpgrades
 
 
-@onready var key_count_label: RichTextLabel = $KeyCountLabel
+@onready var objective_label: RichTextLabel = $ObjectiveLabel
 
 @onready var selection_wheel: SelectionWheel = $SelectionWheel
 var image_preview_raws := {} ## [String]Texture2D
@@ -62,7 +62,7 @@ var player: Player:
 		player.spell_was_cast.connect(spell_was_cast)
 		player.spell_was_disallowed.connect(spell_was_disallowed)
 		player.spell_was_limited.connect(spell_was_limited)
-		key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(player.world_settings.player_keys)
+		objective_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(player.world_settings.player_keys)
 
 var wand: Wand: set = set_wand
 		
@@ -441,7 +441,7 @@ func update_settings(settings: WorldSettings) -> void:
 	
 	compass.visible = not settings.hud_settings.hide_compass
 	
-	key_count_label.visible = not hud_settings.hide_collected_keys_label
+	objective_label.visible = not hud_settings.hide_collected_keys_label
 	
 	if cached_theme_color != hud_settings.theme_color or cached_theme_variation != hud_settings.theme_variation:
 		var global_theme := load(ProjectSettings.get("gui/theme/custom") as String) as ThemeUI
@@ -506,7 +506,7 @@ func update_pick_up_world_item_spell(entity: SpellPaper, s: Spell, m: String) ->
 		
 func update_pick_up_world_item_key(entity: KeyPrism, k: int, m: String) -> void: 
 	show_notification(bbcode_new_item(m), 10)
-	key_count_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)
+	objective_label.text = "[right][font_size=24][color=#ffb500]%d [img=l,24x24, color=#ffb500]res://GUI/Images/key.svg[/img][/color][/font_size][/right]" % GDNavigator.popcnt(world_settings.player_keys)
 	if not GlobalData.game_settings.tutorials_shown.has(GameSettings.Tutorials.KEYS):
 		GlobalData.game_settings.mark_tutorial(GameSettings.Tutorials.KEYS)
 		show_message(GameSettings.Tutorials.KEYS, "[center][font_size=21]Defeat more high level enemies in other biomes for more Keys", INF)

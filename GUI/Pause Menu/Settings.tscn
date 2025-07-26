@@ -30,9 +30,10 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
-current_tab = 0
+current_tab = 4
 
 [node name="Game" type="Panel" parent="Tabs"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -809,7 +810,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="UI" type="Panel" parent="Tabs"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 4
 
@@ -933,7 +933,7 @@ offset_bottom = 360.0
 grow_horizontal = 2
 text = "Hide Compass"
 
-[node name="HideKeyCount" type="CheckButton" parent="Tabs/UI"]
+[node name="HideObjective" type="CheckButton" parent="Tabs/UI"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -943,7 +943,7 @@ offset_top = 367.0
 offset_right = 192.0
 offset_bottom = 392.0
 grow_horizontal = 2
-text = "Hide Key Count"
+text = "Hide Objective"
 
 [node name="ProjectileIndicatorSize" type="Label" parent="Tabs/UI"]
 layout_mode = 1
@@ -1303,7 +1303,7 @@ text = "Make Default"
 [connection signal="toggled" from="Tabs/UI/HidePossibleUpgrades" to="." method="_on_hide_possible_upgrades_toggled"]
 [connection signal="toggled" from="Tabs/UI/HideReticule" to="." method="_on_hide_reticule_toggled"]
 [connection signal="toggled" from="Tabs/UI/HideCompass" to="." method="_on_hide_compass_toggled"]
-[connection signal="toggled" from="Tabs/UI/HideKeyCount" to="." method="_on_hide_key_count_toggled"]
+[connection signal="toggled" from="Tabs/UI/HideObjective" to="." method="_on_hide_objective_toggled"]
 [connection signal="value_changed" from="Tabs/UI/ProjectileIndicatorSize/ProjectileIndicatorSize" to="." method="_on_projectile_indicator_size_value_changed"]
 [connection signal="item_selected" from="Tabs/UI/KeyDisplayLabel/KeyDisplay" to="." method="_on_key_display_item_selected"]
 [connection signal="item_selected" from="Tabs/UI/ThemeVariation/ThemeVariation" to="." method="_on_theme_variation_item_selected"]
