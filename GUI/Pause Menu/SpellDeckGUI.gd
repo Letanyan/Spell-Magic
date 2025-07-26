@@ -24,6 +24,7 @@ signal key_binding_complete(keys: Dictionary, spell: Spell, cast_kind: Wand.Kind
 
 func update_spell_chains(base: Spell) -> void:
 	var updated := book.rebuild_spell_chain(base)
+	book.spell_was_updated.emit(base)
 	for spell in updated:
 		book.spell_was_updated.emit(spell)
 

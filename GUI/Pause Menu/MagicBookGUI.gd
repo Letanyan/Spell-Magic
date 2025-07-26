@@ -204,6 +204,7 @@ func delete_spell_at_index(index: int) -> void:
 
 func update_spell_chains(base: Spell) -> void:
 	var updated := book.rebuild_spell_chain(base)
+	book.spell_was_updated.emit(base)
 	for spell in updated:
 		book.spell_was_updated.emit(spell)
 

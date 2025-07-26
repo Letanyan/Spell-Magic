@@ -297,6 +297,7 @@ func _on_chain_combo_selected(index: int) -> void:
 	preview_selector.visible = false
 	UIAudioPlayer.switch()
 	book.spells[current_index].chain_cast_kind = index as Spell.ChainCastKind
+	check_chain_spell_errors(chain_edit.text, chain_edit.text)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
@@ -450,41 +451,7 @@ func _on_cd_text_changed(new_text: String) -> void:
 	update_spells_that_chain_to_current_spell()
 
 func _on_chain_text_changed(new_text: String) -> void:
-	if current_index < 0:
-		return
-	var spell: Spell = book.spells[current_index]
-	
-	var n: String = book.autocomplete(old_chain_text, chain_edit, false, spell) if not delete_chain_key_pressed else new_text
-	var option := Wand.Option.new()
-	option.parse_spells(n, book)
-	
-	if n == "":
-		spell.chain = null
-		errors_list.erase("chain")
-	elif option.spell_names.size() != 1:
-		spell.chain = null
-		errors_list["chain"] = "Only one spell is allowed to be chained"
-	elif option.get_spell() == null:
-		spell.chain = null
-		errors_list["chain"] = "'%s' does not exists" % option.get_spell_name()
-	elif option.get_spell().name == spell.name:
-		errors_list["chain"] = "'%s' can not chain to itself" % spell.name
-	else:
-		var new_spell := option.get_spell()
-		var problem_chain := book.find_recursive_spell_chain(spell, new_spell.name)
-		if not problem_chain.is_empty():
-			var message := "'%s' can not exist in a recursive spell chain " % new_spell
-			for s in problem_chain:
-				message += s + "->"
-			errors_list["chain"] = message.trim_suffix("->")
-		else:
-			spell.chain = new_spell
-			if not option.parameters.is_empty():
-				spell.chain.configure_using_parameter_collection(option.parameters[0], spell.global_constant_variables())
-				spell.configuration_parameters_for_chain = option.parameters[0]
-			errors_list.erase("chain")
-				
-	old_chain_text = n
+	old_chain_text = check_chain_spell_errors(old_chain_text, new_text)
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 	delete_chain_key_pressed = false
@@ -716,6 +683,47 @@ func _on_expressions_text_changed() -> void:
 	update_cooldown()
 	update_spells_that_chain_to_current_spell()
 
+func check_chain_spell_errors(old_text: String, new_text: String) -> String:
+	if current_index < 0:
+		return ""
+	var spell: Spell = book.spells[current_index]
+	
+	var n: String = book.autocomplete(old_text, chain_edit, false, spell) if not delete_chain_key_pressed else new_text
+	var option := Wand.Option.new()
+	option.parse_spells(n, book)
+	
+	if n == "":
+		spell.chain = null
+		errors_list.erase("chain")
+	elif option.spell_names.size() != 1:
+		spell.chain = null
+		errors_list["chain"] = "Only one spell is allowed to be chained"
+	elif option.get_spell() == null:
+		spell.chain = null
+		errors_list["chain"] = "'%s' does not exists" % option.get_spell_name()
+	elif option.get_spell().name == spell.name:
+		errors_list["chain"] = "'%s' can not chain to itself" % spell.name
+	else:
+		var new_spell := option.get_spell()
+		var problem_chain := book.find_recursive_spell_chain(spell, new_spell.name)
+		if not problem_chain.is_empty():
+			var message := "'%s' can not exist in a recursive spell chain " % new_spell
+			for s in problem_chain:
+				message += s + "->"
+			errors_list["chain"] = message.trim_suffix("->")
+		else:
+			spell.chain = new_spell
+			var disallow := book.can_use_spell(spell.chain)
+			if (chain_combo.selected as Spell.ChainCastKind) != Spell.ChainCastKind.NONE and not (disallow == MagicBook.DisallowSpellReason.NONE or disallow == MagicBook.DisallowSpellReason.NONE):
+				errors_list["chain"] = "'%s''s chained spell has a problem" % [spell.chain.name]
+			elif not option.parameters.is_empty():
+				spell.chain.configure_using_parameter_collection(option.parameters[0], spell.global_constant_variables())
+				spell.configuration_parameters_for_chain = option.parameters[0]
+				errors_list.erase("chain")
+			
+	return n
+	
+
 func check_all_errors() -> void:
 	if current_index < 0:
 		return
@@ -794,20 +802,7 @@ func check_all_errors() -> void:
 		if raw > book.settings.upgrade_settings.max_crit_dmg():
 			errors_list["CD"] = "Value of " + Globals.format_number_nearest_place(raw) + " exceeds maximum of " + Globals.format_number_nearest_place(book.settings.upgrade_settings.max_crit_dmg())
 		
-	text = chain_edit.text
-	if not text.is_empty():
-		var option := Wand.Option.new()
-		option.parse_spells(text, book)
-		if option.spells.size() != 1:
-			errors_list["chain"] = "Only one spell is allowed to be chained"
-		else:
-			var next_spell := option.next_spell()
-			if next_spell == null:
-				errors_list["chain"] = "'%s' does not exists" % option.next_spell()
-			else:
-				var disallow := book.can_use_spell(next_spell)
-				if (chain_combo.selected as Spell.ChainCastKind) != Spell.ChainCastKind.NONE and not (disallow == MagicBook.DisallowSpellReason.NONE or disallow == MagicBook.DisallowSpellReason.NONE):
-					errors_list["chain"] = "'%s''s chained spell has a problem" % [next_spell.name]
+	check_chain_spell_errors(chain_edit.text, chain_edit.text)
 			
 	for k: String in book.spells[current_index].expressions:
 		var expr: Expr = book.spells[current_index].expressions[k]

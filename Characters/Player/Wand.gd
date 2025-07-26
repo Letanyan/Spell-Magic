@@ -125,8 +125,8 @@ class Option:
 	func spell_was_updated(spell: Spell) -> void:
 		for i in spells.size():
 			var s := spells[i]
-			if s == null: continue
-			if s.name != spell.name: continue
+			if s != null and s.name != spell.name: 
+				continue
 			if not parameters[i].is_empty():
 				spells[i] = spell.duplicate()
 				spells[i].configure_using_parameter_collection(parameters[i], spells[i].basic_fixed_vars())

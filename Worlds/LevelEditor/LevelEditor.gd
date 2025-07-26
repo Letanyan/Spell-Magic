@@ -49,14 +49,14 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
+	book = MagicBook.new()
+	book.settings = settings
 	if settings.is_editing_level:
-		book = GlobalData.user_magic_book
-		book.settings = settings
+		book.read_absolute_path("user://universal_magic_book.json", false)
+		book.rebuild_spell_chains()
 		book.ignore_cooldown = true
 		book.settings.upgrade_settings.level_spells_in_book = 25
 	else:
-		book = MagicBook.new()
-		book.settings = settings
 		book.read(settings.world_name, false)
 		book.rebuild_spell_chains()
 		book.ignore_cooldown = GlobalData.is_debug
@@ -245,6 +245,14 @@ func run_on_ready() -> void:
 	
 	menu.build_menu.test_mode_changed.connect(test_mode_changed)
 	menu.build_menu.world_radius_changed.connect(update_world_radius)
+	
+	book.spell_was_updated.connect(func(spell: Spell) -> void:
+		for item in menu.build_menu.items_in_world:
+			if item is SpellPaper:
+				var paper := item as SpellPaper
+				if paper.spell != null and paper.spell.name == spell.name:
+					paper.spell = spell
+	)
 	
 	world_boundary_y_minus.position.y = 900.0
 	world_boundary_x_minus.position.x = -settings.world_radius
