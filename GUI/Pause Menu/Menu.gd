@@ -144,10 +144,10 @@ func update_index(index: Kind) -> void:
 		match current_index:
 			Kind.SPELLS:
 				if not settings.world_settings.is_editing_level and settings.world_settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
-					spell_deck.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); spell_deck.duplicate_book()
+					spell_deck.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); spell_deck.duplicate_book(); spell_deck.reload_cards()
 				else:
-					magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book()
-			Kind.WANDS: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_wand_shelf_items(); wand_case.update_wand_shelf_items(true)
+					magic_book.visible = true; spells_button.grab_focus(); spells_button.set_pressed_no_signal(true); magic_book.duplicate_book(); magic_book.reload_list()
+			Kind.WANDS: wand_case.visible = true; wands_button.grab_focus(); wands_button.set_pressed_no_signal(true); wand_case.reload_list(); wand_case.update_wand_shelf_items(true)
 			Kind.ARTIFACTS: artifacts.visible = true; artifacts_button.grab_focus(); artifacts_button.set_pressed_no_signal(true); artifacts.update_list_and_grid()
 			Kind.UPGRADES:
 				if world_settings.is_editing_level or world_settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
@@ -281,7 +281,9 @@ func save_changes() -> void:
 	if magic_book.visible:
 		if world_settings.is_test_arena:
 			magic_book.book.save_absolute_path("res://magic_book.json")
-		elif not world_settings.is_editing_level:
+		elif world_settings.is_editing_level:
+			magic_book.book.save_absolute_path("user://universal_magic_book.json")
+		else:
 			magic_book.book.save(world_settings.world_name)
 	if spell_deck.visible:
 		if not world_settings.is_test_arena and not world_settings.is_editing_level:

@@ -50,7 +50,7 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	if settings.is_editing_level:
-		book = GlobalData.magic_book
+		book = GlobalData.user_magic_book
 		book.settings = settings
 		book.ignore_cooldown = true
 		book.settings.upgrade_settings.level_spells_in_book = 25
@@ -85,6 +85,7 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	case = WandCase.new()
 	case.read(settings.world_name, book)
 	book.spell_was_updated.connect(case.spell_was_updated)
+	case.is_build_mode = settings.is_editing_level
 	
 	artifacts = Artifacts.new()
 	artifacts.read(settings.world_name)
@@ -129,11 +130,6 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 		if f.tag == 0:
 			win_condition_met()
 	)
-	
-func uneat(entity: ScrollNote) -> void:
-	print("uneat")
-	if is_instance_valid(entity) and entity != null:
-		entity.eaten = false
 
 func _ready() -> void:
 	if ready_state == GameSettings.ReadyState.NOT:
@@ -615,6 +611,17 @@ func mark_entity_name(ename: String) -> void:
 func entity_name_is_marked(ename: String) -> bool:
 	return (settings.marked_entities.get(Vector2i.ZERO, []) as Array[String]).find(ename) != -1
 
+func reset_wand_and_magic_book(is_editing: bool) -> void:
+	book.reset_by_deleting_all_spells()
+	case.reset_by_deleting_all_wands()
+	case.is_build_mode = is_editing
+	wand = case.current_wand()
+	hud.wand = wand
+	menu.magic_book.update_book_without_selection()
+	menu.wand_case.reload_wand_shelf_items(case.selected_wand, true)
+	menu.wand_case.case.save(settings.world_name)
+	menu.magic_book.book.save(settings.world_name)
+
 func _on_player_vital_update(vitals: Vitals) -> void:
 	if settings == null or settings.game_mode_settings == null:
 		return
@@ -641,14 +648,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 				menu.upgrades.settings.save()
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS == 0:
 				subtitle_components.append("Spells")
-				book.reset_by_deleting_all_spells()
-				case.reset_by_deleting_all_wands()
-				wand = case.wands[0]
-				hud.wand = wand
-				menu.magic_book.update_book_without_selection()
-				menu.wand_case.reload_wand_shelf_items(0, true)
-				menu.wand_case.case.save(settings.world_name)
-				menu.magic_book.book.save(settings.world_name)
+				reset_wand_and_magic_book(false)
 			if settings.game_mode_settings.flags & GameModeSettings.RESPAWN_WITH_COINS == 0:
 				subtitle_components.append("Coins")
 				settings.upgrade_settings.currency = 0
@@ -710,6 +710,9 @@ func win_condition_met() -> void:
 	var overlay := OverlayScreen.display("VICTORY", "You've Beaten the Level", "Edit Mode" if is_in_testing_mode else "Main Menu")
 	overlay.confirmed.connect(func() -> void:
 		if is_in_testing_mode:
+			if not settings.is_editing_level:
+				reset_wand_and_magic_book(true) # NOTE: set to true because we are switching into editing mode
+				settings.save()
 			menu.build_menu.switch_editing_mode(not settings.is_editing_level)
 			hud.show()
 			settings.is_paused = false
@@ -721,6 +724,8 @@ func win_condition_met() -> void:
 			if settings.current_time < settings.best_time:
 				settings.best_time = settings.current_time
 			settings.is_editing_level = true
+			reset_wand_and_magic_book(false)
+			settings.save()
 			menu.build_menu.reset_level_when_playing()
 			menu.save_changes()
 			menu.build_menu.save(settings.world_name)
@@ -730,6 +735,18 @@ func win_condition_met() -> void:
 
 func test_mode_changed(is_editing: bool) -> void:
 	settings.marked_entities.clear()
+	
+	case.is_build_mode = is_editing
+	if is_editing:
+		book.reset_by_deleting_all_spells()
+		book.read_absolute_path("user://universal_magic_book.json", false)
+		book.rebuild_spell_chains()
+	else:
+		book.reset_by_deleting_all_spells()
+		book.read(settings.world_name, false)
+		book.rebuild_spell_chains()
+	menu.magic_book.current_index = -1
+	menu.wand_case.reload_wand_shelf_items(case.selected_wand, true)
 	
 	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
