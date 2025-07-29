@@ -775,6 +775,8 @@ func test_mode_changed(is_editing: bool) -> void:
 	menu.wand_case.reload_wand_shelf_items(case.selected_wand, true)
 	hud.wand = menu.wand_case.case.current_wand()
 	
+	hud.update_settings(settings)
+	
 	for proj in menu.build_menu.projectiles_in_world:
 		proj.time_stamp = 0.0
 	for item in menu.build_menu.items_in_world:
