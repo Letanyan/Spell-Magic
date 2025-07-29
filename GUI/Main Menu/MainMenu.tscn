@@ -82,6 +82,12 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Import Game"
 
+[node name="Tutorial" type="Button" parent="Background/MarginContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Tutorial"
+
 [node name="Settings" type="Button" parent="Background/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -152,6 +158,7 @@ expand_icon = true
 [connection signal="pressed" from="Background/MarginContainer/VBoxContainer/NewGame" to="." method="_on_new_game_pressed"]
 [connection signal="pressed" from="Background/MarginContainer/VBoxContainer/Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Background/MarginContainer/VBoxContainer/Import" to="." method="_on_import_pressed"]
+[connection signal="pressed" from="Background/MarginContainer/VBoxContainer/Tutorial" to="." method="_on_tutorial_pressed"]
 [connection signal="pressed" from="Background/MarginContainer/VBoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Background/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="Links/Margin/VBox/Discord" to="." method="_on_discord_pressed"]

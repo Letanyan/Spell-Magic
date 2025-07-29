@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://hh8drb3a5gov"]
+[gd_scene load_steps=5 format=3 uid="uid://hh8drb3a5gov"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/ImportGame.gd" id="1_e65pw"]
+[ext_resource type="Shader" path="res://GUI/ThemeUI/MosaicUI.gdshader" id="2_3pnfo"]
 [ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="2_rra7d"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dr14l"]
+shader = ExtResource("2_3pnfo")
 
 [node name="ImportGame" type="Control"]
 layout_mode = 3
@@ -13,6 +17,7 @@ grow_vertical = 2
 script = ExtResource("1_e65pw")
 
 [node name="Background" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_dr14l")
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5

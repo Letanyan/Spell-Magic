@@ -78,8 +78,6 @@ var upgrades: UpgradeSettings
 
 var main_menu_world: MainMenuWorld = null
 
-var world_data: Array = []
-
 # TODO: add more game modes. Things like: 
 # - Artifacts Only: No upgrades only artifacts
 # Called when the node enters the scene tree for the first time.
@@ -141,11 +139,10 @@ func _ready() -> void:
 	chain_methods_chain_at_end.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.END)
 	chain_methods_chain_on_hit.button_pressed = upgrades.check_if_has_chain_method(Spell.ChainCastKind.HIT)
 	
-	world_data = GameSettings.get_world_names()
-	for t: Array in world_data:
+	for t: Array in GlobalData.world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 		
-	use_save_file.disabled = world_data.is_empty()
+	use_save_file.disabled = GlobalData.world_data.is_empty()
 		
 	name_generator = NameGenerator.new()
 	name_generator.initial()
@@ -159,7 +156,7 @@ func _on_cancel_pressed() -> void:
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 	
 func world_name_exists(world_name: String) -> bool:
-	for t: Array in world_data:
+	for t: Array in GlobalData.world_data:
 		if world_name == t[0]:
 			return true
 	return false
@@ -179,12 +176,13 @@ func _on_worlds_list_item_activated(index: int) -> void:
 		popup.confirmed.connect(func() -> void: UIAudioPlayer.click())
 		popup.show_in_root(self)
 		return
-	var selected_world_name := world_data[index][0] as String
+	var selected_world_name := GlobalData.world_data[index][0] as String
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(selected_world_name)
 	settings.world_name = save_name.text
 	settings.last_save_time = Time.get_unix_time_from_system()
 	settings.save()
+	GameSettings.add_world_name(GlobalData.world_data, settings.world_name)
 	SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 
 func _on_create_pressed() -> void:
@@ -223,12 +221,15 @@ func _on_create_pressed() -> void:
 		settings.is_my_level = is_level_editor_set
 		if game_mode == GameModeSettings.GameMode.RESPAWN or settings.is_level_editor:
 			settings.game_mode_settings.flags = game_flags
+		if settings.is_level_editor:
+			settings.player_position = Vector3(NAN, NAN, NAN)
 		
 		settings.upgrade_settings.load_dict(upgrades.save_dict())
 		if not settings.game_mode_settings.has_flag(GameModeSettings.SHOP_FOR_UPGRADES):
 			settings.upgrade_settings.fill_upgrade_slots(false, {})
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		GameSettings.add_world_name(GlobalData.world_data, settings.world_name)
 		UIAudioPlayer.crash()
 		if settings.is_level_editor:
 			settings.is_editing_level = true
@@ -239,12 +240,13 @@ func _on_create_pressed() -> void:
 	elif use_save_file.button_pressed:
 		if worlds_list.get_selected_items().is_empty():
 			return
-		var selected_world_name := world_data[worlds_list.get_selected_items()[0]][0] as String
+		var selected_world_name := GlobalData.world_data[worlds_list.get_selected_items()[0]][0] as String
 		var settings := WorldSettings.new(get_viewport())
 		settings.read(selected_world_name)
 		settings.world_name = save_name.text
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		GameSettings.add_world_name(GlobalData.world_data, settings.world_name)
 		UIAudioPlayer.click()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_normal.button_pressed:
@@ -265,6 +267,7 @@ func _on_create_pressed() -> void:
 		settings.upgrade_settings.fill_upgrade_slots(false, {})
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		GameSettings.add_world_name(GlobalData.world_data, settings.world_name)
 		UIAudioPlayer.crash()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 	elif use_hardcore.button_pressed:
@@ -286,6 +289,7 @@ func _on_create_pressed() -> void:
 		settings.upgrade_settings.fill_upgrade_slots(false, {})
 		settings.last_save_time = Time.get_unix_time_from_system()
 		settings.save()
+		GameSettings.add_world_name(GlobalData.world_data, settings.world_name)
 		UIAudioPlayer.crash()
 		SceneHandler.load_new_scene("res://Worlds/Demo/demo.tscn", "fade_to_black", func(content: DemoWorld) -> void: content.setup(settings), Quotes.random())
 

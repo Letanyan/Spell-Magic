@@ -191,7 +191,8 @@ func run_on_ready() -> void:
 				flag.custom_free = remove_world_item
 				add_child(flag)
 	
-	player.position = settings.player_position
+	if settings.player_position.is_finite():
+		player.position = settings.player_position
 	player.spell_caster.ignore_mana_cost = true
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
@@ -267,6 +268,14 @@ func run_on_ready() -> void:
 	
 	if settings.is_shared_online != -1:
 		HttpLevels.begin_level_user_data_play(settings.is_shared_online)
+		
+	if not settings.player_position.is_finite():
+		var space := get_world_3d().space
+		var state := PhysicsServer3D.space_get_direct_state(space)
+		player.position = Vector3(0, 0, 0)
+		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
+		player.set_feet_position(world_h)
+		settings.player_position = player.position
 
 func _exit_tree() -> void:
 	if settings.is_shared_online != -1:
@@ -288,6 +297,7 @@ func _process(delta: float) -> void:
 			score_text += "Time: " + Globals.format_seconds_into_minute_and_seconds(settings.current_time)
 		hud.objective_label.text = "[right][font_size=24]%s[/font_size][/right]" % score_text
 	else:
+		hud.objective_label.text = ""
 		($FPS as Label).text = "[EDIT MODE] " + str(player.position) + " FPS: " + str(Engine.get_frames_per_second())
 		
 	

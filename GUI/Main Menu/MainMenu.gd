@@ -84,11 +84,16 @@ func _on_load_pressed() -> void:
 func _on_import_pressed() -> void:
 	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.IMPORT)
+	
+	
+func _on_tutorial_pressed() -> void:
+	UIAudioPlayer.click()
+	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.TUTORIALS)
+
 
 func _on_settings_pressed() -> void:
 	UIAudioPlayer.click()
 	main_menu_world.show_menu_screen(MainMenuWorld.MenuScreenKind.SETTINGS)
-	#get_tree().change_scene_to_file("res://GUI/Main Menu/SettingsMenu.tscn")
 	
 
 func _on_quit_pressed() -> void:

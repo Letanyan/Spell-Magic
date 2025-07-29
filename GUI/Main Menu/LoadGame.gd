@@ -6,21 +6,17 @@ extends Control
 @onready var delete_button: Button = $Delete
 @onready var edit_button: Button = $Edit
 
-var filenames: Array[String]
 var main_menu_world: MainMenuWorld = null
-var filenames_with_times: Array = []
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	filenames_with_times = GameSettings.get_world_names()
-	for t: Array in filenames_with_times:
-		filenames.append(t[0])
+	for t: Array in GlobalData.world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 	
 func update_list_items() -> void:
 	worlds_list.clear()
-	for t: Array in filenames_with_times:
+	for t: Array in GlobalData.world_data:
 		worlds_list.add_item("%s (%s)" % [t[0], GlobalData.get_date_time_string(t[1] as int)])
 
 func _on_cancel_pressed() -> void:
@@ -29,7 +25,7 @@ func _on_cancel_pressed() -> void:
 	#get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
 func load_current_item(selected: int, in_editing_mode: bool) -> void:
-	var world_name := filenames[selected]
+	var world_name := GlobalData.world_data[selected][0] as String
 	var settings := WorldSettings.new(get_viewport())
 	settings.read(world_name)
 	
@@ -66,7 +62,7 @@ func _on_worlds_list_item_selected(index: int) -> void:
 	var selected := list.get_selected_items()
 	if selected.is_empty():
 		return
-	var world_name := filenames[selected[0]]
+	var world_name := GlobalData.world_data[selected[0]][0] as String
 	var settings := WorldSettings.new(null)
 	settings.read(world_name)
 	load_editor.disabled = not settings.is_level_editor or not settings.is_my_level
@@ -77,14 +73,14 @@ func _on_delete_pressed() -> void:
 	var selected := list.get_selected_items()
 	if selected.is_empty():
 		return
-	var filename := filenames[selected[0]] as String
+	var filename := GlobalData.world_data[selected[0]][0] as String
 	var popup := PopupDialog.display("Are you sure you want to delete the save '" + filename + "'")
 	popup.confirmed.connect(func() -> void:
 		var current_selected := list.get_selected_items()
 		if current_selected.is_empty():
 			return
 		UIAudioPlayer.delete()
-		filenames.remove_at(selected[0])
+		GlobalData.world_data.remove_at(selected[0])
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
 		list.remove_item(current_selected[0])
 	)

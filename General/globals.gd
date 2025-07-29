@@ -278,6 +278,7 @@ var is_demo: bool = false
 var is_editor: bool = false
 var is_trailer_mode: bool = false
 var demo_seed: int = 17312398 # FIXME: world 17312393 look for magic book
+var world_data: Array = []
 
 const encoded_dryness_noise = "DwAJAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
 const encoded_temperature_noise = "DQAGAAAAAAAAQBMAAACAPxMAbxKDOggAAAAAAD8AAAAAAA=="
@@ -327,6 +328,8 @@ func _ready() -> void:
 	
 	var upgrade_settings := UpgradeSettings.new()
 	upgrade_settings.reset_all_stats_to_max_values()
+	
+	world_data = GameSettings.get_world_names()
 	
 	magic_book = MagicBook.new()
 	magic_book.settings = WorldSettings.new(get_viewport())

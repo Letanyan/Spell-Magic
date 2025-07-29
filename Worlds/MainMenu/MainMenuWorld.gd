@@ -6,6 +6,7 @@ extends Node3D
 @onready var new_game: NewGameScreen = $NewGame
 @onready var settings_menu: SettingsMenuScreen = $SettingsMenu
 @onready var import_game: ImportGame = $ImportGame
+@onready var tutorial_game: TutorialGame = $TutorialGame
 
 @onready var player: Marker3D = $Player
 var player_movement_direction := Vector3.ZERO
@@ -116,6 +117,7 @@ func _ready() -> void:
 	new_game.main_menu_world = get_node(".")
 	settings_menu.main_menu_world = get_node(".")
 	import_game.main_menu_world = get_node(".")
+	tutorial_game.main_menu_world = get_node(".")
 	
 	(title.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("base_seed", randi_range(0, 1000000))
 	
@@ -246,13 +248,14 @@ func update_terrain() -> void:
 func quit_to_main_menu() -> void:
 	get_tree().change_scene_to_file("res://GUI/Main Menu/MainMenu.tscn")
 
-enum MenuScreenKind { MAIN, LOAD, NEW, SETTINGS, IMPORT }
+enum MenuScreenKind { MAIN, LOAD, NEW, SETTINGS, IMPORT, TUTORIALS }
 func show_menu_screen(kind: MenuScreenKind) -> void:
 	main_menu.hide()
 	load_game.hide()
 	new_game.hide()
 	settings_menu.hide()
 	import_game.hide()
+	tutorial_game.hide()
 	title.hide()
 	placard.hide()
 	match kind:
@@ -264,6 +267,7 @@ func show_menu_screen(kind: MenuScreenKind) -> void:
 		MenuScreenKind.NEW: new_game.show()
 		MenuScreenKind.SETTINGS: settings_menu.show()
 		MenuScreenKind.IMPORT: import_game.show()
+		MenuScreenKind.TUTORIALS: tutorial_game.show()
 
 func transition_to_biome(biome: World.Biome, duration: float) -> void:
 	var env := get_node("WorldEnvironment") as WorldEnvironment

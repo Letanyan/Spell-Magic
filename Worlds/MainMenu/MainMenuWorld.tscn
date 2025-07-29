@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://belcxyniwagvb"]
+[gd_scene load_steps=38 format=3 uid="uid://belcxyniwagvb"]
 
 [ext_resource type="Script" path="res://Worlds/MainMenu/MainMenuWorld.gd" id="1_f55xg"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/sky.gdshader" id="2_okflh"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dnyvjydavvxjx" path="res://GUI/Main Menu/SettingsMenu.tscn" id="7_jbjvw"]
 [ext_resource type="Shader" path="res://Characters/Enemy/Health Bar/health_bar_no_fog.gdshader" id="8_al82f"]
 [ext_resource type="PackedScene" uid="uid://hh8drb3a5gov" path="res://GUI/Main Menu/ImportGame.tscn" id="8_lcf8d"]
+[ext_resource type="PackedScene" uid="uid://tpo3b065fl1g" path="res://GUI/Main Menu/TutorialGame.tscn" id="9_cs3iu"]
 [ext_resource type="FontFile" uid="uid://cmg0iro73rb4" path="res://GUI/ThemeUI/ChakraPetch-Regular.ttf" id="9_wxs5t"]
 [ext_resource type="Material" uid="uid://dalvvgbm7gren" path="res://Worlds/MainMenu/MainMenuWorldTitle.material" id="10_q4h44"]
 [ext_resource type="Shader" path="res://General/standard.gdshader" id="11_0ki14"]
@@ -239,6 +240,9 @@ visible = false
 visible = false
 
 [node name="ImportGame" parent="." instance=ExtResource("8_lcf8d")]
+visible = false
+
+[node name="TutorialGame" parent="." instance=ExtResource("9_cs3iu")]
 visible = false
 
 [node name="Player" type="Marker3D" parent="."]

@@ -109,6 +109,25 @@ static func get_world_names() -> Array:
 		
 	times.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
 	return times
+	
+static func add_world_name(list: Array, name: String) -> void:
+	list.append([name, Time.get_unix_time_from_system()])
+	list.sort_custom(func(a: Array[Variant], b: Array[Variant]) -> bool: return a[1] > b[1])
+	
+static func get_tutorial_names() -> Array[String]:
+	var dir := DirAccess.open("res://")
+	if not dir.dir_exists("Tutorials"):
+		dir.make_dir("Tutorials")
+	dir.change_dir("Tutorials")
+	var tutorials := dir.get_directories()
+	var result: Array[String] = []
+	for tut in tutorials:
+		var file := dir.get_current_dir(true) + "/" + tut + "/settings.json"
+		if not FileAccess.file_exists(file):
+			continue
+		result.append(tut)
+		
+	return result
 
 enum NoteKind { ANY, FUNC, ARTIFACT, SPELL, VARIABLE, WAND, UPGRADES }
 func get_unfound_note(prefix_kind: NoteKind = NoteKind.ANY) -> String:

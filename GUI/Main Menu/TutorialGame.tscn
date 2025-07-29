@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=3 uid="uid://tpo3b065fl1g"]
+
+[ext_resource type="Script" path="res://GUI/Main Menu/TutorialGame.gd" id="1_qab88"]
+[ext_resource type="Shader" path="res://GUI/ThemeUI/MosaicUI.gdshader" id="2_j6cyc"]
+[ext_resource type="StyleBox" uid="uid://c5uxc55mncpts" path="res://GUI/ThemeUI/NeoBaseBackgroundWrap.tres" id="3_r6ljn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4ss8v"]
+shader = ExtResource("2_j6cyc")
+
+[node name="TutorialGame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qab88")
+
+[node name="Background" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_4ss8v")
+layout_mode = 0
+offset_left = 256.0
+offset_top = 8.0
+offset_right = 896.0
+offset_bottom = 640.0
+theme_override_styles/panel = ExtResource("3_r6ljn")
+
+[node name="Back" type="Button" parent="Background"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 591.0
+offset_right = 256.0
+offset_bottom = 616.0
+text = "Back"
+
+[node name="Start" type="Button" parent="Background"]
+layout_mode = 0
+offset_left = 384.0
+offset_top = 592.0
+offset_right = 576.0
+offset_bottom = 616.0
+text = "Start"
+
+[node name="TutorialList" type="ItemList" parent="Background"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 16.0
+offset_right = 576.0
+offset_bottom = 576.0
+
+[connection signal="pressed" from="Background/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Background/Start" to="." method="_on_start_pressed"]
+[connection signal="item_activated" from="Background/TutorialList" to="." method="_on_tutorial_list_item_activated"]
