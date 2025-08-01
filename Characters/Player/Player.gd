@@ -320,7 +320,7 @@ func cast_spell(insert: Callable, next_spell: Spell) -> void:
 	play_animation("attack")
 #	await get_parent_node_3d().get_tree().create_timer(animator.get_animation("Attack").length / 2.5 / 2.0).timeout
 	await get_tree().physics_frame
-	var err := spell_caster.cast_spell(self, vitals, insert, new_spell) as MagicBook.DisallowSpellReason
+	var err := spell_caster.cast_spell(self, Vitals.custom_level if world_settings.is_level_editor else vitals, insert, new_spell) as MagicBook.DisallowSpellReason
 	if err == MagicBook.DisallowSpellReason.NONE:
 		emit_spell_was_cast(next_spell)
 	else:

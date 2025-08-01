@@ -438,7 +438,10 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 		proj.expression_vars = Vars.new()
 		proj.expression_vars.import_dict(info.get("exprs", {}) as Dictionary)
 		proj.spell = spell
+		spell.setup_particle(proj, proj.fixed_vars)
 		proj.origin_spell_caster = caster
+		proj.caster_vitals = Vitals.custom_level
+		proj.origin_node = player
 		caster.particles.append(proj)
 		projectiles_in_world.append(proj)
 		

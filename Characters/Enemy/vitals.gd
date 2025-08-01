@@ -97,6 +97,8 @@ static func enemy(health_max: float, mana_max: float, mana_rate: float, percep: 
 static func default_ea(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(0, 0, high, rate)
 static func default_health(high: float, rate: float) -> Vitals.Stat: return Vitals.Stat.new(high, 0, high, rate)
 
+static var custom_level := Vitals.enemy(100, 100, 2.5, Vector2(5, 10), 100, 100)
+
 func handle_damage(kind: Spell.Element, power: float, gauge: float) -> Dictionary:
 	var amount: float = 0.0
 	var vape := 0.0

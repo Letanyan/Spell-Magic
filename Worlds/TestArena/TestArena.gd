@@ -55,7 +55,6 @@ func setup(_settings: WorldSettings) -> void:
 		if settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
 			menu.spell_deck.update_cards()
 	)
-	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 	player.set_current_biome(World.Biome.GRASSLAND)
@@ -332,6 +331,7 @@ func _ready() -> void:
 		
 	settings.upgrade_settings.currency = 10000
 	settings.game_mode_settings.flags |= GameModeSettings.RESPAWN_WITH_SPELLS_AND_WANDS | GameModeSettings.RESPAWN_WITH_ARTIFACTS
+	player.world_settings = settings
 	menu.setup(book, case, artifacts, settings, player)
 	
 	wand = case.current_wand()

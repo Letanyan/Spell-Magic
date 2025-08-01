@@ -154,6 +154,7 @@ func run_on_ready() -> void:
 	for enemy in inhabitants:
 		enemy.animation_tree.active = true
 		
+	player.world_settings = settings
 	menu.setup(book, case, artifacts, settings, player)
 	
 	wand = case.current_wand()
@@ -194,7 +195,7 @@ func run_on_ready() -> void:
 	
 	if settings.player_position.is_finite():
 		player.position = settings.player_position
-	player.spell_caster.ignore_mana_cost = true
+	player.spell_caster.ignore_mana_cost = is_in_testing_mode
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
 	)
@@ -214,7 +215,6 @@ func run_on_ready() -> void:
 	player.vitals.mana.set_value(settings.player_mana)
 	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack())
 	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence())
-	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 	player.set_current_biome(World.Biome.GRASSLAND)
@@ -775,6 +775,8 @@ func test_mode_changed(is_editing: bool) -> void:
 	menu.magic_book.current_index = -1
 	menu.wand_case.reload_wand_shelf_items(case.selected_wand, true)
 	hud.wand = menu.wand_case.case.current_wand()
+	player.spell_caster.ignore_mana_cost = is_editing
+	book.ignore_cooldown = is_editing
 	
 	hud.update_settings(settings)
 	

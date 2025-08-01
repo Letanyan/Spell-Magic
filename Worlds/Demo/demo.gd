@@ -148,6 +148,7 @@ func run_on_ready() -> void:
 		#_settings.sed = 0 
 		setup(_settings)
 		
+	player.world_settings = settings
 	menu.setup(book, case, artifacts, settings, player)
 	
 	wand = case.current_wand()
@@ -181,7 +182,6 @@ func run_on_ready() -> void:
 	player.vitals.mana.set_value(settings.player_mana)
 	player.vitals.attack.set_fixed_value(settings.upgrade_settings.max_attack())
 	player.vitals.defence.set_fixed_value(settings.upgrade_settings.max_defence())
-	player.world_settings = settings
 	player.name_generator = NameGenerator.new()
 	player.name_generator.read(settings.world_name)
 		

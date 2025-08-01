@@ -518,31 +518,7 @@ func damage(vitals: Vitals) -> float:
 		Element.VOID    : result = 0.0
 	return result
 	
-func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
-	var fixed_vars := Vars.new()
-	fixed_vars.copy_from(fvars)
-	fixed_vars.set_value(Vars.rn0, randf())
-	fixed_vars.set_value(Vars.rn1, randf())
-	fixed_vars.set_value(Vars.rn2, randf())
-	fixed_vars.set_value(Vars.rn3, randf())
-	fixed_vars.set_value(Vars.rn4, randf())
-	fixed_vars.set_value(Vars.rn5, randf())
-	fixed_vars.set_value(Vars.rn6, randf())
-	fixed_vars.set_value(Vars.rn7, randf())
-	fixed_vars.set_value(Vars.rn8, randf())
-	fixed_vars.set_value(Vars.rn9, randf())
-	fixed_vars.set_value(Vars.n, float(n))
-	compute_expressions(fixed_vars)
-	fixed_vars.set_value(Vars.D, d_expr.compute_value(fixed_vars))
-	
-	
-	var p: SpellBody = SpellBuffer.get_projectile(element)
-			
-	p.fixed_vars = fixed_vars
-	p.expression_vars = Vars.new()
-	p.expression_vars.copy_from(exvars)
-	compute_expressions(p.expression_vars, fixed_vars)
-	p.spell = self
+func setup_particle(p: SpellBody, fixed_vars: Vars) -> void:
 	if fixed_vars.has("spinrate"):
 		var temp_ra: Variant = fixed_vars.get_raw_now("spinrate")
 		if temp_ra is float or temp_ra is int:
@@ -583,6 +559,33 @@ func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
 			Globals.look_at(p, Vector3.FORWARD.rotated(Vector3.UP, p.rotation_angle))
 	else:
 		Globals.look_at(p, dir)
+	
+func get_particle(n: int, fvars: Vars, exvars: Vars) -> SpellBody:
+	var fixed_vars := Vars.new()
+	fixed_vars.copy_from(fvars)
+	fixed_vars.set_value(Vars.rn0, randf())
+	fixed_vars.set_value(Vars.rn1, randf())
+	fixed_vars.set_value(Vars.rn2, randf())
+	fixed_vars.set_value(Vars.rn3, randf())
+	fixed_vars.set_value(Vars.rn4, randf())
+	fixed_vars.set_value(Vars.rn5, randf())
+	fixed_vars.set_value(Vars.rn6, randf())
+	fixed_vars.set_value(Vars.rn7, randf())
+	fixed_vars.set_value(Vars.rn8, randf())
+	fixed_vars.set_value(Vars.rn9, randf())
+	fixed_vars.set_value(Vars.n, float(n))
+	compute_expressions(fixed_vars)
+	fixed_vars.set_value(Vars.D, d_expr.compute_value(fixed_vars))
+	
+	
+	var p: SpellBody = SpellBuffer.get_projectile(element)
+			
+	p.fixed_vars = fixed_vars
+	p.expression_vars = Vars.new()
+	p.expression_vars.copy_from(exvars)
+	compute_expressions(p.expression_vars, fixed_vars)
+	p.spell = self
+	setup_particle(p, fixed_vars)
 	
 	return p
 		
