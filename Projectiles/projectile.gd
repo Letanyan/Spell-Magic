@@ -36,6 +36,7 @@ var tracking_target: Node3D
 var tracking_position: Vector3
 var tracking_offset: Vector3
 var origin_spell_caster: SpellCaster
+var is_level_editor: bool
 
 const INVUNERABLE_DURATION: float = 0.5
 
@@ -67,8 +68,10 @@ func setup() -> void:
 	rng.seed = hash(spell.name)
 	if origin_node is Player:
 		origin_spell_caster = (origin_node as Player).spell_caster
+		is_level_editor = (origin_node as Player).world_settings.is_level_editor
 	elif origin_node is Enemy:
 		origin_spell_caster = (origin_node as Enemy).spell_caster
+		is_level_editor = (origin_node as Enemy).player.world_settings.is_level_editor
 	else:
 		origin_spell_caster = null
 		
@@ -108,8 +111,8 @@ func is_active() -> bool:
 	return in_control and time_stamp >= 0 
 	
 func lose_control(p: Node3D, q: Node3D, layer: int, damage: Dictionary) -> void:
-	in_control = false
-	if spell.element == Spell.Element.ROCK:
+	if spell.element == Spell.Element.ROCK and (not is_level_editor or not spell.is_infinite and is_level_editor):
+		in_control = false
 		var body: RigidBody3D = p.get_node("body")
 		if body.freeze:
 			body.freeze = false

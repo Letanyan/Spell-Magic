@@ -106,7 +106,8 @@ func setup(_settings: WorldSettings) -> void:
 		hud.hud_upgrades.upgrade_slots_refreshed(us)
 		if payload.has("element") or payload.has("chain"):
 			menu.magic_book.page.update_combo_box_disabled()
-		menu.spell_deck.update_cards()
+		if settings.game_mode_settings.has_flag(GameModeSettings.SPELL_DECK_BUILDING):
+			menu.spell_deck.update_cards()
 	)
 	
 	case = WandCase.new()
