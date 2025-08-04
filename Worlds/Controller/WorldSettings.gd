@@ -5,6 +5,7 @@ var player_position: Vector3
 var player_keys: int
 var player_health: float
 var player_mana: float
+var player_camera: Vector3
 var last_save_time: float
 var sed: int
 var enemies_killed := {} ## [World.Enemy]int
@@ -59,6 +60,7 @@ func save_dict() -> Dictionary:
 		"name": world_name, "player": {
 			"position": player_position, "keys": player_keys,
 			"health": player_health, "mana": player_mana,
+			"camera": player_camera,
 		}, 
 		"seed": sed,
 		"enemies_killed": enemies_killed, "marked_entities": marked_entities, "day_of_the_year": day_of_the_year,
@@ -94,6 +96,7 @@ func load_dict(data: Dictionary) -> void:
 	player_keys = player.get("keys", 0)
 	player_health = player.get("health", 1000.0)
 	player_mana = player.get("mana", 1000.0)
+	player_camera = player.get("camera", Vector3.ZERO)
 	last_save_time = data.get("last_save_time", 0.0)
 	sed = data.get("seed", 0)
 	enemies_killed = data.get("enemies_killed", {})

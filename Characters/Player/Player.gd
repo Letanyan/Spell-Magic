@@ -128,6 +128,13 @@ func pan_camera(movement: Vector2) -> void:
 		
 	set_underwater()
 
+func update_camera(cam_coords: Vector3) -> void:
+	cam_pivot.rotation.y = cam_coords.y
+	cam_arm.rotation.x = cam_coords.x
+	
+func camera_coords() -> Vector3:
+	return Vector3(cam_arm.rotation.x, cam_pivot.rotation.y, 0.0)
+
 func current_animation_is(animation: String) -> bool:
 	var playback: AnimationNodeStateMachinePlayback = animation_tree["parameters/playback"]
 	var current := playback.get_current_node()

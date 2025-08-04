@@ -28,7 +28,7 @@ var notifications: Dictionary = {} ## [String(Message)]int(seconds until expirat
 var image_preview_raws := {} ## [String]Texture2D
 
 @onready var message_panel: Panel = $MessagePanel
-@onready var message_label: RichTextLabel = $MessagePanel/VBoxContainer/MessageLabel
+@onready var message_label: RichTextLabel = $MessagePanel/MarginContainer/VBoxContainer/MessageLabel
 var messages: Dictionary = {} ## [GameSettings.Tutorial]String(Message)
 var message_times: Dictionary = {} ## [GameSettings.Tutorial]int(seconds until expiration)
 

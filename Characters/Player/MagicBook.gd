@@ -300,7 +300,7 @@ func autocomplete(old_text: String, edit: LineEdit, suggest_only_active: bool, i
 			if p.begins_with(prefix):
 				complete = p
 				break
-		for p: String in ["element", "CD", "CR"]:
+		for p: String in ["element", "CD", "CR", "name"]:
 			if p.begins_with(prefix):
 				complete = p
 				break

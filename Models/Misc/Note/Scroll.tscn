@@ -150,3 +150,4 @@ libraries = {
 }
 
 [connection signal="body_entered" from="area" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="area" to="." method="_on_area_body_exited"]

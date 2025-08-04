@@ -101,8 +101,10 @@ func setup(_settings: WorldSettings, level_data: Dictionary) -> void:
 	SignalBus.pick_up_world_item_scroll_note.connect(mark_world_item_entity)
 	
 	SignalBus.observe_world_item_scroll_note.connect(func(entity: ScrollNote, note_id: String, message: String) -> void: 
-		const DURATION = 10.0
-		hud.show_message(GameSettings.Tutorials.PLAYER_MESSAGE, note_id.replace("\"", ""), DURATION)
+		hud.show_message(GameSettings.Tutorials.PLAYER_MESSAGE, "[center]" + note_id.replace("\"", "") + "[/center]", INF)
+	)
+	SignalBus.deobserve_world_item_scroll_note.connect(func(entity: ScrollNote, note_id: String, message: String) -> void: 
+		hud.hide_message(GameSettings.Tutorials.PLAYER_MESSAGE)
 	)
 	
 	SignalBus.enemy_death.connect(func(e: Enemy) -> void:
@@ -195,6 +197,7 @@ func run_on_ready() -> void:
 	
 	if settings.player_position.is_finite():
 		player.position = settings.player_position
+		player.update_camera(settings.player_camera)
 	player.spell_caster.ignore_mana_cost = is_in_testing_mode
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
 		book.update_spell_buff_limits(v, settings.upgrade_settings.buff_r)
@@ -277,6 +280,7 @@ func run_on_ready() -> void:
 		var world_h := Navigator.get_world_height(state, player.position.x, player.position.z)
 		player.set_feet_position(world_h)
 		settings.player_position = player.position
+		settings.player_camera = player.camera_coords()
 
 func _exit_tree() -> void:
 	if settings.is_shared_online != -1:
@@ -386,6 +390,7 @@ func open_menu_for_player() -> void:
 	settings.player_position = player.position
 	settings.player_health = player.vitals.health.value
 	settings.player_mana = player.vitals.mana.value
+	settings.player_camera = player.camera_coords()
 	settings.last_save_time = Time.get_unix_time_from_system()
 	hud.hide()
 	
@@ -684,6 +689,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			settings.player_position = player.position
 			settings.player_health = player.vitals.health.max_value
 			settings.player_mana = player.vitals.mana.max_value
+			settings.player_camera = player.camera_coords()
 			settings.last_save_time = Time.get_unix_time_from_system()
 			settings.save()
 			hud.hide()

@@ -161,6 +161,7 @@ func run_on_ready() -> void:
 	noise_image = noise_tex.get_image()
 		
 	player.position = settings.player_position
+	player.update_camera(settings.player_camera)
 	player_last_position = player.position
 	player.spell_caster.ignore_mana_cost = GlobalData.is_debug
 	player.spell_velocity_was_buffed.connect(func(v: float) -> void:
@@ -440,6 +441,7 @@ func open_menu_for_player() -> void:
 	settings.player_position = player.position
 	settings.player_health = player.vitals.health.value
 	settings.player_mana = player.vitals.mana.value
+	settings.player_camera = player.camera_coords()
 	settings.last_save_time = Time.get_unix_time_from_system()
 	totem.hide_message()
 	menu.player_in_combat = not player.enemies_in_range.is_empty()
@@ -803,6 +805,7 @@ func _on_player_vital_update(vitals: Vitals) -> void:
 			settings.player_position = player.position
 			settings.player_health = player.vitals.health.max_value
 			settings.player_mana = player.vitals.mana.max_value
+			settings.player_camera = player.camera_coords()
 			settings.last_save_time = Time.get_unix_time_from_system()
 			settings.save()
 			totem.hide_message()

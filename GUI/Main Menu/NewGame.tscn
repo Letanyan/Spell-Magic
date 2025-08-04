@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://oko6g6intlvw"]
+[gd_scene load_steps=13 format=3 uid="uid://oko6g6intlvw"]
 
 [ext_resource type="Script" path="res://GUI/Main Menu/NewGame.gd" id="1_g78rx"]
-[ext_resource type="Material" uid="uid://6hq3w2pddbge" path="res://GUI/ThemeUI/AnimatedUIBG.material" id="2_e3h3o"]
 [ext_resource type="Material" uid="uid://c4b35g68qduf2" path="res://GUI/ThemeUI/MosaicShaderMat.material" id="2_e8dce"]
 [ext_resource type="StyleBox" uid="uid://biokc78elvw35" path="res://GUI/ThemeUI/NeoBaseBackground.tres" id="2_ilee0"]
 [ext_resource type="Texture2D" uid="uid://bx70s1lvxc1lb" path="res://GUI/Images/tinted_fire.tres" id="2_r3ufo"]
@@ -24,6 +23,7 @@ grow_vertical = 2
 script = ExtResource("1_g78rx")
 
 [node name="Background" type="Panel" parent="."]
+visible = false
 material = ExtResource("2_e8dce")
 layout_mode = 1
 anchors_preset = -1
@@ -394,7 +394,7 @@ popup/item_0/text = "Version 1"
 
 [node name="StartingUpgradesPanel" type="Panel" parent="."]
 visible = false
-material = ExtResource("2_e3h3o")
+material = ExtResource("2_e8dce")
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0

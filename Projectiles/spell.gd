@@ -222,6 +222,9 @@ func configure_using_parameter_collection(parameters: Dictionary, vars: Vars) ->
 	if params.has("element"):
 		element = Element.keys().find((params["element"] as String).to_upper()) as Element
 		params.erase("element")
+	if params.has("name"):
+		name = params["name"] as String
+		params.erase("name")
 	if params.has("r"):
 		r = params["r"] as String
 		r_expr = Expr.new(r)

@@ -36,3 +36,11 @@ func save_to_dict(dict: Dictionary) -> void:
 func load_from_dict(dict: Dictionary) -> void:
 	super.load_from_dict(dict)
 	note_id = dict.get("note_id", "") as String
+
+
+func _on_area_body_exited(body: Node3D) -> void:
+	if not eaten and body is Player:
+		if not (body as Player).world_settings.is_level_editor:
+			pass
+		else:
+			SignalBus.deobserve_world_item_scroll_note.emit(self, note_id, "")
