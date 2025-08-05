@@ -37,6 +37,7 @@ var spawner: ItemSpawner
 
 var is_mouse_down: bool = false
 var spells_on_hold: Dictionary = {}
+@onready var item_placement_indicator: MeshInstance3D = $ItemPlacementIndicator
 
 var ready_state: GameSettings.ReadyState = GameSettings.ReadyState.NOT
 
@@ -347,6 +348,14 @@ func _physics_process(delta: float) -> void:
 	for turret_key: String in spells_on_hold:
 		for turret: SpellTurret in spells_on_hold[turret_key]:
 			turret.update_position(delta)
+	if item_placement_indicator.visible:
+		var cdir := Vector3.ZERO
+		var port := get_viewport()
+		var pos := port.get_visible_rect().size / 2.0
+		var coord := port.get_camera_3d().project_ray_origin(pos)
+		cdir = port.get_camera_3d().project_ray_normal(pos)
+		var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
+		item_placement_indicator.position = place_pos
 			
 			
 	if daytime_tick >= 1.0:
@@ -452,9 +461,10 @@ func _input(event: InputEvent) -> void:
 			var is_down := false
 			var is_rapid_fire := Globals.Ref.new(false)
 			var action_option := Globals.Ref.new(null)
+			var action_option_is_pressed := Globals.Ref.new(null)
 			if event.is_action_pressed(k):
 				var hold_spell := Globals.Ref.new(null)
-				s = wand.action_down(k, book, is_rapid_fire, hold_spell)
+				s = wand.action_down(k, book, is_rapid_fire, hold_spell, action_option_is_pressed)
 				is_down = true
 				if hold_spell.data != null:
 					spells_on_hold[k] = player.project_spell(insert_spell, hold_spell.data as Spell)
@@ -466,7 +476,17 @@ func _input(event: InputEvent) -> void:
 					spells_on_hold.erase(k)
 			if s != null:
 				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
+			elif action_option.data == null and action_option_is_pressed.data != null:
+					var cdir := Vector3.ZERO
+					var port := get_viewport()
+					var pos := port.get_visible_rect().size / 2.0
+					var coord := port.get_camera_3d().project_ray_origin(pos)
+					cdir = port.get_camera_3d().project_ray_normal(pos)
+					var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
+					item_placement_indicator.show()
+					item_placement_indicator.position = place_pos
 			elif action_option.data != null:
+				item_placement_indicator.hide()
 				var option := action_option.data as Wand.Option
 				if option.kind == Wand.Kind.REMOVE_ITEM:
 					var cdir := Vector3.ZERO
@@ -491,7 +511,7 @@ func _input(event: InputEvent) -> void:
 					var pos := port.get_visible_rect().size / 2.0
 					var coord := port.get_camera_3d().project_ray_origin(pos)
 					cdir = port.get_camera_3d().project_ray_normal(pos)
-					var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY)
+					var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
 					var spell := option.get_spell()
 					if not place_pos.is_finite():
 						hud.show_notification("Can not place there", 3.0)

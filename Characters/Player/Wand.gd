@@ -421,7 +421,7 @@ func find_spell(key: PackedStringArray, book: MagicBook, option_activated: Globa
 	return null
 	
 
-func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, hold_spell: Globals.Ref) -> Spell:
+func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, hold_spell: Globals.Ref, option_activated: Globals.Ref = null) -> Spell:
 	if action != "":
 		current_actions[action] = 0
 	var best_candidate := PackedStringArray([])
@@ -438,6 +438,9 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, ho
 				
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
+		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.PLACE_ITEM or opt.kind == Kind.PLACE_PICKED:
+			if option_activated != null:
+				option_activated.data = opt
 		is_rapid_fire.data = true if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.FIRE_PICKED_RAPID else false
 		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD or opt.kind == Kind.PICK:
 			opt.start_hold = Time.get_unix_time_from_system()

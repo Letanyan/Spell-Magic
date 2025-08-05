@@ -146,7 +146,7 @@ static var notes := {
 	"func rot_x, rot_y, rot_z": "{rot_#(a, vx, vy, vz, px, py, pz)} can be used to rotate a point around a vector and returns the {#} component. The parameters of the functions are defined as, {a} which is the angle around the vector and {(vx, vy, vz)} which the point {(px, py, pz)} is rotated around.",
 	"func lerp": "{lerp(t, A, B)} is defined as {A+t*(B-A)}.",
 	"func segment2, segment3, segment4, segment5": "{segment#(t, x1, x2, ..., xn, d1, d2, ..., d(n-1) )} interpolates between the values of {x} over time periods of {d} where {t} describes the current time. For example when {dk} <= {t} < {d(k+1)} then return {lerp(t - sum(d1, ..., dk), x(k+1), x(k+2))}. If {t} < {d1} then return {lerp(t, d1, d2)}.",
-	"func unit": "{unit(v)} returns the unit vector of {v}. he exact definition of the function is {v/sqrt(v.x*v.x+v.y*v.y+v.z*v.z)}",
+	"func unit": "{unit(v)} returns the unit vector of {v}. The exact definition of the function is {v/sqrt(v.x*v.x+v.y*v.y+v.z*v.z)}",
 	"func unit_x, unit_y, unit_z": "{unit_#(vx, vy, vz)} returns the {#} component of the unit vector of {(vx,vy,vz)}. The exact definition of the function is {v#/sqrt(vx*vx+vy*vy+vz*vz)}",
 	"func dot": "{dot(v, w)} returns the dot product of {v} and {w}. The exact definition of the function is {v.x*w.x+v.y*w.y+v.z*w.z}.",
 	"func dot2, dot3": "{dot2(vx,vy,wx,wy)} and {dot3(vx,vy,vz,wx,wy,wz)} returns the dot product of the parameters. The exact definition of the functions are {vx*wx+vy*wy} and {vx*wx+vy*wy+vz*wz} respectively.",

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://b6vd12e4dwa2x"]
+[gd_scene load_steps=26 format=3 uid="uid://b6vd12e4dwa2x"]
 
 [ext_resource type="Script" path="res://Worlds/LevelEditor/LevelEditor.gd" id="1_qxjnh"]
 [ext_resource type="PackedScene" uid="uid://gy4oggrqctjx" path="res://GUI/HUD.tscn" id="2_w8e00"]
@@ -8,6 +8,7 @@
 [ext_resource type="Material" uid="uid://cggmnw6bjnv4a" path="res://Worlds/LevelEditor/floor.material" id="6_7ct1e"]
 [ext_resource type="Shader" path="res://Worlds/SkyBox/world_boundary.gdshader" id="7_vweng"]
 [ext_resource type="Material" uid="uid://b4a377hfvfth6" path="res://Worlds/SkyBox/world_boundary.material" id="8_bjjw1"]
+[ext_resource type="Shader" path="res://General/standard_solid.gdshader" id="9_wnq5e"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pvrol"]
 material = ExtResource("6_7ct1e")
@@ -88,6 +89,28 @@ size = Vector3(256, 256, 8)
 [sub_resource type="QuadMesh" id="QuadMesh_wp8xk"]
 material = ExtResource("8_bjjw1")
 size = Vector2(256, 256)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yddng"]
+render_priority = 0
+shader = ExtResource("9_wnq5e")
+shader_parameter/albedo = Color(0, 0.25098, 0.501961, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+
+[sub_resource type="SphereMesh" id="SphereMesh_6s0wd"]
+material = SubResource("ShaderMaterial_yddng")
+radius = 0.1
+height = 0.2
+radial_segments = 6
+rings = 3
 
 [node name="LevelEditor" type="Node3D"]
 script = ExtResource("1_qxjnh")
@@ -189,6 +212,11 @@ visibility_range_end = 512.0
 visibility_range_end_margin = 1.0
 visibility_range_fade_mode = 1
 mesh = SubResource("QuadMesh_wp8xk")
+
+[node name="ItemPlacementIndicator" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2149, 1001.07, 0)
+visible = false
+mesh = SubResource("SphereMesh_6s0wd")
 
 [connection signal="player_moved" from="Player" to="." method="_on_player_moved"]
 [connection signal="vital_update" from="Player" to="." method="_on_player_vital_update"]
