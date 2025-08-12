@@ -549,12 +549,17 @@ func setup_particle(p: SpellBody, fixed_vars: Vars) -> void:
 	p.lifetime_velocity = approximate_distance_traveled_at_time(fixed_vars, duration, 20) / duration
 	p.lifetime_velocity = clamp(p.lifetime_velocity, 0, limit_v + buff_v)
 	
+	
 	fixed_vars.set_value(Vars.t, 0.0)
 	var base_pos := calculate_cartesian_point(fixed_vars)
-	fixed_vars.set_value(Vars.t, 0.016667)
-	var next_pos := calculate_cartesian_point(fixed_vars)
-	fixed_vars.set_value(Vars.t, 0.0)
-	var dir: Vector3 = next_pos - base_pos
+	var dir: Vector3
+	if fixed_vars.has("direction"):
+		dir = fixed_vars.get_raw_now("direction") as Vector3
+	else:
+		fixed_vars.set_value(Vars.t, 0.016667)
+		var next_pos := calculate_cartesian_point(fixed_vars)
+		fixed_vars.set_value(Vars.t, 0.0)
+		dir = next_pos - base_pos
 	if dir.is_zero_approx():
 		if is_nan(p.rotation_angle):
 			Globals.look_at(p, base_pos.normalized())

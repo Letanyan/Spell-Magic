@@ -266,6 +266,7 @@ The following effects occur when a character with {Freeze} is hit by the followi
 	"variable C": "The charge time in seconds. Spell must be set to a {Charged Cast} on the {Wand}.",
 	"variable size": "{size} is either a vector or number that describes the ratio to the radius of each projectile. When {size} is a vector it describes the ratio, {(a normalized vector)}, of {width},{height} and {depth} to the radius of a spell respectivly. When {size} is just a number it describes the ratio, {([0, 1])}, of each projectile in all dimensions. {size} only takes effect when each projectile is cast. {size} can only be set in the variables field of the spell.",
 	"variable spinrate": "{spinrate} describe the rotation speed of {Rock} spells if the projectile has velocity. If a projectile is not moving {spinrate} will define the angle the projectile faces. Limited to {[-tau, tau]}. {spinrate} can only be set in the variables field of the spell.",
+	"variable direction": "{direction} is a vector that defines the direction the projectile faces. If not defined the projectile will face the direction of its velocity",
 	"variable x, y, z": "These are typically used with the {'.'} operator. Since {x=0},{y=1} and {z=2} you can use them to get the corrosponding component of a vector.",
 	"variable position": "{position} is a vector that describes the position of the player in the world.",
 	"variable pi and tau": "{pi} and {tau} are constants defined as approximatly {3.14} and {6.28} respectively.",
