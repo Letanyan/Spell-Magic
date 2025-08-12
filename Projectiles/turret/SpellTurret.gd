@@ -15,4 +15,5 @@ func update_position(delta: float) -> void:
 	fixed_vars.set_value(Vars.t, 0.0)
 	fixed_vars.set_value(Vars.frame_time, delta)
 	fixed_vars.set_value(Vars.C, charge)
+	spell.compute_expressions(fixed_vars, projectile.expression_vars, false)
 	position = spell.calculate_location(fixed_vars)
