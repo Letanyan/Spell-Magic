@@ -355,7 +355,8 @@ func _physics_process(delta: float) -> void:
 		var coord := port.get_camera_3d().project_ray_origin(pos)
 		cdir = port.get_camera_3d().project_ray_normal(pos)
 		var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
-		item_placement_indicator.position = place_pos
+		if place_pos.is_finite():
+			item_placement_indicator.position = place_pos
 			
 			
 	if daytime_tick >= 1.0:
@@ -477,12 +478,13 @@ func _input(event: InputEvent) -> void:
 			if s != null:
 				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
 			elif action_option.data == null and action_option_is_pressed.data != null:
-					var cdir := Vector3.ZERO
-					var port := get_viewport()
-					var pos := port.get_visible_rect().size / 2.0
-					var coord := port.get_camera_3d().project_ray_origin(pos)
-					cdir = port.get_camera_3d().project_ray_normal(pos)
-					var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
+				var cdir := Vector3.ZERO
+				var port := get_viewport()
+				var pos := port.get_visible_rect().size / 2.0
+				var coord := port.get_camera_3d().project_ray_origin(pos)
+				cdir = port.get_camera_3d().project_ray_normal(pos)
+				var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
+				if place_pos.is_finite():
 					item_placement_indicator.show()
 					item_placement_indicator.position = place_pos
 			elif action_option.data != null:
