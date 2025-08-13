@@ -680,9 +680,6 @@ func get_turret(n: int, fvars: Vars) -> SpellTurret:
 	
 	var p := SpellBuffer.get_turret()
 			
-	p.fixed_vars = fixed_vars
-	p.spell = self
-	p.charge = 0.0
 	p.position = calculate_location(fixed_vars)
 	
 	var radius := clampf(fixed_vars.get_value(Vars.r), 0.1, UpgradeSettings.LIMIT_r)

@@ -465,15 +465,14 @@ func cast_spell(body: Node3D, vitals: Vitals, insert: Callable, spell: Spell, ta
 		p.tracking_offset = spell_offset
 		p.caster_vitals = vitals
 		p.complexity_id = cid
+		p.caster_node = body
+		p.caster_spell_caster = self
 		particles.append(p)
 		spell_variables(p.fixed_vars, body, SpellVariableKind.TIMED, p, p.spell)
 		var delay := spell.calculate_delay(p.fixed_vars)
 		if is_projection != null:
-			var turret := start_projecting_particle(delay, body, p, insert)
-			turret.projectile = p
-			turret.spell_caster = self
-			turret.body = body
-			(is_projection.data as Array).append(turret)
+			insert.call(p)
+			(is_projection.data as Array).append(p)
 		else:
 			start_particle(delay, body, p, insert)
 		
@@ -519,11 +518,6 @@ func start_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) 
 	SignalBus.spell_added_to_world.emit(p)
 	if q and q.get_parent():
 		SpellBuffer.free_turrent(q)
-		
-func start_projecting_particle(delay: float, body: Node3D, p: SpellBody, insert: Callable) -> SpellTurret:
-	var q := p.spell.get_turret(p.n, p.fixed_vars)
-	insert.call(q)
-	return q
 
 func free_particles() -> void:
 	for p: SpellBody in particles:

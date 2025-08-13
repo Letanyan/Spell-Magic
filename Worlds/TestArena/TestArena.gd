@@ -436,8 +436,8 @@ func _physics_process(delta: float) -> void:
 		inhabitant.manual_physics_process(delta)
 		
 	for turret_key: String in spells_on_hold:
-		for turret: SpellTurret in spells_on_hold[turret_key]:
-			turret.update_position(delta)
+		for turret: SpellBody in spells_on_hold[turret_key]:
+			turret.update_display(delta)
 			
 			
 	if daytime_tick >= 1.0:
@@ -567,8 +567,8 @@ func _input(event: InputEvent) -> void:
 			if event.is_action_released(k):
 				s = wand.action_up(k, book)
 				if spells_on_hold.has(k):
-					for t: SpellTurret in spells_on_hold[k]:
-						SpellBuffer.free_turrent(t)
+					for t: SpellBody in spells_on_hold[k]:
+						SpellBuffer.free_projectile(t)
 					spells_on_hold.erase(k)
 			if s != null:
 				cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)

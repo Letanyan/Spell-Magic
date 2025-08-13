@@ -20,6 +20,7 @@ var old_pos: Vector3
 var most_recent_radius: Vector3
 var rotation_angle: float
 var rng: RandomNumberGenerator
+var charge: float
 
 var complexity_id: int
 
@@ -37,6 +38,9 @@ var tracking_position: Vector3
 var tracking_offset: Vector3
 var origin_spell_caster: SpellCaster
 var is_level_editor: bool
+
+var caster_node: Node3D
+var caster_spell_caster: SpellCaster
 
 const INVUNERABLE_DURATION: float = 0.5
 
@@ -58,6 +62,7 @@ func setup() -> void:
 	on_hit_casts = {}
 	sub_spell = null
 	skip_update_shape_check = false
+	charge = 0.0
 
 	to_remove = false
 	
@@ -864,6 +869,16 @@ func stop_emitting() -> void:
 		Spell.Element.VOID:
 			get_area_collision().disabled = true
 			free_after(0.1)
+			
+func update_display(delta: float) -> void:
+	charge += delta
+	caster_spell_caster.spell_variables(fixed_vars, caster_node, SpellCaster.SpellVariableKind.FIXED, self, spell)
+	caster_spell_caster.spell_variables(fixed_vars, caster_node, SpellCaster.SpellVariableKind.TIMED, self, spell)
+	fixed_vars.set_value(Vars.t, 0.0)
+	fixed_vars.set_value(Vars.frame_time, delta)
+	fixed_vars.set_value(Vars.C, charge)
+	spell.compute_expressions(fixed_vars, expression_vars, false)
+	spell.setup_particle(self, fixed_vars)
 			
 func free_after(duration: float) -> void:
 	free_when_ready = duration
