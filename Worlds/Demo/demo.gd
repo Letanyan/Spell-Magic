@@ -333,7 +333,7 @@ func _physics_process(delta: float) -> void:
 	book.update_spell_cooldowns(delta)
 	hud.update_spell_cooldowns(delta)
 	
-	for turret_key: String in spells_on_hold:
+	for turret_key: PackedStringArray in spells_on_hold:
 		for turret: SpellBody in spells_on_hold[turret_key]:
 			turret.update_display(delta)
 
@@ -556,14 +556,18 @@ func _input(event: InputEvent) -> void:
 			var hold_spell := Globals.Ref.new(null)
 			s = wand.action_down(k, book, is_rapid_fire, hold_spell)
 			is_down = true
-			if hold_spell.data != null:
-				spells_on_hold[k] = player.project_spell(insert_spell, hold_spell.data as Spell)
+			if hold_spell.data != null and not (hold_spell.data as Array).is_empty():
+				var candidate := (hold_spell.data as Array)[0] as PackedStringArray
+				var spell := (hold_spell.data as Array)[1] as Spell
+				if not spells_on_hold.has(candidate):
+					spells_on_hold[candidate] = player.project_spell(insert_spell, spell)
 		if event.is_action_released(k):
 			s = wand.action_up(k, book)
-			if spells_on_hold.has(k):
-				for t: SpellBody in spells_on_hold[k]:
-					SpellBuffer.free_projectile(t)
-				spells_on_hold.erase(k)
+			for wand_keys: PackedStringArray in spells_on_hold:
+				if wand_keys.has(k):
+					for t: SpellBody in spells_on_hold[wand_keys]:
+						SpellBuffer.free_projectile(t)
+					spells_on_hold.erase(wand_keys)
 		if s != null:
 			cast_spell_with_recusive_check_for_rapid_fire(s, is_down and is_rapid_fire.data as bool)
 				

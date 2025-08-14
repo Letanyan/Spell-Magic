@@ -445,7 +445,11 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, ho
 		if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD or opt.kind == Kind.PICK:
 			opt.start_hold = Time.get_unix_time_from_system()
 			if opt.kind == Kind.FIRE_HOLD or opt.kind == Kind.FIRE_PICKED_HOLD:
-				hold_spell.data = find_spell(best_candidate, book)
+				var found_spell := find_spell(best_candidate, book)
+				if found_spell != null:
+					hold_spell.data = [best_candidate, found_spell]
+				else:
+					hold_spell.data = []
 			if opt.kind == Kind.PICK and selection_wheel != null:
 				var spell_names: Array[String] = []
 				for idx in opt.spell_names.size():
