@@ -28,18 +28,35 @@ var base_position := Vector3.ZERO
 @onready var enemies_in_world_list: ItemList = $EnemiesInWorld
 @onready var enemies_name: LineEdit = $EnemiesName
 
-@onready var deck_building: CheckBox = $Settings/DeckBuilding
-@onready var shop_upgrades: CheckBox = $Settings/ShopUpgrades
-@onready var respawn: CheckBox = $Settings/Respawn
-@onready var respawn_upgrades: CheckBox = $Settings/RespawnUpgrades
-@onready var respawn_artifacts: CheckBox = $Settings/RespawnArtifacts
-@onready var respawn_spells: CheckBox = $Settings/RespawnSpells
-@onready var respawn_coins: CheckBox = $Settings/RespawnCoins
-@onready var world_radius_edit: SpinBox = $Settings/WorldRadiusEdit
-@onready var track_time: CheckBox = $Settings/TrackTime
-@onready var track_score: CheckBox = $Settings/TrackScore
+@onready var deck_building: CheckBox = $"SettingsTabBar/Game Settings/DeckBuilding"
+@onready var shop_upgrades: CheckBox = $"SettingsTabBar/Game Settings/ShopUpgrades"
+@onready var respawn: CheckBox = $"SettingsTabBar/Game Settings/Respawn"
+@onready var respawn_upgrades: CheckBox = $"SettingsTabBar/Game Settings/RespawnUpgrades"
+@onready var respawn_artifacts: CheckBox = $"SettingsTabBar/Game Settings/RespawnArtifacts"
+@onready var respawn_spells: CheckBox = $"SettingsTabBar/Game Settings/RespawnSpells"
+@onready var respawn_coins: CheckBox = $"SettingsTabBar/Game Settings/RespawnCoins"
+@onready var world_radius_edit: SpinBox = $"SettingsTabBar/Game Settings/WorldRadiusEdit"
+@onready var track_time: CheckBox = $"SettingsTabBar/Game Settings/TrackTime"
+@onready var track_score: CheckBox = $"SettingsTabBar/Game Settings/TrackScore"
 
 @onready var test_mode_button: Button = $TestMode
+
+@onready var settings_tab: TabContainer = $SettingsTabBar
+@onready var entity_settings_tab: TabContainer = $"SettingsTabBar/Entity Settings"
+
+var entity_to_edit: Variant = null
+@onready var note_edit: TextEdit = $"SettingsTabBar/Entity Settings/Note/NoteEdit"
+@onready var spell_spell_edit: TextEdit = $"SettingsTabBar/Entity Settings/Spell/SpellEdit"
+@onready var enemy_level_edit: LineEdit = $"SettingsTabBar/Entity Settings/Enemy/LevelEdit"
+@onready var enemy_score_edit: LineEdit = $"SettingsTabBar/Entity Settings/Enemy/ScoreEdit"
+@onready var enemy_flag_edit: LineEdit = $"SettingsTabBar/Entity Settings/Enemy/FlagEdit"
+@onready var coin_amount_edit: LineEdit = $"SettingsTabBar/Entity Settings/Coin/AmountEdit"
+@onready var health_amount_edit: LineEdit = $"SettingsTabBar/Entity Settings/Health/AmountEdit"
+@onready var flag_tag_edit: LineEdit = $"SettingsTabBar/Entity Settings/Flag/TagEdit"
+
+@onready var artifact_creator_panel: Panel = $ArtifactCreator
+@onready var artifact_creator: ArtifactCreator = $ArtifactCreator/ArtifactCreator
+
 
 signal test_mode_changed(is_editing: bool)
 signal world_radius_changed(radius: float)
@@ -55,6 +72,9 @@ func _ready() -> void:
 	SignalBus.item_removed_from_world.connect(item_removed_from_world)
 	SignalBus.enemy_added_to_world.connect(enemy_added_into_world)
 	SignalBus.enemy_removed_from_world.connect(enemy_removed_from_world)
+	
+	artifact_creator.cancelled.connect(func() -> void: artifact_creator_panel.hide())
+	artifact_creator.artifact_edited.connect(edit_old_artifact)
 	
 	base_upgrades = UpgradeSettings.new()
 	base_upgrades.reset_all_stats_to_default_values()
@@ -140,6 +160,7 @@ func delete_projectile(projectile: SpellBody) -> void:
 func _on_spells_in_world_item_selected(index: int) -> void:
 	var proj := projectiles_in_world[index]
 	projectile_name.text = proj.name
+	open_entity_settings(EntitySettingsIndex.PROJECTILE, proj)
 
 func item_added_into_world(item: WorldItem) -> void:
 	items_in_world.append(item)
@@ -164,15 +185,15 @@ func update_item_list() -> void:
 		items_in_world_list.add_item(p.name)
 		match p.kind:
 			World.Item.SPELL:
-				items_in_world_list.set_item_tooltip(i, (p as SpellPaper).spell.name)
+				items_in_world_list.set_item_tooltip(i, "Spell: " + (p as SpellPaper).spell.name)
 			World.Item.HEALTH:
-				items_in_world_list.set_item_tooltip(i, "Amount: %d%%" % ceili((p as RedCross).health * 100))
+				items_in_world_list.set_item_tooltip(i, "Health: %d%%" % ceili((p as RedCross).health * 100))
 			World.Item.COIN:
-				items_in_world_list.set_item_tooltip(i, "Amount: " + Globals.format_number_nearest_place((p as CoinDisc).amount))
+				items_in_world_list.set_item_tooltip(i, "Coin: " + Globals.format_number_nearest_place((p as CoinDisc).amount))
 			World.Item.FLAG:
-				items_in_world_list.set_item_tooltip(i, "Tag: %d" % (p as Flag).tag)
+				items_in_world_list.set_item_tooltip(i, "Flag: %d" % (p as Flag).tag)
 			World.Item.NOTE:
-				items_in_world_list.set_item_tooltip(i, "Note: %s" % (p as ScrollNote).note_id)
+				items_in_world_list.set_item_tooltip(i, "Note: '%s'" % (p as ScrollNote).note_id.substr(0, mini(18, (p as ScrollNote).note_id.length())))
 		i += 1
 
 func _on_rename_item_pressed() -> void:
@@ -215,6 +236,18 @@ func delete_item(item: WorldItem) -> void:
 func _on_items_in_world_item_selected(index: int) -> void:
 	var it := items_in_world[index]
 	item_name.text = it.name
+	if it is ScrollNote:
+		open_entity_settings(EntitySettingsIndex.NOTE, it)
+	elif it is SpellPaper:
+		open_entity_settings(EntitySettingsIndex.SPELL, it)
+	elif it is ArtifactCube:
+		open_entity_settings(EntitySettingsIndex.ARTIFACT, it)
+	elif it is CoinDisc:
+		open_entity_settings(EntitySettingsIndex.COIN, it)
+	elif it is RedCross:
+		open_entity_settings(EntitySettingsIndex.HEALTH, it)
+	elif it is Flag:
+		open_entity_settings(EntitySettingsIndex.FLAG, it)
 	
 func enemy_added_into_world(enemy: Enemy) -> void:
 	enemies_in_world.append(enemy)
@@ -280,6 +313,7 @@ func delete_enemy(enemy: Enemy) -> void:
 func _on_enemies_in_world_item_selected(index: int) -> void:
 	var en := enemies_in_world[index]
 	enemies_name.text = en.name
+	open_entity_settings(EntitySettingsIndex.ENEMY, en)
 
 func retrieve_enemies_based_on_flag_state() -> Array[Enemy]:
 	if not current_enemies_in_world.is_empty():
@@ -626,3 +660,91 @@ func _on_track_time_toggled(toggled_on: bool) -> void:
 
 func _on_track_score_toggled(toggled_on: bool) -> void:
 	settings.track_score = toggled_on
+
+func _on_edit_artifact_pressed() -> void:
+	UIAudioPlayer.click()
+	if entity_to_edit is ArtifactCube:
+		var artifact := (entity_to_edit as ArtifactCube).artifact
+		if artifact != null:
+			artifact_creator.reset_to_other(artifact)
+			artifact_creator_panel.show()
+			
+func edit_old_artifact() -> void:
+	artifact_creator_panel.hide()
+
+enum EntitySettingsIndex { PROJECTILE, NOTE, SPELL, ARTIFACT, ENEMY, COIN, HEALTH, FLAG }
+func open_entity_settings(entity_settings_index: EntitySettingsIndex, entity: Variant) -> void:
+	settings_tab.current_tab = 1
+	entity_settings_tab.current_tab = entity_settings_index
+	
+	entity_to_edit = entity
+	match entity_settings_index:
+		EntitySettingsIndex.PROJECTILE:
+			pass	
+		EntitySettingsIndex.NOTE:
+			var note := entity as ScrollNote
+			note_edit.text = note.note_id
+		EntitySettingsIndex.SPELL:
+			var spell_paper := entity as SpellPaper
+			spell_spell_edit.text = spell_paper.spell.call_with_parameter_collection_description()
+		EntitySettingsIndex.ARTIFACT:
+			pass
+		EntitySettingsIndex.ENEMY:
+			var enemy := entity as Enemy
+			enemy_flag_edit.text = str(enemy.level_flag)
+			enemy_level_edit.text = str(enemy.level)
+			enemy_score_edit.text = str(enemy.level_score)
+		EntitySettingsIndex.COIN:
+			var coin := entity as CoinDisc
+			coin_amount_edit.text = str(coin.amount)
+		EntitySettingsIndex.HEALTH:
+			var health := entity as RedCross
+			health_amount_edit.text = str(health.health)
+		EntitySettingsIndex.FLAG:
+			var flag := entity as Flag
+			flag_tag_edit.text = str(flag.tag)
+		
+
+func _on_note_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is ScrollNote:
+		(entity_to_edit as ScrollNote).note_id = new_text
+	
+func _on_spell_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is SpellPaper:
+		var wand := Wand.Option.new()
+		wand.parse_spells(new_text, player.magic_book)
+		if not wand.spells.is_empty() and wand.spells[0] != null:
+			(entity_to_edit as SpellPaper).spell = wand.spells[0]
+
+func _on_enemy_level_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is Enemy:
+		if new_text.is_valid_int():
+			(entity_to_edit as Enemy).level = new_text.to_int()
+
+func _on_enemy_score_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is Enemy:
+		if new_text.is_valid_int():
+			(entity_to_edit as Enemy).level_score = new_text.to_int()
+
+
+func _on_enemy_flag_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is Enemy:
+		if new_text.is_valid_int():
+			(entity_to_edit as Enemy).level_flag = new_text.to_int()
+
+
+func _on_coin_amount_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is CoinDisc:
+		if new_text.is_valid_int():
+			(entity_to_edit as CoinDisc).amount = new_text.to_int()
+
+
+func _on_health_amount_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is RedCross:
+		if new_text.is_valid_int():
+			(entity_to_edit as RedCross).health = new_text.to_int()
+
+func _on_flag_tag_edit_text_changed(new_text: String) -> void:
+	if entity_to_edit is Flag:
+		if new_text.is_valid_int():
+			(entity_to_edit as Flag).tag = new_text.to_int()
