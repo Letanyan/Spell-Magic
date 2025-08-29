@@ -32,7 +32,7 @@ func setup() -> void:
 	spell.text = actual_spell_text
 	_on_spell_text_changed(actual_spell_text)
 	cast_combo.selected = store_action
-	spell.editable = store_action != Wand.Kind.NONE and store_action != Wand.Kind.MOD and store_action != Wand.Kind.FIRE_PICKED and store_action != Wand.Kind.FIRE_PICKED_RAPID and store_action != Wand.Kind.FIRE_PICKED_RAPID and store_action != Wand.Kind.FIRE_PICKED_HOLD and store_action != Wand.Kind.REMOVE_ITEM and store_action != Wand.Kind.PLACE_PICKED
+	spell.editable = Wand.kind_allows_editable_spells(store_action)
 	if store_key.size() > 1:
 		cast_combo.set_item_disabled(8, true)
 	else:
@@ -43,7 +43,7 @@ func _on_cast_combo_selected(id: int) -> void:
 		UIAudioPlayer.switch()
 		action_changed.call(get_node(".") as WandCaseShelfItem, store_action as Wand.Kind, id as Wand.Kind)
 		spell_changed.call(get_node(".") as WandCaseShelfItem, spell.text, true)
-		spell.editable = id != Wand.Kind.NONE and id != Wand.Kind.MOD and id != Wand.Kind.FIRE_PICKED and id != Wand.Kind.FIRE_PICKED_RAPID and id != Wand.Kind.FIRE_PICKED_HOLD and id != Wand.Kind.REMOVE_ITEM and id != Wand.Kind.PLACE_PICKED
+		spell.editable = Wand.kind_allows_editable_spells(id)
 
 func _on_spell_text_changed(new_text: String) -> void:
 	var updated_text: String = autocomplete.call(old_text, spell, true) if not delete_key_pressed else new_text
@@ -96,12 +96,16 @@ func _on_spell_gui_input(event: InputEvent) -> void:
 
 func make_level_editor_shelf(is_editing_level: bool) -> void:
 	if is_editing_level:
-		if cast_combo.item_count < 12:
+		if cast_combo.item_count < 14:
 			cast_combo.add_item("Remove", 9)
 			cast_combo.add_item("Place", 10)
 			cast_combo.add_item("Place Chosen", 11)
+			cast_combo.add_item("Pick Up Item", 12)
+			cast_combo.add_item("Put Down Item", 13)
 	else:
-		if cast_combo.item_count == 12:
+		if cast_combo.item_count == 14:
+			cast_combo.remove_item(9)
+			cast_combo.remove_item(9)
 			cast_combo.remove_item(9)
 			cast_combo.remove_item(9)
 			cast_combo.remove_item(9)

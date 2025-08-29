@@ -494,7 +494,7 @@ func _input(event: InputEvent) -> void:
 			elif action_option.data != null:
 				item_placement_indicator.hide()
 				var option := action_option.data as Wand.Option
-				if option.kind == Wand.Kind.REMOVE_ITEM:
+				if option.kind == Wand.Kind.REMOVE_ITEM or option.kind == Wand.Kind.PICK_UP_ITEM:
 					var cdir := Vector3.ZERO
 					var port := get_viewport()
 					var pos := port.get_visible_rect().size / 2.0
@@ -502,12 +502,33 @@ func _input(event: InputEvent) -> void:
 					cdir = port.get_camera_3d().project_ray_normal(pos)
 					var node_to_track := Navigator.get_ray_intersection_of_node(player, coord, coord + cdir * 500)
 					if node_to_track != null:
-						if node_to_track is SpellBody:
+						print(node_to_track)
+						if node_to_track is WorldItem:
+							print(option.kind)
+							if option.kind == Wand.Kind.PICK_UP_ITEM:
+								menu.build_menu.pick_up_stack.append(node_to_track)
+							menu.build_menu.delete_item(node_to_track as WorldItem, option.kind != Wand.Kind.PICK_UP_ITEM)
+						elif node_to_track is SpellBody:
 							menu.build_menu.delete_projectile(node_to_track as SpellBody)
-						elif node_to_track is WorldItem:
-							menu.build_menu.delete_item(node_to_track as WorldItem)
 						elif node_to_track is Enemy:
 							menu.build_menu.delete_enemy(node_to_track as Enemy)
+				elif option.kind == Wand.Kind.PUT_DOWN_ITEM:
+					var cdir := Vector3.ZERO
+					var port := get_viewport()
+					var pos := port.get_visible_rect().size / 2.0
+					var coord := port.get_camera_3d().project_ray_origin(pos)
+					cdir = port.get_camera_3d().project_ray_normal(pos)
+					var place_pos := Navigator.get_ray_intersection_point_of_node(player, coord, coord + cdir * 500, Globals.Layer.WORLD | Globals.Layer.OBJECT | Globals.Layer.BOUNDARY).snapped(Vector3(0.2, 0.2, 0.2))
+					if not place_pos.is_finite():
+						hud.show_notification("Can not place there", 3.0)
+					else:
+						var item := menu.build_menu.pick_up_stack.pop_back() as WorldItem
+						if item == null:
+							hud.show_notification("No items have been picked up", 3.0)
+						else:
+							item.set_base_position(place_pos)
+							add_child(item)
+							SignalBus.item_added_to_world.emit(item)
 				elif option.kind == Wand.Kind.PLACE_ITEM or option.kind == Wand.Kind.PLACE_PICKED:
 					if option.kind == Wand.Kind.PLACE_PICKED:
 						wand.get_spell(option, book, action_option)

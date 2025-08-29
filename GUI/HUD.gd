@@ -331,7 +331,7 @@ func update_wand_mappings() -> void:
 		if s == null:
 			var name_str := opt.get_spell_name()
 			var is_item_spell := Wand.is_item_place_spell(name_str)
-			var color_str := ("#FFF" if opt.kind == Wand.Kind.REMOVE_ITEM or opt.kind == Wand.Kind.PLACE_ITEM or opt.kind == Wand.Kind.PLACE_PICKED or is_item_spell else "#333")
+			var color_str := ("#FFF" if Wand.kind_is_for_level_editor(opt.kind) or is_item_spell else "#333")
 			if is_item_spell:
 				name_str += opt.get_spell_params_desc(false)
 			return "[color=%s]" % color_str + name_str + "[/color]"
@@ -387,6 +387,10 @@ func update_wand_mappings() -> void:
 				wand.get_spell(s, book, option)
 				if option.data != null:
 					rich_text += build_desc.call(kd, "[i]Place[/i]", option.data)
+			Wand.Kind.PICK_UP_ITEM:
+				rich_text += kd + " [b]Pick Up Item[/b]\n"
+			Wand.Kind.PUT_DOWN_ITEM:
+				rich_text += kd + " [b]Put Down Item[/b]\n"
 	
 	rich_text += "[/font_size]"
 	var old_text := wand_mapping.text

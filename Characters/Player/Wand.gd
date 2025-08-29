@@ -1,6 +1,6 @@
 class_name Wand
 
-enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD, REMOVE_ITEM, PLACE_ITEM, PLACE_PICKED  }
+enum Kind { NONE, FIRE, FIRE_HOLD, RAPID_FIRE, PICK, FIRE_PICKED, FIRE_PICKED_HOLD, FIRE_PICKED_RAPID, MOD, REMOVE_ITEM, PLACE_ITEM, PLACE_PICKED, PICK_UP_ITEM, PUT_DOWN_ITEM  }
 
 class Option:
 	var kind: Kind
@@ -438,7 +438,7 @@ func action_down(action: String, book: MagicBook, is_rapid_fire: Globals.Ref, ho
 				
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
-		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.PLACE_ITEM or opt.kind == Kind.PLACE_PICKED:
+		if Wand.kind_is_for_level_editor(opt.kind):
 			if option_activated != null:
 				option_activated.data = opt
 		is_rapid_fire.data = true if opt.kind == Kind.RAPID_FIRE or opt.kind == Kind.FIRE_PICKED_RAPID else false
@@ -513,7 +513,7 @@ func action_up(action: String, book: MagicBook, option_activated: Globals.Ref = 
 			
 	if not best_candidate.is_empty():
 		var opt: Option = keys[best_candidate]
-		if opt.kind == Kind.REMOVE_ITEM or opt.kind == Kind.PLACE_ITEM or opt.kind == Kind.PLACE_PICKED:
+		if Wand.kind_is_for_level_editor(opt.kind):
 			if option_activated != null:
 				option_activated.data = opt
 			return null
@@ -577,3 +577,15 @@ func load_dict(dict: Dictionary, book: MagicBook) -> void:
 
 static func is_item_place_spell(spell_name: String) -> bool:
 	return spell_name == "coin" or spell_name == "health" or spell_name == "enemy" or spell_name == "artifact" or spell_name == "flag" or spell_name == "note"
+
+static func kind_allows_editable_spells(kind: Kind) -> bool:
+	return kind != Wand.Kind.NONE and kind != Wand.Kind.MOD \
+	and kind != Wand.Kind.FIRE_PICKED and kind != Wand.Kind.FIRE_PICKED_RAPID \
+	and kind != Wand.Kind.FIRE_PICKED_RAPID and kind != Wand.Kind.FIRE_PICKED_HOLD \
+	and kind != Wand.Kind.REMOVE_ITEM and kind != Wand.Kind.PLACE_PICKED \
+	and kind != Wand.Kind.PICK_UP_ITEM and kind != Wand.Kind.PUT_DOWN_ITEM
+
+static func kind_is_for_level_editor(kind: Kind) -> bool:
+	return kind == Wand.Kind.REMOVE_ITEM or kind == Wand.Kind.PLACE_ITEM \
+	or kind == Wand.Kind.PLACE_PICKED or kind == Wand.Kind.PICK_UP_ITEM \
+	or kind == Wand.Kind.PUT_DOWN_ITEM

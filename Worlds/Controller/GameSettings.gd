@@ -302,6 +302,8 @@ Place items in the world. You can assign spells using their name in text field. 
 	- Currently only enemies and flags can have tags. The tag systems between flags and enemies work independently. 
 """,
 	"wand Place Chosen": "'Place Chosen' works similarily as 'Place', but uses 'Choose' for deciding which action to perform.",
+	"wand Pick Up Item": "'Pick Up Item' will remove the first item in line with the players camera from the world. The removed item will be saved onto a stack of items which can be re-placed into the world with 'Put Down Item.'",
+	"wand Put Down Item": "'Put Down Item' will place the most recently picked up item by 'Pick Up Item.' The newly placed item will be removed from the stack and placed into the world. Using 'Put Down Item' again will place the second most recently picked up item and so on... Until there are no more items that have been picked up.",
 	
 	"upgrades Max Health": "The maximum health of the player.",
 	"upgrades Max M": "The maximum mana of the player.",

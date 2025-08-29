@@ -16,6 +16,7 @@ var current_enemies_in_world: Array[Enemy] = []
 var base_upgrades: UpgradeSettings = null
 var base_artifacts: Artifacts = null
 var base_position := Vector3.ZERO
+var pick_up_stack: Array[WorldItem] = []
 
 @onready var desc_edit: LineEdit = $DescEdit
 @onready var share_online: CheckBox = $ShareOnline
@@ -218,7 +219,7 @@ func _on_delete_item_pressed() -> void:
 	projectile_name.text = ""
 	update_item_list()
 
-func delete_item(item: WorldItem) -> void:
+func delete_item(item: WorldItem, should_free: bool) -> void:
 	var idx := -1
 	for i in items_in_world.size():
 		var it := items_in_world[i]
@@ -228,7 +229,10 @@ func delete_item(item: WorldItem) -> void:
 			
 	if idx != -1:
 		var it := items_in_world[idx]
-		it.queue_free()
+		if should_free:
+			it.queue_free()
+		elif it.get_parent_node_3d() != null:
+			it.get_parent_node_3d().remove_child(it)
 		items_in_world.remove_at(idx)
 		item_name.text = ""
 		update_item_list()
@@ -408,6 +412,12 @@ func get_dict() -> Dictionary:
 	for enemy in enemies_in_world:
 		enemies[enemy.name] = {"kind": World.Enemy.keys()[enemy.kind], "level": enemy.level, "position": enemy.position, "flag": enemy.level_flag, "score": enemy.level_score}
 		
+	var picked_up := {}
+	for item in pick_up_stack:
+		var dict := {}
+		item.save_to_dict(dict)
+		picked_up[item.name] = dict
+		
 	var result := {}
 	result["projectiles"] = projectiles
 	result["items"] = items
@@ -417,6 +427,7 @@ func get_dict() -> Dictionary:
 	result["username"] = GlobalData.game_settings.username
 	result["desc"] = desc_edit.text
 	result["settings"] = settings.game_mode_settings.save_dict()
+	result["picked_up"] = picked_up
 	
 	var current_enemies: Array[String] = []
 	var current_flags: Array[String] = []
@@ -479,10 +490,7 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 		caster.particles.append(proj)
 		projectiles_in_world.append(proj)
 		
-	items_in_world = []
-	var items := data.get("items", {}) as Dictionary
-	for key: String in items:
-		var info := items[key] as Dictionary
+	var load_item := func(info: Dictionary) -> WorldItem:
 		var item: WorldItem = null
 		match info.get("kind", 0):
 			World.Item.SPELL:
@@ -500,10 +508,25 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 			World.Item.NOTE:
 				item = ScrollNote.make()
 				item.load_from_dict(info)
-				
+		return item
+		
+		
+	items_in_world = []
+	var items := data.get("items", {}) as Dictionary
+	for key: String in items:
+		var info := items[key] as Dictionary
+		var item := load_item.call(info) as WorldItem
 		if item != null:				
 			items_in_world.append(item)
 			
+	pick_up_stack = []
+	var picked_up := data.get("picked_up", {}) as Dictionary
+	for key: String in picked_up:
+		var info := picked_up[key] as Dictionary
+		var item := load_item.call(info) as WorldItem
+		if item != null:
+			pick_up_stack.append(item)
+ 			
 	var enemies := data.get("enemies", {}) as Dictionary
 	for key: String in enemies:
 		var enemy_data := enemies[key] as Dictionary
