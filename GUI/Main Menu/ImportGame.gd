@@ -21,14 +21,17 @@ func _ready() -> void:
 	)
 	HttpLevels.got_level.connect(func(id: int, data: Dictionary, level: Dictionary) -> void:
 		var settings := WorldSettings.new(get_viewport())
+		settings.load_dict(GlobalData.game_settings.default_world_settings.save_dict())
 		settings.game_mode_settings.load_dict(data.get("settings", {}) as Dictionary)
 		settings.world_name = data.get("name", Rand.id(8, Time.get_ticks_usec())) + " (" + data.get("username", Rand.id(8, Time.get_ticks_usec())) + ")"
 		settings.is_shared_online = id
 		settings.online_vote = level.get("UserVote", 0)
 		settings.player_position = data.get("base_position", Vector3(0, 1000.95, 0)) as Vector3
+		settings.is_level_editor = true
 		data["current_enemies"] = []
 		data["current_flags"] = []
 		settings.save()
+		GlobalData.world_data.append([settings.world_name, roundi(Time.get_unix_time_from_system())])
 		HttpLevels.add_level_user_data(id)
 		SceneHandler.load_new_scene("res://Worlds/LevelEditor/LevelEditor.tscn", "fade_to_black", func(content: LevelEditor) -> void: content.setup(settings, data), Quotes.random())
 	)

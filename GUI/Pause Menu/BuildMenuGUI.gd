@@ -16,6 +16,7 @@ var current_enemies_in_world: Array[Enemy] = []
 var base_upgrades: UpgradeSettings = null
 var base_artifacts: Artifacts = null
 var base_position := Vector3.ZERO
+var base_camera := Vector3.ZERO
 var pick_up_stack: Array[WorldItem] = []
 
 @onready var desc_edit: LineEdit = $DescEdit
@@ -435,6 +436,7 @@ func get_dict() -> Dictionary:
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		base_artifacts.reset_from_other(player.artifacts)
 		base_position = player.position
+		base_camera = settings.player_camera
 		item_flag_state.clear()
 		enemy_flag_state.clear()
 	else:
@@ -448,6 +450,7 @@ func get_dict() -> Dictionary:
 	result["item_flag_state"] = item_flag_state
 	result["enemy_flag_state"] = enemy_flag_state
 	result["base_position"] = base_position
+	result["base_camera"] = base_camera
 	result["current_enemies"] = current_enemies
 	result["current_flags"] = current_flags
 	
@@ -563,7 +566,9 @@ func load_data(data: Dictionary, caster: SpellCaster) -> void:
 	item_flag_state.assign(data.get("item_flag_state", []) as Array)
 	enemy_flag_state.assign(data.get("enemy_flag_state", []) as Array)
 	base_position = data.get("base_position", Vector3(0, 1000.95, 0)) as Vector3
+	base_camera = data.get("base_camera", Vector3.ZERO) as Vector3
 	player.position = base_position
+	player.update_camera(base_camera)
 	
 	var current_enemies := data.get("current_enemies", []) as Array
 	for enemy_name: String in current_enemies:
@@ -656,11 +661,13 @@ func switch_editing_mode(is_editing: bool) -> void:
 		settings.upgrade_settings.reset_all_stats_to_other(base_upgrades)
 		player.artifacts.reset_from_other(base_artifacts)
 		player.position = base_position
+		player.update_camera(base_camera)
 	else:
 		test_mode_button.text = "Edit Level"
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		base_artifacts.reset_from_other(player.artifacts)
 		base_position = player.position
+		base_camera = player.camera_coords()
 		player.artifacts.collection.clear()
 		
 		
