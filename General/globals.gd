@@ -233,7 +233,6 @@ static func save_credits() -> void:
 					file.store_string(f + "\n")
 				file.store_string("License: " + (part["license"] as String) + "\n\n")
 			file.store_string("\n")
-		file.flush()
 		file.close()
 			
 func remove_folder_that_only_has_files(folder: String) -> void:

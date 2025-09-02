@@ -49,6 +49,7 @@ func save(world_name: String) -> void:
 	data["roman_names"] = roman_names.save_dict()
 	data["latin_names"] = latin_names.save_dict()
 	file.store_var(data)
+	file.close()
 
 func initial() -> void:
 	russian_names = WordGenerator.new(WordGenerator.SourcePath.russian_names)

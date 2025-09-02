@@ -36,15 +36,28 @@ func get_level(id: int) -> void:
 		return
 	http.request(BASE_ADDR + "api/v1/level?id=%d" % id, PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_GET)
 
+func compress(data: Dictionary, buffer_size: Globals.Ref) -> PackedByteArray:
+	var bytes := var_to_bytes(data)
+	buffer_size.data = bytes.size()
+	var result := bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
+	return result
+
+func decompress(buffer_size: int, data: PackedByteArray) -> PackedByteArray:
+	return data.decompress(buffer_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
+
 func add_level(level_name: String, level_desciption: String, data: Dictionary) -> void:
 	if GlobalData.is_demo or IS_WIP:
 		return
-	http.request_raw(BASE_ADDR + "api/v1/level/?name=%s&desc=%s" % [level_name.uri_encode(), level_desciption.uri_encode()], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, var_to_bytes(data))
+	var buffer_size := Globals.Ref.new(0)
+	var comp := compress(data, buffer_size)
+	http.request_raw(BASE_ADDR + "api/v1/level/?name=%s&desc=%s&datasize=%d" % [level_name.uri_encode(), level_desciption.uri_encode(), buffer_size.data], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_POST, comp)
 
 func put_level(level_id: int, level_desciption: String, data: Dictionary) -> void:
 	if GlobalData.is_demo or IS_WIP:
 		return
-	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s" % [level_id, level_desciption.uri_encode()], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, var_to_bytes(data))
+	var buffer_size := Globals.Ref.new(0)
+	var comp := compress(data, buffer_size)
+	http.request_raw(BASE_ADDR + "api/v1/level/?id=%d&desc=%s&datasize=%d" % [level_id, level_desciption.uri_encode(), buffer_size.data], PackedStringArray(["Cookie: user_token=%s" % session_id]), HTTPClient.METHOD_PUT, comp)
 
 func get_levels(page: int, search: String, search_kind: SearchKind) -> void:
 	if GlobalData.is_demo or IS_WIP:
@@ -106,15 +119,24 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 		added_level.emit(id)
 	elif kind == 1:
 		var json := JSON.parse_string(body.get_string_from_utf8()) as Dictionary
+		var buffer_size := json.get("MaxBufferSize", -1) as int
 		var data := json.get("Data", "") as String
 		var bytes := Marshalls.base64_to_raw(data)
-		got_level.emit(json.get("Id", -1) as int, bytes_to_var(bytes) as Dictionary, json)
+		var decomp: PackedByteArray
+		if buffer_size != -1:
+			decomp = decompress(buffer_size, bytes)
+		else:
+			decomp = bytes
+		got_level.emit(json.get("Id", -1) as int, bytes_to_var(decomp) as Dictionary, json)
 	elif kind == 2:
 		var id := body.get_string_from_utf8().to_int()
 		placed_level.emit(id)
 		update_username()
 	elif kind == 3:
-		session_id = body.get_string_from_utf8()
+		var data := body.get_string_from_utf8().split("\n", 2)
+		session_id = data[0]
+		GlobalData.game_settings.user_id = data[1].to_int()
+		GlobalData.game_settings.save()
 	elif kind == 4:
 		var json := JSON.parse_string(body.get_string_from_utf8()) as Array
 		got_levels.emit(json, page)

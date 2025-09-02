@@ -357,6 +357,7 @@ func save_dict() -> Dictionary:
 func save(world_name: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/artifacts.json" % (world_name), FileAccess.WRITE)
 	file.store_var(save_dict())
+	file.close()
 	
 func load_dict(data: Dictionary) -> void:
 	if data == null or data.is_empty():

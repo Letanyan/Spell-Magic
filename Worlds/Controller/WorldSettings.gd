@@ -87,6 +87,7 @@ func save() -> void:
 		dir.make_dir("worlds/%s" % (world_name))
 	var file := FileAccess.open("user://worlds/%s/settings.json" % (world_name), FileAccess.WRITE)
 	file.store_var(save_dict())
+	file.close()
 
 func load_dict(data: Dictionary) -> void:
 	world_name = data.get("name", "empty")

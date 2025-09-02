@@ -33,6 +33,7 @@ func save(world_name: String) -> void:
 	for w: Wand in build_mode_wands:
 		build_data.append(w.save_dict())
 	file.store_var({"wands": play_data, "selected": selected_play_wand, "build_mode_wands": build_data, "selected_build_wand": selected_build_wand})
+	file.close()
 	
 func read(world_name: String, book: MagicBook) -> bool:
 	var file := FileAccess.open("user://worlds/%s/wand_case.json" % (world_name), FileAccess.READ)

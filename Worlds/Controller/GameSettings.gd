@@ -29,12 +29,14 @@ func save() -> void:
 		"tutorials_shown": tutorials_shown, "username": username, "password": password, 
 		"user_id": user_id,
 	})
+	file.close()
 
 func read() -> void:
 	var file := FileAccess.open("user://settings.json", FileAccess.READ)
 	var data: Dictionary
 	if file != null:
 		data = file.get_var()
+		file.close()
 	else:
 		data = {}
 	last_world = data.get("last_world", "")

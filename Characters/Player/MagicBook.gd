@@ -19,6 +19,7 @@ func save_absolute_path(file_path: String) -> void:
 	for s in spells:
 		data.append(s.save_dict())
 	file.store_var(data)
+	file.close()
 	
 func export_absolute_path(file_path: String) -> void:
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
@@ -26,6 +27,7 @@ func export_absolute_path(file_path: String) -> void:
 	for s in spells:
 		data += s.make_gdscript_init(s.name, true)
 	file.store_string(data)
+	file.close()
 	
 func read(world_name: String, create_default_spell: bool = true) -> bool:
 	return read_absolute_path("user://worlds/%s/magic_book.json" % (world_name), create_default_spell)

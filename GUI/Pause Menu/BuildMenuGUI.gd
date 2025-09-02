@@ -82,7 +82,9 @@ func _ready() -> void:
 	base_upgrades.reset_all_stats_to_default_values()
 	base_artifacts = Artifacts.new()
 	
+	username_edit.text = GlobalData.game_settings.username
 	share_online.disabled = HttpLevels.IS_WIP
+	
 	
 	
 func update_settings() -> void:
@@ -389,6 +391,7 @@ func save(world_name: String) -> void:
 	var file := FileAccess.open("user://worlds/%s/level_build.json" % (world_name), FileAccess.WRITE)	
 	var dict := get_dict()
 	file.store_var(dict)
+	file.close()
 	GlobalData.game_settings.username = username_edit.text
 	
 	if settings.is_shared_online != -1:
