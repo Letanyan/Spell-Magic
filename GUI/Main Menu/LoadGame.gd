@@ -83,6 +83,9 @@ func _on_delete_pressed() -> void:
 		GlobalData.world_data.remove_at(selected[0])
 		OS.move_to_trash(ProjectSettings.globalize_path("user://worlds/%s" % (filename)))
 		list.remove_item(current_selected[0])
+		if GlobalData.game_settings.last_world == filename:
+			GlobalData.game_settings.last_world = ""
+			main_menu_world.main_menu.continue_button.disabled = true
 	)
 	popup.cancelled.connect(func() -> void: UIAudioPlayer.click())
 	popup.show_in_root(self)

@@ -494,14 +494,14 @@ func open_menu_for_player() -> void:
 	settings.is_paused = true
 	sub_viewport_container.visible = true
 	menu.player_in_combat = not player.enemies_in_range.is_empty()
-	menu.open(Menu.Kind.ANY)
-	if not menu.is_quick_menu and menu.current_index == Menu.Kind.SETTINGS and menu.settings.tab_container.get_current_tab_control().name == "Skin":
-		player.animate_spring_arm(true, 0.2)
 	settings.player_position = player.position
 	settings.player_camera = player.camera_coords()
 	settings.player_health = player.vitals.health.value
 	settings.player_mana = player.vitals.mana.value
 	settings.last_save_time = Time.get_unix_time_from_system()
+	menu.open(Menu.Kind.ANY)
+	if not menu.is_quick_menu and menu.current_index == Menu.Kind.SETTINGS and menu.settings.tab_container.get_current_tab_control().name == "Skin":
+		player.animate_spring_arm(true, 0.2)
 	hud.hide()
 	
 

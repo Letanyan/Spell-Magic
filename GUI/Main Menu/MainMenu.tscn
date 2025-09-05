@@ -24,7 +24,7 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -136.0
-offset_top = -224.0
+offset_top = -304.0
 offset_right = 136.0
 offset_bottom = -8.0
 grow_horizontal = 2
@@ -77,16 +77,14 @@ text = "Load Game
 "
 
 [node name="Import" type="Button" parent="Background/MarginContainer/VBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Import Game"
+text = "User Shared Levels"
 
 [node name="Tutorial" type="Button" parent="Background/MarginContainer/VBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Tutorial"
+text = "Tutorial (BETA)"
 
 [node name="Settings" type="Button" parent="Background/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)

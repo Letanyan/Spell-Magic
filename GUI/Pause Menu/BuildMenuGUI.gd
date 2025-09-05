@@ -68,6 +68,7 @@ func _ready() -> void:
 	#HttpLevels.added_level.connect(func(id: int) -> void: HttpLevels.get_level(id))
 	#HttpLevels.save_level("New Level", {"projectiles": {}, "items": {}})
 	HttpLevels.added_level.connect(level_added)
+	HttpLevels.placed_level.connect(level_placed)
 	SignalBus.spell_added_to_world.connect(spell_added_into_world)
 	SignalBus.spell_removed_from_world.connect(spell_removed_from_world)
 	SignalBus.item_added_to_world.connect(item_added_into_world)
@@ -83,7 +84,8 @@ func _ready() -> void:
 	base_artifacts = Artifacts.new()
 	
 	username_edit.text = GlobalData.game_settings.username
-	share_online.disabled = HttpLevels.IS_WIP
+	username_edit.editable = HttpLevels.is_available
+	share_online.disabled = not HttpLevels.is_available
 	
 	
 	
@@ -395,7 +397,7 @@ func save(world_name: String) -> void:
 	GlobalData.game_settings.username = username_edit.text
 	
 	if settings.is_shared_online != -1:
-		HttpLevels.put_level(settings.is_shared_online, desc_edit.text, dict)
+		HttpLevels.put_level(settings.is_shared_online, settings.world_name, desc_edit.text, dict)
 	
 func get_dict() -> Dictionary:
 	var projectiles := {}
@@ -439,7 +441,7 @@ func get_dict() -> Dictionary:
 		base_upgrades.reset_all_stats_to_other(settings.upgrade_settings)
 		base_artifacts.reset_from_other(player.artifacts)
 		base_position = player.position
-		base_camera = settings.player_camera
+		base_camera = player.camera_coords()
 		item_flag_state.clear()
 		enemy_flag_state.clear()
 	else:
@@ -649,12 +651,16 @@ func _on_share_online_toggled(toggled_on: bool) -> void:
 		if settings.is_shared_online == -1:
 			HttpLevels.add_level(settings.world_name, desc_edit.text, get_dict())
 		else:
-			HttpLevels.put_level(settings.is_shared_online, desc_edit.text, get_dict())
+			HttpLevels.put_level(settings.is_shared_online, settings.world_name, desc_edit.text, get_dict())
 
 func level_added(id: int) -> void:
 	settings.is_shared_online = id
 	settings.save()
-
+	
+func level_placed(id: int) -> void:
+	if id != 0:
+		settings.is_shared_online = id
+		settings.save()
 
 func switch_editing_mode(is_editing: bool) -> void:
 	settings.is_editing_level = is_editing

@@ -229,7 +229,7 @@ text = "Shop for Upgrades"
 [node name="LevelEditor" type="CheckBox" parent="GameOptions"]
 layout_mode = 2
 tooltip_text = "Create customs levels. THIS IS A WORK IN PROGRESS."
-text = "Level Editor (ALPHA)"
+text = "Level Editor"
 
 [node name="RespawnOptions" type="VBoxContainer" parent="."]
 layout_mode = 1

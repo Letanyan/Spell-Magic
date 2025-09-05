@@ -27,6 +27,7 @@ func _ready() -> void:
 		settings.is_shared_online = id
 		settings.online_vote = level.get("UserVote", 0)
 		settings.player_position = data.get("base_position", Vector3(0, 1000.95, 0)) as Vector3
+		settings.player_camera = data.get("base_camera", Vector3.ZERO) as Vector3
 		settings.is_level_editor = true
 		data["current_enemies"] = []
 		data["current_flags"] = []

@@ -110,7 +110,7 @@ offset_bottom = -96.0
 grow_horizontal = 2
 grow_vertical = 0
 disabled = true
-text = "Edit (ALPHA)"
+text = "Edit Level"
 
 [connection signal="item_activated" from="WorldsList" to="." method="_on_worlds_list_item_activated"]
 [connection signal="item_selected" from="WorldsList" to="." method="_on_worlds_list_item_selected"]
