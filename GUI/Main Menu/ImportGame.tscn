@@ -53,10 +53,13 @@ grow_horizontal = 2
 placeholder_text = "Search"
 
 [node name="SearchOption" type="OptionButton" parent="Background"]
-layout_mode = 0
-offset_left = 392.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -248.0
 offset_top = 16.0
-offset_right = 504.0
+offset_right = -136.0
 offset_bottom = 41.0
 selected = 0
 item_count = 2
@@ -65,27 +68,40 @@ popup/item_1/text = "User Name"
 popup/item_1/id = 1
 
 [node name="SearchButton" type="Button" parent="Background"]
-layout_mode = 0
-offset_left = 512.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -128.0
 offset_top = 16.0
-offset_right = 576.0
+offset_right = -64.0
 offset_bottom = 41.0
 text = "Search"
 
 [node name="Cancel" type="Button" parent="Background"]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 592.0
-offset_right = 256.0
-offset_bottom = 617.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -40.0
+offset_right = -64.0
+offset_bottom = -15.0
 text = "Back"
 
 [node name="Import" type="Button" parent="Background"]
-layout_mode = 0
-offset_left = 384.0
-offset_top = 592.0
-offset_right = 577.0
-offset_bottom = 617.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = -40.0
+offset_right = 257.0
+offset_bottom = -15.0
 text = "Import"
 
 [connection signal="gui_input" from="Background/WorldsList" to="." method="_on_worlds_list_gui_input"]
